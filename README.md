@@ -1,7 +1,7 @@
 Gmail2GDrive
 ============
 
-Gmail2GDrive is a Google Apps Script which stores and sorts Gmail attachments into Google Drive folders.
+Gmail2GDrive is a Google Apps Script which automatically stores and sorts Gmail attachments into Google Drive folders.
 
 It does so by defining a list of rules which consist of Gmail search filters and Google Drive destination folders.
 This way the attachments of periodic emails can be automatically organized in folders without the need to install and run anything on the client.
