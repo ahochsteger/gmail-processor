@@ -13,7 +13,7 @@ Usage
 1. Open [Google Apps Script](https://script.google.com/).
 2. Create an empty project.
 3. Give the project a name (e.g. MyGmail2GDrive)
-4. Replace the content of the created file Code.gs with the provided content.
+4. Replace the content of the created file Code.gs with the provided [Code.gs](https://github.com/ahochsteger/gmail2gdrive/blob/master/Code.gs).
 5. Adjust the configuration in the function getGmail2GDriveConfig() to your needs. It is recommended to restrict the timeframe using 'newerThan' to prevent running into API quotas by Google.
 6. Save the changes.
 7. Test the script by manually executing the function performGmail2GDrive.
@@ -22,7 +22,11 @@ Usage
 Configuration
 -------------
 
-The configuration parameters are documented in the files Code.gs.
+The configuration parameters are documented in the files [Code.gs](https://github.com/ahochsteger/gmail2gdrive/blob/master/Code.gs).
+
+Make sure tho have the following set up:
+* Create the label configured as processedLabel in Gmail
+* Create all destination folders of the rules in Google Drive
 
 
 Feedback and contributions

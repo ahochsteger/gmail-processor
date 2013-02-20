@@ -6,8 +6,8 @@
  */
 function getGmail2GDriveConfig() {
   return {
-    // Gmail label for processed threads:
-    "processedLabel": "gmail2gdrive/processed",
+    // Existing Gmail label for processed threads:
+    "processedLabel": "gmail2gdrive-processed",
     // Sleep time in milli seconds between processed messages:
     "sleepTime": 100,
     // Maximum script runtime in seconds (google scripts will be killed after 5 minutes):
@@ -60,7 +60,7 @@ function performGmail2GDrive() {
   Logger.log("INFO: Starting mail attachment processing.");
   for (var i=0; i<config.rules.length; i++) {
     var rule = config.rules[i];
-    var gSearchExp  = rule.filter + " -label:" + gProcessedLabel;
+    var gSearchExp  = rule.filter + " has:attachment -label:" + gProcessedLabel;
     if (gNewerThan != "") {
       gSearchExp += " newer_than:" + gNewerThan;
     }
