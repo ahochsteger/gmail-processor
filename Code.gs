@@ -1,48 +1,53 @@
-// Gmail2GDrive by Andreas Hochsteger
+// Gmail2GDrive
 // https://github.com/ahochsteger/gmail2gdrive
 
 /**
- * Configuration for Gmail2GDrive
+ * Returns the label with the given name or creates it if not existing.
  */
-function getGmail2GDriveConfig() {
-  return {
-    // Existing Gmail label for processed threads:
-    "processedLabel": "gmail2gdrive-processed",
-    // Sleep time in milli seconds between processed messages:
-    "sleepTime": 100,
-    // Maximum script runtime in seconds (google scripts will be killed after 5 minutes):
-    "maxRuntime": 280,
-    // Only process message newer than (leave empty for no restriction; use d, m and y for day, month and year):
-    "newerThan": "1m",
-    // Processing rules:
-    "rules": [
-	  // Rule documentation:
-	  //  * filter (String, mandatory): a typical gmail search expression (see http://support.google.com/mail/bin/answer.py?hl=en&answer=7190)
-	  //  * folder (String, mandatory): a path to an existing Google Drive folder
-	  //  * archive (boolean, optional): Should the gmail thread be archived after processing? (default: false)
-	  //  * filenameFrom (String, optional): The attachment filename that should be renamed when stored in Google Drive
-	  //  * filenameTo (String, optional): The new filename for the attachment. You can use the special characters 'YYYY' for year, 'MM' for month and 'DD' for day as pattern in the filename.
-      {
-        "filter": "to:my.name+scans@gmail.com",
-		"folder": "Scans"
-	  },
-      {
-	    "filter": "from:example1@example.com",
-		"folder": "Examples/example1"
-	  },
-      {
-		"filter": "from:example2@example.com",
-		"folder": "Examples/example2"
-	  },
-      {
-		"filter": "(from:example3a@example.com OR from:example3b@example.com)",
-		"folder": "Examples/example3ab",
-		"filenameFrom": "file.txt",
-		"filenameTo": "file-YYYY-MM-DD.txt",
-		"archive": true
-	  }
-    ]
-  };
+function getOrCreateLabel(labelName) {
+  var label = GmailApp.getUserLabelByName(labelName);
+  if (label == null) {
+    label = GmailApp.createLabel(labelName);
+  }
+  return label;
+}
+
+/**
+ * Recursive function to create and return a complete folder path.
+ */
+function getOrCreateSubFolder(baseFolder,folderArray) {
+  if (folderArray.length == 0) {
+    return baseFolder;
+  }
+  var nextFolderName = folderArray.shift();
+  var nextFolder = null;
+  var folders = baseFolder.getFolders();
+  for (var i=0; i<folders.length; i++) {
+    var folder = folders[i];
+    if (folders[i].getName() == nextFolderName) {
+      nextFolder = folders[i];
+      break;
+    }
+  }
+  if (nextFolder == null) {
+    // Folder does not exist - create it.
+    nextFolder = baseFolder.createFolder(nextFolderName);
+  }
+  return getOrCreateSubFolder(nextFolder,folderArray);
+}
+
+/**
+ * Returns the GDrive folder with the given name or creates it if not existing.
+ */
+function getOrCreateFolder(folderName) {
+  var folder;
+  try {
+    folder = DocsList.getFolder(folderName);
+  } catch(e) {
+    var folderArray = folderName.split("/");
+    folder = getOrCreateSubFolder(DocsList.getRootFolder(), folderArray);
+  }
+  return folder;
 }
 
 /**
@@ -51,27 +56,23 @@ function getGmail2GDriveConfig() {
  */
 function performGmail2GDrive() {
   var config = getGmail2GDriveConfig();
-  var gProcessedLabel  = config.processedLabel;
-  var gNewerThan  = config.newerThan;
-  var label = GmailApp.getUserLabelByName(gProcessedLabel);
+  var label = getOrCreateLabel(config.processedLabel);
   var end, start;
   start = new Date();
 
   Logger.log("INFO: Starting mail attachment processing.");
-  for (var i=0; i<config.rules.length; i++) {
-    var rule = config.rules[i];
-    var gSearchExp  = rule.filter + " has:attachment -label:" + gProcessedLabel;
-    if (gNewerThan != "") {
-      gSearchExp += " newer_than:" + gNewerThan;
+  for (var ruleIdx=0; ruleIdx<config.rules.length; ruleIdx++) {
+    var rule = config.rules[ruleIdx];
+    var gSearchExp  = rule.filter + " has:attachment -label:" + config.processedLabel;
+    if (config.newerThan != "") {
+      gSearchExp += " newer_than:" + config.newerThan;
     }
-    var gFolder = rule.folder;
     var doArchive = rule.archive == true;
     var threads = GmailApp.search(gSearchExp);
-    var folder  = DocsList.getFolder(gFolder);
     
     Logger.log("INFO:   Processing rule: "+gSearchExp);
-    for (var x=0; x<threads.length; x++) {
-      var thread = threads[x];
+    for (var threadIdx=0; threadIdx<threads.length; threadIdx++) {
+      var thread = threads[threadIdx];
       end = new Date();
       var runTime = (end.getTime() - start.getTime())/1000;
       Logger.log("INFO:     Processing thread: "+thread.getFirstMessageSubject() + " (runtime: " + runTime + "s/" + config.maxRuntime + "s)");
@@ -80,25 +81,25 @@ function performGmail2GDrive() {
         return;
       }
       var messages = thread.getMessages();
-      for (var y=0; y<messages.length; y++) {
-        var message = messages[y];
+      for (var msgIdx=0; msgIdx<messages.length; msgIdx++) {
+        var message = messages[msgIdx];
         Logger.log("INFO:       Processing message: "+message.getSubject() + " (" + message.getId() + ")");
-        var att = message.getAttachments();
-        for (var z=0; z<att.length; z++) {
-          Logger.log("INFO:         Processing attachment: "+att[z].getName());
+        var messageDate = message.getDate();
+        var attachments = message.getAttachments();
+        for (var attIdx=0; attIdx<attachments.length; attIdx++) {
+          var attachment = attachments[attIdx];
+          Logger.log("INFO:         Processing attachment: "+attachment.getName());
           try {
-            var file = folder.createFile(att[z]);
+            var folder = getOrCreateFolder(rule.folder);
+            var file = folder.createFile(attachment);
             if (rule.filenameFrom && rule.filenameTo && rule.filenameFrom == file.getName()) {
-              var messageDate = message.getDate();
-              var d = messageDate.getDate();
-              var m = messageDate.getMonth()+1;
-              var y = messageDate.getFullYear();
-              file.rename(rule.filenameTo.replace('YYYY',y).replace('MM',(m<=9?'0'+m:m)).replace('DD',(d<=9?'0'+d:d)));
+              var newFilename = Utilities.formatDate(messageDate, config.timezone, rule.filenameTo.replace('%s',message.getSubject()));
+              Logger.log("INFO:           Renaming '" + file.getName() + "' -> '" + newFilename + "'");
+              file.rename(newFilename);
             }
-            file.setDescription("Mail title: " + message.getSubject() + "\nMail link: https://mail.google.com/mail/u/0/#inbox/" + message.getId());
+            file.setDescription("Mail title: " + message.getSubject() + "\nMail date: " + message.getDate() + "\nMail link: https://mail.google.com/mail/u/0/#inbox/" + message.getId());
             Utilities.sleep(config.sleepTime);
-          }
-          catch (e) {
+          } catch (e) {
             Logger.log(e);
           }
         }       
@@ -112,5 +113,5 @@ function performGmail2GDrive() {
   }
   end = new Date();
   var runTime = (end.getTime() - start.getTime())/1000;
-  Logger.log("INFO: Finished mail attachment processing after " + runTime + "s.");
+  Logger.log("INFO: Finished mail attachment processing after " + runTime + "s");
 }
