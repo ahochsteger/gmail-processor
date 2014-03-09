@@ -12,7 +12,7 @@ Features
 
 * Automatically sorts your attachments in the background
 * Filter for relevant emails
-* Specify destination the folder
+* Specify the destination folder
 * Rename certain attachments (supports date format strings and using email subject as attachments filename)
 
 
