@@ -1,7 +1,7 @@
 /**
  * Configuration for Gmail2GDrive
  */
-function _getGmail2GDriveConfig() {
+function getGmail2GDriveConfig() {
   return {
     // Gmail label for processed threads (will be created, if not existing):
     "processedLabel": "to-gdrive/processed",
