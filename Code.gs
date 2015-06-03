@@ -56,7 +56,7 @@ function getOrCreateFolder(folderName) {
   return folder;
 }
 
-function saveMessageAttachments(message) {
+function saveMessageAttachments(message, rule, config) {
   Logger.log("INFO:       Processing message: "+message.getSubject() + " (" + message.getId() + ")");
   var messageDate = message.getDate();
   var attachments = message.getAttachments();
@@ -64,7 +64,7 @@ function saveMessageAttachments(message) {
   for (var attIdx=0; attIdx<attachments.length; attIdx++) {
     var attachment = attachments[attIdx];
     Logger.log("INFO:         Processing attachment: "+attachment.getName());
-    try {
+    try {      
       var folder = getOrCreateFolder(rule.folder);
       var file = folder.createFile(attachment);
       if (rule.filenameFrom && rule.filenameTo && rule.filenameFrom == file.getName()) {
@@ -120,7 +120,7 @@ function performGmail2GDrive() {
       var html = [];
       for (var msgIdx=0; msgIdx<messages.length; msgIdx++) {
         var message = messages[msgIdx];
-        saveMessageAttachments(message);
+        saveMessageAttachments(message, rule, config);
         
         if (doPDF) {
           html.push("From: " + message.getFrom() + "<br />") 
@@ -152,3 +152,4 @@ function performGmail2GDrive() {
   var runTime = (end.getTime() - start.getTime())/1000;
   Logger.log("INFO: Finished mail attachment processing after " + runTime + "s");
 }
+
