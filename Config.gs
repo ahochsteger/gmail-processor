@@ -23,6 +23,7 @@ function getGmail2GDriveConfig() {
       // Rule parameter documentation:
       //  * filter (String, mandatory): a typical gmail search expression (see http://support.google.com/mail/bin/answer.py?hl=en&answer=7190)
       //  * folder (String, mandatory): a path to an existing Google Drive folder (will be created, if not existing)
+      //  * saveThreadPDF (boolean, option): Should the thread be saved as a PDF? (default: false)
       //  * archive (boolean, optional): Should the gmail thread be archived after processing? (default: false)
       //  * filenameFrom (String, optional): The attachment filename that should be renamed when stored in Google Drive
       //  * filenameTo (String, optional): The pattern for the new filename of the attachment. You can use '%s' to insert the email subject and date format patterns like 'yyyy' for year, 'MM' for month and 'dd' for day as pattern in the filename.
@@ -40,7 +41,10 @@ function getGmail2GDriveConfig() {
         "filter": "from:example2@example.com",
         "folder": "Examples/example2"
       },
-      { 
+      {
+        "filter": "label:PDF",
+        "saveThreadPDF": true,
+        "folder": "PDF Emails"
       },
       {
         "filter": "(from:example3a@example.com OR from:example3b@example.com)",
