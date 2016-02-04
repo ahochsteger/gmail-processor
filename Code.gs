@@ -115,6 +115,11 @@ function Gmail2GDrive() {
             var file = folder.createFile(attachment);
             if (rule.filenameFrom && rule.filenameTo && rule.filenameFrom == file.getName()) {
               var newFilename = Utilities.formatDate(messageDate, config.timezone, rule.filenameTo.replace('%s',message.getSubject()));
+              Logger.log("INFO:           Renaming matched file '" + file.getName() + "' -> '" + newFilename + "'");
+              file.setName(newFilename);
+            }
+            else if (rule.filenameTo) {
+              var newFilename = Utilities.formatDate(messageDate, config.timezone, rule.filenameTo.replace('%s',message.getSubject()));
               Logger.log("INFO:           Renaming '" + file.getName() + "' -> '" + newFilename + "'");
               file.setName(newFilename);
             }
