@@ -50,7 +50,7 @@ function getFolderByPath(path) {
     if (result.hasNext()) {
       folder = result.next();
     } else {
-      return null;
+      throw new Error( "folder not found." );
     }
   }
   return folder;
