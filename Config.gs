@@ -31,27 +31,27 @@ function getGmail2GDriveConfig() {
 
       { 
         "filter": "to:my.name+scans@gmail.com",
-        "folder": "Scans"
+        "folder": "'Scans'-yyyy-MM-dd"
       },
       {
         "filter": "from:example1@example.com",
-        "folder": "Examples/example1"
+        "folder": "'Examples/example1'"
       },
       { 
         "filter": "from:example2@example.com",
-        "folder": "Examples/example2"
+        "folder": "'Examples/example2'"
       },
       { 
       },
       { // Replace all files with the variable 'filenameTo' string.
         "filter": "(from:example3a@example.com OR from:example3b@example.com)",
-        "folder": "Examples/example3ab",
+        "folder": "'Examples/example3ab'",
         "filenameTo": "'file-'yyyy-MM-dd-'%s.txt'",
         "archive": true
       },
       { // Replace all files that match the 'filenameFrom' string with the variable 'filenameTo' string
         "filter": "(from:example3a@example.com OR from:example3b@example.com)",
-        "folder": "Examples/example3ab",
+        "folder": "'Examples/example3ab'",
         "filenameFrom": "file.txt",
         "filenameTo": "'file-'yyyy-MM-dd-'%s.txt'",
         "archive": true
