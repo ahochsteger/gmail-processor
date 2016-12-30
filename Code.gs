@@ -111,7 +111,7 @@ function Gmail2GDrive() {
           var attachment = attachments[attIdx];
           Logger.log("INFO:         Processing attachment: "+attachment.getName());
           try {
-            var folder = getOrCreateFolder(rule.folder);
+            var folder = getOrCreateFolder(Utilities.formatDate(messageDate, config.timezone, rule.folder));
             var file = folder.createFile(attachment);
             if (rule.filenameFrom && rule.filenameTo && rule.filenameFrom == file.getName()) {
               var newFilename = Utilities.formatDate(messageDate, config.timezone, rule.filenameTo.replace('%s',message.getSubject()));
