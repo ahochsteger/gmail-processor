@@ -82,6 +82,9 @@ function Gmail2GDrive() {
   start = new Date();
 
   Logger.log("INFO: Starting mail attachment processing.");
+  if (config.globalFilter===undefined) {
+    config.globalFilter = "has:attachment -in:trash -in:drafts -in:spam";
+  }
   for (var ruleIdx=0; ruleIdx<config.rules.length; ruleIdx++) {
     var rule = config.rules[ruleIdx];
     var gSearchExp  = config.globalFilter + " " + rule.filter + " -label:" + config.processedLabel;
