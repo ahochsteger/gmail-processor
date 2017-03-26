@@ -84,7 +84,7 @@ function Gmail2GDrive() {
   Logger.log("INFO: Starting mail attachment processing.");
   for (var ruleIdx=0; ruleIdx<config.rules.length; ruleIdx++) {
     var rule = config.rules[ruleIdx];
-    var gSearchExp  = rule.filter + " has:attachment -label:" + config.processedLabel;
+    var gSearchExp  = config.globalFilter + " " + rule.filter + " -label:" + config.processedLabel;
     if (config.newerThan != "") {
       gSearchExp += " newer_than:" + config.newerThan;
     }

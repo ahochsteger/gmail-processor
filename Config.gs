@@ -3,6 +3,9 @@
  */
 function getGmail2GDriveConfig() {
   return {
+    // Global filter
+    "globalFilter": "has:attachment -in:trash -in:drafts -in:spam",
+
     // Gmail label for processed threads (will be created, if not existing):
     "processedLabel": "to-gdrive/processed",
 
