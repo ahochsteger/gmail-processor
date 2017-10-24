@@ -44,8 +44,6 @@ function getGmail2GDriveConfig() {
         "filter": "from:example2@example.com",
         "folder": "Examples/example2"
       },
-      { 
-      },
       { // Replace all files with the variable 'filenameTo' string.
         "filter": "(from:example3a@example.com OR from:example3b@example.com)",
         "folder": "Examples/example3ab",
