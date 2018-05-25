@@ -20,22 +20,22 @@ function getGmail2GDriveConfig() {
     "rules": [
       { // Store all attachments sent to my.name+scans@gmail.com to the folder "Scans"
         "filter": "to:my.name+scans@gmail.com",
-        "folder": "Scans"
+        "folder": "'Scans'-yyyy-MM-dd"
       },
       { // Store all attachments from example1@example.com to the folder "Examples/example1"
         "filter": "from:example1@example.com",
-        "folder": "Examples/example1"
+        "folder": "'Examples/example1'"
       },
       { // Store all pdf attachments from example2@example.com to the folder "Examples/example2"
         "filter": "from:example2@example.com",
-        "folder": "Examples/example2",
+        "folder": "'Examples/example2'",
         "filenameFromRegexp": ".*\.pdf$"
       },
       { // Store all attachments from example3a@example.com OR from:example3b@example.com
         // to the folder "Examples/example3ab" while renaming all attachments to the pattern
         // defined in 'filenameTo' and archive the thread.
         "filter": "(from:example3a@example.com OR from:example3b@example.com)",
-        "folder": "Examples/example3ab",
+        "folder": "'Examples/example3ab'",
         "filenameTo": "'file-'yyyy-MM-dd-'%s.txt'",
         "archive": true
       },
@@ -43,7 +43,7 @@ function getGmail2GDriveConfig() {
         // folder "Examples/example4" and rename the attachment to the pattern
         // defined in 'filenameTo' and archive the thread.
         "filter": "from:example4@example.com",
-        "folder": "Examples/example4",
+        "folder": "'Examples/example4'",
         "filenameFrom": "file.txt",
         "filenameTo": "'file-'yyyy-MM-dd-'%s.txt'"
       }
