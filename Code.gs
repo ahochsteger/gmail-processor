@@ -113,6 +113,15 @@ function Gmail2GDrive() {
         for (var attIdx=0; attIdx<attachments.length; attIdx++) {
           var attachment = attachments[attIdx];
           Logger.log("INFO:         Processing attachment: "+attachment.getName());
+          var match = true;
+          if (rule.filenameFromRegexp) {
+          var re = new RegExp(rule.filenameFromRegexp);
+            match = (attachment.getName()).match(re);
+          }
+          if (!match) {
+            Logger.log("INFO:           Rejecting file '" + attachment.getName() + " not matching" + rule.filenameFromRegexp);
+            continue;
+          }
           try {
             var folder = getOrCreateFolder(rule.folder);
             var file = folder.createFile(attachment);
