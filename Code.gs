@@ -71,6 +71,46 @@ function getOrCreateFolder(folderName) {
 }
 
 /**
+ * Processes a message
+ */
+function processMessage(message, rule, config) {
+  Logger.log("INFO:       Processing message: "+message.getSubject() + " (" + message.getId() + ")");
+  var messageDate = message.getDate();
+  var attachments = message.getAttachments();
+  for (var attIdx=0; attIdx<attachments.length; attIdx++) {
+    var attachment = attachments[attIdx];
+    Logger.log("INFO:         Processing attachment: "+attachment.getName());
+    var match = true;
+    if (rule.filenameFromRegexp) {
+    var re = new RegExp(rule.filenameFromRegexp);
+      match = (attachment.getName()).match(re);
+    }
+    if (!match) {
+      Logger.log("INFO:           Rejecting file '" + attachment.getName() + " not matching" + rule.filenameFromRegexp);
+      continue;
+    }
+    try {
+      var folder = getOrCreateFolder(Utilities.formatDate(messageDate, config.timezone, rule.folder));
+      var file = folder.createFile(attachment);
+      if (rule.filenameFrom && rule.filenameTo && rule.filenameFrom == file.getName()) {
+        var newFilename = Utilities.formatDate(messageDate, config.timezone, rule.filenameTo.replace('%s',message.getSubject()));
+        Logger.log("INFO:           Renaming matched file '" + file.getName() + "' -> '" + newFilename + "'");
+        file.setName(newFilename);
+      }
+      else if (rule.filenameTo) {
+        var newFilename = Utilities.formatDate(messageDate, config.timezone, rule.filenameTo.replace('%s',message.getSubject()));
+        Logger.log("INFO:           Renaming '" + file.getName() + "' -> '" + newFilename + "'");
+        file.setName(newFilename);
+      }
+      file.setDescription("Mail title: " + message.getSubject() + "\nMail date: " + message.getDate() + "\nMail link: https://mail.google.com/mail/u/0/#inbox/" + message.getId());
+      Utilities.sleep(config.sleepTime);
+    } catch (e) {
+      Logger.log(e);
+    }
+  }
+}
+
+/**
  * Main function that processes Gmail attachments and stores them in Google Drive.
  * Use this as trigger function for periodic execution.
  */
@@ -107,40 +147,7 @@ function Gmail2GDrive() {
       var messages = thread.getMessages();
       for (var msgIdx=0; msgIdx<messages.length; msgIdx++) {
         var message = messages[msgIdx];
-        Logger.log("INFO:       Processing message: "+message.getSubject() + " (" + message.getId() + ")");
-        var messageDate = message.getDate();
-        var attachments = message.getAttachments();
-        for (var attIdx=0; attIdx<attachments.length; attIdx++) {
-          var attachment = attachments[attIdx];
-          Logger.log("INFO:         Processing attachment: "+attachment.getName());
-          var match = true;
-          if (rule.filenameFromRegexp) {
-          var re = new RegExp(rule.filenameFromRegexp);
-            match = (attachment.getName()).match(re);
-          }
-          if (!match) {
-            Logger.log("INFO:           Rejecting file '" + attachment.getName() + " not matching" + rule.filenameFromRegexp);
-            continue;
-          }
-          try {
-            var folder = getOrCreateFolder(Utilities.formatDate(messageDate, config.timezone, rule.folder));
-            var file = folder.createFile(attachment);
-            if (rule.filenameFrom && rule.filenameTo && rule.filenameFrom == file.getName()) {
-              var newFilename = Utilities.formatDate(messageDate, config.timezone, rule.filenameTo.replace('%s',message.getSubject()));
-              Logger.log("INFO:           Renaming matched file '" + file.getName() + "' -> '" + newFilename + "'");
-              file.setName(newFilename);
-            }
-            else if (rule.filenameTo) {
-              var newFilename = Utilities.formatDate(messageDate, config.timezone, rule.filenameTo.replace('%s',message.getSubject()));
-              Logger.log("INFO:           Renaming '" + file.getName() + "' -> '" + newFilename + "'");
-              file.setName(newFilename);
-            }
-            file.setDescription("Mail title: " + message.getSubject() + "\nMail date: " + message.getDate() + "\nMail link: https://mail.google.com/mail/u/0/#inbox/" + message.getId());
-            Utilities.sleep(config.sleepTime);
-          } catch (e) {
-            Logger.log(e);
-          }
-        }
+        processMessage(message, rule, config);
       }
       thread.addLabel(label);
       if (doArchive) {
