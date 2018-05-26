@@ -23,12 +23,12 @@ function getOrCreateSubFolder(baseFolder,folderArray) {
   var nextFolder = null;
   var folders = baseFolder.getFolders();
   while (folders.hasNext()) {
-   var folder = folders.next();
-   if (folder.getName() == nextFolderName) {
+    var folder = folders.next();
+    if (folder.getName() == nextFolderName) {
       nextFolder = folder;
       break;
     }
- }
+  }
   if (nextFolder == null) {
     // Folder does not exist - create it.
     nextFolder = baseFolder.createFolder(nextFolderName);
@@ -111,6 +111,38 @@ function processMessage(message, rule, config) {
 }
 
 /**
+ * Generate HTML code for one message of a thread.
+ */
+function processThreadToHtml(thread) {
+  Logger.log("INFO:   Generating HTML code of thread '" + thread.getFirstMessageSubject() + "'");
+  var messages = thread.getMessages();
+  var html = "";
+  for (var msgIdx=0; msgIdx<messages.length; msgIdx++) {
+    var message = messages[msgIdx];
+    html += "From: " + message.getFrom() + "<br />\n";
+    html += "To: " + message.getTo() + "<br />\n";
+    html += "Date: " + message.getDate() + "<br />\n";
+    html += "Subject: " + message.getSubject() + "<br />\n";
+    html += "<hr />\n";
+    html += message.getBody() + "\n";
+    html += "<hr />\n";
+  }
+  return html;
+}
+
+/**
+* Generate a PDF document for the whole thread using HTML from .
+ */
+function processThreadToPdf(thread, rule, html) {
+  Logger.log("INFO: Saving PDF copy of thread '" + thread.getFirstMessageSubject() + "'");
+  var folder = getOrCreateFolder(rule.folder);
+  var html = processThreadToHtml(thread);
+  var blob = Utilities.newBlob(html, 'text/html');
+  var pdf = folder.createFile(blob.getAs('application/pdf')).setName(thread.getFirstMessageSubject() + ".pdf");
+  return pdf;
+}
+
+/**
  * Main function that processes Gmail attachments and stores them in Google Drive.
  * Use this as trigger function for periodic execution.
  */
@@ -119,12 +151,14 @@ function Gmail2GDrive() {
   var config = getGmail2GDriveConfig();
   var label = getOrCreateLabel(config.processedLabel);
   var end, start;
-  start = new Date();
+  start = new Date(); // Start timer
 
   Logger.log("INFO: Starting mail attachment processing.");
   if (config.globalFilter===undefined) {
     config.globalFilter = "has:attachment -in:trash -in:drafts -in:spam";
   }
+
+  // Iterate over all rules:
   for (var ruleIdx=0; ruleIdx<config.rules.length; ruleIdx++) {
     var rule = config.rules[ruleIdx];
     var gSearchExp  = config.globalFilter + " " + rule.filter + " -label:" + config.processedLabel;
@@ -132,8 +166,10 @@ function Gmail2GDrive() {
       gSearchExp += " newer_than:" + config.newerThan;
     }
     var doArchive = rule.archive == true;
-    var threads = GmailApp.search(gSearchExp);
+    var doPDF = rule.saveThreadPDF == true;
 
+    // Process all threads matching the search expression:
+    var threads = GmailApp.search(gSearchExp);
     Logger.log("INFO:   Processing rule: "+gSearchExp);
     for (var threadIdx=0; threadIdx<threads.length; threadIdx++) {
       var thread = threads[threadIdx];
@@ -144,19 +180,27 @@ function Gmail2GDrive() {
         Logger.log("WARNING: Self terminating script after " + runTime + "s")
         return;
       }
+
+      // Process all messages of a thread:
       var messages = thread.getMessages();
       for (var msgIdx=0; msgIdx<messages.length; msgIdx++) {
         var message = messages[msgIdx];
         processMessage(message, rule, config);
       }
+      if (doPDF) { // Generate a PDF document of a thread:
+        processThreadToPdf(thread, rule);
+      }
+
+      // Mark a thread as processed:
       thread.addLabel(label);
-      if (doArchive) {
+
+      if (doArchive) { // Archive a thread if required
         Logger.log("INFO:     Archiving thread '" + thread.getFirstMessageSubject() + "' ...");
         thread.moveToArchive();
       }
     }
   }
-  end = new Date();
+  end = new Date(); // Stop timer
   var runTime = (end.getTime() - start.getTime())/1000;
   Logger.log("INFO: Finished mail attachment processing after " + runTime + "s");
 }

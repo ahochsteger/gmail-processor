@@ -39,6 +39,12 @@ function getGmail2GDriveConfig() {
         "filenameTo": "'file-'yyyy-MM-dd-'%s.txt'",
         "archive": true
       },
+      {
+        // Store threads marked with label "PDF" in the folder "PDF Emails" als PDF document.
+        "filter": "label:PDF",
+        "saveThreadPDF": true,
+        "folder": "PDF Emails"
+      },
       { // Store all attachments named "file.txt" from example4@example.com to the
         // folder "Examples/example4" and rename the attachment to the pattern
         // defined in 'filenameTo' and archive the thread.

@@ -1,7 +1,7 @@
 Gmail2GDrive
 ============
 
-Gmail2GDrive is a Google Apps Script which automatically stores and sorts Gmail attachments into Google Drive folders.
+Gmail2GDrive is a Google Apps Script which automatically stores and sorts Gmail attachments into Google Drive folders, and can also save the thread as a PDF file.
 
 It does so by defining a list of rules which consist of Gmail search filters and Google Drive destination folders.
 This way the attachments of periodic emails can be automatically organized in folders without the need to install and run anything on the client.
@@ -14,6 +14,7 @@ Features
 * Filter for relevant emails
 * Specify the destination folder
 * Rename attachments (using date format strings and email subject as filenames)
+* Save the thread as a PDF File
 
 
 Setup
@@ -61,6 +62,7 @@ A rule supports the following parameters documentation:
 * filenameTo (String, optional): The pattern for the new filename of the attachment. If 'filenameFrom' is not given then this will be the new filename for all attachments.
   * You can use '%s' to insert the email subject and date format patterns like 'yyyy' for year, 'MM' for month and 'dd' for day as pattern in the filename.
   * See https://developers.google.com/apps-script/reference/utilities/utilities#formatDate(Date,String,String) for more information on the possible date format strings.
+* saveThreadPDF (boolean, optional): Should the thread be saved as a PDF? (default: false)
 
 
 Example Configuration
@@ -89,30 +91,36 @@ function getGmail2GDriveConfig() {
     "rules": [
       { // Store all attachments sent to my.name+scans@gmail.com to the folder "Scans"
         "filter": "to:my.name+scans@gmail.com",
-        "folder": "Scans"
+        "folder": "'Scans'-yyyy-MM-dd"
       },
       { // Store all attachments from example1@example.com to the folder "Examples/example1"
         "filter": "from:example1@example.com",
-        "folder": "Examples/example1"
+        "folder": "'Examples/example1'"
       },
       { // Store all pdf attachments from example2@example.com to the folder "Examples/example2"
         "filter": "from:example2@example.com",
-        "folder": "Examples/example2",
+        "folder": "'Examples/example2'",
         "filenameFromRegexp": ".*\.pdf$"
       },
       { // Store all attachments from example3a@example.com OR from:example3b@example.com
         // to the folder "Examples/example3ab" while renaming all attachments to the pattern
         // defined in 'filenameTo' and archive the thread.
         "filter": "(from:example3a@example.com OR from:example3b@example.com)",
-        "folder": "Examples/example3ab",
+        "folder": "'Examples/example3ab'",
         "filenameTo": "'file-'yyyy-MM-dd-'%s.txt'",
         "archive": true
+      },
+      {
+        // Store threads marked with label "PDF" in the folder "PDF Emails" als PDF document.
+        "filter": "label:PDF",
+        "saveThreadPDF": true,
+        "folder": "PDF Emails"
       },
       { // Store all attachments named "file.txt" from example4@example.com to the
         // folder "Examples/example4" and rename the attachment to the pattern
         // defined in 'filenameTo' and archive the thread.
         "filter": "from:example4@example.com",
-        "folder": "Examples/example4",
+        "folder": "'Examples/example4'",
         "filenameFrom": "file.txt",
         "filenameTo": "'file-'yyyy-MM-dd-'%s.txt'"
       }
