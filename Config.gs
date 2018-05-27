@@ -5,7 +5,7 @@
 function getGmail2GDriveConfig() {
   return {
     // Global filter
-    "globalFilter": "has:attachment -in:trash -in:drafts -in:spam",
+    "globalFilter": "-in:trash -in:drafts -in:spam",
     // Gmail label for processed threads (will be created, if not existing):
     "processedLabel": "to-gdrive/processed",
     // Sleep time in milli seconds between processed messages:
@@ -19,22 +19,22 @@ function getGmail2GDriveConfig() {
     // Processing rules:
     "rules": [
       { // Store all attachments sent to my.name+scans@gmail.com to the folder "Scans"
-        "filter": "to:my.name+scans@gmail.com",
+        "filter": "has:attachment to:my.name+scans@gmail.com",
         "folder": "'Scans'-yyyy-MM-dd"
       },
       { // Store all attachments from example1@example.com to the folder "Examples/example1"
-        "filter": "from:example1@example.com",
+        "filter": "has:attachment from:example1@example.com",
         "folder": "'Examples/example1'"
       },
       { // Store all pdf attachments from example2@example.com to the folder "Examples/example2"
-        "filter": "from:example2@example.com",
+        "filter": "has:attachment from:example2@example.com",
         "folder": "'Examples/example2'",
         "filenameFromRegexp": ".*\.pdf$"
       },
       { // Store all attachments from example3a@example.com OR from:example3b@example.com
         // to the folder "Examples/example3ab" while renaming all attachments to the pattern
         // defined in 'filenameTo' and archive the thread.
-        "filter": "(from:example3a@example.com OR from:example3b@example.com)",
+        "filter": "has:attachment (from:example3a@example.com OR from:example3b@example.com)",
         "folder": "'Examples/example3ab'",
         "filenameTo": "'file-'yyyy-MM-dd-'%s.txt'",
         "archive": true
@@ -48,7 +48,7 @@ function getGmail2GDriveConfig() {
       { // Store all attachments named "file.txt" from example4@example.com to the
         // folder "Examples/example4" and rename the attachment to the pattern
         // defined in 'filenameTo' and archive the thread.
-        "filter": "from:example4@example.com",
+        "filter": "has:attachment from:example4@example.com",
         "folder": "'Examples/example4'",
         "filenameFrom": "file.txt",
         "filenameTo": "'file-'yyyy-MM-dd-'%s.txt'"
