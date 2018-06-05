@@ -34,19 +34,19 @@ Global Configuration
 --------------------
 
 * globalFilter: Global filter expression (see https://support.google.com/mail/answer/7190?hl=en for avialable search operators)
-  * Example: "globalFilter": "has:attachment -in:trash -in:drafts -in:spam"
+  * Example: `"globalFilter": "has:attachment -in:trash -in:drafts -in:spam"`
 * processedLabel: The GMail label to mark processed threads (will be created, if not existing)
   * Example: `"processedLabel": "to-gdrive/processed"`
 * sleepTime: Sleep time in milliseconds between processed messages
-  * Example: "sleepTime": 100
+  * Example: `"sleepTime": 100`
 * maxRuntime: Maximum script runtime in seconds (Google Scripts will be killed after 5 minutes)
-  * Example: "maxRuntime": 280
+  * Example: `"maxRuntime": 280`
 * newerThan: Only process message newer than (leave empty for no restriction; use d, m and y for day, month and year)
-  * Example: "newerThan": "1m"
+  * Example: `"newerThan": "1m"`
 * timezone: Timezone for date/time operations
-  * Example: "timezone": "GMT"
+  * Example: `"timezone": "GMT"`
 * rules: List of rules to be processed
-  * Example: "rules": [ {..rule1..}, {..rule2..}, ... ]
+  * Example: `"rules": [ {..rule1..}, {..rule2..}, ... ]`
 
 
 Rule Configuration
@@ -60,11 +60,11 @@ A rule supports the following parameters documentation:
 * filenameFrom (String, optional): The attachment filename that should be renamed when stored in Google Drive
 * filenameFromRegexp (String, optional): A regular expression to specify only relevant attachments
 * filenameTo (String, optional): The pattern for the new filename of the attachment. If 'filenameFrom' is not given then this will be the new filename for all attachments.
-  * You can use the placeholder '#SUBJECT#' to insert the email subject into the new filename
-  * You can use the placeholder '#FILE#' to insert the original attachment's filename into the new filename
-  * you can use date format patterns like 'yyyy' for year, 'MM' for month and 'dd' for day as pattern in the filename.
+  * You can use the placeholder `#SUBJECT#` to insert the email subject into the new filename
+  * You can use the placeholder `#FILE#` to insert the original attachment's filename into the new filename
+  * you can use date format patterns like `yyyy` for year, `MM` for month and `dd` for day as pattern in the filename.
   * See https://developers.google.com/apps-script/reference/utilities/utilities#formatDate(Date,String,String) for more information on the possible date format strings.
-  * Example: "yyyy-MM-dd' #FILE#'" adds today's date before the original filename 
+  * Example: `"yyyy-MM-dd' #FILE#'"` adds today's date before the original filename 
 * saveThreadPDF (boolean, optional): Should the thread be saved as a PDF? (default: false)
 
 
