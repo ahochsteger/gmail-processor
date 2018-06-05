@@ -36,7 +36,7 @@ function getGmail2GDriveConfig() {
         // defined in 'filenameTo' and archive the thread.
         "filter": "has:attachment (from:example3a@example.com OR from:example3b@example.com)",
         "folder": "'Examples/example3ab'",
-        "filenameTo": "'file-'yyyy-MM-dd-'%s.txt'",
+        "filenameTo": "'file-'yyyy-MM-dd-'#FILE#'",
         "archive": true
       },
       {
@@ -51,7 +51,7 @@ function getGmail2GDriveConfig() {
         "filter": "has:attachment from:example4@example.com",
         "folder": "'Examples/example4'",
         "filenameFrom": "file.txt",
-        "filenameTo": "'file-'yyyy-MM-dd-'%s.txt'"
+        "filenameTo": "'file-'yyyy-MM-dd-'#SUBJECT#.txt'"
       }
     ]
   };

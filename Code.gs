@@ -75,6 +75,7 @@ function getOrCreateFolder(folderName) {
  */
 function processMessage(message, rule, config) {
   Logger.log("INFO:       Processing message: "+message.getSubject() + " (" + message.getId() + ")");
+  var filenameMatch = true;
   var messageDate = message.getDate();
   var attachments = message.getAttachments();
   for (var attIdx=0; attIdx<attachments.length; attIdx++) {
@@ -82,23 +83,25 @@ function processMessage(message, rule, config) {
     Logger.log("INFO:         Processing attachment: "+attachment.getName());
     var match = true;
     if (rule.filenameFromRegexp) {
-    var re = new RegExp(rule.filenameFromRegexp);
+      var re = new RegExp(rule.filenameFromRegexp);
       match = (attachment.getName()).match(re);
     }
     if (!match) {
-      Logger.log("INFO:           Rejecting file '" + attachment.getName() + " not matching" + rule.filenameFromRegexp);
+      Logger.log("INFO:           Rejecting file '" + attachment.getName() + "' not matching" + rule.filenameFromRegexp);
       continue;
     }
     try {
       var folder = getOrCreateFolder(Utilities.formatDate(messageDate, config.timezone, rule.folder));
       var file = folder.createFile(attachment);
-      if (rule.filenameFrom && rule.filenameTo && rule.filenameFrom == file.getName()) {
-        var newFilename = Utilities.formatDate(messageDate, config.timezone, rule.filenameTo.replace('%s',message.getSubject()));
-        Logger.log("INFO:           Renaming matched file '" + file.getName() + "' -> '" + newFilename + "'");
-        file.setName(newFilename);
+      if (rule.filenameFrom && rule.filenameFrom != file.getName()) {
+        filenameMatch = false;
+        Logger.log("INFO:           Attachment file name not matching filenameFrom: " + file.getName());
       }
-      else if (rule.filenameTo) {
-        var newFilename = Utilities.formatDate(messageDate, config.timezone, rule.filenameTo.replace('%s',message.getSubject()));
+      if (rule.filenameTo && filenameMatch) {
+        var newFilename = Utilities.formatDate(messageDate, config.timezone, rule.filenameTo.replace('#SUBJECT#', message.getSubject()));
+        newFilename = newFilename.replace("#FILE#", file.getName());
+        // only for backwards compatability (remove soon)
+        newFilename = newFilename.replace("%s", file.getName());
         Logger.log("INFO:           Renaming '" + file.getName() + "' -> '" + newFilename + "'");
         file.setName(newFilename);
       }
@@ -108,6 +111,8 @@ function processMessage(message, rule, config) {
       Logger.log(e);
     }
   }
+
+
 }
 
 /**
