@@ -20,14 +20,14 @@ Features
 Setup
 -----
 
-1. Open [Google Apps Script](https://script.google.com/).
+1. Open [Google Apps Script Dashboard](https://script.google.com/).
 2. Create an empty project.
 3. Give the project a name (e.g. MyGmail2GDrive)
-4. Replace the content of the created file Code.gs with the provided [Code.gs](https://github.com/ahochsteger/gmail2gdrive/blob/master/Code.gs) and save the changes.
-5. Create a new script file with the name 'Config' and replace its content with the provided [Config.gs](https://github.com/ahochsteger/gmail2gdrive/blob/master/Config.gs) and save the changes.
+4. Replace the content of the created file Code.gs with the provided [Code.gs](Code.gs) and save the changes.
+5. Create a new script file with the name `Config` and replace its content with the provided [Config.gs](Config.gs) and save the changes.
 6. Adjust the configuration to your needs. It is recommended to restrict the timeframe using 'newerThan' to prevent running into API quotas by Google.
 7. Test the script by manually executing the function perform `Gmail2GDrive`.
-8. Create a time based trigger which periodically executes 'Gmail2GDrive' (e.g. once per day) to automatically organize your Gmail attachments within Google Drive.
+8. Create a time based trigger which periodically executes `Gmail2GDrive` (e.g. once per day) to automatically organize your Gmail attachments within Google Drive.
 
 
 Global Configuration
@@ -36,7 +36,7 @@ Global Configuration
 * globalFilter: Global filter expression (see https://support.google.com/mail/answer/7190?hl=en for avialable search operators)
   * Example: "globalFilter": "has:attachment -in:trash -in:drafts -in:spam"
 * processedLabel: The GMail label to mark processed threads (will be created, if not existing)
-  * Example: "processedLabel": "to-gdrive/processed"
+  * Example: `"processedLabel": "to-gdrive/processed"`
 * sleepTime: Sleep time in milliseconds between processed messages
   * Example: "sleepTime": 100
 * maxRuntime: Maximum script runtime in seconds (Google Scripts will be killed after 5 minutes)
