@@ -145,6 +145,10 @@ Feedback and contributions
 
 Feedback and contributions is well appreciated via [Github](https://github.com/ahochsteger/gmail2gdrive).
 
+In case you run into problems it may be helpful to provide logs as part of bug reports.
+The logs can be found in the Google Apps Script editor in the menu "View" ("Execution transcript" and "Logs").
+Take care to not include any sensible data in the public viewable issues wich may be part of the script logs.
+
 Thanks
 ------
 
