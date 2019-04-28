@@ -6,7 +6,6 @@ Gmail2GDrive is a Google Apps Script which automatically stores and sorts Gmail 
 It does so by defining a list of rules which consist of Gmail search filters and Google Drive destination folders.
 This way the attachments of periodic emails can be automatically organized in folders without the need to install and run anything on the client.
 
-
 Features
 --------
 
@@ -15,7 +14,6 @@ Features
 * Specify the destination folder
 * Rename attachments (using date format strings and email subject as filenames)
 * Save the thread as a PDF File
-
 
 Setup
 -----
@@ -29,11 +27,10 @@ Setup
 7. Test the script by manually executing the function performGmail2GDrive.
 8. Create a time based trigger which periodically executes 'Gmail2GDrive' (e.g. once per day) to automatically organize your Gmail attachments within Google Drive.
 
-
 Global Configuration
 --------------------
 
-* globalFilter: Global filter expression (see https://support.google.com/mail/answer/7190?hl=en for avialable search operators)
+* globalFilter: Global filter expression (see <https://support.google.com/mail/answer/7190?hl=en> for avialable search operators)
   * Example: "globalFilter": "has:attachment -in:trash -in:drafts -in:spam"
 * processedLabel: The GMail label to mark processed threads (will be created, if not existing)
   * Example: "processedLabel": "to-gdrive/processed"
@@ -48,22 +45,20 @@ Global Configuration
 * rules: List of rules to be processed
   * Example: "rules": [ {..rule1..}, {..rule2..}, ... ]
 
-
 Rule Configuration
 ------------------
 
 A rule supports the following parameters documentation:
 
-* filter (String, mandatory): a typical gmail search expression (see http://support.google.com/mail/bin/answer.py?hl=en&answer=7190)
+* filter (String, mandatory): a typical gmail search expression (see <http://support.google.com/mail/bin/answer.py?hl=en&answer=7190>)
 * folder (String, mandatory): a path to an existing Google Drive folder (will be created, if not existing)
 * archive (boolean, optional): Should the gmail thread be archived after processing? (default: false)
 * filenameFrom (String, optional): The attachment filename that should be renamed when stored in Google Drive
 * filenameFromRegexp (String, optional): A regular expression to specify only relevant attachments
 * filenameTo (String, optional): The pattern for the new filename of the attachment. If 'filenameFrom' is not given then this will be the new filename for all attachments.
   * You can use '%s' to insert the email subject and date format patterns like 'yyyy' for year, 'MM' for month and 'dd' for day as pattern in the filename.
-  * See https://developers.google.com/apps-script/reference/utilities/utilities#formatDate(Date,String,String) for more information on the possible date format strings.
+  * See <https://developers.google.com/apps-script/reference/utilities/utilities#formatDate(Date,String,String)> for more information on the possible date format strings.
 * saveThreadPDF (boolean, optional): Should the thread be saved as a PDF? (default: false)
-
 
 Example Configuration
 ---------------------
@@ -129,12 +124,10 @@ function getGmail2GDriveConfig() {
 }
 ```
 
-
 Feedback and contributions
 --------------------------
 
 Feedback and contributions is well appreciated via [Github](https://github.com/ahochsteger/gmail2gdrive).
-
 
 Thanks
 ------
