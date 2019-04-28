@@ -15,6 +15,13 @@ Features
 * Rename attachments (using date format strings and email subject as filenames)
 * Save the thread as a PDF File
 
+Limitations
+-----------
+
+Gmail2GDrive currently has the following limitations:
+
+* **Processing is done on a per-thread basis with a single email message per thread.** This is so because marking already processed emails is done using labels and GMail only alows to attach labels to a whole thread not to single email messages. For typical usage scenarios this is not really a problem but it may be if you want to process emails that are grouped by GMail into a thread (e.g. forum messages).
+
 Setup
 -----
 
