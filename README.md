@@ -131,6 +131,15 @@ function getGmail2GDriveConfig() {
 }
 ```
 
+Processing overview
+-------------------
+
+The following diagramm gives a brief overview about how the processing actually works:
+
+![Gmail2GDrive processing overview](gmail2gdrive.png)
+
+NOTE: processRule(), processThread() and processAttachment() are modelled as separate functions for better visibility which is not visible as separate functions in Code.gs
+
 Feedback and contributions
 --------------------------
 
