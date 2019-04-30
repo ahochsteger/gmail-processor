@@ -92,15 +92,16 @@ function processMessage(message, rule, config) {
     try {
       var folder = getOrCreateFolder(Utilities.formatDate(messageDate, config.timezone, rule.folder));
       var file = folder.createFile(attachment);
+      var filename = file.getName();
       if (rule.filenameFrom && rule.filenameTo && rule.filenameFrom == file.getName()) {
-        var newFilename = Utilities.formatDate(messageDate, config.timezone, rule.filenameTo.replace('%s',message.getSubject()));
-        Logger.log("INFO:           Renaming matched file '" + file.getName() + "' -> '" + newFilename + "'");
-        file.setName(newFilename);
+        filename = Utilities.formatDate(messageDate, config.timezone, rule.filenameTo.replace('%s',message.getSubject()));
+        Logger.log("INFO:           Renaming matched file '" + file.getName() + "' -> '" + filename + "'");
+        file.setName(filename);
       }
       else if (rule.filenameTo) {
-        var newFilename = Utilities.formatDate(messageDate, config.timezone, rule.filenameTo.replace('%s',message.getSubject()));
-        Logger.log("INFO:           Renaming '" + file.getName() + "' -> '" + newFilename + "'");
-        file.setName(newFilename);
+        filename = Utilities.formatDate(messageDate, config.timezone, rule.filenameTo.replace('%s',message.getSubject()));
+        Logger.log("INFO:           Renaming '" + file.getName() + "' -> '" + filename + "'");
+        file.setName(filename);
       }
       file.setDescription("Mail title: " + message.getSubject() + "\nMail date: " + message.getDate() + "\nMail link: https://mail.google.com/mail/u/0/#inbox/" + message.getId());
       Utilities.sleep(config.sleepTime);
@@ -133,7 +134,7 @@ function processThreadToHtml(thread) {
 /**
 * Generate a PDF document for the whole thread using HTML from .
  */
-function processThreadToPdf(thread, rule, html) {
+function processThreadToPdf(thread, rule) {
   Logger.log("INFO: Saving PDF copy of thread '" + thread.getFirstMessageSubject() + "'");
   var folder = getOrCreateFolder(rule.folder);
   var html = processThreadToHtml(thread);
@@ -150,7 +151,7 @@ function Gmail2GDrive() {
   if (!GmailApp) return; // Skip script execution if GMail is currently not available (yes this happens from time to time and triggers spam emails!)
   var config = getGmail2GDriveConfig();
   var label = getOrCreateLabel(config.processedLabel);
-  var end, start;
+  var end, start, runTime;
   start = new Date(); // Start timer
 
   Logger.log("INFO: Starting mail attachment processing.");
@@ -174,10 +175,10 @@ function Gmail2GDrive() {
     for (var threadIdx=0; threadIdx<threads.length; threadIdx++) {
       var thread = threads[threadIdx];
       end = new Date();
-      var runTime = (end.getTime() - start.getTime())/1000;
+      runTime = (end.getTime() - start.getTime())/1000;
       Logger.log("INFO:     Processing thread: "+thread.getFirstMessageSubject() + " (runtime: " + runTime + "s/" + config.maxRuntime + "s)");
       if (runTime >= config.maxRuntime) {
-        Logger.log("WARNING: Self terminating script after " + runTime + "s")
+        Logger.log("WARNING: Self terminating script after " + runTime + "s");
         return;
       }
 
@@ -201,6 +202,6 @@ function Gmail2GDrive() {
     }
   }
   end = new Date(); // Stop timer
-  var runTime = (end.getTime() - start.getTime())/1000;
+  runTime = (end.getTime() - start.getTime())/1000;
   Logger.log("INFO: Finished mail attachment processing after " + runTime + "s");
 }
