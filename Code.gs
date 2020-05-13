@@ -87,6 +87,7 @@ function processMessage(message, rule, config) {
     }
     if (!match) {
       Logger.log("INFO:           Rejecting file '" + attachment.getName() + " not matching" + rule.filenameFromRegexp);
+      f_addaline_log_file_SpreadsheetApp(message.getSubject(),message.getDate(),message.getId(),"https://mail.google.com/mail/u/0/#inbox/" + message.getId(),"Attachment",attachment.getName(),"Rejected: not matching" + rule.filenameFromRegexp);
       continue;
     }
     try {
@@ -104,6 +105,7 @@ function processMessage(message, rule, config) {
         file.setName(filename);
       }
       file.setDescription("Mail title: " + message.getSubject() + "\nMail date: " + message.getDate() + "\nMail link: https://mail.google.com/mail/u/0/#inbox/" + message.getId());
+      f_addaline_log_file_SpreadsheetApp(message.getSubject(),message.getDate(),message.getId(),"https://mail.google.com/mail/u/0/#inbox/" + message.getId(),"Attachment",file.getName(),file.getUrl());
       Utilities.sleep(config.sleepTime);
     } catch (e) {
       Logger.log(e);
@@ -136,10 +138,12 @@ function processThreadToHtml(thread) {
  */
 function processThreadToPdf(thread, rule) {
   Logger.log("INFO: Saving PDF copy of thread '" + thread.getFirstMessageSubject() + "'");
+  rule.folder = rule.folder.replace(/\'/g,'');
   var folder = getOrCreateFolder(rule.folder);
   var html = processThreadToHtml(thread);
   var blob = Utilities.newBlob(html, 'text/html');
   var pdf = folder.createFile(blob.getAs('application/pdf')).setName(thread.getFirstMessageSubject() + ".pdf");
+  f_addaline_log_file_SpreadsheetApp(thread.getFirstMessageSubject(),thread.getLastMessageDate(),thread.getId(),"https://mail.google.com/mail/u/0/#inbox/" + thread.getId(),"Thread",pdf.getName(),pdf.getUrl());
   return pdf;
 }
 
@@ -159,6 +163,9 @@ function Gmail2GDrive() {
     config.globalFilter = "has:attachment -in:trash -in:drafts -in:spam";
   }
 
+  // Prepare the Google SpreadSheet log file
+  f_prepare_log_file_Int(config.logfilefolderpath);
+  
   // Iterate over all rules:
   for (var ruleIdx=0; ruleIdx<config.rules.length; ruleIdx++) {
     var rule = config.rules[ruleIdx];
@@ -205,3 +212,196 @@ function Gmail2GDrive() {
   runTime = (end.getTime() - start.getTime())/1000;
   Logger.log("INFO: Finished mail attachment processing after " + runTime + "s");
 }
+
+
+// -----------------------------------------------------------------------------
+// START: Google SpreadSheet log gile functions.
+// -----------------------------------------------------------------------------
+// Max Prat-Carrabin
+// May 2020
+// https://github.com/maxsnet
+
+// Google Apps Script to add a Google Spreadsheet log file to the gmail2gdrive script (https://github.com/ahochsteger/gmail2gdrive),
+// Following issue https://github.com/ahochsteger/gmail2gdrive/issues/37
+
+// Naming conventions to functions and variables:
+// -- First part in lowercase is a human understandable name.
+// -- Second part with caps locks for first letters are the Class, seperated by a '_', to which they belong to.
+// -- Functions start witf 'f_'
+// Example: 
+// -- Variable: folder_id_String designates a folder id, and is a String
+// -- Function: f_folder_DriveApp_Folder returns a folder as a DriveApp.Folder 
+
+
+// -----------------------------------------------------------------------------
+// Prepare the SpreadsheetApp_Spreadsheet logfile from the String fodler id.
+// Return 1
+function f_prepare_log_file_Int(folder_path_String){
+  
+  var folder_id_String = f_getfolder_id_from_path_String(folder_path_String);
+  var folder_DriveApp_Folder = f_folder_DriveApp_Folder(folder_id_String);
+  var logfile_SpreadsheetApp_Spreadsheet = f_create_logfile_SpreadsheetApp_Spreadsheet(folder_DriveApp_Folder);
+  var logfileId_String = logfile_SpreadsheetApp_Spreadsheet.getId()
+  Logger.log("INFO: logfile created - spreadsheet Id:" + logfileId_String);
+  
+  // Put the log file Spreasheet Id in Cache. After that, f_logfile_SpreadsheetApp_Spreadsheet can be called to retriev the Spreadheet log file.
+  CacheService.getScriptCache().put("logfileId_String", logfileId_String);
+  
+  // Logger.log("INFO: logfile spreadsheet Id cached:   " + CacheService.getScriptCache().get("logfileId_String"));
+  // Logger.log("INFO: logfile spreadsheet Id cached_f: " + f_logfile_SpreadsheetApp_Spreadsheet().getId());
+  
+  f_add_headers_log_file_Int();
+
+  return 1;  
+
+}
+
+
+// -----------------------------------------------------------------------------
+// Return folder id String from the folder path String.
+function f_getfolder_id_from_path_String(folder_path_String){
+  
+   return getOrCreateFolder(folder_path_String).getId(); 
+
+}
+
+
+// -----------------------------------------------------------------------------
+// Returns the DriveApp_Folder folder from the String folder id.
+function f_folder_DriveApp_Folder(folder_id_String){
+  
+  return DriveApp.getFolderById(folder_id_String);    
+
+}
+
+
+// -----------------------------------------------------------------------------
+// Returns and opens SpreadsheetApp.Spreadsheet log file
+function f_logfile_SpreadsheetApp_Spreadsheet(){
+  
+   return SpreadsheetApp.openById(CacheService.getScriptCache().get("logfileId_String"));
+   
+}
+
+
+// -----------------------------------------------------------------------------
+// Creates the log file on Goole Drive in the indicated DriveApp_Folder folder.
+// Then returns it, as SpreadsheetApp_Spreadsheet, by opening it.
+function f_create_logfile_SpreadsheetApp_Spreadsheet(folder_DriveApp_Folder) {
+
+  // -----------------------------------------------------------------------------
+  // Prepare Log File Name ( log + date )
+  var logfname_String   = "log" + Utilities.formatDate(new Date(), "GMT", "yyyyMMdd HH:mm:ss");
+  
+  // -----------------------------------------------------------------------------
+  // Create temporary Spreadsheet at the root of the Google Drive folder
+  // returns SpreadsheetApp.Spreadsheet
+  // https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet
+  var logfiletemp_SpreadsheetApp_Spreadsheet = SpreadsheetApp.create(logfname_String);
+  
+  // Logger.log("INFO: temp logfile created -        Id:" + logfiletemp_SpreadsheetApp_Spreadsheet.getId());
+
+  // -----------------------------------------------------------------------------  
+  // Get the SpreadsheetApp.Spreadsheet temporary log file as a DriveApp.File
+  var logfiletemp_DriveApp_File = DriveApp.getFileById(logfiletemp_SpreadsheetApp_Spreadsheet.getId());
+
+  // -----------------------------------------------------------------------------
+  // Copy the temporary log file into its final destination
+  // DriveApp.File.makeCopy(name, Destinateion)
+  // name	is String	
+  // destination	is Folder	
+  // returns  File
+  // https://developers.google.com/apps-script/reference/drive/file#makecopydestination
+  //var logfile_DriveApp_File = logfiletemp_DriveApp_File.makeCopy(logfname_String,DriveApp.getFolderById(folder_id_String));
+  var logfile_DriveApp_File = logfiletemp_DriveApp_File.makeCopy(logfname_String,folder_DriveApp_Folder);
+    
+  Logger.log("INFO: logfile created: " + logfile_DriveApp_File.getUrl());
+
+  // -----------------------------------------------------------------------------
+  // Delete the temporary log file
+  // DriveApp.removeFile(child) 
+  // child is a file
+  // returns Folder
+  DriveApp.removeFile(logfiletemp_DriveApp_File);
+  // Logger.log("INFO: temp logfile deleted.");
+
+  return SpreadsheetApp.openById(logfile_DriveApp_File.getId());
+  
+}
+
+
+// -----------------------------------------------------------------------------
+// Adds the header (the first line) to the log file SpreadsheetApp_Spreadsheet
+// Return 1
+function f_add_headers_log_file_Int(){
+    
+  f_addaline_log_file_SpreadsheetApp("Mail title","Mail date","Mail id","Mail link","File Origine","File Name","File Link");
+  return 1;
+    
+}
+
+
+function f_addaline_log_file_SpreadsheetApp(A,B,C,D,E,F,G){
+  
+  // -----------------------------------------------------------------------------
+  // Google comments:  
+  // for most use cases
+  // the built-in method SpreadsheetApp.getActiveSpreadsheet()
+  // .getRange(range).setValues(values) is more appropriate.
+  
+  // -----------------------------------------------------------------------------
+  // Documentation:
+  // setvalues https://developers.google.com/apps-script/reference/spreadsheet/range#setvaluesvalues
+  // range https://developers.google.com/apps-script/reference/spreadsheet/range
+  // getrange https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet#getRange(String)
+  // spreadsheet https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet
+  // getactivespreadsheet https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet-app#getactivespreadsheet
+  // activespreadsheet https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet-app#getActiveSpreadsheet()
+  // spreadsheet app https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet-app
+  
+  // -----------------------------------------------------------------------------
+  // SpreadsheetApp.Spreadsheet.Range.setValues(values)
+  // values is	Object[][],	A two-dimensional array of values. - The size of the two-dimensional array must match the size of the range.
+  // Returns Range — This range, for chaining.
+  //
+  // Exemple:
+  // var ss = SpreadsheetApp.getActiveSpreadsheet();
+  // var sheet = ss.getSheets()[0];
+  // 
+  // var values = [
+  //   [ "2.000", "1,000,000", "$2.99" ]
+  // ];
+  // 
+  // var range = sheet.getRange("B2:D2");
+  // range.setValues(values);
+  
+  // -----------------------------------------------------------------------------
+  // SpreadsheetApp.Spreadsheet.getSheets() - Gets all the sheets in this spreadsheet.
+  // returns Sheet[] — An array of all the sheets in the spreadsheet.
+  //
+  // Exemple:
+  // The code below logs the name of the second sheet
+  // var sheets = SpreadsheetApp.getActiveSpreadsheet().getSheets();
+  // if (sheets.length > 1) {
+  //  Logger.log(sheets[1].getName());
+  // }
+  
+  var values_Object2 = [[ A,B,C,D,E,F,G ]];
+  var sheet_SpreadsheetApp_Spreadsheet_Sheet = f_logfile_SpreadsheetApp_Spreadsheet().getSheets()[0];
+  
+  // SpreadsheetApp.SpreadSheet.Sheet.getLastRow()
+  // https://developers.google.com/apps-script/reference/spreadsheet/sheet#getLastRow()
+  // Return Integer — the last row of the sheet that contains content
+  var lastrow_Int = sheet_SpreadsheetApp_Spreadsheet_Sheet.getLastRow()+1;
+  sheet_SpreadsheetApp_Spreadsheet_Sheet.getRange("A" + lastrow_Int + ":G" + lastrow_Int).setValues(values_Object2);
+  
+}
+
+function main(){
+ Gmail2GDrive();
+ return 1;
+}
+
+// -----------------------------------------------------------------------------
+// END: Google SpreadSheet log gile functions.
+// -----------------------------------------------------------------------------
