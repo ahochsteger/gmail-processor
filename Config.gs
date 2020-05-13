@@ -4,6 +4,9 @@
  */
 function getGmail2GDriveConfig() {
   return {
+    // Path of the log gile folder.
+    "logfilefolderpath": "EmailThisBot",
+    
     // Global filter
     "globalFilter": "-in:trash -in:drafts -in:spam",
     // Gmail label for processed threads (will be created, if not existing):
@@ -19,6 +22,12 @@ function getGmail2GDriveConfig() {
     // Processing rules:
     "rules": [
       { // Store all attachments sent to my.name+scans@gmail.com to the folder "Scans"
+        "filter": "has:attachment keywords",
+        "saveThreadPDF": true,
+        "folder": "'EmailThisBot'"
+      },
+      /*
+       { // Store all attachments sent to my.name+scans@gmail.com to the folder "Scans"
         "filter": "has:attachment to:my.name+scans@gmail.com",
         "folder": "'Scans'-yyyy-MM-dd"
       },
@@ -53,6 +62,8 @@ function getGmail2GDriveConfig() {
         "filenameFrom": "file.txt",
         "filenameTo": "'file-'yyyy-MM-dd-'%s.txt'"
       }
+      */
     ]
   };
 }
+
