@@ -14,6 +14,7 @@ Features
 * Specify the destination folder
 * Rename attachments (using date format strings and email subject as filenames)
 * Save the thread as a PDF File
+* Google Spreadsheet Log File
 
 Limitations
 -----------
