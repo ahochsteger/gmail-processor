@@ -234,7 +234,7 @@ function Gmail2GDrive() {
 
 
 // -----------------------------------------------------------------------------
-// Prepare the SpreadsheetApp_Spreadsheet logfile from the String fodler id.
+// Prepare the SpreadsheetApp_Spreadsheet logfile from the String fodler path.
 // Return 1
 function f_prepare_log_file_Int(folder_path_String){
   
