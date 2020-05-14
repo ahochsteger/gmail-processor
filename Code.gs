@@ -144,6 +144,7 @@ function processThreadToHtml(thread) {
  */
 function processThreadToPdf(thread, rule) {
   Logger.log("INFO: Saving PDF copy of thread '" + thread.getFirstMessageSubject() + "'");
+  rule.folder = rule.folder.replace(/\'/g,'');
   var folder = getOrCreateFolder(rule.folder);
   var html = processThreadToHtml(thread);
   var blob = Utilities.newBlob(html, 'text/html');
