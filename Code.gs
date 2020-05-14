@@ -122,14 +122,19 @@ function processThreadToHtml(thread) {
   var html = "";
   for (var msgIdx=0; msgIdx<messages.length; msgIdx++) {
     var message = messages[msgIdx];
-    html += "From: " + message.getFrom() + "<br />\n";
-    html += "To: " + message.getTo() + "<br />\n";
-    html += "Date: " + message.getDate() + "<br />\n";
-    html += "Subject: " + message.getSubject() + "<br />\n";
-    html += "<hr />\n";
-    html += message.getBody() + "\n";
-    html += "<hr />\n";
-  }
+    var message_isintrash = message.isInTrash();
+    Logger.log("INFO:     Message in trash:" + message_isintrash );
+        if ( message_isintrash !== true ) {
+          Logger.log("INFO:     Message not in trash: processing." );
+          html += "From: " + message.getFrom() + "<br />\n";
+          html += "To: " + message.getTo() + "<br />\n";
+          html += "Date: " + message.getDate() + "<br />\n";
+          html += "Subject: " + message.getSubject() + "<br />\n";
+          html += "<hr />\n";
+          html += message.getBody() + "\n";
+          html += "<hr />\n";
+         }        
+      }
   return html;
 }
 
@@ -193,7 +198,9 @@ function Gmail2GDrive() {
       var messages = thread.getMessages();
       for (var msgIdx=0; msgIdx<messages.length; msgIdx++) {
         var message = messages[msgIdx];
-        processMessage(message, rule, config);
+        var message_isintrash = message.isInTrash();
+        Logger.log("INFO:     Message in trash:" + message_isintrash );
+        if (  message_isintrash !== true ) { processMessage(message, rule, config); }        
       }
       if (doPDF) { // Generate a PDF document of a thread:
         processThreadToPdf(thread, rule);
@@ -234,7 +241,7 @@ function Gmail2GDrive() {
 
 
 // -----------------------------------------------------------------------------
-// Prepare the SpreadsheetApp_Spreadsheet logfile from the String fodler path.
+// Prepare the SpreadsheetApp_Spreadsheet logfile from the String fodler id.
 // Return 1
 function f_prepare_log_file_Int(folder_path_String){
   
