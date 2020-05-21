@@ -58,13 +58,13 @@ config.fnameComputerReady =   true
 
 // START SETUP: Rule
 rule.filter =              "subject:'sujet 1'"
-rule.folder =              "EmailThisBot"
+rule.folder =              "GM2GD"
 rule.saveThreadPDF =       true
 rule.archive =             true
 rule.filenameFrom =        ""
 rule.filenameFromRegexp =  ""
 rule.filenameTo =          "yyyyMMdd-'%id'-'%t'-'%s'"
-rule.filenameReplaceFrom = "Sujet";
+rule.filenameReplaceFrom = "Automatic";
 rule.filenameReplaceTo =   "";
 
 // Do not touch (but keep it at the end of each rule setup)
@@ -74,15 +74,15 @@ var rule = {};
 // END SETUP: Rule 
 
 // START SETUP: Rule
-rule.filter =              "WILLOW"
-rule.folder =              "EmailThisBot"
+rule.filter =              "raspberry"
+rule.folder =              "RasPDF"
 rule.saveThreadPDF =       true
 rule.archive =             true
 rule.filenameFrom =        ""
 rule.filenameFromRegexp =  ""
 rule.filenameTo =          "'%id'-'%s'"
-rule.filenameReplaceFrom = "WILLOW";
-rule.filenameReplaceTo =   "TOTO";
+rule.filenameReplaceFrom = "raspberry";
+rule.filenameReplaceTo =   "log-";
 
 // Do not touch (but keep it at the end of each rule setup)
 config.rules.push(rule);
