@@ -61,7 +61,7 @@ function Gmail2GDrive() {
         var message = messages[msgIdx];
         var message_isintrash = message.isInTrash();
         // Logger.log("    Message in trash:" + message_isintrash );
-        if (  message_isintrash !== true ) { processMessage(message, rule, config); }        
+        if (  message_isintrash !== true ) { processMessage(message, rule); }        
       }
       if (doPDF) { // Generate a PDF document of a thread:
         processThreadToPdf(thread, rule);
@@ -155,7 +155,7 @@ function getOrCreateFolder(folderName) {
  * Processes a message
  */
 // Process a message: extract attachement one by one,  upload it, rename it and add a description
-function processMessage(message, rule, config) {
+function processMessage(message, rule) {
   Logger.log("      Processing message: "+message.getSubject() + " (" + message.getId() + ")");
   var messageDate = message.getDate();
   var attachments = message.getAttachments();
@@ -178,6 +178,7 @@ function processMessage(message, rule, config) {
       var filename = file.getName();
       
       filename = NewFileName(message.getId(),filename, messageDate, rule.filenameTo,"file");
+      file.setName(filename);
 
       file.setDescription("Mail title: " + message.getSubject() + "\nMail date: " + message.getDate() + "\nMail link: https://mail.google.com/mail/u/0/#inbox/" + message.getId());
       f_addaline_log_file_SpreadsheetApp(message.getSubject(),message.getDate(),message.getId(),"https://mail.google.com/mail/u/0/#inbox/" + message.getId(),"Attachment",file.getName(),file.getUrl());
@@ -219,12 +220,21 @@ function processThreadToHtml(thread) {
 /**
 * Generate a PDF document for the whole thread using HTML from .
  */
-function processThreadToPdf(thread) {
+function processThreadToPdf(thread,rule) {
   Logger.log("Saving PDF copy of thread '" + thread.getFirstMessageSubject() + "'");
   
   var messages = thread.getMessages();
   var message = messages[0];
+  
+    Logger.log("avant newfilename, dans processThreadToPdf");
+  Logger.log("rule.filenameTo:" + rule.filenameTo);
+
+  
+  
   var filename = NewFileName(message.getId(),message.getSubject(), message.getDate(), rule.filenameTo,"mail") + ".pdf";
+  
+//  function     NewFileName(id,             name,                 date,              filenameTo,      type) {
+
   
   rule.folder = rule.folder.replace(/\'/g,'');
   var folder = getOrCreateFolder(rule.folder);
@@ -270,17 +280,7 @@ function f_prepare_log_file_Int(folder_path_String){
   // Logger.log("logfile spreadsheet Id cached_f: " + f_logfile_SpreadsheetApp_Spreadsheet().getId());
   
   f_add_headers_log_file_Int();
-      // Process all messages of a thread:
-      var messages = thread.getMessages();
-      for (var msgIdx=0; msgIdx<messages.length; msgIdx++) {
-        var message = messages[msgIdx];
-        var message_isintrash = message.isInTrash();
-        Logger.log("INFO:     Message in trash:" + message_isintrash );
-        if (  message_isintrash !== true ) { processMessage(message, rule, config); }        
-      }
-      if (doPDF) { // Generate a PDF document of a thread:
-        processThreadToPdf(thread, rule);
-      }
+     
   return 1;  
 
 }
@@ -447,6 +447,11 @@ function main(){
 // Returns a new filename using 'rule.filenameTo' from config.gs
 function NewFileName(id, name, date, filenameTo,type) {
     
+  
+  Logger.log("dans newfilename");
+
+  
+  
   var timezone = CacheService.getScriptCache().get("timezone");
 
   // filename = Utilities.formatDate(date, config.timezone, rule.filenameTo.replace('%s',name));
@@ -457,15 +462,14 @@ function NewFileName(id, name, date, filenameTo,type) {
   filename = filename.replace('%t',type); //type
   filename = filename.replace('%s',name); //email topic
   filename = filename.replace(rule.filenameReplaceFrom,rule.filenameReplaceTo); //user defined
-    
-  // filename = filename.replace('[toread] ','');  ==>> faire en REGEX.
-  filename = filename.substr(1, config.maxNameLength);
   
   if ( config.fnameComputerReady === true ) { 
     filename = removeDiacritics(filename);
     config.maxNameLength = Math.min(config.maxNameLength,"250");
-    filename = filename.substr(1, config.maxNameLength);
   }
+  
+  filename = filename.substr(1, config.maxNameLength);
+  filename = filename.trim();
     
   Logger.log("Created a new  filename: " + filename);
   return filename;
