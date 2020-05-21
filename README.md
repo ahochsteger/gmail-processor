@@ -1,9 +1,7 @@
 Gmail2GDrive
 ============
 
-Gmail2GDrive is a Google Apps Script which stores Gmail attachements and Gmail Threads (in PDF) on Google Drive.
-The user defines rules for filtering the emails and attachements and the Google Drive folder to save into.
-The Script can be setup to run preiodically.
+Gmail2GDrive is a Google Apps Script that you can use to store your Gmail attachements and Gmail Threads (in PDF) into the Google Drive folder of your choice.
 
 
 Features
@@ -23,6 +21,7 @@ Features
 * Log the activity into a Google Spreadsheet.
 * Label and/or archive the emails already treated.
 
+* Set it up to run preiodically.
 
 Limitations
 -----------
