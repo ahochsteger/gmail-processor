@@ -4,7 +4,7 @@
  */
 
 // -----------------------------------------------------------------------------
-// Updated May 2020, by Max Prat-Carrabin https://github.com/maxsnet
+// Updated May 2020, by Max Prat-Carrabin https://maxsnet.github.io/gmail2gdrive/
 
 // -----------------------------------------------------------------------------
 // Explanations of rules:
@@ -14,8 +14,8 @@
 //   archive archives the mail.
 //
 //   filenameFrom only stores attachements of those name
-//   filenameFromRegexp renames the fil using regex.
-//
+//   filenameFromRegexp filters the files using RegEx.
+  
 //   filenameTo to rename the file saved:
 //     '%s' is replaced by the name fo the file / the subject of the mail
 //     '%t' is replaced by the file source: 'mail' or 'file'
@@ -56,14 +56,15 @@ config.fnameComputerReady =   true
 // Rules Setup to update
 // To define rules, copy/paste from "START SETUP" to "END SETUP" lines as many times as you want.
 
+
 // START SETUP: Rule
-rule.filter =              "subject:'sujet 1'"
-rule.folder =              "GM2GD"
-rule.saveThreadPDF =       true
-rule.archive =             true
-rule.filenameFrom =        ""
-rule.filenameFromRegexp =  ""
-rule.filenameTo =          "yyyyMMdd-'%id'-'%t'-'%s'"
+rule.filter =              "subject:'sujet 1'";
+rule.folder =              "GM2GD";
+rule.saveThreadPDF =       true;
+rule.archive =             true;
+rule.filenameFrom =        "file.txt";
+//rule.filenameFromRegexp =  "";
+rule.filenameTo =          "yyyyMMdd-'%id'-'%t'-'%s'";
 rule.filenameReplaceFrom = "Automatic";
 rule.filenameReplaceTo =   "";
 
@@ -73,14 +74,15 @@ var rule = {};
                    
 // END SETUP: Rule 
 
+
 // START SETUP: Rule
-rule.filter =              "raspberry"
-rule.folder =              "RasPDF"
-rule.saveThreadPDF =       true
-rule.archive =             true
-rule.filenameFrom =        ""
-rule.filenameFromRegexp =  ""
-rule.filenameTo =          "'%id'-'%s'"
+rule.filter =              "raspberry";
+rule.folder =              "RasPDF";
+rule.saveThreadPDF =       true;
+rule.archive =             true;
+//rule.filenameFrom =        "";
+rule.filenameFromRegexp =  ".*\.doc$";
+rule.filenameTo =          "'%id'-'%s'";
 rule.filenameReplaceFrom = "raspberry";
 rule.filenameReplaceTo =   "log-";
 
@@ -88,55 +90,6 @@ rule.filenameReplaceTo =   "log-";
 config.rules.push(rule);
 var rule = {};
 
-//Logger.log(config.rules[0].filter);
-//Logger.log(config.rules[1].filter);
-                   
-
 // END SETUP: Rule 
 
 
-//   Exemples of rule (in the previous form):
-//      // Store all attachments sent to my.name+scans@gmail.com to the folder "Scans"       
-//      {
-//        "filter": "has:attachment to:my.name+scans@gmail.com",
-//        "folder": "'Scans'-yyyy-MM-dd"
-//      }
-
-//      // Store all attachments from example1@example.com to the folder "Examples/example1"
-//      { 
-//        "filter": "has:attachment from:example1@example.com",
-//        "folder": "'Examples/example1'"
-//      }
-//      // Store all pdf attachments from example2@example.com to the folder "Examples/example2"
-//      {
-//        "filter": "has:attachment from:example2@example.com",
-//        "folder": "'Examples/example2'",
-//        "filenameFromRegexp": ".*\.pdf$"
-//      }
-
-//      // Store all attachments from example3a@example.com OR from:example3b@example.com
-//      // to the folder "Examples/example3ab" while renaming all attachments to the pattern
-//      // defined in 'filenameTo' and archive the thread.
-//      { 
-//       "filter": "has:attachment (from:example3a@example.com OR from:example3b@example.com)",
-//       "folder": "'Examples/example3ab'",
-//        "filenameTo": "'file-'yyyy-MM-dd-'%s.txt'",
-//        "archive": true
-//      }
-
-//      // Store threads marked with label "PDF" in the folder "PDF Emails" als PDF document.
-//      {  
-//        "filter": "label:PDF",
-//        "saveThreadPDF": true,
-//        "folder": "PDF Emails"
-//      }
-
-//      // Store all attachments named "file.txt" from example4@example.com to the
-//      // folder "Examples/example4" and rename the attachment to the pattern
-//      // defined in 'filenameTo' and archive the thread.
-//      { 
-//        "filter": "has:attachment from:example4@example.com",
-//        "folder": "'Examples/example4'",
-//        "filenameFrom": "file.txt",
-//        "filenameTo": "'file-'yyyy-MM-dd-'%s.txt'"
-//      }
