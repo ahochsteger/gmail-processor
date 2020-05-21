@@ -54,6 +54,8 @@ config.fnameComputerReady =   true
 
 // -----------------------------------------------------------------------------
 // Rules Setup to update
+// To define rules, copy/paste from "START SETUP" to "END SETUP" lines as many times as you want.
+
 // START SETUP: Rule
 rule.filter =              "subject:'sujet 1'"
 rule.folder =              "EmailThisBot"
