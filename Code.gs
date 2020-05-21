@@ -195,12 +195,14 @@ function processThreadToHtml(thread) {
   Logger.log("  Generating HTML code of thread '" + thread.getFirstMessageSubject() + "'");
   var messages = thread.getMessages();
   var html = "";
+  
   for (var msgIdx=0; msgIdx<messages.length; msgIdx++) {
     var message = messages[msgIdx];
     var message_isintrash = message.isInTrash();
     // Logger.log("    Message in trash:" + message_isintrash );
         if ( message_isintrash !== true ) {
           Logger.log("    Message not in trash: processing." );
+
           html += "From: " + message.getFrom() + "<br />\n";
           html += "To: " + message.getTo() + "<br />\n";
           html += "Date: " + message.getDate() + "<br />\n";
@@ -210,13 +212,14 @@ function processThreadToHtml(thread) {
           html += "<hr />\n";
          }        
       }
+
   return html;
 }
 
 /**
 * Generate a PDF document for the whole thread using HTML from .
  */
-function processThreadToPdf(thread, rule,config) {
+function processThreadToPdf(thread) {
   Logger.log("Saving PDF copy of thread '" + thread.getFirstMessageSubject() + "'");
   
   var messages = thread.getMessages();
@@ -260,14 +263,24 @@ function f_prepare_log_file_Int(folder_path_String){
   var logfileId_String = logfile_SpreadsheetApp_Spreadsheet.getId()
   Logger.log("logfile created - spreadsheet Id:" + logfileId_String);
   
-  // Put the log file Spreasheet Id in Cache. After that, f_logfile_SpreadsheetApp_Spreadsheet can be called to retriev the Spreadheet log file.
+  // Put the log file Spreasheet Id in Cache. After that, f_logfile_SpreadsheetApp_Spreadsheet can be called to retrieve the Spreadheet log file.
   CacheService.getScriptCache().put("logfileId_String", logfileId_String);
   
   // Logger.log("logfile spreadsheet Id cached:   " + CacheService.getScriptCache().get("logfileId_String"));
   // Logger.log("logfile spreadsheet Id cached_f: " + f_logfile_SpreadsheetApp_Spreadsheet().getId());
   
   f_add_headers_log_file_Int();
-
+      // Process all messages of a thread:
+      var messages = thread.getMessages();
+      for (var msgIdx=0; msgIdx<messages.length; msgIdx++) {
+        var message = messages[msgIdx];
+        var message_isintrash = message.isInTrash();
+        Logger.log("INFO:     Message in trash:" + message_isintrash );
+        if (  message_isintrash !== true ) { processMessage(message, rule, config); }        
+      }
+      if (doPDF) { // Generate a PDF document of a thread:
+        processThreadToPdf(thread, rule);
+      }
   return 1;  
 
 }
