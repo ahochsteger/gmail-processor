@@ -37,7 +37,7 @@ Setup
 Global Configuration
 --------------------
 
-* globalFilter: Global filter expression (see <https://support.google.com/mail/answer/7190?hl=en> for avialable search operators)
+* globalFilter: Global filter expression (see <https://support.google.com/mail/answer/7190?hl=en> for available search operators)
   * Example: "globalFilter": "has:attachment -in:trash -in:drafts -in:spam"
 * processedLabel: The GMail label to mark processed threads (will be created, if not existing)
   * Example: "processedLabel": "to-gdrive/processed"
@@ -113,7 +113,7 @@ function getGmail2GDriveConfig() {
         "archive": true
       },
       {
-        // Store threads marked with label "PDF" in the folder "PDF Emails" als PDF document.
+        // Store threads marked with label "PDF" in the folder "PDF Emails" as PDF document.
         "filter": "label:PDF",
         "saveThreadPDF": true,
         "folder": "PDF Emails"
