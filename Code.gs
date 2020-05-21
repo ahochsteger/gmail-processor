@@ -6,7 +6,6 @@
 // May 2020
 // https://github.com/maxsnet
 
-
 /**
  * Main function that processes Gmail attachments and stores them in Google Drive.
  * Use this as trigger function for periodic execution.
