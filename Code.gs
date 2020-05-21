@@ -12,17 +12,10 @@
  */
 function Gmail2GDrive() {
   if (!GmailApp) return; // Skip script execution if GMail is currently not available (yes this happens from time to time and triggers spam emails!)
- // var config = getGmail2GDriveConfig();
-  
-//Logger.log("Label Name." + config.processedLabel);
-//exit;
+
   var label = getOrCreateLabel(config.processedLabel);
   var end, start, runTime;
   start = new Date(); // Start timer
-
-  // CacheService.getScriptCache().put("timezone", config.timezone);
-  CacheService.getScriptCache().put("timezone", Intl.DateTimeFormat().resolvedOptions().timeZone);
-  config.timezone = CacheService.getScriptCache().get("timezone");
   
   Logger.log("Starting mail attachment processing.");
   if (config.globalFilter===undefined) {
@@ -57,10 +50,10 @@ function Gmail2GDrive() {
 
       // Process all messages of a thread:
       var messages = thread.getMessages();
+      
       for (var msgIdx=0; msgIdx<messages.length; msgIdx++) {
         var message = messages[msgIdx];
         var message_isintrash = message.isInTrash();
-        // Logger.log("    Message in trash:" + message_isintrash );
         if (  message_isintrash !== true ) { processMessage(message, rule); }        
       }
       if (doPDF) { // Generate a PDF document of a thread:
@@ -156,12 +149,15 @@ function getOrCreateFolder(folderName) {
  */
 // Process a message: extract attachement one by one,  upload it, rename it and add a description
 function processMessage(message, rule) {
+  
   Logger.log("      Processing message: "+message.getSubject() + " (" + message.getId() + ")");
+  var timezone = config.timezone;
   var messageDate = message.getDate();
   var attachments = message.getAttachments();
   for (var attIdx=0; attIdx<attachments.length; attIdx++) {
     var attachment = attachments[attIdx];
     Logger.log("        Processing attachment: "+attachment.getName());
+    
     var match = true;
     if (rule.filenameFromRegexp) {
     var re = new RegExp(rule.filenameFromRegexp);
@@ -173,16 +169,17 @@ function processMessage(message, rule) {
       continue;
     }
     try {
-      var folder = getOrCreateFolder(Utilities.formatDate(messageDate, config.timezone, rule.folder));
-      var file = folder.createFile(attachment);
-      var filename = file.getName();
+     var folder = getOrCreateFolder(Utilities.formatDate(messageDate, timezone, rule.folder));
+     var file = folder.createFile(attachment);
+     var filename = file.getName();
       
-      filename = NewFileName(message.getId(),filename, messageDate, rule.filenameTo,"file");
-      file.setName(filename);
-
-      file.setDescription("Mail title: " + message.getSubject() + "\nMail date: " + message.getDate() + "\nMail link: https://mail.google.com/mail/u/0/#inbox/" + message.getId());
-      f_addaline_log_file_SpreadsheetApp(message.getSubject(),message.getDate(),message.getId(),"https://mail.google.com/mail/u/0/#inbox/" + message.getId(),"Attachment",file.getName(),file.getUrl());
-      Utilities.sleep(config.sleepTime);
+     filename = NewFileName(message.getId(),filename, messageDate, rule.filenameTo,"file");
+     file.setName(filename);
+     file.setDescription("Mail title: " + message.getSubject() + "\nMail date: " + message.getDate() + "\nMail link: https://mail.google.com/mail/u/0/#inbox/" + message.getId());
+    
+     f_addaline_log_file_SpreadsheetApp(message.getSubject(),message.getDate(),message.getId(),"https://mail.google.com/mail/u/0/#inbox/" + message.getId(),"Attachment",file.getName(),file.getUrl());
+     
+     Utilities.sleep(config.sleepTime);
     } catch (e) {
       Logger.log(e);
     }
@@ -200,7 +197,6 @@ function processThreadToHtml(thread) {
   for (var msgIdx=0; msgIdx<messages.length; msgIdx++) {
     var message = messages[msgIdx];
     var message_isintrash = message.isInTrash();
-    // Logger.log("    Message in trash:" + message_isintrash );
         if ( message_isintrash !== true ) {
           Logger.log("    Message not in trash: processing." );
 
@@ -225,19 +221,9 @@ function processThreadToPdf(thread,rule) {
   
   var messages = thread.getMessages();
   var message = messages[0];
-  
-    Logger.log("avant newfilename, dans processThreadToPdf");
-  Logger.log("rule.filenameTo:" + rule.filenameTo);
-
-  
-  
   var filename = NewFileName(message.getId(),message.getSubject(), message.getDate(), rule.filenameTo,"mail") + ".pdf";
-  
-//  function     NewFileName(id,             name,                 date,              filenameTo,      type) {
-
-  
-  rule.folder = rule.folder.replace(/\'/g,'');
-  var folder = getOrCreateFolder(rule.folder);
+  var cleanrulefolder = rule.folder.replace(/\'/g,'');
+  var folder = getOrCreateFolder(cleanrulefolder);
   
   var html = processThreadToHtml(thread);
   var blob = Utilities.newBlob(html, 'text/html');
@@ -319,7 +305,7 @@ function f_logfile_SpreadsheetApp_Spreadsheet(){
 function f_create_logfile_SpreadsheetApp_Spreadsheet(folder_DriveApp_Folder) {
 
   
-  var timezone = CacheService.getScriptCache().get("timezone");
+  var timezone = config.timezone;
 
   // -----------------------------------------------------------------------------
   // Prepare Log File Name ( log + date )
@@ -445,17 +431,10 @@ function main(){
 
 // -----------------------------------------------------------------------------
 // Returns a new filename using 'rule.filenameTo' from config.gs
-function NewFileName(id, name, date, filenameTo,type) {
+function NewFileName(id, name, date, filenameTo, type) {
     
-  
-  Logger.log("dans newfilename");
+  var timezone = config.timezone;
 
-  
-  
-  var timezone = CacheService.getScriptCache().get("timezone");
-
-  // filename = Utilities.formatDate(date, config.timezone, rule.filenameTo.replace('%s',name));
-  
   filename = Utilities.formatDate(date, timezone, filenameTo);
   id = id.substr(id.length-3, 3);
   filename = filename.replace('%id',id);  //email id
@@ -468,7 +447,7 @@ function NewFileName(id, name, date, filenameTo,type) {
     config.maxNameLength = Math.min(config.maxNameLength,"250");
   }
   
-  filename = filename.substr(1, config.maxNameLength);
+  filename = filename.substr(0, config.maxNameLength);
   filename = filename.trim();
     
   Logger.log("Created a new  filename: " + filename);

@@ -40,6 +40,8 @@ config.sleepTime =           100;
 config.maxRuntime =          280;
 // Max length name of file
 config.maxNameLength =       150;
+// Timezone
+config.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
 // -----------------------------------------------------------------------------
 // Global setup to update
@@ -48,17 +50,35 @@ config.processedLabel =      "to-gdrive/processed";
 // Only process message newer than (leave empty for no restriction; use d, m and y for day, month and year):
 config.newerThan =           "1m";
 // Path of the log gile folder.
-config.logfilefolderpath =    "EmailThisBot";
+config.logfilefolderpath =    "MY FOLDER/Documents/GM2GD/LogFile";
 // Make filename computer filesystem accepted (not required if the file will always stay on Google Drive)
 config.fnameComputerReady =   true
 
 // -----------------------------------------------------------------------------
 // Rules Setup to update
 // To define rules, copy/paste from "START SETUP" to "END SETUP" lines as many times as you want.
+  
+// START SETUP: Rule TEST
+rule.filter =              "from:bot@mylittleb.ot has:attachment";
+//rule.folder must be surroudned by single quotes
+rule.folder =              "'MY FOLDER/Documents/GM2GD/Files'";
+rule.saveThreadPDF =       false;
+rule.archive =             true;
+rule.filenameFrom =        "";
+rule.filenameFromRegexp =  "";
+rule.filenameTo =          "yyyyMMdd-'%id'-'%t'-'%s'";
+rule.filenameReplaceFrom = "";
+rule.filenameReplaceTo =   "";
 
-
+// Do not touch (but keep it at the end of each rule setup)
+config.rules.push(rule);
+var rule = {};
+                   
+// END SETUP: Rule 
+    
 // START SETUP: Rule
 rule.filter =              "subject:'sujet 1'";
+//rule.folder must be surroudned by single quotes
 rule.folder =              "GM2GD";
 rule.saveThreadPDF =       true;
 rule.archive =             true;
@@ -77,19 +97,18 @@ var rule = {};
 
 // START SETUP: Rule
 rule.filter =              "raspberry";
-rule.folder =              "RasPDF";
+//rule.folder must be surroudned by single quotes
+rule.folder =              "RasF";
 rule.saveThreadPDF =       true;
 rule.archive =             true;
 //rule.filenameFrom =        "";
 rule.filenameFromRegexp =  ".*\.doc$";
 rule.filenameTo =          "'%id'-'%s'";
 rule.filenameReplaceFrom = "raspberry";
-rule.filenameReplaceTo =   "log-";
+rule.filenameReplaceTo =   "blueberry";
 
 // Do not touch (but keep it at the end of each rule setup)
 config.rules.push(rule);
 var rule = {};
 
 // END SETUP: Rule 
-
-
