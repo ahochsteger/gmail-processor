@@ -8,27 +8,33 @@
 
 // -----------------------------------------------------------------------------
 // Explanations of rules:
-//   filter completes Global Filter (gmail filter)
-//   folder is the folder name in the Google Drive where the files will be saved. Surrounded by single quotes.
-//   saveThreadPDF to save the thread email as a pdf.
-//   archive archives the mail.
-//
-//   filenameFrom only stores attachements of those name
+
+//   active             skip the rule if false
+//   filter             complete Global Filter (gmail filter)
+//   folder             is the folder name in the Google Drive where the files will be saved. Surrounded by single quotes.
+//   saveThreadPDF      save the thread email as a pdf.
+//   archive            archive the mail.
+
+//   filenameFrom       only stores attachements of those name
 //   filenameFromRegexp filters the files using RegEx.
   
-//   filenameTo to rename the file saved:
-//     '%s' is replaced by the name fo the file / the subject of the mail
-//     '%t' is replaced by the file source: 'mail' or 'file'
-//     '%id' is remplaced by the 3 last caracters of the id of the mail
+//   filenameTo         rename the file saved:
+//     '%s'     is replaced by the name fo the file / the subject of the mail
+//     '%t'     is replaced by the file source: 'mail' or 'file'
+//     '%id'    is replaced by the 3 last caracters of the id of the mail
+//     '%from'  is replaced by the sender email
+//     '%to'    is replaced by the email recipient
 //   the simple quotes are required.
-//
+
 //   filenameReplaceFrom: if this texte is found in the filename, then it will be replaced by filenameReplaceTo
-//   filenameReplaceTo: look for filenameReplaceFrom in the filename and replaces by this.
- 
+//   filenameReplaceTo:   look for filenameReplaceFrom in the filename and replaces by this.
+
+// -----------------------------------------------------------------------------
 // Do not touch
 var config= {};
 config.rules = [];
 var rule = {};
+
 
 // -----------------------------------------------------------------------------
 // A priori do not touch:
@@ -57,8 +63,10 @@ config.fnameComputerReady =   true
 // -----------------------------------------------------------------------------
 // Rules Setup to update
 // To define rules, copy/paste from "START SETUP" to "END SETUP" lines as many times as you want.
-  
-// START SETUP: Rule TEST
+
+
+// START SETUP: Rule
+rule.active =              false;
 rule.filter =              "from:bot@mylittleb.ot has:attachment";
 //rule.folder must be surroudned by single quotes
 rule.folder =              "'MY FOLDER/Documents/GM2GD/Files'";
@@ -76,7 +84,9 @@ var rule = {};
                    
 // END SETUP: Rule 
     
+    
 // START SETUP: Rule
+rule.active =              true;
 rule.filter =              "subject:'sujet 1'";
 //rule.folder must be surroudned by single quotes
 rule.folder =              "GM2GD";
@@ -84,7 +94,7 @@ rule.saveThreadPDF =       true;
 rule.archive =             true;
 rule.filenameFrom =        "file.txt";
 //rule.filenameFromRegexp =  "";
-rule.filenameTo =          "yyyyMMdd-'%id'-'%t'-'%s'";
+rule.filenameTo =          "yyyyMMdd-'%id'-'%t'-'%to'-'%s'";
 rule.filenameReplaceFrom = "Automatic";
 rule.filenameReplaceTo =   "";
 
@@ -96,6 +106,7 @@ var rule = {};
 
 
 // START SETUP: Rule
+rule.active =              true;
 rule.filter =              "raspberry";
 //rule.folder must be surroudned by single quotes
 rule.folder =              "RasF";
@@ -103,7 +114,7 @@ rule.saveThreadPDF =       true;
 rule.archive =             true;
 //rule.filenameFrom =        "";
 rule.filenameFromRegexp =  ".*\.doc$";
-rule.filenameTo =          "'%id'-'%s'";
+rule.filenameTo =          "'%id'-'%s'-'%from'";
 rule.filenameReplaceFrom = "raspberry";
 rule.filenameReplaceTo =   "blueberry";
 
