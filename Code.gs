@@ -106,7 +106,7 @@ function f_Gmail2GDrive_Int() {
    
     // Get the array of threads corresponding to the search
     var threads_GmailApp_GmailThread_Array = GmailApp.search(search_exp_String);
-    Logger.log("Gmail2GDrive:   Processing rule: " + search_exp_String);
+    Logger.log("Gmail2GDrive: Processing rule: " + search_exp_String);
     
     // Process the threads   
     for (var thread_id_Int=0; thread_id_Int < threads_GmailApp_GmailThread_Array.length; thread_id_Int++) {
@@ -116,7 +116,7 @@ function f_Gmail2GDrive_Int() {
       // Inform about runtime and stops if too long
       end_Date = new Date();
       runTime_Int = (end_Date.getTime() - start_Date.getTime())/1000;
-      Logger.log("Gmail2GDrive:     Processing thread: "+thread_GmailApp_GmailThread.getFirstMessageSubject() + " (runtime: " + runTime_Int + "s/" + config_maxRuntime_Int + "s)");
+      Logger.log("Gmail2GDrive: Processing thread: "+thread_GmailApp_GmailThread.getFirstMessageSubject() + " (runtime: " + runTime_Int + "s/" + config_maxRuntime_Int + "s)");
       if (runTime_Int >= config_maxRuntime_Int) {
         Logger.log("Gmail2GDrive: WARNING: Self terminating script after " + runTime_Int + "s");
         return 0;
@@ -140,7 +140,7 @@ function f_Gmail2GDrive_Int() {
       thread_GmailApp_GmailThread.addLabel(label_GmailApp_GmailLabel);
 
       if (rule_archive_Bolean) { 
-        Logger.log("Gmail2GDrive:     Archiving thread '" + thread_GmailApp_GmailThread.getFirstMessageSubject() + "' ...");
+        Logger.log("Gmail2GDrive: Archiving thread '" + thread_GmailApp_GmailThread.getFirstMessageSubject() + "' ...");
         thread_GmailApp_GmailThread.moveToArchive();
       }
       
@@ -312,13 +312,13 @@ function f_getOrCreateFolder(folderName) {
 // Process a message: extract attachement one by one,  upload it, rename it and add a description
 function f_processMessage(message, rule) {
   
-  Logger.log("      Processing message: "+message.getSubject() + " (" + message.getId() + ")");
+  Logger.log("processMessage: Processing message: "+message.getSubject() + " (" + message.getId() + ")");
   var timezone = config.timezone;
   var messageDate = message.getDate();
   var attachments = message.getAttachments();
   for (var attIdx=0; attIdx<attachments.length; attIdx++) {
     var attachment = attachments[attIdx];
-    Logger.log("        Processing attachment: "+attachment.getName());
+    Logger.log("processMessage: Processing attachment: "+attachment.getName());
     
     var match = true;
     if (rule.filenameFromRegexp) {
@@ -326,7 +326,7 @@ function f_processMessage(message, rule) {
       match = (attachment.getName()).match(re);
     }
     if (!match) {
-      Logger.log("          Rejecting file '" + attachment.getName() + " not matching" + rule.filenameFromRegexp);
+      Logger.log("processMessage: Rejecting file '" + attachment.getName() + " not matching" + rule.filenameFromRegexp);
       f_addaline_log_file_SpreadsheetApp(message.getSubject(),message.getDate(),message.getId(),"https://mail.google.com/mail/u/0/#inbox/" + message.getId(),"Attachment",attachment.getName(),"Rejected: not matching" + rule.filenameFromRegexp);
       continue;
     }
@@ -353,7 +353,7 @@ function f_processMessage(message, rule) {
  * Generate HTML code for one message of a thread.
  */
 function f_processThreadToHtml(thread) {
-  Logger.log("  Generating HTML code of thread '" + thread.getFirstMessageSubject() + "'");
+  Logger.log("processThreadToHtml: Generating HTML code of thread '" + thread.getFirstMessageSubject() + "'");
   var messages = thread.getMessages();
   var html = "";
   
@@ -361,7 +361,7 @@ function f_processThreadToHtml(thread) {
     var message = messages[msg_id_Int];
     var message_isintrash = message.isInTrash();
         if ( message_isintrash !== true ) {
-          Logger.log("    Message not in trash: processing." );
+          Logger.log("processThreadToHtml: Message not in trash: processing." );
 
           html += "From: " + message.getFrom() + "<br />\n";
           html += "To: " + message.getTo() + "<br />\n";
@@ -380,7 +380,7 @@ function f_processThreadToHtml(thread) {
 * Generate a PDF document for the whole thread using HTML from .
  */
 function f_processThreadToPdf(thread,rule) {
-  Logger.log("Saving PDF copy of thread '" + thread.getFirstMessageSubject() + "'");
+  Logger.log("processThreadToPdf: Saving PDF copy of thread '" + thread.getFirstMessageSubject() + "'");
   
   var messages = thread.getMessages();
   var message = messages[0];
@@ -421,7 +421,7 @@ function f_prepare_log_file_Int(folder_path_String){
   var folder_DriveApp_Folder = f_folder_DriveApp_Folder(folder_id_String);
   var logfile_SpreadsheetApp_Spreadsheet = f_create_logfile_SpreadsheetApp_Spreadsheet(folder_DriveApp_Folder);
   var logfileId_String = logfile_SpreadsheetApp_Spreadsheet.getId()
-  Logger.log("logfile created - spreadsheet Id:" + logfileId_String);
+  Logger.log("prepare_log_file: logfile created - spreadsheet Id:" + logfileId_String);
   
   // Put the log file Spreasheet Id in Cache. After that, f_logfile_SpreadsheetApp_Spreadsheet can be called to retrieve the Spreadheet log file.
   CacheService.getScriptCache().put("logfileId_String", logfileId_String);
@@ -497,7 +497,7 @@ function f_create_logfile_SpreadsheetApp_Spreadsheet(folder_DriveApp_Folder) {
   //var logfile_DriveApp_File = logfiletemp_DriveApp_File.makeCopy(logfname_String,DriveApp.getFolderById(folder_id_String));
   var logfile_DriveApp_File = logfiletemp_DriveApp_File.makeCopy(logfname_String,folder_DriveApp_Folder);
     
-  Logger.log("logfile created: " + logfile_DriveApp_File.getUrl());
+  Logger.log("create_logfile: logfile created: " + logfile_DriveApp_File.getUrl());
 
   // -----------------------------------------------------------------------------
   // Delete the temporary log file
@@ -640,7 +640,7 @@ function f_NewFileName(name, rule, message, type) {
   filename = filename.substr(0, config.maxNameLength);
   filename = filename.trim();
     
-  Logger.log("Created a new  filename: " + filename);
+  Logger.log("NewFileName: Created a new  filename: " + filename);
   
   return filename;
 }
