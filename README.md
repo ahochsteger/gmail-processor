@@ -16,6 +16,7 @@ Features
    * use RegEx
    * add source: 'mail' or 'file'
    * add mail id
+   * add sender and recipient
    * make the filename computer filesystem accepted
 * Save the thread as a PDF File.
 * Log the activity into a Google Spreadsheet.

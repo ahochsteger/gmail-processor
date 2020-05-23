@@ -6,79 +6,241 @@
 // May 2020
 // https://github.com/maxsnet
 
-/**
- * Main function that processes Gmail attachments and stores them in Google Drive.
- * Use this as trigger function for periodic execution.
- */
-function Gmail2GDrive() {
-  if (!GmailApp) return; // Skip script execution if GMail is currently not available (yes this happens from time to time and triggers spam emails!)
 
-  var label = getOrCreateLabel(config.processedLabel);
-  var end, start, runTime;
-  start = new Date(); // Start timer
+// -----------------------------------------------------------------------------
+// Function to run.
+function main(){
+ Logger.log("Main: // --------------------------");
+ Logger.log("Main: STARTING");
+ 
+ if ( f_Gmail2GDrive_Int() === 1 ) {
+  Logger.log("Main: SUCCESS");
+ }
+ else {
+   Logger.log("Main: FAILED");
+ }
+ 
+ Logger.log("Main: // --------------------------");
+ Logger.log("Main: ENDING");
+
+ return 1;
+}
+
+
+// -----------------------------------------------------------------------------
+// Main function that processes Gmail attachments and stores them in Google Drive.
+// Return 1 if success, 0 if not.
+function f_Gmail2GDrive_Int() {
+ 
+  // Start timer
+  var end_Date, start_Date, runTime_Int;
+  var start_Date = new Date();
+ 
+  // Check if the required apps are available
+  if(f_check_apps_Int() === 0){
+     Logger.log("Gmail2GDrive: Google Apps not ready, try again later.");
+     return 0;    
+  }
+  else {
+     Logger.log("Gmail2GDrive: Google Apps are ready.");
+  }
   
-  Logger.log("Starting mail attachment processing.");
-  if (config.globalFilter===undefined) {
+  
+  // Prepare the Google SpreadSheet log file
+   if(f_prepare_log_file_Int(config.logfilefolderpath) === 0){
+     Logger.log("Gmail2GDrive: Could not create Google Spreadsheet log file.");
+     return 0;    
+  }
+   else {
+     Logger.log("Gmail2GDrive: Created Google Spreadsheet log file.");
+  }
+  
+  // Check the config
+  if(f_check_config_Int() === 0){
+    Logger.log("Gmail2GDrive: Failed to check config.");
+    return 0;    
+  }
+     else {
+     Logger.log("Gmail2GDrive: Sucessfully checked config.");
+  }
+  
+  var config_globalFilter_String       = config.globalFilter;
+  var config_sleepTime_Int             = config.sleepTime;
+  var config_maxRuntime_Int            = config.maxRuntime;
+  var config_maxNameLength_String      = config.maxNameLength;
+  var config_timezone_String           = config.timezone;
+  var config_processedLabel_String     = config.processedLabel;
+  var config_newerThan_String          = config.newerThan;
+  var config_logfilefolderpath_String  = config.logfilefolderpath;
+  var config_logfilefixedname_Bolean   = config.logfilefixedname;
+  var config_fnameComputerReady_Bolean = config.fnameComputerReady;
+  
+  var label_GmailApp_GmailLabel = f_getOrCreateLabel(config_processedLabel_String);
+  
+  Logger.log("Gmail2GDrive: Starting mail attachment processing.");
+
+  // Iterate over all rules
+  for (var rule_id_Int=0; rule_id_Int < config.rules.length; rule_id_Int++) {
+    
+    var rule_Obj = config.rules[rule_id_Int];
+    rule_Obj = f_check_rule_Obj(rule_Obj);
+
+    var rule_active_Bolean              = rule_Obj.active;
+    var rule_filter_String              = rule_Obj.filter;
+    var rule_folder_String              = rule_Obj.folder;
+    var rule_saveThreadPDF_Bolean       = rule_Obj.saveThreadPDF;
+    var rule_archive_Bolean             = rule_Obj.archive;
+    var rule_filenameFrom_String        = rule_Obj.filenameFrom;
+    var rule_filenameFromRegexp_String  = rule_Obj.filenameFromRegexp;
+    var rule_filenameTo_String          = rule_Obj.filenameTo;
+    var rule_filenameReplaceFrom_String = rule_Obj.filenameReplaceFrom;
+    var rule_filenameReplaceTo_String   = rule_Obj.filenameReplaceTo;
+
+    var search_exp_String = config_globalFilter_String + " " + rule_filter_String +  " -label:" + config_processedLabel_String;
+    if (config_newerThan_String != "") { search_exp_String += " newer_than:" + config_newerThan_String; }
+   
+     if( rule_active_Bolean === false){
+        Logger.log("Gmail2GDrive: Skipping rule: "+ search_exp_String);    
+        continue;
+     }
+   
+    // Get the array of threads corresponding to the search
+    var threads_GmailApp_GmailThread_Array = GmailApp.search(search_exp_String);
+    Logger.log("Gmail2GDrive: Processing rule: " + search_exp_String);
+    
+    // Process the threads   
+    for (var thread_id_Int=0; thread_id_Int < threads_GmailApp_GmailThread_Array.length; thread_id_Int++) {
+      
+      var thread_GmailApp_GmailThread = threads_GmailApp_GmailThread_Array[thread_id_Int];
+      
+      // Inform about runtime and stops if too long
+      end_Date = new Date();
+      runTime_Int = (end_Date.getTime() - start_Date.getTime())/1000;
+      Logger.log("Gmail2GDrive: Processing thread: "+thread_GmailApp_GmailThread.getFirstMessageSubject() + " (runtime: " + runTime_Int + "s/" + config_maxRuntime_Int + "s)");
+      if (runTime_Int >= config_maxRuntime_Int) {
+        Logger.log("Gmail2GDrive: WARNING: Self terminating script after " + runTime_Int + "s");
+        return 0;
+      }
+
+      var messages_GmailApp_GmailMessage_Array = thread_GmailApp_GmailThread.getMessages();
+      
+      // Process all messages of a thread
+      for (var msg_id_Int=0; msg_id_Int < messages_GmailApp_GmailMessage_Array.length; msg_id_Int++) {
+        
+        var message_GmailApp_GmailMessage = messages_GmailApp_GmailMessage_Array[msg_id_Int];
+        var message_isintrash_Bolean = message_GmailApp_GmailMessage.isInTrash();
+
+        // Process the message if it is not in Trash
+        if (  message_isintrash_Bolean !== true ) { f_processMessage(message_GmailApp_GmailMessage, rule_Obj); }    
+        
+      }
+      
+      if (rule_saveThreadPDF_Bolean) { f_processThreadToPdf(thread_GmailApp_GmailThread, rule_Obj); }
+
+      thread_GmailApp_GmailThread.addLabel(label_GmailApp_GmailLabel);
+
+      if (rule_archive_Bolean) { 
+        Logger.log("Gmail2GDrive: Archiving thread '" + thread_GmailApp_GmailThread.getFirstMessageSubject() + "' ...");
+        thread_GmailApp_GmailThread.moveToArchive();
+      }
+      
+    }
+    
+  }
+  
+  end_Date = new Date();
+  runTime_Int = (end_Date.getTime() - start_Date.getTime())/1000;
+  Logger.log("Gmail2GDrive: Finished mail attachment processing after " + runTime_Int + "s");
+  
+  return 1;
+  
+}
+
+
+
+function f_check_config_Int(){
+  
+  if (config.globalFilter===undefined || config.globalFilter==="") {
     config.globalFilter = "has:attachment -in:trash -in:drafts -in:spam";
   }
 
-  // Prepare the Google SpreadSheet log file
-  f_prepare_log_file_Int(config.logfilefolderpath);
-  
-  // Iterate over all rules:
-  for (var ruleIdx=0; ruleIdx<config.rules.length; ruleIdx++) {
-    var rule = config.rules[ruleIdx];
-    var gSearchExp  = config.globalFilter + " " + rule.filter + " -label:" + config.processedLabel;
-    if (config.newerThan != "") {
-      gSearchExp += " newer_than:" + config.newerThan;
-    }
-    var doArchive = rule.archive == true;
-    var doPDF = rule.saveThreadPDF == true;
-
-    // Process all threads matching the search expression:
-    var threads = GmailApp.search(gSearchExp);
-    Logger.log("  Processing rule: "+gSearchExp);
-    for (var threadIdx=0; threadIdx<threads.length; threadIdx++) {
-      var thread = threads[threadIdx];
-      end = new Date();
-      runTime = (end.getTime() - start.getTime())/1000;
-      Logger.log("    Processing thread: "+thread.getFirstMessageSubject() + " (runtime: " + runTime + "s/" + config.maxRuntime + "s)");
-      if (runTime >= config.maxRuntime) {
-        Logger.log("WARNING: Self terminating script after " + runTime + "s");
-        return;
-      }
-
-      // Process all messages of a thread:
-      var messages = thread.getMessages();
-      
-      for (var msgIdx=0; msgIdx<messages.length; msgIdx++) {
-        var message = messages[msgIdx];
-        var message_isintrash = message.isInTrash();
-        if (  message_isintrash !== true ) { processMessage(message, rule); }        
-      }
-      if (doPDF) { // Generate a PDF document of a thread:
-        processThreadToPdf(thread, rule);
-      }
-
-      // Mark a thread as processed:
-      thread.addLabel(label);
-
-      if (doArchive) { // Archive a thread if required
-        Logger.log("    Archiving thread '" + thread.getFirstMessageSubject() + "' ...");
-        thread.moveToArchive();
-      }
-    }
+  if (config.sleepTime===undefined || config.sleepTimer==="") {
+    config.sleepTime = 100;
   }
-  end = new Date(); // Stop timer
-  runTime = (end.getTime() - start.getTime())/1000;
-  Logger.log("Finished mail attachment processing after " + runTime + "s");
+  
+  if (config.maxRuntime===undefined || config.maxRuntime==="") {
+    config.maxRuntime = 280;
+  }
+  
+   if (config.maxNameLength===undefined || config.maxNameLength==="") {
+    config.maxNameLength = 150;
+  }
+  
+  if (config.timezone===undefined || config.timezone==="") {
+    config.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  }
+
+  if (config.processedLabel===undefined || config.processedLabele==="") {
+    config.processedLabel = "to-gdrive/processed";
+  }
+
+  if (config.newerThan===undefined) {
+    cconfig.newerThan = "1m";
+  }
+
+  if (config.logfilefolderpath===undefined) {
+    config.logfilefolderpath = "GM2GD";
+  }
+
+  if (config.logfilefixedname===undefined) {
+    config.logfilefixednameh = true;
+  }
+
+  if (config.fnameComputerReady===undefined) {
+    config.fnameComputerReady = true;
+  }
+  
+
+
+  return 1;
+}
+
+
+function f_check_apps_Int(){
+
+  // Skip script execution if apps is currently not available 
+  if (!GmailApp) return 0;
+  if (!DriveApp) return 0; 
+  if (!SpreadsheetApp) return 0;
+
+  return 1;
+}
+
+
+function f_check_rule_Obj(rule_Obj){
+
+  if (rule_Obj.archive===undefined || rule_Obj.archive==="") {
+    rule_Obj.archive = true;
+  }
+  
+  if (rule_Obj.saveThreadPDF===undefined || rule_Obj.saveThreadPDF==="") {
+    rule_Obj.saveThreadPDF = true;
+  }  
+  
+  
+  if (rule_Obj.folder===undefined || rule_Obj.folder==="") {
+    rule_Obj.folder = "GM2GD";
+  }  
+  
+  return rule_Obj;
+
 }
 
 
 /**
  * Returns the label with the given name or creates it if not existing.
  */
-function getOrCreateLabel(labelName) {
+function f_getOrCreateLabel(labelName) {
   var label = GmailApp.getUserLabelByName(labelName);
   if (label == null) {
     label = GmailApp.createLabel(labelName);
@@ -89,7 +251,7 @@ function getOrCreateLabel(labelName) {
 /**
  * Recursive function to create and return a complete folder path.
  */
-function getOrCreateSubFolder(baseFolder,folderArray) {
+function f_getOrCreateSubFolder(baseFolder,folderArray) {
   if (folderArray.length == 0) {
     return baseFolder;
   }
@@ -107,13 +269,13 @@ function getOrCreateSubFolder(baseFolder,folderArray) {
     // Folder does not exist - create it.
     nextFolder = baseFolder.createFolder(nextFolderName);
   }
-  return getOrCreateSubFolder(nextFolder,folderArray);
+  return f_getOrCreateSubFolder(nextFolder,folderArray);
 }
 
 /**
  * Returns the GDrive folder with the given path.
  */
-function getFolderByPath(path) {
+function f_getFolderByPath(path) {
   var parts = path.split("/");
 
   if (parts[0] == '') parts.shift(); // Did path start at root, '/'?
@@ -133,13 +295,13 @@ function getFolderByPath(path) {
 /**
  * Returns the GDrive folder with the given name or creates it if not existing.
  */
-function getOrCreateFolder(folderName) {
+function f_getOrCreateFolder(folderName) {
   var folder;
   try {
-    folder = getFolderByPath(folderName);
+    folder = f_getFolderByPath(folderName);
   } catch(e) {
     var folderArray = folderName.split("/");
-    folder = getOrCreateSubFolder(DriveApp.getRootFolder(), folderArray);
+    folder = f_getOrCreateSubFolder(DriveApp.getRootFolder(), folderArray);
   }
   return folder;
 }
@@ -148,15 +310,15 @@ function getOrCreateFolder(folderName) {
  * Processes a message
  */
 // Process a message: extract attachement one by one,  upload it, rename it and add a description
-function processMessage(message, rule) {
+function f_processMessage(message, rule) {
   
-  Logger.log("      Processing message: "+message.getSubject() + " (" + message.getId() + ")");
+  Logger.log("processMessage: Processing message: "+message.getSubject() + " (" + message.getId() + ")");
   var timezone = config.timezone;
   var messageDate = message.getDate();
   var attachments = message.getAttachments();
   for (var attIdx=0; attIdx<attachments.length; attIdx++) {
     var attachment = attachments[attIdx];
-    Logger.log("        Processing attachment: "+attachment.getName());
+    Logger.log("processMessage: Processing attachment: "+attachment.getName());
     
     var match = true;
     if (rule.filenameFromRegexp) {
@@ -164,16 +326,17 @@ function processMessage(message, rule) {
       match = (attachment.getName()).match(re);
     }
     if (!match) {
-      Logger.log("          Rejecting file '" + attachment.getName() + " not matching" + rule.filenameFromRegexp);
+      Logger.log("processMessage: Rejecting file '" + attachment.getName() + " not matching" + rule.filenameFromRegexp);
       f_addaline_log_file_SpreadsheetApp(message.getSubject(),message.getDate(),message.getId(),"https://mail.google.com/mail/u/0/#inbox/" + message.getId(),"Attachment",attachment.getName(),"Rejected: not matching" + rule.filenameFromRegexp);
       continue;
     }
     try {
-     var folder = getOrCreateFolder(Utilities.formatDate(messageDate, timezone, rule.folder));
+     var folder = f_getOrCreateFolder(Utilities.formatDate(messageDate, timezone, rule.folder));
      var file = folder.createFile(attachment);
      var filename = file.getName();
       
-     filename = NewFileName(message.getId(),filename, messageDate, rule.filenameTo,"file");
+     filename = f_NewFileName(filename, rule, message, "file");
+     
      file.setName(filename);
      file.setDescription("Mail title: " + message.getSubject() + "\nMail date: " + message.getDate() + "\nMail link: https://mail.google.com/mail/u/0/#inbox/" + message.getId());
     
@@ -189,16 +352,16 @@ function processMessage(message, rule) {
 /**
  * Generate HTML code for one message of a thread.
  */
-function processThreadToHtml(thread) {
-  Logger.log("  Generating HTML code of thread '" + thread.getFirstMessageSubject() + "'");
+function f_processThreadToHtml(thread) {
+  Logger.log("processThreadToHtml: Generating HTML code of thread '" + thread.getFirstMessageSubject() + "'");
   var messages = thread.getMessages();
   var html = "";
   
-  for (var msgIdx=0; msgIdx<messages.length; msgIdx++) {
-    var message = messages[msgIdx];
+  for (var msg_id_Int=0; msg_id_Int<messages.length; msg_id_Int++) {
+    var message = messages[msg_id_Int];
     var message_isintrash = message.isInTrash();
         if ( message_isintrash !== true ) {
-          Logger.log("    Message not in trash: processing." );
+          Logger.log("processThreadToHtml: Message not in trash: processing." );
 
           html += "From: " + message.getFrom() + "<br />\n";
           html += "To: " + message.getTo() + "<br />\n";
@@ -216,16 +379,17 @@ function processThreadToHtml(thread) {
 /**
 * Generate a PDF document for the whole thread using HTML from .
  */
-function processThreadToPdf(thread,rule) {
-  Logger.log("Saving PDF copy of thread '" + thread.getFirstMessageSubject() + "'");
+function f_processThreadToPdf(thread,rule) {
+  Logger.log("processThreadToPdf: Saving PDF copy of thread '" + thread.getFirstMessageSubject() + "'");
   
   var messages = thread.getMessages();
   var message = messages[0];
-  var filename = NewFileName(message.getId(),message.getSubject(), message.getDate(), rule.filenameTo,"mail") + ".pdf";
+  var filename = f_NewFileName(message.getSubject(), rule, message,"mail") + ".pdf";
+    
   var cleanrulefolder = rule.folder.replace(/\'/g,'');
-  var folder = getOrCreateFolder(cleanrulefolder);
+  var folder = f_getOrCreateFolder(cleanrulefolder);
   
-  var html = processThreadToHtml(thread);
+  var html = f_processThreadToHtml(thread);
   var blob = Utilities.newBlob(html, 'text/html');
   var pdf = folder.createFile(blob.getAs('application/pdf')).setName(filename);
   
@@ -257,7 +421,7 @@ function f_prepare_log_file_Int(folder_path_String){
   var folder_DriveApp_Folder = f_folder_DriveApp_Folder(folder_id_String);
   var logfile_SpreadsheetApp_Spreadsheet = f_create_logfile_SpreadsheetApp_Spreadsheet(folder_DriveApp_Folder);
   var logfileId_String = logfile_SpreadsheetApp_Spreadsheet.getId()
-  Logger.log("logfile created - spreadsheet Id:" + logfileId_String);
+  Logger.log("prepare_log_file: logfile created - spreadsheet Id:" + logfileId_String);
   
   // Put the log file Spreasheet Id in Cache. After that, f_logfile_SpreadsheetApp_Spreadsheet can be called to retrieve the Spreadheet log file.
   CacheService.getScriptCache().put("logfileId_String", logfileId_String);
@@ -276,7 +440,7 @@ function f_prepare_log_file_Int(folder_path_String){
 // Return folder id String from the folder path String.
 function f_getfolder_id_from_path_String(folder_path_String){
   
-   return getOrCreateFolder(folder_path_String).getId(); 
+   return f_getOrCreateFolder(folder_path_String).getId(); 
 
 }
 
@@ -333,7 +497,7 @@ function f_create_logfile_SpreadsheetApp_Spreadsheet(folder_DriveApp_Folder) {
   //var logfile_DriveApp_File = logfiletemp_DriveApp_File.makeCopy(logfname_String,DriveApp.getFolderById(folder_id_String));
   var logfile_DriveApp_File = logfiletemp_DriveApp_File.makeCopy(logfname_String,folder_DriveApp_Folder);
     
-  Logger.log("logfile created: " + logfile_DriveApp_File.getUrl());
+  Logger.log("create_logfile: logfile created: " + logfile_DriveApp_File.getUrl());
 
   // -----------------------------------------------------------------------------
   // Delete the temporary log file
@@ -415,11 +579,6 @@ function f_addaline_log_file_SpreadsheetApp(A,B,C,D,E,F,G){
   
 }
 
-function main(){
- Gmail2GDrive();
- return 1;
-}
-
 // -----------------------------------------------------------------------------
 // END: Google SpreadSheet log gile functions.
 // -----------------------------------------------------------------------------
@@ -431,33 +590,65 @@ function main(){
 
 // -----------------------------------------------------------------------------
 // Returns a new filename using 'rule.filenameTo' from config.gs
-function NewFileName(id, name, date, filenameTo, type) {
-    
+function f_NewFileName(name, rule, message, type) {
+  
+  var filenameTo  = rule.filenameTo;
+  var replaceFrom = rule.filenameReplaceFrom;
+  var replaceTo   = rule.filenameReplaceTo;
+  var date        = message.getDate();
+  var id          = message.getId();
+  var from        = message.getFrom();
+  var to          = message.getTo();
+
+  name        = name        || ""; 
+  replaceFrom = replaceFrom || ""; 
+  replaceTo   = replaceTo   || ""; 
+
   var timezone = config.timezone;
 
+  // Replace date
   filename = Utilities.formatDate(date, timezone, filenameTo);
-  id = id.substr(id.length-3, 3);
-  filename = filename.replace('%id',id);  //email id
-  filename = filename.replace('%t',type); //type
-  filename = filename.replace('%s',name); //email topic
-  filename = filename.replace(rule.filenameReplaceFrom,rule.filenameReplaceTo); //user defined
   
+  // Replace email id
+  id = id.substr(id.length-3, 3);
+  filename = filename.replace('%id',id);  
+  
+  // Replace To
+  filename = filename.replace('%to',to);
+  
+  // Add type
+  filename = filename.replace('%t',type);
+  
+  // Replace from
+  filename = filename.replace('%from',from);
+  
+  // Replace word chosen by user
+   if ( replaceFrom != "" && replaceTo != "" ) { 
+    filename = filename.replace(rule.filenameReplaceFrom,rule.filenameReplaceTo);
+  }
+
+  // Replace mail topic
+  filename = filename.replace('%s',name); //email topic
+
+  // Make computer ready
   if ( config.fnameComputerReady === true ) { 
-    filename = removeDiacritics(filename);
+    filename = f_removeDiacritics(filename);
     config.maxNameLength = Math.min(config.maxNameLength,"250");
   }
   
+  // Final setup
   filename = filename.substr(0, config.maxNameLength);
   filename = filename.trim();
     
-  Logger.log("Created a new  filename: " + filename);
+  Logger.log("NewFileName: Created a new  filename: " + filename);
+  
   return filename;
 }
 
 
 // -----------------------------------------------------------------------------
 // Source: https://stackoverflow.com/questions/30576304/parsing-special-characters-in-google-apps-script
-// usage : var userName = removeDiacritics(userNameWithIllegalCharacters);
+// usage : var userName = f_removeDiacritics(userNameWithIllegalCharacters);
 var defaultDiacriticsRemovalap = [
     {'base':'A', 'letters':'\u0041\u24B6\uFF21\u00C0\u00C1\u00C2\u1EA6\u1EA4\u1EAA\u1EA8\u00C3\u0100\u0102\u1EB0\u1EAE\u1EB4\u1EB2\u0226\u01E0\u00C4\u01DE\u1EA2\u00C5\u01FA\u01CD\u0200\u0202\u1EA0\u1EAC\u1EB6\u1E00\u0104\u023A\u2C6F'},
     {'base':'AA','letters':'\uA732'},
@@ -556,7 +747,7 @@ for (var i=0; i < defaultDiacriticsRemovalap.length; i++){
 }
 
 // "what?" version ... http://jsperf.com/diacritics/12
-function removeDiacritics (str) {
+function f_removeDiacritics(str) {
     return str.replace(/[^\u0000-\u007E]/g, function(a){ 
        return diacriticsMap[a] || a; 
     });
