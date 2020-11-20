@@ -55,6 +55,8 @@ config.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 config.processedLabel =      "to-gdrive/processed";
 // Only process message newer than (leave empty for no restriction; use d, m and y for day, month and year):
 config.newerThan =           "1m";
+// Should a log file be created ?
+config.logfilecreate =        false;
 // Path of the log gile folder.
 config.logfilefolderpath =    "MY FOLDER/Documents/GM2GD/LogFile";
 // Make filename computer filesystem accepted (not required if the file will always stay on Google Drive)
