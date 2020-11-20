@@ -418,13 +418,30 @@ function f_processThreadToPdf(thread,rule) {
 // Prepare the SpreadsheetApp_Spreadsheet logfile from the String fodler id.
 // Return 1
 function f_prepare_log_file_Int(folder_path_String, islogfile_Bolean){
-  
-  if( islogfile_Bolean === false){
-    
-    // islogfile indicates if the log file chould be created. This value is kept in cach to be used by other functions.
-    CacheService.getScriptCache().put("islogfile_Bolean", islogfile_Bolean);
 
-    Logger.log("Config says not to create a log file.");
+  // -----------------------------------------------------------------------------
+  // Documentation:
+  // Class CacheService https://developers.google.com/apps-script/reference/cache/cache-service
+  // Class Cache https://developers.google.com/apps-script/reference/cache/cache
+  
+  // -----------------------------------------------------------------------------
+  // getScriptCache(): Gets the cache instance scoped to the script. Script caches are common to all users of the script. Use these to store information that is not specific to the current user.
+  // getScriptCache(): Gets a cache that is common to all users of the script.
+  // Returns Cache — a script cache instance
+  
+  // -----------------------------------------------------------------------------
+  // CacheService.getScriptCache().put(key, value): Adds a key/value pair to the cache.
+  // The maximum length of a key is 250 characters. The maximum amount of data that can be stored per key is 100KB. The value will expire from the cache after 600 seconds (10 minutes).
+  //
+  // Exemple: Puts the value 'bar' into the cache using the key 'foo': cache.put('foo', 'bar');
+  // key and value are String
+    
+   
+  // islogfile indicates if the log file chould be created. This value is kept in cach to be used by other functions.
+  CacheService.getScriptCache().put("islogfile_String", islogfile_Bolean.toString());
+  var islogfile_String = CacheService.getScriptCache().get("islogfile_String");
+  if( islogfile_String === 'false'){
+    Logger.log("prepare_log_file: Config says not to create a log file.");
     return 0;
   }  
  
@@ -432,7 +449,7 @@ function f_prepare_log_file_Int(folder_path_String, islogfile_Bolean){
   var folder_DriveApp_Folder = f_folder_DriveApp_Folder(folder_id_String);
   var logfile_SpreadsheetApp_Spreadsheet = f_create_logfile_SpreadsheetApp_Spreadsheet(folder_DriveApp_Folder);
   var logfileId_String = logfile_SpreadsheetApp_Spreadsheet.getId()
-  Logger.log("prepare_log_file: logfile created - spreadsheet Id:" + logfileId_String);
+  Logger.log("prepare_log_file: prepare_log_file: logfile created - spreadsheet Id:" + logfileId_String);
   
   // Put the log file Spreasheet Id in Cache. After that, f_logfile_SpreadsheetApp_Spreadsheet can be called to retrieve the Spreadheet log file.
   CacheService.getScriptCache().put("logfileId_String", logfileId_String);
@@ -535,8 +552,8 @@ function f_add_headers_log_file_Int(){
 
 function f_addaline_log_file_SpreadsheetApp(A,B,C,D,E,F,G){
   
-  var islogfile_Bolean = CacheService.getScriptCache().get("logfileId_String")
-  if( islogfile_Bolean === false){
+  var islogfile_String = CacheService.getScriptCache().get("islogfile_String");
+  if( islogfile_String === 'false'){
     // not adding a line because the log file has not (and should not, as per the config) been created.
     return 0;
   }  
@@ -773,3 +790,4 @@ function f_removeDiacritics(str) {
 // -----------------------------------------------------------------------------
 // END: functions to improve filename.
 // -----------------------------------------------------------------------------
+
