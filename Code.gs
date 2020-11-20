@@ -3,13 +3,21 @@
 
 // Modified by 
 // Max Prat-Carrabin
-// May 2020
+// Novembre 2020. V0.2
 // https://github.com/maxsnet
 
+// Naming conventions of functions and variables:
+// -- First part in lowercase is a human understandable name.
+// -- Second part with caps locks for first letters are the Class, seperated by a '_', to which they belong to.
+// -- Functions start witf 'f_'
+// Example: 
+// -- Variable: folder_id_String designates a folder id, and is a String
+// -- Function: f_folder_DriveApp_Folder returns a folder as a DriveApp.Folder 
 
 // -----------------------------------------------------------------------------
 // Function to run.
 function main(){
+  
  Logger.log("Main: // --------------------------");
  Logger.log("Main: STARTING");
  
@@ -24,8 +32,8 @@ function main(){
  Logger.log("Main: ENDING");
 
  return 1;
+  
 }
-
 
 // -----------------------------------------------------------------------------
 // Main function that processes Gmail attachments and stores them in Google Drive.
@@ -45,16 +53,6 @@ function f_Gmail2GDrive_Int() {
      Logger.log("Gmail2GDrive: Google Apps are ready.");
   }
   
-  
-  // Prepare the Google SpreadSheet log file
-   if(f_prepare_log_file_Int(config.logfilefolderpath) === 0){
-     Logger.log("Gmail2GDrive: Could not create Google Spreadsheet log file.");
-     return 0;    
-  }
-   else {
-     Logger.log("Gmail2GDrive: Created Google Spreadsheet log file.");
-  }
-  
   // Check the config
   if(f_check_config_Int() === 0){
     Logger.log("Gmail2GDrive: Failed to check config.");
@@ -71,12 +69,22 @@ function f_Gmail2GDrive_Int() {
   var config_timezone_String           = config.timezone;
   var config_processedLabel_String     = config.processedLabel;
   var config_newerThan_String          = config.newerThan;
+  var config_logfilecreate_Bolean      = config.logfilecreate;
   var config_logfilefolderpath_String  = config.logfilefolderpath;
   var config_logfilefixedname_Bolean   = config.logfilefixedname;
   var config_fnameComputerReady_Bolean = config.fnameComputerReady;
   
   var label_GmailApp_GmailLabel = f_getOrCreateLabel(config_processedLabel_String);
   
+  // Prepare the Google SpreadSheet log file
+  if(f_prepare_log_file_Int(config.logfilefolderpath, config_logfilecreate_Bolean ) === 0){
+    Logger.log("Gmail2GDrive: Google Spreadsheet log file not created.");
+    //return 0;
+  }
+  else {
+    Logger.log("Gmail2GDrive: Created Google Spreadsheet log file.");
+  }
+    
   Logger.log("Gmail2GDrive: Starting mail attachment processing.");
 
   // Iterate over all rules
@@ -131,7 +139,7 @@ function f_Gmail2GDrive_Int() {
         var message_isintrash_Bolean = message_GmailApp_GmailMessage.isInTrash();
 
         // Process the message if it is not in Trash
-        if (  message_isintrash_Bolean !== true ) { f_processMessage(message_GmailApp_GmailMessage, rule_Obj); }    
+        if (  message_isintrash_Bolean !== true ) { f_processMessage(message_GmailApp_GmailMessage, rule_Obj, config_logfilecreate_Bolean ); }    
         
       }
       
@@ -185,7 +193,11 @@ function f_check_config_Int(){
   }
 
   if (config.newerThan===undefined) {
-    cconfig.newerThan = "1m";
+    config.newerThan = "1m";
+  }
+  
+  if (config.logfilecreate===undefined) {
+    config.logfilecreate = false;
   }
 
   if (config.logfilefolderpath===undefined) {
@@ -200,9 +212,8 @@ function f_check_config_Int(){
     config.fnameComputerReady = true;
   }
   
-
-
   return 1;
+  
 }
 
 
@@ -214,6 +225,7 @@ function f_check_apps_Int(){
   if (!SpreadsheetApp) return 0;
 
   return 1;
+  
 }
 
 
@@ -233,7 +245,7 @@ function f_check_rule_Obj(rule_Obj){
   }  
   
   return rule_Obj;
-
+  
 }
 
 
@@ -336,13 +348,12 @@ function f_processMessage(message, rule) {
      var filename = file.getName();
       
      filename = f_NewFileName(filename, rule, message, "file");
-     
      file.setName(filename);
      file.setDescription("Mail title: " + message.getSubject() + "\nMail date: " + message.getDate() + "\nMail link: https://mail.google.com/mail/u/0/#inbox/" + message.getId());
-    
-     f_addaline_log_file_SpreadsheetApp(message.getSubject(),message.getDate(),message.getId(),"https://mail.google.com/mail/u/0/#inbox/" + message.getId(),"Attachment",file.getName(),file.getUrl());
      
+     f_addaline_log_file_SpreadsheetApp(message.getSubject(),message.getDate(),message.getId(),"https://mail.google.com/mail/u/0/#inbox/" + message.getId(),"Attachment",file.getName(),file.getUrl());
      Utilities.sleep(config.sleepTime);
+      
     } catch (e) {
       Logger.log(e);
     }
@@ -403,20 +414,20 @@ function f_processThreadToPdf(thread,rule) {
 // START: Google SpreadSheet log gile functions.
 // -----------------------------------------------------------------------------
 
-// Naming conventions to functions and variables:
-// -- First part in lowercase is a human understandable name.
-// -- Second part with caps locks for first letters are the Class, seperated by a '_', to which they belong to.
-// -- Functions start witf 'f_'
-// Example: 
-// -- Variable: folder_id_String designates a folder id, and is a String
-// -- Function: f_folder_DriveApp_Folder returns a folder as a DriveApp.Folder 
-
-
 // -----------------------------------------------------------------------------
 // Prepare the SpreadsheetApp_Spreadsheet logfile from the String fodler id.
 // Return 1
-function f_prepare_log_file_Int(folder_path_String){
+function f_prepare_log_file_Int(folder_path_String, islogfile_Bolean){
   
+  if( islogfile_Bolean === false){
+    
+    // islogfile indicates if the log file chould be created. This value is kept in cach to be used by other functions.
+    CacheService.getScriptCache().put("islogfile_Bolean", islogfile_Bolean);
+
+    Logger.log("Config says not to create a log file.");
+    return 0;
+  }  
+ 
   var folder_id_String = f_getfolder_id_from_path_String(folder_path_String);
   var folder_DriveApp_Folder = f_folder_DriveApp_Folder(folder_id_String);
   var logfile_SpreadsheetApp_Spreadsheet = f_create_logfile_SpreadsheetApp_Spreadsheet(folder_DriveApp_Folder);
@@ -468,7 +479,6 @@ function f_logfile_SpreadsheetApp_Spreadsheet(){
 // Then returns it, as SpreadsheetApp_Spreadsheet, by opening it.
 function f_create_logfile_SpreadsheetApp_Spreadsheet(folder_DriveApp_Folder) {
 
-  
   var timezone = config.timezone;
 
   // -----------------------------------------------------------------------------
@@ -524,6 +534,12 @@ function f_add_headers_log_file_Int(){
 
 
 function f_addaline_log_file_SpreadsheetApp(A,B,C,D,E,F,G){
+  
+  var islogfile_Bolean = CacheService.getScriptCache().get("logfileId_String")
+  if( islogfile_Bolean === false){
+    // not adding a line because the log file has not (and should not, as per the config) been created.
+    return 0;
+  }  
   
   // -----------------------------------------------------------------------------
   // Google comments:  
@@ -757,4 +773,3 @@ function f_removeDiacritics(str) {
 // -----------------------------------------------------------------------------
 // END: functions to improve filename.
 // -----------------------------------------------------------------------------
-
