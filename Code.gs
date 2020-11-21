@@ -200,7 +200,7 @@ function f_check_config_Int(){
   }
   
   if (config.logfilecreate===undefined) {
-    config.logfilecreate = false;
+    config.logfilecreate = true;
   }
 
   if (config.logfilefolderpath===undefined) {
