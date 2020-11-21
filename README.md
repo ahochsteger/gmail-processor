@@ -42,39 +42,57 @@ Setup
 4. Replace the content of the created file Code.gs with the provided [Code.gs](https://github.com/ahochsteger/gmail2gdrive/blob/master/Code.gs) and save the changes.
 5. Create a new script file with the name 'Config' and replace its content with the provided [Config.gs](https://github.com/ahochsteger/gmail2gdrive/blob/master/Config.gs) and save the changes.
 6. Adjust the configuration to your needs. It is recommended to restrict the timeframe using 'newerThan' to prevent running into API quotas by Google.
-7. Test the script by manually executing the function performGmail2GDrive.
+7. Test the script by manually executing the function main.
 8. Create a time based trigger which periodically executes 'Gmail2GDrive' (e.g. once per day) to automatically organize your Gmail attachments within Google Drive.
+
+
+
 
 Global Configuration
 --------------------
 Update the file Config.gs accordingly.
 
-* globalFilter: Global filter expression (see <https://support.google.com/mail/answer/7190?hl=en> for available search operators)
-* processedLabel: The GMail label to mark processed threads (will be created, if not existing)
-* sleepTime: Sleep time in milliseconds between processed messages
-* maxRuntime: Maximum script runtime in seconds (Google Scripts will be killed after 5 minutes)
-* newerThan: Only process message newer than (leave empty for no restriction; use d, m and y for day, month and year)
-* rules: List of rules to be processed, an array including all users rules.
+```javascript
+// Global filter (see <https://support.google.com/mail/answer/7190?hl=en> for available search operators)
+// Sleep time in milli seconds between processed messages:
+// Maximum script runtime in seconds (google scripts will be killed after 5 minutes):
+// Max length name of file
+// Timezone
+// Gmail label for processed threads (will be created, if not existing):
+// Only process message newer than (leave empty for no restriction; use d, m and y for day, month and year):
+// Should a log file be created ?
+// Path of the log gile folder.
+// Fixed name for the logfile (or it will include a timestamp in the name) - NOT IMPLEMENTED YET
+// Make filename computer filesystem accepted (not required if the file will always stay on Google Drive)
+```
 
 Rule Configuration
 ------------------
 Update the file Config.gs accordingly.
 
-A rule supports the following parameters documentation:
+A rule supports the following parameters:
 
-* filter (String, mandatory): completes Global Filter (gmail filter).
-* folder (String, mandatory): a path to an existing Google Drive folder (will be created, if not existing). Surrounded by single quotes.
-* archive (boolean, optional): archives the mail. (default: false)
-* saveThreadPDF (boolean, optional): save the thread email as a pdf. (default: false)
+```javascript
+//   active:        skip the rule if false
+//   filter:        completes Global Filter (gmail filter)
+//   folder:        is the folder name in the Google Drive where the files will be saved. Surrounded by single quotes.
+//   saveThreadPDF: to save the thread email as a pdf.
+//   archive:       archives the mail.
 
-* filenameFromRegexp (String, optional): A regular expression to specify only relevant attachments. 
-* filenameFrom (String, optional): if this texte is found in the filename, then it will be replaced by filenameReplaceTo.
-* filenameTo (String, optional): Look for filenameReplaceFrom in the filename and replaces by this. The pattern for the new filename of the attachment. If 'filenameFrom' is not given then this will be the new filename for all attachments. 
-  * '%s' is replaced by the name fo the file / the subject of the mail
-  * '%t' is replaced by the file source: 'mail' or 'file'
-  * '%id' is remplaced by the 3 last caracters of the id of the mail
-  * the simple quotes are required.
-  * You can add date format patterns: 'yyyy' for year, 'MM' for month and 'dd' for day. Cf <https://developers.google.com/apps-script/reference/utilities/utilities#formatDate(Date,String,String)> for more information on the possible date format strings.
+//   filenameFrom:       only stores attachements of those name
+//   filenameFromRegexp: filters the files using RegEx.
+  
+//   filenameTo to rename the file saved:
+//     '%s'     is replaced by the name fo the file / the subject of the mail
+//     '%t'     is replaced by the file source: 'mail' or 'file'
+//     '%id'    is replaced by the 3 last caracters of the id of the mail
+//     '%from'  is replaced by the sender email
+//     '%to'    is replaced by the email recipient
+//   the simple quotes are required.
+//
+//   filenameReplaceFrom: if this texte is found in the filename, then it will be replaced by filenameReplaceTo
+//   filenameReplaceTo:   look for filenameReplaceFrom in the filename and replaces by this.
+```
 
 Example Configuration
 ---------------------
@@ -91,9 +109,7 @@ Example Configuration
   * rule.filenameReplaceTo =   "";
 ```
 
-Original Script and related Thanks
+Original Script
 ----------------------------------
 
 The original script is accessible here https://github.com/ahochsteger/gmail2gdrive
-I'd like to thank [Amit Agarwal](http://www.labnol.org/about/) who provided similar functionality in his article [Send your Gmail Attachments to Google Drive](http://www.labnol.org/internet/send-gmail-to-google-drive/21236/) from which Gmail2GDrive evolved to provide more flexibility.
-Also thanks to all [contributors](https://github.com/ahochsteger/gmail2gdrive/graphs/contributors) that extended GMail2GDrive with new functionality.
