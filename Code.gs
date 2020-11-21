@@ -107,15 +107,18 @@ function f_Gmail2GDrive_Int() {
     var search_exp_String = config_globalFilter_String + " " + rule_filter_String +  " -label:" + config_processedLabel_String;
     if (config_newerThan_String != "") { search_exp_String += " newer_than:" + config_newerThan_String; }
    
-     if( rule_active_Bolean === false){
+     if(rule_active_Bolean === false){
         Logger.log("Gmail2GDrive: Skipping rule: "+ search_exp_String);    
         continue;
      }
    
     // Get the array of threads corresponding to the search
     var threads_GmailApp_GmailThread_Array = GmailApp.search(search_exp_String);
+
     Logger.log("Gmail2GDrive: Processing rule: " + search_exp_String);
-    
+    Logger.log("https://mail.google.com/mail/u/0/#search/" + encodeURIComponent(search_exp_String));
+    Logger.log("Gmail2GDrive: Found " + threads_GmailApp_GmailThread_Array.length + " thread(s) of mail for this rule.");
+        
     // Process the threads   
     for (var thread_id_Int=0; thread_id_Int < threads_GmailApp_GmailThread_Array.length; thread_id_Int++) {
       
@@ -449,7 +452,7 @@ function f_prepare_log_file_Int(folder_path_String, islogfile_Bolean){
   var folder_DriveApp_Folder = f_folder_DriveApp_Folder(folder_id_String);
   var logfile_SpreadsheetApp_Spreadsheet = f_create_logfile_SpreadsheetApp_Spreadsheet(folder_DriveApp_Folder);
   var logfileId_String = logfile_SpreadsheetApp_Spreadsheet.getId()
-  Logger.log("prepare_log_file: prepare_log_file: logfile created - spreadsheet Id:" + logfileId_String);
+  Logger.log("prepare_log_file: logfile created - spreadsheet Id:" + logfileId_String);
   
   // Put the log file Spreasheet Id in Cache. After that, f_logfile_SpreadsheetApp_Spreadsheet can be called to retrieve the Spreadheet log file.
   CacheService.getScriptCache().put("logfileId_String", logfileId_String);
