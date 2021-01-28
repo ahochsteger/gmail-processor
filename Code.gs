@@ -91,6 +91,7 @@ function processMessage(message, rule, config) {
     }
     try {
       var folderName = Utilities.formatDate(messageDate, config.timezone, rule.folder.replace('%s', message.getSubject()));
+      folderName = folderName.replace(':', '');
       Logger.log("Saving to folder" + folderName);
       var folder = getOrCreateFolder(folderName);
       var file = folder.createFile(attachment);
