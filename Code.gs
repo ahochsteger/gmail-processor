@@ -96,12 +96,12 @@ function processMessage(message, rule, config) {
       var file = folder.createFile(attachment);
       var filename = file.getName();
       if (rule.filenameFrom && rule.filenameTo && rule.filenameFrom == file.getName()) {
-        filename = Utilities.formatDate(messageDate, config.timezone, rule.filenameTo.replace('%s',message.getSubject())) + filename;
+        filename = Utilities.formatDate(messageDate, config.timezone, rule.filenameTo.replace('%s',message.getSubject()));
         Logger.log("INFO:           Renaming matched file '" + file.getName() + "' -> '" + filename + "'");
         file.setName(filename);
       }
       else if (rule.filenameTo) {
-        filename = Utilities.formatDate(messageDate, config.timezone, rule.filenameTo.replace('%s',message.getSubject())) + filename;
+        filename = Utilities.formatDate(messageDate, config.timezone, rule.filenameTo.replace('%s',message.getSubject()));
         Logger.log("INFO:           Renaming '" + file.getName() + "' -> '" + filename + "'");
         file.setName(filename);
       }
