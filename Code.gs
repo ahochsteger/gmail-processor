@@ -2,6 +2,69 @@
 // https://github.com/ahochsteger/gmail2gdrive
 
 /**
+ * Main function that processes Gmail attachments and stores them in Google Drive.
+ * Use this as trigger function for periodic execution.
+ */
+function Gmail2GDrive() {
+  if (!GmailApp) return; // Skip script execution if GMail is currently not available (yes this happens from time to time and triggers spam emails!)
+  var config = getGmail2GDriveConfig();
+  var label = getOrCreateLabel(config.processedLabel);
+  var end, start, runTime;
+  start = new Date(); // Start timer
+
+  Logger.log("INFO: Starting mail attachment processing.");
+  if (config.globalFilter===undefined) {
+    config.globalFilter = "has:attachment -in:trash -in:drafts -in:spam";
+  }
+
+  // Iterate over all rules:
+  for (var ruleIdx=0; ruleIdx<config.rules.length; ruleIdx++) {
+    var rule = config.rules[ruleIdx];
+    var gSearchExp  = config.globalFilter + " " + rule.filter + " -label:" + config.processedLabel;
+    if (config.newerThan != "") {
+      gSearchExp += " newer_than:" + config.newerThan;
+    }
+    var doArchive = rule.archive == true;
+    var doPDF = rule.saveThreadPDF == true;
+
+    // Process all threads matching the search expression:
+    var threads = GmailApp.search(gSearchExp);
+    Logger.log("INFO:   Processing rule: "+gSearchExp);
+    for (var threadIdx=0; threadIdx<threads.length; threadIdx++) {
+      var thread = threads[threadIdx];
+      end = new Date();
+      runTime = (end.getTime() - start.getTime())/1000;
+      Logger.log("INFO:     Processing thread: "+thread.getFirstMessageSubject() + " (runtime: " + runTime + "s/" + config.maxRuntime + "s)");
+      if (runTime >= config.maxRuntime) {
+        Logger.log("WARNING: Self terminating script after " + runTime + "s");
+        return;
+      }
+
+      // Process all messages of a thread:
+      var messages = thread.getMessages();
+      for (var msgIdx=0; msgIdx<messages.length; msgIdx++) {
+        var message = messages[msgIdx];
+        processMessage(message, rule, config);
+      }
+      if (doPDF) { // Generate a PDF document of a thread:
+        processThreadToPdf(thread, rule);
+      }
+
+      // Mark a thread as processed:
+      thread.addLabel(label);
+
+      if (doArchive) { // Archive a thread if required
+        Logger.log("INFO:     Archiving thread '" + thread.getFirstMessageSubject() + "' ...");
+        thread.moveToArchive();
+      }
+    }
+  }
+  end = new Date(); // Stop timer
+  runTime = (end.getTime() - start.getTime())/1000;
+  Logger.log("INFO: Finished mail attachment processing after " + runTime + "s");
+}
+
+/**
  * Returns the label with the given name or creates it if not existing.
  */
 function getOrCreateLabel(labelName) {
@@ -144,67 +207,4 @@ function processThreadToPdf(thread, rule) {
   var blob = Utilities.newBlob(html, 'text/html');
   var pdf = folder.createFile(blob.getAs('application/pdf')).setName(thread.getFirstMessageSubject() + ".pdf");
   return pdf;
-}
-
-/**
- * Main function that processes Gmail attachments and stores them in Google Drive.
- * Use this as trigger function for periodic execution.
- */
-function Gmail2GDrive() {
-  if (!GmailApp) return; // Skip script execution if GMail is currently not available (yes this happens from time to time and triggers spam emails!)
-  var config = getGmail2GDriveConfig();
-  var label = getOrCreateLabel(config.processedLabel);
-  var end, start, runTime;
-  start = new Date(); // Start timer
-
-  Logger.log("INFO: Starting mail attachment processing.");
-  if (config.globalFilter===undefined) {
-    config.globalFilter = "has:attachment -in:trash -in:drafts -in:spam";
-  }
-
-  // Iterate over all rules:
-  for (var ruleIdx=0; ruleIdx<config.rules.length; ruleIdx++) {
-    var rule = config.rules[ruleIdx];
-    var gSearchExp  = config.globalFilter + " " + rule.filter + " -label:" + config.processedLabel;
-    if (config.newerThan != "") {
-      gSearchExp += " newer_than:" + config.newerThan;
-    }
-    var doArchive = rule.archive == true;
-    var doPDF = rule.saveThreadPDF == true;
-
-    // Process all threads matching the search expression:
-    var threads = GmailApp.search(gSearchExp);
-    Logger.log("INFO:   Processing rule: "+gSearchExp);
-    for (var threadIdx=0; threadIdx<threads.length; threadIdx++) {
-      var thread = threads[threadIdx];
-      end = new Date();
-      runTime = (end.getTime() - start.getTime())/1000;
-      Logger.log("INFO:     Processing thread: "+thread.getFirstMessageSubject() + " (runtime: " + runTime + "s/" + config.maxRuntime + "s)");
-      if (runTime >= config.maxRuntime) {
-        Logger.log("WARNING: Self terminating script after " + runTime + "s");
-        return;
-      }
-
-      // Process all messages of a thread:
-      var messages = thread.getMessages();
-      for (var msgIdx=0; msgIdx<messages.length; msgIdx++) {
-        var message = messages[msgIdx];
-        processMessage(message, rule, config);
-      }
-      if (doPDF) { // Generate a PDF document of a thread:
-        processThreadToPdf(thread, rule);
-      }
-
-      // Mark a thread as processed:
-      thread.addLabel(label);
-
-      if (doArchive) { // Archive a thread if required
-        Logger.log("INFO:     Archiving thread '" + thread.getFirstMessageSubject() + "' ...");
-        thread.moveToArchive();
-      }
-    }
-  }
-  end = new Date(); // Stop timer
-  runTime = (end.getTime() - start.getTime())/1000;
-  Logger.log("INFO: Finished mail attachment processing after " + runTime + "s");
 }
