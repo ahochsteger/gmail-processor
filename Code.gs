@@ -90,7 +90,10 @@ function processMessage(message, rule, config) {
       continue;
     }
     try {
-      var folder = getOrCreateFolder(Utilities.formatDate(messageDate, config.timezone, rule.folder));
+      var folderName = Utilities.formatDate(messageDate, config.timezone, rule.folder.replace('%s', message.getSubject()));
+      folderName = folderName.replace(':', '');
+      Logger.log("Saving to folder" + folderName);
+      var folder = getOrCreateFolder(folderName);
       var file = folder.createFile(attachment);
       var filename = file.getName();
       if (rule.filenameFrom && rule.filenameTo && rule.filenameFrom == file.getName()) {
