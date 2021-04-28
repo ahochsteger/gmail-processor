@@ -53,17 +53,27 @@ Global Configuration
 Update the file Config.gs accordingly.
 
 ```javascript
-// Global filter (see <https://support.google.com/mail/answer/7190?hl=en> for available search operators)
-// Sleep time in milli seconds between processed messages:
-// Maximum script runtime in seconds (google scripts will be killed after 5 minutes):
-// Max length name of file
-// Timezone
-// Gmail label for processed threads (will be created, if not existing):
-// Only process message newer than (leave empty for no restriction; use d, m and y for day, month and year):
-// Should a log file be created ?
-// Path of the log gile folder.
-// Fixed name for the logfile (or it will include a timestamp in the name) - NOT IMPLEMENTED YET
-// Make filename computer filesystem accepted (not required if the file will always stay on Google Drive)
+//   active             skip the rule if false
+//   filter             gmail filter
+//   maxmailsinThread   Only the threads of messages with less or even messages as maxmailsinThread will be treated 
+//                      Enter 1 to filter out all threads with at least one reply or a forward. Enter 0 for no limit
+//   folder             is the folder name in the Google Drive where the files will be saved. Surrounded by single quotes
+//   saveThreadPDF      save the thread email as a pdf (google drive), but you can decide to save attahments only
+//   archive            archive the mail (gmail)
+
+//   filenameFrom       only stores attachements of those name
+//   filenameFromRegexp filters the files using RegEx
+  
+//   filenameTo         rename the file saved:
+//     '%s'     is replaced by the name fo the file / the subject of the mail
+//     '%t'     is replaced by the file source: 'mail' or 'file'
+//     '%id'    is replaced by the 3 last caracters of the id of the mail
+//     '%from'  is replaced by the sender email
+//     '%to'    is replaced by the email recipient
+//   the simple quotes are required
+
+//   filenameReplaceFrom: if this text is found in the filename, then it will be replaced by filenameReplaceTo
+//   filenameReplaceTo:   look for filenameReplaceFrom in the filename and replaces by this
 ```
 
 Rule Configuration
@@ -98,18 +108,17 @@ Example Configuration
 ---------------------
 
 ```javascript
-  * rule.filter =              "subject:'sujet 1'"
-  * rule.folder =              "GM2GD"
-  * rule.saveThreadPDF =       true
-  * rule.archive =             true
-  * rule.filenameFrom =        ""
-  * rule.filenameFromRegexp =  ""
-  * rule.filenameTo =          "yyyyMMdd-'%id'-'%t'-'%s'"
-  * rule.filenameReplaceFrom = "Automatic";
-  * rule.filenameReplaceTo =   "";
+rule.active =              true;
+rule.filter =              "from:me to:me";
+rule.maxmailsinThread =    1;
+//rule.folder must be surroudned by single quotes
+rule.folder =              "'MY FOLDER/Documents/GM2GD/ToDo'";
+rule.saveThreadPDF =       true;
+rule.archive =             true;
+rule.filenameFrom =        "";
+rule.filenameFromRegexp =  "";
+rule.filenameTo =          "yyyyMMdd-'%id'-'%t'-'%s'";
+rule.filenameReplaceFrom = "";
+rule.filenameReplaceTo =   "";
 ```
 
-Original Script
-----------------------------------
-
-The original script is accessible here https://github.com/ahochsteger/gmail2gdrive
