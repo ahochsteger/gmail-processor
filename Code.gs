@@ -89,12 +89,14 @@ function f_Gmail2GDrive_Int() {
 
   // Iterate over all rules
   for (var rule_id_Int=0; rule_id_Int < config.rules.length; rule_id_Int++) {
-    
+
+    // Check the config
     var rule_Obj = config.rules[rule_id_Int];
     rule_Obj = f_check_rule_Obj(rule_Obj);
 
     var rule_active_Bolean              = rule_Obj.active;
     var rule_filter_String              = rule_Obj.filter;
+    var rule_maxmailsinThread_Int       = rule_Obj.maxmailsinThread;
     var rule_folder_String              = rule_Obj.folder;
     var rule_saveThreadPDF_Bolean       = rule_Obj.saveThreadPDF;
     var rule_archive_Bolean             = rule_Obj.archive;
@@ -119,7 +121,7 @@ function f_Gmail2GDrive_Int() {
     Logger.log("https://mail.google.com/mail/u/0/#search/" + encodeURIComponent(search_exp_String));
     Logger.log("Gmail2GDrive: Found " + threads_GmailApp_GmailThread_Array.length + " thread(s) of mail for this rule.");
         
-    // Process the threads   
+    // Process the thread of threads   
     for (var thread_id_Int=0; thread_id_Int < threads_GmailApp_GmailThread_Array.length; thread_id_Int++) {
       
       var thread_GmailApp_GmailThread = threads_GmailApp_GmailThread_Array[thread_id_Int];
@@ -132,10 +134,19 @@ function f_Gmail2GDrive_Int() {
         Logger.log("Gmail2GDrive: WARNING: Self terminating script after " + runTime_Int + "s");
         return 0;
       }
-
-      var messages_GmailApp_GmailMessage_Array = thread_GmailApp_GmailThread.getMessages();
       
-      // Process all messages of a thread
+      var messages_GmailApp_GmailMessage_Array = thread_GmailApp_GmailThread.getMessages();
+
+      // Don't process the thread if the number of messages in it is higher than the filter rule "maxmailsinThread"
+      var Thisrule_maxmailsinThread_Int = rule_maxmailsinThread_Int;  
+      if ( Thisrule_maxmailsinThread_Int === 0 ) { Thisrule_maxmailsinThread_Int = messages_GmailApp_GmailMessage_Array.length + 1 }
+
+      if ( messages_GmailApp_GmailMessage_Array.length > Thisrule_maxmailsinThread_Int ) {
+        Logger.log("Gmail2GDrive: Skipping thread: the number of mails into it is higher than the filter rule maxmailsinThread");            
+        continue;
+      }    
+
+      // Process all messages of a thread (in other words: process a thread of messages, or process a thread)  
       for (var msg_id_Int=0; msg_id_Int < messages_GmailApp_GmailMessage_Array.length; msg_id_Int++) {
         
         var message_GmailApp_GmailMessage = messages_GmailApp_GmailMessage_Array[msg_id_Int];
@@ -793,4 +804,3 @@ function f_removeDiacritics(str) {
 // -----------------------------------------------------------------------------
 // END: functions to improve filename.
 // -----------------------------------------------------------------------------
-
