@@ -391,9 +391,9 @@ function f_processThreadToHtml(thread) {
           html += "From: " + message.getFrom() + "<br />\n";
           html += "To: " + message.getTo() + "<br />\n";
           html += "Date: " + message.getDate() + "<br />\n";
-          html += "Subject: " + message.getSubject() + "<br />\n";
+          html += "Subject: <a href=https://mail.google.com/mail/u/0/#inbox/" + message.getId() + ">" + message.getSubject() + "</a><br />\n";
           html += "<hr />\n";
-          html += message.getBody() + "\n";
+          html +=  + "\n";
           html += "<hr />\n";
          }        
       }
@@ -804,3 +804,4 @@ function f_removeDiacritics(str) {
 // -----------------------------------------------------------------------------
 // END: functions to improve filename.
 // -----------------------------------------------------------------------------
+
