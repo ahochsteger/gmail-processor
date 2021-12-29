@@ -5,7 +5,7 @@
 function getGmail2GDriveConfig() {
   return {
     // Global filter
-    "globalFilter": "-in:trash -in:drafts -in:spam",
+    "globalFilter": "-in:trash -in:drafts -in:spam has:attachment",
     // Gmail label for processed threads (will be created, if not existing):
     "processedLabel": "to-gdrive/processed",
     // Sleep time in milli seconds between processed messages:
@@ -13,55 +13,35 @@ function getGmail2GDriveConfig() {
     // Maximum script runtime in seconds (google scripts will be killed after 5 minutes):
     "maxRuntime": 280,
     // Only process message newer than (leave empty for no restriction; use d, m and y for day, month and year):
-    "newerThan": "1m",
+    "newerThan": "2m",
     // Timezone for date/time operations:
     "timezone": "GMT",
     // Processing rules:
     "rules": [
-      { // Store all attachments sent to my.name+scans@gmail.com to the folder "Scans"
-        "filter": "has:attachment to:my.name+scans@gmail.com",
-        "folder": "'Scans'-yyyy-MM-dd"
-      },
-      { // Store all attachments from example1@example.com to the folder "Examples/example1"
-        "filter": "has:attachment from:example1@example.com",
-        "folder": "'Examples/example1'"
-      },
-      { // Store all pdf attachments from example2@example.com to the folder "Examples/example2"
-        "filter": "has:attachment from:example2@example.com",
-        "folder": "'Examples/example2'",
-        "filenameFromRegexp": ".*\.pdf$"
-      },
-      { // Store all attachments from example3a@example.com OR from:example3b@example.com
-        // to the folder "Examples/example3ab" while renaming all attachments to the pattern
-        // defined in 'filenameTo' and archive the thread.
-        "filter": "has:attachment (from:example3a@example.com OR from:example3b@example.com)",
-        "folder": "'Examples/example3ab'",
-        "filenameTo": "'file-'yyyy-MM-dd-'%s.txt'",
-        "archive": true
-      },
-      {
-        // Store threads marked with label "PDF" in the folder "PDF Emails" als PDF document.
-        "filter": "label:PDF",
-        "saveThreadPDF": true,
-        "folder": "PDF Emails"
-      },
-      { // Store all attachments named "file.txt" from example4@example.com to the
-        // folder "Examples/example4" and rename the attachment to the pattern
-        // defined in 'filenameTo' and archive the thread.
-        "filter": "has:attachment from:example4@example.com",
-        "folder": "'Examples/example4'",
-        "filenameFrom": "file.txt",
-        "filenameTo": "'file-'yyyy-MM-dd-'%s.txt'"
-      },
-      { // Store all attachments named "file.txt" from example5@example.com to the
-        // folder "Examples/example5" and rename the attachment to the pattern
-        // defined in 'filenameTo' and archive the thread. 
-        // In this case file-1.txt, file-2.txt and so on. 
-        "filter": "has:attachment from:example5@example.com",
-        "folder": "'Examples/example5'",
-        "filenameFrom": "file.txt",
-        "filenameTo": "'file-%d.txt'"
-      }
+      { 
+        "filter": "receipt from:Noreply@car2go.co.il",
+        "folder": "'Expenses/Current'",
+        "filenameFrom": "*.pdf",
+        "filenameTo": "'car2go-%d.pdf'"
+      }, 
+      { 
+        "filter": "receipt from:billing@zoom.us",
+        "folder": "'Expenses/Current'",
+        "filenameFrom": "*.pdf",
+        "filenameTo": "'zoom-%d.pdf'"
+      }, 
+      { 
+        "filter": "receipt",
+        "folder": "'Expenses/Current'",
+        "filenameFrom": "*.pdf",
+        "filenameTo": "'other-%d-%s.pdf'"
+      }, 
+      { 
+        "filter": "receipt",
+        "folder": "'Expenses/Current'",
+        "filenameFrom": "*.jpg",
+        "filenameTo": "'other-%d-%s.jpg'"
+      }, 
     ]
   };
 }
