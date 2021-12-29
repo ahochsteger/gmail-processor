@@ -52,6 +52,15 @@ function getGmail2GDriveConfig() {
         "folder": "'Examples/example4'",
         "filenameFrom": "file.txt",
         "filenameTo": "'file-'yyyy-MM-dd-'%s.txt'"
+      },
+      { // Store all attachments named "file.txt" from example4@example.com to the
+        // folder "Examples/example4" and rename the attachment to the pattern
+        // defined in 'filenameTo' and archive the thread. 
+        // In this case file-1.txt, file-2.txt and so on. 
+        "filter": "has:attachment from:example5@example.com",
+        "folder": "'Examples/example5'",
+        "filenameFrom": "file.txt",
+        "filenameTo": "'file-%d.txt'"
       }
     ]
   };
