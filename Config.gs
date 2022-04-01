@@ -26,6 +26,11 @@ function getGmail2GDriveConfig() {
         "filter": "has:attachment from:example1@example.com",
         "folder": "'Examples/example1'"
       },
+      { // Store all attachments sent to my.name+scans@gmail.com to the folder "Scans" with extend received dates
+        "filter": "has:attachment to:my.name+scans@gmail.com",
+        "folder": "'Scans'-yyyy-MM-dd",
+        "newerThan": "3m" // received in the last 3 months (applied for this rule only)
+      },
       { // Store all pdf attachments from example2@example.com to the folder "Examples/example2"
         "filter": "has:attachment from:example2@example.com",
         "folder": "'Examples/example2'",

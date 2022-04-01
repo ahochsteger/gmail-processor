@@ -21,9 +21,12 @@ function Gmail2GDrive() {
   for (var ruleIdx=0; ruleIdx<config.rules.length; ruleIdx++) {
     var rule = config.rules[ruleIdx];
     var gSearchExp  = config.globalFilter + " " + rule.filter + " -label:" + config.processedLabel;
-    if (config.newerThan != "") {
-      gSearchExp += " newer_than:" + config.newerThan;
+    var newerThan = rule.newerThan || config.newerThan;
+
+    if (newerThan != "") {
+      gSearchExp += " newer_than:" + newerThan;
     }
+    
     var doArchive = rule.archive == true;
     var doPDF = rule.saveThreadPDF == true;
 
