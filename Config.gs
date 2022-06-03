@@ -34,6 +34,9 @@ function getGmail2GDriveConfig() {
       { // Store all attachments from example3a@example.com OR from:example3b@example.com
         // to the folder "Examples/example3ab" while renaming all attachments to the pattern
         // defined in 'filenameTo' and archive the thread.
+        // filenameTo supports the following printf style substitutions:
+        // %s - The subject of the message/thread
+        // %o - The original filename of the attachement
         "filter": "has:attachment (from:example3a@example.com OR from:example3b@example.com)",
         "folder": "'Examples/example3ab'",
         "filenameTo": "'file-'yyyy-MM-dd-'%s.txt'",
@@ -45,9 +48,23 @@ function getGmail2GDriveConfig() {
         "saveThreadPDF": true,
         "folder": "PDF Emails"
       },
+      {
+        // Store threads marked with label "PDF" in the folder "PDF Emails" als PDF document.
+        // while renaming the PDFs to the pattern defined in 'filenameTo'.
+        // filenameTo supports the following printf style substitutions:
+        // %s - The subject of the message/thread
+        // NOTE: .pdf will automatically be added to the file name
+        "filter": "label:PDF",
+        "saveThreadPDF": true,
+        "folder": "PDF Emails",
+        "filenameTo": "'file-'yyyy-MM-dd-'%s'"
+      },
       { // Store all attachments named "file.txt" from example4@example.com to the
         // folder "Examples/example4" and rename the attachment to the pattern
         // defined in 'filenameTo' and archive the thread.
+        // filenameTo supports the following printf style substitutions:
+        // %s - The subject of the message/thread
+        // %o - The original filename of the attachement
         "filter": "has:attachment from:example4@example.com",
         "folder": "'Examples/example4'",
         "filenameFrom": "file.txt",
