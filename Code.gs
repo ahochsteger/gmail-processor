@@ -47,7 +47,7 @@ function Gmail2GDrive() {
         processMessage(message, rule, config);
       }
       if (doPDF) { // Generate a PDF document of a thread:
-        processThreadToPdf(thread, rule);
+        processThreadToPdf(thread, rule,config);
       }
 
       // Mark a thread as processed:
@@ -160,12 +160,12 @@ function processMessage(message, rule, config) {
       var file = folder.createFile(attachment);
       var filename = file.getName();
       if (rule.filenameFrom && rule.filenameTo && rule.filenameFrom == file.getName()) {
-        filename = Utilities.formatDate(messageDate, config.timezone, rule.filenameTo.replace('%s',message.getSubject()));
+        filename = Utilities.formatDate(messageDate, config.timezone, rule.filenameTo.replace('%s',message.getSubject()).replace('%o', filename));
         Logger.log("INFO:           Renaming matched file '" + file.getName() + "' -> '" + filename + "'");
         file.setName(filename);
       }
       else if (rule.filenameTo) {
-        filename = Utilities.formatDate(messageDate, config.timezone, rule.filenameTo.replace('%s',message.getSubject()));
+        filename = Utilities.formatDate(messageDate, config.timezone, rule.filenameTo.replace('%s',message.getSubject()).replace('%o', filename));
         Logger.log("INFO:           Renaming '" + file.getName() + "' -> '" + filename + "'");
         file.setName(filename);
       }
@@ -200,11 +200,20 @@ function processThreadToHtml(thread) {
 /**
 * Generate a PDF document for the whole thread using HTML from .
  */
-function processThreadToPdf(thread, rule) {
+function processThreadToPdf(thread, rule, config) {
   Logger.log("INFO: Saving PDF copy of thread '" + thread.getFirstMessageSubject() + "'");
   var folder = getOrCreateFolder(rule.folder);
   var html = processThreadToHtml(thread);
   var blob = Utilities.newBlob(html, 'text/html');
-  var pdf = folder.createFile(blob.getAs('application/pdf')).setName(thread.getFirstMessageSubject() + ".pdf");
+  var pdf;
+  if (rule.filenameTo) {
+    filename = Utilities.formatDate(thread.getMessages()[0].getDate(), config.timezone, rule.filenameTo.replace('%s',thread.getFirstMessageSubject()));
+    Logger.log("INFO:           Renaming '" + thread.getFirstMessageSubject() + "' -> '" + filename + "'");
+    pdf = folder.createFile(blob.getAs('application/pdf')).setName(filename + ".pdf");
+  } else {
+    pdf = folder.createFile(blob.getAs('application/pdf')).setName(thread.getFirstMessageSubject() + ".pdf");
+  }
+  
   return pdf;
 }
+
