@@ -1,29 +1,19 @@
-Gmail2GDrive
-============
+# Gmail2GDrive
 
 Gmail2GDrive is a Google Apps Script which automatically stores and sorts Gmail attachments into Google Drive folders, and can also save the thread as a PDF file.
 
 It does so by defining a list of rules which consist of Gmail search filters and Google Drive destination folders.
 This way the attachments of periodic emails can be automatically organized in folders without the need to install and run anything on the client.
 
-Features
---------
+## Features
 
-* Automatically sorts your attachments in the background
-* Filter for relevant emails
-* Specify the destination folder
-* Rename attachments (using date format strings and email subject as filenames)
-* Save the thread as a PDF File
+- Automatically sorts your attachments in the background
+- Filter for relevant emails
+- Specify the destination folder
+- Rename attachments (using date format strings and email subject as filenames)
+- Save the thread as a PDF File
 
-Limitations
------------
-
-Gmail2GDrive currently has the following limitations:
-
-* **Processing is done on a per-thread basis with a single email message per thread.** This is so because marking already processed emails is done using labels and GMail only alows to attach labels to a whole thread not to single email messages. For typical usage scenarios this is not really a problem but it may be if you want to process emails that are grouped by GMail into a thread (e.g. forum messages).
-
-Setup
------
+## Setup
 
 1. Open [Google Apps Script](https://script.google.com/).
 2. Create an empty project.
@@ -34,41 +24,47 @@ Setup
 7. Test the script by manually executing the function 'Gmail2GDrive'.
 8. Create a time based trigger which periodically executes 'Gmail2GDrive' (e.g. once per day) to automatically organize your Gmail attachments within Google Drive.
 
-Global Configuration
---------------------
+## Global Configuration
 
-* globalFilter: Global filter expression (see <https://support.google.com/mail/answer/7190?hl=en> for avialable search operators)
-  * Example: "globalFilter": "has:attachment -in:trash -in:drafts -in:spam"
-* processedLabel: The GMail label to mark processed threads (will be created, if not existing)
-  * Example: "processedLabel": "to-gdrive/processed"
-* sleepTime: Sleep time in milliseconds between processed messages
-  * Example: "sleepTime": 100
-* maxRuntime: Maximum script runtime in seconds (Google Scripts will be killed after 5 minutes)
-  * Example: "maxRuntime": 280
-* newerThan: Only process message newer than (leave empty for no restriction; use d, m and y for day, month and year)
-  * Example: "newerThan": "1m"
-* timezone: Timezone for date/time operations
-  * Example: "timezone": "GMT"
-* rules: List of rules to be processed
-  * Example: "rules": [ {..rule1..}, {..rule2..}, ... ]
+- globalFilter: Global filter expression (see <https://support.google.com/mail/answer/7190?hl=en> for avialable search operators)
+  - Example: "globalFilter": "has:attachment -in:trash -in:drafts -in:spam"
+- processedLabel: The GMail label to mark processed threads (will be created, if not existing)
+  - Example: "processedLabel": "to-gdrive/processed"
+- sleepTime: Sleep time in milliseconds between processed messages
+  - Example: "sleepTime": 100
+- maxRuntime: Maximum script runtime in seconds (Google Scripts will be killed after 5 minutes)
+  - Example: "maxRuntime": 280
+- newerThan: Only process message newer than (leave empty for no restriction; use d, m and y for day, month and year)
+  - Example: "newerThan": "1m"
+- timezone: Timezone for date/time operations
+  - Example: "timezone": "GMT"
+- rules: List of rules to be processed
+  - Example: "rules": [ {..rule1..}, {..rule2..}, ... ]
 
-Rule Configuration
-------------------
+## Rule Configuration (Version 1)
 
 A rule supports the following parameters documentation:
 
-* filter (String, mandatory): a typical gmail search expression (see <http://support.google.com/mail/bin/answer.py?hl=en&answer=7190>)
-* folder (String, mandatory): a path to an existing Google Drive folder (will be created, if not existing)
-* archive (boolean, optional): Should the gmail thread be archived after processing? (default: false)
-* filenameFrom (String, optional): The attachment filename that should be renamed when stored in Google Drive
-* filenameFromRegexp (String, optional): A regular expression to specify only relevant attachments
-* filenameTo (String, optional): The pattern for the new filename of the attachment. If 'filenameFrom' is not given then this will be the new filename for all attachments.
-  * You can use '%s' to insert the email subject and date format patterns like 'yyyy' for year, 'MM' for month and 'dd' for day as pattern in the filename.
-  * See <https://developers.google.com/apps-script/reference/utilities/utilities#formatDate(Date,String,String)> for more information on the possible date format strings.
-* saveThreadPDF (boolean, optional): Should the thread be saved as a PDF? (default: false)
+- filter (String, mandatory): a typical gmail search expression (see <http://support.google.com/mail/bin/answer.py?hl=en&answer=7190>)
+- folder (String, mandatory): a path to an existing Google Drive folder (will be created, if not existing)
+- archive (boolean, optional): Should the gmail thread be archived after processing? (default: false)
+- filenameFrom (String, optional): The attachment filename that should be renamed when stored in Google Drive
+- filenameFromRegexp (String, optional): A regular expression to specify only relevant attachments
+- filenameTo (String, optional): The pattern for the new filename of the attachment. If 'filenameFrom' is not given then this will be the new filename for all attachments.
+  - You can use '%s' to insert the email subject and date format patterns like 'yyyy' for year, 'MM' for month and 'dd' for day as pattern in the filename.
+  - See <https://developers.google.com/apps-script/reference/utilities/utilities#formatDate(Date,String,String)> for more information on the possible date format strings.
+- saveThreadPDF (boolean, optional): Should the thread be saved as a PDF? (default: false)
 
-Example Configuration
----------------------
+## Processing Commands
+
+### Thread Commands
+
+| V1 Config             | Command                    | Arguments                  | Notes |
+| --------------------- | -------------------------- | -------------------------- | ----- |
+| "archive": true       | thread.moveToArchive       | -                          |       |
+| "saveThreadPDF": true | thread.exportAsPdfToGDrive | location, conflictStrategy |       |
+
+## Example Configuration
 
 ```javascript
 /**
@@ -78,79 +74,166 @@ Example Configuration
 function getGmail2GDriveConfig() {
   return {
     // Global filter
-    "globalFilter": "has:attachment -in:trash -in:drafts -in:spam",
+    globalFilter: "has:attachment -in:trash -in:drafts -in:spam",
     // Gmail label for processed threads (will be created, if not existing):
-    "processedLabel": "to-gdrive/processed",
+    processedLabel: "to-gdrive/processed",
     // Sleep time in milli seconds between processed messages:
-    "sleepTime": 100,
+    sleepTime: 100,
     // Maximum script runtime in seconds (google scripts will be killed after 5 minutes):
-    "maxRuntime": 280,
+    maxRuntime: 280,
     // Only process message newer than (leave empty for no restriction; use d, m and y for day, month and year):
-    "newerThan": "1m",
+    newerThan: "1m",
     // Timezone for date/time operations:
-    "timezone": "GMT",
+    timezone: "GMT",
     // Processing rules:
-    "rules": [
-      { // Store all attachments sent to my.name+scans@gmail.com to the folder "Scans"
-        "filter": "to:my.name+scans@gmail.com",
-        "folder": "'Scans'-yyyy-MM-dd"
+    rules: [
+      {
+        // Store all attachments sent to my.name+scans@gmail.com to the folder "Scans"
+        filter: "to:my.name+scans@gmail.com",
+        folder: "'Scans'-yyyy-MM-dd",
       },
-      { // Store all attachments from example1@example.com to the folder "Examples/example1"
-        "filter": "from:example1@example.com",
-        "folder": "'Examples/example1'"
+      {
+        // Store all attachments from example1@example.com to the folder "Examples/example1"
+        filter: "from:example1@example.com",
+        folder: "'Examples/example1'",
       },
-      { // Store all pdf attachments from example2@example.com to the folder "Examples/example2"
-        "filter": "from:example2@example.com",
-        "folder": "'Examples/example2'",
-        "filenameFromRegexp": ".*\.pdf$"
+      {
+        // Store all pdf attachments from example2@example.com to the folder "Examples/example2"
+        filter: "from:example2@example.com",
+        folder: "'Examples/example2'",
+        filenameFromRegexp: ".*.pdf$",
       },
-      { // Store all attachments from example3a@example.com OR from:example3b@example.com
+      {
+        // Store all attachments from example3a@example.com OR from:example3b@example.com
         // to the folder "Examples/example3ab" while renaming all attachments to the pattern
         // defined in 'filenameTo' and archive the thread.
-        "filter": "(from:example3a@example.com OR from:example3b@example.com)",
-        "folder": "'Examples/example3ab'",
-        "filenameTo": "'file-'yyyy-MM-dd-'%s.txt'",
-        "archive": true
+        filter: "(from:example3a@example.com OR from:example3b@example.com)",
+        folder: "'Examples/example3ab'",
+        filenameTo: "'file-'yyyy-MM-dd-'%s.txt'",
+        archive: true,
       },
       {
         // Store threads marked with label "PDF" in the folder "PDF Emails" als PDF document.
-        "filter": "label:PDF",
-        "saveThreadPDF": true,
-        "folder": "PDF Emails"
+        filter: "label:PDF",
+        saveThreadPDF: true,
+        folder: "PDF Emails",
       },
-      { // Store all attachments named "file.txt" from example4@example.com to the
+      {
+        // Store all attachments named "file.txt" from example4@example.com to the
         // folder "Examples/example4" and rename the attachment to the pattern
         // defined in 'filenameTo' and archive the thread.
-        "filter": "from:example4@example.com",
-        "folder": "'Examples/example4'",
-        "filenameFrom": "file.txt",
-        "filenameTo": "'file-'yyyy-MM-dd-'%s.txt'"
-      }
-    ]
-  };
+        filter: "from:example4@example.com",
+        folder: "'Examples/example4'",
+        filenameFrom: "file.txt",
+        filenameTo: "'file-'yyyy-MM-dd-'%s.txt'",
+      },
+    ],
+  }
 }
 ```
 
-Processing overview
--------------------
+## Migrating from Gmail2GDrive 1.x
 
-The following diagramm gives a brief overview about how the processing actually works:
+The configuration of version 1 just provided a single use-case: storing Gmail attachments to Google Drive which limited the extension to additional use-cases.
 
-![Gmail2GDrive processing overview](gmail2gdrive.png)
+The config format of version 2 addresses this by providing a list of commands and multiple rules (for threads, messages and attachments) which should give enough flexibility for various use-cases.
 
-NOTE: processRule(), processThread() and processAttachment() are modelled as separate functions for better visibility which is not visible as separate functions in Code.gs
+### Version 1 Config
 
-Feedback and contributions
---------------------------
+```json
+{
+  "folder": "'Scans'-yyyy-MM-dd",
+  "filenameFrom": "file.txt",
+  "filenameTo": "'file-'yyyy-MM-dd-'%s.txt'"
+}
+```
+
+The supported date format provided by Google Apps Script Utilities is documented here:
+
+- <https://developers.google.com/apps-script/reference/utilities/utilities#formatdatedate,-timezone,-format>
+- <https://docs.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html>
+
+### Version 2 Config
+
+```json
+{
+  "commands": [
+    {
+      "name": "attachment.storeToGDrive",
+      "args": {
+        "location": "Scans-${message.date:dateformat:yyyy-mm-dd}/file-${message.date:dateformat:yyyy-mm-dd}-${message.subject}"
+      }
+    }
+  ]
+}
+```
+
+Note that the date format has changed in version 2 since it's based on the `dateformat` npm package.
+Esp. take care that the casing has changed for month and minute!
+It is documented here:
+
+- <https://www.npmjs.com/package/dateformat>
+
+As a fallback the old format is still supported and can be auto-detected if it finds a single quote in the format string.
+It can also be configured in the settings, if auto-detection does not work as expected.
+Make sure though, to migrate to the new format as it is much more flexible and easier to read as it uses meaningful names (e.g. `${message.subject}` instead of `%s`).
+
+## Development
+
+The best way to do development for Google Apps Script is to use clasp:
+<https://github.com/google/clasp>
+
+This way you can use your local JavaScript development tools with easy deployment to your Google Apps Script project.
+
+NOTE: On some systems the clasp command is called gclasp.
+
+```bash
+# Perform all clasp commands within the scripts directory:
+cd scripts
+
+# Login to your google account and store the scriptId in the file .clasp:
+clasp login
+
+# Pull files from Apps Script project to your local workspace:
+clasp pull
+
+# Push files from the local workspace to the Apps Script project:
+clasp push
+```
+
+Unit tests should be written using the Simula Innovation fork of QUnit, which provides support for Google Apps Script:
+<https://github.com/simula-innovation/qunit/tree/gas/gas>
+
+See <https://github.com/qunitjs/qunit/issues/1392> for the request to include it into QUnit.
+
+To run the unit tests you have to follow these steps:
+
+- Setup QUnit for your Apps Script project as described in the section "Example Use in Google Apps Script" in the above link (only once)
+- Run the tests and view the test results by selecting "Publish > Deploy as web app" from Google Apps Script and click on the link at "Test web app for your latest code.".
+
+For a more local development experience [gas-local](https://github.com/mzagorny/gas-local) may be helpful.
+This way many Google Services can be mocked for running automated tests locally before pushing them with clasp.
+
+## Resources
+
+- Google Apps Script Development
+  - <https://github.com/google/clasp>
+- Google Apps Script with Babel and WebPack
+  - <https://github.com/labnol/apps-script-starter>
+  - <https://github.com/labnol/google-apps-script-awesome-list>
+  - <https://blog.gsmart.in/es6-and-npm-modules-in-google-apps-script/>
+  - <https://github.com/gsmart-in/AppsCurryStep1>
+- Google Apps Script with TypeScript
+  - <https://developers.google.com/apps-script/guides/typescript>
+  - <https://github.com/google/clasp/blob/master/docs/typescript.md>
+  - <https://github.com/grant/ts2gas>
+  - <https://blog.filippo.io/gmail-bot-with-apps-script-and-typescript/>
+
+## Feedback and contributions
 
 Feedback and contributions is well appreciated via [Github](https://github.com/ahochsteger/gmail2gdrive).
 
-In case you run into problems it may be helpful to provide logs as part of bug reports.
-The logs can be found in the Google Apps Script editor in the menu "View" ("Execution transcript" and "Logs").
-Take care to not include any sensible data in the public viewable issues wich may be part of the script logs.
+## Thanks
 
-Thanks
-------
-
-I'd like to thank [Amit Agarwal](http://www.labnol.org/about/) who provided similar functionality in his article [Send your Gmail Attachments to Google Drive](http://www.labnol.org/internet/send-gmail-to-google-drive/21236/) from which Gmail2GDrive evolved to provide more flexibility.
-Also thanks to all [contributors](https://github.com/ahochsteger/gmail2gdrive/graphs/contributors) that extended GMail2GDrive with new functionality.
+Thanks goes to [Amit Agarwal](http://www.labnol.org/about/) who provided similar functionality in his article [Send your Gmail Attachments to Google Drive](http://www.labnol.org/internet/send-gmail-to-google-drive/21236/) from which Gmail2GDrive evolved to provide more flexibility.
+Also thanks to many [contributors](https://github.com/ahochsteger/gmail2gdrive/graphs/contributors) that helped fixing bugs and extending GMail2GDrive with new functionality.
