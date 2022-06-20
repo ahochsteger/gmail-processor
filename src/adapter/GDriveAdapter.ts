@@ -1,5 +1,3 @@
-import { HybridLogger } from "../utils/HybridLogger"
-
 export enum ConflictStrategy {
   KEEP = "keep",
   SKIP = "skip",
@@ -8,7 +6,7 @@ export enum ConflictStrategy {
 }
 
 export class GDriveAdapter {
-  private logger: HybridLogger = new HybridLogger()
+  public logger: Console = console
 
   constructor(public driveApp: GoogleAppsScript.Drive.DriveApp) {}
 
@@ -34,7 +32,7 @@ export class GDriveAdapter {
       if (result.hasNext()) {
         folder = result.next()
       } else {
-        this.logger.log("ERROR: Folder '" + path + "' not found.")
+        this.logger.error("Folder '" + path + "' not found.")
         throw new Error("Folder '" + path + "' not found.")
       }
     }
@@ -69,8 +67,8 @@ export class GDriveAdapter {
       existingFiles.hasNext() &&
       conflictStrategy === ConflictStrategy.SKIP
     ) {
-      Logger.log(
-        "WARN:    Skipping existing file '" +
+      this.logger.warn(
+        "   Skipping existing file '" +
           location +
           "' (using conflict strategy 'SKIP')!",
       )
@@ -84,8 +82,8 @@ export class GDriveAdapter {
         const existingFile = existingFiles.next()
         const existingFileId = existingFile.getId()
         const removeStatus = this.driveApp.removeFile(existingFile)
-        Logger.log(
-          'WARN:    Existing file "' +
+        this.logger.warn(
+          '   Existing file "' +
             existingFile +
             '" (id:"' +
             existingFileId +

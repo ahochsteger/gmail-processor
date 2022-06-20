@@ -5,14 +5,15 @@ import { CommandExecutor } from "./CommandExecutor"
 import { ThreadAction } from "./ThreadAction"
 
 export class PDFActions implements ActionProvider, CommandExecutor {
+  logger: Console = console
   constructor(public gdriveApp: GoogleAppsScript.Drive.DriveApp) {}
 
   /**
    * Generate HTML code for one message of a thread.
    */
   public processThreadToHtml(thread: GoogleAppsScript.Gmail.GmailThread) {
-    Logger.log(
-      "INFO:   Generating HTML code of thread '" +
+    this.logger.info(
+      "  Generating HTML code of thread '" +
         thread.getFirstMessageSubject() +
         "'",
     )
@@ -38,8 +39,8 @@ export class PDFActions implements ActionProvider, CommandExecutor {
     location: string,
     conflictStrategy: ConflictStrategy,
   ) {
-    Logger.log(
-      "INFO: Saving PDF copy of thread '" +
+    this.logger.info(
+      "Saving PDF copy of thread '" +
         thread.getFirstMessageSubject() +
         "' to file +'" +
         location +

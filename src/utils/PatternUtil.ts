@@ -3,6 +3,8 @@ import { MessageRule } from "../config/MessageRule"
 import { ProcessingContext } from "../context/ProcessingContext"
 
 export class PatternUtil {
+  public static logger: Console = console
+
   public static escapeRegExp(s: string) {
     // tslint:disable-next-line: max-line-length
     // See https://stackoverflow.com/questions/3115150/how-to-escape-regular-expression-special-characters-using-javascript
@@ -84,7 +86,7 @@ export class PatternUtil {
       // tslint:disable-next-line: no-conditional-assignment
       while ((result = regex.exec(data)) !== null) {
         hasAtLeastOneMatch = true
-        // Logger.log("Matches: " + result.length);
+        this.logger.log("Matches: " + result.length)
         for (let i = 1; i < result.length; i++) {
           m.set(keyName + ".match." + i, result[i])
         }
@@ -187,7 +189,7 @@ export class PatternUtil {
         )
         if (messgageMatch == null) {
           m.set("message.matched", false)
-          Logger.log(
+          this.logger.info(
             "  Skipped message with id " +
               message.getId() +
               " because it did not match the regex rules ...",
@@ -219,7 +221,7 @@ export class PatternUtil {
           )
           if (attachmentMatch == null) {
             m.set("attachment.matched", false)
-            Logger.log(
+            this.logger.info(
               "  Skipped attachment with name '" +
                 attachment.getName() +
                 "' because it did not match the regex rules ...",

@@ -10,7 +10,7 @@ export function runGmailProcessorWithConfig(settings: any, rules: any[]) {
   const gasContext: GoogleAppsScriptContext = new GoogleAppsScriptContext(
     GmailApp,
     DriveApp,
-    Logger,
+    console,
     Utilities,
   )
   const actionProvider = new AllActions(gasContext, config)

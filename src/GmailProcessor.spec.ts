@@ -122,16 +122,16 @@ const threadRules = [
 ]
 
 // Google Apps Script Dependencies:
+const mockedConsole = mock<Console>()
 const mockedGmailApp = mock<GoogleAppsScript.Gmail.GmailApp>()
 const mockedGdriveApp = mock<GoogleAppsScript.Drive.DriveApp>()
-const mockedLogger = mock<GoogleAppsScript.Base.Logger>()
 const mockedUtilities = mock<GoogleAppsScript.Utilities.Utilities>()
 
 const config: Config = new Config(settings, threadRules)
 const gasContext: GoogleAppsScriptContext = new GoogleAppsScriptContext(
   mockedGmailApp,
   mockedGdriveApp,
-  mockedLogger,
+  mockedConsole,
   mockedUtilities,
 )
 const actionProvider: ActionProvider = new AllActions(gasContext, config)
@@ -146,6 +146,8 @@ const gmailProcessor: GmailProcessor = new GmailProcessor(
   actionProvider,
   threadProcessor,
 )
+gmailProcessor.setLogger(mockedConsole)
+
 describe("GmailProcessor", () => {
   it("should process the thread rules", () => {
     // Prepare fake result for search() in substitute:

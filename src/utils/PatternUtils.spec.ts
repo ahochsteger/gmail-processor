@@ -1,6 +1,10 @@
 import { MessageRule } from "../config/MessageRule"
 import { PatternUtil } from "./PatternUtil"
 import { GmailMockFactory } from "../../test/mocks/GmailMockFactory"
+import { mock } from "jest-mock-extended"
+
+const mockedConsole = mock<Console>()
+PatternUtil.logger = mockedConsole
 
 describe("Pattern Substitution", () => {
   it("should handle a thread", () => {

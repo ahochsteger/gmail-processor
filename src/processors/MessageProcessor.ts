@@ -54,8 +54,8 @@ export class MessageProcessor {
   public processMessage(messageContext: MessageContext) {
     const messageRule: MessageRule = messageContext.messageRule
     const message = messageContext.message
-    this.logger.log(
-      "INFO:       Processing message: " +
+    this.logger.info(
+      "      Processing message: " +
         message.getSubject() +
         " (" +
         message.getId() +

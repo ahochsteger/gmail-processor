@@ -54,6 +54,7 @@ export class AttachmentProcessor {
   }
 
   public processAttachment(attachmentContext: AttachmentContext) {
+    PatternUtil.logger = this.logger
     const dataMap = PatternUtil.buildSubstitutionMap(
       this.threadContext.thread,
       this.messageContext.index,
@@ -71,7 +72,7 @@ export class AttachmentProcessor {
   //     const thread: GoogleAppsScript.Gmail.GmailThread,
   //     const msgIdx: number: messageC.index
   //     const message = thread.getMessages()[msgIdx]
-  //     this.logger.log("INFO:         Processing attachment rule: "
+  //     this.logger.info("        Processing attachment rule: "
   //         + attachmentRule.getSubject() + " (" + message.getId() + ")")
   //     for (let attIdx = 0; attIdx < message.getAttachments().length; attIdx++) {
   //         // TODO: Add support for attachment rules

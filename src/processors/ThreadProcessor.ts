@@ -50,17 +50,17 @@ export class ThreadProcessor {
       1,
       this.config.maxBatchSize,
     )
-    this.logger.log("INFO:   Processing rule: " + gSearchExp)
+    this.logger.info("  Processing rule: " + gSearchExp)
     for (const thread of threads) {
       const runTime = this.timer.getRunTime()
       if (runTime >= this.config.maxRuntime) {
-        this.logger.log(
-          "WARNING: Self terminating script after max runtime " + runTime + "s",
+        this.logger.warn(
+          "Self terminating script after max runtime " + runTime + "s",
         )
         return
       }
-      this.logger.log(
-        "INFO:     Processing thread: " +
+      this.logger.info(
+        "    Processing thread: " +
           thread.getFirstMessageSubject() +
           " (runtime: " +
           runTime +

@@ -37,6 +37,7 @@ export class GmailProcessor {
       this.actionProvider,
       processingContext,
     )
+    threadProcessor.logger = this.logger
     threadProcessor.processThreadRules(this.config.threadRules)
   }
 }
