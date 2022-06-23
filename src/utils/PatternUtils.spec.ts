@@ -1,14 +1,14 @@
+import { mock } from "jest-mock-extended"
+import { MockFactory } from "../../test/mocks/MockFactory"
 import { MessageRule } from "../config/MessageRule"
 import { PatternUtil } from "./PatternUtil"
-import { GmailMockFactory } from "../../test/mocks/GmailMockFactory"
-import { mock } from "jest-mock-extended"
 
 const mockedConsole = mock<Console>()
 PatternUtil.logger = mockedConsole
 
 describe("Pattern Substitution", () => {
   it("should handle a thread", () => {
-    const thread1 = GmailMockFactory.newThreadMock({
+    const thread1 = MockFactory.newThreadMock({
       messages: [
         {
           date: new Date("2018-05-27T12:34:56Z"),
@@ -43,7 +43,7 @@ describe("Pattern Substitution", () => {
     )
   })
   it("should handle a thread with a message rule", () => {
-    const thread2 = GmailMockFactory.newThreadMock({
+    const thread2 = MockFactory.newThreadMock({
       messages: [
         {
           subject: "Message 01: Some more text",
@@ -95,7 +95,7 @@ describe("Pattern Substitution", () => {
     )
     expect(s2).toBe(expRslt)
   })
-  const sharedThread = GmailMockFactory.newThreadMock({
+  const sharedThread = MockFactory.newThreadMock({
     messages: [
       {
         date: new Date("2018-05-27T12:34:56"),
@@ -130,7 +130,7 @@ describe("Pattern Substitution", () => {
   })
 
   it("should substitute all thread attributes", () => {
-    const thread = GmailMockFactory.newThreadMock({})
+    const thread = MockFactory.newThreadMock({})
     const s = PatternUtil.substitutePatternFromThread(
       "${thread.firstMessageSubject}," +
         "${thread.hasStarredMessages},${thread.id},${thread.isImportant},${thread.isInPriorityInbox}," +
@@ -198,7 +198,7 @@ describe("Substitutions", () => {
         "${thread.firstMessageSubject},${thread.hasStarredMessages}," +
           "${thread.id},${thread.isImportant},${thread.isInPriorityInbox},${thread.labels}," +
           "${thread.lastMessageDate:dateformat:yyyy-mm-dd HH:MM:ss},${thread.messageCount},${thread.permalink}",
-        GmailMockFactory.newThreadMock({
+        MockFactory.newThreadMock({
           firstMessageSubject: "tfms",
           hasStarredMessages: true,
           id: "tid",
@@ -220,7 +220,7 @@ describe("Substitutions", () => {
       PatternUtil.substitutePatternFromThread(
         "${message.bcc},${message.cc},${message.date:dateformat:yyyy-mm-dd HH:MM:ss},${message.from}," +
           "${message.id},${message.replyTo},${message.subject},${message.to}",
-        GmailMockFactory.newThreadMock({
+        MockFactory.newThreadMock({
           messages: [
             {
               bcc: "mbcc",
@@ -245,7 +245,7 @@ describe("Substitutions", () => {
       PatternUtil.substitutePatternFromThread(
         "${attachment.contentType},${attachment.hash},${attachment.isGoogleType},${attachment.name}," +
           "${attachment.size}",
-        GmailMockFactory.newThreadMock({
+        MockFactory.newThreadMock({
           messages: [
             {
               attachments: [
@@ -272,7 +272,7 @@ describe("Handle single messages", () => {
     expect(
       PatternUtil.substitutePatternFromThread(
         "",
-        GmailMockFactory.newThreadMock(),
+        MockFactory.newThreadMock(),
         0,
         0,
         new MessageRule({}),
@@ -289,7 +289,7 @@ describe("Handle single messages", () => {
           "${message.id},${message.replyTo},${message.subject},${message.to}," +
           "${attachment.contentType},${attachment.hash},${attachment.isGoogleType},${attachment.name}," +
           "${attachment.size}",
-        GmailMockFactory.newThreadMock({
+        MockFactory.newThreadMock({
           firstMessageSubject: "tfms",
           hasStarredMessages: true,
           id: "tid",
@@ -333,7 +333,7 @@ describe("Handle single messages", () => {
   })
 })
 describe("Handle multiple attachments", () => {
-  const thread = GmailMockFactory.newThreadMock({
+  const thread = MockFactory.newThreadMock({
     messages: [
       {
         attachments: [
@@ -381,7 +381,7 @@ describe("Handle multiple attachments", () => {
   })
 })
 describe("Handle multiple messages", () => {
-  const thread = GmailMockFactory.newThreadMock({
+  const thread = MockFactory.newThreadMock({
     firstMessageSubject: "tfms",
     hasStarredMessages: true,
     id: "tid",
