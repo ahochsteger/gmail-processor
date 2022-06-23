@@ -295,6 +295,7 @@ export class PatternUtil {
     return s
       .replace(/%s/g, "${message.subject}") // Original subject syntax
       .replace(/%o/g, "${attachment.name}") // Alternative syntax (from PR #61)
+      .replace(/%filename/g, "${attachment.name}") // Alternative syntax from issue #50
       .replace(/#SUBJECT#/g, "${message.subject}") // Alternative syntax (from PR #22)
       .replace(/#FILE#/g, "${attachment.name}") // Alternative syntax (from PR #22)
   }

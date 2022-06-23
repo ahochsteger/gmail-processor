@@ -508,14 +508,14 @@ describe("Compatibility", () => {
       "${message.subject}.txt",
     )
   })
-  it("should support all old filename substitution parameters (type: '%s','%o','#SUBJECT#','#FILE#',yyyy-mm-dd)", () => {
+  it("should support all old filename substitution parameters (type: '%s','%o','%filename','#SUBJECT#','#FILE#',yyyy-mm-dd)", () => {
     expect(
       PatternUtil.convertFromV1Pattern(
-        "'%s,%o,#SUBJECT#,#FILE#,'yyyy-mm-dd",
+        "'%s,%o,%filename,#SUBJECT#,#FILE#,'yyyy-mm-dd",
         "message.date",
       ),
     ).toBe(
-      "${message.subject},${attachment.name},${message.subject},${attachment.name},${message.date:dateformat:yyyy-mm-dd}",
+      "${message.subject},${attachment.name},${attachment.name},${message.subject},${attachment.name},${message.date:dateformat:yyyy-mm-dd}",
     )
   })
 })
