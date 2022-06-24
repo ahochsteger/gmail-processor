@@ -50,6 +50,11 @@ function Gmail2GDrive() {
         processThreadToPdf(thread, rule,config);
       }
 
+      if(rule.ruleLabel) {
+        thread.addLabel(getOrCreateLabel(rule.ruleLabel));
+      }
+
+
       // Mark a thread as processed:
       thread.addLabel(label);
 
@@ -217,4 +222,3 @@ function processThreadToPdf(thread, rule, config) {
   
   return pdf;
 }
-
