@@ -69,7 +69,13 @@ function getGmail2GDriveConfig() {
         "folder": "'Examples/example4'",
         "filenameFrom": "file.txt",
         "filenameTo": "'file-'yyyy-MM-dd-'%s.txt'"
-      }
+      },
+      {
+        // Store threads marked with label "PDF" in the folder "PDF Emails" als PDF document.
+        "filter": "label:PDF",
+        "ruleLabel": "addPDFlabel",
+        "folder": "PDF Emails"
+      },
     ]
   };
 }
