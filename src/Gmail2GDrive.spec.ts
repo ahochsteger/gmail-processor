@@ -37,5 +37,7 @@ describe('Features', () => {
     test.todo('should allow to enumerate the attachments (issue #58)')
     test.todo('should try to respect quota limits as good as possible (issue #59)')
     test.todo('should allow to set date filter at rule-level (issue #60)')
+    test.todo('should be able to customize the thread PDF filename (PR #61)')
+    test.todo('should be able to set a custom thread label (PR #63)')
     test.todo('should be able to report quota-related issues')
 })
