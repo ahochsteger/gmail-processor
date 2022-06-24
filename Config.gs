@@ -71,7 +71,7 @@ function getGmail2GDriveConfig() {
         "filenameTo": "'file-'yyyy-MM-dd-'%s.txt'"
       },
       {
-        // Store threads marked with label "PDF" in the folder "PDF Emails" als PDF document.
+        // Store threads marked with label "PDF" in the folder "PDF Emails" als PDF document and add "addPDFlabel" to the processed thread.
         "filter": "label:PDF",
         "ruleLabel": "addPDFlabel",
         "folder": "PDF Emails"
