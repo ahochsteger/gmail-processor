@@ -24,7 +24,7 @@ export class MockFactory {
     return gasContext
   }
 
-  public static newDefaultSettingsJson() {
+  public static newDefaultSettingsJson(includeThreadRules = false) {
     return {
       // Global filter
       globalFilter: "has:attachment -in:trash -in:drafts -in:spam",
@@ -38,7 +38,7 @@ export class MockFactory {
       sleepTime: 100,
       // Timezone for date/time operations:
       timezone: "GMT",
-      threadRules: [],
+      threadRules: includeThreadRules ? [this.newDefaultThreadRuleJson()] : [],
     }
   }
 
@@ -54,25 +54,22 @@ export class MockFactory {
     }
   }
 
-  public static newDefaultAttachmentRuleJson() {
+  public static newDefaultAttachmentRuleJson(includeCommands = false) {
     return {
       match: {
         name: "Image-([0-9]+)\\.jpg",
         contentType: "image/.+",
       },
-      commands: [],
+      commands: includeCommands ? [this.newDefaultCommandJson()] : [],
     }
   }
 
-  public static newDefaultThreadRuleJson(): any {
+  public static newDefaultThreadRuleJson(includeCommands=false, includeMessages = false): any {
     return {
+      description: "A sample thread rule",
       filter: "has:attachment from:example@example.com",
-      commands: [
-        {
-          name: "attachment.storeToGDrive",
-          args: { folder: "Folder1/Subfolder1" },
-        },
-      ],
+      commands: includeCommands ? [ this.newDefaultCommandJson() ] : [],
+      messageRules: includeMessages ? [this.newDefaultMessageRuleJson() ] : []
     }
   }
 
@@ -186,16 +183,16 @@ export class MockFactory {
     return cfg
   }
 
-  public static newDefaultMailRuleJson() {
+  public static newDefaultMessageRuleJson(includeCommands = false, includeAttachmentRules = false) {
     return {
       match: {
         from: "(.+)@example.com",
         subject: "Prefix - (.*) - Suffix(.*)",
         to: "my\\.address\\+(.+)@gmail.com",
       },
-      is: ["starred", "unstarred", "read", "unread"],
-      commands: [],
-      attachmentRules: [],
+      is: [ "unread" ],
+      commands: includeCommands ? [this.newDefaultCommandJson()] : [],
+      attachmentRules: includeAttachmentRules ? [this.newDefaultAttachmentRuleJson()] : [],
     }
   }
 
