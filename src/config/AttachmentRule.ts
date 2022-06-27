@@ -9,7 +9,7 @@ import { Type } from "class-transformer"
  * },
  */
 export class AttachmentRule {
-  @Type(() => Map<string,string>)
+  @Type(() => Map<string, string>)
   public match: Map<string, string> = new Map<string, string>()
   @Type(() => Command)
   public commands: Command[] = []

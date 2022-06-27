@@ -20,8 +20,8 @@ import { Type } from "class-transformer"
  * }
  */
 export class MessageRule {
-  @Type(() => Map<string,string>)
-  public match: Map<string,string> = new Map<string,string>()
+  @Type(() => Map<string, string>)
+  public match: Map<string, string> = new Map<string, string>()
   public is: MessageFlag[] = []
   @Type(() => Command)
   public commands: Command[] = []

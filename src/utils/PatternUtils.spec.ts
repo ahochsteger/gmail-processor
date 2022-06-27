@@ -69,7 +69,7 @@ describe("Pattern Substitution", () => {
       "message.from: some.email@example.com, message.to: my.email+emailsuffix@example.com, " +
       "message.date: 2019-05-01_18-48-31, message.subject.match.1: 01, " +
       "message.subject.match.2: Some more text"
-    const rule = plainToInstance(MessageRule,{
+    const rule = plainToInstance(MessageRule, {
       filter: "has:attachment from:example4@example.com",
       match: {
         from: "(.+)@example.com",

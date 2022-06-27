@@ -69,7 +69,7 @@ A rule supports the following parameters documentation:
 - filenameFromRegexp (String, optional): A regular expression to specify only relevant attachments
 - filenameTo (String, optional): The pattern for the new filename of the attachment. If 'filenameFrom' is not given then this will be the new filename for all attachments.
   - You can use '%s' to insert the email subject and date format patterns like 'yyyy' for year, 'MM' for month and 'dd' for day as pattern in the filename.
-  - See [https://developers.google.com/apps-script/reference/utilities/utilities#formatDate(Date,String,String)](https://developers.google.com/apps-script/reference/utilities/utilities#formatDate(Date,String,String)) for more information on the possible date format strings.
+  - See [https://developers.google.com/apps-script/reference/utilities/utilities#formatDate(Date,String,String)](<https://developers.google.com/apps-script/reference/utilities/utilities#formatDate(Date,String,String)>) for more information on the possible date format strings.
 - saveThreadPDF (boolean, optional): Should the thread be saved as a PDF? (default: false)
 
 ## Processing Commands

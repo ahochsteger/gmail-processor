@@ -9,7 +9,7 @@ import { CommandType } from "./CommandType"
  * }
  */
 export class Command {
-  public type: CommandType|undefined
+  public type: CommandType | undefined
   public name = ""
   public args = {}
 

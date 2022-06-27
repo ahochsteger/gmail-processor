@@ -3,7 +3,7 @@ import { mock } from "jest-mock-extended"
 import { AllActions } from "../../src/actions/AllActions"
 import { ProcessingContext } from "../../src/context/ProcessingContext"
 import { GmailProcessor } from "../../src/GmailProcessor"
-import { ThreadProcessor } from '../../src/processors/ThreadProcessor'
+import { ThreadProcessor } from "../../src/processors/ThreadProcessor"
 import { GoogleAppsScriptContext } from "../../src/context/GoogleAppsScriptContext"
 import { MockObjects } from "./MockObjects"
 import { plainToInstance } from "class-transformer"
@@ -50,7 +50,7 @@ export class MockFactory {
         folder: "Folder2/Subfolder2/${message.subject.match.1}",
         filename: "${message.subject} - ${match.file.1}.jpg",
         onExists: "replace",
-      }
+      },
     }
   }
 
@@ -67,10 +67,12 @@ export class MockFactory {
   public static newDefaultThreadRuleJson(): any {
     return {
       filter: "has:attachment from:example@example.com",
-      commands: [{
-        name: "attachment.storeToGDrive",
-        args: { folder: "Folder1/Subfolder1" },
-      }],
+      commands: [
+        {
+          name: "attachment.storeToGDrive",
+          args: { folder: "Folder1/Subfolder1" },
+        },
+      ],
     }
   }
 
@@ -177,29 +179,30 @@ export class MockFactory {
 
   public static newDefaultConfig() {
     const cfg = plainToInstance(Config, this.newDefaultSettingsJson())
-    cfg.threadRules = plainToInstance(ThreadRule, this.newComplexThreadRulesJson())
+    cfg.threadRules = plainToInstance(
+      ThreadRule,
+      this.newComplexThreadRulesJson(),
+    )
     return cfg
   }
 
   public static newDefaultMailRuleJson() {
     return {
-        match: {
-            from: "(.+)@example.com",
-            subject: "Prefix - (.*) - Suffix(.*)",
-            to: "my\\.address\\+(.+)@gmail.com",
-        },
-        is: [
-            "starred",
-            "unstarred",
-            "read",
-            "unread",
-        ],
-        commands: [],
-        attachmentRules: [],
+      match: {
+        from: "(.+)@example.com",
+        subject: "Prefix - (.*) - Suffix(.*)",
+        to: "my\\.address\\+(.+)@gmail.com",
+      },
+      is: ["starred", "unstarred", "read", "unread"],
+      commands: [],
+      attachmentRules: [],
     }
   }
 
-  public static newGmailProcessorMock(config: Config, gasContext = MockFactory.newGasContextMock()) {
+  public static newGmailProcessorMock(
+    config: Config,
+    gasContext = MockFactory.newGasContextMock(),
+  ) {
     const actionProvider = new AllActions(gasContext, config)
     const threadProcessor = new ThreadProcessor(
       gasContext.gmailApp,
@@ -235,9 +238,7 @@ export class MockFactory {
     mockedGmailThread.getLastMessageDate.mockReturnValue(data.lastMessageDate)
     mockedGmailThread.getMessageCount.mockReturnValue(data.messageCount)
     mockedGmailThread.getPermalink.mockReturnValue(data.permalink)
-    mockedGmailThread.getMessages.mockReturnValue(
-      MockFactory.getMessages(data),
-    )
+    mockedGmailThread.getMessages.mockReturnValue(MockFactory.getMessages(data))
     return mockedGmailThread
   }
   public static newMessageMock(

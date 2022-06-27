@@ -1,4 +1,5 @@
 build/
 coverage/
 dist/
+docs/Code.gs
 node_modules/

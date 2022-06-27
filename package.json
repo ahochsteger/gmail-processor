@@ -5,11 +5,13 @@
   "scripts": {
     "build": "tsc && webpack && cp -pr gas/.clasp.json gas/* dist/",
     "clean": "rm -rf build dist",
-    "format": "prettier",
-    "lint": "eslint",
+    "format": "prettier -w .",
+    "lint": "eslint .",
     "login": "cd gas && clasp login",
+    "pre-commit": "npm run clean && npm run build && npm run test && npm run format && npm run lint",
     "push": "cd dist && clasp push -f",
-    "test": "jest --forceExit"
+    "redeploy": "npm run pre-commit && npm run push",
+    "test": "jest --detectOpenHandles"
   },
   "repository": {
     "type": "git",

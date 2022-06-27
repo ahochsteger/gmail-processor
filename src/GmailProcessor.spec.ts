@@ -13,8 +13,6 @@ it("should process the thread rules", () => {
     .calledWith(anyString(), 1, config.maxBatchSize)
     .mockReturnValue([])
   gmailProcessor.run()
-  expect(md.gmailApp.search).toHaveBeenCalledTimes(
-    config.threadRules.length,
-  )
+  expect(md.gmailApp.search).toHaveBeenCalledTimes(config.threadRules.length)
   // mockedGmailApp.received(config.threadRules.length).search(anyString(), 1, config.maxBatchSize)
 })
