@@ -9,7 +9,7 @@
     "lint": "eslint",
     "login": "cd gas && clasp login",
     "push": "cd dist && clasp push -f",
-    "test": "jest"
+    "test": "jest --forceExit"
   },
   "repository": {
     "type": "git",
@@ -52,7 +52,9 @@
   },
   "private": true,
   "dependencies": {
-    "dateformat": "^4.6.3"
+    "class-transformer": "^0.5.1",
+    "dateformat": "^4.6.3",
+    "reflect-metadata": "^0.1.13"
   },
   "engines": {
     "node": ">=10.0.0"

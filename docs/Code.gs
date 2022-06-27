@@ -12,7 +12,7 @@ var settings = {
   newerThan: "1m",
   // Timezone for date/time operations:
   timezone: "GMT",
-}
+};
 
 // NOTE: Adjust rules to your requirements here:
 var rules = [
@@ -56,10 +56,10 @@ var rules = [
     filenameFrom: "file.txt",
     filenameTo: "'file-'yyyy-MM-dd-'%s.txt'",
   },
-]
+];
 
 function run() {
-  console.log("Processing started ...")
-  Lib.runGmailProcessorWithConfig(settings, rules)
-  console.log("Processing finished ...")
+  console.log("Processing started ...");
+  GMail2GDrive.Lib.runGmailProcessorWithConfig(settings, rules);
+  console.log("Processing finished ...");
 }

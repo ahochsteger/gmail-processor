@@ -4,9 +4,11 @@ import { GoogleAppsScriptContext } from "./context/GoogleAppsScriptContext"
 import { ProcessingContext } from "./context/ProcessingContext"
 import { GmailProcessor } from "./GmailProcessor"
 import { ThreadProcessor } from "./processors/ThreadProcessor"
+import "reflect-metadata"
+import { plainToInstance } from "class-transformer"
 
-export function runGmailProcessorWithConfig(settings: any, rules: any[]) {
-  const config = new Config(settings, rules)
+export function run(jsonConfig: any) {
+  const config = plainToInstance(Config, jsonConfig)
   const gasContext: GoogleAppsScriptContext = new GoogleAppsScriptContext(
     GmailApp,
     DriveApp,
@@ -27,4 +29,11 @@ export function runGmailProcessorWithConfig(settings: any, rules: any[]) {
     threadProcessor,
   )
   gmailProcessor.run()
+}
+
+// TODO: Remove - is just for compatibility
+export function runGmailProcessorWithConfig(settings: any, rules: any[]) {
+  const config = settings
+  config.threadRules = rules
+  run(config)
 }

@@ -6,6 +6,8 @@ import { GmailProcessor } from "../../src/GmailProcessor"
 import { ThreadProcessor } from '../../src/processors/ThreadProcessor'
 import { GoogleAppsScriptContext } from "../../src/context/GoogleAppsScriptContext"
 import { MockObjects } from "./MockObjects"
+import { plainToInstance } from "class-transformer"
+import { ThreadRule } from "../../src/config/ThreadRule"
 
 export class MockFactory {
   public static newMockObjects() {
@@ -22,10 +24,10 @@ export class MockFactory {
     return gasContext
   }
 
-  public static newDefaultConfig() {
-    const settings = {
+  public static newDefaultSettingsJson() {
+    return {
       // Global filter
-      globalFilter: "-in:trash -in:drafts -in:spam",
+      globalFilter: "has:attachment -in:trash -in:drafts -in:spam",
       // Maximum script runtime in seconds (google scripts will be killed after 5 minutes):
       maxRuntime: 280,
       // Only process message newer than (leave empty for no restriction; use d, m and y for day, month and year):
@@ -36,8 +38,44 @@ export class MockFactory {
       sleepTime: 100,
       // Timezone for date/time operations:
       timezone: "GMT",
+      threadRules: [],
     }
-    const threadRules = [
+  }
+
+  public static newDefaultCommandJson() {
+    return {
+      name: "file.storeToGDrive",
+      args: {
+        folderType: "path",
+        folder: "Folder2/Subfolder2/${message.subject.match.1}",
+        filename: "${message.subject} - ${match.file.1}.jpg",
+        onExists: "replace",
+      }
+    }
+  }
+
+  public static newDefaultAttachmentRuleJson() {
+    return {
+      match: {
+        name: "Image-([0-9]+)\\.jpg",
+        contentType: "image/.+",
+      },
+      commands: [],
+    }
+  }
+
+  public static newDefaultThreadRuleJson(): any {
+    return {
+      filter: "has:attachment from:example@example.com",
+      commands: [{
+        name: "attachment.storeToGDrive",
+        args: { folder: "Folder1/Subfolder1" },
+      }],
+    }
+  }
+
+  public static newComplexThreadRulesJson(): any[] {
+    return [
       // Responsible: ThreadProcessor.processRules
       {
         // Responsible: ThreadProcessor.processRule
@@ -135,7 +173,30 @@ export class MockFactory {
         ],
       },
     ]
-    return new Config(settings, threadRules)
+  }
+
+  public static newDefaultConfig() {
+    const cfg = plainToInstance(Config, this.newDefaultSettingsJson())
+    cfg.threadRules = plainToInstance(ThreadRule, this.newComplexThreadRulesJson())
+    return cfg
+  }
+
+  public static newDefaultMailRuleJson() {
+    return {
+        match: {
+            from: "(.+)@example.com",
+            subject: "Prefix - (.*) - Suffix(.*)",
+            to: "my\\.address\\+(.+)@gmail.com",
+        },
+        is: [
+            "starred",
+            "unstarred",
+            "read",
+            "unread",
+        ],
+        commands: [],
+        attachmentRules: [],
+    }
   }
 
   public static newGmailProcessorMock(config: Config, gasContext = MockFactory.newGasContextMock()) {

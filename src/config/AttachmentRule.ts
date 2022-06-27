@@ -1,4 +1,6 @@
 import { Command } from "./Command"
+import "reflect-metadata"
+import { Type } from "class-transformer"
 
 /**
  * {
@@ -7,12 +9,8 @@ import { Command } from "./Command"
  * },
  */
 export class AttachmentRule {
-  public match: Map<string, string>
+  @Type(() => Map<string,string>)
+  public match: Map<string, string> = new Map<string, string>()
+  @Type(() => Command)
   public commands: Command[] = []
-  constructor(config: any) {
-    this.match = config.match
-    for (const c of config.commands instanceof Array ? config.commands : []) {
-      this.commands.push(new Command(c))
-    }
-  }
 }

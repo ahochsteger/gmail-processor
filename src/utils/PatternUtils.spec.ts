@@ -2,6 +2,7 @@ import { mock } from "jest-mock-extended"
 import { MockFactory } from "../../test/mocks/MockFactory"
 import { MessageRule } from "../config/MessageRule"
 import { PatternUtil } from "./PatternUtil"
+import { plainToInstance } from "class-transformer"
 
 const mockedConsole = mock<Console>()
 PatternUtil.logger = mockedConsole
@@ -35,7 +36,7 @@ describe("Pattern Substitution", () => {
       thread1,
       0,
       0,
-      new MessageRule({}),
+      new MessageRule(),
       0,
     )
     expect(s1).toBe(
@@ -68,7 +69,7 @@ describe("Pattern Substitution", () => {
       "message.from: some.email@example.com, message.to: my.email+emailsuffix@example.com, " +
       "message.date: 2019-05-01_18-48-31, message.subject.match.1: 01, " +
       "message.subject.match.2: Some more text"
-    const rule = new MessageRule({
+    const rule = plainToInstance(MessageRule,{
       filter: "has:attachment from:example4@example.com",
       match: {
         from: "(.+)@example.com",
@@ -124,7 +125,7 @@ describe("Pattern Substitution", () => {
       sharedThread,
       0,
       0,
-      new MessageRule({}),
+      new MessageRule(),
     )
     expect(s).toBe("msgFrom,msgTo,msgSubject,msgId,2018-05-27")
   })
@@ -139,7 +140,7 @@ describe("Pattern Substitution", () => {
       thread,
       0,
       0,
-      new MessageRule({}),
+      new MessageRule(),
     )
     expect(s).toBe(
       "message subject,false,threadId123,false,false,,2019-05-02,2,some-permalink-url",
@@ -154,7 +155,7 @@ describe("Pattern Substitution", () => {
       sharedThread,
       0,
       0,
-      new MessageRule({}),
+      new MessageRule(),
     )
     expect(s).toBe(
       "msgFrom/msgTo/attContentType1/msgSubject-msgId-1-attName1-2018-05-27",
@@ -169,7 +170,7 @@ describe("Pattern Substitution", () => {
       sharedThread,
       0,
       1,
-      new MessageRule({}),
+      new MessageRule(),
     )
     expect(s).toBe(
       "msgFrom/msgTo/attContentType2/msgSubject-msgId-2-attName2-2018-05-27",
@@ -184,7 +185,7 @@ describe("Pattern Substitution", () => {
       sharedThread,
       0,
       0,
-      new MessageRule({}),
+      new MessageRule(),
     )
     expect(s).toBe(
       "msgFrom/msgTo/attContentType1/msgSubject-msgId-1-attName1-2018-05-27",
@@ -211,7 +212,7 @@ describe("Substitutions", () => {
         }),
         0,
         0,
-        new MessageRule({}),
+        new MessageRule(),
       ),
     ).toBe("tfms,true,tid,true,true,l1,l2,2019-05-06 12:34:56,3,tpl")
   })
@@ -236,7 +237,7 @@ describe("Substitutions", () => {
         }),
         0,
         0,
-        new MessageRule({}),
+        new MessageRule(),
       ),
     ).toBe("mbcc,mcc,2019-05-06 12:34:56,mfrom,mid,mrt,msj,mto")
   })
@@ -262,7 +263,7 @@ describe("Substitutions", () => {
         }),
         0,
         0,
-        new MessageRule({}),
+        new MessageRule(),
       ),
     ).toBe("act,ah,true,aname,12345")
   })
@@ -275,7 +276,7 @@ describe("Handle single messages", () => {
         MockFactory.newThreadMock(),
         0,
         0,
-        new MessageRule({}),
+        new MessageRule(),
       ),
     ).toBe("")
   })
@@ -323,7 +324,7 @@ describe("Handle single messages", () => {
         }),
         0,
         0,
-        new MessageRule({}),
+        new MessageRule(),
       ),
     ).toBe(
       "tfms,true,tid,true,true,l1,l2,2019-05-06 12:34:56,3,tpl," +
@@ -363,7 +364,7 @@ describe("Handle multiple attachments", () => {
         thread,
         0,
         0,
-        new MessageRule({}),
+        new MessageRule(),
       ),
     ).toBe("act1,ah1,true,aname1,12345")
   })
@@ -375,7 +376,7 @@ describe("Handle multiple attachments", () => {
         thread,
         0,
         1,
-        new MessageRule({}),
+        new MessageRule(),
       ),
     ).toBe("act2,ah2,false,aname2,23456")
   })
@@ -445,7 +446,7 @@ describe("Handle multiple messages", () => {
         thread,
         0,
         0,
-        new MessageRule({}),
+        new MessageRule(),
       ),
     ).toBe(
       "tfms,true,tid,true,true,l1,l2,2019-05-06 12:34:56,3,tpl," +
@@ -466,7 +467,7 @@ describe("Handle multiple messages", () => {
         thread,
         1,
         0,
-        new MessageRule({}),
+        new MessageRule(),
       ),
     ).toBe(
       "tfms,true,tid,true,true,l1,l2,2019-05-06 12:34:56,3,tpl," +

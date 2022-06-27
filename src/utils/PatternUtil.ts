@@ -169,7 +169,7 @@ export class PatternUtil {
     let m = new Map<string, any>()
     msgIdx = msgIdx !== undefined ? msgIdx : 0
     attIdx = attIdx !== undefined ? attIdx : 0
-    rule = rule !== undefined ? rule : new MessageRule({})
+    rule = rule !== undefined ? rule : new MessageRule()
     attRuleIdx = attRuleIdx !== undefined ? attRuleIdx : 0
 
     // Thread data
@@ -268,7 +268,7 @@ export class PatternUtil {
       : -1
     const rule = context.messageContext
       ? context.messageContext.messageRule
-      : new MessageRule({})
+      : new MessageRule()
     const attRuleIdx = context.attachmentContext
       ? context.attachmentContext.ruleIndex
       : -1
