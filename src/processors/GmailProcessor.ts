@@ -1,11 +1,11 @@
-import { ActionProvider } from "./actions/ActionProvider"
-import { Actions } from "./actions/Actions"
-import { Config } from "./config/Config"
-import { GoogleAppsScriptContext } from "./context/GoogleAppsScriptContext"
-import { ProcessingContext } from "./context/ProcessingContext"
-import { ThreadProcessor } from "./processors/ThreadProcessor"
-import { PatternUtil } from "./utils/PatternUtil"
-import { Timer } from "./utils/Timer"
+import { ActionProvider } from "../actions/ActionProvider"
+import { Actions } from "../actions/Actions"
+import { Config } from "../config/Config"
+import { GoogleAppsScriptContext } from "../context/GoogleAppsScriptContext"
+import { ProcessingContext } from "../context/ProcessingContext"
+import { ThreadProcessor } from "./ThreadProcessor"
+import { PatternUtil } from "../utils/PatternUtil"
+import { Timer } from "../utils/Timer"
 
 export class GmailProcessor {
   public logger: Console = console

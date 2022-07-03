@@ -1,5 +1,5 @@
 import { anyString } from "jest-mock-extended"
-import { MockFactory } from "../test/mocks/MockFactory"
+import { MockFactory } from "../../test/mocks/MockFactory"
 
 const config = MockFactory.newDefaultConfig()
 const md = MockFactory.newMockObjects()
