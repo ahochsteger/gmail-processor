@@ -39,7 +39,10 @@ function getGmail2GDriveConfig() {
       { // Store all attachments from example3a@example.com OR from:example3b@example.com
         // to the folder "Examples/example3ab" while renaming all attachments to the pattern
         // defined in 'filenameTo' and archive the thread.
-        "filter": "(from:example3a@example.com OR from:example3b@example.com)",
+        // filenameTo supports the following printf style substitutions:
+        // %s - The subject of the message/thread
+        // %o - The original filename of the attachement
+        "filter": "has:attachment (from:example3a@example.com OR from:example3b@example.com)",
         "folder": "'Examples/example3ab'",
         "filenameTo": "'file-'yyyy-MM-dd-'%s.txt'",
         "archive": true
@@ -50,14 +53,34 @@ function getGmail2GDriveConfig() {
         "saveThreadPDF": true,
         "folder": "PDF Emails"
       },
+      {
+        // Store threads marked with label "PDF" in the folder "PDF Emails" als PDF document.
+        // while renaming the PDFs to the pattern defined in 'filenameTo'.
+        // filenameTo supports the following printf style substitutions:
+        // %s - The subject of the message/thread
+        // NOTE: .pdf will automatically be added to the file name
+        "filter": "label:PDF",
+        "saveThreadPDF": true,
+        "folder": "PDF Emails",
+        "filenameTo": "'file-'yyyy-MM-dd-'%s'"
+      },
       { // Store all attachments named "file.txt" from example4@example.com to the
         // folder "Examples/example4" and rename the attachment to the pattern
         // defined in 'filenameTo' and archive the thread.
-        "filter": "from:example4@example.com",
+        // filenameTo supports the following printf style substitutions:
+        // %s - The subject of the message/thread
+        // %o - The original filename of the attachement
+        "filter": "has:attachment from:example4@example.com",
         "folder": "'Examples/example4'",
         "filenameFrom": "file.txt",
         "filenameTo": "'file-'yyyy-MM-dd-'%s.txt'"
-      }
+      },
+      {
+        // Store threads marked with label "PDF" in the folder "PDF Emails" als PDF document and add "addPDFlabel" to the processed thread.
+        "filter": "label:PDF",
+        "ruleLabel": "addPDFlabel",
+        "folder": "PDF Emails"
+      },
     ]
   };
 }
