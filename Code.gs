@@ -49,8 +49,13 @@ function Gmail2GDrive() {
         processMessage(message, rule, config);
       }
       if (doPDF) { // Generate a PDF document of a thread:
-        processThreadToPdf(thread, rule);
+        processThreadToPdf(thread, rule, config);
       }
+
+      if(rule.ruleLabel) {
+        thread.addLabel(getOrCreateLabel(rule.ruleLabel));
+      }
+
 
       // Mark a thread as processed:
       thread.addLabel(label);
@@ -160,17 +165,17 @@ function processMessage(message, rule, config) {
       Logger.log("Saving to folder" + folderName);
       var folder = getOrCreateFolder(folderName);
       var file = folder.createFile(attachment);
-      var filename = file.getName();
-      var new_filename = rule.filenameTo.replace('%s',message.getSubject()).replace("%d", String(rule_counter++))
+      var original_attachment_name = file.getName();
+      var new_filename = rule.filenameTo.replace('%s',message.getSubject()).replace("%d", String(rule_counter++)).replace('%o', original_attachment_name)
       if (rule.filenameFrom && rule.filenameTo && rule.filenameFrom == file.getName()) {
-        filename = Utilities.formatDate(messageDate, config.timezone, new_filename);
-        Logger.log("INFO:           Renaming matched file '" + file.getName() + "' -> '" + filename + "'");
-        file.setName(filename);
+        var final_attachment_name = Utilities.formatDate(messageDate, config.timezone, new_filename);
+        Logger.log("INFO:           Renaming matched file '" + file.getName() + "' -> '" + final_attachment_name + "'");
+        file.setName(final_attachment_name);
       }
       else if (rule.filenameTo) {
-        filename = Utilities.formatDate(messageDate, config.timezone, new_filename);
-        Logger.log("INFO:           Renaming '" + file.getName() + "' -> '" + filename + "'");
-        file.setName(filename);
+        var final_attachment_name = Utilities.formatDate(messageDate, config.timezone, new_filename);
+        Logger.log("INFO:           Renaming '" + file.getName() + "' -> '" + final_attachment_name + "'");
+        file.setName(final_attachment_name);
       }
       file.setDescription("Mail title: " + message.getSubject() + "\nMail date: " + message.getDate() + "\nMail link: https://mail.google.com/mail/u/0/#inbox/" + message.getId());
       Utilities.sleep(config.sleepTime);
@@ -203,11 +208,20 @@ function processThreadToHtml(thread) {
 /**
 * Generate a PDF document for the whole thread using HTML from .
  */
-function processThreadToPdf(thread, rule) {
+function processThreadToPdf(thread, rule, config) {
   Logger.log("INFO: Saving PDF copy of thread '" + thread.getFirstMessageSubject() + "'");
-  var folder = getOrCreateFolder(rule.folder);
+  var cleanRuleFolder = rule.folder.replace(/\'/g,'');
+  var folder = getOrCreateFolder(cleanRuleFolder);
   var html = processThreadToHtml(thread);
   var blob = Utilities.newBlob(html, 'text/html');
-  var pdf = folder.createFile(blob.getAs('application/pdf')).setName(thread.getFirstMessageSubject() + ".pdf");
+  var pdf;
+  if (rule.filenameTo) {
+    filename = Utilities.formatDate(thread.getMessages()[0].getDate(), config.timezone, rule.filenameTo.replace('%s',thread.getFirstMessageSubject()));
+    Logger.log("INFO:           Renaming '" + thread.getFirstMessageSubject() + "' -> '" + filename + "'");
+    pdf = folder.createFile(blob.getAs('application/pdf')).setName(filename + ".pdf");
+  } else {
+    pdf = folder.createFile(blob.getAs('application/pdf')).setName(thread.getFirstMessageSubject() + ".pdf");
+  }
+  
   return pdf;
 }
