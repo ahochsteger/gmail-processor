@@ -13,7 +13,7 @@ function getGmail2GDriveConfig() {
     // Maximum script runtime in seconds (google scripts will be killed after 5 minutes):
     "maxRuntime": 280,
     // Only process message newer than (leave empty for no restriction; use d, m and y for day, month and year):
-    "newerThan": "1m",
+    "newerThan": "2m",
     // Timezone for date/time operations:
     "timezone": "GMT",
     // Processing rules:
@@ -70,11 +70,19 @@ function getGmail2GDriveConfig() {
         // filenameTo supports the following printf style substitutions:
         // %s - The subject of the message/thread
         // %o - The original filename of the attachement
+        // %d - A running counter from 1 for each match of this rule.
         "filter": "has:attachment from:example4@example.com",
         "folder": "'Examples/example4'",
         "filenameFrom": "file.txt",
         "filenameTo": "'file-'yyyy-MM-dd-'%s.txt'"
       },
+         // Sotre all of the emails with the text "receipt" from billing@zoom.us
+         // into the folder "Examples/example5" and rename the filenames to be zoom-1.pdf, zoom-2.pdf...
+        "filter": "receipt from:billing@zoom.us",
+        "folder": "'Examples/example5'",
+        "filenameFrom": "*.pdf",
+        "filenameTo": "'zoom-%d.pdf'"
+      }, 
       {
         // Store threads marked with label "PDF" in the folder "PDF Emails" als PDF document and add "addPDFlabel" to the processed thread.
         "filter": "label:PDF",

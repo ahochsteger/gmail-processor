@@ -63,7 +63,9 @@ A rule supports the following parameters documentation:
 * `filenameFrom` (String, optional): The attachment filename that should be renamed when stored in Google Drive
 * `filenameFromRegexp` (String, optional): A regular expression to specify only relevant attachments
 * `filenameTo` (String, optional): The pattern for the new filename of the attachment. If 'filenameFrom' is not given then this will be the new filename for all attachments.
-  * You can use `%s` to insert the email subject, `%o` for the original attachment filename and date format patterns like `yyyy` for year, `MM` for month and `dd` for day as pattern in the filename.
+  * You can use `%s` to insert the email subject, 
+  * `%o` for the original attachment filename and date format patterns like `yyyy` for year, `MM` for month and `dd` for day as pattern in the filename.
+  * `%d` to insert a running counter for matches of that rule as pattern in the filename.
   * See <https://developers.google.com/apps-script/reference/utilities/utilities#formatDate(Date,String,String)> for more information on the possible date format strings.
 * `newerThan` (String, optional): Only process message newer than (leave empty for no restriction; use d, m and y for day, month and year)
   * Example: "newerThan": "3m"
@@ -133,6 +135,15 @@ function getGmail2GDriveConfig() {
         "folder": "'Examples/example4'",
         "filenameFrom": "file.txt",
         "filenameTo": "'file-'yyyy-MM-dd-'%s.txt'"
+      },
+      { // Store all attachments named "file.txt" from example5@example.com to the
+        // folder "Examples/example5" and rename the attachment to the pattern
+        // defined in 'filenameTo' and archive the thread. 
+        // In this case file-1.txt, file-2.txt and so on. 
+        "filter": "has:attachment from:example5@example.com",
+        "folder": "'Examples/example5'",
+        "filenameFrom": "file.txt",
+        "filenameTo": "'file-%d.txt'"
       }
     ]
   };
