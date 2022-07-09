@@ -5,7 +5,7 @@
 function getGmail2GDriveConfig() {
   return {
     // Global filter
-    "globalFilter": "-in:trash -in:drafts -in:spam has:attachment",
+    "globalFilter": "has:attachment -in:trash -in:drafts -in:spam",
     // Gmail label for processed threads (will be created, if not existing):
     "processedLabel": "to-gdrive/processed",
     // Sleep time in milli seconds between processed messages:
@@ -19,15 +19,20 @@ function getGmail2GDriveConfig() {
     // Processing rules:
     "rules": [
       { // Store all attachments sent to my.name+scans@gmail.com to the folder "Scans"
-        "filter": "has:attachment to:my.name+scans@gmail.com",
+        "filter": "to:my.name+scans@gmail.com",
         "folder": "'Scans'-yyyy-MM-dd"
       },
       { // Store all attachments from example1@example.com to the folder "Examples/example1"
-        "filter": "has:attachment from:example1@example.com",
+        "filter": "from:example1@example.com",
         "folder": "'Examples/example1'"
       },
+      { // Store all attachments sent to my.name+scans@gmail.com to the folder "Scans" with extend received dates
+        "filter": "to:my.name+scans@gmail.com",
+        "folder": "'Scans'-yyyy-MM-dd",
+        "newerThan": "3m" // received in the last 3 months (applied for this rule only)
+      },
       { // Store all pdf attachments from example2@example.com to the folder "Examples/example2"
-        "filter": "has:attachment from:example2@example.com",
+        "filter": "from:example2@example.com",
         "folder": "'Examples/example2'",
         "filenameFromRegexp": ".*\.pdf$"
       },

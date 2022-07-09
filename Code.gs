@@ -23,9 +23,11 @@ function Gmail2GDrive() {
     var rule = config.rules[ruleIdx];
     var gSearchExp  = config.globalFilter + " " + rule.filter + " -label:" + config.processedLabel;
     rule_counter = 1; // Counts attachments matching this rule for %d in renameTo patterns
-    if (config.newerThan != "") {
+    var newerThan = rule.newerThan || config.newerThan;
+    if (newerThan != "") {
       gSearchExp += " newer_than:" + config.newerThan;
     }
+    
     var doArchive = rule.archive == true;
     var doPDF = rule.saveThreadPDF == true;
 

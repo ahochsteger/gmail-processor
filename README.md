@@ -67,7 +67,10 @@ A rule supports the following parameters documentation:
   * `%o` for the original attachment filename and date format patterns like `yyyy` for year, `MM` for month and `dd` for day as pattern in the filename.
   * `%d` to insert a running counter for matches of that rule as pattern in the filename.
   * See <https://developers.google.com/apps-script/reference/utilities/utilities#formatDate(Date,String,String)> for more information on the possible date format strings.
+* `newerThan` (String, optional): Only process message newer than (leave empty for no restriction; use d, m and y for day, month and year)
+  * Example: "newerThan": "3m"
 * `saveThreadPDF` (boolean, optional): Should the thread be saved as a PDF? (default: `false`)
+
 
 Example Configuration
 ---------------------
@@ -100,6 +103,11 @@ function getGmail2GDriveConfig() {
       { // Store all attachments from example1@example.com to the folder "Examples/example1"
         "filter": "from:example1@example.com",
         "folder": "'Examples/example1'"
+      },
+      { // Store all attachments sent to my.name+scans@gmail.com to the folder "Scans" with extend received dates
+        "filter": "to:my.name+scans@gmail.com",
+        "folder": "'Scans'-yyyy-MM-dd",
+        "newerThan": "3m" // received in the last 3 months (applied for this rule only)
       },
       { // Store all pdf attachments from example2@example.com to the folder "Examples/example2"
         "filter": "from:example2@example.com",
