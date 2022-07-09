@@ -5,6 +5,7 @@
  * Main function that processes Gmail attachments and stores them in Google Drive.
  * Use this as trigger function for periodic execution.
  */
+var rule_counter = 1;
 function Gmail2GDrive() {
   if (!GmailApp) return; // Skip script execution if GMail is currently not available (yes this happens from time to time and triggers spam emails!)
   var config = getGmail2GDriveConfig();
@@ -21,6 +22,7 @@ function Gmail2GDrive() {
   for (var ruleIdx=0; ruleIdx<config.rules.length; ruleIdx++) {
     var rule = config.rules[ruleIdx];
     var gSearchExp  = config.globalFilter + " " + rule.filter + " -label:" + config.processedLabel;
+    rule_counter = 1; // Counts attachments matching this rule for %d in renameTo patterns
     if (config.newerThan != "") {
       gSearchExp += " newer_than:" + config.newerThan;
     }
@@ -47,7 +49,7 @@ function Gmail2GDrive() {
         processMessage(message, rule, config);
       }
       if (doPDF) { // Generate a PDF document of a thread:
-        processThreadToPdf(thread, rule,config);
+        processThreadToPdf(thread, rule, config);
       }
 
       if(rule.ruleLabel) {
@@ -163,16 +165,17 @@ function processMessage(message, rule, config) {
       Logger.log("Saving to folder" + folderName);
       var folder = getOrCreateFolder(folderName);
       var file = folder.createFile(attachment);
-      var filename = file.getName();
+      var original_attachment_name = file.getName();
+      var new_filename = rule.filenameTo.replace('%s',message.getSubject()).replace("%d", String(rule_counter++)).replace('%o', original_attachment_name)
       if (rule.filenameFrom && rule.filenameTo && rule.filenameFrom == file.getName()) {
-        filename = Utilities.formatDate(messageDate, config.timezone, rule.filenameTo.replace('%s',message.getSubject()).replace('%o', filename));
-        Logger.log("INFO:           Renaming matched file '" + file.getName() + "' -> '" + filename + "'");
-        file.setName(filename);
+        var final_attachment_name = Utilities.formatDate(messageDate, config.timezone, new_filename);
+        Logger.log("INFO:           Renaming matched file '" + file.getName() + "' -> '" + final_attachment_name + "'");
+        file.setName(final_attachment_name);
       }
       else if (rule.filenameTo) {
-        filename = Utilities.formatDate(messageDate, config.timezone, rule.filenameTo.replace('%s',message.getSubject()).replace('%o', filename));
-        Logger.log("INFO:           Renaming '" + file.getName() + "' -> '" + filename + "'");
-        file.setName(filename);
+        var final_attachment_name = Utilities.formatDate(messageDate, config.timezone, new_filename);
+        Logger.log("INFO:           Renaming '" + file.getName() + "' -> '" + final_attachment_name + "'");
+        file.setName(final_attachment_name);
       }
       file.setDescription("Mail title: " + message.getSubject() + "\nMail date: " + message.getDate() + "\nMail link: https://mail.google.com/mail/u/0/#inbox/" + message.getId());
       Utilities.sleep(config.sleepTime);
