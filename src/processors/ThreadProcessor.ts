@@ -1,12 +1,12 @@
 import { ActionProvider } from "../actions/ActionProvider"
 import { Actions } from "../actions/Actions"
-import { GmailActions } from "../actions/GmailActions"
 import { Config } from "../config/Config"
-import { ThreadRule } from "../config/ThreadRule"
+import { GmailActions } from "../actions/GmailActions"
+import { MessageProcessor } from "./MessageProcessor"
 import { ProcessingContext } from "../context/ProcessingContext"
+import { ThreadConfig } from "../config/ThreadConfig"
 import { ThreadContext } from "../context/ThreadContext"
 import { Timer } from "../utils/Timer"
-import { MessageProcessor } from "./MessageProcessor"
 
 export class ThreadProcessor {
   public logger: Console = console
@@ -28,32 +28,32 @@ export class ThreadProcessor {
     this.gmailActions = new GmailActions(gmailApp)
   }
 
-  public processThreadRules(threadRules: ThreadRule[]) {
+  public processThreadRules(threadRules: ThreadConfig[]) {
     for (const threadRule of threadRules) {
       this.processThreadRule(threadRule)
     }
   }
 
-  public processThreadRule(threadRule: ThreadRule) {
+  public processThreadRule(threadConfig: ThreadConfig) {
     let gSearchExp =
-      this.config.globalFilter +
+      (this.config.global.match.query) +
       " " +
-      threadRule.filter +
+      (threadConfig.match.query) +
       " -label:" +
-      this.config.processedLabel
-    if (this.config.newerThan !== "") {
-      gSearchExp += " newer_than:" + this.config.newerThan
+      this.config.settings.processedLabel
+    if (this.config.global.match.newerThan != "") {
+      gSearchExp += " newer_than:" + this.config.global.match.newerThan
     }
     // Process all threads matching the search expression:
     const threads = this.gmailApp.search(
       gSearchExp,
       1,
-      this.config.maxBatchSize,
+      this.config.settings.maxBatchSize,
     )
     this.logger.info("  Processing rule: " + gSearchExp)
     for (const thread of threads) {
       const runTime = this.timer.getRunTime()
-      if (runTime >= this.config.maxRuntime) {
+      if (runTime >= this.config.settings.maxRuntime) {
         this.logger.warn(
           "Self terminating script after max runtime " + runTime + "s",
         )
@@ -65,14 +65,14 @@ export class ThreadProcessor {
           " (runtime: " +
           runTime +
           "s/" +
-          this.config.maxRuntime +
+          this.config.settings.maxRuntime +
           "s)",
       )
       const threadContext: ThreadContext = new ThreadContext(
-        threadRule,
+        threadConfig,
         thread,
         threads.indexOf(thread),
-        this.config.threadRules.indexOf(threadRule),
+        (this.config.handler).indexOf(threadConfig),
       )
       this.processingContext.threadContext = threadContext
       this.processThread(threadContext)
@@ -81,13 +81,13 @@ export class ThreadProcessor {
 
   public processThread(threadContext: ThreadContext) {
     const thread: GoogleAppsScript.Gmail.GmailThread = threadContext.thread
-    const threadRule: ThreadRule = threadContext.threadRule
+    const threadRule: ThreadConfig = threadContext.threadConfig
     const messageProcessor = new MessageProcessor(
       this.gmailApp,
       this.actionProvider,
       this.processingContext,
     )
-    messageProcessor.processMessageRules(threadRule.messageRules)
+    messageProcessor.processMessageRules(threadRule.handler)
     // // Process all messages of a thread:
     // for (const messageRule of threadRule.messageRules) {
     //     for (const message of thread.getMessages()) {
@@ -107,7 +107,9 @@ export class ThreadProcessor {
    * @param config The global configuration.
    */
   public markThreadAsProcessed(thread: GoogleAppsScript.Gmail.GmailThread) {
-    const label = this.gmailActions.getOrCreateLabel(this.config.processedLabel)
-    thread.addLabel(label)
+    if (this.config.settings.processedLabel != "") {
+      const label = this.gmailActions.getOrCreateLabel(this.config.settings.processedLabel)
+      thread.addLabel(label)
+    }
   }
 }

@@ -1,8 +1,8 @@
-import { ThreadRule } from "../config/ThreadRule"
+import { ThreadConfig } from "../config/ThreadConfig"
 
 export class ThreadContext {
   constructor(
-    public threadRule: ThreadRule,
+    public threadConfig: ThreadConfig,
     public thread: GoogleAppsScript.Gmail.GmailThread,
     public index: number,
     public ruleIndex: number,

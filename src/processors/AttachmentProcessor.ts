@@ -1,8 +1,8 @@
 import { ActionProvider } from "../actions/ActionProvider"
 import { Actions } from "../actions/Actions"
-import { AttachmentRule } from "../config/AttachmentRule"
-import { Config } from "../config/Config"
+import { AttachmentConfig } from "../config/AttachmentConfig"
 import { AttachmentContext } from "../context/AttachmentContext"
+import { Config } from "../config/Config"
 import { MessageContext } from "../context/MessageContext"
 import { ProcessingContext } from "../context/ProcessingContext"
 import { ThreadContext } from "../context/ThreadContext"
@@ -34,19 +34,19 @@ export class AttachmentProcessor {
     }
   }
 
-  public processAttachmentRules(attachmentRules: AttachmentRule[]) {
-    for (const attachmentRule of attachmentRules) {
+  public processAttachmentRules(attachmentConfig: AttachmentConfig[]) {
+    for (const attachmentRule of attachmentConfig) {
       this.processAttachmentRule(attachmentRule)
     }
   }
 
-  public processAttachmentRule(attachmentRule: AttachmentRule) {
+  public processAttachmentRule(attachmentConfig: AttachmentConfig) {
     for (const attachment of this.messageContext.message.getAttachments()) {
       const attachmentContext = new AttachmentContext(
-        attachmentRule,
+        attachmentConfig,
         attachment,
         this.messageContext.message.getAttachments().indexOf(attachment),
-        this.messageContext.messageRule.attachmentRules.indexOf(attachmentRule),
+        (this.messageContext.messageConfig.handler || []).indexOf(attachmentConfig),
       )
       this.processingContext.attachmentContext = attachmentContext
       this.processAttachment(attachmentContext)
@@ -59,7 +59,7 @@ export class AttachmentProcessor {
       this.threadContext.thread,
       this.messageContext.index,
       attachmentContext.index,
-      this.messageContext.messageRule,
+      this.messageContext.messageConfig,
       attachmentContext.ruleIndex,
     )
     this.logger.log("Dumping dataMap:")

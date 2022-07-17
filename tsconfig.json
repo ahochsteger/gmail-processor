@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "target": "ES6",
     "module": "commonjs",
     "strict": true,
@@ -13,7 +14,8 @@
     "outDir": "build",
     "lib": ["ES2020"],
     "types": ["google-apps-script", "jest"],
-    "baseUrl": "src/"
+    "baseUrl": "src/",
+    "resolveJsonModule": true
   },
   "include": ["src/**/*", "test/**/*"]
 }

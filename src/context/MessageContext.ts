@@ -1,8 +1,8 @@
-import { MessageRule } from "../config/MessageRule"
+import { MessageConfig } from "../config/MessageConfig"
 
 export class MessageContext {
   constructor(
-    public messageRule: MessageRule,
+    public messageConfig: MessageConfig,
     public message: GoogleAppsScript.Gmail.GmailMessage,
     public index: number,
     public ruleIndex: number,

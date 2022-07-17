@@ -1,0 +1,92 @@
+{
+  "settings": {
+    "maxBatchSize": 10,
+    "maxRuntime": 280,
+    "sleepTimeThreads": 100,
+    "sleepTimeMessages": 10,
+    "sleepTimeAttachments": 1,
+    "timezone": "GMT"
+  },
+  "handler": [
+    {
+      "type": "global",
+      "match": {
+        "query": "has:attachment -in:trash -in:drafts -in:spam",
+        "maxMessageCount": 123,
+        "minMessageCount": 0,
+        "newerThan": "1m"
+      },
+      "actions": [
+        {
+          "name": "message.markRead",
+          "scope": "attachments"
+        },
+        {
+          "name": "message.markRead",
+          "scope": "messages"
+        },
+        {
+          "name": "thread.addLabel",
+          "scope": "threads",
+          "args": {
+            "label": "to-gdrive/processed"
+          }
+        }
+      ]
+    },
+    {
+      "type": "threads",
+      "match": {
+        "query": "has:attachment from:example4@example.com",
+        "maxMessageCount": 123,
+        "minMessageCount": 1
+      },
+      "handler": [
+        {
+          "type": "messages",
+          "match": {
+            "from": "(.+)@example.com",
+            "subject": "Prefix - (.*) - Suffix(.*)",
+            "to": "my\\.address\\+(.+)@gmail.com",
+            "is": [ "unread" ]
+          },
+          "handler": [
+            {
+              "type": "attachments",
+              "match": {
+                "name": "Image-([0-9]+)\\.jpg",
+                "contentType": "image/.*",
+                "largerThan": 12345,
+                "smallerThan": 123456
+              },
+              "actions": [
+                {
+                  "name": "file.storeToGDrive",
+                  "args": {
+                    "folderType": "id|path",
+                    "folder": "Folder2/Subfolder2/${message.subject.match.1}",
+                    "filename": "${message.subject} - ${match.file.1}.jpg",
+                    "onExists": "replace"
+                  }
+                }
+              ]
+            }
+          ],
+          "actions": [
+            {
+              "name": "message.markRead"
+            }
+          ]
+        }
+      ],
+      "actions": [
+        {
+          "name": "thread.addLabel",
+          "args": {
+            "label": "to-gdrive/processed"
+          }
+        }
+      ]
+    }
+  ]
+}

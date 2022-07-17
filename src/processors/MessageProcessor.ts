@@ -1,7 +1,7 @@
 import { ActionProvider } from "../actions/ActionProvider"
 import { Actions } from "../actions/Actions"
 import { Config } from "../config/Config"
-import { MessageRule } from "../config/MessageRule"
+import { MessageConfig } from "../config/MessageConfig"
 import { MessageContext } from "../context/MessageContext"
 import { ProcessingContext } from "../context/ProcessingContext"
 import { ThreadContext } from "../context/ThreadContext"
@@ -27,19 +27,19 @@ export class MessageProcessor {
     }
   }
 
-  public processMessageRules(messageRules: MessageRule[]) {
-    for (const messageRule of messageRules) {
-      this.processMessageRule(messageRule)
+  public processMessageRules(messageConfigs: MessageConfig[]) {
+    for (const messageConfig of messageConfigs) {
+      this.processMessageRule(messageConfig)
     }
   }
 
-  public processMessageRule(messageRule: MessageRule) {
+  public processMessageRule(messageConfig: MessageConfig) {
     for (const message of this.threadContext.thread.getMessages()) {
       const messageContext = new MessageContext(
-        messageRule,
+        messageConfig,
         message,
         this.threadContext.thread.getMessages().indexOf(message),
-        this.threadContext.threadRule.messageRules.indexOf(messageRule),
+        (this.threadContext.threadConfig.handler).indexOf(messageConfig),
       )
       this.processingContext.messageContext = messageContext
       this.processMessage(messageContext)
@@ -51,8 +51,8 @@ export class MessageProcessor {
    * @param message The message to be processed.
    * @param rule The rule to be processed.
    */
-  public processMessage(messageContext: MessageContext) {
-    const messageRule: MessageRule = messageContext.messageRule
+  public processMessage(messageContext: MessageContext) { // TODO: Check, if this.processingContext would be better here!
+    const messageConfig: MessageConfig = messageContext.messageConfig
     const message = messageContext.message
     this.logger.info(
       "      Processing message: " +
@@ -67,9 +67,9 @@ export class MessageProcessor {
       this.actionProvider,
       this.processingContext,
     )
-    if (messageRule.attachmentRules) {
+    if (messageConfig.handler) {
       // New rule configuration format
-      attachmentProcessor.processAttachmentRules(messageRule.attachmentRules)
+      attachmentProcessor.processAttachmentRules(messageConfig.handler)
     }
     // } else { // Old rule configuration format
     //     // TODO: Convert old rule configuration into new format instead of duplicate implementation

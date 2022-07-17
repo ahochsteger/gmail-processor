@@ -1,5 +1,7 @@
 import dateFormat from "dateformat"
-import { MessageRule } from "../config/MessageRule"
+import { AttachmentMatchConfig } from "../config/AttachmentMatchConfig"
+import { MessageConfig } from "../config/MessageConfig"
+import { MessageMatchConfig } from "../config/MessageMatchConfig"
 import { ProcessingContext } from "../context/ProcessingContext"
 
 export class PatternUtil {
@@ -84,7 +86,7 @@ export class PatternUtil {
       let hasAtLeastOneMatch = false
       const data: string = dataMap.get(keyName) as string
       // tslint:disable-next-line: no-conditional-assignment
-      while ((result = regex.exec(data)) !== null) {
+      if ((result = regex.exec(data)) !== null) {
         hasAtLeastOneMatch = true
         this.logger.log("Matches: " + result.length)
         for (let i = 1; i < result.length; i++) {
@@ -163,13 +165,13 @@ export class PatternUtil {
     thread: GoogleAppsScript.Gmail.GmailThread,
     msgIdx: number,
     attIdx: number,
-    rule: MessageRule,
+    messageConfig: MessageConfig,
     attRuleIdx: number,
   ): Map<string, any> {
     let m = new Map<string, any>()
     msgIdx = msgIdx !== undefined ? msgIdx : 0
     attIdx = attIdx !== undefined ? attIdx : 0
-    rule = rule !== undefined ? rule : new MessageRule()
+    messageConfig = messageConfig !== undefined ? messageConfig : new MessageConfig()
     attRuleIdx = attRuleIdx !== undefined ? attRuleIdx : 0
 
     // Thread data
@@ -180,12 +182,12 @@ export class PatternUtil {
     if (messages !== undefined && messages != null && messages.length > 0) {
       const message = thread.getMessages()[msgIdx]
       m = PatternUtil.mergeMaps(m, this.getSubstitutionMapFromMessage(message))
-      if (rule.match) {
+      if (messageConfig.match) {
         // Test for message rules
         const messgageMatch = this.buildRegExpSubustitutionMap(
           m,
           "message",
-          rule.match,
+          this.getRegexMapFromMessageMatchConfig(messageConfig.match),
         )
         if (messgageMatch == null) {
           m.set("message.matched", false)
@@ -209,15 +211,15 @@ export class PatternUtil {
         )
         m.set("attachment.index", attIdx + 1)
         if (
-          rule.attachmentRules !== undefined &&
+          messageConfig.handler !== undefined &&
           attRuleIdx >= 0 &&
-          attRuleIdx < rule.attachmentRules.length
+          attRuleIdx < messageConfig.handler.length
         ) {
-          const attachmentRule = rule.attachmentRules[attRuleIdx]
+          const attachmentRule = messageConfig.handler[attRuleIdx]
           const attachmentMatch = this.buildRegExpSubustitutionMap(
             m,
             "attachment",
-            attachmentRule.match,
+            this.getRegexMapFromAttachmentMatchConfig(attachmentRule.match),
           )
           if (attachmentMatch == null) {
             m.set("attachment.matched", false)
@@ -236,19 +238,40 @@ export class PatternUtil {
     return m
   }
 
+  public static getRegexMapFromAttachmentMatchConfig(amc: AttachmentMatchConfig | undefined): Map<string,string> {
+    const m = new Map<string,string>()
+    if (amc === undefined) {
+      return m
+    }
+    if (amc.name) m.set("name", amc.name)
+    if (amc.contentType) m.set("contentType", amc.contentType)
+    return m
+  }
+
+  public static getRegexMapFromMessageMatchConfig(mmc: MessageMatchConfig | undefined): Map<string,string> {
+    const m = new Map<string,string>()
+    if (mmc === undefined) {
+      return m
+    }
+    if (mmc.from) m.set("from", mmc.from)
+    if (mmc.subject) m.set("subject", mmc.subject)
+    if (mmc.to) m.set("to", mmc.to)
+    return m
+  }
+
   public static substitutePatternFromThread(
     pattern: string,
     thread: GoogleAppsScript.Gmail.GmailThread,
     msgIdx: number,
     attIdx: number,
-    rule: MessageRule,
+    messageConfig: MessageConfig,
     attRuleIdx = 0,
   ) {
     const m = this.buildSubstitutionMap(
       thread,
       msgIdx,
       attIdx,
-      rule,
+      messageConfig,
       attRuleIdx,
     )
     return this.substitutePatternFromMap(pattern, m)
@@ -267,8 +290,8 @@ export class PatternUtil {
       ? context.attachmentContext.index
       : -1
     const rule = context.messageContext
-      ? context.messageContext.messageRule
-      : new MessageRule()
+      ? context.messageContext.messageConfig
+      : new MessageConfig()
     const attRuleIdx = context.attachmentContext
       ? context.attachmentContext.ruleIndex
       : -1

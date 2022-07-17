@@ -38,6 +38,6 @@ export class GmailProcessor {
       processingContext,
     )
     threadProcessor.logger = this.logger
-    threadProcessor.processThreadRules(this.config.threadRules)
+    threadProcessor.processThreadRules(this.config.handler)
   }
 }

@@ -1,35 +1,27 @@
-import { ThreadRule } from "./ThreadRule"
-import "reflect-metadata"
-import { Type } from "class-transformer"
+import { ConfigBase, Model } from "./ConfigBase"
+import { GlobalConfig } from "./GlobalConfig"
+import { SettingsConfig } from "./SettingsConfig"
+import { ThreadConfig } from "./ThreadConfig"
 
 /**
- * @example
- * {
- *     globalFilter: "-in:trash -in:drafts -in:spam",
- *     maxRuntime: 280,
- *     newerThan: "1m",
- *     processedLabel: "to-gdrive/processed",
- *     sleepTime: 100,
- *     timezone: "GMT",
- *     threadRules: [ ... ],
- * }
+ * Represents a configuration for GMail2GDrive
  */
-export class Config {
-  /** Global Gmail search filter */
-  public globalFilter = "has:attachment -in:trash -in:drafts -in:spam"
-  /** Maximum batch size for thread search results */
-  public maxBatchSize = 10
-  /** Maximum script runtime in seconds (google scripts will be killed automatically after 6 minutes) */
-  public maxRuntime = 280
-  /** Only process message newer than (leave empty for no restriction; use d, m and y for day, month and year) */
-  public newerThan = "1m"
-  /** Gmail label for processed threads (will be created, if not existing) */
-  public processedLabel = "to-gdrive/processed"
-  /** Sleep time in milli seconds between processed messages */
-  public sleepTime = 100
-  /** Timezone for date/time operations */
-  public timezone = "GMT"
-  /** List of thread processing rules */
-  @Type(() => ThreadRule)
-  public threadRules: ThreadRule[] = []
+@Model
+export class Config extends ConfigBase<Config> {
+  /**
+   * The description of the GMail2GDrive config
+   */
+  description = ""
+  /**
+   * The global configuration that defines matching for all threads as well as actions for all threads, messages or attachments.
+   */
+  global: GlobalConfig = new GlobalConfig()
+  /**
+   * The list of handler that define the way nested threads, messages or attachments are processed
+   */
+  handler: ThreadConfig[] = []
+  /**
+   * Represents a settings config that affect the way GMail2GDrive works.
+   */
+  settings: SettingsConfig = new SettingsConfig()
 }

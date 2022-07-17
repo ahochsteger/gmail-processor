@@ -1,0 +1,334 @@
+{
+    "$ref": "#/definitions/Config",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "definitions": {
+        "ActionConfig": {
+            "description": "Represents a config to perform a certain action for a GMail thread/message/attachment.",
+            "properties": {
+                "args": {
+                    "additionalProperties": {},
+                    "description": "The arguments for a certain action",
+                    "type": "object"
+                },
+                "description": {
+                    "default": "",
+                    "description": "The description for the action",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "The name of the action to be executed",
+                    "type": "string"
+                },
+                "scope": {
+                    "description": "The handler type to which this action is bound to (defaults to the handler type where the action is defined)",
+                    "enum": [
+                        "attachments",
+                        "global",
+                        "messages",
+                        "threads"
+                    ],
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "AttachmentConfig": {
+            "description": "Represents a config to handle a certain GMail attachment",
+            "properties": {
+                "actions": {
+                    "default": [],
+                    "description": "The list actions to be executed for their respective handler scopes",
+                    "items": {
+                        "$ref": "#/definitions/ActionConfig"
+                    },
+                    "type": "array"
+                },
+                "description": {
+                    "default": "",
+                    "description": "The description of the attachment handler config",
+                    "type": "string"
+                },
+                "match": {
+                    "$ref": "#/definitions/AttachmentMatchConfig",
+                    "description": "Specifies which attachments match for further processing"
+                },
+                "type": {
+                    "default": "attachments",
+                    "description": "The type of handler",
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "AttachmentMatchConfig": {
+            "description": "Represents a config to match a certain GMail attachment",
+            "properties": {
+                "contentType": {
+                    "default": ".*",
+                    "description": "A RegEx matching the content type of the attachment",
+                    "type": "string"
+                },
+                "includeAttachments": {
+                    "default": true,
+                    "description": "Should regular attachments be included in attachment processing (default: true)",
+                    "type": "boolean"
+                },
+                "includeInlineImages": {
+                    "default": true,
+                    "description": "Should inline images be included in attachment processing (default: true)",
+                    "type": "boolean"
+                },
+                "largerThan": {
+                    "default": -1,
+                    "description": "Only include attachments larger than the given size in bytes",
+                    "type": "number"
+                },
+                "name": {
+                    "default": ".*",
+                    "description": "A RegEx matching the name of the attachment",
+                    "type": "string"
+                },
+                "smallerThan": {
+                    "default": -1,
+                    "description": "Only include attachments smaller than the given size in bytes",
+                    "type": "number"
+                }
+            },
+            "type": "object"
+        },
+        "Config": {
+            "description": "Represents a configuration for GMail2GDrive",
+            "properties": {
+                "description": {
+                    "default": "",
+                    "description": "The description of the GMail2GDrive config",
+                    "type": "string"
+                },
+                "global": {
+                    "$ref": "#/definitions/GlobalConfig",
+                    "description": "The global configuration that defines matching for all threads as well as actions for all threads, messages or attachments."
+                },
+                "handler": {
+                    "default": [],
+                    "description": "The list of handler that define the way nested threads, messages or attachments are processed",
+                    "items": {
+                        "$ref": "#/definitions/ThreadConfig"
+                    },
+                    "type": "array"
+                },
+                "settings": {
+                    "$ref": "#/definitions/SettingsConfig",
+                    "description": "Represents a settings config that affect the way GMail2GDrive works."
+                }
+            },
+            "type": "object"
+        },
+        "GlobalConfig": {
+            "description": "The global configuration that defines matching for all threads as well as actions for all threads, messages or attachments.",
+            "properties": {
+                "actions": {
+                    "default": [],
+                    "description": "The list of global actions that are always executed for their respective handler scopes",
+                    "items": {
+                        "$ref": "#/definitions/ActionConfig"
+                    },
+                    "type": "array"
+                },
+                "match": {
+                    "$ref": "#/definitions/ThreadMatchConfig",
+                    "description": "The global thread matching parameters applied in addition to each thread configuration"
+                },
+                "type": {
+                    "default": "global",
+                    "description": "The type of handler",
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "MessageConfig": {
+            "description": "Represents a config to handle a certain GMail message",
+            "properties": {
+                "actions": {
+                    "default": [],
+                    "description": "The list actions to be executed for their respective handler scopes",
+                    "items": {
+                        "$ref": "#/definitions/ActionConfig"
+                    },
+                    "type": "array"
+                },
+                "description": {
+                    "default": "",
+                    "description": "The description of the message handler config",
+                    "type": "string"
+                },
+                "handler": {
+                    "default": [],
+                    "description": "The list of handler that define the way attachments are processed",
+                    "items": {
+                        "$ref": "#/definitions/AttachmentConfig"
+                    },
+                    "type": "array"
+                },
+                "match": {
+                    "$ref": "#/definitions/MessageMatchConfig",
+                    "description": "Specifies which attachments match for further processing"
+                },
+                "type": {
+                    "default": "messages",
+                    "description": "The type of handler",
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "MessageMatchConfig": {
+            "description": "Represents a config to match a certain GMail message",
+            "properties": {
+                "from": {
+                    "default": ".*",
+                    "type": "string"
+                },
+                "is": {
+                    "default": [],
+                    "description": "A list of properties matching messages should have",
+                    "items": {
+                        "enum": [
+                            "read",
+                            "starred",
+                            "unread",
+                            "unstarred"
+                        ],
+                        "type": "string"
+                    },
+                    "type": "array"
+                },
+                "newerThan": {
+                    "default": "",
+                    "description": "A relative date/time according to https://github.com/cmaurer/relative.time.parser#readme or an RFC 3339 date/time format matching messages newer than the given date/time",
+                    "type": "string"
+                },
+                "olderThan": {
+                    "default": "",
+                    "description": "An RFC 3339 date/time format matching messages older than the given date/time",
+                    "type": "string"
+                },
+                "subject": {
+                    "default": ".*",
+                    "description": "A RegEx matching the subject of messages",
+                    "type": "string"
+                },
+                "to": {
+                    "default": ".*",
+                    "description": "A RegEx matching the recipient email address of messages",
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "SettingsConfig": {
+            "description": "Represents a settings config that affect the way GMail2GDrive works.",
+            "properties": {
+                "maxBatchSize": {
+                    "default": 10,
+                    "description": "The maximum batch size of threads to process in a single run to respect Google processing limits",
+                    "type": "number"
+                },
+                "maxRuntime": {
+                    "default": 280,
+                    "description": "The maximum runtime in seconds for a single run to respect Google processing limits",
+                    "type": "number"
+                },
+                "processedLabel": {
+                    "default": "to-gdrive/processed",
+                    "description": "The label to be added to processed GMail threads",
+                    "type": "string"
+                },
+                "sleepTimeAttachments": {
+                    "default": 0,
+                    "description": "The sleep time in milliseconds between processing each attachment",
+                    "type": "number"
+                },
+                "sleepTimeMessages": {
+                    "default": 0,
+                    "description": "The sleep time in milliseconds between processing each message",
+                    "type": "number"
+                },
+                "sleepTimeThreads": {
+                    "default": 100,
+                    "description": "The sleep time in milliseconds between processing each thread",
+                    "type": "number"
+                },
+                "timezone": {
+                    "default": "UTC",
+                    "description": "The timezone used for formatting file and folder names",
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "ThreadConfig": {
+            "description": "Represents a config handle a certain GMail thread",
+            "properties": {
+                "actions": {
+                    "default": [],
+                    "description": "The list actions to be executed for their respective handler scopes",
+                    "items": {
+                        "$ref": "#/definitions/ActionConfig"
+                    },
+                    "type": "array"
+                },
+                "description": {
+                    "default": "",
+                    "description": "The description of the thread handler config",
+                    "type": "string"
+                },
+                "handler": {
+                    "default": [],
+                    "description": "The list of handler that define the way nested messages or attachments are processed",
+                    "items": {
+                        "$ref": "#/definitions/MessageConfig"
+                    },
+                    "type": "array"
+                },
+                "match": {
+                    "$ref": "#/definitions/ThreadMatchConfig",
+                    "description": "Specifies which threads match for further processing"
+                },
+                "type": {
+                    "default": "threads",
+                    "description": "The type of handler",
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "ThreadMatchConfig": {
+            "description": "Represents a config to match a certain GMail thread",
+            "properties": {
+                "maxMessageCount": {
+                    "default": -1,
+                    "description": "The maximum number of messages a matching thread is allowed to have",
+                    "type": "number"
+                },
+                "minMessageCount": {
+                    "default": 1,
+                    "description": "The minimum number of messages a matching thread must have",
+                    "type": "number"
+                },
+                "newerThan": {
+                    "default": "1m",
+                    "description": "Only process threads with message newer than (leave empty for no restriction; use d, m and y for day, month and year)",
+                    "type": "string"
+                },
+                "query": {
+                    "default": "",
+                    "description": "The GMail search query to find threads to be processed (see http://support.google.com/mail/bin/answer.py?hl=en&answer=7190 for details)",
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        }
+    }
+}
+

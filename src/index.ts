@@ -1,14 +1,13 @@
 import { AllActions } from "./actions/AllActions"
 import { Config } from "./config/Config"
+import { GmailProcessor } from "./processors/GmailProcessor"
 import { GoogleAppsScriptContext } from "./context/GoogleAppsScriptContext"
 import { ProcessingContext } from "./context/ProcessingContext"
-import { GmailProcessor } from "./processors/GmailProcessor"
 import { ThreadProcessor } from "./processors/ThreadProcessor"
-import "reflect-metadata"
-import { plainToInstance } from "class-transformer"
+import { V1Config } from "./config/v1/V1Config"
+import { V1ToV2Converter } from "./config/v1/V1ToV2Converter"
 
-export function run(jsonConfig: any) {
-  const config = plainToInstance(Config, jsonConfig)
+export function run(config: Config) {
   const gasContext: GoogleAppsScriptContext = new GoogleAppsScriptContext(
     GmailApp,
     DriveApp,
@@ -31,9 +30,10 @@ export function run(jsonConfig: any) {
   gmailProcessor.run()
 }
 
-// TODO: Remove - is just for compatibility
-export function runGmailProcessorWithConfig(settings: any, rules: any[]) {
-  const config = settings
-  config.threadRules = rules
+export function runWithV1Config(v1configJson: any) {
+  const configV1 = new V1Config(v1configJson)
+  const config = V1ToV2Converter.v1ConfigToV2Config(configV1)
+  console.warn("Using deprecated v1 config format - switching to the new v2 config format is strongly recommended! Use instead:")
+  console.warn("Lib.run(" + JSON.stringify(config, undefined, 2) + ")")
   run(config)
 }

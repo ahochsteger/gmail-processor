@@ -1,3 +1,5 @@
+import { ActionConfig } from "../../src/config/ActionConfig"
+import { AttachmentConfig } from "../../src/config/AttachmentConfig"
 import { Config } from "../../src/config/Config"
 import { mock } from "jest-mock-extended"
 import { AllActions } from "../../src/actions/AllActions"
@@ -6,8 +8,10 @@ import { GmailProcessor } from "../../src/processors/GmailProcessor"
 import { ThreadProcessor } from "../../src/processors/ThreadProcessor"
 import { GoogleAppsScriptContext } from "../../src/context/GoogleAppsScriptContext"
 import { MockObjects } from "./MockObjects"
-import { plainToInstance } from "class-transformer"
-import { ThreadRule } from "../../src/config/ThreadRule"
+import { MessageConfig } from "../../src/config/MessageConfig"
+import { MessageFlag } from "../../src/config/MessageFlag"
+import { SettingsConfig } from "../../src/config/SettingsConfig"
+import { ThreadConfig } from "../../src/config/ThreadConfig"
 
 export class MockFactory {
   public static newMockObjects() {
@@ -24,64 +28,57 @@ export class MockFactory {
     return gasContext
   }
 
-  public static newDefaultSettingsJson(includeThreadRules = false) {
-    return {
-      // Global filter
-      globalFilter: "has:attachment -in:trash -in:drafts -in:spam",
-      // Maximum script runtime in seconds (google scripts will be killed after 5 minutes):
+  public static newDefaultSettingsConfig(): SettingsConfig {
+    return new SettingsConfig({
+      maxBatchSize: 100,
       maxRuntime: 280,
-      // Only process message newer than (leave empty for no restriction; use d, m and y for day, month and year):
-      newerThan: "1m",
-      // Gmail label for processed threads (will be created, if not existing):
       processedLabel: "to-gdrive/processed",
-      // Sleep time in milli seconds between processed messages:
-      sleepTime: 100,
-      // Timezone for date/time operations:
-      timezone: "GMT",
-      threadRules: includeThreadRules ? [this.newDefaultThreadRuleJson()] : [],
-    }
+      sleepTimeThreads: 100,
+      sleepTimeMessages: 10,
+      sleepTimeAttachments: 1,
+      timezone: "UTC",
+    })
   }
 
-  public static newDefaultCommandJson() {
-    return {
-      name: "file.storeToGDrive",
+  public static newDefaultActionConfig(): ActionConfig {
+    return new ActionConfig({
       args: {
         folderType: "path",
         folder: "Folder2/Subfolder2/${message.subject.match.1}",
         filename: "${message.subject} - ${match.file.1}.jpg",
         onExists: "replace",
       },
-    }
+      name: "file.storeToGDrive",
+    })
   }
 
-  public static newDefaultAttachmentRuleJson(includeCommands = false) {
-    return {
+  public static newDefaultAttachmentConfig(includeCommands = false): AttachmentConfig {
+    return new AttachmentConfig({
+      actions: includeCommands ? [ this.newDefaultActionConfig() as any] : [],
       match: {
         name: "Image-([0-9]+)\\.jpg",
         contentType: "image/.+",
       },
-      commands: includeCommands ? [this.newDefaultCommandJson()] : [],
-    }
+    })
   }
 
-  public static newDefaultThreadRuleJson(includeCommands=false, includeMessages = false): any {
-    return {
+  public static newDefaultThreadConfig(includeCommands=false, includeMessages = false): ThreadConfig {
+    return new ThreadConfig({
+      actions: includeCommands ? [ this.newDefaultActionConfig() as any ] : [],
       description: "A sample thread rule",
-      filter: "has:attachment from:example@example.com",
-      commands: includeCommands ? [ this.newDefaultCommandJson() ] : [],
-      messageRules: includeMessages ? [this.newDefaultMessageRuleJson() ] : []
-    }
+      handler: includeMessages ? [ this.newDefaultMessageConfig() as any ] : [],
+      match: {
+        query: "has:attachment from:example@example.com",
+      },
+    })
   }
 
-  public static newComplexThreadRulesJson(): any[] {
+  public static newComplexThreadConfigList(): ThreadConfig[] {
     return [
       // Responsible: ThreadProcessor.processRules
-      {
+      new ThreadConfig({
         // Responsible: ThreadProcessor.processRule
-        description:
-          "Example that stores all attachments of all found threads to a certain GDrive folder",
-        filter: "has:attachment from:example@example.com",
-        commands: [
+        actions: [
           // Responsible: ThreadProcessor.performActions
           {
             // Responsible: ThreadProcessor.performAction
@@ -89,17 +86,24 @@ export class MockFactory {
             args: { location: "Folder1/Subfolder1/${attachment.name}" },
           },
         ],
-      },
-      {
+        description:
+          "Example that stores all attachments of all found threads to a certain GDrive folder",
+        match: {
+          query: "has:attachment from:example@example.com",
+        },
+      }),
+      new ThreadConfig({
         // Responsible: ThreadProcessor.processRule
         description:
           "Example that stores all attachments of matching messages to a certain GDrive folder",
-        filter: "has:attachment from:example@example.com",
-        messagesRules: [
+        match: {
+          query: "has:attachment from:example@example.com",
+        },
+        handler: [
           // Responsible: MessageProcessor.processRules
           {
             // Responsible: MessageProcessor.processRule
-            commands: [
+            actions: [
               // Responsible: MessageProcessor.performActions
               {
                 // Responsible: MessageProcessor.performAction
@@ -115,10 +119,12 @@ export class MockFactory {
             },
           },
         ],
-      },
-      {
-        filter: "has:attachment from:example4@example.com",
-        messagesRules: [
+      }),
+      new ThreadConfig({
+        match: {
+          query: "has:attachment from:example4@example.com",
+        },
+        handler: [
           // Responsible: MessageProcessor.processRules
           {
             // Responsible: MessageProcessor.processRule
@@ -127,20 +133,21 @@ export class MockFactory {
               from: "(.+)@example.com",
               subject: "Prefix - (.*) - Suffix(.*)",
               to: "my\\.address\\+(.+)@gmail.com",
+              is: [ MessageFlag.UNREAD ],
               // TODO: Find out how to match only read/unread or starred/unstarred messages?
             },
-            commands: [
+            actions: [
               // Responsible: MessageProcessor.performActions
               // TODO: Decide if only actions of a certain type (thread, message, attachment) are allowed?
               // Pro: More flexible (e.g. forward message, if a certain attachment rule matches)
               { name: "markMessageRead" }, // Responsible: MessageProcessor.processAction
             ],
-            attachmentRules: [
+            handler: [
               // Responsible: AttachmentProcessor.processRules
               {
                 // Responsible: AttachmentProcessor.processRule
                 match: { name: "Image-([0-9]+)\\.jpg" }, // Responsible: AttachmentProcessor.matches
-                commands: [
+                actions: [
                   // Responsible: AttachmentProcessor.performActions
                   {
                     // Responsible: AttachmentProcessor.performAction
@@ -156,7 +163,7 @@ export class MockFactory {
               },
               {
                 match: { name: ".+\\..+" },
-                commands: [
+                actions: [
                   {
                     name: "storeAttachment",
                     args: {
@@ -170,30 +177,27 @@ export class MockFactory {
             ],
           },
         ],
-      },
+      }),
     ]
   }
 
-  public static newDefaultConfig() {
-    const cfg = plainToInstance(Config, this.newDefaultSettingsJson())
-    cfg.threadRules = plainToInstance(
-      ThreadRule,
-      this.newComplexThreadRulesJson(),
-    )
+  public static newDefaultConfig(): Config {
+    const cfg: Config = new Config() // TODO: Support without empty object payload
+    cfg.handler = this.newComplexThreadConfigList()
     return cfg
   }
 
-  public static newDefaultMessageRuleJson(includeCommands = false, includeAttachmentRules = false) {
-    return {
+  public static newDefaultMessageConfig(includeCommands = false, includeAttachmentRules = false): MessageConfig {
+    return new MessageConfig({
       match: {
         from: "(.+)@example.com",
         subject: "Prefix - (.*) - Suffix(.*)",
         to: "my\\.address\\+(.+)@gmail.com",
+        is: [ MessageFlag.UNREAD ],
       },
-      is: [ "unread" ],
-      commands: includeCommands ? [this.newDefaultCommandJson()] : [],
-      attachmentRules: includeAttachmentRules ? [this.newDefaultAttachmentRuleJson()] : [],
-    }
+      actions: includeCommands ? [this.newDefaultActionConfig() as any] : [],
+      handler: includeAttachmentRules ? [this.newDefaultAttachmentConfig() as any] : [],
+    })
   }
 
   public static newGmailProcessorMock(
