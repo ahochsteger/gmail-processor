@@ -1,16 +1,14 @@
-import { ConfigBase, Model } from "./ConfigBase"
 import { HandlerType } from "./ConfigTypes"
 
 /**
  * Represents a config to perform a certain action for a GMail thread/message/attachment.
  */
-@Model
-export class ActionConfig extends ConfigBase<ActionConfig> {
+export class ActionConfig {
   /**
    * The arguments for a certain action
    */
   args?: {
-    [k: string]: unknown;
+    [k: string]: unknown
   }
   /**
    * The description for the action

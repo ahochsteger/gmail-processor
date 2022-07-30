@@ -1,5 +1,3 @@
-import { ActionConfig } from "../../src/config/ActionConfig"
-import { AttachmentConfig } from "../../src/config/AttachmentConfig"
 import { Config } from "../../src/config/Config"
 import { mock } from "jest-mock-extended"
 import { AllActions } from "../../src/actions/AllActions"
@@ -8,10 +6,9 @@ import { GmailProcessor } from "../../src/processors/GmailProcessor"
 import { ThreadProcessor } from "../../src/processors/ThreadProcessor"
 import { GoogleAppsScriptContext } from "../../src/context/GoogleAppsScriptContext"
 import { MockObjects } from "./MockObjects"
-import { MessageConfig } from "../../src/config/MessageConfig"
-import { MessageFlag } from "../../src/config/MessageFlag"
-import { SettingsConfig } from "../../src/config/SettingsConfig"
 import { ThreadConfig } from "../../src/config/ThreadConfig"
+import { MessageProcessor } from '../../src/processors/MessageProcessor';
+import { ThreadContext } from "../../src/context/ThreadContext"
 
 export class MockFactory {
   public static newMockObjects() {
@@ -28,8 +25,8 @@ export class MockFactory {
     return gasContext
   }
 
-  public static newDefaultSettingsConfig(): SettingsConfig {
-    return new SettingsConfig({
+  public static newDefaultSettingsConfig(): any {
+    return {
       maxBatchSize: 100,
       maxRuntime: 280,
       processedLabel: "to-gdrive/processed",
@@ -37,11 +34,11 @@ export class MockFactory {
       sleepTimeMessages: 10,
       sleepTimeAttachments: 1,
       timezone: "UTC",
-    })
+    }
   }
 
-  public static newDefaultActionConfig(): ActionConfig {
-    return new ActionConfig({
+  public static newDefaultActionConfig(): any {
+    return {
       args: {
         folderType: "path",
         folder: "Folder2/Subfolder2/${message.subject.match.1}",
@@ -49,34 +46,47 @@ export class MockFactory {
         onExists: "replace",
       },
       name: "file.storeToGDrive",
-    })
+    }
   }
 
-  public static newDefaultAttachmentConfig(includeCommands = false): AttachmentConfig {
-    return new AttachmentConfig({
+  public static newDefaultAttachmentConfig(includeCommands = false): any {
+    return {
       actions: includeCommands ? [ this.newDefaultActionConfig() as any] : [],
       match: {
         name: "Image-([0-9]+)\\.jpg",
         contentType: "image/.+",
       },
-    })
+    }
   }
 
-  public static newDefaultThreadConfig(includeCommands=false, includeMessages = false): ThreadConfig {
-    return new ThreadConfig({
+  public static newDefaultMessageConfig(includeCommands = false, includeAttachmentRules = false): any {
+    return {
+      match: {
+        from: "(.+)@example.com",
+        subject: "Prefix - (.*) - Suffix(.*)",
+        to: "my\\.address\\+(.+)@gmail.com",
+        is: [ "unread" ],
+      },
+      actions: includeCommands ? [this.newDefaultActionConfig() as any] : [],
+      handler: includeAttachmentRules ? [this.newDefaultAttachmentConfig() as any] : [],
+    }
+  }
+
+  public static newDefaultThreadConfig(includeCommands=false, includeMessages = false): any {
+    return {
       actions: includeCommands ? [ this.newDefaultActionConfig() as any ] : [],
       description: "A sample thread rule",
       handler: includeMessages ? [ this.newDefaultMessageConfig() as any ] : [],
       match: {
         query: "has:attachment from:example@example.com",
       },
-    })
+    }
   }
 
-  public static newComplexThreadConfigList(): ThreadConfig[] {
+  public static newComplexThreadConfigList(): any[] {
     return [
       // Responsible: ThreadProcessor.processRules
-      new ThreadConfig({
+      {
         // Responsible: ThreadProcessor.processRule
         actions: [
           // Responsible: ThreadProcessor.performActions
@@ -91,8 +101,8 @@ export class MockFactory {
         match: {
           query: "has:attachment from:example@example.com",
         },
-      }),
-      new ThreadConfig({
+      },
+      {
         // Responsible: ThreadProcessor.processRule
         description:
           "Example that stores all attachments of matching messages to a certain GDrive folder",
@@ -119,8 +129,8 @@ export class MockFactory {
             },
           },
         ],
-      }),
-      new ThreadConfig({
+      },
+      {
         match: {
           query: "has:attachment from:example4@example.com",
         },
@@ -133,7 +143,7 @@ export class MockFactory {
               from: "(.+)@example.com",
               subject: "Prefix - (.*) - Suffix(.*)",
               to: "my\\.address\\+(.+)@gmail.com",
-              is: [ MessageFlag.UNREAD ],
+              is: [ "unread" ],
               // TODO: Find out how to match only read/unread or starred/unstarred messages?
             },
             actions: [
@@ -177,27 +187,14 @@ export class MockFactory {
             ],
           },
         ],
-      }),
+      },
     ]
   }
 
-  public static newDefaultConfig(): Config {
-    const cfg: Config = new Config() // TODO: Support without empty object payload
-    cfg.handler = this.newComplexThreadConfigList()
-    return cfg
-  }
-
-  public static newDefaultMessageConfig(includeCommands = false, includeAttachmentRules = false): MessageConfig {
-    return new MessageConfig({
-      match: {
-        from: "(.+)@example.com",
-        subject: "Prefix - (.*) - Suffix(.*)",
-        to: "my\\.address\\+(.+)@gmail.com",
-        is: [ MessageFlag.UNREAD ],
-      },
-      actions: includeCommands ? [this.newDefaultActionConfig() as any] : [],
-      handler: includeAttachmentRules ? [this.newDefaultAttachmentConfig() as any] : [],
-    })
+  public static newDefaultConfig(): any {
+    return {
+      handler: this.newComplexThreadConfigList()
+    }
   }
 
   public static newGmailProcessorMock(
@@ -218,6 +215,39 @@ export class MockFactory {
     )
     gmailProcessor.setLogger(gasContext.logger)
     return gmailProcessor
+  }
+
+  public static newThreadProcessorMock(
+    config: Config,
+    gasContext = MockFactory.newGasContextMock(),
+  ) {
+    const actionProvider = new AllActions(gasContext, config)
+    const threadProcessor = new ThreadProcessor(
+      gasContext.gmailApp,
+      actionProvider,
+      new ProcessingContext(gasContext, config),
+    )
+    return threadProcessor
+  }
+
+  public static newMessageProcessorMock(
+    config: Config,
+    gasContext = MockFactory.newGasContextMock(),
+  ) {
+    const actionProvider = new AllActions(gasContext, config)
+    const processingContext = new ProcessingContext(gasContext, config)
+    processingContext.threadContext = new ThreadContext(
+      new ThreadConfig(),
+      this.newThreadMock(),
+      0,
+      0,
+    )
+    const messageProcessor = new MessageProcessor(
+      gasContext.gmailApp,
+      actionProvider,
+      processingContext,
+    )
+    return messageProcessor
   }
 
   public static newThreadMock(
@@ -242,6 +272,7 @@ export class MockFactory {
     mockedGmailThread.getMessages.mockReturnValue(MockFactory.getMessages(data))
     return mockedGmailThread
   }
+
   public static newMessageMock(
     data: any = {},
   ): GoogleAppsScript.Gmail.GmailMessage {
@@ -259,8 +290,11 @@ export class MockFactory {
     mockedGmailMessage.getReplyTo.mockReturnValue(data.replyTo)
     mockedGmailMessage.getSubject.mockReturnValue(data.subject)
     mockedGmailMessage.getTo.mockReturnValue(data.to)
+    mockedGmailMessage.isStarred.mockReturnValue(data.isStarred)
+    mockedGmailMessage.isUnread.mockReturnValue(data.isUnread)
     return mockedGmailMessage
   }
+
   public static newAttachmentMock(
     data: any = {},
   ): GoogleAppsScript.Gmail.GmailAttachment {
@@ -274,6 +308,7 @@ export class MockFactory {
     mockedGmailAttachment.getDataAsString.mockReturnValue(data.content) // TODO: Check, if this works for binaries too!
     return mockedGmailAttachment
   }
+
   private static getMessages(data: any): GoogleAppsScript.Gmail.GmailMessage[] {
     const a = []
     for (let i = 0; i < data.messages.length; i++) {
@@ -281,6 +316,7 @@ export class MockFactory {
     }
     return a
   }
+
   private static getAttachments(
     data: any,
   ): GoogleAppsScript.Gmail.GmailAttachment[] {
@@ -290,12 +326,14 @@ export class MockFactory {
     }
     return a
   }
+
   private static lengthInUtf8Bytes(str: string) {
     // See https://stackoverflow.com/questions/5515869/string-length-in-bytes-in-javascript/5515960#5515960
     // Matches only the 10.. bytes that are non-initial characters in a multi-byte sequence.
     const m = encodeURIComponent(str).match(/%[89ABab]/g)
     return str.length + (m ? m.length : 0)
   }
+
   private static getThreadSampleData(data: any): any {
     data = typeof data === "undefined" ? { messages: [] } : data // Allows calling without data parameter
     const sampleMessages = [
@@ -350,6 +388,8 @@ export class MockFactory {
       subject: "message subject",
       to: "message-to@example.com",
       attachments: sampleAttachments,
+      isStarred: false,
+      isUnread: true,
     }
     Object.assign(sampleData, data)
     return sampleData

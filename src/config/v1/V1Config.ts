@@ -1,8 +1,7 @@
-import { ConfigBase, Model } from "../ConfigBase"
+import { Type } from "class-transformer"
 import { V1Rule } from "./V1Rule"
 
-@Model
-export class V1Config extends ConfigBase<V1Config> {
+export class V1Config {
   /** Global filter */
   globalFilter = "has:attachment -in:trash -in:drafts -in:spam"
   /** Gmail label for processed threads (will be created, if not existing) */
@@ -16,7 +15,8 @@ export class V1Config extends ConfigBase<V1Config> {
   /** Timezone for date/time operations */
   timezone = "GMT"
   /** Processing rules */
-  rules: V1Rule[] = []
+  @Type(() => V1Rule)
+  rules!: V1Rule[]
 }
 
 /*

@@ -1,25 +1,22 @@
-import { ConfigBase, Model } from "../ConfigBase"
-
-@Model
-export class V1Rule extends ConfigBase<V1Rule> {
-    /** Archive thread after processing */
-    archive = false
-    /** Rename matching attachments from the given filename */
-    filenameFrom = ""
-    /** Rename matching attachments from the given filename regex */
-    filenameFromRegexp = ""
-    /** Rename matching attachments to the given filename */
-    filenameTo = ""
-    /** Search filter for threads */
-    filter = ""
-    /** GDrive folder to store attachments to */
-    folder = ""
-    /** Restrict to threads containing messages newer than the given relative date/time */
-    newerThan = ""
-    /** Add the given label to the processed thread */
-    ruleLabel = ""
-    /** Save the thread to PDF */
-    saveThreadPDF = false
+export class V1Rule {
+  /** Archive thread after processing */
+  archive = false
+  /** Rename matching attachments from the given filename */
+  filenameFrom = ""
+  /** Rename matching attachments from the given filename regex */
+  filenameFromRegexp = ""
+  /** Rename matching attachments to the given filename */
+  filenameTo = ""
+  /** Search filter for threads */
+  filter = ""
+  /** GDrive folder to store attachments to */
+  folder = ""
+  /** Restrict to threads containing messages newer than the given relative date/time */
+  newerThan = ""
+  /** Add the given label to the processed thread */
+  ruleLabel = ""
+  /** Save the thread to PDF */
+  saveThreadPDF = false
 }
 
 /*

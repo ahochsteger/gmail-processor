@@ -1,10 +1,7 @@
-import { ConfigBase, Model } from "./ConfigBase"
-
 /**
  * Represents a config to match a certain GMail attachment
  */
-@Model
-export class AttachmentMatchConfig extends ConfigBase<AttachmentMatchConfig> {
+export class AttachmentMatchConfig {
   /**
    * A RegEx matching the content type of the attachment
    */

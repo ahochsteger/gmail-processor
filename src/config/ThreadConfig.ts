@@ -1,13 +1,13 @@
+import { Type } from "class-transformer"
 import { ActionConfig } from "./ActionConfig"
-import { ConfigBase, Model } from "./ConfigBase"
 import { MessageConfig } from "./MessageConfig"
 import { ThreadMatchConfig } from "./ThreadMatchConfig"
+import "reflect-metadata"
 
 /**
  * Represents a config handle a certain GMail thread
  */
-@Model
-export class ThreadConfig extends ConfigBase<ThreadConfig> {
+export class ThreadConfig {
   /**
    * The list actions to be executed for their respective handler scopes
    */
@@ -19,10 +19,12 @@ export class ThreadConfig extends ConfigBase<ThreadConfig> {
   /**
    * The list of handler that define the way nested messages or attachments are processed
    */
+  @Type(() => MessageConfig)
   handler: MessageConfig[] = []
   /**
    * Specifies which threads match for further processing
    */
+  @Type(() => ThreadMatchConfig)
   match = new ThreadMatchConfig()
   /**
    * The type of handler

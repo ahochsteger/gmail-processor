@@ -1,13 +1,13 @@
+import { Type } from "class-transformer"
 import { ActionConfig } from "./ActionConfig"
 import { AttachmentConfig } from "./AttachmentConfig"
-import { ConfigBase, Model } from "./ConfigBase"
 import { MessageMatchConfig } from "./MessageMatchConfig"
+import "reflect-metadata"
 
 /**
  * Represents a config to handle a certain GMail message
  */
-@Model
-export class MessageConfig extends ConfigBase<MessageConfig> {
+export class MessageConfig {
   /**
    * The list actions to be executed for their respective handler scopes
    */
@@ -19,10 +19,12 @@ export class MessageConfig extends ConfigBase<MessageConfig> {
   /**
    * The list of handler that define the way attachments are processed
    */
+  @Type(() => AttachmentConfig)
   handler: AttachmentConfig[] = []
   /**
    * Specifies which attachments match for further processing
    */
+  @Type(() => MessageMatchConfig)
   match = new MessageMatchConfig()
   /**
    * The type of handler

@@ -1,10 +1,7 @@
-import { ConfigBase, Model } from "./ConfigBase"
-
 /**
  * Represents a settings config that affect the way GMail2GDrive works.
  */
-@Model
-export class SettingsConfig extends ConfigBase<SettingsConfig> {
+export class SettingsConfig {
   /**
    * The maximum batch size of threads to process in a single run to respect Google processing limits
    */

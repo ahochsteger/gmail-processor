@@ -1,11 +1,9 @@
-import { ConfigBase, Model } from "./ConfigBase"
 import { MessageFlag } from "./MessageFlag"
 
 /**
  * Represents a config to match a certain GMail message
  */
-@Model
-export class MessageMatchConfig extends ConfigBase<MessageMatchConfig> {
+export class MessageMatchConfig {
   from = ".*"
   /**
    * A list of properties matching messages should have

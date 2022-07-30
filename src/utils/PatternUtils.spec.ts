@@ -1,8 +1,8 @@
-import { AttachmentMatchConfig } from "../config/AttachmentMatchConfig"
 import { mock } from "jest-mock-extended"
 import { MockFactory } from "../../test/mocks/MockFactory"
 import { MessageConfig } from "../config/MessageConfig"
 import { PatternUtil } from "./PatternUtil"
+import { plainToClass } from "class-transformer"
 
 const mockedConsole = mock<Console>()
 PatternUtil.logger = mockedConsole
@@ -69,7 +69,7 @@ describe("Pattern Substitution", () => {
       "message.from: some.email@example.com, message.to: my.email+emailsuffix@example.com, " +
       "message.date: 2019-05-01_18-48-31, message.subject.match.1: 01, " +
       "message.subject.match.2: Some more text"
-    const rule = new MessageConfig({
+    const rule = plainToClass(MessageConfig, {
       match: {
         from: "(.+)@example.com",
         subject: "Message ([0-9]+): (.*)",
@@ -78,19 +78,20 @@ describe("Pattern Substitution", () => {
       handler: [
         {
           type: "attachments",
-          match: new AttachmentMatchConfig({ name: "attachment([0-9]+)\\.jpg" }),
+          match: { name: "attachment([0-9]+)\\.jpg" },
           actions: [
             {
               name: "storeAttachment",
               args: {
-                location: "Folder2/Subfolder2/${message.subject.match.1}/${message.subject} - " +
-                "${attachment.name.match.1}.jpg",
+                location:
+                  "Folder2/Subfolder2/${message.subject.match.1}/${message.subject} - " +
+                  "${attachment.name.match.1}.jpg",
                 conflictStrategy: "replace",
-              }
+              },
             },
-          ]
+          ],
         },
-      ]
+      ],
     })
     const s2 = PatternUtil.substitutePatternFromThread(
       pattern,

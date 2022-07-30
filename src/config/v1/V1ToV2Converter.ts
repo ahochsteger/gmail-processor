@@ -5,30 +5,36 @@ import { MessageConfig } from "../MessageConfig"
 import { ThreadConfig } from "../ThreadConfig"
 import { V1Rule } from "./V1Rule"
 import { V1Config } from "./V1Config"
+import { plainToClass } from "class-transformer"
 
 export class V1ToV2Converter {
   static v1RuleToV2ThreadConfig(rule: V1Rule): ThreadConfig {
     const threadConfig = new ThreadConfig()
     if (rule.archive) {
-      threadConfig.actions.push(new ActionConfig({
-        name:"thread.archive",
-      }))
+      threadConfig.actions.push(
+        plainToClass(ActionConfig, {
+          name: "thread.archive",
+        }),
+      )
     }
     if (rule.filenameFrom || rule.filenameFromRegexp) {
       const messageConfig = new MessageConfig()
       const attachmentConfig = new AttachmentConfig()
-      attachmentConfig.match.name = rule.filenameFrom != "" ? rule.filenameFrom : rule.filenameFromRegexp
-      attachmentConfig.actions.push(new ActionConfig({
-        name: "attachment.storeToGDrive",
-        args: {
-          name: "file.storeToGDrive",
+      attachmentConfig.match.name =
+        rule.filenameFrom != "" ? rule.filenameFrom : rule.filenameFromRegexp
+      attachmentConfig.actions.push(
+        plainToClass(ActionConfig, {
+          name: "attachment.storeToGDrive",
           args: {
-            folderType: "path",
-            folder: rule.folder,
-            filename: rule.filenameTo,
-          }
-        },
-      }))
+            name: "file.storeToGDrive",
+            args: {
+              folderType: "path",
+              folder: rule.folder,
+              filename: rule.filenameTo,
+            },
+          },
+        }),
+      )
       messageConfig.handler.push(attachmentConfig)
       threadConfig.handler.push(messageConfig)
     }
@@ -36,24 +42,28 @@ export class V1ToV2Converter {
       threadConfig.match.newerThan = rule.newerThan
     }
     if (rule.ruleLabel != "") {
-      threadConfig.actions.push(new ActionConfig({
-        name: "thread.addLabel",
-        args: {
-          label: rule.ruleLabel,
-        },
-      }))
+      threadConfig.actions.push(
+        plainToClass(ActionConfig, {
+          name: "thread.addLabel",
+          args: {
+            label: rule.ruleLabel,
+          },
+        }),
+      )
     }
     if (rule.saveThreadPDF) {
-      threadConfig.actions.push(new ActionConfig({
-        name: "thread.exportAsPdfToGDrive",
-        args: {
-          location: rule.filenameTo, 
-        },
-      }))
+      threadConfig.actions.push(
+        plainToClass(ActionConfig, {
+          name: "thread.exportAsPdfToGDrive",
+          args: {
+            location: rule.filenameTo,
+          },
+        }),
+      )
     }
     return threadConfig
   }
-  
+
   static v1ConfigToV2Config(v1config: V1Config): Config {
     const config = new Config()
     config.global.match.query = v1config.globalFilter
