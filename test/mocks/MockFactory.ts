@@ -7,7 +7,7 @@ import { ThreadProcessor } from "../../src/processors/ThreadProcessor"
 import { GoogleAppsScriptContext } from "../../src/context/GoogleAppsScriptContext"
 import { MockObjects } from "./MockObjects"
 import { ThreadConfig } from "../../src/config/ThreadConfig"
-import { MessageProcessor } from '../../src/processors/MessageProcessor';
+import { MessageProcessor } from "../../src/processors/MessageProcessor"
 import { ThreadContext } from "../../src/context/ThreadContext"
 
 export class MockFactory {
@@ -51,7 +51,7 @@ export class MockFactory {
 
   public static newDefaultAttachmentConfig(includeCommands = false): any {
     return {
-      actions: includeCommands ? [ this.newDefaultActionConfig() as any] : [],
+      actions: includeCommands ? [this.newDefaultActionConfig() as any] : [],
       match: {
         name: "Image-([0-9]+)\\.jpg",
         contentType: "image/.+",
@@ -59,24 +59,32 @@ export class MockFactory {
     }
   }
 
-  public static newDefaultMessageConfig(includeCommands = false, includeAttachmentRules = false): any {
+  public static newDefaultMessageConfig(
+    includeCommands = false,
+    includeAttachmentRules = false,
+  ): any {
     return {
       match: {
         from: "(.+)@example.com",
         subject: "Prefix - (.*) - Suffix(.*)",
         to: "my\\.address\\+(.+)@gmail.com",
-        is: [ "unread" ],
+        is: ["unread"],
       },
       actions: includeCommands ? [this.newDefaultActionConfig() as any] : [],
-      handler: includeAttachmentRules ? [this.newDefaultAttachmentConfig() as any] : [],
+      handler: includeAttachmentRules
+        ? [this.newDefaultAttachmentConfig() as any]
+        : [],
     }
   }
 
-  public static newDefaultThreadConfig(includeCommands=false, includeMessages = false): any {
+  public static newDefaultThreadConfig(
+    includeCommands = false,
+    includeMessages = false,
+  ): any {
     return {
-      actions: includeCommands ? [ this.newDefaultActionConfig() as any ] : [],
+      actions: includeCommands ? [this.newDefaultActionConfig() as any] : [],
       description: "A sample thread rule",
-      handler: includeMessages ? [ this.newDefaultMessageConfig() as any ] : [],
+      handler: includeMessages ? [this.newDefaultMessageConfig() as any] : [],
       match: {
         query: "has:attachment from:example@example.com",
       },
@@ -143,7 +151,7 @@ export class MockFactory {
               from: "(.+)@example.com",
               subject: "Prefix - (.*) - Suffix(.*)",
               to: "my\\.address\\+(.+)@gmail.com",
-              is: [ "unread" ],
+              is: ["unread"],
               // TODO: Find out how to match only read/unread or starred/unstarred messages?
             },
             actions: [
@@ -193,7 +201,7 @@ export class MockFactory {
 
   public static newDefaultConfig(): any {
     return {
-      handler: this.newComplexThreadConfigList()
+      handler: this.newComplexThreadConfigList(),
     }
   }
 

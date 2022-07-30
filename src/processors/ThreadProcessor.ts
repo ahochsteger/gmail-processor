@@ -72,7 +72,7 @@ export class ThreadProcessor {
         threadConfig,
         thread,
         threads.indexOf(thread),
-        (this.config.handler).indexOf(threadConfig),
+        this.config.handler.indexOf(threadConfig),
       )
       this.processingContext.threadContext = threadContext
       this.processThread(threadContext)
@@ -108,7 +108,9 @@ export class ThreadProcessor {
    */
   public markThreadAsProcessed(thread: GoogleAppsScript.Gmail.GmailThread) {
     if (this.config.settings.processedLabel != "") {
-      const label = this.gmailActions.getOrCreateLabel(this.config.settings.processedLabel)
+      const label = this.gmailActions.getOrCreateLabel(
+        this.config.settings.processedLabel,
+      )
       thread.addLabel(label)
     }
   }

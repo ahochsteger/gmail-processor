@@ -171,7 +171,8 @@ export class PatternUtil {
     let m = new Map<string, any>()
     msgIdx = msgIdx !== undefined ? msgIdx : 0
     attIdx = attIdx !== undefined ? attIdx : 0
-    messageConfig = messageConfig !== undefined ? messageConfig : new MessageConfig()
+    messageConfig =
+      messageConfig !== undefined ? messageConfig : new MessageConfig()
     attRuleIdx = attRuleIdx !== undefined ? attRuleIdx : 0
 
     // Thread data
@@ -238,8 +239,10 @@ export class PatternUtil {
     return m
   }
 
-  public static getRegexMapFromAttachmentMatchConfig(amc: AttachmentMatchConfig | undefined): Map<string,string> {
-    const m = new Map<string,string>()
+  public static getRegexMapFromAttachmentMatchConfig(
+    amc: AttachmentMatchConfig | undefined,
+  ): Map<string, string> {
+    const m = new Map<string, string>()
     if (amc === undefined) {
       return m
     }
@@ -248,8 +251,10 @@ export class PatternUtil {
     return m
   }
 
-  public static getRegexMapFromMessageMatchConfig(mmc: MessageMatchConfig | undefined): Map<string,string> {
-    const m = new Map<string,string>()
+  public static getRegexMapFromMessageMatchConfig(
+    mmc: MessageMatchConfig | undefined,
+  ): Map<string, string> {
+    const m = new Map<string, string>()
     if (mmc === undefined) {
       return m
     }

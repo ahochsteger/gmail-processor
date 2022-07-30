@@ -46,7 +46,9 @@ export class AttachmentProcessor {
         attachmentConfig,
         attachment,
         this.messageContext.message.getAttachments().indexOf(attachment),
-        (this.messageContext.messageConfig.handler || []).indexOf(attachmentConfig),
+        (this.messageContext.messageConfig.handler || []).indexOf(
+          attachmentConfig,
+        ),
       )
       this.processingContext.attachmentContext = attachmentContext
       this.processAttachment(attachmentContext)

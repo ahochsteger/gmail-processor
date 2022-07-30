@@ -56,7 +56,9 @@ describe("Features", () => {
     test.todo(
       "should be able to specify regex options (e.g. case-insensitive match) (issue #51)",
     )
-    test.todo("should be able to filter by date at the thread handler level (PR #60)")
+    test.todo(
+      "should be able to filter by date at the thread handler level (PR #60)",
+    )
     test.todo("should be able to disable handler")
     test.todo("should be able to filter read/unread messages")
     test.todo("should be able to filter starred/unstarred messages")
