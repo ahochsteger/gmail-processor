@@ -41,7 +41,9 @@ export class AllActions implements ActionProvider, CommandExecutor {
   public markThreadAsProcessed(
     thread: GoogleAppsScript.Gmail.GmailThread,
   ): boolean {
-    const label = this.gmailActions.getOrCreateLabel(this.config.processedLabel)
+    const label = this.gmailActions.getOrCreateLabel(
+      this.config.settings.processedLabel,
+    )
     thread.addLabel(label)
     return true
   }
