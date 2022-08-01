@@ -489,7 +489,9 @@ describe("Matching", () => {
 })
 describe("Compatibility", () => {
   it("should support old date format", () => {
-    expect(PatternUtil.convertDateFormat("yyyy-MM-dd HH-mm-ss")).toBe("YYYY-MM-DD HH-mm-ss")
+    expect(PatternUtil.convertDateFormat("yyyy-MM-dd HH-mm-ss")).toBe(
+      "YYYY-MM-DD HH-mm-ss",
+    )
   })
   it("should support old filename pattern (type: 'string'format'string')", () => {
     expect(
@@ -532,18 +534,48 @@ describe("Compatibility", () => {
 })
 describe("Timezone Handling", () => {
   it("should handle UTC dates and format as UTC", () => {
-    expect(PatternUtil.formatDate(new Date("2022-07-30T16:26:00Z"), "YYYY MM DD HH mm ss", "UTC")).toBe("2022 07 30 16 26 00")
+    expect(
+      PatternUtil.formatDate(
+        new Date("2022-07-30T16:26:00Z"),
+        "YYYY MM DD HH mm ss",
+        "UTC",
+      ),
+    ).toBe("2022 07 30 16 26 00")
   })
   it("should handle UTC dates and format as other timezone", () => {
-    expect(PatternUtil.formatDate(new Date("2022-07-30T16:26:00Z"), "YYYY MM DD HH mm ss", "CEST")).toBe("2022 07 30 18 26 00")
+    expect(
+      PatternUtil.formatDate(
+        new Date("2022-07-30T16:26:00Z"),
+        "YYYY MM DD HH mm ss",
+        "Europe/Vienna",
+      ),
+    ).toBe("2022 07 30 18 26 00")
   })
   it("should handle dates in other timezones and format as UTC", () => {
-    expect(PatternUtil.formatDate(new Date("2022-07-30T18:26:00+02:00"), "YYYY MM DD HH mm ss", "UTC")).toBe("2022 07 30 16 26 00")
+    expect(
+      PatternUtil.formatDate(
+        new Date("2022-07-30T18:26:00+02:00"),
+        "YYYY MM DD HH mm ss",
+        "UTC",
+      ),
+    ).toBe("2022 07 30 16 26 00")
   })
   it("should handle dates in other timezones and format as the same other timezone", () => {
-    expect(PatternUtil.formatDate(new Date("2022-07-30T18:26:00+02:00"), "YYYY MM DD HH mm ss", "CEST")).toBe("2022 07 30 18 26 00")
+    expect(
+      PatternUtil.formatDate(
+        new Date("2022-07-30T18:26:00+02:00"),
+        "YYYY MM DD HH mm ss",
+        "Europe/Vienna",
+      ),
+    ).toBe("2022 07 30 18 26 00")
   })
   it("should handle dates in other timezones and format as yet another timezone", () => {
-    expect(PatternUtil.formatDate(new Date("2022-07-30T18:26:00+02:00"), "YYYY MM DD HH mm ss", "America/New_York")).toBe("2022 07 30 12 26 00")
+    expect(
+      PatternUtil.formatDate(
+        new Date("2022-07-30T18:26:00+02:00"),
+        "YYYY MM DD HH mm ss",
+        "America/New_York",
+      ),
+    ).toBe("2022 07 30 12 26 00")
   })
 })

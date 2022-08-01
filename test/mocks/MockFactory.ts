@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Config } from "../../src/config/Config"
 import { mock } from "jest-mock-extended"
 import { AllActions } from "../../src/actions/AllActions"

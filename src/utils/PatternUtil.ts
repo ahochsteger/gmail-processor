@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import moment from "moment-timezone"
 import { AttachmentMatchConfig } from "../config/AttachmentMatchConfig"
 import { MessageConfig } from "../config/MessageConfig"
@@ -27,7 +28,7 @@ export class PatternUtil {
     const v = moment(date).tz(timezone).format(format)
     return v
   }
-  
+
   public static substituteDates(
     pattern: string,
     data: Map<string, any>,
@@ -55,9 +56,7 @@ export class PatternUtil {
     // See https://docs.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html
     // new format (from moment): YYYY-MM-DD_HH-mm-ss
     // See https://momentjs.com/docs/#/displaying/
-    const convertedFormat = format
-    .replace(/d/g, "D")
-    .replace(/y/g, "Y")
+    const convertedFormat = format.replace(/d/g, "D").replace(/y/g, "Y")
     return convertedFormat
   }
 
@@ -329,7 +328,10 @@ export class PatternUtil {
       for (const match of matches) {
         if (match.length > 1) {
           const convertedFormat = this.convertDateFormat(match[1])
-          s = s.replace(/:olddateformat:[^}]+}/g, `:dateformat:${convertedFormat}}`)
+          s = s.replace(
+            /:olddateformat:[^}]+}/g,
+            `:dateformat:${convertedFormat}}`,
+          )
         }
       }
     } else {
