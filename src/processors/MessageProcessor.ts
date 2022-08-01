@@ -1,3 +1,4 @@
+import { MessageFlag } from "../config/MessageFlag"
 import { ActionProvider } from "../actions/ActionProvider"
 import { Actions } from "../actions/Actions"
 import { Config } from "../config/Config"
@@ -33,13 +34,43 @@ export class MessageProcessor {
     }
   }
 
+  public matches(
+    messageConfig: MessageConfig,
+    message: GoogleAppsScript.Gmail.GmailMessage,
+  ) {
+    if (!message.getFrom().match(messageConfig.match.from)) return false
+    if (!message.getTo().match(messageConfig.match.to)) return false
+    if (!message.getSubject().match(messageConfig.match.subject)) return false
+    for (let i = 0; i < messageConfig.match.is.length; i++) {
+      const flag = messageConfig.match.is[i]
+      switch (flag) {
+        case MessageFlag.READ:
+          if (message.isUnread()) return false
+          break
+        case MessageFlag.UNREAD:
+          if (!message.isUnread()) return false
+          break
+        case MessageFlag.STARRED:
+          if (!message.isStarred()) return false
+          break
+        case MessageFlag.UNSTARRED:
+          if (message.isStarred()) return false
+          break
+      }
+    }
+    return true
+  }
+
   public processMessageRule(messageConfig: MessageConfig) {
     for (const message of this.threadContext.thread.getMessages()) {
+      if (!this.matches(messageConfig, message)) {
+        continue
+      }
       const messageContext = new MessageContext(
         messageConfig,
         message,
         this.threadContext.thread.getMessages().indexOf(message),
-        (this.threadContext.threadConfig.handler).indexOf(messageConfig),
+        this.threadContext.threadConfig.handler.indexOf(messageConfig),
       )
       this.processingContext.messageContext = messageContext
       this.processMessage(messageContext)

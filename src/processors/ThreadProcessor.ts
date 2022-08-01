@@ -10,7 +10,6 @@ import { Timer } from "../utils/Timer"
 
 export class ThreadProcessor {
   public logger: Console = console
-  public data: any
   public type = "thread"
   public timer: Timer
   public actions: Actions
@@ -34,16 +33,25 @@ export class ThreadProcessor {
     }
   }
 
+  public getQueryFromThreadConfig(threadConfig: ThreadConfig) {
+    let gSearchExp = ""
+    gSearchExp +=
+      this.config.global.match.query != "" ? this.config.global.match.query : ""
+    gSearchExp +=
+      threadConfig.match.query != "" ? " " + threadConfig.match.query : ""
+    gSearchExp +=
+      this.config.settings.processedLabel != ""
+        ? " -label:" + this.config.settings.processedLabel
+        : ""
+    gSearchExp +=
+      this.config.global.match.newerThan != ""
+        ? " newer_than:" + this.config.global.match.newerThan
+        : ""
+    return gSearchExp.trim()
+  }
+
   public processThreadRule(threadConfig: ThreadConfig) {
-    let gSearchExp =
-      (this.config.global.match.query) +
-      " " +
-      (threadConfig.match.query) +
-      " -label:" +
-      this.config.settings.processedLabel
-    if (this.config.global.match.newerThan != "") {
-      gSearchExp += " newer_than:" + this.config.global.match.newerThan
-    }
+    const gSearchExp = this.getQueryFromThreadConfig(threadConfig)
     // Process all threads matching the search expression:
     const threads = this.gmailApp.search(
       gSearchExp,
