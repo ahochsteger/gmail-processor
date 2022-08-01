@@ -58,8 +58,8 @@
   "private": true,
   "dependencies": {
     "class-transformer": "^0.5.1",
-    "dateformat": "^4.6.3",
     "moment": "^2.29.4",
+    "moment-timezone": "^0.5.34",
     "reflect-metadata": "^0.1.13",
     "relative-time-parser": "^1.0.15"
   },

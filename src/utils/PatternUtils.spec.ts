@@ -32,7 +32,7 @@ describe("Pattern Substitution", () => {
     })
     const s1 = PatternUtil.substitutePatternFromThread(
       "${message.from}/${message.to}/${attachment.contentType}/${message.subject}-${message.id}-" +
-        "${attachment.index}-${attachment.name}-${message.date:dateformat:yyyy-mm-dd}",
+        "${attachment.index}-${attachment.name}-${message.date:dateformat:YYYY-MM-DD}",
       thread1,
       0,
       0,
@@ -50,7 +50,7 @@ describe("Pattern Substitution", () => {
           subject: "Message 01: Some more text",
           from: "some.email@example.com",
           to: "my.email+emailsuffix@example.com",
-          date: new Date("2019-05-01T18:48:31"),
+          date: new Date("2019-05-01T18:48:31Z"),
           attachments: [
             {
               name: "attachment123.jpg",
@@ -61,7 +61,7 @@ describe("Pattern Substitution", () => {
     })
     const pattern =
       "Evaluation data: message.subject: ${message.subject}, message.from: ${message.from}, " +
-      "message.to: ${message.to}, message.date: ${message.date:dateformat:yyyy-mm-dd_HH-MM-ss}, " +
+      "message.to: ${message.to}, message.date: ${message.date:dateformat:YYYY-MM-DD_HH-mm-ss}, " +
       "message.subject.match.1: ${message.subject.match.1}, message.subject.match.2: " +
       "${message.subject.match.2}"
     const expRslt =
@@ -106,7 +106,7 @@ describe("Pattern Substitution", () => {
   const sharedThread = MockFactory.newThreadMock({
     messages: [
       {
-        date: new Date("2018-05-27T12:34:56"),
+        date: new Date("2018-05-27T12:34:56Z"),
         from: "msgFrom",
         id: "msgId",
         subject: "msgSubject",
@@ -128,7 +128,7 @@ describe("Pattern Substitution", () => {
   it("should handle a thread with one message", () => {
     const s = PatternUtil.substitutePatternFromThread(
       "${message.from},${message.to},${message.subject}," +
-        "${message.id},${message.date:dateformat:yyyy-mm-dd}",
+        "${message.id},${message.date:dateformat:YYYY-MM-DD}",
       sharedThread,
       0,
       0,
@@ -142,7 +142,7 @@ describe("Pattern Substitution", () => {
     const s = PatternUtil.substitutePatternFromThread(
       "${thread.firstMessageSubject}," +
         "${thread.hasStarredMessages},${thread.id},${thread.isImportant},${thread.isInPriorityInbox}," +
-        "${thread.labels},${thread.lastMessageDate:dateformat:yyyy-mm-dd},${thread.messageCount}," +
+        "${thread.labels},${thread.lastMessageDate:dateformat:YYYY-MM-DD},${thread.messageCount}," +
         "${thread.permalink}",
       thread,
       0,
@@ -158,7 +158,7 @@ describe("Pattern Substitution", () => {
     const s = PatternUtil.substitutePatternFromThread(
       "${message.from}/${message.to}/${attachment.contentType}" +
         "/${message.subject}-${message.id}-${attachment.index}-${attachment.name}-" +
-        "${message.date:dateformat:yyyy-mm-dd}",
+        "${message.date:dateformat:YYYY-MM-DD}",
       sharedThread,
       0,
       0,
@@ -173,7 +173,7 @@ describe("Pattern Substitution", () => {
     const s = PatternUtil.substitutePatternFromThread(
       "${message.from}/${message.to}/${attachment.contentType}" +
         "/${message.subject}-${message.id}-${attachment.index}-${attachment.name}-" +
-        "${message.date:dateformat:yyyy-mm-dd}",
+        "${message.date:dateformat:YYYY-MM-DD}",
       sharedThread,
       0,
       1,
@@ -188,7 +188,7 @@ describe("Pattern Substitution", () => {
     const s = PatternUtil.substitutePatternFromThread(
       "${message.from}/${message.to}/${attachment.contentType}/" +
         "${message.subject}-${message.id}-${attachment.index}-${attachment.name}-" +
-        "${message.date:dateformat:yyyy-mm-dd}",
+        "${message.date:dateformat:YYYY-MM-DD}",
       sharedThread,
       0,
       0,
@@ -205,7 +205,7 @@ describe("Substitutions", () => {
       PatternUtil.substitutePatternFromThread(
         "${thread.firstMessageSubject},${thread.hasStarredMessages}," +
           "${thread.id},${thread.isImportant},${thread.isInPriorityInbox},${thread.labels}," +
-          "${thread.lastMessageDate:dateformat:yyyy-mm-dd HH:MM:ss},${thread.messageCount},${thread.permalink}",
+          "${thread.lastMessageDate:dateformat:YYYY-MM-DD HH:mm:ss},${thread.messageCount},${thread.permalink}",
         MockFactory.newThreadMock({
           firstMessageSubject: "tfms",
           hasStarredMessages: true,
@@ -213,7 +213,7 @@ describe("Substitutions", () => {
           isImportant: true,
           isInPriorityInbox: true,
           labels: ["l1", "l2"],
-          lastMessageDate: new Date("2019-05-06T12:34:56"),
+          lastMessageDate: new Date("2019-05-06T12:34:56Z"),
           messageCount: 3,
           permalink: "tpl",
         }),
@@ -226,14 +226,14 @@ describe("Substitutions", () => {
   it("should substitute all message attributes", () => {
     expect(
       PatternUtil.substitutePatternFromThread(
-        "${message.bcc},${message.cc},${message.date:dateformat:yyyy-mm-dd HH:MM:ss},${message.from}," +
+        "${message.bcc},${message.cc},${message.date:dateformat:YYYY-MM-DD HH:mm:ss},${message.from}," +
           "${message.id},${message.replyTo},${message.subject},${message.to}",
         MockFactory.newThreadMock({
           messages: [
             {
               bcc: "mbcc",
               cc: "mcc",
-              date: new Date("2019-05-06T12:34:56"),
+              date: new Date("2019-05-06T12:34:56Z"),
               from: "mfrom",
               id: "mid",
               replyTo: "mrt",
@@ -291,9 +291,9 @@ describe("Handle single messages", () => {
     expect(
       PatternUtil.substitutePatternFromThread(
         "${thread.firstMessageSubject},${thread.hasStarredMessages},${thread.id},${thread.isImportant}," +
-          "${thread.isInPriorityInbox},${thread.labels},${thread.lastMessageDate:dateformat:yyyy-mm-dd " +
-          "HH:MM:ss},${thread.messageCount},${thread.permalink}," +
-          "${message.bcc},${message.cc},${message.date:dateformat:yyyy-mm-dd HH:MM:ss},${message.from}," +
+          "${thread.isInPriorityInbox},${thread.labels},${thread.lastMessageDate:dateformat:YYYY-MM-DD " +
+          "HH:mm:ss},${thread.messageCount},${thread.permalink}," +
+          "${message.bcc},${message.cc},${message.date:dateformat:YYYY-MM-DD HH:mm:ss},${message.from}," +
           "${message.id},${message.replyTo},${message.subject},${message.to}," +
           "${attachment.contentType},${attachment.hash},${attachment.isGoogleType},${attachment.name}," +
           "${attachment.size}",
@@ -304,14 +304,14 @@ describe("Handle single messages", () => {
           isImportant: true,
           isInPriorityInbox: true,
           labels: ["l1", "l2"],
-          lastMessageDate: new Date("2019-05-06T12:34:56"),
+          lastMessageDate: new Date("2019-05-06T12:34:56Z"),
           messageCount: 3,
           permalink: "tpl",
           messages: [
             {
               bcc: "mbcc",
               cc: "mcc",
-              date: new Date("2019-05-06T12:34:56"),
+              date: new Date("2019-05-06T12:34:56Z"),
               from: "mfrom",
               id: "mid",
               replyTo: "mrt",
@@ -396,14 +396,14 @@ describe("Handle multiple messages", () => {
     isImportant: true,
     isInPriorityInbox: true,
     labels: ["l1", "l2"],
-    lastMessageDate: new Date("2019-05-06T12:34:56"),
+    lastMessageDate: new Date("2019-05-06T12:34:56Z"),
     messageCount: 3,
     permalink: "tpl",
     messages: [
       {
         bcc: "mbcc1",
         cc: "mcc1",
-        date: new Date("2019-05-06T01:23:45"),
+        date: new Date("2019-05-06T01:23:45Z"),
         from: "mfrom1",
         id: "mid1",
         replyTo: "mrt1",
@@ -422,7 +422,7 @@ describe("Handle multiple messages", () => {
       {
         bcc: "mbcc2",
         cc: "mcc2",
-        date: new Date("2019-05-06T12:34:56"),
+        date: new Date("2019-05-06T12:34:56Z"),
         from: "mfrom2",
         id: "mid2",
         replyTo: "mrt2",
@@ -444,9 +444,9 @@ describe("Handle multiple messages", () => {
     expect(
       PatternUtil.substitutePatternFromThread(
         "${thread.firstMessageSubject},${thread.hasStarredMessages},${thread.id},${thread.isImportant}," +
-          "${thread.isInPriorityInbox},${thread.labels},${thread.lastMessageDate:dateformat:yyyy-mm-dd " +
-          "HH:MM:ss},${thread.messageCount},${thread.permalink}," +
-          "${message.bcc},${message.cc},${message.date:dateformat:yyyy-mm-dd HH:MM:ss},${message.from}," +
+          "${thread.isInPriorityInbox},${thread.labels},${thread.lastMessageDate:dateformat:YYYY-MM-DD " +
+          "HH:mm:ss},${thread.messageCount},${thread.permalink}," +
+          "${message.bcc},${message.cc},${message.date:dateformat:YYYY-MM-DD HH:mm:ss},${message.from}," +
           "${message.id},${message.replyTo},${message.subject},${message.to}," +
           "${attachment.contentType},${attachment.hash},${attachment.isGoogleType},${attachment.name}," +
           "${attachment.size}",
@@ -465,9 +465,9 @@ describe("Handle multiple messages", () => {
     expect(
       PatternUtil.substitutePatternFromThread(
         "${thread.firstMessageSubject},${thread.hasStarredMessages},${thread.id},${thread.isImportant}," +
-          "${thread.isInPriorityInbox},${thread.labels},${thread.lastMessageDate:dateformat:yyyy-mm-dd " +
-          "HH:MM:ss},${thread.messageCount},${thread.permalink}," +
-          "${message.bcc},${message.cc},${message.date:dateformat:yyyy-mm-dd HH:MM:ss},${message.from}," +
+          "${thread.isInPriorityInbox},${thread.labels},${thread.lastMessageDate:dateformat:YYYY-MM-DD " +
+          "HH:mm:ss},${thread.messageCount},${thread.permalink}," +
+          "${message.bcc},${message.cc},${message.date:dateformat:YYYY-MM-DD HH:mm:ss},${message.from}," +
           "${message.id},${message.replyTo},${message.subject},${message.to}," +
           "${attachment.contentType},${attachment.hash},${attachment.isGoogleType},${attachment.name}," +
           "${attachment.size}",
@@ -488,27 +488,30 @@ describe("Matching", () => {
   test.todo("should handle a thread with one message and matched attachments")
 })
 describe("Compatibility", () => {
+  it("should support old date format", () => {
+    expect(PatternUtil.convertDateFormat("yyyy-MM-dd HH-mm-ss")).toBe("YYYY-MM-DD HH-mm-ss")
+  })
   it("should support old filename pattern (type: 'string'format'string')", () => {
     expect(
       PatternUtil.convertFromV1Pattern(
-        "'file-'yyyy-mm-dd-'%s.txt'",
+        "'file-'yyyy-MM-dd-'%s.txt'",
         "message.date",
       ),
-    ).toBe("file-${message.date:dateformat:yyyy-mm-dd-}${message.subject}.txt")
+    ).toBe("file-${message.date:dateformat:YYYY-MM-DD-}${message.subject}.txt")
   })
   it("should support old filename pattern (type: 'string'format)", () => {
     expect(
-      PatternUtil.convertFromV1Pattern("'file-'yyyy-mm-dd", "message.date"),
-    ).toBe("file-${message.date:dateformat:yyyy-mm-dd}")
+      PatternUtil.convertFromV1Pattern("'file-'yyyy-MM-dd", "message.date"),
+    ).toBe("file-${message.date:dateformat:YYYY-MM-DD}")
   })
   it("should support old filename pattern (type: format'string')", () => {
     expect(
-      PatternUtil.convertFromV1Pattern("yyyy-mm-dd'-%s.txt'", "message.date"),
-    ).toBe("${message.date:dateformat:yyyy-mm-dd}-${message.subject}.txt")
+      PatternUtil.convertFromV1Pattern("yyyy-MM-dd'-%s.txt'", "message.date"),
+    ).toBe("${message.date:dateformat:YYYY-MM-DD}-${message.subject}.txt")
   })
   it("should support old filename pattern (type: format)", () => {
-    expect(PatternUtil.convertFromV1Pattern("yyyy-mm-dd", "message.date")).toBe(
-      "${message.date:dateformat:yyyy-mm-dd}",
+    expect(PatternUtil.convertFromV1Pattern("yyyy-MM-dd", "message.date")).toBe(
+      "${message.date:dateformat:YYYY-MM-DD}",
     )
   })
   it("should support old filename pattern (type: 'string')", () => {
@@ -519,11 +522,28 @@ describe("Compatibility", () => {
   it("should support all old filename substitution parameters (type: '%s','%o','%filename','#SUBJECT#','#FILE#',yyyy-mm-dd)", () => {
     expect(
       PatternUtil.convertFromV1Pattern(
-        "'%s,%o,%filename,#SUBJECT#,#FILE#,'yyyy-mm-dd",
+        "'%s,%o,%filename,#SUBJECT#,#FILE#,'yyyy-MM-dd",
         "message.date",
       ),
     ).toBe(
-      "${message.subject},${attachment.name},${attachment.name},${message.subject},${attachment.name},${message.date:dateformat:yyyy-mm-dd}",
+      "${message.subject},${attachment.name},${attachment.name},${message.subject},${attachment.name},${message.date:dateformat:YYYY-MM-DD}",
     )
+  })
+})
+describe("Timezone Handling", () => {
+  it("should handle UTC dates and format as UTC", () => {
+    expect(PatternUtil.formatDate(new Date("2022-07-30T16:26:00Z"), "YYYY MM DD HH mm ss", "UTC")).toBe("2022 07 30 16 26 00")
+  })
+  it("should handle UTC dates and format as other timezone", () => {
+    expect(PatternUtil.formatDate(new Date("2022-07-30T16:26:00Z"), "YYYY MM DD HH mm ss", "CEST")).toBe("2022 07 30 18 26 00")
+  })
+  it("should handle dates in other timezones and format as UTC", () => {
+    expect(PatternUtil.formatDate(new Date("2022-07-30T18:26:00+02:00"), "YYYY MM DD HH mm ss", "UTC")).toBe("2022 07 30 16 26 00")
+  })
+  it("should handle dates in other timezones and format as the same other timezone", () => {
+    expect(PatternUtil.formatDate(new Date("2022-07-30T18:26:00+02:00"), "YYYY MM DD HH mm ss", "CEST")).toBe("2022 07 30 18 26 00")
+  })
+  it("should handle dates in other timezones and format as yet another timezone", () => {
+    expect(PatternUtil.formatDate(new Date("2022-07-30T18:26:00+02:00"), "YYYY MM DD HH mm ss", "America/New_York")).toBe("2022 07 30 12 26 00")
   })
 })

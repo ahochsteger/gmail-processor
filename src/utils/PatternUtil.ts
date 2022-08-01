@@ -1,4 +1,4 @@
-import dateFormat from "dateformat"
+import moment from "moment-timezone"
 import { AttachmentMatchConfig } from "../config/AttachmentMatchConfig"
 import { MessageConfig } from "../config/MessageConfig"
 import { MessageMatchConfig } from "../config/MessageMatchConfig"
@@ -22,9 +22,16 @@ export class PatternUtil {
     return s
   }
 
+  public static formatDate(date: Date, format: string, timezone = "UTC") {
+    // See https://stackoverflow.com/questions/43525786/momentjs-convert-from-utc-to-desired-timezone-not-just-local
+    const v = moment(date).tz(timezone).format(format)
+    return v
+  }
+  
   public static substituteDates(
     pattern: string,
     data: Map<string, any>,
+    timezone = "UTC",
     formatType = "dateformat",
   ) {
     let s = pattern
@@ -37,7 +44,7 @@ export class PatternUtil {
         formatType === "olddateformat"
           ? PatternUtil.convertDateFormat(result[2])
           : result[2]
-      const v = dateFormat(date, format)
+      const v = this.formatDate(date, format, timezone)
       s = s.replace(new RegExp(this.escapeRegExp(result[0])), v)
     }
     return s
@@ -46,11 +53,11 @@ export class PatternUtil {
   public static convertDateFormat(format: string): string {
     // old format (from Utilities): yyyy-MM-dd_HH-mm-ss
     // See https://docs.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html
-    // new format (from dateformat): yyyy-mm-dd_HH-MM-ss
+    // new format (from moment): YYYY-MM-DD_HH-mm-ss
+    // See https://momentjs.com/docs/#/displaying/
     const convertedFormat = format
-      .replace(/M/g, "§1")
-      .replace(/m/g, "M")
-      .replace(/§1/g, "m")
+    .replace(/d/g, "D")
+    .replace(/y/g, "Y")
     return convertedFormat
   }
 
@@ -60,8 +67,8 @@ export class PatternUtil {
     timezone = "UTC",
   ) {
     let s = pattern
-    s = this.substituteDates(s, data, "olddateformat")
-    s = this.substituteDates(s, data, "dateformat")
+    s = this.substituteDates(s, data, timezone, "olddateformat")
+    s = this.substituteDates(s, data, timezone, "dateformat")
     s = this.substituteStrings(s, data)
     return s
   }
@@ -315,8 +322,16 @@ export class PatternUtil {
       // Support original date format
       s = s.replace(
         /('([^']+)')?([^']+)('([^']+)')?/g,
-        "$2${" + dateKey + ":dateformat:$3}$5",
+        "$2${" + dateKey + ":olddateformat:$3}$5",
       )
+      const regexp = /:olddateformat:([^}]+)}/g
+      const matches = s.matchAll(regexp)
+      for (const match of matches) {
+        if (match.length > 1) {
+          const convertedFormat = this.convertDateFormat(match[1])
+          s = s.replace(/:olddateformat:[^}]+}/g, `:dateformat:${convertedFormat}}`)
+        }
+      }
     } else {
       s = s.replace(/'/g, "")
     }
