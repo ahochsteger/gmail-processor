@@ -6,6 +6,7 @@ import { ThreadConfig } from "../ThreadConfig"
 import { V1Rule } from "./V1Rule"
 import { V1Config } from "./V1Config"
 import { plainToClass } from "class-transformer"
+import { PatternUtil } from "../../utils/PatternUtil"
 
 export class V1ToV2Converter {
   static v1RuleToV2ThreadConfig(rule: V1Rule): ThreadConfig {
@@ -17,27 +18,26 @@ export class V1ToV2Converter {
         }),
       )
     }
-    if (rule.filenameFrom || rule.filenameFromRegexp) {
-      const messageConfig = new MessageConfig()
-      const attachmentConfig = new AttachmentConfig()
-      attachmentConfig.match.name =
-        rule.filenameFrom != "" ? rule.filenameFrom : rule.filenameFromRegexp
-      attachmentConfig.actions.push(
-        plainToClass(ActionConfig, {
-          name: "attachment.storeToGDrive",
-          args: {
-            name: "file.storeToGDrive",
-            args: {
-              folderType: "path",
-              folder: rule.folder,
-              filename: rule.filenameTo,
-            },
-          },
-        }),
-      )
-      messageConfig.handler.push(attachmentConfig)
-      threadConfig.handler.push(messageConfig)
+    const messageConfig = new MessageConfig()
+    const attachmentConfig = new AttachmentConfig()
+    // Handle filename filtering:
+    if (rule.filenameFrom) {
+      attachmentConfig.match.name = String(rule.filenameFrom).replace(/[\\^$*+?.()|[\]{}]/g, '\\$&')
+    } else if (rule.filenameFromRegexp) {
+      attachmentConfig.match.name = rule.filenameFromRegexp
     }
+    attachmentConfig.actions.push(
+      plainToClass(ActionConfig, {
+        name: "file.storeToGDrive",
+        args: {
+           folderType: "path",
+          folder: PatternUtil.convertFromV1Pattern(rule.folder),
+          filename: rule.filenameTo ? rule.filenameTo : "${attachment.name.match.1}",
+        },
+      }),
+    )
+    messageConfig.handler.push(attachmentConfig)
+    threadConfig.handler.push(messageConfig)
     if (rule.newerThan != "") {
       threadConfig.match.newerThan = rule.newerThan
     }
@@ -56,7 +56,7 @@ export class V1ToV2Converter {
         plainToClass(ActionConfig, {
           name: "thread.exportAsPdfToGDrive",
           args: {
-            location: rule.filenameTo,
+            location: PatternUtil.convertFromV1Pattern(rule.filenameTo),
           },
         }),
       )

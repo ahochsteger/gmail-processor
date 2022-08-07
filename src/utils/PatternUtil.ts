@@ -316,7 +316,7 @@ export class PatternUtil {
     )
   }
 
-  public static convertFromV1Pattern(s: string, dateKey: string) {
+  public static convertFromV1Pattern(s: string, dateKey="message.date") {
     if (s.replace(/'([^'\n]+)'/g, "") !== "") {
       // Support original date format
       s = s.replace(

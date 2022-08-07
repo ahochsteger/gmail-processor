@@ -21,7 +21,7 @@ export class AttachmentMatchConfig {
   /**
    * A RegEx matching the name of the attachment
    */
-  name = ".*"
+  name = "(.*)"
   /**
    * Only include attachments smaller than the given size in bytes
    */
