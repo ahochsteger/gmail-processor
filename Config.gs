@@ -64,7 +64,8 @@ function getGmail2GDriveConfig() {
         "folder": "PDF Emails",
         "filenameTo": "'file-'yyyy-MM-dd-'%s'"
       },
-      { // Store all attachments named "file.txt" from example4@example.com to the
+      {
+        // Store all attachments named "file.txt" from example4@example.com to the
         // folder "Examples/example4" and rename the attachment to the pattern
         // defined in 'filenameTo' and archive the thread.
         // filenameTo supports the following printf style substitutions:
@@ -76,13 +77,14 @@ function getGmail2GDriveConfig() {
         "filenameFrom": "file.txt",
         "filenameTo": "'file-'yyyy-MM-dd-'%s.txt'"
       },
-         // Sotre all of the emails with the text "receipt" from billing@zoom.us
-         // into the folder "Examples/example5" and rename the filenames to be zoom-1.pdf, zoom-2.pdf...
+      {
+        // Store all of the emails with the text "receipt" from billing@zoom.us
+        // into the folder "Examples/example5" and rename the filenames to be zoom-1.pdf, zoom-2.pdf...
         "filter": "receipt from:billing@zoom.us",
         "folder": "'Examples/example5'",
         "filenameFrom": "*.pdf",
         "filenameTo": "'zoom-%d.pdf'"
-      }, 
+      },
       {
         // Store threads marked with label "PDF" in the folder "PDF Emails" als PDF document and add "addPDFlabel" to the processed thread.
         "filter": "label:PDF",
