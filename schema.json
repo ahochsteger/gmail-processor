@@ -79,7 +79,7 @@
           "type": "number"
         },
         "name": {
-          "default": ".*",
+          "default": "(.*)",
           "description": "A RegEx matching the name of the attachment",
           "type": "string"
         },
@@ -219,6 +219,11 @@
     "SettingsConfig": {
       "description": "Represents a settings config that affect the way GMail2GDrive works.",
       "properties": {
+        "dryrun": {
+          "default": false,
+          "description": "Just show what would have been done but don't write anything to GMail or GDrive.",
+          "type": "boolean"
+        },
         "maxBatchSize": {
           "default": 10,
           "description": "The maximum batch size of threads to process in a single run to respect Google processing limits",
