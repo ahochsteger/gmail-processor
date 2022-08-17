@@ -119,7 +119,16 @@ export class ThreadProcessor {
       const label = this.gmailActions.getOrCreateLabel(
         this.config.settings.processedLabel,
       )
+      if (!this.config.settings.dryrun) {
+        this.logger.info(
+          `Adding label to thread ${thread.getFirstMessageSubject()}`,
+        )
       thread.addLabel(label)
+      } else {
+        this.logger.info(
+          `[dryrun] Skipped adding label to thread ${thread.getFirstMessageSubject()}`,
+        )
+      }
     }
   }
 }
