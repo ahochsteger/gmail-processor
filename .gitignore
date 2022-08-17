@@ -1,6 +1,7 @@
+.vscode/
 bak/
 build/
 coverage/
 dist/
-node_modules/
 gas/.clasp.json
+node_modules/
