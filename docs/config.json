@@ -48,7 +48,7 @@
             "from": "(.+)@example.com",
             "subject": "Prefix - (.*) - Suffix(.*)",
             "to": "my\\.address\\+(.+)@gmail.com",
-            "is": [ "unread" ]
+            "is": ["unread"]
           },
           "handler": [
             {

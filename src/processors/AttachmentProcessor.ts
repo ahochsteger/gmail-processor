@@ -56,6 +56,17 @@ export class AttachmentProcessor {
   }
 
   public processAttachment(attachmentContext: AttachmentContext) {
+    // TODO: Check, if this.processingContext would be better here!
+    // var match = true;
+    // if (rule.filenameFromRegexp) {
+    // var re = new RegExp(rule.filenameFromRegexp);
+    //   match = (attachment.getName()).match(re);
+    // }
+    // if (!match) {
+    //   Logger.log("INFO:           Rejecting file '" + attachment.getName() + " not matching" + rule.filenameFromRegexp);
+    //   continue;
+    // }
+
     PatternUtil.logger = this.logger
     const dataMap = PatternUtil.buildSubstitutionMap(
       this.threadContext.thread,
@@ -64,6 +75,7 @@ export class AttachmentProcessor {
       this.messageContext.messageConfig,
       attachmentContext.ruleIndex,
     )
+    // TODO: Implement attachment handling including dry-run
     this.logger.log("Dumping dataMap:")
     this.logger.log(dataMap)
   }

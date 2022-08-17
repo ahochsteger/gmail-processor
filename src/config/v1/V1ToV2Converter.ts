@@ -22,7 +22,10 @@ export class V1ToV2Converter {
     const attachmentConfig = new AttachmentConfig()
     // Handle filename filtering:
     if (rule.filenameFrom) {
-      attachmentConfig.match.name = String(rule.filenameFrom).replace(/[\\^$*+?.()|[\]{}]/g, '\\$&')
+      attachmentConfig.match.name = String(rule.filenameFrom).replace(
+        /[\\^$*+?.()|[\]{}]/g,
+        "\\$&",
+      )
     } else if (rule.filenameFromRegexp) {
       attachmentConfig.match.name = rule.filenameFromRegexp
     }
@@ -30,9 +33,11 @@ export class V1ToV2Converter {
       plainToClass(ActionConfig, {
         name: "file.storeToGDrive",
         args: {
-           folderType: "path",
+          folderType: "path",
           folder: PatternUtil.convertFromV1Pattern(rule.folder),
-          filename: rule.filenameTo ? rule.filenameTo : "${attachment.name.match.1}",
+          filename: rule.filenameTo
+            ? rule.filenameTo
+            : "${attachment.name.match.1}",
         },
       }),
     )

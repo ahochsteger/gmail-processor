@@ -88,6 +88,7 @@ export class ThreadProcessor {
   }
 
   public processThread(threadContext: ThreadContext) {
+    // TODO: Check, if this.processingContext would be better here!
     const thread: GoogleAppsScript.Gmail.GmailThread = threadContext.thread
     const threadRule: ThreadConfig = threadContext.threadConfig
     const messageProcessor = new MessageProcessor(
@@ -123,7 +124,7 @@ export class ThreadProcessor {
         this.logger.info(
           `Adding label to thread ${thread.getFirstMessageSubject()}`,
         )
-      thread.addLabel(label)
+        thread.addLabel(label)
       } else {
         this.logger.info(
           `[dryrun] Skipped adding label to thread ${thread.getFirstMessageSubject()}`,

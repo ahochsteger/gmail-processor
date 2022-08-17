@@ -82,7 +82,8 @@ export class MessageProcessor {
    * @param message The message to be processed.
    * @param rule The rule to be processed.
    */
-  public processMessage(messageContext: MessageContext) { // TODO: Check, if this.processingContext would be better here!
+  public processMessage(messageContext: MessageContext) {
+    // TODO: Check, if this.processingContext would be better here!
     const messageConfig: MessageConfig = messageContext.messageConfig
     const message = messageContext.message
     this.logger.info(

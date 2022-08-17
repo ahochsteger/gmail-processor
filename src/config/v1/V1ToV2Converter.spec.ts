@@ -26,7 +26,7 @@ it("should convert filenameTo patterns", () => {
           archive: true,
         },
       ],
-    })
+    }),
   )
   const expected = {
     description: "",
@@ -95,45 +95,45 @@ it("should convert filenameTo patterns", () => {
       {
         actions: [],
         description: "",
-        "handler": [
+        handler: [
           {
-            "actions": [],
-            "description": "",
-            "handler": [
+            actions: [],
+            description: "",
+            handler: [
               {
-                "actions": [
+                actions: [
                   {
-                    "description": "",
-                    "name": "file.storeToGDrive",
-                    "args": {
-                      "folderType": "path",
-                      "folder": "Examples/example1",
-                      "filename": "${attachment.name.match.1}"
-                    }
-                  }
+                    description: "",
+                    name: "file.storeToGDrive",
+                    args: {
+                      folderType: "path",
+                      folder: "Examples/example1",
+                      filename: "${attachment.name.match.1}",
+                    },
+                  },
                 ],
-                "description": "",
-                "match": {
-                  "contentType": ".*",
-                  "includeAttachments": true,
-                  "includeInlineImages": true,
-                  "largerThan": -1,
-                  "name": "(.*)",
-                  "smallerThan": -1
+                description: "",
+                match: {
+                  contentType: ".*",
+                  includeAttachments: true,
+                  includeInlineImages: true,
+                  largerThan: -1,
+                  name: "(.*)",
+                  smallerThan: -1,
                 },
-                "type": "attachments"
-              }
+                type: "attachments",
+              },
             ],
-            "match": {
-              "from": ".*",
-              "is": [],
-              "newerThan": "",
-              "olderThan": "",
-              "subject": ".*",
-              "to": ".*"
+            match: {
+              from: ".*",
+              is: [],
+              newerThan: "",
+              olderThan: "",
+              subject: ".*",
+              to: ".*",
             },
-            "type": "messages"
-          }
+            type: "messages",
+          },
         ],
         match: {
           query: "",
@@ -202,45 +202,45 @@ it("should convert filenameTo patterns", () => {
           },
         ],
         description: "",
-        "handler": [
+        handler: [
           {
-            "actions": [],
-            "description": "",
-            "handler": [
+            actions: [],
+            description: "",
+            handler: [
               {
-                "actions": [
+                actions: [
                   {
-                    "description": "",
-                    "name": "file.storeToGDrive",
-                    "args": {
-                      "folderType": "path",
-                      "folder": "Examples/example3ab",
-                      "filename": "'file-'yyyy-MM-dd-'%s.txt'"
-                    }
-                  }
+                    description: "",
+                    name: "file.storeToGDrive",
+                    args: {
+                      folderType: "path",
+                      folder: "Examples/example3ab",
+                      filename: "'file-'yyyy-MM-dd-'%s.txt'",
+                    },
+                  },
                 ],
-                "description": "",
-                "match": {
-                  "contentType": ".*",
-                  "includeAttachments": true,
-                  "includeInlineImages": true,
-                  "largerThan": -1,
-                  "name": "(.*)",
-                  "smallerThan": -1
+                description: "",
+                match: {
+                  contentType: ".*",
+                  includeAttachments: true,
+                  includeInlineImages: true,
+                  largerThan: -1,
+                  name: "(.*)",
+                  smallerThan: -1,
                 },
-                "type": "attachments"
-              }
+                type: "attachments",
+              },
             ],
-            "match": {
-              "from": ".*",
-              "is": [],
-              "newerThan": "",
-              "olderThan": "",
-              "subject": ".*",
-              "to": ".*"
+            match: {
+              from: ".*",
+              is: [],
+              newerThan: "",
+              olderThan: "",
+              subject: ".*",
+              to: ".*",
             },
-            "type": "messages"
-          }
+            type: "messages",
+          },
         ],
         match: {
           query: "",
@@ -263,7 +263,9 @@ it("should convert filenameTo patterns", () => {
     },
   }
 
-  expect(JSON.stringify(actual, null, 2)).toEqual(JSON.stringify(expected, null, 2))
+  expect(JSON.stringify(actual, null, 2)).toEqual(
+    JSON.stringify(expected, null, 2),
+  )
 
   // expect(actual).toEqual(
   //   expect.objectContaining({
