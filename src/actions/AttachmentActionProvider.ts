@@ -19,6 +19,7 @@ export class GDriveActionProvider extends AbstractActionProvider {
     description: string,
   ) {
     const gdriveAdapter = new GDriveAdapter(gdriveApp)
+    if (this.checkDryRun(`Storing attachment '${this.attachment.getName()}' to '${location}' ...`)) return
     const file = gdriveAdapter.createFile(
       location,
       this.attachment.getDataAsString(),

@@ -106,16 +106,10 @@ export class ThreadActionProvider extends AbstractActionProvider {
     location: string,
     conflictStrategy: ConflictStrategy,
   ) {
-    this.logger.info(
-      "Saving PDF copy of thread '" +
-        this.thread.getFirstMessageSubject() +
-        "' to file +'" +
-        location +
-        "'",
-    )
     const html = this.processThreadToHtml(this.thread)
     const htmlBlob = Utilities.newBlob(html, "text/html")
     const gdriveAdapter: GDriveAdapter = new GDriveAdapter(gdriveApp)
+    if (this.checkDryRun(`Saving PDF copy of thread '${this.thread.getFirstMessageSubject()}' to '${location}' ...`)) return
     const pdfFile = gdriveAdapter.createFile(
       location,
       htmlBlob.getAs("application/pdf").getDataAsString(),
