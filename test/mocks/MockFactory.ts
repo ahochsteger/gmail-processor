@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Config } from "../../src/config/Config"
 import { mock } from "jest-mock-extended"
-import { AllActions } from "../../src/actions/AllActions"
 import { ProcessingContext } from "../../src/context/ProcessingContext"
 import { GmailProcessor } from "../../src/processors/GmailProcessor"
 import { ThreadProcessor } from "../../src/processors/ThreadProcessor"
@@ -210,16 +209,13 @@ export class MockFactory {
     config: Config,
     gasContext = MockFactory.newGasContextMock(),
   ) {
-    const actionProvider = new AllActions(gasContext, config)
     const threadProcessor = new ThreadProcessor(
       gasContext.gmailApp,
-      actionProvider,
       new ProcessingContext(gasContext, config),
     )
     const gmailProcessor = new GmailProcessor(
       gasContext,
       config,
-      actionProvider,
       threadProcessor,
     )
     gmailProcessor.setLogger(gasContext.logger)
@@ -230,10 +226,8 @@ export class MockFactory {
     config: Config,
     gasContext = MockFactory.newGasContextMock(),
   ) {
-    const actionProvider = new AllActions(gasContext, config)
     const threadProcessor = new ThreadProcessor(
       gasContext.gmailApp,
-      actionProvider,
       new ProcessingContext(gasContext, config),
     )
     return threadProcessor
@@ -243,7 +237,6 @@ export class MockFactory {
     config: Config,
     gasContext = MockFactory.newGasContextMock(),
   ) {
-    const actionProvider = new AllActions(gasContext, config)
     const processingContext = new ProcessingContext(gasContext, config)
     processingContext.threadContext = new ThreadContext(
       new ThreadConfig(),
@@ -253,7 +246,6 @@ export class MockFactory {
     )
     const messageProcessor = new MessageProcessor(
       gasContext.gmailApp,
-      actionProvider,
       processingContext,
     )
     return messageProcessor

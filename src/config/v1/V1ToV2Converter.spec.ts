@@ -256,6 +256,7 @@ it("should convert filenameTo patterns", () => {
       maxBatchSize: 10,
       maxRuntime: 280,
       processedLabel: "to-gdrive/processed",
+      processedMode: "read",
       sleepTimeThreads: 100,
       sleepTimeMessages: 0,
       sleepTimeAttachments: 0,

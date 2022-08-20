@@ -1,30 +1,23 @@
-import { ActionProvider } from "../actions/ActionProvider"
-import { Actions } from "../actions/Actions"
 import { Config } from "../config/Config"
-import { GmailActions } from "../actions/GmailActions"
 import { MessageProcessor } from "./MessageProcessor"
 import { ProcessingContext } from "../context/ProcessingContext"
 import { ThreadConfig } from "../config/ThreadConfig"
 import { ThreadContext } from "../context/ThreadContext"
 import { Timer } from "../utils/Timer"
+import { ThreadActionProvider } from "../actions/ThreadActionProvider"
 
 export class ThreadProcessor {
   public logger: Console = console
   public type = "thread"
   public timer: Timer
-  public actions: Actions
   public config: Config
-  public gmailActions: GmailActions
 
   constructor(
     public gmailApp: GoogleAppsScript.Gmail.GmailApp,
-    public actionProvider: ActionProvider,
     public processingContext: ProcessingContext,
   ) {
     this.timer = new Timer()
-    this.actions = actionProvider.getActions()
     this.config = processingContext.config
-    this.gmailActions = new GmailActions(gmailApp)
   }
 
   public processThreadRules(threadRules: ThreadConfig[]) {
@@ -91,9 +84,9 @@ export class ThreadProcessor {
     // TODO: Check, if this.processingContext would be better here!
     const thread: GoogleAppsScript.Gmail.GmailThread = threadContext.thread
     const threadRule: ThreadConfig = threadContext.threadConfig
+    const threadActionProvider = new ThreadActionProvider(this.processingContext,this.logger,this.config.settings.dryrun,thread)
     const messageProcessor = new MessageProcessor(
       this.gmailApp,
-      this.actionProvider,
       this.processingContext,
     )
     messageProcessor.processMessageRules(threadRule.handler)
@@ -107,29 +100,6 @@ export class ThreadProcessor {
     // }
 
     // Mark a thread as processed:
-    this.markThreadAsProcessed(thread)
-  }
-
-  /**
-   * Mark a thread as processed.
-   * @param thread The thread to mark as processed.
-   * @param config The global configuration.
-   */
-  public markThreadAsProcessed(thread: GoogleAppsScript.Gmail.GmailThread) {
-    if (this.config.settings.processedLabel != "") {
-      const label = this.gmailActions.getOrCreateLabel(
-        this.config.settings.processedLabel,
-      )
-      if (!this.config.settings.dryrun) {
-        this.logger.info(
-          `Adding label to thread ${thread.getFirstMessageSubject()}`,
-        )
-        thread.addLabel(label)
-      } else {
-        this.logger.info(
-          `[dryrun] Skipped adding label to thread ${thread.getFirstMessageSubject()}`,
-        )
-      }
-    }
+    threadActionProvider.markAsProcessed()
   }
 }

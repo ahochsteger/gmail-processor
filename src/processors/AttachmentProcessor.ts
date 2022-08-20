@@ -1,5 +1,3 @@
-import { ActionProvider } from "../actions/ActionProvider"
-import { Actions } from "../actions/Actions"
 import { AttachmentConfig } from "../config/AttachmentConfig"
 import { AttachmentContext } from "../context/AttachmentContext"
 import { Config } from "../config/Config"
@@ -10,17 +8,14 @@ import { PatternUtil } from "../utils/PatternUtil"
 
 export class AttachmentProcessor {
   public logger: Console = console
-  public actions: Actions
   public config: Config
   public threadContext: ThreadContext
   public messageContext: MessageContext
 
   constructor(
     public gmailApp: GoogleAppsScript.Gmail.GmailApp,
-    public actionProvider: ActionProvider,
     public processingContext: ProcessingContext,
   ) {
-    this.actions = actionProvider.getActions()
     this.config = processingContext.config
     if (processingContext.threadContext) {
       this.threadContext = processingContext.threadContext

@@ -1,6 +1,4 @@
 import { MessageFlag } from "../config/MessageFlag"
-import { ActionProvider } from "../actions/ActionProvider"
-import { Actions } from "../actions/Actions"
 import { Config } from "../config/Config"
 import { MessageConfig } from "../config/MessageConfig"
 import { MessageContext } from "../context/MessageContext"
@@ -10,16 +8,13 @@ import { AttachmentProcessor } from "../processors/AttachmentProcessor"
 
 export class MessageProcessor {
   public logger: Console = console
-  public actions: Actions
   public config: Config
   public threadContext: ThreadContext
 
   constructor(
     public gmailApp: GoogleAppsScript.Gmail.GmailApp,
-    public actionProvider: ActionProvider,
     public processingContext: ProcessingContext,
   ) {
-    this.actions = actionProvider.getActions()
     this.config = processingContext.config
     if (processingContext.threadContext) {
       this.threadContext = processingContext.threadContext
@@ -96,7 +91,6 @@ export class MessageProcessor {
 
     const attachmentProcessor: AttachmentProcessor = new AttachmentProcessor(
       this.gmailApp,
-      this.actionProvider,
       this.processingContext,
     )
     if (messageConfig.handler) {
