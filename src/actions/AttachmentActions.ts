@@ -1,8 +1,8 @@
 import { ProcessingContext } from "../context/ProcessingContext"
 import { ConflictStrategy, GDriveAdapter } from "../adapter/GDriveAdapter"
-import { AbstractActionProvider } from "./AbstractActionProvider"
+import { AbstractActions } from "./AbstractActions"
 
-export class GDriveActionProvider extends AbstractActionProvider {
+export class GDriveActions extends AbstractActions {
   constructor(
     context: ProcessingContext,
     logger: Console = console,

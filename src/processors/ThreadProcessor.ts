@@ -4,7 +4,7 @@ import { ProcessingContext } from "../context/ProcessingContext"
 import { ThreadConfig } from "../config/ThreadConfig"
 import { ThreadContext } from "../context/ThreadContext"
 import { Timer } from "../utils/Timer"
-import { ThreadActionProvider } from "../actions/ThreadActionProvider"
+import { ThreadActions } from "../actions/ThreadActions"
 
 export class ThreadProcessor {
   public logger: Console = console
@@ -84,7 +84,7 @@ export class ThreadProcessor {
     // TODO: Check, if this.processingContext would be better here!
     const thread: GoogleAppsScript.Gmail.GmailThread = threadContext.thread
     const threadRule: ThreadConfig = threadContext.threadConfig
-    const threadActionProvider = new ThreadActionProvider(
+    const threadActions = new ThreadActions(
       this.processingContext,
       this.logger,
       this.config.settings.dryRun,
@@ -105,6 +105,6 @@ export class ThreadProcessor {
     // }
 
     // Mark a thread as processed:
-    threadActionProvider.markAsProcessed()
+    threadActions.markAsProcessed()
   }
 }

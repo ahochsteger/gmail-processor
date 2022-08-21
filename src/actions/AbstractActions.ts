@@ -1,6 +1,6 @@
 import { ProcessingContext } from "../context/ProcessingContext"
 
-export abstract class AbstractActionProvider {
+export abstract class AbstractActions {
   constructor(
     protected context: ProcessingContext,
     protected logger: Console = console,

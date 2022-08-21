@@ -1,5 +1,5 @@
 import { mock } from "jest-mock-extended"
-import { ThreadActionProvider } from "./ThreadActionProvider"
+import { ThreadActions } from "./ThreadActions"
 import { Config } from "../config/Config"
 import { MockFactory } from "../../test/mocks/MockFactory"
 import { plainToClass } from "class-transformer"
@@ -10,26 +10,26 @@ const gasContext = MockFactory.newGasContextMock(md)
 it("should mark a thread as important", () => {
   const mockedGmailThread = mock<GoogleAppsScript.Gmail.GmailThread>()
   const mockThreadProcessor = MockFactory.newThreadProcessorMock(new Config())
-  const messageActionProvider = new ThreadActionProvider(
+  const messageActions = new ThreadActions(
     mockThreadProcessor.processingContext,
     console,
     false,
     mockedGmailThread,
   )
-  messageActionProvider.markImportant()
+  messageActions.markImportant()
   expect(mockedGmailThread.markImportant).toBeCalled()
 })
 
 it("should not mark a thread as important (dryRun)", () => {
   const mockedGmailThread = mock<GoogleAppsScript.Gmail.GmailThread>()
   const mockThreadProcessor = MockFactory.newThreadProcessorMock(new Config())
-  const messageActionProvider = new ThreadActionProvider(
+  const messageActions = new ThreadActions(
     mockThreadProcessor.processingContext,
     console,
     true,
     mockedGmailThread,
   )
-  messageActionProvider.markImportant()
+  messageActions.markImportant()
   expect(mockedGmailThread.markImportant).not.toBeCalled()
 })
 
@@ -42,13 +42,13 @@ it("should mark a thread as processed by adding a label if processedMode='label'
   })
   const threadProcessor = MockFactory.newThreadProcessorMock(config, gasContext)
   const mockedThread = MockFactory.newThreadMock()
-  const messageActionProvider = new ThreadActionProvider(
+  const messageActions = new ThreadActions(
     threadProcessor.processingContext,
     console,
     false,
     mockedThread,
   )
-  messageActionProvider.markAsProcessed()
+  messageActions.markAsProcessed()
   expect(mockedThread.addLabel).toBeCalled()
 })
 
@@ -60,13 +60,13 @@ it("should not add a label to a thread if processedMode='read'", () => {
   })
   const threadProcessor = MockFactory.newThreadProcessorMock(config, gasContext)
   const mockedThread = MockFactory.newThreadMock()
-  const messageActionProvider = new ThreadActionProvider(
+  const messageActions = new ThreadActions(
     threadProcessor.processingContext,
     console,
     false,
     mockedThread,
   )
-  messageActionProvider.markAsProcessed()
+  messageActions.markAsProcessed()
   expect(mockedThread.addLabel).not.toBeCalled()
 })
 

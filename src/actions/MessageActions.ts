@@ -1,7 +1,7 @@
 import { ProcessingContext } from "../context/ProcessingContext"
-import { AbstractActionProvider } from "./AbstractActionProvider"
+import { AbstractActions } from "./AbstractActions"
 
-export class MessageActionProvider extends AbstractActionProvider {
+export class MessageActions extends AbstractActions {
   constructor(
     context: ProcessingContext,
     logger: Console = console,
