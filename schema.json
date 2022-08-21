@@ -219,7 +219,7 @@
     "SettingsConfig": {
       "description": "Represents a settings config that affect the way GMail2GDrive works.",
       "properties": {
-        "dryrun": {
+        "dryRun": {
           "default": false,
           "description": "Just show what would have been done but don't write anything to GMail or GDrive.",
           "type": "boolean"
