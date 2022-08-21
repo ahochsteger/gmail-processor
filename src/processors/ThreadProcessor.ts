@@ -87,7 +87,7 @@ export class ThreadProcessor {
     const threadActionProvider = new ThreadActionProvider(
       this.processingContext,
       this.logger,
-      this.config.settings.dryrun,
+      this.config.settings.dryRun,
       thread,
     )
     const messageProcessor = new MessageProcessor(

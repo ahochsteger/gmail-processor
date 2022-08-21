@@ -252,7 +252,7 @@ it("should convert filenameTo patterns", () => {
       },
     ],
     settings: {
-      dryrun: false,
+      dryRun: false,
       maxBatchSize: 10,
       maxRuntime: 280,
       processedLabel: "to-gdrive/processed",

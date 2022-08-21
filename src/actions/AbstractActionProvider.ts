@@ -9,7 +9,7 @@ export abstract class AbstractActionProvider {
 
   checkDryRun(message: string): boolean {
     if (this.dryRun) {
-      this.logger.info(`Skipped (dryrun): ${message}'`)
+      this.logger.info(`Skipped (dryRun): ${message}'`)
       return true
     }
     this.logger.info(message)
