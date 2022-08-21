@@ -4,7 +4,7 @@ export abstract class AbstractActionProvider {
   constructor(
     protected context: ProcessingContext,
     protected logger: Console = console,
-    protected dryRun = false
+    protected dryRun = false,
   ) {}
 
   checkDryRun(message: string): boolean {

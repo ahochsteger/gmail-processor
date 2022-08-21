@@ -236,7 +236,13 @@
         },
         "processedLabel": {
           "default": "to-gdrive/processed",
-          "description": "The label to be added to processed GMail threads",
+          "description": "The label to be added to processed GMail threads (only for markProcessedMode=\"label\", deprecated - only for compatibility to v1)",
+          "type": "string"
+        },
+        "processedMode": {
+          "default": "read",
+          "description": "The mode to mark processed threads/messages.\n* `label`: Add the label from `processedLabel` to the thread. This is just for compatibility to v1 and is limited to one message per thread.\n* `read`: Mark the message as read. This is the new default since it provides more flexibility esp. when threads contain multiple messages.",
+          "enum": ["label", "read"],
           "type": "string"
         },
         "sleepTimeAttachments": {

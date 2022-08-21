@@ -84,7 +84,12 @@ export class ThreadProcessor {
     // TODO: Check, if this.processingContext would be better here!
     const thread: GoogleAppsScript.Gmail.GmailThread = threadContext.thread
     const threadRule: ThreadConfig = threadContext.threadConfig
-    const threadActionProvider = new ThreadActionProvider(this.processingContext,this.logger,this.config.settings.dryrun,thread)
+    const threadActionProvider = new ThreadActionProvider(
+      this.processingContext,
+      this.logger,
+      this.config.settings.dryrun,
+      thread,
+    )
     const messageProcessor = new MessageProcessor(
       this.gmailApp,
       this.processingContext,

@@ -17,13 +17,13 @@ export class SettingsConfig {
   /**
    * The label to be added to processed GMail threads (only for markProcessedMode="label", deprecated - only for compatibility to v1)
    */
-   processedLabel = "to-gdrive/processed"
-   /**
+  processedLabel = "to-gdrive/processed"
+  /**
    * The mode to mark processed threads/messages.
    * * `label`: Add the label from `processedLabel` to the thread. This is just for compatibility to v1 and is limited to one message per thread.
    * * `read`: Mark the message as read. This is the new default since it provides more flexibility esp. when threads contain multiple messages.
    */
-  processedMode: ("label"|"read") = "read"
+  processedMode: "label" | "read" = "read"
   /**
    * The sleep time in milliseconds between processing each thread
    */

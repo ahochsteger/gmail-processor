@@ -1,4 +1,3 @@
-import { AllActions } from "./actions/AllActions"
 import { Config } from "./config/Config"
 import { GmailProcessor } from "./processors/GmailProcessor"
 import { GoogleAppsScriptContext } from "./context/GoogleAppsScriptContext"
@@ -16,19 +15,12 @@ export function run(config: Config) {
     console,
     Utilities,
   )
-  const actionProvider = new AllActions(gasContext, config)
 
   const threadProcessor = new ThreadProcessor(
     GmailApp,
-    actionProvider,
     new ProcessingContext(gasContext, config),
   )
-  const gmailProcessor = new GmailProcessor(
-    gasContext,
-    config,
-    actionProvider,
-    threadProcessor,
-  )
+  const gmailProcessor = new GmailProcessor(gasContext, config, threadProcessor)
   gmailProcessor.run()
 }
 
