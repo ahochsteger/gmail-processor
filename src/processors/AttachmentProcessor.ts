@@ -29,13 +29,21 @@ export class AttachmentProcessor {
     }
   }
 
-  public processAttachmentRules(attachmentConfig: AttachmentConfig[]) {
-    for (const attachmentRule of attachmentConfig) {
+  public processAttachmentRules(attachmentConfigs: AttachmentConfig[]) {
+    for (let i = 0; i < attachmentConfigs.length; i++) {
+      const attachmentRule = attachmentConfigs[i]
+      attachmentRule.description =
+        attachmentRule.description !== ""
+          ? attachmentRule.description
+          : `Attachment config #${i + 1}`
       this.processAttachmentRule(attachmentRule)
     }
   }
 
   public processAttachmentRule(attachmentConfig: AttachmentConfig) {
+    this.logger.info(
+      `          Processing of attachment config '${attachmentConfig.description}' started ...`,
+    )
     for (const attachment of this.messageContext.message.getAttachments()) {
       const attachmentContext = new AttachmentContext(
         attachmentConfig,
@@ -48,9 +56,16 @@ export class AttachmentProcessor {
       this.processingContext.attachmentContext = attachmentContext
       this.processAttachment(attachmentContext)
     }
+    this.logger.info(
+      `          Processing of attachment config '${attachmentConfig.description}' finished.`,
+    )
   }
 
   public processAttachment(attachmentContext: AttachmentContext) {
+    const attachment = attachmentContext.attachment
+    this.logger.info(
+      `            Processing of attachment '${attachment.getName()}' started ...`,
+    )
     // TODO: Check, if this.processingContext would be better here!
     // var match = true;
     // if (rule.filenameFromRegexp) {
@@ -73,6 +88,9 @@ export class AttachmentProcessor {
     // TODO: Implement attachment handling including dry-run
     this.logger.log("Dumping dataMap:")
     this.logger.log(dataMap)
+    this.logger.info(
+      `            Processing of attachment '${attachment.getName()}' finished.`,
+    )
   }
 
   // public processAttachmentRule_old(

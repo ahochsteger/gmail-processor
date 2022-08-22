@@ -24,12 +24,13 @@ export function run(config: Config) {
   gmailProcessor.run()
 }
 
-export function runWithV1Config(v1configJson: any) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function runWithV1Config(v1configJson: any, dryRun = false) {
   const configV1 = plainToClass(V1Config, v1configJson)
   const config = V1ToV2Converter.v1ConfigToV2Config(configV1)
+  config.settings.dryRun = dryRun
   console.warn(
-    "Using deprecated v1 config format - switching to the new v2 config format is strongly recommended! Use instead:",
+    "Using deprecated v1 config format - switching to the new v2 config format is strongly recommended!",
   )
-  console.warn("Lib.run(" + JSON.stringify(config, undefined, 2) + ")")
   run(config)
 }

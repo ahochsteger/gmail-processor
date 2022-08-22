@@ -21,7 +21,12 @@ export class ThreadProcessor {
   }
 
   public processThreadRules(threadRules: ThreadConfig[]) {
-    for (const threadRule of threadRules) {
+    for (let i = 0; i < threadRules.length; i++) {
+      const threadRule = threadRules[i]
+      threadRule.description =
+        threadRule.description !== ""
+          ? threadRule.description
+          : `Thread config #${i + 1}`
       this.processThreadRule(threadRule)
     }
   }
@@ -51,24 +56,17 @@ export class ThreadProcessor {
       1,
       this.config.settings.maxBatchSize,
     )
-    this.logger.info("  Processing rule: " + gSearchExp)
+    this.logger.info(
+      `  Processing of thread config '${threadConfig.description}' started ...`,
+    )
     for (const thread of threads) {
       const runTime = this.timer.getRunTime()
       if (runTime >= this.config.settings.maxRuntime) {
         this.logger.warn(
-          "Self terminating script after max runtime " + runTime + "s",
+          `Processing terminated due to reaching runtime of ${runTime}s (max:${this.config.settings.maxRuntime}s).`,
         )
         return
       }
-      this.logger.info(
-        "    Processing thread: " +
-          thread.getFirstMessageSubject() +
-          " (runtime: " +
-          runTime +
-          "s/" +
-          this.config.settings.maxRuntime +
-          "s)",
-      )
       const threadContext: ThreadContext = new ThreadContext(
         threadConfig,
         thread,
@@ -78,6 +76,9 @@ export class ThreadProcessor {
       this.processingContext.threadContext = threadContext
       this.processThread(threadContext)
     }
+    this.logger.info(
+      `  Processing of thread config '${threadConfig.description}' finished.`,
+    )
   }
 
   public processThread(threadContext: ThreadContext) {
@@ -94,6 +95,9 @@ export class ThreadProcessor {
       this.gmailApp,
       this.processingContext,
     )
+    this.logger.info(
+      `    Processing of thread '${thread.getFirstMessageSubject()}' started ...`,
+    )
     messageProcessor.processMessageRules(threadRule.handler)
     // // Process all messages of a thread:
     // for (const messageRule of threadRule.messageRules) {
@@ -106,5 +110,8 @@ export class ThreadProcessor {
 
     // Mark a thread as processed:
     threadActions.markAsProcessed()
+    this.logger.info(
+      `    Processing of thread '${thread.getFirstMessageSubject()}' finished.`,
+    )
   }
 }

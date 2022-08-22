@@ -24,7 +24,12 @@ export class MessageProcessor {
   }
 
   public processMessageRules(messageConfigs: MessageConfig[]) {
-    for (const messageConfig of messageConfigs) {
+    for (let i = 0; i < messageConfigs.length; i++) {
+      const messageConfig = messageConfigs[i]
+      messageConfig.description =
+        messageConfig.description !== ""
+          ? messageConfig.description
+          : `Message config #${i + 1}`
       this.processMessageRule(messageConfig)
     }
   }
@@ -57,6 +62,9 @@ export class MessageProcessor {
   }
 
   public processMessageRule(messageConfig: MessageConfig) {
+    this.logger.info(
+      `      Processing of message config '${messageConfig.description}' started ...`,
+    )
     for (const message of this.threadContext.thread.getMessages()) {
       if (!this.matches(messageConfig, message)) {
         continue
@@ -70,6 +78,9 @@ export class MessageProcessor {
       this.processingContext.messageContext = messageContext
       this.processMessage(messageContext)
     }
+    this.logger.info(
+      `      Processing of message config '${messageConfig.description}' finished.`,
+    )
   }
 
   /**
@@ -82,13 +93,8 @@ export class MessageProcessor {
     const messageConfig: MessageConfig = messageContext.messageConfig
     const message = messageContext.message
     this.logger.info(
-      "      Processing message: " +
-        message.getSubject() +
-        " (" +
-        message.getId() +
-        ")",
+      `        Processing of message '${message.getSubject()}' (id:${message.getId()}) started ...`,
     )
-
     const attachmentProcessor: AttachmentProcessor = new AttachmentProcessor(
       this.gmailApp,
       this.processingContext,
@@ -104,5 +110,8 @@ export class MessageProcessor {
     //         processAttachment(thread, msgIdx, messageRule, config, attIdx)
     //     }
     // }
+    this.logger.info(
+      `        Processing of message '${message.getSubject()}' (id:${message.getId()}) finished.`,
+    )
   }
 }
