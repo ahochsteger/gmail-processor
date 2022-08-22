@@ -61,7 +61,7 @@ export class MockFactory {
 
   public static newDefaultMessageConfig(
     includeCommands = false,
-    includeAttachmentRules = false,
+    includeAttachmentConfigs = false,
   ): any {
     return {
       match: {
@@ -71,7 +71,7 @@ export class MockFactory {
         is: ["unread"],
       },
       actions: includeCommands ? [this.newDefaultActionConfig() as any] : [],
-      handler: includeAttachmentRules
+      handler: includeAttachmentConfigs
         ? [this.newDefaultAttachmentConfig() as any]
         : [],
     }
@@ -83,7 +83,7 @@ export class MockFactory {
   ): any {
     return {
       actions: includeCommands ? [this.newDefaultActionConfig() as any] : [],
-      description: "A sample thread rule",
+      description: "A sample thread config",
       handler: includeMessages ? [this.newDefaultMessageConfig() as any] : [],
       match: {
         query: "has:attachment from:example@example.com",

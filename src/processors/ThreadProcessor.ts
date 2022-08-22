@@ -20,12 +20,12 @@ export class ThreadProcessor {
     this.config = processingContext.config
   }
 
-  public processThreadRules(threadRules: ThreadConfig[]) {
-    for (let i = 0; i < threadRules.length; i++) {
-      const threadRule = threadRules[i]
-      threadRule.name =
-        threadRule.name !== "" ? threadRule.name : `thread-cfg-${i + 1}`
-      this.processThreadRule(threadRule)
+  public processThreadConfigs(threadConfigs: ThreadConfig[]) {
+    for (let i = 0; i < threadConfigs.length; i++) {
+      const threadConfig = threadConfigs[i]
+      threadConfig.name =
+        threadConfig.name !== "" ? threadConfig.name : `thread-cfg-${i + 1}`
+      this.processThreadConfig(threadConfig)
     }
   }
 
@@ -46,7 +46,7 @@ export class ThreadProcessor {
     return gSearchExp.trim()
   }
 
-  public processThreadRule(threadConfig: ThreadConfig) {
+  public processThreadConfig(threadConfig: ThreadConfig) {
     const gSearchExp = this.getQueryFromThreadConfig(threadConfig)
     // Process all threads matching the search expression:
     const threads = this.gmailApp.search(
@@ -82,7 +82,7 @@ export class ThreadProcessor {
   public processThread(threadContext: ThreadContext) {
     // TODO: Check, if this.processingContext would be better here!
     const thread: GoogleAppsScript.Gmail.GmailThread = threadContext.thread
-    const threadRule: ThreadConfig = threadContext.threadConfig
+    const threadConfig: ThreadConfig = threadContext.threadConfig
     const threadActions = new ThreadActions(
       this.processingContext,
       this.logger,
@@ -96,7 +96,7 @@ export class ThreadProcessor {
     this.logger.info(
       `    Processing of thread '${thread.getFirstMessageSubject()}' started ...`,
     )
-    messageProcessor.processMessageRules(threadRule.handler)
+    messageProcessor.processMessageConfigs(threadConfig.handler)
     // // Process all messages of a thread:
     // for (const messageRule of threadRule.messageRules) {
     //     for (const message of thread.getMessages()) {

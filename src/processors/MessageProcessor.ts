@@ -23,12 +23,12 @@ export class MessageProcessor {
     }
   }
 
-  public processMessageRules(messageConfigs: MessageConfig[]) {
+  public processMessageConfigs(messageConfigs: MessageConfig[]) {
     for (let i = 0; i < messageConfigs.length; i++) {
       const messageConfig = messageConfigs[i]
       messageConfig.name =
         messageConfig.name !== "" ? messageConfig.name : `message-cfg-${i + 1}`
-      this.processMessageRule(messageConfig)
+      this.processMessageConfig(messageConfig)
     }
   }
 
@@ -59,7 +59,7 @@ export class MessageProcessor {
     return true
   }
 
-  public processMessageRule(messageConfig: MessageConfig) {
+  public processMessageConfig(messageConfig: MessageConfig) {
     this.logger.info(
       `      Processing of message config '${messageConfig.name}' started ...`,
     )
@@ -99,7 +99,7 @@ export class MessageProcessor {
     )
     if (messageConfig.handler) {
       // New rule configuration format
-      attachmentProcessor.processAttachmentRules(messageConfig.handler)
+      attachmentProcessor.processAttachmentConfigs(messageConfig.handler)
     }
     // } else { // Old rule configuration format
     //     // TODO: Convert old rule configuration into new format instead of duplicate implementation

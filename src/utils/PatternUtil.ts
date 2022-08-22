@@ -304,7 +304,7 @@ export class PatternUtil {
       ? context.messageContext.messageConfig
       : new MessageConfig()
     const attRuleIdx = context.attachmentContext
-      ? context.attachmentContext.ruleIndex
+      ? context.attachmentContext.configIndex
       : -1
     this.substitutePatternFromThread(
       pattern,

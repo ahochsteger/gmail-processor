@@ -5,6 +5,6 @@ export class ThreadContext {
     public threadConfig: ThreadConfig,
     public thread: GoogleAppsScript.Gmail.GmailThread,
     public index: number,
-    public ruleIndex: number,
+    public configIndex: number,
   ) {}
 }

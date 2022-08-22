@@ -29,18 +29,18 @@ export class AttachmentProcessor {
     }
   }
 
-  public processAttachmentRules(attachmentConfigs: AttachmentConfig[]) {
+  public processAttachmentConfigs(attachmentConfigs: AttachmentConfig[]) {
     for (let i = 0; i < attachmentConfigs.length; i++) {
-      const attachmentRule = attachmentConfigs[i]
-      attachmentRule.name =
-        attachmentRule.name !== ""
-          ? attachmentRule.name
+      const attachmentConfig = attachmentConfigs[i]
+      attachmentConfig.name =
+        attachmentConfig.name !== ""
+          ? attachmentConfig.name
           : `attachment-cfg-${i + 1}`
-      this.processAttachmentRule(attachmentRule)
+      this.processAttachmentConfig(attachmentConfig)
     }
   }
 
-  public processAttachmentRule(attachmentConfig: AttachmentConfig) {
+  public processAttachmentConfig(attachmentConfig: AttachmentConfig) {
     this.logger.info(
       `          Processing of attachment config '${attachmentConfig.name}' started ...`,
     )
@@ -83,7 +83,7 @@ export class AttachmentProcessor {
       this.messageContext.index,
       attachmentContext.index,
       this.messageContext.messageConfig,
-      attachmentContext.ruleIndex,
+      attachmentContext.configIndex,
     )
     // TODO: Implement attachment handling including dry-run
     this.logger.log("Dumping dataMap:")

@@ -5,6 +5,6 @@ export class MessageContext {
     public messageConfig: MessageConfig,
     public message: GoogleAppsScript.Gmail.GmailMessage,
     public index: number,
-    public ruleIndex: number,
+    public configIndex: number,
   ) {}
 }

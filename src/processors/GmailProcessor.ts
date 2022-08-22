@@ -33,7 +33,7 @@ export class GmailProcessor {
       processingContext,
     )
     threadProcessor.logger = this.logger
-    threadProcessor.processThreadRules(this.config.handler)
+    threadProcessor.processThreadConfigs(this.config.handler)
     this.logger.info("Processing of GMail2GDrive config finished.")
   }
 }
