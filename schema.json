@@ -47,6 +47,11 @@
           "$ref": "#/definitions/AttachmentMatchConfig",
           "description": "Specifies which attachments match for further processing"
         },
+        "name": {
+          "default": "",
+          "description": "The unique name of the attachment config (will be generated if not set)",
+          "type": "string"
+        },
         "type": {
           "default": "attachments",
           "description": "The type of handler",
@@ -168,6 +173,11 @@
         "match": {
           "$ref": "#/definitions/MessageMatchConfig",
           "description": "Specifies which attachments match for further processing"
+        },
+        "name": {
+          "default": "",
+          "description": "The unique name of the message config (will be generated if not set)",
+          "type": "string"
         },
         "type": {
           "default": "messages",
@@ -295,6 +305,11 @@
         "match": {
           "$ref": "#/definitions/ThreadMatchConfig",
           "description": "Specifies which threads match for further processing"
+        },
+        "name": {
+          "default": "",
+          "description": "The unique name of the thread config (will be generated if not set)",
+          "type": "string"
         },
         "type": {
           "default": "threads",

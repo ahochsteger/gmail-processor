@@ -23,10 +23,8 @@ export class ThreadProcessor {
   public processThreadRules(threadRules: ThreadConfig[]) {
     for (let i = 0; i < threadRules.length; i++) {
       const threadRule = threadRules[i]
-      threadRule.description =
-        threadRule.description !== ""
-          ? threadRule.description
-          : `Thread config #${i + 1}`
+      threadRule.name =
+        threadRule.name !== "" ? threadRule.name : `thread-cfg-${i + 1}`
       this.processThreadRule(threadRule)
     }
   }
@@ -57,7 +55,7 @@ export class ThreadProcessor {
       this.config.settings.maxBatchSize,
     )
     this.logger.info(
-      `  Processing of thread config '${threadConfig.description}' started ...`,
+      `  Processing of thread config '${threadConfig.name}' started ...`,
     )
     for (const thread of threads) {
       const runTime = this.timer.getRunTime()
@@ -77,7 +75,7 @@ export class ThreadProcessor {
       this.processThread(threadContext)
     }
     this.logger.info(
-      `  Processing of thread config '${threadConfig.description}' finished.`,
+      `  Processing of thread config '${threadConfig.name}' finished.`,
     )
   }
 

@@ -27,6 +27,10 @@ export class MessageConfig {
   @Type(() => MessageMatchConfig)
   match = new MessageMatchConfig()
   /**
+   * The unique name of the message config (will be generated if not set)
+   */
+  name = ""
+  /**
    * The type of handler
    */
   type = "messages"

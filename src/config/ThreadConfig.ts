@@ -27,6 +27,10 @@ export class ThreadConfig {
   @Type(() => ThreadMatchConfig)
   match = new ThreadMatchConfig()
   /**
+   * The unique name of the thread config (will be generated if not set)
+   */
+  name = ""
+  /**
    * The type of handler
    */
   type = "threads"

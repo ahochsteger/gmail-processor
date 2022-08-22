@@ -32,17 +32,17 @@ export class AttachmentProcessor {
   public processAttachmentRules(attachmentConfigs: AttachmentConfig[]) {
     for (let i = 0; i < attachmentConfigs.length; i++) {
       const attachmentRule = attachmentConfigs[i]
-      attachmentRule.description =
-        attachmentRule.description !== ""
-          ? attachmentRule.description
-          : `Attachment config #${i + 1}`
+      attachmentRule.name =
+        attachmentRule.name !== ""
+          ? attachmentRule.name
+          : `attachment-cfg-${i + 1}`
       this.processAttachmentRule(attachmentRule)
     }
   }
 
   public processAttachmentRule(attachmentConfig: AttachmentConfig) {
     this.logger.info(
-      `          Processing of attachment config '${attachmentConfig.description}' started ...`,
+      `          Processing of attachment config '${attachmentConfig.name}' started ...`,
     )
     for (const attachment of this.messageContext.message.getAttachments()) {
       const attachmentContext = new AttachmentContext(
@@ -57,7 +57,7 @@ export class AttachmentProcessor {
       this.processAttachment(attachmentContext)
     }
     this.logger.info(
-      `          Processing of attachment config '${attachmentConfig.description}' finished.`,
+      `          Processing of attachment config '${attachmentConfig.name}' finished.`,
     )
   }
 

@@ -22,6 +22,10 @@ export class AttachmentConfig {
   @Type(() => AttachmentMatchConfig)
   match = new AttachmentMatchConfig()
   /**
+   * The unique name of the attachment config (will be generated if not set)
+   */
+  name = ""
+  /**
    * The type of handler
    */
   type = "attachments"

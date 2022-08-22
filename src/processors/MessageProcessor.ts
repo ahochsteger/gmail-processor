@@ -26,10 +26,8 @@ export class MessageProcessor {
   public processMessageRules(messageConfigs: MessageConfig[]) {
     for (let i = 0; i < messageConfigs.length; i++) {
       const messageConfig = messageConfigs[i]
-      messageConfig.description =
-        messageConfig.description !== ""
-          ? messageConfig.description
-          : `Message config #${i + 1}`
+      messageConfig.name =
+        messageConfig.name !== "" ? messageConfig.name : `message-cfg-${i + 1}`
       this.processMessageRule(messageConfig)
     }
   }
@@ -63,7 +61,7 @@ export class MessageProcessor {
 
   public processMessageRule(messageConfig: MessageConfig) {
     this.logger.info(
-      `      Processing of message config '${messageConfig.description}' started ...`,
+      `      Processing of message config '${messageConfig.name}' started ...`,
     )
     for (const message of this.threadContext.thread.getMessages()) {
       if (!this.matches(messageConfig, message)) {
@@ -79,7 +77,7 @@ export class MessageProcessor {
       this.processMessage(messageContext)
     }
     this.logger.info(
-      `      Processing of message config '${messageConfig.description}' finished.`,
+      `      Processing of message config '${messageConfig.name}' finished.`,
     )
   }
 
