@@ -1,6 +1,8 @@
 import { ProcessingContext } from "../context/ProcessingContext"
 import { ConflictStrategy, GDriveAdapter } from "../adapter/GDriveAdapter"
 import { AbstractActions } from "./AbstractActions"
+import "reflect-metadata"
+import { action } from "./ActionRegistry"
 
 export class ThreadActions extends AbstractActions {
   constructor(
@@ -12,7 +14,8 @@ export class ThreadActions extends AbstractActions {
     super(context, logger, dryRun)
   }
 
-  markAsProcessed() {
+  @action("thread.markProcessed")
+  public markProcessed() {
     if (this.context.config.settings.processedMode == "label") {
       if (
         this.checkDryRun(
@@ -24,7 +27,8 @@ export class ThreadActions extends AbstractActions {
     }
   }
 
-  markImportant() {
+  @action("thread.markImportant")
+  public markImportant() {
     if (
       this.checkDryRun(
         `Marking thread '${this.thread.getFirstMessageSubject()}' as important ...`,
@@ -34,7 +38,8 @@ export class ThreadActions extends AbstractActions {
     this.thread.markImportant()
   }
 
-  markRead() {
+  @action("thread.markRead")
+  public markRead() {
     if (
       this.checkDryRun(
         `Marking thread '${this.thread.getFirstMessageSubject()}' as read ...`,
@@ -44,7 +49,8 @@ export class ThreadActions extends AbstractActions {
     this.thread.markRead()
   }
 
-  markUnimportant() {
+  @action("thread.markUnimportant")
+  public markUnimportant() {
     if (
       this.checkDryRun(
         `Marking thread '${this.thread.getFirstMessageSubject()}' as unimportant ...`,
@@ -54,7 +60,8 @@ export class ThreadActions extends AbstractActions {
     this.thread.markUnimportant()
   }
 
-  markUnread() {
+  @action("thread.markUnread")
+  public markUnread() {
     if (
       this.checkDryRun(
         `Marking thread '${this.thread.getFirstMessageSubject()}' as unread ...`,
@@ -64,7 +71,8 @@ export class ThreadActions extends AbstractActions {
     this.thread.markUnread()
   }
 
-  moveToArchive() {
+  @action("thread.moveToArchive")
+  public moveToArchive() {
     if (
       this.checkDryRun(
         `Moving thread '${this.thread.getFirstMessageSubject()}' to archive ...`,
@@ -74,7 +82,8 @@ export class ThreadActions extends AbstractActions {
     this.thread.moveToArchive()
   }
 
-  moveToInbox() {
+  @action("thread.moveToInbox")
+  public moveToInbox() {
     if (
       this.checkDryRun(
         `Moving thread '${this.thread.getFirstMessageSubject()}' to inbox ...`,
@@ -84,7 +93,8 @@ export class ThreadActions extends AbstractActions {
     this.thread.moveToInbox()
   }
 
-  moveToSpam() {
+  @action("thread.moveToSpam")
+  public moveToSpam() {
     if (
       this.checkDryRun(
         `Moving thread '${this.thread.getFirstMessageSubject()}' to spam ...`,
@@ -94,7 +104,8 @@ export class ThreadActions extends AbstractActions {
     this.thread.moveToSpam()
   }
 
-  moveToTrash() {
+  @action("thread.moveToTrash")
+  public moveToTrash() {
     if (
       this.checkDryRun(
         `Moving thread '${this.thread.getFirstMessageSubject()}' to trash ...`,
@@ -104,7 +115,8 @@ export class ThreadActions extends AbstractActions {
     this.thread.moveToTrash()
   }
 
-  addLabel(labelName: string) {
+  @action("thread.addLabel")
+  public addLabel(labelName: string) {
     if (
       this.checkDryRun(
         `Adding label '${labelName}' to thread '${this.thread.getFirstMessageSubject()}' ...`,
@@ -118,7 +130,8 @@ export class ThreadActions extends AbstractActions {
     }
   }
 
-  removeLabel(labelName: string) {
+  @action("thread.removeLabel")
+  public removeLabel(labelName: string) {
     if (
       this.checkDryRun(
         `Removing label '${labelName}' from thread '${this.thread.getFirstMessageSubject()}' ...`,
@@ -158,6 +171,7 @@ export class ThreadActions extends AbstractActions {
   /**
    * Generate a PDF document for the whole thread using HTML from .
    */
+  @action("thread.storeAsPdfToGDrive")
   public storeAsPdfToGDrive(
     gdriveApp: GoogleAppsScript.Drive.DriveApp,
     location: string,

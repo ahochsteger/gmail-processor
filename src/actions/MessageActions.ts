@@ -1,5 +1,7 @@
 import { ProcessingContext } from "../context/ProcessingContext"
 import { AbstractActions } from "./AbstractActions"
+import "reflect-metadata"
+import { action } from "./ActionRegistry"
 
 export class MessageActions extends AbstractActions {
   constructor(
@@ -11,7 +13,8 @@ export class MessageActions extends AbstractActions {
     super(context, logger, dryRun)
   }
 
-  forward(to: string) {
+  @action("message.forward")
+  public forward(to: string) {
     if (
       this.checkDryRun(
         `Forwarding message '${this.message.getSubject()}' to '${to}' ...`,
@@ -21,7 +24,8 @@ export class MessageActions extends AbstractActions {
     this.message.forward(to)
   }
 
-  markAsProcessed() {
+  @action("message.markProcessed")
+  public markProcessed() {
     if (this.context.config.settings.processedMode == "read") {
       if (
         this.checkDryRun(
@@ -33,7 +37,8 @@ export class MessageActions extends AbstractActions {
     }
   }
 
-  markRead() {
+  @action("message.markRead")
+  public markRead() {
     if (
       this.checkDryRun(
         `Marking message '${this.message.getSubject()}' as read ...`,
@@ -43,7 +48,8 @@ export class MessageActions extends AbstractActions {
     this.message.markRead()
   }
 
-  markUnread() {
+  @action("message.markUnread")
+  public markUnread() {
     if (
       this.checkDryRun(
         `Marking message '${this.message.getSubject()}' as unread ...`,
@@ -53,7 +59,8 @@ export class MessageActions extends AbstractActions {
     this.message.markUnread()
   }
 
-  moveToTrash() {
+  @action("message.moveToTrash")
+  public moveToTrash() {
     if (
       this.checkDryRun(
         `Moving message '${this.message.getSubject()}' to trash ...`,
@@ -63,7 +70,8 @@ export class MessageActions extends AbstractActions {
     this.message.moveToTrash()
   }
 
-  star() {
+  @action("message.star")
+  public star() {
     if (
       this.checkDryRun(
         `Marking message '${this.message.getSubject()}' as starred ...`,
@@ -73,7 +81,8 @@ export class MessageActions extends AbstractActions {
     this.message.star()
   }
 
-  unstar() {
+  @action("message.unstar")
+  public unstar() {
     if (
       this.checkDryRun(
         `Marking message '${this.message.getSubject()}' as unstarred ...`,

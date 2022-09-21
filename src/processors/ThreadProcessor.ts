@@ -107,7 +107,7 @@ export class ThreadProcessor {
     // }
 
     // Mark a thread as processed:
-    threadActions.markAsProcessed()
+    threadActions.markProcessed()
     this.logger.info(
       `    Processing of thread '${thread.getFirstMessageSubject()}' finished.`,
     )

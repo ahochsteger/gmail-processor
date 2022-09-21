@@ -1,8 +1,10 @@
 import { ProcessingContext } from "../context/ProcessingContext"
 import { ConflictStrategy, GDriveAdapter } from "../adapter/GDriveAdapter"
 import { AbstractActions } from "./AbstractActions"
+import "reflect-metadata"
+import { action } from "./ActionRegistry"
 
-export class GDriveActions extends AbstractActions {
+export class AttachmentActions extends AbstractActions {
   constructor(
     context: ProcessingContext,
     logger: Console = console,
@@ -12,7 +14,12 @@ export class GDriveActions extends AbstractActions {
     super(context, logger, dryRun)
   }
 
-  public storeAttachmentToGDrive(
+  @action("attachment.testAction")
+  public testAction(argString: string, argNum: number, argArray: string[], argMap: any) {
+    console.log(`argString:${argString}, argNum:${argNum}, argArray:${argArray}, argMap:${argMap}`)
+  }
+  @action("attachment.storeToGDrive")
+  public storeToGDrive(
     gdriveApp: GoogleAppsScript.Drive.DriveApp,
     location: string,
     conflictStrategy: ConflictStrategy,

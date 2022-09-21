@@ -3,33 +3,56 @@ import { ThreadActions } from "./ThreadActions"
 import { Config } from "../config/Config"
 import { MockFactory } from "../../test/mocks/MockFactory"
 import { plainToClass } from "class-transformer"
+import { actionRegistry } from "./ActionRegistry"
 
-const md = MockFactory.newMockObjects()
-const gasContext = MockFactory.newGasContextMock(md)
-
-it("should mark a thread as important", () => {
+function getMocks(dryRun=true,config=new Config()) {
   const mockedGmailThread = mock<GoogleAppsScript.Gmail.GmailThread>()
-  const mockThreadProcessor = MockFactory.newThreadProcessorMock(new Config())
-  const messageActions = new ThreadActions(
+  const md = MockFactory.newMockObjects()
+  const mockedGasContext = MockFactory.newGasContextMock(md)
+  const mockThreadProcessor = MockFactory.newThreadProcessorMock(config,mockedGasContext)
+  const threadActions = new ThreadActions(
     mockThreadProcessor.processingContext,
     console,
-    false,
+    dryRun,
     mockedGmailThread,
   )
-  messageActions.markImportant()
+  return {
+    mockedGmailThread,
+    mockThreadProcessor,
+    threadActions,
+  }
+}
+
+it("should provide actions in the action registry", () => {
+  const {threadActions} = getMocks()
+  expect(threadActions).not.toBeNull()
+
+  const actionMap = actionRegistry.getActionMap()
+  expect(Object.keys(actionMap).filter(v => v.startsWith("thread")).sort()).toEqual([
+    "thread.addLabel",
+    "thread.markImportant",
+    "thread.markProcessed",
+    "thread.markRead",
+    "thread.markUnimportant",
+    "thread.markUnread",
+    "thread.moveToArchive",
+    "thread.moveToInbox",
+    "thread.moveToSpam",
+    "thread.moveToTrash",
+    "thread.removeLabel",
+    "thread.storeAsPdfToGDrive",
+  ])
+})
+
+it("should mark a thread as important", () => {
+  const {mockedGmailThread,threadActions} = getMocks(false)
+  threadActions.markImportant()
   expect(mockedGmailThread.markImportant).toBeCalled()
 })
 
 it("should not mark a thread as important (dryRun)", () => {
-  const mockedGmailThread = mock<GoogleAppsScript.Gmail.GmailThread>()
-  const mockThreadProcessor = MockFactory.newThreadProcessorMock(new Config())
-  const messageActions = new ThreadActions(
-    mockThreadProcessor.processingContext,
-    console,
-    true,
-    mockedGmailThread,
-  )
-  messageActions.markImportant()
+  const {mockedGmailThread,threadActions} = getMocks(true)
+  threadActions.markImportant()
   expect(mockedGmailThread.markImportant).not.toBeCalled()
 })
 
@@ -40,16 +63,9 @@ it("should mark a thread as processed by adding a label if processedMode='label'
       processedMode: "label",
     },
   })
-  const threadProcessor = MockFactory.newThreadProcessorMock(config, gasContext)
-  const mockedThread = MockFactory.newThreadMock()
-  const messageActions = new ThreadActions(
-    threadProcessor.processingContext,
-    console,
-    false,
-    mockedThread,
-  )
-  messageActions.markAsProcessed()
-  expect(mockedThread.addLabel).toBeCalled()
+  const {mockedGmailThread,threadActions} = getMocks(false,config)
+  threadActions.markProcessed()
+  expect(mockedGmailThread.addLabel).toBeCalled()
 })
 
 it("should not add a label to a thread if processedMode='read'", () => {
@@ -58,16 +74,9 @@ it("should not add a label to a thread if processedMode='read'", () => {
       processedMode: "read",
     },
   })
-  const threadProcessor = MockFactory.newThreadProcessorMock(config, gasContext)
-  const mockedThread = MockFactory.newThreadMock()
-  const messageActions = new ThreadActions(
-    threadProcessor.processingContext,
-    console,
-    false,
-    mockedThread,
-  )
-  messageActions.markAsProcessed()
-  expect(mockedThread.addLabel).not.toBeCalled()
+  const {mockedGmailThread,threadActions} = getMocks(false,config)
+  threadActions.markProcessed()
+  expect(mockedGmailThread.addLabel).not.toBeCalled()
 })
 
 it.todo("should convert a thread to PDF")
