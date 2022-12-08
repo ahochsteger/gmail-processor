@@ -212,11 +212,16 @@ function processThreadToHtml(thread) {
  */
 function processThreadToPdf(thread, rule, config) {
   Logger.log("INFO: Saving PDF copy of thread '" + thread.getFirstMessageSubject() + "'");
+  var threadDate = thread.getLastMessageDate();
   var cleanRuleFolder = rule.folder.replace(/\'/g,'');
-  var folder = getOrCreateFolder(cleanRuleFolder);
   var html = processThreadToHtml(thread);
   var blob = Utilities.newBlob(html, 'text/html');
   var pdf;
+
+  var folderName = Utilities.formatDate(threadDate, config.timezone, rule.folder.replace('%s', thread.getFirstMessageSubject()));
+  folderName = folderName.replace(':', '');
+  var folder = getOrCreateFolder(folderName);
+
   if (rule.filenameTo) {
     filename = Utilities.formatDate(thread.getMessages()[0].getDate(), config.timezone, rule.filenameTo.replace('%s',thread.getFirstMessageSubject()));
     Logger.log("INFO:           Renaming '" + thread.getFirstMessageSubject() + "' -> '" + filename + "'");
