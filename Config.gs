@@ -36,6 +36,16 @@ function getGmail2GDriveConfig() {
         "folder": "'Examples/example2'",
         "filenameFromRegexp": ".*\.pdf$"
       },
+      { // Store all attachments from example1@example.com to the SHARED Drive folder "Shared Drives/Lambda/Examples/example1"
+        "parentFolderId": "FOLDER_ID_FOR_Lambda_FOLDER", // This approach is with the ID of "Lambda"
+        "filter": "from:example1@example.com",
+        "folder": "'Examples/example1'"
+      },
+      { // Store all attachments from example1@example.com to the SHARED Drive folder "Shared Drives/Lambda/Examples/example1"
+        "parentFolderId": "FOLDER_ID_FOR_Examples_FOLDER", // This approach is with the ID of "Examples"
+        "filter": "from:example1@example.com",
+        "folder": "'example1'" // Note: We omited the folder path "Examples" since it's the direct parent
+      },
       { // Store all attachments from example3a@example.com OR from:example3b@example.com
         // to the folder "Examples/example3ab" while renaming all attachments to the pattern
         // defined in 'filenameTo' and archive the thread.
