@@ -1,3 +1,5 @@
+import { BaseAdapter } from "./BaseAdapter"
+
 export enum ConflictStrategy {
   KEEP = "keep",
   SKIP = "skip",
@@ -5,10 +7,15 @@ export enum ConflictStrategy {
   ERROR = "error",
 }
 
-export class GDriveAdapter {
-  public logger: Console = console
+export class GDriveAdapter extends BaseAdapter {
 
-  constructor(public driveApp: GoogleAppsScript.Drive.DriveApp) {}
+  constructor(
+    public logger: Console = console,
+    public dryRun: boolean = false,
+    public driveApp: GoogleAppsScript.Drive.DriveApp,
+  ) {
+    super(logger, dryRun)
+  }
 
   // TODO: Continue here!!!
   // * Test the new functions (storeAttachment, processAttachmentRule, eval*, buildSubstitutionMap)
@@ -114,6 +121,28 @@ export class GDriveAdapter {
     return file
   }
 
+  public storeAttachment(
+    attachment: GoogleAppsScript.Gmail.GmailAttachment,
+    location: string,
+    conflictStrategy: ConflictStrategy,
+    description: string,
+  ) {
+    if (
+      this.checkDryRun(
+        `Storing attachment '${attachment.getName()}' to '${location}' ...`,
+      )
+    )
+      return
+    const file = this.createFile(
+      location,
+      attachment.getDataAsString(),
+      attachment.getContentType(),
+      description,
+      conflictStrategy,
+    )
+    return file
+  }
+
   /**
    * Returns the GDrive folder with the given name or creates it if not existing.
    */
@@ -136,9 +165,9 @@ export class GDriveAdapter {
   private getFilesFromPath(location: string) {
     const folderPath = this.getFolderPathFromLocation(location)
     const filename = this.getFilenameFromLocation(location)
-    let folder = null
-    folder = this.getFolderFromPath(folderPath)
-    return folder.getFilesByName(filename)
+    let folder = this.getFolderFromPath(folderPath)
+    let fileIterator = folder.getFilesByName(filename)
+    return fileIterator
   }
 
   /**

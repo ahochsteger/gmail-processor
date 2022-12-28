@@ -9,6 +9,11 @@ import { MockObjects } from "./MockObjects"
 import { ThreadConfig } from "../../src/config/ThreadConfig"
 import { MessageProcessor } from "../../src/processors/MessageProcessor"
 import { ThreadContext } from "../../src/context/ThreadContext"
+import { MessageConfig } from "../../src/config/MessageConfig"
+import { MessageContext } from "../../src/context/MessageContext"
+import { AttachmentConfig } from "../../src/config/AttachmentConfig"
+import { AttachmentContext } from "../../src/context/AttachmentContext"
+import { AttachmentProcessor } from "../../src/processors/AttachmentProcessor"
 
 export class MockFactory {
   public static newMockObjects() {
@@ -205,6 +210,16 @@ export class MockFactory {
     }
   }
 
+  public static newProcessingContextMock(
+    gasContext = this.newGasContextMock(),
+    config = new Config(),
+    threadContext = this.newThreadContextMock(),
+    messageContext = this.newMessageContextMock(),
+    attachmentContext = this.newAttachmentContextMock(),
+  ) {
+    return new ProcessingContext(gasContext, config, threadContext, messageContext, attachmentContext)
+  }
+
   public static newGmailProcessorMock(
     config: Config,
     gasContext = MockFactory.newGasContextMock(),
@@ -222,20 +237,50 @@ export class MockFactory {
     return gmailProcessor
   }
 
-  public static newThreadProcessorMock(
-    config: Config,
-    gasContext = MockFactory.newGasContextMock(),
+  public static newThreadContextMock(
+    threadConfig = this.newDefaultThreadConfig(),
+    thread = this.newThreadMock(),
   ) {
+    return new ThreadContext(
+      threadConfig,
+      thread,
+      0,
+      0,
+    )
+  }
+
+  public static newThreadProcessorMock(
+    gasContext = MockFactory.newGasContextMock(),
+    config = this.newDefaultConfig(),
+    threadConfig = new ThreadConfig(),
+    thread = this.newThreadMock(),
+  ) {
+    const processingContext = new ProcessingContext(gasContext, config)
+    processingContext.threadContext = this.newThreadContextMock(threadConfig, thread)
     const threadProcessor = new ThreadProcessor(
       gasContext.gmailApp,
-      new ProcessingContext(gasContext, config),
+      processingContext,
     )
     return threadProcessor
+  }
+
+  public static newMessageContextMock(
+    messageConfig = new MessageConfig(),
+    message = this.newMessageMock(),
+  ) {
+    return new MessageContext(
+      messageConfig,
+      message,
+      0,
+      0,
+    )
   }
 
   public static newMessageProcessorMock(
     config: Config,
     gasContext = MockFactory.newGasContextMock(),
+    messageConfig = new MessageConfig(),
+    message = this.newMessageMock(),
   ) {
     const processingContext = new ProcessingContext(gasContext, config)
     processingContext.threadContext = new ThreadContext(
@@ -244,11 +289,50 @@ export class MockFactory {
       0,
       0,
     )
+    processingContext.messageContext = this.newMessageContextMock(
+      messageConfig,
+      message,
+    )
     const messageProcessor = new MessageProcessor(
       gasContext.gmailApp,
       processingContext,
     )
     return messageProcessor
+  }
+
+  public static newAttachmentContextMock(
+    attachmentConfig = new AttachmentConfig(),
+    attachment = this.newAttachmentMock(),
+  ) {
+    return new AttachmentContext(attachmentConfig, attachment, 0, 0)
+  }
+
+  public static newAttachmentProcessorMock(
+    config: Config,
+    gasContext = MockFactory.newGasContextMock(),
+    attachmentConfig = new AttachmentConfig(),
+    attachment = this.newAttachmentMock(),
+  ) {
+    const processingContext = new ProcessingContext(gasContext, config)
+    processingContext.threadContext = new ThreadContext(
+      new ThreadConfig(),
+      this.newThreadMock(),
+      0,
+      0,
+    )
+    processingContext.messageContext = this.newMessageContextMock(
+      new MessageConfig(),
+      this.newMessageMock(),
+    )
+    processingContext.attachmentContext = this.newAttachmentContextMock(
+      attachmentConfig,
+      attachment,
+    )
+    const attachmentProcessor = new AttachmentProcessor(
+      gasContext.gmailApp,
+      processingContext,
+    )
+    return attachmentProcessor
   }
 
   public static newThreadMock(

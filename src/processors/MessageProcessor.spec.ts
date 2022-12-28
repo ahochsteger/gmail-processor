@@ -88,10 +88,6 @@ it("should match messages with matching parameters", () => {
       },
     ],
   })
-  const messageProcessor = MockFactory.newMessageProcessorMock(
-    new Config(),
-    gasContext,
-  )
   for (let i = 0; i < matchExamples.length; i++) {
     const e = matchExamples[i]
     const messageConfig = plainToClass(MessageConfig, {
@@ -100,6 +96,12 @@ it("should match messages with matching parameters", () => {
     })
     const res = []
     for (const m of mockedThread.getMessages()) {
+      const messageProcessor = MockFactory.newMessageProcessorMock(
+        new Config(),
+        gasContext,
+        messageConfig,
+        m,
+      )
       if (messageProcessor.matches(messageConfig, m)) {
         res.push(m.getSubject())
       }

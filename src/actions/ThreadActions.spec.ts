@@ -3,18 +3,18 @@ import { ThreadActions } from "./ThreadActions"
 import { Config } from "../config/Config"
 import { MockFactory } from "../../test/mocks/MockFactory"
 import { plainToClass } from "class-transformer"
-import { actionRegistry } from "./ActionRegistry"
+import { ActionRegistry } from "./ActionRegistry"
+import { ThreadConfig } from "../config/ThreadConfig"
 
 function getMocks(dryRun=true,config=new Config()) {
   const mockedGmailThread = mock<GoogleAppsScript.Gmail.GmailThread>()
   const md = MockFactory.newMockObjects()
   const mockedGasContext = MockFactory.newGasContextMock(md)
-  const mockThreadProcessor = MockFactory.newThreadProcessorMock(config,mockedGasContext)
+  const mockThreadProcessor = MockFactory.newThreadProcessorMock(mockedGasContext, config, new ThreadConfig(), mockedGmailThread)
   const threadActions = new ThreadActions(
     mockThreadProcessor.processingContext,
     console,
     dryRun,
-    mockedGmailThread,
   )
   return {
     mockedGmailThread,
@@ -27,7 +27,7 @@ it("should provide actions in the action registry", () => {
   const {threadActions} = getMocks()
   expect(threadActions).not.toBeNull()
 
-  const actionMap = actionRegistry.getActionMap()
+  const actionMap = ActionRegistry.getActionMap()
   expect(Object.keys(actionMap).filter(v => v.startsWith("thread")).sort()).toEqual([
     "thread.addLabel",
     "thread.markImportant",

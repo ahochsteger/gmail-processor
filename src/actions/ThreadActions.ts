@@ -1,17 +1,19 @@
 import { ProcessingContext } from "../context/ProcessingContext"
 import { ConflictStrategy, GDriveAdapter } from "../adapter/GDriveAdapter"
 import { AbstractActions } from "./AbstractActions"
+import { action, actionProvider } from "./ActionRegistry"
 import "reflect-metadata"
-import { action } from "./ActionRegistry"
 
+@actionProvider("thread")
 export class ThreadActions extends AbstractActions {
+  private thread: GoogleAppsScript.Gmail.GmailThread
   constructor(
     context: ProcessingContext,
     logger: Console = console,
     dryRun = false,
-    private thread: GoogleAppsScript.Gmail.GmailThread,
   ) {
     super(context, logger, dryRun)
+    this.thread = context.threadContext!.thread!
   }
 
   @action("thread.markProcessed")
@@ -179,7 +181,7 @@ export class ThreadActions extends AbstractActions {
   ) {
     const html = this.processThreadToHtml(this.thread)
     const htmlBlob = Utilities.newBlob(html, "text/html")
-    const gdriveAdapter: GDriveAdapter = new GDriveAdapter(gdriveApp)
+    const gdriveAdapter: GDriveAdapter = new GDriveAdapter(this.logger, this.dryRun, gdriveApp) // TODO: Don't instanciate here - get from context
     if (
       this.checkDryRun(
         `Saving PDF copy of thread '${this.thread.getFirstMessageSubject()}' to '${location}' ...`,

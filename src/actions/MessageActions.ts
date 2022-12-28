@@ -1,16 +1,18 @@
 import { ProcessingContext } from "../context/ProcessingContext"
 import { AbstractActions } from "./AbstractActions"
+import { action, actionProvider } from "./ActionRegistry"
 import "reflect-metadata"
-import { action } from "./ActionRegistry"
 
+@actionProvider("message")
 export class MessageActions extends AbstractActions {
+  private message: GoogleAppsScript.Gmail.GmailMessage
   constructor(
     context: ProcessingContext,
     logger: Console = console,
     dryRun = false,
-    private message: GoogleAppsScript.Gmail.GmailMessage,
   ) {
     super(context, logger, dryRun)
+    this.message = context.messageContext!.message!
   }
 
   @action("message.forward")

@@ -23,7 +23,7 @@ it("should construct a GMail search query with globals (query, newerThan) and pr
       query: "some-thread-specific-query",
     },
   })
-  const threadProcessor = MockFactory.newThreadProcessorMock(config, gasContext)
+  const threadProcessor = MockFactory.newThreadProcessorMock(gasContext, config)
   const actualQuery = threadProcessor.getQueryFromThreadConfig(threadConfig)
   expect(actualQuery).toBe(
     "some-global-query some-thread-specific-query -label:some-label newer_than:3m",
@@ -47,7 +47,7 @@ it("should construct a GMail search query without globals and no processedLabel"
       query: "some-thread-specific-query",
     },
   })
-  const threadProcessor = MockFactory.newThreadProcessorMock(config, gasContext)
+  const threadProcessor = MockFactory.newThreadProcessorMock(gasContext, config)
   const actualQuery = threadProcessor.getQueryFromThreadConfig(threadConfig)
   expect(actualQuery).toBe("some-thread-specific-query")
 })
