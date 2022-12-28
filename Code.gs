@@ -27,7 +27,7 @@ function Gmail2GDrive() {
     if (newerThan != "") {
       gSearchExp += " newer_than:" + config.newerThan;
     }
-    
+
     var doArchive = rule.archive == true;
     var doPDF = rule.saveThreadPDF == true;
 
@@ -110,13 +110,15 @@ function getOrCreateSubFolder(baseFolder,folderArray) {
 
 /**
  * Returns the GDrive folder with the given path.
+ * "parentFolderId": is optional
  */
-function getFolderByPath(path) {
+function getFolderByPath(path, parentFolderId) {
   var parts = path.split("/");
 
   if (parts[0] == '') parts.shift(); // Did path start at root, '/'?
 
-  var folder = DriveApp.getRootFolder();
+  var folder = parentFolderId ? DriveApp.getFolderById(parentFolderId) : DriveApp.getRootFolder();
+
   for (var i = 0; i < parts.length; i++) {
     var result = folder.getFoldersByName(parts[i]);
     if (result.hasNext()) {
@@ -130,14 +132,19 @@ function getFolderByPath(path) {
 
 /**
  * Returns the GDrive folder with the given name or creates it if not existing.
+ * "parentFolderId": is optional
  */
-function getOrCreateFolder(folderName) {
+function getOrCreateFolder(folderName, parentFolderId) {
   var folder;
   try {
-    folder = getFolderByPath(folderName);
+    folder = getFolderByPath(folderName, parentFolderId);
   } catch(e) {
     var folderArray = folderName.split("/");
-    folder = getOrCreateSubFolder(DriveApp.getRootFolder(), folderArray);
+    var parentFolder = parentFolderId ? DriveApp.getFolderById(parentFolderId) : DriveApp.getRootFolder();
+
+    if (parentFolder) {
+      folder = getOrCreateSubFolder(parentFolder, folderArray);
+    }
   }
   return folder;
 }
@@ -165,7 +172,7 @@ function processMessage(message, rule, config) {
       var folderName = Utilities.formatDate(messageDate, config.timezone, rule.folder.replace('%s', message.getSubject()));
       folderName = folderName.replace(':', '');
       Logger.log("Saving to folder" + folderName);
-      var folder = getOrCreateFolder(folderName);
+      var folder = getOrCreateFolder(folderName, rule.parentFolderId);
       var file = folder.createFile(attachment);
       var original_attachment_name = file.getName();
       var new_filename = rule.filenameTo.replace('%s',message.getSubject()).replace("%d", String(rule_counter++)).replace('%o', original_attachment_name)
@@ -220,7 +227,7 @@ function processThreadToPdf(thread, rule, config) {
 
   var folderName = Utilities.formatDate(threadDate, config.timezone, rule.folder.replace('%s', thread.getFirstMessageSubject()));
   folderName = folderName.replace(':', '');
-  var folder = getOrCreateFolder(folderName);
+  var folder = getOrCreateFolder(folderName, rule.parentFolderId);
 
   if (rule.filenameTo) {
     filename = Utilities.formatDate(thread.getMessages()[0].getDate(), config.timezone, rule.filenameTo.replace('%s',thread.getFirstMessageSubject()));
@@ -229,6 +236,6 @@ function processThreadToPdf(thread, rule, config) {
   } else {
     pdf = folder.createFile(blob.getAs('application/pdf')).setName(thread.getFirstMessageSubject() + ".pdf");
   }
-  
+
   return pdf;
 }
