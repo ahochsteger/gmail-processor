@@ -13,6 +13,8 @@ export class V1Rule {
   folder = ""
   /** Restrict to threads containing messages newer than the given relative date/time */
   newerThan = ""
+  /** Parent folder ID to be used (for shared drives) */
+  parentFolderId = ""
   /** Add the given label to the processed thread */
   ruleLabel = ""
   /** Save the thread to PDF */
