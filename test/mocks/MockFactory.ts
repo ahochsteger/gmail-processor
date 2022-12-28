@@ -217,7 +217,13 @@ export class MockFactory {
     messageContext = this.newMessageContextMock(),
     attachmentContext = this.newAttachmentContextMock(),
   ) {
-    return new ProcessingContext(gasContext, config, threadContext, messageContext, attachmentContext)
+    return new ProcessingContext(
+      gasContext,
+      config,
+      threadContext,
+      messageContext,
+      attachmentContext,
+    )
   }
 
   public static newGmailProcessorMock(
@@ -241,12 +247,7 @@ export class MockFactory {
     threadConfig = this.newDefaultThreadConfig(),
     thread = this.newThreadMock(),
   ) {
-    return new ThreadContext(
-      threadConfig,
-      thread,
-      0,
-      0,
-    )
+    return new ThreadContext(threadConfig, thread, 0, 0)
   }
 
   public static newThreadProcessorMock(
@@ -256,7 +257,10 @@ export class MockFactory {
     thread = this.newThreadMock(),
   ) {
     const processingContext = new ProcessingContext(gasContext, config)
-    processingContext.threadContext = this.newThreadContextMock(threadConfig, thread)
+    processingContext.threadContext = this.newThreadContextMock(
+      threadConfig,
+      thread,
+    )
     const threadProcessor = new ThreadProcessor(
       gasContext.gmailApp,
       processingContext,
@@ -268,12 +272,7 @@ export class MockFactory {
     messageConfig = new MessageConfig(),
     message = this.newMessageMock(),
   ) {
-    return new MessageContext(
-      messageConfig,
-      message,
-      0,
-      0,
-    )
+    return new MessageContext(messageConfig, message, 0, 0)
   }
 
   public static newMessageProcessorMock(

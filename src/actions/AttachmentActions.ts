@@ -22,7 +22,11 @@ export class AttachmentActions extends AbstractActions {
     conflictStrategy: ConflictStrategy,
     description: string,
   ) {
-    const gdriveAdapter = new GDriveAdapter(this.logger, this.dryRun, this.context.gasContext.gdriveApp)
+    const gdriveAdapter = new GDriveAdapter(
+      this.logger,
+      this.dryRun,
+      this.context.gasContext.gdriveApp,
+    )
     if (
       this.checkDryRun(
         `Storing attachment '${this.attachment.getName()}' to '${location}' ...`,

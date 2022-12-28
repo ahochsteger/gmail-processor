@@ -6,11 +6,16 @@ import { plainToClass } from "class-transformer"
 import { ActionRegistry } from "./ActionRegistry"
 import { ThreadConfig } from "../config/ThreadConfig"
 
-function getMocks(dryRun=true,config=new Config()) {
+function getMocks(dryRun = true, config = new Config()) {
   const mockedGmailThread = mock<GoogleAppsScript.Gmail.GmailThread>()
   const md = MockFactory.newMockObjects()
   const mockedGasContext = MockFactory.newGasContextMock(md)
-  const mockThreadProcessor = MockFactory.newThreadProcessorMock(mockedGasContext, config, new ThreadConfig(), mockedGmailThread)
+  const mockThreadProcessor = MockFactory.newThreadProcessorMock(
+    mockedGasContext,
+    config,
+    new ThreadConfig(),
+    mockedGmailThread,
+  )
   const threadActions = new ThreadActions(
     mockThreadProcessor.processingContext,
     console,
@@ -24,11 +29,15 @@ function getMocks(dryRun=true,config=new Config()) {
 }
 
 it("should provide actions in the action registry", () => {
-  const {threadActions} = getMocks()
+  const { threadActions } = getMocks()
   expect(threadActions).not.toBeNull()
 
   const actionMap = ActionRegistry.getActionMap()
-  expect(Object.keys(actionMap).filter(v => v.startsWith("thread")).sort()).toEqual([
+  expect(
+    Object.keys(actionMap)
+      .filter((v) => v.startsWith("thread"))
+      .sort(),
+  ).toEqual([
     "thread.addLabel",
     "thread.markImportant",
     "thread.markProcessed",
@@ -45,13 +54,13 @@ it("should provide actions in the action registry", () => {
 })
 
 it("should mark a thread as important", () => {
-  const {mockedGmailThread,threadActions} = getMocks(false)
+  const { mockedGmailThread, threadActions } = getMocks(false)
   threadActions.markImportant()
   expect(mockedGmailThread.markImportant).toBeCalled()
 })
 
 it("should not mark a thread as important (dryRun)", () => {
-  const {mockedGmailThread,threadActions} = getMocks(true)
+  const { mockedGmailThread, threadActions } = getMocks(true)
   threadActions.markImportant()
   expect(mockedGmailThread.markImportant).not.toBeCalled()
 })
@@ -63,7 +72,7 @@ it("should mark a thread as processed by adding a label if processedMode='label'
       processedMode: "label",
     },
   })
-  const {mockedGmailThread,threadActions} = getMocks(false,config)
+  const { mockedGmailThread, threadActions } = getMocks(false, config)
   threadActions.markProcessed()
   expect(mockedGmailThread.addLabel).toBeCalled()
 })
@@ -74,7 +83,7 @@ it("should not add a label to a thread if processedMode='read'", () => {
       processedMode: "read",
     },
   })
-  const {mockedGmailThread,threadActions} = getMocks(false,config)
+  const { mockedGmailThread, threadActions } = getMocks(false, config)
   threadActions.markProcessed()
   expect(mockedGmailThread.addLabel).not.toBeCalled()
 })

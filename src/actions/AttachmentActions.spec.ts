@@ -1,11 +1,11 @@
-import { Config } from "../config/Config";
+import { Config } from "../config/Config"
 import "reflect-metadata"
-import { MockFactory } from "../../test/mocks/MockFactory";
-import { ActionRegistry } from './ActionRegistry';
-import { AttachmentActions } from "./AttachmentActions";
-import { ConflictStrategy } from "../adapter/GDriveAdapter";
+import { MockFactory } from "../../test/mocks/MockFactory"
+import { ActionRegistry } from "./ActionRegistry"
+import { AttachmentActions } from "./AttachmentActions"
+import { ConflictStrategy } from "../adapter/GDriveAdapter"
 
-function getMocks(dryRun=true,config=new Config()) {
+function getMocks(dryRun = true, config = new Config()) {
   const mockedGmailAttachment = MockFactory.newAttachmentMock()
   const md = MockFactory.newMockObjects()
   const mockedGasContext = MockFactory.newGasContextMock(md)
@@ -15,11 +15,7 @@ function getMocks(dryRun=true,config=new Config()) {
   )
   const context = mockedAttachmentProcessor.processingContext
   context.attachmentContext!.attachment = mockedGmailAttachment
-  const attachmentActions = new AttachmentActions(
-    context,
-    console,
-    dryRun,
-  )
+  const attachmentActions = new AttachmentActions(context, console, dryRun)
   return {
     mockedGmailAttachment,
     mockedAttachmentProcessor,
@@ -30,23 +26,33 @@ function getMocks(dryRun=true,config=new Config()) {
 }
 
 it("should provide actions in the action registry", () => {
-  const {attachmentActions} = getMocks()
+  const { attachmentActions } = getMocks()
   expect(attachmentActions).not.toBeNull()
 
   const actionMap = ActionRegistry.getActionMap()
-  expect(Object.keys(actionMap).filter(v => v.startsWith("attachment")).sort()).toEqual([
-    "attachment.storeToGDrive",
-  ])
+  expect(
+    Object.keys(actionMap)
+      .filter((v) => v.startsWith("attachment"))
+      .sort(),
+  ).toEqual(["attachment.storeToGDrive"])
 })
 
 it("should create a file", () => {
-  const {mockedFolder,attachmentActions} = getMocks(false)
-  attachmentActions.storeToGDrive("test-location", ConflictStrategy.REPLACE, "automated test")
+  const { mockedFolder, attachmentActions } = getMocks(false)
+  attachmentActions.storeToGDrive(
+    "test-location",
+    ConflictStrategy.REPLACE,
+    "automated test",
+  )
   expect(mockedFolder.createFile).toBeCalled()
 })
 
 it("should not create a file on dry-run", () => {
-  const {mockedFolder,attachmentActions} = getMocks(true)
-  attachmentActions.storeToGDrive("test-location", ConflictStrategy.REPLACE, "automated test")
+  const { mockedFolder, attachmentActions } = getMocks(true)
+  attachmentActions.storeToGDrive(
+    "test-location",
+    ConflictStrategy.REPLACE,
+    "automated test",
+  )
   expect(mockedFolder.createFile).not.toBeCalled()
 })

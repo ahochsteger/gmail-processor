@@ -15,7 +15,9 @@ describe("Features", () => {
     test.todo(
       "should be able to use the subject regex match for attachment file name (issue #6)",
     )
-    test.todo("should support date format patterns for folders (issue #8,#64,#69)")
+    test.todo(
+      "should support date format patterns for folders (issue #8,#64,#69)",
+    )
     test.todo(
       "should be able to use the subject as folder name (issue #18,#28)",
     )
@@ -65,7 +67,9 @@ describe("Features", () => {
   })
   describe("Google Drive support", () => {
     test.todo("should create missing parent folders (issue #7)")
-    test.todo("should support shared drives/team drives (issue #15,#34,#53,#72)")
+    test.todo(
+      "should support shared drives/team drives (issue #15,#34,#53,#72)",
+    )
     test.todo(
       "should support different conflict resolution strategies on duplicate filenames (issue #19,#29)",
     )

@@ -8,7 +8,6 @@ export enum ConflictStrategy {
 }
 
 export class GDriveAdapter extends BaseAdapter {
-
   constructor(
     public logger: Console = console,
     public dryRun: boolean = false,
@@ -165,8 +164,8 @@ export class GDriveAdapter extends BaseAdapter {
   private getFilesFromPath(location: string) {
     const folderPath = this.getFolderPathFromLocation(location)
     const filename = this.getFilenameFromLocation(location)
-    let folder = this.getFolderFromPath(folderPath)
-    let fileIterator = folder.getFilesByName(filename)
+    const folder = this.getFolderFromPath(folderPath)
+    const fileIterator = folder.getFilesByName(filename)
     return fileIterator
   }
 

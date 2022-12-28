@@ -2,7 +2,9 @@ import { ProcessingContext } from "context/ProcessingContext"
 import "reflect-metadata"
 import { AbstractActions } from "./AbstractActions"
 
-export type ActionType = typeof AbstractActions & { new(...args: any[]): AbstractActions };
+export type ActionType = typeof AbstractActions & {
+  new (...args: any[]): AbstractActions
+}
 
 export class ActionRegistry {
   constructor(
@@ -18,32 +20,61 @@ export class ActionRegistry {
   }
 
   private static getMeta(key: string, defaultValue: any): any {
-    return Reflect.getMetadata(`gmail2gdrive:${key}`, ActionRegistry, `gmail2gdrive:${key}`) || defaultValue
-  } 
+    return (
+      Reflect.getMetadata(
+        `gmail2gdrive:${key}`,
+        ActionRegistry,
+        `gmail2gdrive:${key}`,
+      ) || defaultValue
+    )
+  }
 
   private static setMeta(key: string, value: any) {
-    Reflect.defineMetadata(`gmail2gdrive:${key}`, value, ActionRegistry, `gmail2gdrive:${key}`);
+    Reflect.defineMetadata(
+      `gmail2gdrive:${key}`,
+      value,
+      ActionRegistry,
+      `gmail2gdrive:${key}`,
+    )
   }
 
-  public static addProvider(providerName: string, constructor: (context: ProcessingContext, logger: Console, dryRun: boolean)=>ActionType) {
+  public static addProvider(
+    providerName: string,
+    constructor: (
+      context: ProcessingContext,
+      logger: Console,
+      dryRun: boolean,
+    ) => ActionType,
+  ) {
     const map = ActionRegistry.getProviderMap()
     map[providerName] = constructor
-    ActionRegistry.setMeta("actionProviderMap", map);
+    ActionRegistry.setMeta("actionProviderMap", map)
   }
 
-  public static addAction(actionName: string, target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+  public static addAction(
+    actionName: string,
+    target: any,
+    propertyKey: string,
+    descriptor: PropertyDescriptor,
+  ) {
     const map = ActionRegistry.getActionMap()
-    if (map[actionName]===undefined) {
+    if (map[actionName] === undefined) {
       // TODO: Cleanup map contents (most entries were just for debugging)
       map[actionName] = {
-        designType: Reflect.getMetadata("design:type",ActionRegistry),
-        designParamTypes: Reflect.getMetadata("design:paramtypes",ActionRegistry),
-        designReturnType: Reflect.getMetadata("design:returntype",ActionRegistry),
+        designType: Reflect.getMetadata("design:type", ActionRegistry),
+        designParamTypes: Reflect.getMetadata(
+          "design:paramtypes",
+          ActionRegistry,
+        ),
+        designReturnType: Reflect.getMetadata(
+          "design:returntype",
+          ActionRegistry,
+        ),
         target: target,
         propertyKey: propertyKey,
         descriptor: descriptor,
       }
-      ActionRegistry.setMeta("actionMap", map);
+      ActionRegistry.setMeta("actionMap", map)
     } else {
       throw new Error(`Duplicate actionName decorator '${actionName}'!`)
     }
@@ -53,20 +84,40 @@ export class ActionRegistry {
     return ActionRegistry.getMeta("actionMap", {})
   }
 
-  public static getProviderMap(): {[k:string]:(context: ProcessingContext, logger: Console, dryRun: boolean)=>ActionType} {
+  public static getProviderMap(): {
+    [k: string]: (
+      context: ProcessingContext,
+      logger: Console,
+      dryRun: boolean,
+    ) => ActionType
+  } {
     return ActionRegistry.getMeta("actionProviderMap", {})
   }
-
 }
 
 export function action(value = ""): any {
-  return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
-    ActionRegistry.addAction(value!=="" ? value : propertyKey, target, propertyKey, descriptor)
+  return function (
+    target: any,
+    propertyKey: string,
+    descriptor: PropertyDescriptor,
+  ) {
+    ActionRegistry.addAction(
+      value !== "" ? value : propertyKey,
+      target,
+      propertyKey,
+      descriptor,
+    )
   }
 }
 
 export function actionProvider(value = ""): any {
-  return function (constructor: (context: ProcessingContext, logger: Console, dryRun: boolean)=>ActionType) { 
+  return function (
+    constructor: (
+      context: ProcessingContext,
+      logger: Console,
+      dryRun: boolean,
+    ) => ActionType,
+  ) {
     ActionRegistry.addProvider(value, constructor)
   }
 }

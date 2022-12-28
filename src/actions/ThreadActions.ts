@@ -181,7 +181,11 @@ export class ThreadActions extends AbstractActions {
   ) {
     const html = this.processThreadToHtml(this.thread)
     const htmlBlob = Utilities.newBlob(html, "text/html")
-    const gdriveAdapter: GDriveAdapter = new GDriveAdapter(this.logger, this.dryRun, gdriveApp) // TODO: Don't instanciate here - get from context
+    const gdriveAdapter: GDriveAdapter = new GDriveAdapter(
+      this.logger,
+      this.dryRun,
+      gdriveApp,
+    ) // TODO: Don't instanciate here - get from context
     if (
       this.checkDryRun(
         `Saving PDF copy of thread '${this.thread.getFirstMessageSubject()}' to '${location}' ...`,

@@ -1,9 +1,5 @@
 export class BaseAdapter {
-
-  constructor(
-    public logger: Console = console,
-    public dryRun = false,
-  ) {}
+  constructor(public logger: Console = console, public dryRun = false) {}
 
   checkDryRun(message: string): boolean {
     if (this.dryRun) {

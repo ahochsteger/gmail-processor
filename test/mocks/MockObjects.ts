@@ -8,10 +8,16 @@ export class MockObjects {
   public folder = mock<GoogleAppsScript.Drive.Folder>()
   public file = mock<GoogleAppsScript.Drive.File>()
   constructor() {
-    this.folder.getFilesByName.mockReturnValue(mock<GoogleAppsScript.Drive.FileIterator>())
+    this.folder.getFilesByName.mockReturnValue(
+      mock<GoogleAppsScript.Drive.FileIterator>(),
+    )
     this.folder.createFile.mockReturnValue(this.file)
     this.gdriveApp.getRootFolder.mockReturnValue(this.folder)
-    this.gdriveApp.getFilesByName.mockReturnValue(mock<GoogleAppsScript.Drive.FileIterator>())
-    this.gdriveApp.getFoldersByName.mockReturnValue(mock<GoogleAppsScript.Drive.FolderIterator>())
+    this.gdriveApp.getFilesByName.mockReturnValue(
+      mock<GoogleAppsScript.Drive.FileIterator>(),
+    )
+    this.gdriveApp.getFoldersByName.mockReturnValue(
+      mock<GoogleAppsScript.Drive.FolderIterator>(),
+    )
   }
 }
