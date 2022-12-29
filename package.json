@@ -6,7 +6,7 @@
     "build": "tsc && webpack && cp -pr gas/.clasp.json gas/* dist/ && npm run generate-schema",
     "clean": "rm -rf build dist",
     "format": "prettier -w .",
-    "generate-schema": "typescript-json-schema tsconfig.json Config --topRef -o schema.json",
+    "generate-schema": "typescript-json-schema tsconfig.json Config --topRef -o schema.json && prettier -w schema.json",
     "lint": "eslint . && ajv validate -s schema.json -d docs/config.json --verbose",
     "login": "cd gas && clasp login",
     "pre-commit": "npm run clean && npm run build && npm run test && npm run format && npm run lint",
