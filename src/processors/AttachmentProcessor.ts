@@ -7,9 +7,7 @@ import { BaseProcessor } from "./BaseProcessor"
 export class AttachmentProcessor extends BaseProcessor {
   public logger: Console = console
 
-  constructor(
-    public messageContext: MessageContext,
-  ) {
+  constructor(public messageContext: MessageContext) {
     super()
   }
 
@@ -58,9 +56,8 @@ export class AttachmentProcessor extends BaseProcessor {
     // }
 
     PatternUtil.logger = this.logger
-    const dataMap = PatternUtil.buildSubstitutionMapFromAttachmentContext(
-      attachmentContext,
-    )
+    const dataMap =
+      PatternUtil.buildSubstitutionMapFromAttachmentContext(attachmentContext)
     // TODO: Implement attachment handling including dry-run
     this.logger.log("Dumping dataMap:")
     this.logger.log(dataMap)

@@ -34,7 +34,9 @@ function getMocks(dryRun = true) {
     new MessageConfig(),
     MockFactory.newMessageMock(),
   )
-  const mockedAttachmentProcessor = new AttachmentProcessor(mockedMessageContext)
+  const mockedAttachmentProcessor = new AttachmentProcessor(
+    mockedMessageContext,
+  )
   const attachmentContext = new AttachmentContext(
     mockedMessageContext,
     new AttachmentConfig(),

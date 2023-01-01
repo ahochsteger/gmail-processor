@@ -17,7 +17,6 @@ export function run(config: Config) {
   )
 
   const threadProcessor = new ThreadProcessor(
-    GmailApp,
     new ProcessingContext(gasContext, config),
   )
   const gmailProcessor = new GmailProcessor(gasContext, config, threadProcessor)

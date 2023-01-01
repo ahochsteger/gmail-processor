@@ -6,9 +6,7 @@ import { AttachmentContext } from "../context/AttachmentContext"
 
 @actionProvider("attachment")
 export class AttachmentActions extends AbstractActions {
-  constructor(
-    protected attachmentContext: AttachmentContext,
-  ) {
+  constructor(protected attachmentContext: AttachmentContext) {
     super(attachmentContext)
   }
 

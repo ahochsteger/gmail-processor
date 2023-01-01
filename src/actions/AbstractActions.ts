@@ -2,9 +2,7 @@ import { ProcessingContext } from "../context/ProcessingContext"
 
 export abstract class AbstractActions {
   protected logger
-  constructor(
-    protected processingContext: ProcessingContext,
-  ) {
+  constructor(protected processingContext: ProcessingContext) {
     this.logger = processingContext.gasContext.logger
   }
 

@@ -13,9 +13,7 @@ export class ThreadProcessor extends BaseProcessor {
   public timer: Timer
   public config: Config
 
-  constructor(
-    public processingContext: ProcessingContext,
-  ) {
+  constructor(public processingContext: ProcessingContext) {
     super()
     this.timer = new Timer()
     this.config = processingContext.config
@@ -34,14 +32,12 @@ export class ThreadProcessor extends BaseProcessor {
     let gSearchExp = ""
     gSearchExp += this.getStr(this.config.global?.match?.query)
     gSearchExp += " " + this.getStr(threadConfig.match.query)
-    gSearchExp +=
-      this.isSet(this.config.settings?.processedLabel)
-        ? " -label:" + this.config.settings.processedLabel
-        : ""
-    gSearchExp +=
-      this.isSet(this.config.global?.match?.newerThan)
-        ? " newer_than:" + this.config.global.match.newerThan
-        : ""
+    gSearchExp += this.isSet(this.config.settings?.processedLabel)
+      ? " -label:" + this.config.settings.processedLabel
+      : ""
+    gSearchExp += this.isSet(this.config.global?.match?.newerThan)
+      ? " newer_than:" + this.config.global.match.newerThan
+      : ""
     return gSearchExp.trim()
   }
 
@@ -81,9 +77,7 @@ export class ThreadProcessor extends BaseProcessor {
     const thread: GoogleAppsScript.Gmail.GmailThread = threadContext.thread
     const threadConfig: ThreadConfig = threadContext.threadConfig
     const threadActions = new ThreadActions(threadContext)
-    const messageProcessor = new MessageProcessor(
-      threadContext,
-    )
+    const messageProcessor = new MessageProcessor(threadContext)
     this.logger.info(
       `    Processing of thread '${thread.getFirstMessageSubject()}' started ...`,
     )

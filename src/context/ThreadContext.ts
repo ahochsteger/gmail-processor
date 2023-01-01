@@ -1,5 +1,5 @@
 import { ThreadConfig } from "../config/ThreadConfig"
-import { ProcessingContext } from "./ProcessingContext";
+import { ProcessingContext } from "./ProcessingContext"
 
 export class ThreadContext extends ProcessingContext {
   constructor(
@@ -8,7 +8,7 @@ export class ThreadContext extends ProcessingContext {
     public thread: GoogleAppsScript.Gmail.GmailThread,
     public threadConfigIndex = 0,
     public threadIndex = 0,
-    ) {
+  ) {
     super(processingContext.gasContext, processingContext.config)
   }
 }

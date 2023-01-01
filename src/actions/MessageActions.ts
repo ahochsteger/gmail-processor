@@ -5,9 +5,7 @@ import { MessageContext } from "../context/MessageContext"
 
 @actionProvider("message")
 export class MessageActions extends AbstractActions {
-  constructor(
-    protected messageContext: MessageContext,
-  ) {
+  constructor(protected messageContext: MessageContext) {
     super(messageContext)
   }
 

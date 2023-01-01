@@ -212,10 +212,7 @@ export class MockFactory {
     gasContext = this.newGasContextMock(),
     config = new Config(),
   ) {
-    return new ProcessingContext(
-      gasContext,
-      config,
-    )
+    return new ProcessingContext(gasContext, config)
   }
 
   public static newGmailProcessorMock(
@@ -424,19 +421,16 @@ export class MockFactory {
     config = new Config(),
   ) {
     config.handler.push(threadConfig)
-    
+
     const ctx = new ThreadContext(
-      new ProcessingContext(
-        MockFactory.newGasContextMock(),
-        config,
-      ),
+      new ProcessingContext(MockFactory.newGasContextMock(), config),
       threadConfig,
       thread,
     )
     ctx.threadIndex = threadIndex + 1
     return ctx
   }
-  
+
   public static newMessageContext(
     thread: GoogleAppsScript.Gmail.GmailThread,
     threadIndex = 0,
@@ -448,21 +442,16 @@ export class MockFactory {
     threadConfig.handler.push(messageConfig)
     config.handler.push(threadConfig)
     const message = thread.getMessages()[messageIndex]
-    
+
     const ctx = new MessageContext(
-      MockFactory.newThreadContext(
-        thread,
-        threadIndex,
-        threadConfig,
-        config,
-      ),
+      MockFactory.newThreadContext(thread, threadIndex, threadConfig, config),
       messageConfig,
       message,
     )
     ctx.messageIndex = messageIndex + 1
     return ctx
   }
-  
+
   public static newAttachmentContext(
     thread: GoogleAppsScript.Gmail.GmailThread,
     threadIndex = 0,
@@ -478,7 +467,7 @@ export class MockFactory {
     config.handler.push(threadConfig)
     const message = thread.getMessages()[messageIndex]
     const attachment = message.getAttachments()[attachmentIndex]
-    
+
     const ctx = new AttachmentContext(
       MockFactory.newMessageContext(
         thread,

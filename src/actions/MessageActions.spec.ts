@@ -12,9 +12,7 @@ function getMocks(dryRun = true) {
     mockedGmailMessage,
   )
   mockedMessageContext.processingContext.config.settings.dryRun = dryRun
-  const messageActions = new MessageActions(
-    mockedMessageContext,
-  )
+  const messageActions = new MessageActions(mockedMessageContext)
   return { mockedGmailMessage, messageActions }
 }
 

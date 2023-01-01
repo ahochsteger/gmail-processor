@@ -6,9 +6,7 @@ import { ThreadContext } from "../context/ThreadContext"
 
 @actionProvider("thread")
 export class ThreadActions extends AbstractActions {
-  constructor(
-    public threadContext: ThreadContext,
-  ) {
+  constructor(public threadContext: ThreadContext) {
     super(threadContext)
   }
 

@@ -13,13 +13,18 @@ function getMocks(dryRun = true, config = new Config()) {
   const md = MockFactory.newMockObjects()
   const mockedGasContext = MockFactory.newGasContextMock(md)
   config.settings.dryRun = dryRun
-  const mockedProcessingContext = MockFactory.newProcessingContextMock(mockedGasContext, config)
-  const threadConfig = new ThreadConfig()
-  const mockedThreadContext = MockFactory.newThreadContextMock(mockedProcessingContext, threadConfig, mockedGmailThread)
-  const mockThreadProcessor = new ThreadProcessor(mockedProcessingContext)
-  const threadActions = new ThreadActions(
-    mockedThreadContext,
+  const mockedProcessingContext = MockFactory.newProcessingContextMock(
+    mockedGasContext,
+    config,
   )
+  const threadConfig = new ThreadConfig()
+  const mockedThreadContext = MockFactory.newThreadContextMock(
+    mockedProcessingContext,
+    threadConfig,
+    mockedGmailThread,
+  )
+  const mockThreadProcessor = new ThreadProcessor(mockedProcessingContext)
+  const threadActions = new ThreadActions(mockedThreadContext)
   return {
     mockedGmailThread,
     mockThreadProcessor,

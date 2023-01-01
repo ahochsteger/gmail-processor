@@ -1,5 +1,5 @@
 import { MessageConfig } from "../config/MessageConfig"
-import { ThreadContext } from "./ThreadContext";
+import { ThreadContext } from "./ThreadContext"
 
 export class MessageContext extends ThreadContext {
   constructor(
@@ -8,7 +8,11 @@ export class MessageContext extends ThreadContext {
     public message: GoogleAppsScript.Gmail.GmailMessage,
     public messageConfigIndex = 0,
     public messageIndex = 0,
-    ) {
-    super(threadContext.processingContext, threadContext.threadConfig, threadContext.thread)
+  ) {
+    super(
+      threadContext.processingContext,
+      threadContext.threadConfig,
+      threadContext.thread,
+    )
   }
 }

@@ -98,8 +98,8 @@ it("should match messages with matching parameters", () => {
     for (const m of mockedThread.getMessages()) {
       const messageProcessor = new MessageProcessor(
         MockFactory.newThreadContextMock(
-          MockFactory.newProcessingContextMock(gasContext)
-        )
+          MockFactory.newProcessingContextMock(gasContext),
+        ),
       )
       if (messageProcessor.matches(messageConfig, m)) {
         res.push(m.getSubject())

@@ -2,8 +2,8 @@ import { ProcessingContext } from "../context/ProcessingContext"
 import "reflect-metadata"
 import { AbstractActions } from "./AbstractActions"
 
-export type ActionArgType = boolean|number|string
-export type ActionArgsType = {[k:string]:ActionArgType}
+export type ActionArgType = boolean | number | string
+export type ActionArgsType = { [k: string]: ActionArgType }
 
 export type ActionType = typeof AbstractActions & {
   new (...args: any[]): AbstractActions

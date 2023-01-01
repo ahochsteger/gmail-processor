@@ -92,7 +92,14 @@ describe("Pattern Substitution", () => {
     })
     const s2 = PatternUtil.substituteFromAttachmentContext(
       pattern,
-      MockFactory.newAttachmentContext(thread2, 0, 0, 0, new AttachmentConfig(), rule)
+      MockFactory.newAttachmentContext(
+        thread2,
+        0,
+        0,
+        0,
+        new AttachmentConfig(),
+        rule,
+      ),
     )
     expect(s2).toBe(expRslt)
   })
@@ -220,8 +227,7 @@ describe("Substitutions", () => {
               },
             ],
           }),
-
-        )
+        ),
       ),
     ).toBe("mbcc,mcc,2019-05-06 12:34:56,mfrom,mid,mrt,msj,mto")
   })
@@ -246,7 +252,7 @@ describe("Substitutions", () => {
               },
             ],
           }),
-        )
+        ),
       ),
     ).toBe("act,ah,true,aname,12345")
   })
@@ -256,7 +262,7 @@ describe("Handle single messages", () => {
     expect(
       PatternUtil.substituteFromThreadContext(
         "",
-        MockFactory.newThreadContextMock()
+        MockFactory.newThreadContextMock(),
       ),
     ).toBe("")
   })
@@ -303,7 +309,7 @@ describe("Handle single messages", () => {
               },
             ],
           }),
-        )
+        ),
       ),
     ).toBe(
       "tfms,true,tid,true,true,l1,l2,2019-05-06 12:34:56,3,tpl," +
@@ -340,7 +346,7 @@ describe("Handle multiple attachments", () => {
       PatternUtil.substituteFromAttachmentContext(
         "${attachment.contentType},${attachment.hash},${attachment.isGoogleType},${attachment.name}," +
           "${attachment.size}",
-        MockFactory.newAttachmentContext(thread)
+        MockFactory.newAttachmentContext(thread),
       ),
     ).toBe("act1,ah1,true,aname1,12345")
   })

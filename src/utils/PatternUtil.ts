@@ -179,9 +179,12 @@ export class PatternUtil {
 
   public static buildSubstitutionMapFromThreadContext(
     ctx: ThreadContext,
-    substMap = new Map<string,any>(),
+    substMap = new Map<string, any>(),
   ) {
-    substMap = PatternUtil.mergeMaps(substMap, this.getSubstitutionMapFromThread(ctx.thread))
+    substMap = PatternUtil.mergeMaps(
+      substMap,
+      this.getSubstitutionMapFromThread(ctx.thread),
+    )
     substMap.set("thread.index", ctx.threadIndex)
     substMap.set("threadConfig.index", ctx.threadConfigIndex)
     return substMap
@@ -189,9 +192,12 @@ export class PatternUtil {
 
   public static buildSubstitutionMapFromMessageContext(
     ctx: MessageContext,
-    substMap = new Map<string,any>(),
+    substMap = new Map<string, any>(),
   ) {
-    let m = this.buildSubstitutionMapFromThreadContext(ctx.threadContext, substMap)
+    let m = this.buildSubstitutionMapFromThreadContext(
+      ctx.threadContext,
+      substMap,
+    )
     // Message data
     const message = ctx.message
     m = PatternUtil.mergeMaps(m, this.getSubstitutionMapFromMessage(message))
@@ -222,9 +228,12 @@ export class PatternUtil {
 
   public static buildSubstitutionMapFromAttachmentContext(
     ctx: AttachmentContext,
-    substMap = new Map<string,any>(),
+    substMap = new Map<string, any>(),
   ): Map<string, any> {
-    let m = this.buildSubstitutionMapFromMessageContext(ctx.messageContext, substMap)
+    let m = this.buildSubstitutionMapFromMessageContext(
+      ctx.messageContext,
+      substMap,
+    )
     // Attachment data
     // Substitute values for a specific attachment, if provided
     const attachment = ctx.attachment
@@ -298,9 +307,12 @@ export class PatternUtil {
   public static substituteFromAttachmentContext(
     pattern: string,
     attachmentContext: AttachmentContext,
-    substMap = new Map<string,any>(),
+    substMap = new Map<string, any>(),
   ) {
-    const m = this.buildSubstitutionMapFromAttachmentContext(attachmentContext, substMap)
+    const m = this.buildSubstitutionMapFromAttachmentContext(
+      attachmentContext,
+      substMap,
+    )
     return this.substitutePatternFromMap(pattern, m)
   }
 

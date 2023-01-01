@@ -8,9 +8,7 @@ import { BaseProcessor } from "./BaseProcessor"
 export class MessageProcessor extends BaseProcessor {
   public logger: Console = console // TODO: Use from context!
 
-  constructor(
-    public threadContext: ThreadContext,
-  ) {
+  constructor(public threadContext: ThreadContext) {
     super()
   }
 
