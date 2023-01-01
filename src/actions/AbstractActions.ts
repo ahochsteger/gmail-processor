@@ -1,14 +1,15 @@
 import { ProcessingContext } from "../context/ProcessingContext"
 
 export abstract class AbstractActions {
+  protected logger
   constructor(
-    protected context: ProcessingContext,
-    protected logger: Console = console,
-    protected dryRun = false,
-  ) {}
+    protected processingContext: ProcessingContext,
+  ) {
+    this.logger = processingContext.gasContext.logger
+  }
 
   checkDryRun(message: string): boolean {
-    if (this.dryRun) {
+    if (this.processingContext.config.settings.dryRun) {
       this.logger.info(`Skipped (dryRun): ${message}'`)
       return true
     }

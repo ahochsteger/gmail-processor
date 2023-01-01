@@ -1,21 +1,47 @@
-import { Config } from "../config/Config"
 import "reflect-metadata"
 import { MockFactory } from "../../test/mocks/MockFactory"
 import { ActionRegistry } from "./ActionRegistry"
 import { AttachmentActions } from "./AttachmentActions"
 import { ConflictStrategy } from "../adapter/GDriveAdapter"
+import { AttachmentProcessor } from "../processors/AttachmentProcessor"
+import { AttachmentConfig } from "../config/AttachmentConfig"
+import { AttachmentContext } from "../context/AttachmentContext"
+import { MessageContext } from "../context/MessageContext"
+import { ThreadContext } from "../context/ThreadContext"
+import { ProcessingContext } from "../context/ProcessingContext"
+import { GoogleAppsScriptContext } from "../context/GoogleAppsScriptContext"
+import { ThreadConfig } from "../config/ThreadConfig"
+import { MessageConfig } from "../config/MessageConfig"
+import { Config } from "../config/Config"
 
-function getMocks(dryRun = true, config = new Config()) {
+function getMocks(dryRun = true) {
   const mockedGmailAttachment = MockFactory.newAttachmentMock()
   const md = MockFactory.newMockObjects()
-  const mockedGasContext = MockFactory.newGasContextMock(md)
-  const mockedAttachmentProcessor = MockFactory.newAttachmentProcessorMock(
-    config,
-    mockedGasContext,
+  const mockedMessageContext = new MessageContext(
+    new ThreadContext(
+      new ProcessingContext(
+        new GoogleAppsScriptContext(
+          md.gmailApp,
+          md.gdriveApp,
+          md.console,
+          md.utilities,
+        ),
+        new Config(),
+      ),
+      new ThreadConfig(),
+      MockFactory.newThreadMock(),
+    ),
+    new MessageConfig(),
+    MockFactory.newMessageMock(),
   )
-  const context = mockedAttachmentProcessor.processingContext
-  context.attachmentContext!.attachment = mockedGmailAttachment
-  const attachmentActions = new AttachmentActions(context, console, dryRun)
+  const mockedAttachmentProcessor = new AttachmentProcessor(mockedMessageContext)
+  const attachmentContext = new AttachmentContext(
+    mockedMessageContext,
+    new AttachmentConfig(),
+    mockedGmailAttachment,
+  )
+  attachmentContext.processingContext.config.settings.dryRun = dryRun
+  const attachmentActions = new AttachmentActions(attachmentContext)
   return {
     mockedGmailAttachment,
     mockedAttachmentProcessor,

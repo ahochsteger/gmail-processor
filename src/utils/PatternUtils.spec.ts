@@ -3,6 +3,7 @@ import { MockFactory } from "../../test/mocks/MockFactory"
 import { MessageConfig } from "../config/MessageConfig"
 import { PatternUtil } from "./PatternUtil"
 import { plainToClass } from "class-transformer"
+import { AttachmentConfig } from "../config/AttachmentConfig"
 
 const mockedConsole = mock<Console>()
 PatternUtil.logger = mockedConsole
@@ -30,14 +31,10 @@ describe("Pattern Substitution", () => {
         },
       ],
     })
-    const s1 = PatternUtil.substitutePatternFromThread(
+    const s1 = PatternUtil.substituteFromAttachmentContext(
       "${message.from}/${message.to}/${attachment.contentType}/${message.subject}-${message.id}-" +
         "${attachment.index}-${attachment.name}-${message.date:dateformat:YYYY-MM-DD}",
-      thread1,
-      0,
-      0,
-      new MessageConfig(),
-      0,
+      MockFactory.newAttachmentContext(thread1),
     )
     expect(s1).toBe(
       "msgFrom/msgTo/attContentType0/msgSubject-msgId-1-attName0-2018-05-27",
@@ -93,13 +90,9 @@ describe("Pattern Substitution", () => {
         },
       ],
     })
-    const s2 = PatternUtil.substitutePatternFromThread(
+    const s2 = PatternUtil.substituteFromAttachmentContext(
       pattern,
-      thread2,
-      0,
-      0,
-      rule,
-      0,
+      MockFactory.newAttachmentContext(thread2, 0, 0, 0, new AttachmentConfig(), rule)
     )
     expect(s2).toBe(expRslt)
   })
@@ -126,28 +119,22 @@ describe("Pattern Substitution", () => {
   })
 
   it("should handle a thread with one message", () => {
-    const s = PatternUtil.substitutePatternFromThread(
+    const s = PatternUtil.substituteFromMessageContext(
       "${message.from},${message.to},${message.subject}," +
         "${message.id},${message.date:dateformat:YYYY-MM-DD}",
-      sharedThread,
-      0,
-      0,
-      new MessageConfig(),
+      MockFactory.newMessageContext(sharedThread),
     )
     expect(s).toBe("msgFrom,msgTo,msgSubject,msgId,2018-05-27")
   })
 
   it("should substitute all thread attributes", () => {
     const thread = MockFactory.newThreadMock()
-    const s = PatternUtil.substitutePatternFromThread(
+    const s = PatternUtil.substituteFromThreadContext(
       "${thread.firstMessageSubject}," +
         "${thread.hasStarredMessages},${thread.id},${thread.isImportant},${thread.isInPriorityInbox}," +
         "${thread.labels},${thread.lastMessageDate:dateformat:YYYY-MM-DD},${thread.messageCount}," +
         "${thread.permalink}",
-      thread,
-      0,
-      0,
-      new MessageConfig(),
+      MockFactory.newMessageContext(thread),
     )
     expect(s).toBe(
       "message subject,false,threadId123,false,false,,2019-05-02,2,some-permalink-url",
@@ -155,14 +142,11 @@ describe("Pattern Substitution", () => {
   })
 
   it("should handle a thread with one message and attachment 1 of 2", () => {
-    const s = PatternUtil.substitutePatternFromThread(
+    const s = PatternUtil.substituteFromAttachmentContext(
       "${message.from}/${message.to}/${attachment.contentType}" +
         "/${message.subject}-${message.id}-${attachment.index}-${attachment.name}-" +
         "${message.date:dateformat:YYYY-MM-DD}",
-      sharedThread,
-      0,
-      0,
-      new MessageConfig(),
+      MockFactory.newAttachmentContext(sharedThread, 0, 0, 0),
     )
     expect(s).toBe(
       "msgFrom/msgTo/attContentType1/msgSubject-msgId-1-attName1-2018-05-27",
@@ -170,14 +154,11 @@ describe("Pattern Substitution", () => {
   })
 
   it("should substitute advanced message + attachment pattern", () => {
-    const s = PatternUtil.substitutePatternFromThread(
+    const s = PatternUtil.substituteFromAttachmentContext(
       "${message.from}/${message.to}/${attachment.contentType}" +
         "/${message.subject}-${message.id}-${attachment.index}-${attachment.name}-" +
         "${message.date:dateformat:YYYY-MM-DD}",
-      sharedThread,
-      0,
-      1,
-      new MessageConfig(),
+      MockFactory.newAttachmentContext(sharedThread, 0, 0, 1),
     )
     expect(s).toBe(
       "msgFrom/msgTo/attContentType2/msgSubject-msgId-2-attName2-2018-05-27",
@@ -185,14 +166,11 @@ describe("Pattern Substitution", () => {
   })
 
   it("should substitute mixed message + attachment pattern", () => {
-    const s = PatternUtil.substitutePatternFromThread(
+    const s = PatternUtil.substituteFromAttachmentContext(
       "${message.from}/${message.to}/${attachment.contentType}/" +
         "${message.subject}-${message.id}-${attachment.index}-${attachment.name}-" +
         "${message.date:dateformat:YYYY-MM-DD}",
-      sharedThread,
-      0,
-      0,
-      new MessageConfig(),
+      MockFactory.newAttachmentContext(sharedThread),
     )
     expect(s).toBe(
       "msgFrom/msgTo/attContentType1/msgSubject-msgId-1-attName1-2018-05-27",
@@ -202,75 +180,73 @@ describe("Pattern Substitution", () => {
 describe("Substitutions", () => {
   it("should substitute all thread attributes", () => {
     expect(
-      PatternUtil.substitutePatternFromThread(
+      PatternUtil.substituteFromThreadContext(
         "${thread.firstMessageSubject},${thread.hasStarredMessages}," +
           "${thread.id},${thread.isImportant},${thread.isInPriorityInbox},${thread.labels}," +
           "${thread.lastMessageDate:dateformat:YYYY-MM-DD HH:mm:ss},${thread.messageCount},${thread.permalink}",
-        MockFactory.newThreadMock({
-          firstMessageSubject: "tfms",
-          hasStarredMessages: true,
-          id: "tid",
-          isImportant: true,
-          isInPriorityInbox: true,
-          labels: ["l1", "l2"],
-          lastMessageDate: new Date("2019-05-06T12:34:56Z"),
-          messageCount: 3,
-          permalink: "tpl",
-        }),
-        0,
-        0,
-        new MessageConfig(),
+        MockFactory.newThreadContext(
+          MockFactory.newThreadMock({
+            firstMessageSubject: "tfms",
+            hasStarredMessages: true,
+            id: "tid",
+            isImportant: true,
+            isInPriorityInbox: true,
+            labels: ["l1", "l2"],
+            lastMessageDate: new Date("2019-05-06T12:34:56Z"),
+            messageCount: 3,
+            permalink: "tpl",
+          }),
+        ),
       ),
     ).toBe("tfms,true,tid,true,true,l1,l2,2019-05-06 12:34:56,3,tpl")
   })
   it("should substitute all message attributes", () => {
     expect(
-      PatternUtil.substitutePatternFromThread(
+      PatternUtil.substituteFromMessageContext(
         "${message.bcc},${message.cc},${message.date:dateformat:YYYY-MM-DD HH:mm:ss},${message.from}," +
           "${message.id},${message.replyTo},${message.subject},${message.to}",
-        MockFactory.newThreadMock({
-          messages: [
-            {
-              bcc: "mbcc",
-              cc: "mcc",
-              date: new Date("2019-05-06T12:34:56Z"),
-              from: "mfrom",
-              id: "mid",
-              replyTo: "mrt",
-              subject: "msj",
-              to: "mto",
-            },
-          ],
-        }),
-        0,
-        0,
-        new MessageConfig(),
+        MockFactory.newMessageContext(
+          MockFactory.newThreadMock({
+            messages: [
+              {
+                bcc: "mbcc",
+                cc: "mcc",
+                date: new Date("2019-05-06T12:34:56Z"),
+                from: "mfrom",
+                id: "mid",
+                replyTo: "mrt",
+                subject: "msj",
+                to: "mto",
+              },
+            ],
+          }),
+
+        )
       ),
     ).toBe("mbcc,mcc,2019-05-06 12:34:56,mfrom,mid,mrt,msj,mto")
   })
   it("should substitute all attachment attributes", () => {
     expect(
-      PatternUtil.substitutePatternFromThread(
+      PatternUtil.substituteFromAttachmentContext(
         "${attachment.contentType},${attachment.hash},${attachment.isGoogleType},${attachment.name}," +
           "${attachment.size}",
-        MockFactory.newThreadMock({
-          messages: [
-            {
-              attachments: [
-                {
-                  contentType: "act",
-                  hash: "ah",
-                  isGoogleType: true,
-                  name: "aname",
-                  size: 12345,
-                },
-              ],
-            },
-          ],
-        }),
-        0,
-        0,
-        new MessageConfig(),
+        MockFactory.newAttachmentContext(
+          MockFactory.newThreadMock({
+            messages: [
+              {
+                attachments: [
+                  {
+                    contentType: "act",
+                    hash: "ah",
+                    isGoogleType: true,
+                    name: "aname",
+                    size: 12345,
+                  },
+                ],
+              },
+            ],
+          }),
+        )
       ),
     ).toBe("act,ah,true,aname,12345")
   })
@@ -278,18 +254,15 @@ describe("Substitutions", () => {
 describe("Handle single messages", () => {
   it("should handle a thread with one message and no attachments", () => {
     expect(
-      PatternUtil.substitutePatternFromThread(
+      PatternUtil.substituteFromThreadContext(
         "",
-        MockFactory.newThreadMock(),
-        0,
-        0,
-        new MessageConfig(),
+        MockFactory.newThreadContextMock()
       ),
     ).toBe("")
   })
   it("should handle a thread with one message and one attachment", () => {
     expect(
-      PatternUtil.substitutePatternFromThread(
+      PatternUtil.substituteFromAttachmentContext(
         "${thread.firstMessageSubject},${thread.hasStarredMessages},${thread.id},${thread.isImportant}," +
           "${thread.isInPriorityInbox},${thread.labels},${thread.lastMessageDate:dateformat:YYYY-MM-DD " +
           "HH:mm:ss},${thread.messageCount},${thread.permalink}," +
@@ -297,41 +270,40 @@ describe("Handle single messages", () => {
           "${message.id},${message.replyTo},${message.subject},${message.to}," +
           "${attachment.contentType},${attachment.hash},${attachment.isGoogleType},${attachment.name}," +
           "${attachment.size}",
-        MockFactory.newThreadMock({
-          firstMessageSubject: "tfms",
-          hasStarredMessages: true,
-          id: "tid",
-          isImportant: true,
-          isInPriorityInbox: true,
-          labels: ["l1", "l2"],
-          lastMessageDate: new Date("2019-05-06T12:34:56Z"),
-          messageCount: 3,
-          permalink: "tpl",
-          messages: [
-            {
-              bcc: "mbcc",
-              cc: "mcc",
-              date: new Date("2019-05-06T12:34:56Z"),
-              from: "mfrom",
-              id: "mid",
-              replyTo: "mrt",
-              subject: "msj",
-              to: "mto",
-              attachments: [
-                {
-                  contentType: "act",
-                  hash: "ah",
-                  isGoogleType: true,
-                  name: "aname",
-                  size: 12345,
-                },
-              ],
-            },
-          ],
-        }),
-        0,
-        0,
-        new MessageConfig(),
+        MockFactory.newAttachmentContext(
+          MockFactory.newThreadMock({
+            firstMessageSubject: "tfms",
+            hasStarredMessages: true,
+            id: "tid",
+            isImportant: true,
+            isInPriorityInbox: true,
+            labels: ["l1", "l2"],
+            lastMessageDate: new Date("2019-05-06T12:34:56Z"),
+            messageCount: 3,
+            permalink: "tpl",
+            messages: [
+              {
+                bcc: "mbcc",
+                cc: "mcc",
+                date: new Date("2019-05-06T12:34:56Z"),
+                from: "mfrom",
+                id: "mid",
+                replyTo: "mrt",
+                subject: "msj",
+                to: "mto",
+                attachments: [
+                  {
+                    contentType: "act",
+                    hash: "ah",
+                    isGoogleType: true,
+                    name: "aname",
+                    size: 12345,
+                  },
+                ],
+              },
+            ],
+          }),
+        )
       ),
     ).toBe(
       "tfms,true,tid,true,true,l1,l2,2019-05-06 12:34:56,3,tpl," +
@@ -365,25 +337,19 @@ describe("Handle multiple attachments", () => {
   })
   it("should handle a thread with one message and attachment 1 of 2", () => {
     expect(
-      PatternUtil.substitutePatternFromThread(
+      PatternUtil.substituteFromAttachmentContext(
         "${attachment.contentType},${attachment.hash},${attachment.isGoogleType},${attachment.name}," +
           "${attachment.size}",
-        thread,
-        0,
-        0,
-        new MessageConfig(),
+        MockFactory.newAttachmentContext(thread)
       ),
     ).toBe("act1,ah1,true,aname1,12345")
   })
   it("should handle a thread with one message and attachment 2 of 2", () => {
     expect(
-      PatternUtil.substitutePatternFromThread(
+      PatternUtil.substituteFromAttachmentContext(
         "${attachment.contentType},${attachment.hash},${attachment.isGoogleType},${attachment.name}," +
           "${attachment.size}",
-        thread,
-        0,
-        1,
-        new MessageConfig(),
+        MockFactory.newAttachmentContext(thread, 0, 0, 1),
       ),
     ).toBe("act2,ah2,false,aname2,23456")
   })
@@ -442,7 +408,7 @@ describe("Handle multiple messages", () => {
   })
   it("should handle a thread with message 1 of 2 and one attachment", () => {
     expect(
-      PatternUtil.substitutePatternFromThread(
+      PatternUtil.substituteFromAttachmentContext(
         "${thread.firstMessageSubject},${thread.hasStarredMessages},${thread.id},${thread.isImportant}," +
           "${thread.isInPriorityInbox},${thread.labels},${thread.lastMessageDate:dateformat:YYYY-MM-DD " +
           "HH:mm:ss},${thread.messageCount},${thread.permalink}," +
@@ -450,10 +416,7 @@ describe("Handle multiple messages", () => {
           "${message.id},${message.replyTo},${message.subject},${message.to}," +
           "${attachment.contentType},${attachment.hash},${attachment.isGoogleType},${attachment.name}," +
           "${attachment.size}",
-        thread,
-        0,
-        0,
-        new MessageConfig(),
+        MockFactory.newAttachmentContext(thread),
       ),
     ).toBe(
       "tfms,true,tid,true,true,l1,l2,2019-05-06 12:34:56,3,tpl," +
@@ -463,7 +426,7 @@ describe("Handle multiple messages", () => {
   })
   it("should handle a thread with message 2 of 2 and one attachment", () => {
     expect(
-      PatternUtil.substitutePatternFromThread(
+      PatternUtil.substituteFromAttachmentContext(
         "${thread.firstMessageSubject},${thread.hasStarredMessages},${thread.id},${thread.isImportant}," +
           "${thread.isInPriorityInbox},${thread.labels},${thread.lastMessageDate:dateformat:YYYY-MM-DD " +
           "HH:mm:ss},${thread.messageCount},${thread.permalink}," +
@@ -471,10 +434,7 @@ describe("Handle multiple messages", () => {
           "${message.id},${message.replyTo},${message.subject},${message.to}," +
           "${attachment.contentType},${attachment.hash},${attachment.isGoogleType},${attachment.name}," +
           "${attachment.size}",
-        thread,
-        1,
-        0,
-        new MessageConfig(),
+        MockFactory.newAttachmentContext(thread, 0, 1),
       ),
     ).toBe(
       "tfms,true,tid,true,true,l1,l2,2019-05-06 12:34:56,3,tpl," +

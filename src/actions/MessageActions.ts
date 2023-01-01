@@ -1,41 +1,37 @@
-import { ProcessingContext } from "../context/ProcessingContext"
 import { AbstractActions } from "./AbstractActions"
 import { action, actionProvider } from "./ActionRegistry"
 import "reflect-metadata"
+import { MessageContext } from "../context/MessageContext"
 
 @actionProvider("message")
 export class MessageActions extends AbstractActions {
-  private message: GoogleAppsScript.Gmail.GmailMessage
   constructor(
-    context: ProcessingContext,
-    logger: Console = console,
-    dryRun = false,
+    protected messageContext: MessageContext,
   ) {
-    super(context, logger, dryRun)
-    this.message = context.messageContext!.message!
+    super(messageContext)
   }
 
   @action("message.forward")
   public forward(to: string) {
     if (
       this.checkDryRun(
-        `Forwarding message '${this.message.getSubject()}' to '${to}' ...`,
+        `Forwarding message '${this.messageContext.message.getSubject()}' to '${to}' ...`,
       )
     )
       return
-    this.message.forward(to)
+    this.messageContext.message.forward(to)
   }
 
   @action("message.markProcessed")
   public markProcessed() {
-    if (this.context.config.settings.processedMode == "read") {
+    if (this.processingContext.config.settings.processedMode == "read") {
       if (
         this.checkDryRun(
-          `Marking message '${this.message.getSubject()}' as processed ...`,
+          `Marking message '${this.messageContext.message.getSubject()}' as processed ...`,
         )
       )
         return
-      this.message.markRead()
+      this.messageContext.message.markRead()
     }
   }
 
@@ -43,54 +39,54 @@ export class MessageActions extends AbstractActions {
   public markRead() {
     if (
       this.checkDryRun(
-        `Marking message '${this.message.getSubject()}' as read ...`,
+        `Marking message '${this.messageContext.message.getSubject()}' as read ...`,
       )
     )
       return
-    this.message.markRead()
+    this.messageContext.message.markRead()
   }
 
   @action("message.markUnread")
   public markUnread() {
     if (
       this.checkDryRun(
-        `Marking message '${this.message.getSubject()}' as unread ...`,
+        `Marking message '${this.messageContext.message.getSubject()}' as unread ...`,
       )
     )
       return
-    this.message.markUnread()
+    this.messageContext.message.markUnread()
   }
 
   @action("message.moveToTrash")
   public moveToTrash() {
     if (
       this.checkDryRun(
-        `Moving message '${this.message.getSubject()}' to trash ...`,
+        `Moving message '${this.messageContext.message.getSubject()}' to trash ...`,
       )
     )
       return
-    this.message.moveToTrash()
+    this.messageContext.message.moveToTrash()
   }
 
   @action("message.star")
   public star() {
     if (
       this.checkDryRun(
-        `Marking message '${this.message.getSubject()}' as starred ...`,
+        `Marking message '${this.messageContext.message.getSubject()}' as starred ...`,
       )
     )
       return
-    this.message.star()
+    this.messageContext.message.star()
   }
 
   @action("message.unstar")
   public unstar() {
     if (
       this.checkDryRun(
-        `Marking message '${this.message.getSubject()}' as unstarred ...`,
+        `Marking message '${this.messageContext.message.getSubject()}' as unstarred ...`,
       )
     )
       return
-    this.message.unstar()
+    this.messageContext.message.unstar()
   }
 }

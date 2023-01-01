@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import moment from "moment-timezone"
 import { AttachmentMatchConfig } from "../config/AttachmentMatchConfig"
-import { MessageConfig } from "../config/MessageConfig"
 import { MessageMatchConfig } from "../config/MessageMatchConfig"
-import { ProcessingContext } from "../context/ProcessingContext"
+import { AttachmentContext } from "../context/AttachmentContext"
+import { MessageContext } from "../context/MessageContext"
+import { ThreadContext } from "../context/ThreadContext"
+import moment from "moment-timezone"
 
 export class PatternUtil {
   public static logger: Console = console
@@ -129,7 +130,12 @@ export class PatternUtil {
     m = this.mapAdd(m, "thread.hasStarredMessages", thread.hasStarredMessages())
     m = this.mapAdd(m, "thread.id", thread.getId())
     m = this.mapAdd(m, "thread.isImportant", thread.isImportant())
+    m = this.mapAdd(m, "thread.isInChats", thread.isInChats())
+    m = this.mapAdd(m, "thread.isInInbox", thread.isInInbox())
     m = this.mapAdd(m, "thread.isInPriorityInbox", thread.isInPriorityInbox())
+    m = this.mapAdd(m, "thread.isInSpam", thread.isInSpam())
+    m = this.mapAdd(m, "thread.isInTrash", thread.isInTrash())
+    m = this.mapAdd(m, "thread.isUnread", thread.isUnread())
     m = this.mapAdd(m, "thread.labels", thread.getLabels())
     m = this.mapAdd(m, "thread.lastMessageDate", thread.getLastMessageDate())
     m = this.mapAdd(m, "thread.messageCount", thread.getMessageCount())
@@ -146,6 +152,13 @@ export class PatternUtil {
     m = this.mapAdd(m, "message.date", message.getDate())
     m = this.mapAdd(m, "message.from", message.getFrom())
     m = this.mapAdd(m, "message.id", message.getId())
+    m = this.mapAdd(m, "message.isDraft", message.isDraft())
+    m = this.mapAdd(m, "message.isInChats", message.isInChats())
+    m = this.mapAdd(m, "message.isInInbox", message.isInInbox())
+    m = this.mapAdd(m, "message.isInPriorityInbox", message.isInPriorityInbox())
+    m = this.mapAdd(m, "message.isInTrash", message.isInTrash())
+    m = this.mapAdd(m, "message.isStarred", message.isStarred())
+    m = this.mapAdd(m, "message.isUnread", message.isUnread())
     m = this.mapAdd(m, "message.replyTo", message.getReplyTo())
     m = this.mapAdd(m, "message.subject", message.getSubject())
     m = this.mapAdd(m, "message.to", message.getTo())
@@ -164,84 +177,80 @@ export class PatternUtil {
     return m
   }
 
-  /**
-   *
-   */
-  public static buildSubstitutionMap(
-    thread: GoogleAppsScript.Gmail.GmailThread,
-    msgIdx: number,
-    attIdx: number,
-    messageConfig: MessageConfig,
-    attRuleIdx: number,
-  ): Map<string, any> {
-    let m = new Map<string, any>()
-    msgIdx = msgIdx !== undefined ? msgIdx : 0
-    attIdx = attIdx !== undefined ? attIdx : 0
-    messageConfig =
-      messageConfig !== undefined ? messageConfig : new MessageConfig()
-    attRuleIdx = attRuleIdx !== undefined ? attRuleIdx : 0
+  public static buildSubstitutionMapFromThreadContext(
+    ctx: ThreadContext,
+    substMap = new Map<string,any>(),
+  ) {
+    substMap = PatternUtil.mergeMaps(substMap, this.getSubstitutionMapFromThread(ctx.thread))
+    substMap.set("thread.index", ctx.threadIndex)
+    substMap.set("threadConfig.index", ctx.threadConfigIndex)
+    return substMap
+  }
 
-    // Thread data
-    m = PatternUtil.mergeMaps(m, this.getSubstitutionMapFromThread(thread))
-
+  public static buildSubstitutionMapFromMessageContext(
+    ctx: MessageContext,
+    substMap = new Map<string,any>(),
+  ) {
+    let m = this.buildSubstitutionMapFromThreadContext(ctx.threadContext, substMap)
     // Message data
-    const messages = thread.getMessages()
-    if (messages !== undefined && messages != null && messages.length > 0) {
-      const message = thread.getMessages()[msgIdx]
-      m = PatternUtil.mergeMaps(m, this.getSubstitutionMapFromMessage(message))
-      if (messageConfig.match) {
-        // Test for message rules
-        const messgageMatch = this.buildRegExpSubustitutionMap(
-          m,
-          "message",
-          this.getRegexMapFromMessageMatchConfig(messageConfig.match),
+    const message = ctx.message
+    m = PatternUtil.mergeMaps(m, this.getSubstitutionMapFromMessage(message))
+    m.set("message.index", ctx.messageIndex)
+    m.set("messageConfig.index", ctx.messageConfigIndex)
+    const messageConfig = ctx.messageConfig
+    if (messageConfig.match) {
+      // Test for message rules
+      const messgageMatch = this.buildRegExpSubustitutionMap(
+        m,
+        "message",
+        this.getRegexMapFromMessageMatchConfig(messageConfig.match),
+      )
+      if (messgageMatch == null) {
+        m.set("message.matched", false)
+        this.logger.info(
+          "  Skipped message with id " +
+            message.getId() +
+            " because it did not match the regex rules ...",
         )
-        if (messgageMatch == null) {
-          m.set("message.matched", false)
-          this.logger.info(
-            "  Skipped message with id " +
-              message.getId() +
-              " because it did not match the regex rules ...",
-          )
-        }
-        // If not yet defined: true, false otherwise:
-        m.set("message.matched", m.get("message.matched") === undefined)
-        m = PatternUtil.mergeMaps(m, messgageMatch)
       }
-      // Attachment data
-      if (attIdx >= 0 && attIdx < message.getAttachments().length) {
-        // Substitute values for a specific attachment, if provided
-        const attachment = message.getAttachments()[attIdx]
-        m = PatternUtil.mergeMaps(
-          m,
-          this.getSubstitutionMapFromAttachment(attachment),
-        )
-        m.set("attachment.index", attIdx + 1)
-        if (
-          messageConfig.handler !== undefined &&
-          attRuleIdx >= 0 &&
-          attRuleIdx < messageConfig.handler.length
-        ) {
-          const attachmentRule = messageConfig.handler[attRuleIdx]
-          const attachmentMatch = this.buildRegExpSubustitutionMap(
-            m,
-            "attachment",
-            this.getRegexMapFromAttachmentMatchConfig(attachmentRule.match),
-          )
-          if (attachmentMatch == null) {
-            m.set("attachment.matched", false)
-            this.logger.info(
-              "  Skipped attachment with name '" +
-                attachment.getName() +
-                "' because it did not match the regex rules ...",
-            )
-          }
-          // If not yet defined: true, false otherwise
-          m.set("attachment.matched", m.get("attachment.matched") === undefined)
-          m = PatternUtil.mergeMaps(m, attachmentMatch)
-        }
-      }
+      // If not yet defined: true, false otherwise:
+      m.set("message.matched", m.get("message.matched") === undefined)
+      m = PatternUtil.mergeMaps(m, messgageMatch)
     }
+    return m
+  }
+
+  public static buildSubstitutionMapFromAttachmentContext(
+    ctx: AttachmentContext,
+    substMap = new Map<string,any>(),
+  ): Map<string, any> {
+    let m = this.buildSubstitutionMapFromMessageContext(ctx.messageContext, substMap)
+    // Attachment data
+    // Substitute values for a specific attachment, if provided
+    const attachment = ctx.attachment
+    m = PatternUtil.mergeMaps(
+      m,
+      this.getSubstitutionMapFromAttachment(attachment),
+    )
+    m.set("attachment.index", ctx.attachmentIndex)
+    m.set("attachmentConfig.index", ctx.attachmentConfigIndex)
+    const attachmentConfig = ctx.attachmentConfig
+    const attachmentMatch = this.buildRegExpSubustitutionMap(
+      m,
+      "attachment",
+      this.getRegexMapFromAttachmentMatchConfig(attachmentConfig.match),
+    )
+    if (attachmentMatch == null) {
+      m.set("attachment.matched", false)
+      this.logger.info(
+        "  Skipped attachment with name '" +
+          attachment.getName() +
+          "' because it did not match the regex rules ...",
+      )
+    }
+    // If not yet defined: true, false otherwise
+    m.set("attachment.matched", m.get("attachment.matched") === undefined)
+    m = PatternUtil.mergeMaps(m, attachmentMatch)
     return m
   }
 
@@ -270,50 +279,29 @@ export class PatternUtil {
     return m
   }
 
-  public static substitutePatternFromThread(
+  public static substituteFromThreadContext(
     pattern: string,
-    thread: GoogleAppsScript.Gmail.GmailThread,
-    msgIdx: number,
-    attIdx: number,
-    messageConfig: MessageConfig,
-    attRuleIdx = 0,
+    threadContext: ThreadContext,
   ) {
-    const m = this.buildSubstitutionMap(
-      thread,
-      msgIdx,
-      attIdx,
-      messageConfig,
-      attRuleIdx,
-    )
+    const m = this.buildSubstitutionMapFromThreadContext(threadContext)
     return this.substitutePatternFromMap(pattern, m)
   }
 
-  public static substitutePatternFromContext(
+  public static substituteFromMessageContext(
     pattern: string,
-    context: ProcessingContext,
+    messageContext: MessageContext,
   ) {
-    if (!context.threadContext || !context.threadContext.thread) {
-      return pattern
-    }
-    const thread = context.threadContext.thread
-    const msgIdx = context.messageContext ? context.messageContext.index : -1
-    const attIdx = context.attachmentContext
-      ? context.attachmentContext.index
-      : -1
-    const rule = context.messageContext
-      ? context.messageContext.messageConfig
-      : new MessageConfig()
-    const attRuleIdx = context.attachmentContext
-      ? context.attachmentContext.configIndex
-      : -1
-    this.substitutePatternFromThread(
-      pattern,
-      thread,
-      msgIdx,
-      attIdx,
-      rule,
-      attRuleIdx,
-    )
+    const m = this.buildSubstitutionMapFromMessageContext(messageContext)
+    return this.substitutePatternFromMap(pattern, m)
+  }
+
+  public static substituteFromAttachmentContext(
+    pattern: string,
+    attachmentContext: AttachmentContext,
+    substMap = new Map<string,any>(),
+  ) {
+    const m = this.buildSubstitutionMapFromAttachmentContext(attachmentContext, substMap)
+    return this.substitutePatternFromMap(pattern, m)
   }
 
   public static convertFromV1Pattern(s: string, dateKey = "message.date") {

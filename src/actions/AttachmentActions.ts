@@ -1,19 +1,15 @@
-import { ProcessingContext } from "../context/ProcessingContext"
 import { ConflictStrategy, GDriveAdapter } from "../adapter/GDriveAdapter"
 import { AbstractActions } from "./AbstractActions"
 import { action, actionProvider } from "./ActionRegistry"
 import "reflect-metadata"
+import { AttachmentContext } from "../context/AttachmentContext"
 
 @actionProvider("attachment")
 export class AttachmentActions extends AbstractActions {
-  private attachment: GoogleAppsScript.Gmail.GmailAttachment
   constructor(
-    context: ProcessingContext,
-    logger: Console = console,
-    dryRun = false,
+    protected attachmentContext: AttachmentContext,
   ) {
-    super(context, logger, dryRun)
-    this.attachment = context.attachmentContext!.attachment!
+    super(attachmentContext)
   }
 
   @action("attachment.storeToGDrive")
@@ -24,17 +20,17 @@ export class AttachmentActions extends AbstractActions {
   ) {
     const gdriveAdapter = new GDriveAdapter(
       this.logger,
-      this.dryRun,
-      this.context.gasContext.gdriveApp,
+      this.processingContext.config.settings.dryRun,
+      this.processingContext.gasContext.gdriveApp,
     )
     if (
       this.checkDryRun(
-        `Storing attachment '${this.attachment.getName()}' to '${location}' ...`,
+        `Storing attachment '${this.attachmentContext.attachment.getName()}' to '${location}' ...`,
       )
     )
       return
     const file = gdriveAdapter.storeAttachment(
-      this.attachment,
+      this.attachmentContext.attachment,
       location,
       conflictStrategy,
       description,

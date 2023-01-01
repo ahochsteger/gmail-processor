@@ -1,31 +1,27 @@
-import { ProcessingContext } from "../context/ProcessingContext"
 import { ConflictStrategy, GDriveAdapter } from "../adapter/GDriveAdapter"
 import { AbstractActions } from "./AbstractActions"
 import { action, actionProvider } from "./ActionRegistry"
 import "reflect-metadata"
+import { ThreadContext } from "../context/ThreadContext"
 
 @actionProvider("thread")
 export class ThreadActions extends AbstractActions {
-  private thread: GoogleAppsScript.Gmail.GmailThread
   constructor(
-    context: ProcessingContext,
-    logger: Console = console,
-    dryRun = false,
+    public threadContext: ThreadContext,
   ) {
-    super(context, logger, dryRun)
-    this.thread = context.threadContext!.thread!
+    super(threadContext)
   }
 
   @action("thread.markProcessed")
   public markProcessed() {
-    if (this.context.config.settings.processedMode == "label") {
+    if (this.processingContext.config.settings.processedMode == "label") {
       if (
         this.checkDryRun(
-          `Marking thread '${this.thread.getFirstMessageSubject()}' as processed ...`,
+          `Marking thread '${this.threadContext.thread.getFirstMessageSubject()}' as processed ...`,
         )
       )
         return
-      this.addLabel(this.context.config.settings.processedLabel)
+      this.addLabel(this.processingContext.config.settings.processedLabel)
     }
   }
 
@@ -33,102 +29,102 @@ export class ThreadActions extends AbstractActions {
   public markImportant() {
     if (
       this.checkDryRun(
-        `Marking thread '${this.thread.getFirstMessageSubject()}' as important ...`,
+        `Marking thread '${this.threadContext.thread.getFirstMessageSubject()}' as important ...`,
       )
     )
       return
-    this.thread.markImportant()
+    this.threadContext.thread.markImportant()
   }
 
   @action("thread.markRead")
   public markRead() {
     if (
       this.checkDryRun(
-        `Marking thread '${this.thread.getFirstMessageSubject()}' as read ...`,
+        `Marking thread '${this.threadContext.thread.getFirstMessageSubject()}' as read ...`,
       )
     )
       return
-    this.thread.markRead()
+    this.threadContext.thread.markRead()
   }
 
   @action("thread.markUnimportant")
   public markUnimportant() {
     if (
       this.checkDryRun(
-        `Marking thread '${this.thread.getFirstMessageSubject()}' as unimportant ...`,
+        `Marking thread '${this.threadContext.thread.getFirstMessageSubject()}' as unimportant ...`,
       )
     )
       return
-    this.thread.markUnimportant()
+    this.threadContext.thread.markUnimportant()
   }
 
   @action("thread.markUnread")
   public markUnread() {
     if (
       this.checkDryRun(
-        `Marking thread '${this.thread.getFirstMessageSubject()}' as unread ...`,
+        `Marking thread '${this.threadContext.thread.getFirstMessageSubject()}' as unread ...`,
       )
     )
       return
-    this.thread.markUnread()
+    this.threadContext.thread.markUnread()
   }
 
   @action("thread.moveToArchive")
   public moveToArchive() {
     if (
       this.checkDryRun(
-        `Moving thread '${this.thread.getFirstMessageSubject()}' to archive ...`,
+        `Moving thread '${this.threadContext.thread.getFirstMessageSubject()}' to archive ...`,
       )
     )
       return
-    this.thread.moveToArchive()
+    this.threadContext.thread.moveToArchive()
   }
 
   @action("thread.moveToInbox")
   public moveToInbox() {
     if (
       this.checkDryRun(
-        `Moving thread '${this.thread.getFirstMessageSubject()}' to inbox ...`,
+        `Moving thread '${this.threadContext.thread.getFirstMessageSubject()}' to inbox ...`,
       )
     )
       return
-    this.thread.moveToInbox()
+    this.threadContext.thread.moveToInbox()
   }
 
   @action("thread.moveToSpam")
   public moveToSpam() {
     if (
       this.checkDryRun(
-        `Moving thread '${this.thread.getFirstMessageSubject()}' to spam ...`,
+        `Moving thread '${this.threadContext.thread.getFirstMessageSubject()}' to spam ...`,
       )
     )
       return
-    this.thread.moveToSpam()
+    this.threadContext.thread.moveToSpam()
   }
 
   @action("thread.moveToTrash")
   public moveToTrash() {
     if (
       this.checkDryRun(
-        `Moving thread '${this.thread.getFirstMessageSubject()}' to trash ...`,
+        `Moving thread '${this.threadContext.thread.getFirstMessageSubject()}' to trash ...`,
       )
     )
       return
-    this.thread.moveToTrash()
+    this.threadContext.thread.moveToTrash()
   }
 
   @action("thread.addLabel")
   public addLabel(labelName: string) {
     if (
       this.checkDryRun(
-        `Adding label '${labelName}' to thread '${this.thread.getFirstMessageSubject()}' ...`,
+        `Adding label '${labelName}' to thread '${this.threadContext.thread.getFirstMessageSubject()}' ...`,
       )
     )
       return
     if (labelName !== "") {
       const label =
-        this.context.gasContext.gmailApp.getUserLabelByName(labelName)
-      this.thread.addLabel(label)
+        this.processingContext.gasContext.gmailApp.getUserLabelByName(labelName)
+      this.threadContext.thread.addLabel(label)
     }
   }
 
@@ -136,14 +132,14 @@ export class ThreadActions extends AbstractActions {
   public removeLabel(labelName: string) {
     if (
       this.checkDryRun(
-        `Removing label '${labelName}' from thread '${this.thread.getFirstMessageSubject()}' ...`,
+        `Removing label '${labelName}' from thread '${this.threadContext.thread.getFirstMessageSubject()}' ...`,
       )
     )
       return
     if (labelName !== "") {
       const label =
-        this.context.gasContext.gmailApp.getUserLabelByName(labelName)
-      this.thread.removeLabel(label)
+        this.processingContext.gasContext.gmailApp.getUserLabelByName(labelName)
+      this.threadContext.thread.removeLabel(label)
     }
   }
 
@@ -179,16 +175,16 @@ export class ThreadActions extends AbstractActions {
     location: string,
     conflictStrategy: ConflictStrategy,
   ) {
-    const html = this.processThreadToHtml(this.thread)
+    const html = this.processThreadToHtml(this.threadContext.thread)
     const htmlBlob = Utilities.newBlob(html, "text/html")
     const gdriveAdapter: GDriveAdapter = new GDriveAdapter(
       this.logger,
-      this.dryRun,
+      this.processingContext.config.settings.dryRun,
       gdriveApp,
     ) // TODO: Don't instanciate here - get from context
     if (
       this.checkDryRun(
-        `Saving PDF copy of thread '${this.thread.getFirstMessageSubject()}' to '${location}' ...`,
+        `Saving PDF copy of thread '${this.threadContext.thread.getFirstMessageSubject()}' to '${location}' ...`,
       )
     )
       return

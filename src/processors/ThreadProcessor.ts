@@ -1,4 +1,5 @@
 import { Config } from "../config/Config"
+import { BaseProcessor } from "./BaseProcessor"
 import { MessageProcessor } from "./MessageProcessor"
 import { ProcessingContext } from "../context/ProcessingContext"
 import { ThreadConfig } from "../config/ThreadConfig"
@@ -6,16 +7,16 @@ import { ThreadContext } from "../context/ThreadContext"
 import { Timer } from "../utils/Timer"
 import { ThreadActions } from "../actions/ThreadActions"
 
-export class ThreadProcessor {
+export class ThreadProcessor extends BaseProcessor {
   public logger: Console = console
   public type = "thread"
   public timer: Timer
   public config: Config
 
   constructor(
-    public gmailApp: GoogleAppsScript.Gmail.GmailApp,
     public processingContext: ProcessingContext,
   ) {
+    super()
     this.timer = new Timer()
     this.config = processingContext.config
   }
@@ -31,16 +32,14 @@ export class ThreadProcessor {
 
   public getQueryFromThreadConfig(threadConfig: ThreadConfig) {
     let gSearchExp = ""
+    gSearchExp += this.getStr(this.config.global?.match?.query)
+    gSearchExp += " " + this.getStr(threadConfig.match.query)
     gSearchExp +=
-      this.config.global.match.query != "" ? this.config.global.match.query : ""
-    gSearchExp +=
-      threadConfig.match.query != "" ? " " + threadConfig.match.query : ""
-    gSearchExp +=
-      this.config.settings.processedLabel != ""
+      this.isSet(this.config.settings?.processedLabel)
         ? " -label:" + this.config.settings.processedLabel
         : ""
     gSearchExp +=
-      this.config.global.match.newerThan != ""
+      this.isSet(this.config.global?.match?.newerThan)
         ? " newer_than:" + this.config.global.match.newerThan
         : ""
     return gSearchExp.trim()
@@ -49,7 +48,7 @@ export class ThreadProcessor {
   public processThreadConfig(threadConfig: ThreadConfig) {
     const gSearchExp = this.getQueryFromThreadConfig(threadConfig)
     // Process all threads matching the search expression:
-    const threads = this.gmailApp.search(
+    const threads = this.processingContext.gasContext.gmailApp.search(
       gSearchExp,
       1,
       this.config.settings.maxBatchSize,
@@ -66,12 +65,10 @@ export class ThreadProcessor {
         return
       }
       const threadContext: ThreadContext = new ThreadContext(
+        this.processingContext,
         threadConfig,
         thread,
-        threads.indexOf(thread),
-        this.config.handler.indexOf(threadConfig),
       )
-      this.processingContext.threadContext = threadContext
       this.processThread(threadContext)
     }
     this.logger.info(
@@ -83,15 +80,9 @@ export class ThreadProcessor {
     // TODO: Check, if this.processingContext would be better here!
     const thread: GoogleAppsScript.Gmail.GmailThread = threadContext.thread
     const threadConfig: ThreadConfig = threadContext.threadConfig
-    this.processingContext.threadContext = threadContext
-    const threadActions = new ThreadActions(
-      this.processingContext,
-      this.logger,
-      this.config.settings.dryRun,
-    )
+    const threadActions = new ThreadActions(threadContext)
     const messageProcessor = new MessageProcessor(
-      this.gmailApp,
-      this.processingContext,
+      threadContext,
     )
     this.logger.info(
       `    Processing of thread '${thread.getFirstMessageSubject()}' started ...`,

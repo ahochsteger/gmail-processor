@@ -1,26 +1,17 @@
 import { MessageFlag } from "../config/MessageFlag"
-import { Config } from "../config/Config"
 import { MessageConfig } from "../config/MessageConfig"
 import { MessageContext } from "../context/MessageContext"
-import { ProcessingContext } from "../context/ProcessingContext"
 import { ThreadContext } from "../context/ThreadContext"
 import { AttachmentProcessor } from "../processors/AttachmentProcessor"
+import { BaseProcessor } from "./BaseProcessor"
 
-export class MessageProcessor {
-  public logger: Console = console
-  public config: Config
-  public threadContext: ThreadContext
+export class MessageProcessor extends BaseProcessor {
+  public logger: Console = console // TODO: Use from context!
 
   constructor(
-    public gmailApp: GoogleAppsScript.Gmail.GmailApp,
-    public processingContext: ProcessingContext,
+    public threadContext: ThreadContext,
   ) {
-    this.config = processingContext.config
-    if (processingContext.threadContext) {
-      this.threadContext = processingContext.threadContext
-    } else {
-      throw Error("Parameter processingContext has no threadContext set!")
-    }
+    super()
   }
 
   public processMessageConfigs(messageConfigs: MessageConfig[]) {
@@ -68,12 +59,10 @@ export class MessageProcessor {
         continue
       }
       const messageContext = new MessageContext(
+        this.threadContext,
         messageConfig,
         message,
-        this.threadContext.thread.getMessages().indexOf(message),
-        this.threadContext.threadConfig.handler.indexOf(messageConfig),
       )
-      this.processingContext.messageContext = messageContext
       this.processMessage(messageContext)
     }
     this.logger.info(
@@ -94,8 +83,7 @@ export class MessageProcessor {
       `        Processing of message '${message.getSubject()}' (id:${message.getId()}) started ...`,
     )
     const attachmentProcessor: AttachmentProcessor = new AttachmentProcessor(
-      this.gmailApp,
-      this.processingContext,
+      messageContext,
     )
     if (messageConfig.handler) {
       // New rule configuration format

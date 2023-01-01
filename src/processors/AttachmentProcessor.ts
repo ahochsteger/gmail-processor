@@ -1,32 +1,16 @@
 import { AttachmentConfig } from "../config/AttachmentConfig"
 import { AttachmentContext } from "../context/AttachmentContext"
-import { Config } from "../config/Config"
 import { MessageContext } from "../context/MessageContext"
-import { ProcessingContext } from "../context/ProcessingContext"
-import { ThreadContext } from "../context/ThreadContext"
 import { PatternUtil } from "../utils/PatternUtil"
+import { BaseProcessor } from "./BaseProcessor"
 
-export class AttachmentProcessor {
+export class AttachmentProcessor extends BaseProcessor {
   public logger: Console = console
-  public config: Config
-  public threadContext: ThreadContext
-  public messageContext: MessageContext
 
   constructor(
-    public gmailApp: GoogleAppsScript.Gmail.GmailApp,
-    public processingContext: ProcessingContext,
+    public messageContext: MessageContext,
   ) {
-    this.config = processingContext.config
-    if (processingContext.threadContext) {
-      this.threadContext = processingContext.threadContext
-    } else {
-      throw Error("Parameter processingContext has no threadContext set!")
-    }
-    if (processingContext.messageContext) {
-      this.messageContext = processingContext.messageContext
-    } else {
-      throw Error("Parameter processingContext has no messageContext set!")
-    }
+    super()
   }
 
   public processAttachmentConfigs(attachmentConfigs: AttachmentConfig[]) {
@@ -46,14 +30,10 @@ export class AttachmentProcessor {
     )
     for (const attachment of this.messageContext.message.getAttachments()) {
       const attachmentContext = new AttachmentContext(
+        this.messageContext,
         attachmentConfig,
         attachment,
-        this.messageContext.message.getAttachments().indexOf(attachment),
-        (this.messageContext.messageConfig.handler || []).indexOf(
-          attachmentConfig,
-        ),
       )
-      this.processingContext.attachmentContext = attachmentContext
       this.processAttachment(attachmentContext)
     }
     this.logger.info(
@@ -78,12 +58,8 @@ export class AttachmentProcessor {
     // }
 
     PatternUtil.logger = this.logger
-    const dataMap = PatternUtil.buildSubstitutionMap(
-      this.threadContext.thread,
-      this.messageContext.index,
-      attachmentContext.index,
-      this.messageContext.messageConfig,
-      attachmentContext.configIndex,
+    const dataMap = PatternUtil.buildSubstitutionMapFromAttachmentContext(
+      attachmentContext,
     )
     // TODO: Implement attachment handling including dry-run
     this.logger.log("Dumping dataMap:")

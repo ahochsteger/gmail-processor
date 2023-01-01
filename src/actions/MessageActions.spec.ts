@@ -1,27 +1,21 @@
-import { Config } from "../config/Config"
 import "reflect-metadata"
 import { mock } from "jest-mock-extended"
 import { MockFactory } from "../../test/mocks/MockFactory"
 import { MessageActions } from "./MessageActions"
 import { ActionRegistry } from "./ActionRegistry"
-import { MessageConfig } from "../config/MessageConfig"
 
-function getMocks(dryRun = true, config = new Config()) {
+function getMocks(dryRun = true) {
   const mockedGmailMessage = mock<GoogleAppsScript.Gmail.GmailMessage>()
-  const md = MockFactory.newMockObjects()
-  const mockedGasContext = MockFactory.newGasContextMock(md)
-  const mockedMessageProcessor = MockFactory.newMessageProcessorMock(
-    config,
-    mockedGasContext,
-    new MessageConfig(),
+  const mockedMessageContext = MockFactory.newMessageContextMock(
+    MockFactory.newThreadContextMock(),
+    MockFactory.newDefaultMessageConfig(),
     mockedGmailMessage,
   )
+  mockedMessageContext.processingContext.config.settings.dryRun = dryRun
   const messageActions = new MessageActions(
-    mockedMessageProcessor.processingContext,
-    console,
-    dryRun,
+    mockedMessageContext,
   )
-  return { mockedGmailMessage, mockedMessageProcessor, messageActions }
+  return { mockedGmailMessage, messageActions }
 }
 
 it("should provide actions in the action registry", () => {
