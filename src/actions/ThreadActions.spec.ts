@@ -4,30 +4,32 @@ import { Config } from "../config/Config"
 import { MockFactory } from "../../test/mocks/MockFactory"
 import { plainToClass } from "class-transformer"
 import { ActionRegistry } from "./ActionRegistry"
-import { ThreadConfig } from "../config/ThreadConfig"
 import { ThreadProcessor } from "../processors/ThreadProcessor"
+import { ThreadConfig } from "../config/ThreadConfig"
 
 function getMocks(dryRun = true, config = new Config()) {
   // TODO: Simplify this
   const mockedGmailThread = mock<GoogleAppsScript.Gmail.GmailThread>()
-  const md = MockFactory.newMockObjects()
-  const mockedGasContext = MockFactory.newGasContextMock(md)
+  mockedGmailThread.markImportant.mockReturnValue(mockedGmailThread)
+  const md = MockFactory.newMockObjects(dryRun)
+  const mockedGasContext = MockFactory.newGasContextMock(md, dryRun)
   config.settings.dryRun = dryRun
   const mockedProcessingContext = MockFactory.newProcessingContextMock(
     mockedGasContext,
     config,
   )
-  const threadConfig = new ThreadConfig()
-  const mockedThreadContext = MockFactory.newThreadContextMock(
-    mockedProcessingContext,
-    threadConfig,
+  const mockedThreadContext = MockFactory.newThreadContext(
     mockedGmailThread,
+    0,
+    new ThreadConfig(),
+    config,
   )
   const mockThreadProcessor = new ThreadProcessor(mockedProcessingContext)
   const threadActions = new ThreadActions(mockedThreadContext)
   return {
     mockedGmailThread,
     mockThreadProcessor,
+    mockedThreadContext,
     threadActions,
   }
 }

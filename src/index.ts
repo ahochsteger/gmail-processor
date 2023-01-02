@@ -14,6 +14,7 @@ export function run(config: Config) {
     DriveApp,
     console,
     Utilities,
+    config.settings.dryRun,
   )
 
   const threadProcessor = new ThreadProcessor(

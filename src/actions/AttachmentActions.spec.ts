@@ -25,6 +25,7 @@ function getMocks(dryRun = true) {
           md.gdriveApp,
           md.console,
           md.utilities,
+          dryRun,
         ),
         new Config(),
       ),

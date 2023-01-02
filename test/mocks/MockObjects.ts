@@ -1,4 +1,5 @@
 import { mock } from "jest-mock-extended"
+import { GmailAdapter } from "../../src/adapter/GmailAdapter"
 
 export class MockObjects {
   public console = mock<Console>()
@@ -7,7 +8,8 @@ export class MockObjects {
   public utilities = mock<GoogleAppsScript.Utilities.Utilities>()
   public folder = mock<GoogleAppsScript.Drive.Folder>()
   public file = mock<GoogleAppsScript.Drive.File>()
-  constructor() {
+  public gmailAdapter
+  constructor(dryRun = true) {
     this.folder.getFilesByName.mockReturnValue(
       mock<GoogleAppsScript.Drive.FileIterator>(),
     )
@@ -19,5 +21,6 @@ export class MockObjects {
     this.gdriveApp.getFoldersByName.mockReturnValue(
       mock<GoogleAppsScript.Drive.FolderIterator>(),
     )
+    this.gmailAdapter = new GmailAdapter(this.console, dryRun, this.gmailApp)
   }
 }

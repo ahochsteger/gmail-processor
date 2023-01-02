@@ -1,13 +1,17 @@
-import { ConflictStrategy, GDriveAdapter } from "../adapter/GDriveAdapter"
-import { AbstractActions } from "./AbstractActions"
+import { ConflictStrategy } from "../adapter/GDriveAdapter"
+import { AbstractActions, dryRunAware } from "./AbstractActions"
 import { action, actionProvider } from "./ActionRegistry"
 import "reflect-metadata"
 import { ThreadContext } from "../context/ThreadContext"
 
 @actionProvider("thread")
 export class ThreadActions extends AbstractActions {
+  private gmailAdapter
+  private thread
   constructor(public threadContext: ThreadContext) {
     super(threadContext)
+    this.gmailAdapter = this.threadContext.gasContext.gmailAdapter
+    this.thread = this.threadContext.thread
   }
 
   @action("thread.markProcessed")
@@ -24,175 +28,81 @@ export class ThreadActions extends AbstractActions {
   }
 
   @action("thread.markImportant")
+  @dryRunAware()
   public markImportant() {
-    if (
-      this.checkDryRun(
-        `Marking thread '${this.threadContext.thread.getFirstMessageSubject()}' as important ...`,
-      )
-    )
-      return
-    this.threadContext.thread.markImportant()
+    return this.thread.markImportant()
   }
 
   @action("thread.markRead")
+  @dryRunAware()
   public markRead() {
-    if (
-      this.checkDryRun(
-        `Marking thread '${this.threadContext.thread.getFirstMessageSubject()}' as read ...`,
-      )
-    )
-      return
-    this.threadContext.thread.markRead()
+    return this.thread.markRead()
   }
 
   @action("thread.markUnimportant")
+  @dryRunAware()
   public markUnimportant() {
-    if (
-      this.checkDryRun(
-        `Marking thread '${this.threadContext.thread.getFirstMessageSubject()}' as unimportant ...`,
-      )
-    )
-      return
-    this.threadContext.thread.markUnimportant()
+    return this.threadContext.thread.markUnimportant()
   }
 
   @action("thread.markUnread")
+  @dryRunAware()
   public markUnread() {
-    if (
-      this.checkDryRun(
-        `Marking thread '${this.threadContext.thread.getFirstMessageSubject()}' as unread ...`,
-      )
-    )
-      return
-    this.threadContext.thread.markUnread()
+    return this.thread.markUnread()
   }
 
   @action("thread.moveToArchive")
+  @dryRunAware()
   public moveToArchive() {
-    if (
-      this.checkDryRun(
-        `Moving thread '${this.threadContext.thread.getFirstMessageSubject()}' to archive ...`,
-      )
-    )
-      return
-    this.threadContext.thread.moveToArchive()
+    return this.thread.moveToArchive()
   }
 
   @action("thread.moveToInbox")
+  @dryRunAware()
   public moveToInbox() {
-    if (
-      this.checkDryRun(
-        `Moving thread '${this.threadContext.thread.getFirstMessageSubject()}' to inbox ...`,
-      )
-    )
-      return
-    this.threadContext.thread.moveToInbox()
+    return this.thread.moveToInbox()
   }
 
   @action("thread.moveToSpam")
+  @dryRunAware()
   public moveToSpam() {
-    if (
-      this.checkDryRun(
-        `Moving thread '${this.threadContext.thread.getFirstMessageSubject()}' to spam ...`,
-      )
-    )
-      return
-    this.threadContext.thread.moveToSpam()
+    return this.thread.moveToSpam()
   }
 
   @action("thread.moveToTrash")
+  @dryRunAware()
   public moveToTrash() {
-    if (
-      this.checkDryRun(
-        `Moving thread '${this.threadContext.thread.getFirstMessageSubject()}' to trash ...`,
-      )
-    )
-      return
-    this.threadContext.thread.moveToTrash()
+    return this.thread.moveToTrash()
   }
 
   @action("thread.addLabel")
+  @dryRunAware()
   public addLabel(labelName: string) {
-    if (
-      this.checkDryRun(
-        `Adding label '${labelName}' to thread '${this.threadContext.thread.getFirstMessageSubject()}' ...`,
-      )
-    )
-      return
-    if (labelName !== "") {
-      const label =
-        this.processingContext.gasContext.gmailApp.getUserLabelByName(labelName)
-      this.threadContext.thread.addLabel(label)
-    }
+    this.gmailAdapter.threadAddLabel(this.thread, labelName)
   }
 
   @action("thread.removeLabel")
+  @dryRunAware()
   public removeLabel(labelName: string) {
-    if (
-      this.checkDryRun(
-        `Removing label '${labelName}' from thread '${this.threadContext.thread.getFirstMessageSubject()}' ...`,
-      )
-    )
-      return
-    if (labelName !== "") {
-      const label =
-        this.processingContext.gasContext.gmailApp.getUserLabelByName(labelName)
-      this.threadContext.thread.removeLabel(label)
-    }
-  }
-
-  /**
-   * Generate HTML code for one message of a thread.
-   */
-  private processThreadToHtml(thread: GoogleAppsScript.Gmail.GmailThread) {
-    this.logger.info(
-      "  Generating HTML code of thread '" +
-        thread.getFirstMessageSubject() +
-        "'",
-    )
-    const messages = thread.getMessages()
-    let html = ""
-    for (const message of messages) {
-      html += "From: " + message.getFrom() + "<br />\n"
-      html += "To: " + message.getTo() + "<br />\n"
-      html += "Date: " + message.getDate() + "<br />\n"
-      html += "Subject: " + message.getSubject() + "<br />\n"
-      html += "<hr />\n"
-      html += message.getBody() + "\n"
-      html += "<hr />\n"
-    }
-    return html
+    return this.gmailAdapter.threadRemoveLabel(this.thread, labelName)
   }
 
   /**
    * Generate a PDF document for the whole thread using HTML from .
    */
   @action("thread.storeAsPdfToGDrive")
+  @dryRunAware()
   public storeAsPdfToGDrive(
     gdriveApp: GoogleAppsScript.Drive.DriveApp,
     location: string,
     conflictStrategy: ConflictStrategy,
   ) {
-    const html = this.processThreadToHtml(this.threadContext.thread)
-    const htmlBlob = Utilities.newBlob(html, "text/html")
-    const gdriveAdapter: GDriveAdapter = new GDriveAdapter(
-      this.logger,
-      this.processingContext.config.settings.dryRun,
-      gdriveApp,
-    ) // TODO: Don't instanciate here - get from context
-    if (
-      this.checkDryRun(
-        `Saving PDF copy of thread '${this.threadContext.thread.getFirstMessageSubject()}' to '${location}' ...`,
-      )
-    )
-      return
-    const pdfFile = gdriveAdapter.createFile(
+    return this.processingContext.gasContext.gdriveAdapter.createFile(
       location,
-      htmlBlob.getAs("application/pdf").getDataAsString(),
+      this.gmailAdapter.threadAsPdf(this.threadContext.thread),
       "application/pdf",
       "",
       conflictStrategy,
     )
-    return pdfFile
   }
 }

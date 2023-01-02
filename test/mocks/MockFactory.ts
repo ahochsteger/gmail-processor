@@ -12,18 +12,20 @@ import { MessageContext } from "../../src/context/MessageContext"
 import { AttachmentConfig } from "../../src/config/AttachmentConfig"
 import { AttachmentContext } from "../../src/context/AttachmentContext"
 import { ThreadConfig } from "../../src/config/ThreadConfig"
+import { deprecated } from "../../src/utils/Decorators"
 
 export class MockFactory {
-  public static newMockObjects() {
-    return new MockObjects()
+  public static newMockObjects(dryRun = true) {
+    return new MockObjects(dryRun)
   }
 
-  public static newGasContextMock(md = new MockObjects()) {
+  public static newGasContextMock(md = new MockObjects(), dryRun = true) {
     const gasContext: GoogleAppsScriptContext = new GoogleAppsScriptContext(
       md.gmailApp,
       md.gdriveApp,
       md.console,
       md.utilities,
+      dryRun,
     )
     return gasContext
   }
@@ -231,6 +233,7 @@ export class MockFactory {
     return gmailProcessor
   }
 
+  @deprecated("Use newThreadContext() instead!")
   public static newThreadContextMock(
     processingContext = this.newProcessingContextMock(),
     threadConfig = this.newDefaultThreadConfig(),
@@ -239,6 +242,7 @@ export class MockFactory {
     return new ThreadContext(processingContext, threadConfig, thread)
   }
 
+  @deprecated("Use newMessageContext() instead!")
   public static newMessageContextMock(
     threadContext = this.newThreadContextMock(),
     messageConfig = new MessageConfig(),
