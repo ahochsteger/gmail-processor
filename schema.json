@@ -229,11 +229,6 @@
     "SettingsConfig": {
       "description": "Represents a settings config that affect the way GMail2GDrive works.",
       "properties": {
-        "dryRun": {
-          "default": false,
-          "description": "Just show what would have been done but don't write anything to GMail or GDrive.",
-          "type": "boolean"
-        },
         "maxBatchSize": {
           "default": 10,
           "description": "The maximum batch size of threads to process in a single run to respect Google processing limits",
