@@ -9,6 +9,10 @@ export class ThreadContext extends ProcessingContext {
     public threadConfigIndex = 0,
     public threadIndex = 0,
   ) {
-    super(processingContext.gasContext, processingContext.config, processingContext.dryRun)
+    super(
+      processingContext.gasContext,
+      processingContext.config,
+      processingContext.dryRun,
+    )
   }
 }

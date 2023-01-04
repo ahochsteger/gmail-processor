@@ -42,10 +42,7 @@ export class ActionRegistry {
 
   public static addProvider(
     providerName: string,
-    constructor: (
-      context: ProcessingContext,
-      logger: Console,
-    ) => ActionType,
+    constructor: (context: ProcessingContext, logger: Console) => ActionType,
   ) {
     const map = ActionRegistry.getProviderMap()
     map[providerName] = constructor
@@ -86,10 +83,7 @@ export class ActionRegistry {
   }
 
   public static getProviderMap(): {
-    [k: string]: (
-      context: ProcessingContext,
-      logger: Console,
-    ) => ActionType
+    [k: string]: (context: ProcessingContext, logger: Console) => ActionType
   } {
     return ActionRegistry.getMeta("actionProviderMap", {})
   }
@@ -112,10 +106,7 @@ export function action(value = ""): any {
 
 export function actionProvider(value = ""): any {
   return function (
-    constructor: (
-      context: ProcessingContext,
-      logger: Console,
-    ) => ActionType,
+    constructor: (context: ProcessingContext, logger: Console) => ActionType,
   ) {
     ActionRegistry.addProvider(value, constructor)
   }

@@ -6,6 +6,8 @@ export interface ActionProvider {
 export abstract class AbstractActions implements ActionProvider {
   public logger: Console
   constructor(protected processingContext: ProcessingContext) {
-    this.logger = processingContext.gasContext.logger ? processingContext.gasContext.logger : console
+    this.logger = processingContext.gasContext.logger
+      ? processingContext.gasContext.logger
+      : console
   }
 }

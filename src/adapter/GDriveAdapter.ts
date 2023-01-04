@@ -11,9 +11,7 @@ export enum ConflictStrategy {
 
 export class GDriveAdapter extends BaseAdapter {
   private gdriveApp: GoogleAppsScript.Drive.DriveApp
-  constructor(
-    public processingContext: ProcessingContext,
-  ) {
+  constructor(public processingContext: ProcessingContext) {
     super(processingContext)
     this.gdriveApp = processingContext.gasContext.gdriveApp
   }
@@ -130,7 +128,9 @@ export class GDriveAdapter extends BaseAdapter {
     conflictStrategy: ConflictStrategy,
     description: string,
   ) {
-    this.logger.info(`Storing attachment '${attachment.getName()}' to '${location}' ...`)
+    this.logger.info(
+      `Storing attachment '${attachment.getName()}' to '${location}' ...`,
+    )
     const file = this.createFile(
       location,
       attachment.getDataAsString(),

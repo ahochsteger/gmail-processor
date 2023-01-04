@@ -1,5 +1,5 @@
 export class GoogleAppsScriptContext {
-constructor(
+  constructor(
     public gmailApp: GoogleAppsScript.Gmail.GmailApp,
     public gdriveApp: GoogleAppsScript.Drive.DriveApp,
     public logger: Console,

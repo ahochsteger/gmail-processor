@@ -7,11 +7,11 @@ import { V1Config } from "./config/v1/V1Config"
 import { V1ToV2Converter } from "./config/v1/V1ToV2Converter"
 import { plainToClass } from "class-transformer"
 
-  /**
-   * @param config GMail2GDrive configuration
-   * @param dryRun Just show what would have been done but don't write anything to GMail or GDrive.
-   */
-  export function run(config: Config, dryRun = false) {
+/**
+ * @param config GMail2GDrive configuration
+ * @param dryRun Just show what would have been done but don't write anything to GMail or GDrive.
+ */
+export function run(config: Config, dryRun = false) {
   const gasContext: GoogleAppsScriptContext = new GoogleAppsScriptContext(
     GmailApp,
     DriveApp,

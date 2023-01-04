@@ -4,31 +4,26 @@ import { BaseAdapter } from "./BaseAdapter"
 
 export class GmailAdapter extends BaseAdapter {
   private gmailApp: GoogleAppsScript.Gmail.GmailApp
-  constructor(
-    public processingContext: ProcessingContext,
-  ) {
+  constructor(public processingContext: ProcessingContext) {
     super(processingContext)
     this.gmailApp = processingContext.gasContext.gmailApp
   }
 
   // TODO: Maybe move to a utility class - is not Gmail-specific
-  public convertHtmlToPdf(
-    html: string,
-  ): string {
+  public convertHtmlToPdf(html: string): string {
     const htmlBlob = Utilities.newBlob(html, "text/html")
     return htmlBlob.getAs("application/pdf").getDataAsString()
   }
 
-  public messageAsHtml(
-    message: GoogleAppsScript.Gmail.GmailMessage,
-  ): string {
-    const html = "From: " + message.getFrom() + "<br />\n"
-      + "To: " + message.getTo() + "<br />\n"
-      + "Date: " + message.getDate() + "<br />\n"
-      + "Subject: " + message.getSubject() + "<br />\n"
-      + "<hr />\n"
-      + message.getBody() + "\n"
-      + "<hr />\n"
+  public messageAsHtml(message: GoogleAppsScript.Gmail.GmailMessage): string {
+    const html = `From: ${message.getFrom()}<br />
+To: ${message.getTo()}<br />
+Date: ${message.getDate()}<br />
+Subject: ${message.getSubject()}<br />
+<hr />
+${message.getBody()}
+<hr />
+`
     return html
   }
 
@@ -41,7 +36,9 @@ export class GmailAdapter extends BaseAdapter {
     message: GoogleAppsScript.Gmail.GmailMessage,
     to: string,
   ) {
-    this.logger.info(`Forwarding message '${message.getSubject()}' to '${to}' ...`)
+    this.logger.info(
+      `Forwarding message '${message.getSubject()}' to '${to}' ...`,
+    )
     return message.forward(to)
   }
 
@@ -71,19 +68,19 @@ export class GmailAdapter extends BaseAdapter {
 
   @skipOnDryRun()
   public messageUnstar(message: GoogleAppsScript.Gmail.GmailMessage) {
-    this.logger.info(`Marking message '${message.getSubject()}' as unstarred ...`)
+    this.logger.info(
+      `Marking message '${message.getSubject()}' as unstarred ...`,
+    )
     return message.unstar()
   }
-
 
   @skipOnDryRun()
   public threadAddLabel(
     thread: GoogleAppsScript.Gmail.GmailThread,
-    labelName: string
+    labelName: string,
   ) {
     if (labelName !== "") {
-      const label =
-        this.gmailApp.getUserLabelByName(labelName)
+      const label = this.gmailApp.getUserLabelByName(labelName)
       this.logger.info(
         `Adding label '${labelName}' to thread '${thread.getFirstMessageSubject()}' ...`,
       )
@@ -94,11 +91,10 @@ export class GmailAdapter extends BaseAdapter {
   @skipOnDryRun()
   public threadRemoveLabel(
     thread: GoogleAppsScript.Gmail.GmailThread,
-    labelName: string
+    labelName: string,
   ) {
     if (labelName !== "") {
-      const label =
-        this.gmailApp.getUserLabelByName(labelName)
+      const label = this.gmailApp.getUserLabelByName(labelName)
       this.logger.info(
         `Removing label '${labelName}' from thread '${thread.getFirstMessageSubject()}' ...`,
       )
@@ -129,50 +125,65 @@ export class GmailAdapter extends BaseAdapter {
 
   @skipOnDryRun()
   public threadMarkImportant(thread: GoogleAppsScript.Gmail.GmailThread) {
-    this.logger.info(`Marking thread '${thread.getFirstMessageSubject()}' as important ...`)
+    this.logger.info(
+      `Marking thread '${thread.getFirstMessageSubject()}' as important ...`,
+    )
     return thread.markImportant()
   }
 
   @skipOnDryRun()
   public threadMarkRead(thread: GoogleAppsScript.Gmail.GmailThread) {
-    this.logger.info(`Marking thread '${thread.getFirstMessageSubject()}' as read ...`)
+    this.logger.info(
+      `Marking thread '${thread.getFirstMessageSubject()}' as read ...`,
+    )
     return thread.markRead()
   }
 
   @skipOnDryRun()
   public threadMarkUnimportant(thread: GoogleAppsScript.Gmail.GmailThread) {
-    this.logger.info(`Marking thread '${thread.getFirstMessageSubject()}' as unimportant ...`)
+    this.logger.info(
+      `Marking thread '${thread.getFirstMessageSubject()}' as unimportant ...`,
+    )
     return thread.markUnimportant()
   }
 
   @skipOnDryRun()
   public threadMarkUnread(thread: GoogleAppsScript.Gmail.GmailThread) {
-    this.logger.info(`Marking thread '${thread.getFirstMessageSubject()}' as unread ...`)
+    this.logger.info(
+      `Marking thread '${thread.getFirstMessageSubject()}' as unread ...`,
+    )
     return thread.markUnread()
   }
 
   @skipOnDryRun()
   public threadMoveToArchive(thread: GoogleAppsScript.Gmail.GmailThread) {
-    this.logger.info(`Moving thread '${thread.getFirstMessageSubject()}' to archive ...`)
+    this.logger.info(
+      `Moving thread '${thread.getFirstMessageSubject()}' to archive ...`,
+    )
     return thread.moveToArchive()
   }
 
   @skipOnDryRun()
   public threadMoveToInbox(thread: GoogleAppsScript.Gmail.GmailThread) {
-    this.logger.info(`Moving thread '${thread.getFirstMessageSubject()}' to inbox ...`)
+    this.logger.info(
+      `Moving thread '${thread.getFirstMessageSubject()}' to inbox ...`,
+    )
     return thread.moveToInbox()
   }
 
   @skipOnDryRun()
   public threadMoveToSpam(thread: GoogleAppsScript.Gmail.GmailThread) {
-    this.logger.info(`Moving thread '${thread.getFirstMessageSubject()}' to spam ...`)
+    this.logger.info(
+      `Moving thread '${thread.getFirstMessageSubject()}' to spam ...`,
+    )
     return thread.moveToSpam()
   }
 
   @skipOnDryRun()
   public threadMoveToTrash(thread: GoogleAppsScript.Gmail.GmailThread) {
-    this.logger.info(`Moving thread '${thread.getFirstMessageSubject()}' to trash ...`)
+    this.logger.info(
+      `Moving thread '${thread.getFirstMessageSubject()}' to trash ...`,
+    )
     return thread.moveToTrash()
   }
-
 }
