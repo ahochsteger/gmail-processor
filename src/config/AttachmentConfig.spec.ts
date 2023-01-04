@@ -1,7 +1,6 @@
 import { plainToClass } from "class-transformer"
 import { MockFactory } from "../../test/mocks/MockFactory"
 import { AttachmentConfig } from "./AttachmentConfig"
-import "reflect-metadata"
 
 it("should expect a JSON config", () => {
   const attachmentConfig = plainToClass(

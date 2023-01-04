@@ -1,7 +1,6 @@
 import { Type } from "class-transformer"
 import { ActionConfig } from "./ActionConfig"
 import { AttachmentMatchConfig } from "./AttachmentMatchConfig"
-import "reflect-metadata"
 
 /**
  * Represents a config to handle a certain GMail attachment

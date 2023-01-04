@@ -1,5 +1,5 @@
-import { ProcessingContext } from "../context/ProcessingContext"
 import "reflect-metadata"
+import { ProcessingContext } from "../context/ProcessingContext"
 import { AbstractActions } from "./AbstractActions"
 
 export type ActionArgType = boolean | number | string
@@ -13,13 +13,12 @@ export class ActionRegistry {
   constructor(
     protected context: ProcessingContext,
     protected logger: Console = console,
-    protected dryRun = false,
   ) {
     // TODO: This introduces a circular dependency!
     // const providerMap = new Map<string,AbstractActions>()
-    // providerMap.set("thread", new ThreadActions(context, logger, dryRun))
-    // providerMap.set("message", new MessageActions(context, logger, dryRun))
-    // providerMap.set("attachment", new AttachmentActions(context, logger, dryRun))
+    // providerMap.set("thread", new ThreadActions(context, logger))
+    // providerMap.set("message", new MessageActions(context, logger))
+    // providerMap.set("attachment", new AttachmentActions(context, logger))
   }
 
   private static getMeta(key: string, defaultValue: any): any {
@@ -46,7 +45,6 @@ export class ActionRegistry {
     constructor: (
       context: ProcessingContext,
       logger: Console,
-      dryRun: boolean,
     ) => ActionType,
   ) {
     const map = ActionRegistry.getProviderMap()
@@ -91,7 +89,6 @@ export class ActionRegistry {
     [k: string]: (
       context: ProcessingContext,
       logger: Console,
-      dryRun: boolean,
     ) => ActionType
   } {
     return ActionRegistry.getMeta("actionProviderMap", {})
@@ -118,7 +115,6 @@ export function actionProvider(value = ""): any {
     constructor: (
       context: ProcessingContext,
       logger: Console,
-      dryRun: boolean,
     ) => ActionType,
   ) {
     ActionRegistry.addProvider(value, constructor)

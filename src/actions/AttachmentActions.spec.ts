@@ -1,4 +1,3 @@
-import "reflect-metadata"
 import { MockFactory } from "../../test/mocks/MockFactory"
 import { ActionRegistry } from "./ActionRegistry"
 import { AttachmentActions } from "./AttachmentActions"
@@ -25,9 +24,9 @@ function getMocks(dryRun = true) {
           md.gdriveApp,
           md.console,
           md.utilities,
-          dryRun,
         ),
         new Config(),
+        dryRun,
       ),
       new ThreadConfig(),
       MockFactory.newThreadMock(),
@@ -43,7 +42,6 @@ function getMocks(dryRun = true) {
     new AttachmentConfig(),
     mockedGmailAttachment,
   )
-  attachmentContext.processingContext.config.settings.dryRun = dryRun
   const attachmentActions = new AttachmentActions(attachmentContext)
   return {
     mockedGmailAttachment,

@@ -2,7 +2,6 @@ import { Type } from "class-transformer"
 import { ActionConfig } from "./ActionConfig"
 import { AttachmentConfig } from "./AttachmentConfig"
 import { MessageMatchConfig } from "./MessageMatchConfig"
-import "reflect-metadata"
 
 /**
  * Represents a config to handle a certain GMail message

@@ -22,11 +22,12 @@ export class GmailProcessor {
     this.logger = logger
   }
 
-  public run() {
+  public run(dryRun = false) {
     this.logger.info("Processing of GMail2GDrive config started ...")
     const processingContext = new ProcessingContext(
       this.gasContext,
       this.config,
+      dryRun,
     )
     const threadProcessor = new ThreadProcessor(processingContext)
     threadProcessor.logger = this.logger

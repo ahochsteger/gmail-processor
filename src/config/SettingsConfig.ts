@@ -3,10 +3,6 @@
  */
 export class SettingsConfig {
   /**
-   * Just show what would have been done but don't write anything to GMail or GDrive.
-   */
-  dryRun = false
-  /**
    * The maximum batch size of threads to process in a single run to respect Google processing limits
    */
   maxBatchSize = 10

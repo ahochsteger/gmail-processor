@@ -1,4 +1,3 @@
-import "reflect-metadata"
 import { AbstractActions } from "./AbstractActions"
 import { action, actionProvider } from "./ActionRegistry"
 import { MessageContext } from "../context/MessageContext"
@@ -10,7 +9,7 @@ export class MessageActions extends AbstractActions {
   private message: GoogleAppsScript.Gmail.GmailMessage
   constructor(protected messageContext: MessageContext) {
     super(messageContext)
-    this.gmailAdapter = messageContext.gasContext.gmailAdapter
+    this.gmailAdapter = messageContext.gmailAdapter
     this.message = messageContext.message
   }
 

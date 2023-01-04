@@ -15,17 +15,16 @@ import { ThreadConfig } from "../../src/config/ThreadConfig"
 import { deprecated } from "../../src/utils/Decorators"
 
 export class MockFactory {
-  public static newMockObjects(dryRun = true) {
-    return new MockObjects(dryRun)
+  public static newMockObjects() {
+    return new MockObjects()
   }
 
-  public static newGasContextMock(md = new MockObjects(), dryRun = true) {
+  public static newGasContextMock(md = new MockObjects()) {
     const gasContext: GoogleAppsScriptContext = new GoogleAppsScriptContext(
       md.gmailApp,
       md.gdriveApp,
       md.console,
       md.utilities,
-      dryRun,
     )
     return gasContext
   }
@@ -213,16 +212,18 @@ export class MockFactory {
   public static newProcessingContextMock(
     gasContext = this.newGasContextMock(),
     config = new Config(),
+    dryRun = true,
   ) {
-    return new ProcessingContext(gasContext, config)
+    return new ProcessingContext(gasContext, config, dryRun)
   }
 
   public static newGmailProcessorMock(
     config: Config,
     gasContext = MockFactory.newGasContextMock(),
+    dryRun = true,
   ) {
     const threadProcessor = new ThreadProcessor(
-      new ProcessingContext(gasContext, config),
+      new ProcessingContext(gasContext, config, dryRun),
     )
     const gmailProcessor = new GmailProcessor(
       gasContext,
@@ -423,11 +424,12 @@ export class MockFactory {
     threadIndex = 0,
     threadConfig = new ThreadConfig(),
     config = new Config(),
+    dryRun = true,
   ) {
     config.handler.push(threadConfig)
 
     const ctx = new ThreadContext(
-      new ProcessingContext(MockFactory.newGasContextMock(), config),
+      new ProcessingContext(MockFactory.newGasContextMock(), config, dryRun),
       threadConfig,
       thread,
     )

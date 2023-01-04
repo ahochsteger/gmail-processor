@@ -14,7 +14,7 @@ export function skipOnDryRun() {
   return function<T extends Adapter>(target: T, propertyKey: string, descriptor: PropertyDescriptor) {
     const originalMethod = descriptor.value;
     descriptor.value = function(this: T, ...args: any[]) {
-      if (this.dryRun) {
+      if (this.processingContext.dryRun) {
         this.logger.info(`Skipped calling method '${propertyKey}'`);
         return;
       } else {

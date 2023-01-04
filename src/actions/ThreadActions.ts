@@ -1,4 +1,3 @@
-import "reflect-metadata"
 import { ConflictStrategy } from "../adapter/GDriveAdapter"
 import { AbstractActions } from "./AbstractActions"
 import { action, actionProvider } from "./ActionRegistry"
@@ -11,7 +10,7 @@ export class ThreadActions extends AbstractActions {
   private thread: GoogleAppsScript.Gmail.GmailThread
   constructor(public threadContext: ThreadContext) {
     super(threadContext)
-    this.gmailAdapter = threadContext.gasContext.gmailAdapter
+    this.gmailAdapter = threadContext.gmailAdapter
     this.thread = threadContext.thread
   }
 
@@ -81,7 +80,7 @@ export class ThreadActions extends AbstractActions {
     location: string,
     conflictStrategy: ConflictStrategy,
   ) {
-    return this.processingContext.gasContext.gdriveAdapter.createFile(
+    return this.processingContext.gdriveAdapter.createFile(
       location,
       this.gmailAdapter.threadAsPdf(this.threadContext.thread),
       "application/pdf",

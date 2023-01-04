@@ -1,4 +1,3 @@
-import "reflect-metadata"
 import { ConflictStrategy } from "../adapter/GDriveAdapter"
 import { AbstractActions } from "./AbstractActions"
 import { action, actionProvider } from "./ActionRegistry"
@@ -16,7 +15,7 @@ export class AttachmentActions extends AbstractActions {
     conflictStrategy: ConflictStrategy,
     description: string,
   ) {
-    return this.processingContext.gasContext.gdriveAdapter.storeAttachment(
+    return this.processingContext.gdriveAdapter.storeAttachment(
       this.attachmentContext.attachment,
       location,
       conflictStrategy,

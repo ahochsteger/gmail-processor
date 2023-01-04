@@ -2,7 +2,6 @@ import { Type } from "class-transformer"
 import { ActionConfig } from "./ActionConfig"
 import { MessageConfig } from "./MessageConfig"
 import { ThreadMatchConfig } from "./ThreadMatchConfig"
-import "reflect-metadata"
 
 /**
  * Represents a config handle a certain GMail thread
