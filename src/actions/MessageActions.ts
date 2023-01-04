@@ -1,90 +1,53 @@
+import "reflect-metadata"
 import { AbstractActions } from "./AbstractActions"
 import { action, actionProvider } from "./ActionRegistry"
-import "reflect-metadata"
 import { MessageContext } from "../context/MessageContext"
+import { GmailAdapter } from "../adapter/GmailAdapter"
 
 @actionProvider("message")
 export class MessageActions extends AbstractActions {
+  private gmailAdapter: GmailAdapter
+  private message: GoogleAppsScript.Gmail.GmailMessage
   constructor(protected messageContext: MessageContext) {
     super(messageContext)
+    this.gmailAdapter = messageContext.gasContext.gmailAdapter
+    this.message = messageContext.message
   }
 
   @action("message.forward")
   public forward(to: string) {
-    if (
-      this.checkDryRun(
-        `Forwarding message '${this.messageContext.message.getSubject()}' to '${to}' ...`,
-      )
-    )
-      return
-    this.messageContext.message.forward(to)
+    this.gmailAdapter.messageForward(this.message, to)
   }
 
   @action("message.markProcessed")
   public markProcessed() {
     if (this.processingContext.config.settings.processedMode == "read") {
-      if (
-        this.checkDryRun(
-          `Marking message '${this.messageContext.message.getSubject()}' as processed ...`,
-        )
-      )
-        return
-      this.messageContext.message.markRead()
+      this.gmailAdapter.messageMarkRead(this.message)
     }
   }
 
   @action("message.markRead")
   public markRead() {
-    if (
-      this.checkDryRun(
-        `Marking message '${this.messageContext.message.getSubject()}' as read ...`,
-      )
-    )
-      return
-    this.messageContext.message.markRead()
+    this.gmailAdapter.messageMarkRead(this.message)
   }
 
   @action("message.markUnread")
   public markUnread() {
-    if (
-      this.checkDryRun(
-        `Marking message '${this.messageContext.message.getSubject()}' as unread ...`,
-      )
-    )
-      return
-    this.messageContext.message.markUnread()
+    this.gmailAdapter.messageMarkUnread(this.message)
   }
 
   @action("message.moveToTrash")
   public moveToTrash() {
-    if (
-      this.checkDryRun(
-        `Moving message '${this.messageContext.message.getSubject()}' to trash ...`,
-      )
-    )
-      return
-    this.messageContext.message.moveToTrash()
+    this.gmailAdapter.messageMoveToTrash(this.message)
   }
 
   @action("message.star")
   public star() {
-    if (
-      this.checkDryRun(
-        `Marking message '${this.messageContext.message.getSubject()}' as starred ...`,
-      )
-    )
-      return
-    this.messageContext.message.star()
+    this.gmailAdapter.messageStar(this.message)
   }
 
   @action("message.unstar")
   public unstar() {
-    if (
-      this.checkDryRun(
-        `Marking message '${this.messageContext.message.getSubject()}' as unstarred ...`,
-      )
-    )
-      return
-    this.messageContext.message.unstar()
+    this.gmailAdapter.messageUnstar(this.message)
   }
 }

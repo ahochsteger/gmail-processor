@@ -1,7 +1,7 @@
-import { ConflictStrategy, GDriveAdapter } from "../adapter/GDriveAdapter"
+import "reflect-metadata"
+import { ConflictStrategy } from "../adapter/GDriveAdapter"
 import { AbstractActions } from "./AbstractActions"
 import { action, actionProvider } from "./ActionRegistry"
-import "reflect-metadata"
 import { AttachmentContext } from "../context/AttachmentContext"
 
 @actionProvider("attachment")
@@ -16,23 +16,11 @@ export class AttachmentActions extends AbstractActions {
     conflictStrategy: ConflictStrategy,
     description: string,
   ) {
-    const gdriveAdapter = new GDriveAdapter(
-      this.logger,
-      this.processingContext.config.settings.dryRun,
-      this.processingContext.gasContext.gdriveApp,
-    )
-    if (
-      this.checkDryRun(
-        `Storing attachment '${this.attachmentContext.attachment.getName()}' to '${location}' ...`,
-      )
-    )
-      return
-    const file = gdriveAdapter.storeAttachment(
+    return this.processingContext.gasContext.gdriveAdapter.storeAttachment(
       this.attachmentContext.attachment,
       location,
       conflictStrategy,
       description,
     )
-    return file
   }
 }

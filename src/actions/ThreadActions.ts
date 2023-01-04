@@ -1,88 +1,73 @@
-import { ConflictStrategy } from "../adapter/GDriveAdapter"
-import { AbstractActions, dryRunAware } from "./AbstractActions"
-import { action, actionProvider } from "./ActionRegistry"
 import "reflect-metadata"
+import { ConflictStrategy } from "../adapter/GDriveAdapter"
+import { AbstractActions } from "./AbstractActions"
+import { action, actionProvider } from "./ActionRegistry"
 import { ThreadContext } from "../context/ThreadContext"
+import { GmailAdapter } from "../adapter/GmailAdapter"
 
 @actionProvider("thread")
 export class ThreadActions extends AbstractActions {
-  private gmailAdapter
-  private thread
+  private gmailAdapter: GmailAdapter
+  private thread: GoogleAppsScript.Gmail.GmailThread
   constructor(public threadContext: ThreadContext) {
     super(threadContext)
-    this.gmailAdapter = this.threadContext.gasContext.gmailAdapter
-    this.thread = this.threadContext.thread
+    this.gmailAdapter = threadContext.gasContext.gmailAdapter
+    this.thread = threadContext.thread
   }
 
   @action("thread.markProcessed")
   public markProcessed() {
     if (this.processingContext.config.settings.processedMode == "label") {
-      if (
-        this.checkDryRun(
-          `Marking thread '${this.threadContext.thread.getFirstMessageSubject()}' as processed ...`,
-        )
-      )
-        return
       this.addLabel(this.processingContext.config.settings.processedLabel)
     }
   }
 
   @action("thread.markImportant")
-  @dryRunAware()
   public markImportant() {
-    return this.thread.markImportant()
+    return this.gmailAdapter.threadMarkImportant(this.thread)
   }
 
   @action("thread.markRead")
-  @dryRunAware()
   public markRead() {
-    return this.thread.markRead()
+    return this.gmailAdapter.threadMarkRead(this.thread)
   }
 
   @action("thread.markUnimportant")
-  @dryRunAware()
   public markUnimportant() {
-    return this.threadContext.thread.markUnimportant()
+    return this.gmailAdapter.threadMarkUnimportant(this.thread)
   }
 
   @action("thread.markUnread")
-  @dryRunAware()
   public markUnread() {
-    return this.thread.markUnread()
+    return this.gmailAdapter.threadMarkUnread(this.thread)
   }
 
   @action("thread.moveToArchive")
-  @dryRunAware()
   public moveToArchive() {
-    return this.thread.moveToArchive()
+    return this.gmailAdapter.threadMoveToArchive(this.thread)
   }
 
   @action("thread.moveToInbox")
-  @dryRunAware()
   public moveToInbox() {
-    return this.thread.moveToInbox()
+    return this.gmailAdapter.threadMoveToInbox(this.thread)
   }
 
   @action("thread.moveToSpam")
-  @dryRunAware()
   public moveToSpam() {
-    return this.thread.moveToSpam()
+    return this.gmailAdapter.threadMoveToSpam(this.thread)
   }
 
   @action("thread.moveToTrash")
-  @dryRunAware()
   public moveToTrash() {
-    return this.thread.moveToTrash()
+    return this.gmailAdapter.threadMoveToTrash(this.thread)
   }
 
   @action("thread.addLabel")
-  @dryRunAware()
   public addLabel(labelName: string) {
-    this.gmailAdapter.threadAddLabel(this.thread, labelName)
+    return this.gmailAdapter.threadAddLabel(this.thread, labelName)
   }
 
   @action("thread.removeLabel")
-  @dryRunAware()
   public removeLabel(labelName: string) {
     return this.gmailAdapter.threadRemoveLabel(this.thread, labelName)
   }
@@ -91,7 +76,6 @@ export class ThreadActions extends AbstractActions {
    * Generate a PDF document for the whole thread using HTML from .
    */
   @action("thread.storeAsPdfToGDrive")
-  @dryRunAware()
   public storeAsPdfToGDrive(
     gdriveApp: GoogleAppsScript.Drive.DriveApp,
     location: string,

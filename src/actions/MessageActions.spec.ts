@@ -3,11 +3,21 @@ import { mock } from "jest-mock-extended"
 import { MockFactory } from "../../test/mocks/MockFactory"
 import { MessageActions } from "./MessageActions"
 import { ActionRegistry } from "./ActionRegistry"
+import { Config } from "../config/Config"
 
-function getMocks(dryRun = true) {
+function getMocks(dryRun = true, config = new Config()) {
+  // TODO: Simplify this
   const mockedGmailMessage = mock<GoogleAppsScript.Gmail.GmailMessage>()
+  mockedGmailMessage.forward.mockReturnValue(mockedGmailMessage)
+  const md = MockFactory.newMockObjects(dryRun)
+  const mockedGasContext = MockFactory.newGasContextMock(md, dryRun)
+  config.settings.dryRun = dryRun
+  const mockedProcessingContext = MockFactory.newProcessingContextMock(
+    mockedGasContext,
+    config,
+  )
   const mockedMessageContext = MockFactory.newMessageContextMock(
-    MockFactory.newThreadContextMock(),
+    MockFactory.newThreadContextMock(mockedProcessingContext),
     MockFactory.newDefaultMessageConfig(),
     mockedGmailMessage,
   )

@@ -1,3 +1,5 @@
+import { ProcessingContext } from "../context/ProcessingContext"
+import { skipOnDryRun } from "../utils/Decorators"
 import { BaseAdapter } from "./BaseAdapter"
 
 export enum ConflictStrategy {
@@ -8,12 +10,12 @@ export enum ConflictStrategy {
 }
 
 export class GDriveAdapter extends BaseAdapter {
+  private gdriveApp: GoogleAppsScript.Drive.DriveApp
   constructor(
-    public logger: Console = console,
-    public dryRun: boolean = false,
-    public driveApp: GoogleAppsScript.Drive.DriveApp,
+    public processingContext: ProcessingContext,
   ) {
-    super(logger, dryRun)
+    super(processingContext)
+    this.gdriveApp = processingContext.gasContext.gdriveApp
   }
 
   // TODO: Continue here!!!
@@ -31,7 +33,7 @@ export class GDriveAdapter extends BaseAdapter {
       parts.shift()
     } // Did path start at root, '/'?
 
-    let folder = this.driveApp.getRootFolder()
+    let folder = this.gdriveApp.getRootFolder()
     // for (let i = 0; i < parts.length; i++) {
     for (const subfolder of parts) {
       const result = folder.getFoldersByName(subfolder)
@@ -55,6 +57,7 @@ export class GDriveAdapter extends BaseAdapter {
    * @param description The description of the file
    * @param conflictStrategy The conflict strategy in case a file already exists at the file location (skip, replace)
    */
+  @skipOnDryRun()
   public createFile(
     location: string,
     content: string,
@@ -87,7 +90,7 @@ export class GDriveAdapter extends BaseAdapter {
       while (existingFiles.hasNext()) {
         const existingFile = existingFiles.next()
         const existingFileId = existingFile.getId()
-        const removeStatus = this.driveApp.removeFile(existingFile)
+        const removeStatus = this.gdriveApp.removeFile(existingFile)
         this.logger.warn(
           '   Existing file "' +
             existingFile +
@@ -120,18 +123,14 @@ export class GDriveAdapter extends BaseAdapter {
     return file
   }
 
+  @skipOnDryRun()
   public storeAttachment(
     attachment: GoogleAppsScript.Gmail.GmailAttachment,
     location: string,
     conflictStrategy: ConflictStrategy,
     description: string,
   ) {
-    if (
-      this.checkDryRun(
-        `Storing attachment '${attachment.getName()}' to '${location}' ...`,
-      )
-    )
-      return
+    this.logger.info(`Storing attachment '${attachment.getName()}' to '${location}' ...`)
     const file = this.createFile(
       location,
       attachment.getDataAsString(),
@@ -145,6 +144,7 @@ export class GDriveAdapter extends BaseAdapter {
   /**
    * Returns the GDrive folder with the given name or creates it if not existing.
    */
+  @skipOnDryRun()
   private getOrCreateFolderFromPath(
     path: string,
   ): GoogleAppsScript.Drive.Folder {
@@ -154,7 +154,7 @@ export class GDriveAdapter extends BaseAdapter {
     } catch (e) {
       const folderArray = path.split("/")
       folder = this.getOrCreateSubFolder(
-        this.driveApp.getRootFolder(),
+        this.gdriveApp.getRootFolder(),
         folderArray,
       )
     }
@@ -172,6 +172,7 @@ export class GDriveAdapter extends BaseAdapter {
   /**
    * Recursive function to create and return a complete folder path.
    */
+  @skipOnDryRun()
   private getOrCreateSubFolder(
     baseFolder: GoogleAppsScript.Drive.Folder,
     folderArray: string[],
@@ -191,6 +192,7 @@ export class GDriveAdapter extends BaseAdapter {
     }
     if (nextFolder == null && nextFolderName != null) {
       // Folder does not exist - create it.
+      this.logger.info("Creating folder ${nextFolderName} ...")
       nextFolder = baseFolder.createFolder(nextFolderName)
     }
     if (nextFolder == null) {

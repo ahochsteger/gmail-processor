@@ -6,6 +6,7 @@ import { plainToClass } from "class-transformer"
 import { ActionRegistry } from "./ActionRegistry"
 import { ThreadProcessor } from "../processors/ThreadProcessor"
 import { ThreadConfig } from "../config/ThreadConfig"
+import { ThreadContext } from "../context/ThreadContext"
 
 function getMocks(dryRun = true, config = new Config()) {
   // TODO: Simplify this
@@ -18,11 +19,10 @@ function getMocks(dryRun = true, config = new Config()) {
     mockedGasContext,
     config,
   )
-  const mockedThreadContext = MockFactory.newThreadContext(
-    mockedGmailThread,
-    0,
+  const mockedThreadContext = new ThreadContext(
+    mockedProcessingContext,
     new ThreadConfig(),
-    config,
+    mockedGmailThread,
   )
   const mockThreadProcessor = new ThreadProcessor(mockedProcessingContext)
   const threadActions = new ThreadActions(mockedThreadContext)
