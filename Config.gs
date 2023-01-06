@@ -101,6 +101,12 @@ function getGmail2GDriveConfig() {
         "ruleLabel": "addPDFlabel",
         "folder": "PDF Emails"
       },
+      { 
+        // Store attachments in a folder in a Shared Drive
+        "filter": "receipt from:billing@zoom.us",
+        "parentFolderId": "XYZPQRS12343",  // copy this from the URL bar when browsing the Shared Drive you want to use
+        "folder": "'ExampleFolder'"
+      },
     ]
   };
 }
