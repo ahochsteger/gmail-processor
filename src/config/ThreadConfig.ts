@@ -14,7 +14,7 @@ export class ThreadConfig {
   /**
    * The description of the thread handler config
    */
-  description = ""
+  description? = ""
   /**
    * The list of handler that define the way nested messages or attachments are processed
    */
@@ -28,7 +28,7 @@ export class ThreadConfig {
   /**
    * The unique name of the thread config (will be generated if not set)
    */
-  name = ""
+  name? = ""
   /**
    * The type of handler
    */

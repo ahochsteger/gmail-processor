@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Config } from "../../src/config/Config"
 import { mock } from "jest-mock-extended"
 import { ProcessingContext } from "../../src/context/ProcessingContext"
@@ -12,6 +11,9 @@ import { MessageContext } from "../../src/context/MessageContext"
 import { AttachmentConfig } from "../../src/config/AttachmentConfig"
 import { AttachmentContext } from "../../src/context/AttachmentContext"
 import { ThreadConfig } from "../../src/config/ThreadConfig"
+import { ActionConfig } from "../../src/config/ActionConfig"
+import { MessageFlag } from "../../src/config/MessageFlag"
+import { SettingsConfig } from "../../src/config/SettingsConfig"
 
 export class MockFactory {
   public static newGasContextMock(mocks = new Mocks()) {
@@ -26,7 +28,7 @@ export class MockFactory {
     return gasContext
   }
 
-  public static newDefaultSettingsConfig(): any {
+  public static newDefaultSettingsConfig(): Partial<SettingsConfig> {
     return {
       maxBatchSize: 100,
       maxRuntime: 280,
@@ -38,7 +40,7 @@ export class MockFactory {
     }
   }
 
-  public static newDefaultActionConfig(): any {
+  public static newDefaultActionConfig(): ActionConfig {
     return {
       args: {
         folderType: "path",
@@ -47,15 +49,25 @@ export class MockFactory {
         onExists: "replace",
       },
       name: "file.storeToGDrive",
+      description: "Default action config",
     }
   }
 
-  public static newDefaultAttachmentConfig(includeCommands = false): any {
+  public static newDefaultAttachmentConfig(
+    includeCommands = false,
+  ): AttachmentConfig {
     return {
-      actions: includeCommands ? [this.newDefaultActionConfig() as any] : [],
+      name: "default-attachment-config",
+      description: "Default attachment config",
+      type: "attachment",
+      actions: includeCommands ? [this.newDefaultActionConfig()] : [],
       match: {
         name: "Image-([0-9]+)\\.jpg",
         contentType: "image/.+",
+        includeAttachments: true,
+        includeInlineImages: true,
+        largerThan: -1,
+        smallerThan: -1,
       },
     }
   }
@@ -63,17 +75,22 @@ export class MockFactory {
   public static newDefaultMessageConfig(
     includeCommands = false,
     includeAttachmentConfigs = false,
-  ): any {
+  ): MessageConfig {
     return {
+      name: "default-message-config",
+      description: "Default message config",
+      type: "message",
       match: {
         from: "(.+)@example.com",
         subject: "Prefix - (.*) - Suffix(.*)",
         to: "my\\.address\\+(.+)@gmail.com",
-        is: ["unread"],
+        is: [MessageFlag.UNREAD],
+        newerThan: "",
+        olderThan: "",
       },
-      actions: includeCommands ? [this.newDefaultActionConfig() as any] : [],
+      actions: includeCommands ? [this.newDefaultActionConfig()] : [],
       handler: includeAttachmentConfigs
-        ? [this.newDefaultAttachmentConfig() as any]
+        ? [this.newDefaultAttachmentConfig()]
         : [],
     }
   }
@@ -81,26 +98,28 @@ export class MockFactory {
   public static newDefaultThreadConfig(
     includeCommands = false,
     includeMessages = false,
-  ): any {
+  ): ThreadConfig {
     return {
-      actions: includeCommands ? [this.newDefaultActionConfig() as any] : [],
+      name: "default-thread-config",
       description: "A sample thread config",
-      handler: includeMessages ? [this.newDefaultMessageConfig() as any] : [],
+      type: "thread",
+      actions: includeCommands ? [this.newDefaultActionConfig()] : [],
+      handler: includeMessages ? [this.newDefaultMessageConfig()] : [],
       match: {
         query: "has:attachment from:example@example.com",
+        maxMessageCount: -1,
+        minMessageCount: -1,
+        newerThan: "",
       },
     }
   }
 
-  public static newComplexThreadConfigList(): any[] {
+  public static newComplexThreadConfigList(): unknown[] {
+    // TODO: Continue here (make fields optional in config)
     return [
-      // Responsible: ThreadProcessor.processRules
       {
-        // Responsible: ThreadProcessor.processRule
         actions: [
-          // Responsible: ThreadProcessor.performActions
           {
-            // Responsible: ThreadProcessor.performAction
             name: "attachment.storeToGDrive",
             args: { location: "Folder1/Subfolder1/${attachment.name}" },
           },
@@ -112,26 +131,20 @@ export class MockFactory {
         },
       },
       {
-        // Responsible: ThreadProcessor.processRule
         description:
           "Example that stores all attachments of matching messages to a certain GDrive folder",
         match: {
           query: "has:attachment from:example@example.com",
         },
         handler: [
-          // Responsible: MessageProcessor.processRules
           {
-            // Responsible: MessageProcessor.processRule
             actions: [
-              // Responsible: MessageProcessor.performActions
               {
-                // Responsible: MessageProcessor.performAction
                 name: "attachment.storeToGDrive",
                 args: { location: "Folder1/Subfolder1/${attachment.name}" },
               },
             ],
             match: {
-              // Responsible: MessageProcessor.matches
               from: "(.+)@example.com",
               subject: "Prefix - (.*) - Suffix(.*)",
               to: "my\\.address\\+(.+)@gmail.com",
@@ -144,11 +157,8 @@ export class MockFactory {
           query: "has:attachment from:example4@example.com",
         },
         handler: [
-          // Responsible: MessageProcessor.processRules
           {
-            // Responsible: MessageProcessor.processRule
             match: {
-              // Responsible: MessageProcessor.matches
               from: "(.+)@example.com",
               subject: "Prefix - (.*) - Suffix(.*)",
               to: "my\\.address\\+(.+)@gmail.com",
@@ -156,23 +166,17 @@ export class MockFactory {
               // TODO: Find out how to match only read/unread or starred/unstarred messages?
             },
             actions: [
-              // Responsible: MessageProcessor.performActions
               // TODO: Decide if only actions of a certain type (thread, message, attachment) are allowed?
               // Pro: More flexible (e.g. forward message, if a certain attachment rule matches)
-              { name: "markMessageRead" }, // Responsible: MessageProcessor.processAction
+              { name: "markMessageRead" },
             ],
             handler: [
-              // Responsible: AttachmentProcessor.processRules
               {
-                // Responsible: AttachmentProcessor.processRule
-                match: { name: "Image-([0-9]+)\\.jpg" }, // Responsible: AttachmentProcessor.matches
+                match: { name: "Image-([0-9]+)\\.jpg" },
                 actions: [
-                  // Responsible: AttachmentProcessor.performActions
                   {
-                    // Responsible: AttachmentProcessor.performAction
                     name: "attachment.storeToGDrive",
                     args: {
-                      // tslint:disable-next-line: max-line-length
                       location:
                         "Folder2/Subfolder2/${message.subject.match.1}/${email.subject} - ${match.att.1}.jpg",
                       conflictStrategy: "replace",
@@ -200,7 +204,7 @@ export class MockFactory {
     ]
   }
 
-  public static newDefaultConfig(): any {
+  public static newDefaultConfig(): unknown {
     return {
       handler: this.newComplexThreadConfigList(),
     }
@@ -248,79 +252,112 @@ export class MockFactory {
   }
 
   public static newThreadMock(
-    data: any = {},
+    data: Record<string, unknown> = {},
   ): GoogleAppsScript.Gmail.GmailThread {
-    data = MockFactory.getThreadSampleData(data)
-    data.messages = data.messages !== undefined ? data.messages : []
+    const threadData = MockFactory.getThreadSampleData(data)
+    threadData.messages =
+      threadData.messages !== undefined ? threadData.messages : []
     const mockedGmailThread = mock<GoogleAppsScript.Gmail.GmailThread>()
     mockedGmailThread.getFirstMessageSubject.mockReturnValue(
-      data.firstMessageSubject,
+      threadData.firstMessageSubject as string,
     )
     mockedGmailThread.hasStarredMessages.mockReturnValue(
-      data.hasStarredMessages,
+      threadData.hasStarredMessages as boolean,
     )
-    mockedGmailThread.getId.mockReturnValue(data.id)
-    mockedGmailThread.isImportant.mockReturnValue(data.isImportant)
-    mockedGmailThread.isInPriorityInbox.mockReturnValue(data.isInPriorityInbox)
-    mockedGmailThread.getLabels.mockReturnValue(data.labels)
-    mockedGmailThread.getLastMessageDate.mockReturnValue(data.lastMessageDate)
-    mockedGmailThread.getMessageCount.mockReturnValue(data.messageCount)
-    mockedGmailThread.getPermalink.mockReturnValue(data.permalink)
-    mockedGmailThread.getMessages.mockReturnValue(MockFactory.getMessages(data))
+    const dataLabels: string[] =
+      threadData.labels !== undefined ? (threadData.labels as string[]) : []
+    const mockedLabels: GoogleAppsScript.Gmail.GmailLabel[] = []
+    dataLabels.forEach((l: string) => {
+      const mockedLabel = mock<GoogleAppsScript.Gmail.GmailLabel>()
+      mockedLabel.getName.mockReturnValue(l)
+      mockedLabels.push(mockedLabel)
+    })
+    mockedGmailThread.getId.mockReturnValue(threadData.id as string)
+    mockedGmailThread.isImportant.mockReturnValue(
+      threadData.isImportant as boolean,
+    )
+    mockedGmailThread.isInPriorityInbox.mockReturnValue(
+      threadData.isInPriorityInbox as boolean,
+    )
+    mockedGmailThread.getLabels.mockReturnValue(mockedLabels)
+    mockedGmailThread.getLastMessageDate.mockReturnValue(
+      threadData.lastMessageDate as Date,
+    )
+    mockedGmailThread.getMessageCount.mockReturnValue(
+      threadData.messageCount as number,
+    )
+    mockedGmailThread.getPermalink.mockReturnValue(
+      threadData.permalink as string,
+    )
+    mockedGmailThread.getMessages.mockReturnValue(
+      MockFactory.getMessages(threadData),
+    )
     return mockedGmailThread
   }
 
   public static newMessageMock(
-    data: any = {},
+    data1: Record<string, unknown> = {},
   ): GoogleAppsScript.Gmail.GmailMessage {
-    data = MockFactory.getMessageSampleData(data)
-    data.attachments = data.attachments ? data.attachments : [] // Make sure attachments is defined
+    const msgData = MockFactory.getMessageSampleData(data1)
+    msgData.attachments = msgData.attachments ? msgData.attachments : [] // Make sure attachments is defined
     const mockedGmailMessage = mock<GoogleAppsScript.Gmail.GmailMessage>()
     mockedGmailMessage.getAttachments.mockReturnValue(
-      MockFactory.getAttachments(data),
+      MockFactory.getAttachments(msgData),
     )
-    mockedGmailMessage.getBcc.mockReturnValue(data.bcc)
-    mockedGmailMessage.getCc.mockReturnValue(data.cc)
-    mockedGmailMessage.getDate.mockReturnValue(data.date)
-    mockedGmailMessage.getFrom.mockReturnValue(data.from)
-    mockedGmailMessage.getId.mockReturnValue(data.id)
-    mockedGmailMessage.getReplyTo.mockReturnValue(data.replyTo)
-    mockedGmailMessage.getSubject.mockReturnValue(data.subject)
-    mockedGmailMessage.getTo.mockReturnValue(data.to)
-    mockedGmailMessage.isStarred.mockReturnValue(data.isStarred)
-    mockedGmailMessage.isUnread.mockReturnValue(data.isUnread)
+    mockedGmailMessage.getBcc.mockReturnValue(msgData.bcc as string)
+    mockedGmailMessage.getCc.mockReturnValue(msgData.cc as string)
+    mockedGmailMessage.getDate.mockReturnValue(msgData.date as Date)
+    mockedGmailMessage.getFrom.mockReturnValue(msgData.from as string)
+    mockedGmailMessage.getId.mockReturnValue(msgData.id as string)
+    mockedGmailMessage.getReplyTo.mockReturnValue(msgData.replyTo as string)
+    mockedGmailMessage.getSubject.mockReturnValue(msgData.subject as string)
+    mockedGmailMessage.getTo.mockReturnValue(msgData.to as string)
+    mockedGmailMessage.isStarred.mockReturnValue(msgData.isStarred as boolean)
+    mockedGmailMessage.isUnread.mockReturnValue(msgData.isUnread as boolean)
     return mockedGmailMessage
   }
 
   public static newAttachmentMock(
-    data: any = {},
+    data: Record<string, unknown> = {},
   ): GoogleAppsScript.Gmail.GmailAttachment {
-    data = MockFactory.getAttachmentSampleData(data)
+    const attData = MockFactory.getAttachmentSampleData(data)
     const mockedGmailAttachment = mock<GoogleAppsScript.Gmail.GmailAttachment>()
-    mockedGmailAttachment.getContentType.mockReturnValue(data.contentType)
-    mockedGmailAttachment.getHash.mockReturnValue(data.hash)
-    mockedGmailAttachment.getName.mockReturnValue(data.name)
-    mockedGmailAttachment.getSize.mockReturnValue(data.size)
-    mockedGmailAttachment.isGoogleType.mockReturnValue(data.isGoogleType)
-    mockedGmailAttachment.getDataAsString.mockReturnValue(data.content) // TODO: Check, if this works for binaries too!
+    mockedGmailAttachment.getContentType.mockReturnValue(
+      attData.contentType as string,
+    )
+    mockedGmailAttachment.getHash.mockReturnValue(attData.hash as string)
+    mockedGmailAttachment.getName.mockReturnValue(attData.name as string)
+    mockedGmailAttachment.getSize.mockReturnValue(attData.size as number)
+    mockedGmailAttachment.isGoogleType.mockReturnValue(
+      attData.isGoogleType as boolean,
+    )
+    mockedGmailAttachment.getDataAsString.mockReturnValue(
+      attData.content as string,
+    )
     return mockedGmailAttachment
   }
 
-  private static getMessages(data: any): GoogleAppsScript.Gmail.GmailMessage[] {
-    const a = []
-    for (let i = 0; i < data.messages.length; i++) {
-      a[i] = MockFactory.newMessageMock(data.messages[i])
-    }
+  private static getMessages(
+    data: Record<string, unknown>,
+  ): GoogleAppsScript.Gmail.GmailMessage[] {
+    const dataMessages =
+      data.messages !== undefined
+        ? (data.messages as Record<string, unknown>[])
+        : []
+    const a: GoogleAppsScript.Gmail.GmailMessage[] = []
+    dataMessages.forEach((dm) => a.push(MockFactory.newMessageMock(dm)))
     return a
   }
 
   private static getAttachments(
-    data: any,
+    data: Record<string, unknown>,
   ): GoogleAppsScript.Gmail.GmailAttachment[] {
-    const a = []
-    for (let i = 0; i < data.attachments.length; i++) {
-      a[i] = MockFactory.newAttachmentMock(data.attachments[i])
-    }
+    const a: GoogleAppsScript.Gmail.GmailAttachment[] = []
+    const dataAttachments =
+      data.attachments !== undefined
+        ? (data.attachments as Record<string, unknown>[])
+        : []
+    dataAttachments.forEach((da) => a.push(MockFactory.newAttachmentMock(da)))
     return a
   }
 
@@ -328,17 +365,20 @@ export class MockFactory {
     // See https://stackoverflow.com/questions/5515869/string-length-in-bytes-in-javascript/5515960#5515960
     // Matches only the 10.. bytes that are non-initial characters in a multi-byte sequence.
     const m = encodeURIComponent(str).match(/%[89ABab]/g)
-    return str.length + (m ? m.length : 0)
+    return (str === undefined ? "" : str).length + (m ? m.length : 0)
   }
 
-  private static getThreadSampleData(data: any): any {
-    data = typeof data === "undefined" ? { messages: [] } : data // Allows calling without data parameter
+  private static getThreadSampleData(
+    data: Record<string, unknown>,
+  ): Record<string, unknown> {
+    data = data === undefined ? { messages: [] } : data // Allows calling without data parameter
+    const dataMessages = data.messages as Record<string, object>[]
     const sampleMessages = [
       MockFactory.getMessageSampleData(
-        data.messages && data.messages.length > 0 ? data.messages[0] : {},
+        dataMessages && dataMessages.length > 0 ? dataMessages[0] : {},
       ),
       MockFactory.getMessageSampleData(
-        data.messages && data.messages.length > 1 ? data.messages[1] : {},
+        dataMessages && dataMessages.length > 1 ? dataMessages[1] : {},
       ),
     ]
     const sampleData = {
@@ -357,7 +397,7 @@ export class MockFactory {
     return sampleData
   }
 
-  private static getMessageSampleData(data: any) {
+  private static getMessageSampleData(data: Record<string, unknown>) {
     data = typeof data === "undefined" ? {} : data // Allows calling without data parameter
     const sampleAttachments = [
       MockFactory.getAttachmentSampleData({
@@ -384,6 +424,7 @@ export class MockFactory {
       id: "message-id",
       subject: "message subject",
       to: "message-to@example.com",
+      replyTo: "message-reply-to@example.com",
       attachments: sampleAttachments,
       isStarred: false,
       isUnread: true,
@@ -392,10 +433,11 @@ export class MockFactory {
     return sampleData
   }
 
-  private static getAttachmentSampleData(data: any) {
+  private static getAttachmentSampleData(data: Record<string, unknown>) {
     data = typeof data === "undefined" ? {} : data // Allows calling without data parameter
-    const sampleContent =
-      typeof data.content === "undefined" ? "Sample text content" : data.content
+    const sampleContent = data.content
+      ? (data.content as string)
+      : "Sample text content"
     const sampleData = {
       contentType: "text/plain",
       hash:

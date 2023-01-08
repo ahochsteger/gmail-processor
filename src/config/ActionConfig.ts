@@ -7,13 +7,11 @@ export class ActionConfig {
   /**
    * The arguments for a certain action
    */
-  args?: {
-    [k: string]: unknown
-  }
+  args?: { [k: string]: unknown } = {}
   /**
    * The description for the action
    */
-  description = ""
+  description? = ""
   /**
    * The name of the action to be executed
    */

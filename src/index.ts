@@ -28,8 +28,7 @@ export function run(config: Config, dryRun = false) {
   gmailProcessor.run()
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function runWithV1Config(v1configJson: any, dryRun = false) {
+export function runWithV1Config(v1configJson: object, dryRun = false) {
   const configV1 = plainToClass(V1Config, v1configJson)
   const config = V1ToV2Converter.v1ConfigToV2Config(configV1)
   console.warn(

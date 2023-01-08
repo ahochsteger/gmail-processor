@@ -3,7 +3,7 @@ import { ProcessingContext } from "../context/ProcessingContext"
 import { AbstractActions } from "./AbstractActions"
 
 export type ActionArgType = boolean | number | string
-export type ActionArgsType = { [k: string]: ActionArgType }
+export type ActionArgsType = Record<string, ActionArgType>
 
 export type ActionType = typeof AbstractActions & {
   new (...args: unknown[]): AbstractActions
@@ -65,13 +65,14 @@ export class ActionRegistry {
     }
   }
 
-  public static getActionMap(): { [k: string]: unknown } {
+  public static getActionMap(): Record<string, unknown> {
     return ActionRegistry.getMeta("actionMap", {})
   }
 
-  public static getProviderMap(): {
-    [k: string]: (context: ProcessingContext, logger: Console) => ActionType
-  } {
+  public static getProviderMap(): Record<
+    string,
+    (context: ProcessingContext, logger: Console) => ActionType
+  > {
     return ActionRegistry.getMeta("actionProviderMap", {})
   }
 }

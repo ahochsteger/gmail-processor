@@ -1,10 +1,11 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { AttachmentMatchConfig } from "../config/AttachmentMatchConfig"
 import { MessageMatchConfig } from "../config/MessageMatchConfig"
 import { AttachmentContext } from "../context/AttachmentContext"
 import { MessageContext } from "../context/MessageContext"
 import { ThreadContext } from "../context/ThreadContext"
 import moment from "moment-timezone"
+
+export class SubstMap extends Map<string, unknown> {}
 
 export class PatternUtil {
   public static logger: Console = console
@@ -15,11 +16,11 @@ export class PatternUtil {
     return s.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&")
   }
 
-  public static substituteStrings(pattern: string, data: Map<string, any>) {
+  public static substituteStrings(pattern: string, data: SubstMap) {
     let s = pattern
-    data.forEach((value: any, key: string) => {
+    data.forEach((value: unknown, key: string) => {
       const rex = new RegExp("\\$\\{" + this.escapeRegExp(key) + "\\}")
-      s = s.replace(rex, value)
+      s = s.replace(rex, value as string)
     })
     return s
   }
@@ -32,16 +33,15 @@ export class PatternUtil {
 
   public static substituteDates(
     pattern: string,
-    data: Map<string, any>,
+    data: SubstMap,
     timezone = "UTC",
     formatType = "dateformat",
   ) {
     let s = pattern
     const regex = new RegExp("\\$\\{([^:{]+):" + formatType + ":([^}]+)\\}")
     let result
-    // tslint:disable-next-line: no-conditional-assignment
     while ((result = regex.exec(s)) !== null) {
-      const date = data.get(result[1])
+      const date = data.get(result[1]) as Date
       const format =
         formatType === "olddateformat"
           ? PatternUtil.convertDateFormat(result[2])
@@ -63,7 +63,7 @@ export class PatternUtil {
 
   public static substitutePatternFromMap(
     pattern: string,
-    data: Map<string, any>,
+    data: SubstMap,
     timezone = "UTC",
   ) {
     let s = pattern
@@ -80,7 +80,7 @@ export class PatternUtil {
    * @param regexMap Map with attribute names and regex to do matches on (e.g. {"subject": "Message ([0-9]+)"})
    */
   public static buildRegExpSubustitutionMap(
-    dataMap: Map<string, any>,
+    dataMap: SubstMap,
     keyPrefix: string,
     regexMap: Map<string, string>,
   ): Map<string, string> {
@@ -92,7 +92,6 @@ export class PatternUtil {
       const keyName = keyPrefix + "." + k
       let hasAtLeastOneMatch = false
       const data: string = dataMap.get(keyName) as string
-      // tslint:disable-next-line: no-conditional-assignment
       if ((result = regex.exec(data)) !== null) {
         hasAtLeastOneMatch = true
         this.logger.log("Matches: " + result.length)
@@ -107,11 +106,7 @@ export class PatternUtil {
     return m
   }
 
-  public static mapAdd(
-    m: Map<string, any>,
-    key: string,
-    value: any,
-  ): Map<string, any> {
+  public static mapAdd(m: SubstMap, key: string, value: unknown): SubstMap {
     if (value !== undefined) {
       m.set(key, value)
     }
@@ -120,8 +115,8 @@ export class PatternUtil {
 
   public static getSubstitutionMapFromThread(
     thread: GoogleAppsScript.Gmail.GmailThread,
-  ): Map<string, any> {
-    let m = new Map<string, any>()
+  ): SubstMap {
+    let m = new SubstMap()
     m = this.mapAdd(
       m,
       "thread.firstMessageSubject",
@@ -136,7 +131,12 @@ export class PatternUtil {
     m = this.mapAdd(m, "thread.isInSpam", thread.isInSpam())
     m = this.mapAdd(m, "thread.isInTrash", thread.isInTrash())
     m = this.mapAdd(m, "thread.isUnread", thread.isUnread())
-    m = this.mapAdd(m, "thread.labels", thread.getLabels())
+    const labels: GoogleAppsScript.Gmail.GmailLabel[] = thread.getLabels()
+      ? thread.getLabels()
+      : []
+    const labelNames: string[] = []
+    labels.forEach((l) => labelNames.push(l.getName()))
+    m = this.mapAdd(m, "thread.labels", labelNames.join(","))
     m = this.mapAdd(m, "thread.lastMessageDate", thread.getLastMessageDate())
     m = this.mapAdd(m, "thread.messageCount", thread.getMessageCount())
     m = this.mapAdd(m, "thread.permalink", thread.getPermalink())
@@ -145,8 +145,8 @@ export class PatternUtil {
 
   public static getSubstitutionMapFromMessage(
     message: GoogleAppsScript.Gmail.GmailMessage,
-  ): Map<string, any> {
-    let m = new Map<string, any>()
+  ): SubstMap {
+    let m = new SubstMap()
     m = this.mapAdd(m, "message.bcc", message.getBcc())
     m = this.mapAdd(m, "message.cc", message.getCc())
     m = this.mapAdd(m, "message.date", message.getDate())
@@ -167,8 +167,8 @@ export class PatternUtil {
 
   public static getSubstitutionMapFromAttachment(
     attachment: GoogleAppsScript.Gmail.GmailAttachment,
-  ): Map<string, any> {
-    let m = new Map<string, any>()
+  ): SubstMap {
+    let m = new SubstMap()
     m = this.mapAdd(m, "attachment.contentType", attachment.getContentType())
     m = this.mapAdd(m, "attachment.hash", attachment.getHash())
     m = this.mapAdd(m, "attachment.isGoogleType", attachment.isGoogleType())
@@ -179,7 +179,7 @@ export class PatternUtil {
 
   public static buildSubstitutionMapFromThreadContext(
     ctx: ThreadContext,
-    substMap = new Map<string, any>(),
+    substMap = new SubstMap(),
   ) {
     substMap = PatternUtil.mergeMaps(
       substMap,
@@ -192,7 +192,7 @@ export class PatternUtil {
 
   public static buildSubstitutionMapFromMessageContext(
     ctx: MessageContext,
-    substMap = new Map<string, any>(),
+    substMap = new SubstMap(),
   ) {
     let m = this.buildSubstitutionMapFromThreadContext(
       ctx.threadContext,
@@ -228,8 +228,8 @@ export class PatternUtil {
 
   public static buildSubstitutionMapFromAttachmentContext(
     ctx: AttachmentContext,
-    substMap = new Map<string, any>(),
-  ): Map<string, any> {
+    substMap = new SubstMap(),
+  ): SubstMap {
     let m = this.buildSubstitutionMapFromMessageContext(
       ctx.messageContext,
       substMap,
@@ -307,7 +307,7 @@ export class PatternUtil {
   public static substituteFromAttachmentContext(
     pattern: string,
     attachmentContext: AttachmentContext,
-    substMap = new Map<string, any>(),
+    substMap = new SubstMap(),
   ) {
     const m = this.buildSubstitutionMapFromAttachmentContext(
       attachmentContext,
@@ -345,10 +345,7 @@ export class PatternUtil {
       .replace(/#FILE#/g, "${attachment.name}") // Alternative syntax (from PR #22)
   }
 
-  private static mergeMaps(
-    map1: Map<string, any>,
-    map2: Map<string, any>,
-  ): Map<string, any> {
+  private static mergeMaps(map1: SubstMap, map2: SubstMap): SubstMap {
     return new Map([
       ...Array.from(map1.entries()),
       ...Array.from(map2.entries()),

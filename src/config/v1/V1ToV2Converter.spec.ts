@@ -52,13 +52,13 @@ it("should convert filenameTo patterns", () => {
               {
                 actions: [
                   {
-                    description: "",
-                    name: "file.storeToGDrive",
                     args: {
                       folderType: "path",
                       folder: "Scans${message.date:dateformat:-YYYY-MM-DD}",
                       filename: "${attachment.name.match.1}",
                     },
+                    description: "",
+                    name: "file.storeToGDrive",
                   },
                 ],
                 description: "",
@@ -106,13 +106,13 @@ it("should convert filenameTo patterns", () => {
               {
                 actions: [
                   {
-                    description: "",
-                    name: "file.storeToGDrive",
                     args: {
                       folderType: "path",
                       folder: "Examples/example1",
                       filename: "${attachment.name.match.1}",
                     },
+                    description: "",
+                    name: "file.storeToGDrive",
                   },
                 ],
                 description: "",
@@ -160,13 +160,13 @@ it("should convert filenameTo patterns", () => {
               {
                 actions: [
                   {
-                    description: "",
-                    name: "file.storeToGDrive",
                     args: {
                       folderType: "path",
                       folder: "Examples/example2",
                       filename: "${attachment.name.match.1}",
                     },
+                    description: "",
+                    name: "file.storeToGDrive",
                   },
                 ],
                 description: "",
@@ -206,6 +206,7 @@ it("should convert filenameTo patterns", () => {
       {
         actions: [
           {
+            args: {},
             description: "",
             name: "thread.archive",
           },
@@ -219,13 +220,13 @@ it("should convert filenameTo patterns", () => {
               {
                 actions: [
                   {
-                    description: "",
-                    name: "file.storeToGDrive",
                     args: {
                       folderType: "path",
                       folder: "Examples/example3ab",
                       filename: "'file-'yyyy-MM-dd-'%s.txt'",
                     },
+                    description: "",
+                    name: "file.storeToGDrive",
                   },
                 ],
                 description: "",

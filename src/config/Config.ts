@@ -10,7 +10,7 @@ export class Config {
   /**
    * The description of the GMail2GDrive config
    */
-  description = ""
+  description? = ""
   /**
    * The global configuration that defines matching for all threads as well as actions for all threads, messages or attachments.
    */

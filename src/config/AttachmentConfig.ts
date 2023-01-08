@@ -14,7 +14,7 @@ export class AttachmentConfig {
   /**
    * The description of the attachment handler config
    */
-  description = ""
+  description? = ""
   /**
    * Specifies which attachments match for further processing
    */
@@ -23,7 +23,7 @@ export class AttachmentConfig {
   /**
    * The unique name of the attachment config (will be generated if not set)
    */
-  name = ""
+  name? = ""
   /**
    * The type of handler
    */

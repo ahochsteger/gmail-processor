@@ -14,7 +14,7 @@ export class MessageConfig {
   /**
    * The description of the message handler config
    */
-  description = ""
+  description? = ""
   /**
    * The list of handler that define the way attachments are processed
    */
@@ -28,7 +28,7 @@ export class MessageConfig {
   /**
    * The unique name of the message config (will be generated if not set)
    */
-  name = ""
+  name? = ""
   /**
    * The type of handler
    */
