@@ -1,12 +1,41 @@
-import { mock } from "jest-mock-extended"
 import { MockFactory } from "../../test/mocks/MockFactory"
 import { MessageConfig } from "../config/MessageConfig"
 import { PatternUtil } from "./PatternUtil"
 import { plainToClass } from "class-transformer"
 import { AttachmentConfig } from "../config/AttachmentConfig"
+import { Config } from "../config/Config"
+import { Mocks } from "../../test/mocks/Mocks"
+import { ThreadContext } from "../context/ThreadContext"
+import { MessageContext } from "../context/MessageContext"
+import { AttachmentContext } from "../context/AttachmentContext"
+import { mock } from "jest-mock-extended"
 
-const mockedConsole = mock<Console>()
-PatternUtil.logger = mockedConsole
+PatternUtil.logger = mock<Console>()
+
+function getMocks(dryRun = true, config = new Config()) {
+  const mocks = new Mocks(config, dryRun)
+  const threadContext = new ThreadContext(
+    mocks.processingContext,
+    MockFactory.newDefaultThreadConfig(),
+    mocks.thread,
+  )
+  const messageContext = new MessageContext(
+    threadContext,
+    MockFactory.newDefaultMessageConfig(),
+    mocks.message,
+  )
+  const attachmentContext = new AttachmentContext(
+    messageContext,
+    new AttachmentConfig(),
+    mocks.attachment,
+  )
+  return {
+    mocks,
+    threadContext,
+    messageContext,
+    attachmentContext,
+  }
+}
 
 describe("Pattern Substitution", () => {
   it("should handle a thread", () => {
@@ -259,12 +288,8 @@ describe("Substitutions", () => {
 })
 describe("Handle single messages", () => {
   it("should handle a thread with one message and no attachments", () => {
-    expect(
-      PatternUtil.substituteFromThreadContext(
-        "",
-        MockFactory.newThreadContextMock(),
-      ),
-    ).toBe("")
+    const { threadContext } = getMocks()
+    expect(PatternUtil.substituteFromThreadContext("", threadContext)).toBe("")
   })
   it("should handle a thread with one message and one attachment", () => {
     expect(

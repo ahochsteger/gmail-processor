@@ -5,28 +5,23 @@ import { ProcessingContext } from "../../src/context/ProcessingContext"
 import { GmailProcessor } from "../../src/processors/GmailProcessor"
 import { ThreadProcessor } from "../../src/processors/ThreadProcessor"
 import { GoogleAppsScriptContext } from "../../src/context/GoogleAppsScriptContext"
-import { MockObjects } from "./MockObjects"
+import { Mocks } from "./Mocks"
 import { ThreadContext } from "../../src/context/ThreadContext"
 import { MessageConfig } from "../../src/config/MessageConfig"
 import { MessageContext } from "../../src/context/MessageContext"
 import { AttachmentConfig } from "../../src/config/AttachmentConfig"
 import { AttachmentContext } from "../../src/context/AttachmentContext"
 import { ThreadConfig } from "../../src/config/ThreadConfig"
-import { deprecated } from "../../src/utils/Decorators"
 
 export class MockFactory {
-  public static newMockObjects() {
-    return new MockObjects()
-  }
-
-  public static newGasContextMock(md = new MockObjects()) {
+  public static newGasContextMock(mocks = new Mocks()) {
     const gasContext: GoogleAppsScriptContext = new GoogleAppsScriptContext(
-      md.gmailApp,
-      md.gdriveApp,
-      md.console,
-      md.utilities,
-      md.spreadsheetApp,
-      md.cacheService,
+      mocks.gmailApp,
+      mocks.gdriveApp,
+      mocks.console,
+      mocks.utilities,
+      mocks.spreadsheetApp,
+      mocks.cacheService,
     )
     return gasContext
   }
@@ -236,7 +231,6 @@ export class MockFactory {
     return gmailProcessor
   }
 
-  @deprecated("Use newThreadContext() instead!")
   public static newThreadContextMock(
     processingContext = this.newProcessingContextMock(),
     threadConfig = this.newDefaultThreadConfig(),
@@ -245,7 +239,6 @@ export class MockFactory {
     return new ThreadContext(processingContext, threadConfig, thread)
   }
 
-  @deprecated("Use newMessageContext() instead!")
   public static newMessageContextMock(
     threadContext = this.newThreadContextMock(),
     messageConfig = new MessageConfig(),

@@ -4,8 +4,7 @@ import { ThreadConfig } from "../config/ThreadConfig"
 import { plainToClass } from "class-transformer"
 import { ThreadProcessor } from "./ThreadProcessor"
 
-const md = MockFactory.newMockObjects()
-const gasContext = MockFactory.newGasContextMock(md)
+const gasContext = MockFactory.newGasContextMock()
 
 it("should construct a GMail search query with globals (query, newerThan) and processedLabel", () => {
   const config = plainToClass(Config, {

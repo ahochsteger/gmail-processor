@@ -4,8 +4,7 @@ import { MessageFlag } from "../config/MessageFlag"
 import { plainToClass } from "class-transformer"
 import { MessageProcessor } from "./MessageProcessor"
 
-const md = MockFactory.newMockObjects()
-const gasContext = MockFactory.newGasContextMock(md)
+const gasContext = MockFactory.newGasContextMock()
 
 it("should match messages with matching parameters", () => {
   const matchExamples = [

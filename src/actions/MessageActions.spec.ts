@@ -1,27 +1,23 @@
-import { mock } from "jest-mock-extended"
+import { Mocks } from "../../test/mocks/Mocks"
 import { MockFactory } from "../../test/mocks/MockFactory"
 import { MessageActions } from "./MessageActions"
 import { ActionRegistry } from "./ActionRegistry"
 import { Config } from "../config/Config"
 
 function getMocks(dryRun = true, config = new Config()) {
-  // TODO: Simplify this
-  const mockedGmailMessage = mock<GoogleAppsScript.Gmail.GmailMessage>()
-  mockedGmailMessage.forward.mockReturnValue(mockedGmailMessage)
-  const md = MockFactory.newMockObjects()
-  const mockedGasContext = MockFactory.newGasContextMock(md)
-  const mockedProcessingContext = MockFactory.newProcessingContextMock(
-    mockedGasContext,
-    config,
-    dryRun,
-  )
-  const mockedMessageContext = MockFactory.newMessageContextMock(
-    MockFactory.newThreadContextMock(mockedProcessingContext),
+  const mocks = new Mocks(config, dryRun)
+  const messageContext = MockFactory.newMessageContextMock(
+    MockFactory.newThreadContextMock(mocks.processingContext),
     MockFactory.newDefaultMessageConfig(),
-    mockedGmailMessage,
+    mocks.message,
   )
-  const messageActions = new MessageActions(mockedMessageContext)
-  return { mockedGmailMessage, messageActions }
+  const messageActions = new MessageActions(messageContext)
+  return {
+    mocks,
+    message: mocks.message,
+    messageContext,
+    messageActions,
+  }
 }
 
 it("should provide actions in the action registry", () => {
@@ -45,13 +41,13 @@ it("should provide actions in the action registry", () => {
 })
 
 it("should forward a message", () => {
-  const { mockedGmailMessage, messageActions } = getMocks(false)
+  const { message, messageActions } = getMocks(false)
   messageActions.forward("test")
-  expect(mockedGmailMessage.forward).toBeCalled()
+  expect(message.forward).toBeCalled()
 })
 
 it("should not forward a message (dryRun)", () => {
-  const { mockedGmailMessage, messageActions } = getMocks(true)
+  const { message, messageActions } = getMocks(true)
   messageActions.forward("test")
-  expect(mockedGmailMessage.forward).not.toBeCalled()
+  expect(message.forward).not.toBeCalled()
 })

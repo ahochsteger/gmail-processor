@@ -1,35 +1,23 @@
-import { mock } from "jest-mock-extended"
+import { Mocks } from "../../test/mocks/Mocks"
 import { ThreadActions } from "./ThreadActions"
 import { Config } from "../config/Config"
-import { MockFactory } from "../../test/mocks/MockFactory"
 import { plainToClass } from "class-transformer"
 import { ActionRegistry } from "./ActionRegistry"
-import { ThreadProcessor } from "../processors/ThreadProcessor"
 import { ThreadConfig } from "../config/ThreadConfig"
 import { ThreadContext } from "../context/ThreadContext"
 
 function getMocks(dryRun = true, config = new Config()) {
-  // TODO: Simplify this
-  const mockedGmailThread = mock<GoogleAppsScript.Gmail.GmailThread>()
-  mockedGmailThread.markImportant.mockReturnValue(mockedGmailThread)
-  const md = MockFactory.newMockObjects()
-  const mockedGasContext = MockFactory.newGasContextMock(md)
-  const mockedProcessingContext = MockFactory.newProcessingContextMock(
-    mockedGasContext,
-    config,
-    dryRun,
-  )
-  const mockedThreadContext = new ThreadContext(
-    mockedProcessingContext,
+  const mocks = new Mocks(config, dryRun)
+  const threadContext = new ThreadContext(
+    mocks.processingContext,
     new ThreadConfig(),
-    mockedGmailThread,
+    mocks.thread,
   )
-  const mockThreadProcessor = new ThreadProcessor(mockedProcessingContext)
-  const threadActions = new ThreadActions(mockedThreadContext)
+  const threadActions = new ThreadActions(threadContext)
   return {
-    mockedGmailThread,
-    mockThreadProcessor,
-    mockedThreadContext,
+    mocks,
+    thread: mocks.thread,
+    threadContext,
     threadActions,
   }
 }
@@ -60,15 +48,15 @@ it("should provide actions in the action registry", () => {
 })
 
 it("should mark a thread as important", () => {
-  const { mockedGmailThread, threadActions } = getMocks(false)
+  const { thread, threadActions } = getMocks(false)
   threadActions.markImportant()
-  expect(mockedGmailThread.markImportant).toBeCalled()
+  expect(thread.markImportant).toBeCalled()
 })
 
 it("should not mark a thread as important (dryRun)", () => {
-  const { mockedGmailThread, threadActions } = getMocks(true)
+  const { thread, threadActions } = getMocks(true)
   threadActions.markImportant()
-  expect(mockedGmailThread.markImportant).not.toBeCalled()
+  expect(thread.markImportant).not.toBeCalled()
 })
 
 it("should mark a thread as processed by adding a label if processedMode='label'", () => {
@@ -78,9 +66,9 @@ it("should mark a thread as processed by adding a label if processedMode='label'
       processedMode: "label",
     },
   })
-  const { mockedGmailThread, threadActions } = getMocks(false, config)
+  const { thread, threadActions } = getMocks(false, config)
   threadActions.markProcessed()
-  expect(mockedGmailThread.addLabel).toBeCalled()
+  expect(thread.addLabel).toBeCalled()
 })
 
 it("should not add a label to a thread if processedMode='read'", () => {
@@ -89,9 +77,9 @@ it("should not add a label to a thread if processedMode='read'", () => {
       processedMode: "read",
     },
   })
-  const { mockedGmailThread, threadActions } = getMocks(false, config)
+  const { thread, threadActions } = getMocks(false, config)
   threadActions.markProcessed()
-  expect(mockedGmailThread.addLabel).not.toBeCalled()
+  expect(thread.addLabel).not.toBeCalled()
 })
 
 it.todo("should convert a thread to PDF")

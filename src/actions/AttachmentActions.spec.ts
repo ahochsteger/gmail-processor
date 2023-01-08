@@ -1,56 +1,38 @@
-import { MockFactory } from "../../test/mocks/MockFactory"
+import { Mocks } from "../../test/mocks/Mocks"
 import { ActionRegistry } from "./ActionRegistry"
 import { AttachmentActions } from "./AttachmentActions"
 import { ConflictStrategy } from "../adapter/GDriveAdapter"
-import { AttachmentProcessor } from "../processors/AttachmentProcessor"
 import { AttachmentConfig } from "../config/AttachmentConfig"
 import { AttachmentContext } from "../context/AttachmentContext"
 import { MessageContext } from "../context/MessageContext"
 import { ThreadContext } from "../context/ThreadContext"
-import { ProcessingContext } from "../context/ProcessingContext"
 import { ThreadConfig } from "../config/ThreadConfig"
 import { MessageConfig } from "../config/MessageConfig"
 import { Config } from "../config/Config"
-import { GoogleAppsScriptContext } from "../context/GoogleAppsScriptContext"
 
-function getMocks(dryRun = true) {
-  const mockedGmailAttachment = MockFactory.newAttachmentMock()
-  const md = MockFactory.newMockObjects() // TODO: Replace with mocked newGoogleAppsScriptContext to keep instances consistent
-  const mockedMessageContext = new MessageContext(
-    new ThreadContext(
-      new ProcessingContext(
-        new GoogleAppsScriptContext(
-          md.gmailApp,
-          md.gdriveApp,
-          md.console,
-          md.utilities,
-          md.spreadsheetApp,
-          md.cacheService,
-        ),
-        new Config(),
-        dryRun,
-      ),
-      new ThreadConfig(),
-      MockFactory.newThreadMock(),
-    ),
-    new MessageConfig(),
-    MockFactory.newMessageMock(),
+function getMocks(dryRun = true, config = new Config()) {
+  const mocks = new Mocks(config, dryRun)
+  const threadContext = new ThreadContext(
+    mocks.processingContext,
+    new ThreadConfig(),
+    mocks.thread,
   )
-  const mockedAttachmentProcessor = new AttachmentProcessor(
-    mockedMessageContext,
+  const messageContext = new MessageContext(
+    threadContext,
+    new MessageConfig(),
+    mocks.message,
   )
   const attachmentContext = new AttachmentContext(
-    mockedMessageContext,
+    messageContext,
     new AttachmentConfig(),
-    mockedGmailAttachment,
+    mocks.attachment,
   )
   const attachmentActions = new AttachmentActions(attachmentContext)
   return {
-    mockedGmailAttachment,
-    mockedAttachmentProcessor,
+    mocks,
+    attachment: mocks.attachment,
+    attachmentContext,
     attachmentActions,
-    mockedGDriveApp: md.gdriveApp,
-    mockedFolder: md.folder,
   }
 }
 
@@ -67,21 +49,21 @@ it("should provide actions in the action registry", () => {
 })
 
 it("should create a file", () => {
-  const { mockedFolder, attachmentActions } = getMocks(false)
+  const { mocks, attachmentActions } = getMocks(false)
   attachmentActions.storeToGDrive(
     "test-location",
     ConflictStrategy.REPLACE,
     "automated test",
   )
-  expect(mockedFolder.createFile).toBeCalled()
+  expect(mocks.folder.createFile).toBeCalled()
 })
 
 it("should not create a file on dry-run", () => {
-  const { mockedFolder, attachmentActions } = getMocks(true)
+  const { mocks, attachmentActions } = getMocks(true)
   attachmentActions.storeToGDrive(
     "test-location",
     ConflictStrategy.REPLACE,
     "automated test",
   )
-  expect(mockedFolder.createFile).not.toBeCalled()
+  expect(mocks.folder.createFile).not.toBeCalled()
 })

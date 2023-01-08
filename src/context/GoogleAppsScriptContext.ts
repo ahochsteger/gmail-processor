@@ -1,5 +1,6 @@
 export class GoogleAppsScriptContext {
-  constructor( // TODO: Reorder (e.g. logger, utilities first)
+  constructor(
+    // TODO: Reorder (e.g. logger, utilities first)
     public gmailApp: GoogleAppsScript.Gmail.GmailApp,
     public gdriveApp: GoogleAppsScript.Drive.DriveApp,
     public logger: Console,
