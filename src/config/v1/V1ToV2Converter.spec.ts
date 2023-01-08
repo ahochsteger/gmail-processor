@@ -264,6 +264,8 @@ it("should convert filenameTo patterns", () => {
       },
     ],
     settings: {
+      logSheetFile: "Gmail2GDrive/Gmail2GDrive-logs",
+      logSheetFolderId: "",
       maxBatchSize: 10,
       maxRuntime: 280,
       processedLabel: "to-gdrive/processed",

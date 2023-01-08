@@ -17,6 +17,8 @@ export function run(config: Config, dryRun = false) {
     DriveApp,
     console,
     Utilities,
+    SpreadsheetApp,
+    CacheService,
   )
 
   const threadProcessor = new ThreadProcessor(

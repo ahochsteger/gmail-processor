@@ -25,6 +25,8 @@ export class MockFactory {
       md.gdriveApp,
       md.console,
       md.utilities,
+      md.spreadsheetApp,
+      md.cacheService,
     )
     return gasContext
   }

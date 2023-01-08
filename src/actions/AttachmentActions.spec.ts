@@ -8,14 +8,14 @@ import { AttachmentContext } from "../context/AttachmentContext"
 import { MessageContext } from "../context/MessageContext"
 import { ThreadContext } from "../context/ThreadContext"
 import { ProcessingContext } from "../context/ProcessingContext"
-import { GoogleAppsScriptContext } from "../context/GoogleAppsScriptContext"
 import { ThreadConfig } from "../config/ThreadConfig"
 import { MessageConfig } from "../config/MessageConfig"
 import { Config } from "../config/Config"
+import { GoogleAppsScriptContext } from "../context/GoogleAppsScriptContext"
 
 function getMocks(dryRun = true) {
   const mockedGmailAttachment = MockFactory.newAttachmentMock()
-  const md = MockFactory.newMockObjects()
+  const md = MockFactory.newMockObjects() // TODO: Replace with mocked newGoogleAppsScriptContext to keep instances consistent
   const mockedMessageContext = new MessageContext(
     new ThreadContext(
       new ProcessingContext(
@@ -24,6 +24,8 @@ function getMocks(dryRun = true) {
           md.gdriveApp,
           md.console,
           md.utilities,
+          md.spreadsheetApp,
+          md.cacheService,
         ),
         new Config(),
         dryRun,

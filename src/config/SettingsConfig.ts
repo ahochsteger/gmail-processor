@@ -3,6 +3,14 @@
  */
 export class SettingsConfig {
   /**
+   * Path of the spreadsheet log file
+   */
+  logSheetFile = "Gmail2GDrive/Gmail2GDrive-logs"
+  /**
+   * Folder ID in case of a shared drive
+   */
+  logSheetFolderId = ""
+  /**
    * The maximum batch size of threads to process in a single run to respect Google processing limits
    */
   maxBatchSize = 10
