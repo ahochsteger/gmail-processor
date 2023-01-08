@@ -2,11 +2,11 @@ import { Adapter } from "../adapter/BaseAdapter"
 
 export function deprecated(message: string) {
   return function (
-    target: any,
+    target: unknown,
     propertyKey: string,
     descriptor: PropertyDescriptor,
   ) {
-    console.log(`${propertyKey} is deprecated: ${message}`) // TODO: Change to warn!
+    console.warn(`${target && descriptor ? propertyKey : propertyKey} is deprecated: ${message}`)
   }
 }
 
@@ -17,7 +17,7 @@ export function skipOnDryRun() {
     descriptor: PropertyDescriptor,
   ) {
     const originalMethod = descriptor.value
-    descriptor.value = function (this: T, ...args: any[]) {
+    descriptor.value = function (this: T, ...args: unknown[]) {
       if (this.processingContext.dryRun) {
         this.logger.info(`Skipped calling method '${propertyKey}'`)
         return

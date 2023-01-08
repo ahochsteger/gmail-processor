@@ -1,9 +1,8 @@
 import { AbstractActions } from "./AbstractActions"
-import { action, actionProvider } from "./ActionRegistry"
+import { action } from "./ActionRegistry"
 import { MessageContext } from "../context/MessageContext"
 import { GmailAdapter } from "../adapter/GmailAdapter"
 
-@actionProvider("message")
 export class MessageActions extends AbstractActions {
   private gmailAdapter: GmailAdapter
   private message: GoogleAppsScript.Gmail.GmailMessage

@@ -6,32 +6,21 @@ export type ActionArgType = boolean | number | string
 export type ActionArgsType = { [k: string]: ActionArgType }
 
 export type ActionType = typeof AbstractActions & {
-  new (...args: any[]): AbstractActions
+  new (...args: unknown[]): AbstractActions
 }
 
 export class ActionRegistry {
-  constructor(
-    protected context: ProcessingContext,
-    protected logger: Console = console,
-  ) {
-    // TODO: This introduces a circular dependency!
-    // const providerMap = new Map<string,AbstractActions>()
-    // providerMap.set("thread", new ThreadActions(context, logger))
-    // providerMap.set("message", new MessageActions(context, logger))
-    // providerMap.set("attachment", new AttachmentActions(context, logger))
-  }
-
-  private static getMeta(key: string, defaultValue: any): any {
+  private static getMeta<T>(key: string, defaultValue: T): T {
     return (
       Reflect.getMetadata(
         `gmail2gdrive:${key}`,
         ActionRegistry,
         `gmail2gdrive:${key}`,
       ) || defaultValue
-    )
+    ) as T
   }
 
-  private static setMeta(key: string, value: any) {
+  private static setMeta(key: string, value: unknown) {
     Reflect.defineMetadata(
       `gmail2gdrive:${key}`,
       value,
@@ -51,7 +40,7 @@ export class ActionRegistry {
 
   public static addAction(
     actionName: string,
-    target: any,
+    target: unknown,
     propertyKey: string,
     descriptor: PropertyDescriptor,
   ) {
@@ -78,7 +67,7 @@ export class ActionRegistry {
     }
   }
 
-  public static getActionMap(): any {
+  public static getActionMap(): {[k:string]:unknown} {
     return ActionRegistry.getMeta("actionMap", {})
   }
 
@@ -89,9 +78,9 @@ export class ActionRegistry {
   }
 }
 
-export function action(value = ""): any {
+export function action(value = "") {
   return function (
-    target: any,
+    target: unknown,
     propertyKey: string,
     descriptor: PropertyDescriptor,
   ) {
@@ -101,13 +90,5 @@ export function action(value = ""): any {
       propertyKey,
       descriptor,
     )
-  }
-}
-
-export function actionProvider(value = ""): any {
-  return function (
-    constructor: (context: ProcessingContext, logger: Console) => ActionType,
-  ) {
-    ActionRegistry.addProvider(value, constructor)
   }
 }

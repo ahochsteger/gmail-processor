@@ -1,10 +1,9 @@
 import { ConflictStrategy } from "../adapter/GDriveAdapter"
 import { AbstractActions } from "./AbstractActions"
-import { action, actionProvider } from "./ActionRegistry"
+import { action } from "./ActionRegistry"
 import { ThreadContext } from "../context/ThreadContext"
 import { GmailAdapter } from "../adapter/GmailAdapter"
 
-@actionProvider("thread")
 export class ThreadActions extends AbstractActions {
   private gmailAdapter: GmailAdapter
   private thread: GoogleAppsScript.Gmail.GmailThread
