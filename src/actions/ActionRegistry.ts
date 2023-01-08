@@ -11,13 +11,11 @@ export type ActionType = typeof AbstractActions & {
 
 export class ActionRegistry {
   private static getMeta<T>(key: string, defaultValue: T): T {
-    return (
-      Reflect.getMetadata(
-        `gmail2gdrive:${key}`,
-        ActionRegistry,
-        `gmail2gdrive:${key}`,
-      ) || defaultValue
-    ) as T
+    return (Reflect.getMetadata(
+      `gmail2gdrive:${key}`,
+      ActionRegistry,
+      `gmail2gdrive:${key}`,
+    ) || defaultValue) as T
   }
 
   private static setMeta(key: string, value: unknown) {
@@ -67,7 +65,7 @@ export class ActionRegistry {
     }
   }
 
-  public static getActionMap(): {[k:string]:unknown} {
+  public static getActionMap(): { [k: string]: unknown } {
     return ActionRegistry.getMeta("actionMap", {})
   }
 

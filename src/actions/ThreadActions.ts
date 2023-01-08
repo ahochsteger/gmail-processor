@@ -75,7 +75,6 @@ export class ThreadActions extends AbstractActions {
    */
   @action("thread.storeAsPdfToGDrive")
   public storeAsPdfToGDrive(
-    gdriveApp: GoogleAppsScript.Drive.DriveApp,
     location: string,
     conflictStrategy: ConflictStrategy,
   ) {

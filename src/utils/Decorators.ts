@@ -1,18 +1,14 @@
 import { Adapter } from "../adapter/BaseAdapter"
 
 export function deprecated(message: string) {
-  return function (
-    target: unknown,
-    propertyKey: string,
-    descriptor: PropertyDescriptor,
-  ) {
-    console.warn(`${target && descriptor ? propertyKey : propertyKey} is deprecated: ${message}`)
+  return function (_target: unknown, propertyKey: string) {
+    console.warn(`${propertyKey} is deprecated: ${message}`)
   }
 }
 
 export function skipOnDryRun() {
   return function <T extends Adapter>(
-    target: T,
+    _target: T,
     propertyKey: string,
     descriptor: PropertyDescriptor,
   ) {

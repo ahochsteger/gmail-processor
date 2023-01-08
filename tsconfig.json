@@ -6,8 +6,7 @@
     "module": "commonjs",
     "strict": true,
     "noUnusedLocals": true,
-    // "noUnusedParameters": true, // TODO: Enable again, if all errors are fixed.
-    "noUnusedParameters": false,
+    "noUnusedParameters": true,
     "noImplicitReturns": false,
     "noFallthroughCasesInSwitch": true,
     "esModuleInterop": true,
