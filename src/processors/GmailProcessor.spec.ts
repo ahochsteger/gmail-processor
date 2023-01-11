@@ -1,23 +1,25 @@
 import { Mocks } from "../../test/mocks/Mocks"
-import { Config } from "../config/Config"
 import { anyString } from "jest-mock-extended"
 import { MockFactory } from "../../test/mocks/MockFactory"
-import { plainToClass } from "class-transformer"
+import { GmailProcessor } from "./GmailProcessor"
 
-const config = plainToClass(Config, MockFactory.newDefaultConfig())
-const mocks = new Mocks()
-const gasContext = MockFactory.newGasContextMock(mocks)
-const gmailProcessor = MockFactory.newGmailProcessorMock(config, gasContext)
+function getMocks() {
+  const mocks = new Mocks()
+  return {
+    ...mocks,
+  }
+}
 
 it("should process the thread rules", () => {
   // Prepare fake result for search() in substitute:
-  // mockedGmailApp.search(Arg.any(), 1, config.maxBatchSize).returns([])
+  const config = MockFactory.newDefaultConfig()
+  const mocks = getMocks()
+  const gmailProcessor = new GmailProcessor(mocks.gasContext)
   mocks.gmailApp.search
     .calledWith(anyString(), 1, config.settings.maxBatchSize)
     .mockReturnValue([])
-  gmailProcessor.run()
-  expect(gasContext.gmailApp.search).toHaveBeenCalledTimes(
+  gmailProcessor.run(config, true)
+  expect(mocks.gasContext.gmailApp.search).toHaveBeenCalledTimes(
     config.handler.length,
   )
-  // mockedGmailApp.received(config.threadRules.length).search(anyString(), 1, config.maxBatchSize)
 })

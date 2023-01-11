@@ -1,8 +1,5 @@
 import { Config } from "./config/Config"
 import { GmailProcessor } from "./processors/GmailProcessor"
-import { GoogleAppsScriptContext } from "./context/GoogleAppsScriptContext"
-import { ProcessingContext } from "./context/ProcessingContext"
-import { ThreadProcessor } from "./processors/ThreadProcessor"
 import { V1Config } from "./config/v1/V1Config"
 import { V1ToV2Converter } from "./config/v1/V1ToV2Converter"
 import { plainToClass } from "class-transformer"
@@ -11,21 +8,10 @@ import { plainToClass } from "class-transformer"
  * @param config GMail2GDrive configuration
  * @param dryRun Just show what would have been done but don't write anything to GMail or GDrive.
  */
-export function run(config: Config, dryRun = false) {
-  const gasContext: GoogleAppsScriptContext = new GoogleAppsScriptContext(
-    GmailApp,
-    DriveApp,
-    console,
-    Utilities,
-    SpreadsheetApp,
-    CacheService,
-  )
-
-  const threadProcessor = new ThreadProcessor(
-    new ProcessingContext(gasContext, config, dryRun),
-  )
-  const gmailProcessor = new GmailProcessor(gasContext, config, threadProcessor)
-  gmailProcessor.run()
+export function run(configJson: Config, dryRun = false) {
+  const config = plainToClass(Config, configJson)
+  const gmailProcessor = new GmailProcessor()
+  gmailProcessor.run(config, dryRun)
 }
 
 export function runWithV1Config(v1configJson: object, dryRun = false) {

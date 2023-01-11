@@ -11,9 +11,14 @@ export class GmailProcessor {
   public timer: Timer
 
   constructor(
-    public gasContext: GoogleAppsScriptContext,
-    public config: Config,
-    public threadProcessor: ThreadProcessor,
+    public gasContext = new GoogleAppsScriptContext(
+      GmailApp,
+      DriveApp,
+      console,
+      Utilities,
+      SpreadsheetApp,
+      CacheService,
+    ),
   ) {
     this.timer = new Timer()
   }
@@ -22,16 +27,16 @@ export class GmailProcessor {
     this.logger = logger
   }
 
-  public run(dryRun = false) {
+  public run(config: Config, dryRun = false) {
     this.logger.info("Processing of GMail2GDrive config started ...")
     const processingContext = new ProcessingContext(
       this.gasContext,
-      this.config,
+      config,
       dryRun,
     )
     const threadProcessor = new ThreadProcessor(processingContext)
     threadProcessor.logger = this.logger
-    threadProcessor.processThreadConfigs(this.config.handler)
+    threadProcessor.processThreadConfigs(config.handler)
     this.logger.info("Processing of GMail2GDrive config finished.")
   }
 }

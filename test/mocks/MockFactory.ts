@@ -2,7 +2,6 @@ import { Config } from "../../src/config/Config"
 import { mock } from "jest-mock-extended"
 import { ProcessingContext } from "../../src/context/ProcessingContext"
 import { GmailProcessor } from "../../src/processors/GmailProcessor"
-import { ThreadProcessor } from "../../src/processors/ThreadProcessor"
 import { GoogleAppsScriptContext } from "../../src/context/GoogleAppsScriptContext"
 import { Mocks } from "./Mocks"
 import { ThreadContext } from "../../src/context/ThreadContext"
@@ -14,6 +13,7 @@ import { ThreadConfig } from "../../src/config/ThreadConfig"
 import { ActionConfig } from "../../src/config/ActionConfig"
 import { MessageFlag } from "../../src/config/MessageFlag"
 import { SettingsConfig } from "../../src/config/SettingsConfig"
+import { plainToClass } from "class-transformer"
 
 export class MockFactory {
   public static newGasContextMock(mocks = new Mocks()) {
@@ -204,10 +204,10 @@ export class MockFactory {
     ]
   }
 
-  public static newDefaultConfig(): unknown {
-    return {
+  public static newDefaultConfig(): Config {
+    return plainToClass(Config, {
       handler: this.newComplexThreadConfigList(),
-    }
+    })
   }
 
   public static newProcessingContextMock(
@@ -219,18 +219,9 @@ export class MockFactory {
   }
 
   public static newGmailProcessorMock(
-    config: Config,
     gasContext = MockFactory.newGasContextMock(),
-    dryRun = true,
   ) {
-    const threadProcessor = new ThreadProcessor(
-      new ProcessingContext(gasContext, config, dryRun),
-    )
-    const gmailProcessor = new GmailProcessor(
-      gasContext,
-      config,
-      threadProcessor,
-    )
+    const gmailProcessor = new GmailProcessor(gasContext)
     gmailProcessor.setLogger(gasContext.logger)
     return gmailProcessor
   }
