@@ -164,7 +164,7 @@ function processMessage(message, rule, config) {
     var re = new RegExp(rule.filenameFromRegexp);
       match = (attachment.getName()).match(re);
     }
-    if (!match) {
+    if (!match || attachment.getName().endsWith('png') || attachment.getName().endsWith('jpg') || attachment.getName().endsWith('jpeg')) {
       Logger.log("INFO:           Rejecting file '" + attachment.getName() + " not matching" + rule.filenameFromRegexp);
       continue;
     }
@@ -175,16 +175,26 @@ function processMessage(message, rule, config) {
       var folder = getOrCreateFolder(folderName, rule.parentFolderId);
       var file = folder.createFile(attachment);
       var original_attachment_name = file.getName();
-      var new_filename = rule.filenameTo.replace('%s',message.getSubject()).replace("%d", String(rule_counter++)).replace('%o', original_attachment_name)
+      var new_filename = rule.filenameTo.replace('%s',message.getSubject().normalize("NFKD").replace(/[\u0300-\u036f]/g, "")).replace("%d", String(rule_counter++)).replace('%o', original_attachment_name.normalize("NFKD").replace(/[\u0300-\u036f]/g, "")).replace('%r',message.getReplyTo().normalize("NFKD").replace(/[\u0300-\u036f]/g, "")).replace('%f',message.getFrom().normalize("NFKD").replace(/[\u0300-\u036f]/g, ""));
       if (rule.filenameFrom && rule.filenameTo && rule.filenameFrom == file.getName()) {
-        var final_attachment_name = Utilities.formatDate(messageDate, config.timezone, new_filename);
-        Logger.log("INFO:           Renaming matched file '" + file.getName() + "' -> '" + final_attachment_name + "'");
-        file.setName(final_attachment_name);
+        try {
+          var final_attachment_name = Utilities.formatDate(messageDate, config.timezone, new_filename);
+          Logger.log("INFO:           Renaming matched file '" + file.getName() + "' -> '" + final_attachment_name + "'");
+          file.setName(final_attachment_name);
+        } catch(e) {
+          Logger.log("ERROR:           failed on  formatDate, using" + new_filename);
+          file.setName(new_filename);
+        }
       }
       else if (rule.filenameTo) {
-        var final_attachment_name = Utilities.formatDate(messageDate, config.timezone, new_filename);
-        Logger.log("INFO:           Renaming '" + file.getName() + "' -> '" + final_attachment_name + "'");
-        file.setName(final_attachment_name);
+        try {
+          var final_attachment_name = Utilities.formatDate(messageDate, config.timezone, new_filename);
+          Logger.log("INFO:           Renaming '" + file.getName() + "' -> '" + final_attachment_name + "'");
+          file.setName(final_attachment_name);
+        } catch(e) {
+          Logger.log("ERROR:           failed on  formatDate, using" + new_filename);
+          file.setName(new_filename);
+        }
       }
       file.setDescription("Mail title: " + message.getSubject() + "\nMail date: " + message.getDate() + "\nMail link: https://mail.google.com/mail/u/0/#inbox/" + message.getId());
       Utilities.sleep(config.sleepTime);
@@ -204,6 +214,7 @@ function processThreadToHtml(thread) {
   for (var msgIdx=0; msgIdx<messages.length; msgIdx++) {
     var message = messages[msgIdx];
     html += "From: " + message.getFrom() + "<br />\n";
+    html += "Reply-To: " + message.getReplyTo() + "<br />\n";
     html += "To: " + message.getTo() + "<br />\n";
     html += "Date: " + message.getDate() + "<br />\n";
     html += "Subject: " + message.getSubject() + "<br />\n";
@@ -230,8 +241,14 @@ function processThreadToPdf(thread, rule, config) {
   var folder = getOrCreateFolder(folderName, rule.parentFolderId);
 
   if (rule.filenameTo) {
-    filename = Utilities.formatDate(thread.getMessages()[0].getDate(), config.timezone, rule.filenameTo.replace('%s',thread.getFirstMessageSubject()));
-    Logger.log("INFO:           Renaming '" + thread.getFirstMessageSubject() + "' -> '" + filename + "'");
+    try {
+      filename = Utilities.formatDate(thread.getMessages()[0].getDate(), config.timezone, rule.filenameTo.replace('%s',thread.getFirstMessageSubject().normalize("NFKD").replace(/[\u0300-\u036f]/g, ""))).replace('%r',thread.getMessages()[0].getReplyTo().normalize("NFKD").replace(/[\u0300-\u036f]/g, "")).replace('%f',thread.getMessages()[0].getFrom().normalize("NFKD").replace(/[\u0300-\u036f]/g, "")).replace('%o','');
+      Logger.log("INFO:           Renaming '" + thread.getFirstMessageSubject() + "' -> '" + filename + "'");
+
+    } catch(e) {
+      filename = rule.filenameTo.replace('%s',thread.getFirstMessageSubject().normalize("NFKD").replace(/[\u0300-\u036f]/g, "")).replace('%r',thread.getMessages()[0].getReplyTo().normalize("NFKD").replace(/[\u0300-\u036f]/g, "")).replace('%f',thread.getMessages()[0].getFrom().normalize("NFKD").replace(/[\u0300-\u036f]/g, "")).replace('%o','');
+      Logger.log("ERROR:           failed on  formatDate, using" + filename);
+    }
     pdf = folder.createFile(blob.getAs('application/pdf')).setName(filename + ".pdf");
   } else {
     pdf = folder.createFile(blob.getAs('application/pdf')).setName(thread.getFirstMessageSubject() + ".pdf");
