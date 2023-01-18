@@ -44,11 +44,7 @@ export class ThreadProcessor extends BaseProcessor {
   public processThreadConfig(threadConfig: ThreadConfig) {
     const gSearchExp = this.getQueryFromThreadConfig(threadConfig)
     // Process all threads matching the search expression:
-    const threads = this.processingContext.gasContext.gmailApp.search(
-      gSearchExp,
-      1,
-      this.config.settings.maxBatchSize,
-    )
+    const threads = this.processingContext.gmailAdapter.search(gSearchExp)
     this.logger.info(
       `  Processing of thread config '${threadConfig.name}' started ...`,
     )

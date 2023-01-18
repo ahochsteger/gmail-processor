@@ -9,6 +9,14 @@ export class GmailAdapter extends BaseAdapter {
     this.gmailApp = processingContext.gasContext.gmailApp
   }
 
+  public search(query: string): GoogleAppsScript.Gmail.GmailThread[] {
+    return this.processingContext.gasContext.gmailApp.search(
+      query,
+      1,
+      this.processingContext.config.settings.maxBatchSize,
+    )
+  }
+
   // TODO: Maybe move to a utility class - is not Gmail-specific
   public convertHtmlToPdf(html: string): string {
     const htmlBlob = Utilities.newBlob(html, "text/html")
