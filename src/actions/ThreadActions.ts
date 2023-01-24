@@ -71,16 +71,17 @@ export class ThreadActions extends AbstractActions {
   }
 
   /**
-   * Generate a PDF document for the whole thread using HTML from .
+   * Generate a PDF document for the whole thread and store it to GDrive.
    */
   @action("thread.storeAsPdfToGDrive")
   public storeAsPdfToGDrive(
     location: string,
     conflictStrategy: ConflictStrategy,
+    skipHeader = false,
   ) {
     return this.processingContext.gdriveAdapter.createFile(
       location,
-      this.gmailAdapter.threadAsPdf(this.threadContext.thread),
+      this.gmailAdapter.threadAsPdf(this.threadContext.thread, skipHeader),
       "application/pdf",
       "",
       conflictStrategy,

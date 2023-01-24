@@ -17,8 +17,12 @@ export class V1Rule {
   parentFolderId = ""
   /** Add the given label to the processed thread */
   ruleLabel = ""
+  /** Save the message to PDF */
+  saveMessagePDF = false
   /** Save the thread to PDF */
   saveThreadPDF = false
+  /** Skip header for PDF */
+  skipPDFHeader = false
 }
 
 /*
@@ -55,6 +59,13 @@ export class V1Rule {
       // Store threads marked with label "PDF" in the folder "PDF Emails" als PDF document.
       "filter": "label:PDF",
       "saveThreadPDF": true,
+      "folder": "PDF Emails"
+    },
+    {
+      // Store each INDIVIDUAL email as "PDF" instead of an entire thread, in the folder "PDF Emails"
+      "filter": "from:no_reply@email-invoice.example.com",
+      "saveMessagePDF": true,
+      "skipPDFHeader": true, // Skip Email Header
       "folder": "PDF Emails"
     },
     {

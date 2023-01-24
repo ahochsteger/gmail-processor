@@ -23,20 +23,24 @@ export class GmailAdapter extends BaseAdapter {
     return htmlBlob.getAs("application/pdf").getDataAsString()
   }
 
-  public messageAsHtml(message: GoogleAppsScript.Gmail.GmailMessage): string {
-    const html = `From: ${message.getFrom()}<br />
+  public messageAsHtml(message: GoogleAppsScript.Gmail.GmailMessage, skipHeader = false): string {
+    let html = ""
+    if (!skipHeader) {
+      html += `From: ${message.getFrom()}<br />
 To: ${message.getTo()}<br />
 Date: ${message.getDate()}<br />
 Subject: ${message.getSubject()}<br />
 <hr />
-${message.getBody()}
+`
+    }
+    html += `${message.getBody()}
 <hr />
 `
     return html
   }
 
-  public messageAsPdf(message: GoogleAppsScript.Gmail.GmailMessage) {
-    return this.convertHtmlToPdf(this.messageAsHtml(message))
+  public messageAsPdf(message: GoogleAppsScript.Gmail.GmailMessage, skipHeader = false) {
+    return this.convertHtmlToPdf(this.messageAsHtml(message, skipHeader))
   }
 
   @skipOnDryRun()
@@ -113,7 +117,7 @@ ${message.getBody()}
   /**
    * Generate HTML code for one message of a thread.
    */
-  public threadAsHtml(thread: GoogleAppsScript.Gmail.GmailThread) {
+  public threadAsHtml(thread: GoogleAppsScript.Gmail.GmailThread, skipHeader = false) {
     this.logger.info(
       "  Generating HTML code of thread '" +
         thread.getFirstMessageSubject() +
@@ -122,13 +126,13 @@ ${message.getBody()}
     const messages = thread.getMessages()
     let html = ""
     for (const message of messages) {
-      html += this.messageAsHtml(message)
+      html += this.messageAsHtml(message, skipHeader)
     }
     return html
   }
 
-  public threadAsPdf(thread: GoogleAppsScript.Gmail.GmailThread) {
-    return this.convertHtmlToPdf(this.threadAsHtml(thread))
+  public threadAsPdf(thread: GoogleAppsScript.Gmail.GmailThread, skipHeader = false) {
+    return this.convertHtmlToPdf(this.threadAsHtml(thread, skipHeader))
   }
 
   @skipOnDryRun()

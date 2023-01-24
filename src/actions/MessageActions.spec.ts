@@ -36,6 +36,7 @@ it("should provide actions in the action registry", () => {
     "message.markUnread",
     "message.moveToTrash",
     "message.star",
+    "message.storeAsPdfToGDrive",
     "message.unstar",
   ])
 })

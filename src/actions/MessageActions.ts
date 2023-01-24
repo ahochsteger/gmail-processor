@@ -2,6 +2,7 @@ import { AbstractActions } from "./AbstractActions"
 import { action } from "./ActionRegistry"
 import { MessageContext } from "../context/MessageContext"
 import { GmailAdapter } from "../adapter/GmailAdapter"
+import { ConflictStrategy } from "../adapter/GDriveAdapter"
 
 export class MessageActions extends AbstractActions {
   private gmailAdapter: GmailAdapter
@@ -47,5 +48,23 @@ export class MessageActions extends AbstractActions {
   @action("message.unstar")
   public unstar() {
     this.gmailAdapter.messageUnstar(this.message)
+  }
+
+  /**
+   * Generate a PDF document from the message and store it to GDrive.
+   */
+  @action("message.storeAsPdfToGDrive")
+  public storeAsPdfToGDrive(
+    location: string,
+    conflictStrategy: ConflictStrategy,
+    skipHeader = false,
+  ) {
+    return this.processingContext.gdriveAdapter.createFile(
+      location,
+      this.gmailAdapter.messageAsPdf(this.messageContext.message, skipHeader),
+      "application/pdf",
+      "",
+      conflictStrategy,
+    )
   }
 }

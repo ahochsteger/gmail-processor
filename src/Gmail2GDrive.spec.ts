@@ -1,6 +1,7 @@
 describe("Features", () => {
-  describe("Store email thread as PDF", () => {
+  describe("Store as PDF", () => {
     test.todo("should be able to store the thread as PDF (PR #2)")
+    test.todo("should be able to store an individual message as PDF (PR #73)")
     test.todo(
       "should be able to store attachments and email PDF in the same folder (issue #36, PR #40)",
     )
