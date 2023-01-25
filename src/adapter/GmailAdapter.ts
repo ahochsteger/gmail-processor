@@ -19,7 +19,7 @@ export class GmailAdapter extends BaseAdapter {
 
   // TODO: Maybe move to a utility class - is not Gmail-specific
   public convertHtmlToPdf(html: string): string {
-    const htmlBlob = Utilities.newBlob(html, "text/html")
+    const htmlBlob = this.processingContext.gasContext.utilities.newBlob(html, "text/html")
     return htmlBlob.getAs("application/pdf").getDataAsString()
   }
 

@@ -23,9 +23,11 @@ export class Mocks {
   public fileIterator = mock<GoogleAppsScript.Drive.FileIterator>()
   public folderIterator = mock<GoogleAppsScript.Drive.FolderIterator>()
   public cache = mock<GoogleAppsScript.Cache.Cache>()
+  public blob = mock<GoogleAppsScript.Base.Blob>()
 
   constructor(config = new Config(), dryRun = true) {
     // Setup mock behavior:
+    this.thread.getMessages.mockReturnValue([this.message])
     this.thread.markImportant.mockReturnValue(this.thread)
     this.message.forward.mockReturnValue(this.message)
     this.folder.getFilesByName.mockReturnValue(this.fileIterator)
@@ -47,5 +49,8 @@ export class Mocks {
       config,
       dryRun,
     )
+    this.blob.getAs.mockReturnValue(this.blob)
+    this.blob.getDataAsString.mockReturnValue("PDF-Contents")
+    this.utilities.newBlob.mockReturnValue(this.blob)
   }
 }

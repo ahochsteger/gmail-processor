@@ -5,6 +5,7 @@ import { plainToClass } from "class-transformer"
 import { ActionRegistry } from "./ActionRegistry"
 import { ThreadConfig } from "../config/ThreadConfig"
 import { ThreadContext } from "../context/ThreadContext"
+import { ConflictStrategy } from "../adapter/GDriveAdapter"
 
 function getMocks(dryRun = true, config = new Config()) {
   const mocks = new Mocks(config, dryRun)
@@ -82,6 +83,20 @@ it("should not add a label to a thread if processedMode='read'", () => {
   expect(thread.addLabel).not.toBeCalled()
 })
 
-it.todo("should convert a thread to PDF")
+it("should store a thread as PDF with header", () => {
+  const { thread, threadActions, mocks } = getMocks(false)
+  threadActions.storeAsPdfToGDrive("thread.pdf", ConflictStrategy.REPLACE, false)
+  expect(mocks.blob.getAs).toBeCalledWith("application/pdf")
+  expect(mocks.blob.getDataAsString()).toEqual("PDF-Contents")
+  expect(thread.getFirstMessageSubject).toBeCalled()
+})
+
+it("should store a thread as PDF without header", () => {
+  const { thread, threadActions, mocks } = getMocks(false)
+  threadActions.storeAsPdfToGDrive("thread.pdf", ConflictStrategy.REPLACE, true)
+  expect(mocks.blob.getAs).toBeCalledWith("application/pdf")
+  expect(mocks.blob.getDataAsString()).toEqual("PDF-Contents")
+  expect(thread.getMessages()[0].getSubject).not.toBeCalled()
+})
 
 it.todo("should use filenameTo as the output filename") // See PR #61

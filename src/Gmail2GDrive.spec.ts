@@ -2,6 +2,7 @@ describe("Features", () => {
   describe("Store as PDF", () => {
     test.todo("should be able to store the thread as PDF (PR #2)")
     test.todo("should be able to store an individual message as PDF (PR #73)")
+    test.todo("should be able to skip the message header in PDF exports (PR #73)")
     test.todo(
       "should be able to store attachments and email PDF in the same folder (issue #36, PR #40)",
     )
@@ -33,6 +34,8 @@ describe("Features", () => {
       "should handle special characters in the resulting filenames (issue #47, PR #40)",
     )
     test.todo("should allow to enumerate the attachments (issue #58)")
+    test.todo("should be able to sanitize file names (PR #76)")
+    test.todo("should be able to use replyTo and from as folder/file names (PR #76)")
   })
   describe("Filtering", () => {
     test.todo("should be able to exclude inline attachments (issue #13,#26)")
