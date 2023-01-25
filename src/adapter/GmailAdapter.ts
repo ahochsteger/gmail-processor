@@ -19,11 +19,17 @@ export class GmailAdapter extends BaseAdapter {
 
   // TODO: Maybe move to a utility class - is not Gmail-specific
   public convertHtmlToPdf(html: string): string {
-    const htmlBlob = this.processingContext.gasContext.utilities.newBlob(html, "text/html")
+    const htmlBlob = this.processingContext.gasContext.utilities.newBlob(
+      html,
+      "text/html",
+    )
     return htmlBlob.getAs("application/pdf").getDataAsString()
   }
 
-  public messageAsHtml(message: GoogleAppsScript.Gmail.GmailMessage, skipHeader = false): string {
+  public messageAsHtml(
+    message: GoogleAppsScript.Gmail.GmailMessage,
+    skipHeader = false,
+  ): string {
     let html = ""
     if (!skipHeader) {
       html += `From: ${message.getFrom()}<br />
@@ -39,7 +45,10 @@ Subject: ${message.getSubject()}<br />
     return html
   }
 
-  public messageAsPdf(message: GoogleAppsScript.Gmail.GmailMessage, skipHeader = false) {
+  public messageAsPdf(
+    message: GoogleAppsScript.Gmail.GmailMessage,
+    skipHeader = false,
+  ) {
     return this.convertHtmlToPdf(this.messageAsHtml(message, skipHeader))
   }
 
@@ -117,7 +126,10 @@ Subject: ${message.getSubject()}<br />
   /**
    * Generate HTML code for one message of a thread.
    */
-  public threadAsHtml(thread: GoogleAppsScript.Gmail.GmailThread, skipHeader = false) {
+  public threadAsHtml(
+    thread: GoogleAppsScript.Gmail.GmailThread,
+    skipHeader = false,
+  ) {
     this.logger.info(
       "  Generating HTML code of thread '" +
         thread.getFirstMessageSubject() +
@@ -131,7 +143,10 @@ Subject: ${message.getSubject()}<br />
     return html
   }
 
-  public threadAsPdf(thread: GoogleAppsScript.Gmail.GmailThread, skipHeader = false) {
+  public threadAsPdf(
+    thread: GoogleAppsScript.Gmail.GmailThread,
+    skipHeader = false,
+  ) {
     return this.convertHtmlToPdf(this.threadAsHtml(thread, skipHeader))
   }
 
