@@ -3,8 +3,14 @@ import { MessageConfig } from "../config/MessageConfig"
 import { MessageFlag } from "../config/MessageFlag"
 import { plainToClass } from "class-transformer"
 import { MessageProcessor } from "./MessageProcessor"
+import { Mocks } from "../../test/mocks/Mocks"
+import { Config } from "../config/Config"
 
-const gasContext = MockFactory.newGasContextMock()
+let mocks: Mocks
+
+beforeEach(() => {
+  mocks = new Mocks(new Config(), false)
+})
 
 it("should match messages with matching parameters", () => {
   const matchExamples = [
@@ -95,11 +101,7 @@ it("should match messages with matching parameters", () => {
     })
     const res = []
     for (const m of mockedThread.getMessages()) {
-      const messageProcessor = new MessageProcessor(
-        MockFactory.newThreadContextMock(
-          MockFactory.newProcessingContextMock(gasContext),
-        ),
-      )
+      const messageProcessor = new MessageProcessor(mocks.threadContext)
       if (messageProcessor.matches(messageConfig, m)) {
         res.push(m.getSubject())
       }
