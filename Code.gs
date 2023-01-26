@@ -48,7 +48,12 @@ function Gmail2GDrive() {
       var messages = thread.getMessages();
       for (var msgIdx=0; msgIdx<messages.length; msgIdx++) {
         var message = messages[msgIdx];
-        processMessage(message, rule, config);
+
+        if (rule.saveMessagePDF) {
+          processMessageToPdf(message, rule, config);
+        } else {
+          processMessage(message, rule, config);
+        }
       }
       if (doPDF) { // Generate a PDF document of a thread:
         processThreadToPdf(thread, rule, config);
@@ -195,19 +200,63 @@ function processMessage(message, rule, config) {
 }
 
 /**
- * Generate HTML code for one message of a thread.
+ * Generate HTML code for a single message.
  */
-function processThreadToHtml(thread) {
-  Logger.log("INFO:   Generating HTML code of thread '" + thread.getFirstMessageSubject() + "'");
-  var messages = thread.getMessages();
+function processMessageToHtml(message, skipPDFHeader) {
+  Logger.log("INFO:   Generating HTML code of message '" + message.getSubject() + "'");
   var html = "";
-  for (var msgIdx=0; msgIdx<messages.length; msgIdx++) {
-    var message = messages[msgIdx];
+
+  if (!skipPDFHeader) {
     html += "From: " + message.getFrom() + "<br />\n";
     html += "To: " + message.getTo() + "<br />\n";
     html += "Date: " + message.getDate() + "<br />\n";
     html += "Subject: " + message.getSubject() + "<br />\n";
     html += "<hr />\n";
+  }
+
+  html += message.getBody() + "\n";
+  html += "<hr />\n";
+  return html;
+}
+
+/**
+* Generate a PDF document for a single message using HTML from .
+ */
+function processMessageToPdf(message, rule, config) {
+  var filename = message.getSubject() + ".pdf";
+  var messageDate = message.getDate();
+
+  if (rule.filenameTo) {
+    filename = Utilities.formatDate(messageDate, config.timezone, rule.filenameTo.replace('%s',message.getSubject()));
+  }
+
+  Logger.log("INFO: Saving PDF copy of message '" + filename + "'");
+
+  var folder = getOrCreateFolder(Utilities.formatDate(messageDate, config.timezone, rule.folder), rule.parentFolderId);
+  var html = processMessageToHtml(message, rule.skipPDFHeader);
+  var blob = Utilities.newBlob(html, 'text/html');
+  var pdf = folder.createFile(blob.getAs('application/pdf')).setName(filename + ".pdf");
+  return pdf;
+}
+
+/**
+ * Generate HTML code for all messages of a thread.
+ */
+function processThreadToHtml(thread, skipHeader) {
+  Logger.log("INFO:   Generating HTML code of thread '" + thread.getFirstMessageSubject() + "'");
+  var messages = thread.getMessages();
+  var html = "";
+  for (var msgIdx=0; msgIdx<messages.length; msgIdx++) {
+    var message = messages[msgIdx];
+
+    if (!skipHeader) {
+      html += "From: " + message.getFrom() + "<br />\n";
+      html += "To: " + message.getTo() + "<br />\n";
+      html += "Date: " + message.getDate() + "<br />\n";
+      html += "Subject: " + message.getSubject() + "<br />\n";
+      html += "<hr />\n";
+    }
+
     html += message.getBody() + "\n";
     html += "<hr />\n";
   }

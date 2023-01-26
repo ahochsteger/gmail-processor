@@ -58,13 +58,20 @@ function getGmail2GDriveConfig() {
         "archive": true
       },
       {
-        // Store threads marked with label "PDF" in the folder "PDF Emails" als PDF document.
+        // Store threads marked with label "PDF" in the folder "PDF Emails" as PDF document.
         "filter": "label:PDF",
         "saveThreadPDF": true,
         "folder": "PDF Emails"
       },
       {
-        // Store threads marked with label "PDF" in the folder "PDF Emails" als PDF document.
+        // Store each INDIVIDUAL email as "PDF" instead of an entire thread, in the folder "PDF Emails"
+        "filter": "from:no_reply@email-invoice.example.com",
+        "saveMessagePDF": true,
+        "skipPDFHeader": true, // Skip Email Header
+        "folder": "PDF Emails"
+      },
+      {
+        // Store threads marked with label "PDF" in the folder "PDF Emails" as PDF document.
         // while renaming the PDFs to the pattern defined in 'filenameTo'.
         // filenameTo supports the following printf style substitutions:
         // %s - The subject of the message/thread
