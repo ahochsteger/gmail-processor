@@ -66,8 +66,8 @@ function getGmail2GDriveConfig() {
       {
         // Store each INDIVIDUAL email as "PDF" instead of an entire thread, in the folder "PDF Emails"
         "filter": "from:no_reply@email-invoice.example.com",
-        "saveMessageAsPDF": true,
-        "skipHeader": true, // Skip Email Header
+        "saveMessagePDF": true,
+        "skipPDFHeader": true, // Skip Email Header
         "folder": "PDF Emails"
       },
       {
