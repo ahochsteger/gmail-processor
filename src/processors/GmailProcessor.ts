@@ -4,6 +4,9 @@ import { ProcessingContext } from "../context/ProcessingContext"
 import { ThreadProcessor } from "./ThreadProcessor"
 import { PatternUtil } from "../utils/PatternUtil"
 import { Timer } from "../utils/Timer"
+import { V1Config } from "../config/v1/V1Config"
+import { V1ToV2Converter } from "../config/v1/V1ToV2Converter"
+import { plainToClass } from "class-transformer"
 
 export class GmailProcessor {
   public logger: Console
@@ -39,5 +42,24 @@ export class GmailProcessor {
     threadProcessor.logger = this.logger
     threadProcessor.processThreadConfigs(config.handler)
     this.logger.info("Processing of GMail2GDrive config finished.")
+  }
+
+  public runWithConfigJson(configJson: object, dryRun = false) {
+    const config = plainToClass(Config, configJson)
+    const gmailProcessor = new GmailProcessor()
+    gmailProcessor.run(config, dryRun)
+  }
+
+  public runWithV1Config(v1config: V1Config, dryRun = false) {
+    const config = V1ToV2Converter.v1ConfigToV2Config(v1config)
+    console.warn(
+      "Using deprecated v1 config format - switching to the new v2 config format is strongly recommended!",
+    )
+    this.run(config, dryRun)
+  }
+
+  public runWithV1ConfigJson(v1configJson: object, dryRun = false) {
+    const v1config = plainToClass(V1Config, v1configJson)
+    this.runWithV1Config(v1config, dryRun)
   }
 }
