@@ -6,7 +6,7 @@ import { PatternUtil } from "../utils/PatternUtil"
 import { Timer } from "../utils/Timer"
 
 export class GmailProcessor {
-  public logger: Console = console
+  public logger: Console
   public patternUtil: PatternUtil = new PatternUtil()
   public timer: Timer
 
@@ -21,6 +21,7 @@ export class GmailProcessor {
     ),
   ) {
     this.timer = new Timer()
+    this.logger = gasContext.logger
   }
 
   public setLogger(logger: Console) {
