@@ -12,6 +12,6 @@ it("should process the thread rules", () => {
     .mockReturnValue([])
   gmailProcessor.run(config, true)
   expect(mocks.gasContext.gmailApp.search).toHaveBeenCalledTimes(
-    config.handler.length,
+    config.threadHandler.length,
   )
 })

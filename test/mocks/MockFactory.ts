@@ -89,7 +89,7 @@ export class MockFactory {
         olderThan: "",
       },
       actions: includeCommands ? [this.newDefaultActionConfig()] : [],
-      handler: includeAttachmentConfigs
+      attachmentHandler: includeAttachmentConfigs
         ? [this.newDefaultAttachmentConfig()]
         : [],
     }
@@ -104,7 +104,7 @@ export class MockFactory {
       description: "A sample thread config",
       type: "thread",
       actions: includeCommands ? [this.newDefaultActionConfig()] : [],
-      handler: includeMessages ? [this.newDefaultMessageConfig()] : [],
+      messageHandler: includeMessages ? [this.newDefaultMessageConfig()] : [],
       match: {
         query: "has:attachment from:example@example.com",
         maxMessageCount: -1,
@@ -454,7 +454,7 @@ export class MockFactory {
     config = new Config(),
     dryRun = true,
   ) {
-    config.handler.push(threadConfig)
+    config.threadHandler.push(threadConfig)
 
     const ctx = new ThreadContext(
       new ProcessingContext(MockFactory.newGasContextMock(), config, dryRun),
@@ -473,8 +473,8 @@ export class MockFactory {
     threadConfig = new ThreadConfig(),
     config = new Config(),
   ) {
-    threadConfig.handler.push(messageConfig)
-    config.handler.push(threadConfig)
+    threadConfig.messageHandler.push(messageConfig)
+    config.threadHandler.push(threadConfig)
     const message = thread.getMessages()[messageIndex]
 
     const ctx = new MessageContext(
@@ -496,9 +496,9 @@ export class MockFactory {
     threadConfig = new ThreadConfig(),
     config = new Config(),
   ) {
-    messageConfig.handler.push(attachmentConfig)
-    threadConfig.handler.push(messageConfig)
-    config.handler.push(threadConfig)
+    messageConfig.attachmentHandler.push(attachmentConfig)
+    threadConfig.messageHandler.push(messageConfig)
+    config.threadHandler.push(threadConfig)
     const message = thread.getMessages()[messageIndex]
     const attachment = message.getAttachments()[attachmentIndex]
 

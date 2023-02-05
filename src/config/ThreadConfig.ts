@@ -19,7 +19,7 @@ export class ThreadConfig {
    * The list of handler that define the way nested messages or attachments are processed
    */
   @Type(() => MessageConfig)
-  handler: MessageConfig[] = []
+  messageHandler: MessageConfig[] = []
   /**
    * Specifies which threads match for further processing
    */

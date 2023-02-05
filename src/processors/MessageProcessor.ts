@@ -83,9 +83,11 @@ export class MessageProcessor extends BaseProcessor {
     const attachmentProcessor: AttachmentProcessor = new AttachmentProcessor(
       messageContext,
     )
-    if (messageConfig.handler) {
+    if (messageConfig.attachmentHandler) {
       // New rule configuration format
-      attachmentProcessor.processAttachmentConfigs(messageConfig.handler)
+      attachmentProcessor.processAttachmentConfigs(
+        messageConfig.attachmentHandler,
+      )
     }
     // } else { // Old rule configuration format
     //     // TODO: Convert old rule configuration into new format instead of duplicate implementation

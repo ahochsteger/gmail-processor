@@ -77,7 +77,7 @@ export class ThreadProcessor extends BaseProcessor {
     this.logger.info(
       `    Processing of thread '${thread.getFirstMessageSubject()}' started ...`,
     )
-    messageProcessor.processMessageConfigs(threadConfig.handler)
+    messageProcessor.processMessageConfigs(threadConfig.messageHandler)
     // // Process all messages of a thread:
     // for (const messageRule of threadRule.messageRules) {
     //     for (const message of thread.getMessages()) {

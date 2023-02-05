@@ -41,8 +41,8 @@ export class V1ToV2Converter {
         },
       }),
     )
-    messageConfig.handler.push(attachmentConfig)
-    threadConfig.handler.push(messageConfig)
+    messageConfig.attachmentHandler.push(attachmentConfig)
+    threadConfig.messageHandler.push(messageConfig)
     if (rule.newerThan != "") {
       threadConfig.match.newerThan = rule.newerThan
     }
@@ -78,7 +78,7 @@ export class V1ToV2Converter {
     config.global.match.newerThan = v1config.newerThan
     config.settings.timezone = v1config.timezone
     for (const rule of v1config.rules) {
-      config.handler.push(this.v1RuleToV2ThreadConfig(rule))
+      config.threadHandler.push(this.v1RuleToV2ThreadConfig(rule))
     }
     return config
   }

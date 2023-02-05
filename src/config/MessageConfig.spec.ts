@@ -22,7 +22,7 @@ it("should ensure nested object defaults", () => {
     },
   })
   expect(messageConfig.actions).toEqual([])
-  expect(messageConfig.handler).toEqual([])
+  expect(messageConfig.attachmentHandler).toEqual([])
   expect(messageConfig.match).toBeDefined()
   expect(messageConfig.match.from).toBe("test")
   expect(messageConfig.match.is).toEqual([])

@@ -40,15 +40,15 @@ it("should convert filenameTo patterns", () => {
       actions: [],
       type: "global",
     },
-    handler: [
+    threadHandler: [
       {
         actions: [],
         description: "",
-        handler: [
+        messageHandler: [
           {
             actions: [],
             description: "",
-            handler: [
+            attachmentHandler: [
               {
                 actions: [
                   {
@@ -98,11 +98,11 @@ it("should convert filenameTo patterns", () => {
       {
         actions: [],
         description: "",
-        handler: [
+        messageHandler: [
           {
             actions: [],
             description: "",
-            handler: [
+            attachmentHandler: [
               {
                 actions: [
                   {
@@ -152,11 +152,11 @@ it("should convert filenameTo patterns", () => {
       {
         actions: [],
         description: "",
-        handler: [
+        messageHandler: [
           {
             actions: [],
             description: "",
-            handler: [
+            attachmentHandler: [
               {
                 actions: [
                   {
@@ -212,11 +212,11 @@ it("should convert filenameTo patterns", () => {
           },
         ],
         description: "",
-        handler: [
+        messageHandler: [
           {
             actions: [],
             description: "",
-            handler: [
+            attachmentHandler: [
               {
                 actions: [
                   {

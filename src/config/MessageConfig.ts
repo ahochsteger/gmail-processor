@@ -19,7 +19,7 @@ export class MessageConfig {
    * The list of handler that define the way attachments are processed
    */
   @Type(() => AttachmentConfig)
-  handler: AttachmentConfig[] = []
+  attachmentHandler: AttachmentConfig[] = []
   /**
    * Specifies which attachments match for further processing
    */

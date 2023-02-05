@@ -20,7 +20,7 @@ export class Config {
    * The list of handler that define the way nested threads, messages or attachments are processed
    */
   @Type(() => ThreadConfig)
-  handler: ThreadConfig[] = []
+  threadHandler: ThreadConfig[] = []
   /**
    * Represents a settings config that affect the way GMail2GDrive works.
    */
