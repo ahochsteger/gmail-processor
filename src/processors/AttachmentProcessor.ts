@@ -5,8 +5,6 @@ import { PatternUtil } from "../utils/PatternUtil"
 import { BaseProcessor } from "./BaseProcessor"
 
 export class AttachmentProcessor extends BaseProcessor {
-  public logger: Console = console
-
   constructor(public messageContext: MessageContext) {
     super()
   }
@@ -23,7 +21,7 @@ export class AttachmentProcessor extends BaseProcessor {
   }
 
   public processAttachmentConfig(attachmentConfig: AttachmentConfig) {
-    this.logger.info(
+    console.info(
       `          Processing of attachment config '${attachmentConfig.name}' started ...`,
     )
     for (const attachment of this.messageContext.message.getAttachments()) {
@@ -34,14 +32,14 @@ export class AttachmentProcessor extends BaseProcessor {
       )
       this.processAttachment(attachmentContext)
     }
-    this.logger.info(
+    console.info(
       `          Processing of attachment config '${attachmentConfig.name}' finished.`,
     )
   }
 
   public processAttachment(attachmentContext: AttachmentContext) {
     const attachment = attachmentContext.attachment
-    this.logger.info(
+    console.info(
       `            Processing of attachment '${attachment.getName()}' started ...`,
     )
     // TODO: Check, if this.processingContext would be better here!
@@ -55,13 +53,12 @@ export class AttachmentProcessor extends BaseProcessor {
     //   continue;
     // }
 
-    PatternUtil.logger = this.logger
     const dataMap =
       PatternUtil.buildSubstitutionMapFromAttachmentContext(attachmentContext)
     // TODO: Implement attachment handling including dry-run
-    this.logger.log("Dumping dataMap:")
-    this.logger.log(dataMap)
-    this.logger.info(
+    console.log("Dumping dataMap:")
+    console.log(dataMap)
+    console.info(
       `            Processing of attachment '${attachment.getName()}' finished.`,
     )
   }
@@ -72,7 +69,7 @@ export class AttachmentProcessor extends BaseProcessor {
   //     const thread: GoogleAppsScript.Gmail.GmailThread,
   //     const msgIdx: number: messageC.index
   //     const message = thread.getMessages()[msgIdx]
-  //     this.logger.info("        Processing attachment rule: "
+  //     console.info("        Processing attachment rule: "
   //         + attachmentRule.getSubject() + " (" + message.getId() + ")")
   //     for (let attIdx = 0; attIdx < message.getAttachments().length; attIdx++) {
   //         // TODO: Add support for attachment rules

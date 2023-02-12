@@ -21,7 +21,7 @@
     "push-examples": "cd build/gas/examples && clasp push -f",
     "push-lib": "cd build/gas/lib && clasp push -f",
     "redeploy": "npm run pre-commit && npm run push",
-    "test": "jest --detectOpenHandles"
+    "test": "jest --silent --detectOpenHandles"
   },
   "repository": {
     "type": "git",

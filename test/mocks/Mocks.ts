@@ -15,7 +15,6 @@ import { AttachmentConfig } from "../../src/config/AttachmentConfig"
 export class Mocks {
   // Create Google Apps Script Context mock objects:
   public gasContext: GoogleAppsScriptContext
-  public console = mock<Console>()
   public gmailApp = mock<GoogleAppsScript.Gmail.GmailApp>()
   public gdriveApp = mock<GoogleAppsScript.Drive.DriveApp>()
   public spreadsheetApp = mock<GoogleAppsScript.Spreadsheet.SpreadsheetApp>()
@@ -54,7 +53,6 @@ export class Mocks {
     this.gasContext = new GoogleAppsScriptContext(
       this.gmailApp,
       this.gdriveApp,
-      this.console,
       this.utilities,
       this.spreadsheetApp,
       this.cacheService,

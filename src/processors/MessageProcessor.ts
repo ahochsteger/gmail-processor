@@ -6,8 +6,6 @@ import { AttachmentProcessor } from "../processors/AttachmentProcessor"
 import { BaseProcessor } from "./BaseProcessor"
 
 export class MessageProcessor extends BaseProcessor {
-  public logger: Console = console // TODO: Use from context!
-
   constructor(public threadContext: ThreadContext) {
     super()
   }
@@ -49,7 +47,7 @@ export class MessageProcessor extends BaseProcessor {
   }
 
   public processMessageConfig(messageConfig: MessageConfig) {
-    this.logger.info(
+    console.info(
       `      Processing of message config '${messageConfig.name}' started ...`,
     )
     for (const message of this.threadContext.thread.getMessages()) {
@@ -63,7 +61,7 @@ export class MessageProcessor extends BaseProcessor {
       )
       this.processMessage(messageContext)
     }
-    this.logger.info(
+    console.info(
       `      Processing of message config '${messageConfig.name}' finished.`,
     )
   }
@@ -77,7 +75,7 @@ export class MessageProcessor extends BaseProcessor {
     // TODO: Check, if this.processingContext would be better here!
     const messageConfig: MessageConfig = messageContext.messageConfig
     const message = messageContext.message
-    this.logger.info(
+    console.info(
       `        Processing of message '${message.getSubject()}' (id:${message.getId()}) started ...`,
     )
     const attachmentProcessor: AttachmentProcessor = new AttachmentProcessor(
@@ -96,7 +94,7 @@ export class MessageProcessor extends BaseProcessor {
     //         processAttachment(thread, msgIdx, messageRule, config, attIdx)
     //     }
     // }
-    this.logger.info(
+    console.info(
       `        Processing of message '${message.getSubject()}' (id:${message.getId()}) finished.`,
     )
   }

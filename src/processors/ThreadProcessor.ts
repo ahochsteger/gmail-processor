@@ -8,7 +8,6 @@ import { Timer } from "../utils/Timer"
 import { ThreadActions } from "../actions/ThreadActions"
 
 export class ThreadProcessor extends BaseProcessor {
-  public logger: Console = console
   public type = "thread"
   public timer: Timer
   public config: Config
@@ -45,13 +44,13 @@ export class ThreadProcessor extends BaseProcessor {
     const gSearchExp = this.getQueryFromThreadConfig(threadConfig)
     // Process all threads matching the search expression:
     const threads = this.processingContext.gmailAdapter.search(gSearchExp)
-    this.logger.info(
+    console.info(
       `  Processing of thread config '${threadConfig.name}' started ...`,
     )
     for (const thread of threads) {
       const runTime = this.timer.getRunTime()
       if (runTime >= this.config.settings.maxRuntime) {
-        this.logger.warn(
+        console.warn(
           `Processing terminated due to reaching runtime of ${runTime}s (max:${this.config.settings.maxRuntime}s).`,
         )
         return
@@ -63,7 +62,7 @@ export class ThreadProcessor extends BaseProcessor {
       )
       this.processThread(threadContext)
     }
-    this.logger.info(
+    console.info(
       `  Processing of thread config '${threadConfig.name}' finished.`,
     )
   }
@@ -74,7 +73,7 @@ export class ThreadProcessor extends BaseProcessor {
     const threadConfig: ThreadConfig = threadContext.threadConfig
     const threadActions = new ThreadActions(threadContext)
     const messageProcessor = new MessageProcessor(threadContext)
-    this.logger.info(
+    console.info(
       `    Processing of thread '${thread.getFirstMessageSubject()}' started ...`,
     )
     messageProcessor.processMessageConfigs(threadConfig.messageHandler)
@@ -89,7 +88,7 @@ export class ThreadProcessor extends BaseProcessor {
 
     // Mark a thread as processed:
     threadActions.markProcessed()
-    this.logger.info(
+    console.info(
       `    Processing of thread '${thread.getFirstMessageSubject()}' finished.`,
     )
   }

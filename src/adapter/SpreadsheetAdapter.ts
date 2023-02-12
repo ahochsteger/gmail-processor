@@ -31,7 +31,7 @@ export class SpreadsheetAdapter extends BaseAdapter {
     this.logSheetId = this.logSpreadsheet.getId()
     const logSheetFile = this.driveApp.getFileById(this.logSheetId)
     logSheetFile.moveTo(folder)
-    this.logger.info(`Created new logSheet at: ${logSheetFile.getUrl()}`)
+    console.info(`Created new logSheet at: ${logSheetFile.getUrl()}`)
     this.appendToLogSheet(
       "Mail title",
       "Mail date",
@@ -48,7 +48,7 @@ export class SpreadsheetAdapter extends BaseAdapter {
     const values = [args]
     const logSheet = this.getLogSheet()
     if (!logSheet) {
-      this.logger.error(`Could not open logSheet! Could not log: ${args}`)
+      console.error(`Could not open logSheet! Could not log: ${args}`)
       return
     }
     const lastRow = logSheet.getLastRow() + 1
@@ -108,7 +108,7 @@ export class SpreadsheetAdapter extends BaseAdapter {
     location: string,
     file: GoogleAppsScript.Drive.File,
   ) {
-    this.logger.info(
+    console.info(
       `Creating spreadsheet log entry for attachment '${attachment.getName()}' of message '${message.getSubject()}' stored to ${location} (${file.getName()}) ...`,
     )
     this.appendToLogSheet(
@@ -129,7 +129,7 @@ export class SpreadsheetAdapter extends BaseAdapter {
     location: string,
     logMessage: string,
   ) {
-    this.logger.info(
+    console.info(
       `Creating spreadsheet log entry for attachment '${attachment.getName()}' of message '${message.getSubject()}' stored to ${location} ...`,
     )
     this.appendToLogSheet(
@@ -149,7 +149,7 @@ export class SpreadsheetAdapter extends BaseAdapter {
     location: string,
     pdf: GoogleAppsScript.Drive.File,
   ) {
-    this.logger.info(
+    console.info(
       `Creating spreadsheet log entry for PDF export of thread '${thread.getFirstMessageSubject()}' stored to ${location} ...`,
     )
     this.appendToLogSheet(

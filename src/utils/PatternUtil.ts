@@ -8,8 +8,6 @@ import moment from "moment-timezone"
 export class SubstMap extends Map<string, unknown> {}
 
 export class PatternUtil {
-  public static logger: Console = console
-
   public static escapeRegExp(s: string) {
     // tslint:disable-next-line: max-line-length
     // See https://stackoverflow.com/questions/3115150/how-to-escape-regular-expression-special-characters-using-javascript
@@ -94,7 +92,7 @@ export class PatternUtil {
       const data: string = dataMap.get(keyName) as string
       if ((result = regex.exec(data)) !== null) {
         hasAtLeastOneMatch = true
-        this.logger.log("Matches: " + result.length)
+        console.log("Matches: " + result.length)
         for (let i = 1; i < result.length; i++) {
           m.set(keyName + ".match." + i, result[i])
         }
@@ -213,7 +211,7 @@ export class PatternUtil {
       )
       if (messgageMatch == null) {
         m.set("message.matched", false)
-        this.logger.info(
+        console.log(
           "  Skipped message with id " +
             message.getId() +
             " because it did not match the regex rules ...",
@@ -251,7 +249,7 @@ export class PatternUtil {
     )
     if (attachmentMatch == null) {
       m.set("attachment.matched", false)
-      this.logger.info(
+      console.log(
         "  Skipped attachment with name '" +
           attachment.getName() +
           "' because it did not match the regex rules ...",

@@ -20,7 +20,6 @@ export class MockFactory {
     const gasContext: GoogleAppsScriptContext = new GoogleAppsScriptContext(
       mocks.gmailApp,
       mocks.gdriveApp,
-      mocks.console,
       mocks.utilities,
       mocks.spreadsheetApp,
       mocks.cacheService,
@@ -222,7 +221,6 @@ export class MockFactory {
     gasContext = MockFactory.newGasContextMock(),
   ) {
     const gmailProcessor = new GmailProcessor(gasContext)
-    gmailProcessor.setLogger(gasContext.logger)
     return gmailProcessor
   }
 

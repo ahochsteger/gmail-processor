@@ -9,7 +9,6 @@ import { V1ToV2Converter } from "../config/v1/V1ToV2Converter"
 import { plainToClass } from "class-transformer"
 
 export class GmailProcessor {
-  public logger: Console
   public patternUtil: PatternUtil = new PatternUtil()
   public timer: Timer
 
@@ -17,31 +16,24 @@ export class GmailProcessor {
     public gasContext = new GoogleAppsScriptContext(
       GmailApp,
       DriveApp,
-      console,
       Utilities,
       SpreadsheetApp,
       CacheService,
     ),
   ) {
     this.timer = new Timer()
-    this.logger = gasContext.logger
-  }
-
-  public setLogger(logger: Console) {
-    this.logger = logger
   }
 
   public run(config: Config, dryRun = false) {
-    this.logger.info("Processing of GMail2GDrive config started ...")
+    console.info("Processing of GMail2GDrive config started ...")
     const processingContext = new ProcessingContext(
       this.gasContext,
       config,
       dryRun,
     )
     const threadProcessor = new ThreadProcessor(processingContext)
-    threadProcessor.logger = this.logger
     threadProcessor.processThreadConfigs(config.threadHandler)
-    this.logger.info("Processing of GMail2GDrive config finished.")
+    console.info("Processing of GMail2GDrive config finished.")
   }
 
   public runWithConfigJson(configJson: object, dryRun = false) {

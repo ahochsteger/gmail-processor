@@ -38,7 +38,7 @@ export class GDriveAdapter extends BaseAdapter {
       if (result.hasNext()) {
         folder = result.next()
       } else {
-        this.logger.error("Folder '" + path + "' not found.")
+        console.error("Folder '" + path + "' not found.")
         throw new Error("Folder '" + path + "' not found.")
       }
     }
@@ -74,7 +74,7 @@ export class GDriveAdapter extends BaseAdapter {
       existingFiles.hasNext() &&
       conflictStrategy === ConflictStrategy.SKIP
     ) {
-      this.logger.warn(
+      console.warn(
         "   Skipping existing file '" +
           location +
           "' (using conflict strategy 'SKIP')!",
@@ -89,7 +89,7 @@ export class GDriveAdapter extends BaseAdapter {
         const existingFile = existingFiles.next()
         const existingFileId = existingFile.getId()
         const removeStatus = this.gdriveApp.removeFile(existingFile)
-        this.logger.warn(
+        console.warn(
           '   Existing file "' +
             existingFile +
             '" (id:"' +
@@ -128,7 +128,7 @@ export class GDriveAdapter extends BaseAdapter {
     conflictStrategy: ConflictStrategy,
     description: string,
   ) {
-    this.logger.info(
+    console.info(
       `Storing attachment '${attachment.getName()}' to '${location}' ...`,
     )
     const file = this.createFile(
@@ -192,7 +192,7 @@ export class GDriveAdapter extends BaseAdapter {
     }
     if (nextFolder == null && nextFolderName != null) {
       // Folder does not exist - create it.
-      this.logger.info("Creating folder ${nextFolderName} ...")
+      console.info("Creating folder ${nextFolderName} ...")
       nextFolder = baseFolder.createFolder(nextFolderName)
     }
     if (nextFolder == null) {

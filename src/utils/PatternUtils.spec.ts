@@ -8,9 +8,6 @@ import { Mocks } from "../../test/mocks/Mocks"
 import { ThreadContext } from "../context/ThreadContext"
 import { MessageContext } from "../context/MessageContext"
 import { AttachmentContext } from "../context/AttachmentContext"
-import { mock } from "jest-mock-extended"
-
-PatternUtil.logger = mock<Console>()
 
 function getMocks(dryRun = true, config = new Config()) {
   const mocks = new Mocks(config, dryRun)
