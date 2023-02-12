@@ -39,8 +39,7 @@ export class GmailProcessor {
   public runWithConfigJson(configJson: object, dryRun = false) {
     const config = this.getEffectiveConfig(configJson)
     console.info("Effective configuration: " + JSON.stringify(config))
-    const gmailProcessor = new GmailProcessor()
-    gmailProcessor.run(config, dryRun)
+    this.run(config, dryRun)
   }
 
   public runWithV1Config(v1config: V1Config, dryRun = false) {
