@@ -1,5 +1,7 @@
+/* global GMail2GDrive */
+
 // NOTE: Adjust config to your requirements here:
-var v1config = {
+var config = {
   // Global filter
   globalFilter: "has:attachment -in:trash -in:drafts -in:spam",
   // Gmail label for processed threads (will be created, if not existing):
@@ -59,6 +61,6 @@ var v1config = {
 
 function runWithV1Config() {
   console.log("Processing v1 config started ...")
-  GMail2GDrive.Lib.runWithV1Config(v1config, true)
+  GMail2GDrive.Lib.runWithV1Config(config, true)
   console.log("Processing v1 config finished ...")
 }

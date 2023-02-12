@@ -6,7 +6,7 @@ module.exports = {
   entry: "./build/src",
   output: {
     path: __dirname,
-    filename: "dist/Lib.js",
+    filename: "build/gas/lib/Lib.js",
     library: {
       name: "Lib",
       type: "var",
