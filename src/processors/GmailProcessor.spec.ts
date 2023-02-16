@@ -1,6 +1,4 @@
-import { Mocks } from "../../test/mocks/Mocks"
-import { anyString } from "jest-mock-extended"
-import { MockFactory } from "../../test/mocks/MockFactory"
+import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
 import { GmailProcessor } from "./GmailProcessor"
 import { Config } from "../config/Config"
 
@@ -10,19 +8,23 @@ let gmailProcessor: GmailProcessor
 
 beforeEach(() => {
   config = MockFactory.newDefaultConfig()
-  mocks = new Mocks(config, true)
+  mocks = MockFactory.newMocks(config, true)
   gmailProcessor = new GmailProcessor(mocks.gasContext)
 })
 
 describe("run", () => {
-  it("should process the thread rules", () => {
-    mocks.gmailApp.search
-      .calledWith(anyString(), 1, config.settings.maxBatchSize)
-      .mockReturnValue([])
+  it("should process a v2 config object", () => {
     gmailProcessor.run(config, true)
     expect(mocks.gasContext.gmailApp.search).toHaveBeenCalledTimes(
       config.threadHandler.length,
     )
+  })
+})
+
+describe("runWithV1ConfigJson", () => {
+  it("should process a v1 config JSON", () => {
+    const v1config = MockFactory.newDefaultV1ConfigJson()
+    gmailProcessor.runWithV1ConfigJson(v1config)
   })
 })
 

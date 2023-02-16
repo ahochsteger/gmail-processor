@@ -1,14 +1,14 @@
-import { Mocks } from "../../test/mocks/Mocks"
 import { ActionRegistry } from "./ActionRegistry"
 import { Config } from "../config/Config"
 import { ConflictStrategy } from "../adapter/GDriveAdapter"
+import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
 
 let mocks: Mocks
 let dryRunMocks: Mocks
 
 beforeEach(() => {
-  mocks = new Mocks(new Config(), false)
-  dryRunMocks = new Mocks(new Config(), true)
+  mocks = MockFactory.newMocks(new Config(), false)
+  dryRunMocks = MockFactory.newMocks(new Config(), true)
 })
 
 it("should provide actions in the action registry", () => {

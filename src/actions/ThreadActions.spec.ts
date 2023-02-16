@@ -1,15 +1,15 @@
-import { Mocks } from "../../test/mocks/Mocks"
 import { Config } from "../config/Config"
 import { plainToClass } from "class-transformer"
 import { ActionRegistry } from "./ActionRegistry"
 import { ConflictStrategy } from "../adapter/GDriveAdapter"
+import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
 
 let mocks: Mocks
 let dryRunMocks: Mocks
 
 beforeEach(() => {
-  mocks = new Mocks(new Config(), false)
-  dryRunMocks = new Mocks(new Config(), true)
+  mocks = MockFactory.newMocks(new Config(), false)
+  dryRunMocks = MockFactory.newMocks(new Config(), true)
 })
 
 it("should provide actions in the action registry", () => {
@@ -53,7 +53,7 @@ it("should mark a thread as processed by adding a label if processedMode='label'
       processedMode: "label",
     },
   })
-  const mocks = new Mocks(config, false)
+  const mocks = MockFactory.newMocks(config, false)
   mocks.threadActions.markProcessed()
   expect(mocks.thread.addLabel).toBeCalled()
 })
@@ -64,7 +64,7 @@ it("should not add a label to a thread if processedMode='read'", () => {
       processedMode: "read",
     },
   })
-  const mocks = new Mocks(config, false)
+  const mocks = MockFactory.newMocks(config, false)
   mocks.threadActions.markProcessed()
   expect(mocks.thread.addLabel).not.toBeCalled()
 })

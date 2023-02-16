@@ -1,15 +1,14 @@
-import { MockFactory } from "../../test/mocks/MockFactory"
+import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
 import { MessageConfig } from "../config/MessageConfig"
 import { MessageFlag } from "../config/MessageFlag"
 import { plainToClass } from "class-transformer"
 import { MessageProcessor } from "./MessageProcessor"
-import { Mocks } from "../../test/mocks/Mocks"
 import { Config } from "../config/Config"
 
 let mocks: Mocks
 
 beforeEach(() => {
-  mocks = new Mocks(new Config(), false)
+  mocks = MockFactory.newMocks(new Config(), false)
 })
 
 it("should match messages with matching parameters", () => {

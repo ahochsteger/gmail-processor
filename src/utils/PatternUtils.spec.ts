@@ -4,13 +4,12 @@ import { PatternUtil } from "./PatternUtil"
 import { plainToClass } from "class-transformer"
 import { AttachmentConfig } from "../config/AttachmentConfig"
 import { Config } from "../config/Config"
-import { Mocks } from "../../test/mocks/Mocks"
 import { ThreadContext } from "../context/ThreadContext"
 import { MessageContext } from "../context/MessageContext"
 import { AttachmentContext } from "../context/AttachmentContext"
 
 function getMocks(dryRun = true, config = new Config()) {
-  const mocks = new Mocks(config, dryRun)
+  const mocks = MockFactory.newMocks(config, dryRun)
   const threadContext = new ThreadContext(
     mocks.processingContext,
     MockFactory.newDefaultThreadConfig(),

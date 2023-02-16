@@ -2,7 +2,7 @@ import { Config } from "../config/Config"
 import { ThreadConfig } from "../config/ThreadConfig"
 import { plainToClass } from "class-transformer"
 import { ThreadProcessor } from "./ThreadProcessor"
-import { Mocks } from "../../test/mocks/Mocks"
+import { MockFactory } from "../../test/mocks/MockFactory"
 
 it("should construct a GMail search query with globals (query, newerThan) and processedLabel", () => {
   const config = plainToClass(Config, {
@@ -21,7 +21,7 @@ it("should construct a GMail search query with globals (query, newerThan) and pr
       query: "some-thread-specific-query",
     },
   })
-  const mocks = new Mocks(config, false)
+  const mocks = MockFactory.newMocks(config, false)
   const threadProcessor = new ThreadProcessor(mocks.processingContext)
   const actualQuery = threadProcessor.getQueryFromThreadConfig(threadConfig)
   expect(actualQuery).toBe(
@@ -46,7 +46,7 @@ it("should construct a GMail search query without globals and no processedLabel"
       query: "some-thread-specific-query",
     },
   })
-  const mocks = new Mocks(config, false)
+  const mocks = MockFactory.newMocks(config, false)
   const threadProcessor = new ThreadProcessor(mocks.processingContext)
   const actualQuery = threadProcessor.getQueryFromThreadConfig(threadConfig)
   expect(actualQuery).toBe("some-thread-specific-query")
