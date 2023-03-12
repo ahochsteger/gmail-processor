@@ -59,18 +59,27 @@ A rule supports the following parameters documentation:
 
 * `filter` (String, mandatory): a typical gmail search expression (see <http://support.google.com/mail/bin/answer.py?hl=en&answer=7190>)
 * `folder` (String, mandatory): a path to an existing Google Drive folder (will be created, if not existing)
+* `parentFolderId` (String, mandatory if using Google Shared/Lamda folders): folder ID of the shared Google Drive folder (will fail, if not existing)
 * `archive` (boolean, optional): Should the gmail thread be archived after processing? (default: `false`)
 * `filenameFrom` (String, optional): The attachment filename that should be renamed when stored in Google Drive
 * `filenameFromRegexp` (String, optional): A regular expression to specify only relevant attachments
 * `filenameTo` (String, optional): The pattern for the new filename of the attachment. If 'filenameFrom' is not given then this will be the new filename for all attachments.
-  * You can use `%s` to insert the email subject, 
+  * You can use `%s` to insert the email subject,
   * `%o` for the original attachment filename and date format patterns like `yyyy` for year, `MM` for month and `dd` for day as pattern in the filename.
   * `%d` to insert a running counter for matches of that rule as pattern in the filename.
   * See <https://developers.google.com/apps-script/reference/utilities/utilities#formatDate(Date,String,String)> for more information on the possible date format strings.
 * `newerThan` (String, optional): Only process message newer than (leave empty for no restriction; use d, m and y for day, month and year)
   * Example: "newerThan": "3m"
 * `saveThreadPDF` (boolean, optional): Should the thread be saved as a PDF? (default: `false`)
+* `saveMessagePDF` (boolean, optional): Should save single email as a PDF? (default: `false`)
+* `skipPDFHeader` (boolean, optional): Should skip Email Header when saving email as a PDF? (default: `false`)
 
+Special Note on Google Shared/Lambda Drives
+------------------
+Obtain the "parentFolderId" by opening the desired shared drive, and then clicking on parent of that drive.
+It is the random character string at the end of the URL and should look something like the following: https://drive.google.com/drive/u/0/folders/0AAp0ay_HaKsQIK9DHB
+The end of the URL is the "parentFolderId", which in this case would be "0AAp0ay_HaKsQIK9DHB".
+So the var would look like `"parentFolderId": "0AAp0ay_HaKsQIK9DHB"`
 
 Example Configuration
 ---------------------
@@ -128,6 +137,23 @@ function getGmail2GDriveConfig() {
         "saveThreadPDF": true,
         "folder": "PDF Emails"
       },
+      { // Store all attachments from example1@example.com to the SHARED Drive folder "Shared Drives/Lambda/Examples/example1"
+        "parentFolderId": "FOLDER_ID_FOR_Lambda_FOLDER", // This approach is with the ID of "Lambda"
+        "filter": "from:example1@example.com",
+        "folder": "'Examples/example1'"
+      },
+      { // Store all attachments from example1@example.com to the SHARED Drive folder "Shared Drives/Lambda/Examples/example1"
+        "parentFolderId": "FOLDER_ID_FOR_Examples_FOLDER", // This approach is with the ID of "Examples"
+        "filter": "from:example1@example.com",
+        "folder": "'example1'" // Note: We omited the folder path "Examples" since it's the direct parent
+      },
+      {
+        // Store each INDIVIDUAL email as "PDF" instead of an entire thread, in the folder "PDF Emails"
+        "filter": "from:no_reply@email-invoice.example.com",
+        "saveMessagePDF": true,
+        "skipPDFHeader": true, // Skip Email Header
+        "folder": "PDF Emails"
+      },
       { // Store all attachments named "file.txt" from example4@example.com to the
         // folder "Examples/example4" and rename the attachment to the pattern
         // defined in 'filenameTo' and archive the thread.
@@ -138,8 +164,8 @@ function getGmail2GDriveConfig() {
       },
       { // Store all attachments named "file.txt" from example5@example.com to the
         // folder "Examples/example5" and rename the attachment to the pattern
-        // defined in 'filenameTo' and archive the thread. 
-        // In this case file-1.txt, file-2.txt and so on. 
+        // defined in 'filenameTo' and archive the thread.
+        // In this case file-1.txt, file-2.txt and so on.
         "filter": "has:attachment from:example5@example.com",
         "folder": "'Examples/example5'",
         "filenameFrom": "file.txt",
