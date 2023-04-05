@@ -1,93 +1,100 @@
-import "reflect-metadata"
+import { AttachmentContext } from "../context/AttachmentContext"
+import { MessageContext } from "../context/MessageContext"
 import { ProcessingContext } from "../context/ProcessingContext"
-import { AbstractActions } from "./AbstractActions"
+import { ThreadContext } from "../context/ThreadContext"
 
 export type ActionArgType = boolean | number | string
-export type ActionArgsType = Record<string, ActionArgType>
+export type ActionArgsType = Record<string, ActionArgType | never>
+export type ActionContextType =
+  | ProcessingContext
+  | ThreadContext
+  | MessageContext
+  | AttachmentContext
+export type ActionReturnType = {
+  status?: boolean
+  error?: unknown
+  [k: string]: unknown
+}
 
-export type ActionType = typeof AbstractActions & {
-  new (...args: unknown[]): AbstractActions
+// Define a type for the function that takes context and args as arguments
+export type ActionFunction<
+  TContext extends ActionContextType = ProcessingContext,
+  TArgs extends ActionArgsType = ActionArgsType,
+  TReturn extends ActionReturnType = ActionReturnType,
+> = (context: TContext, args: TArgs) => TReturn | void
+
+export class ActionProvider {
+  // TODO: Make generic type to define default context type to simplify typing of each action function
+  // [key: string | symbol]: ActionFunction<ActionContextType, ActionArgsType>
 }
 
 export class ActionRegistry {
-  private static getMeta<T>(key: string, defaultValue: T): T {
-    return (Reflect.getMetadata(
-      `gmail2gdrive:${key}`,
-      ActionRegistry,
-      `gmail2gdrive:${key}`,
-    ) || defaultValue) as T
+  private actionProviders = new Map<string, ActionProvider>()
+  private actions = new Map<string, ActionFunction>()
+
+  getActionNamesFromProvider(provider: ActionProvider): string[] {
+    return Object.getOwnPropertyNames(provider.constructor.prototype)
   }
 
-  private static setMeta(key: string, value: unknown) {
-    Reflect.defineMetadata(
-      `gmail2gdrive:${key}`,
-      value,
-      ActionRegistry,
-      `gmail2gdrive:${key}`,
+  registerActionProvider(providerName: string, provider: ActionProvider) {
+    if (this.actionProviders.get(providerName))
+      throw new Error(
+        `An action provider with name ${providerName} is already registered!`,
+      )
+    this.actionProviders.set(providerName, provider)
+    Object.getOwnPropertyNames(provider.constructor.prototype).forEach(
+      (actionName) => {
+        const fullActionName = `${providerName}.${String(actionName)}`
+        const action = provider[actionName as keyof typeof provider]
+        if (action && actionName !== "constructor") {
+          this.actions.set(fullActionName, action)
+        }
+      },
     )
   }
 
-  public static addProvider(
-    providerName: string,
-    constructor: (context: ProcessingContext) => ActionType,
-  ) {
-    const map = ActionRegistry.getProviderMap()
-    map[providerName] = constructor
-    ActionRegistry.setMeta("actionProviderMap", map)
+  getActionProviders(): Map<string, ActionProvider> {
+    return this.actionProviders
   }
 
-  public static addAction(
-    actionName: string,
-    target: unknown,
-    propertyKey: string,
-    descriptor: PropertyDescriptor,
-  ) {
-    const map = ActionRegistry.getActionMap()
-    if (map[actionName] === undefined) {
-      // TODO: Cleanup map contents (most entries were just for debugging)
-      map[actionName] = {
-        designType: Reflect.getMetadata("design:type", ActionRegistry),
-        designParamTypes: Reflect.getMetadata(
-          "design:paramtypes",
-          ActionRegistry,
-        ),
-        designReturnType: Reflect.getMetadata(
-          "design:returntype",
-          ActionRegistry,
-        ),
-        target: target,
-        propertyKey: propertyKey,
-        descriptor: descriptor,
+  getActions(): Map<string, ActionFunction> {
+    return this.actions
+  }
+
+  getAction(fullActionName: string): ActionFunction | undefined {
+    const fn = this.actions.get(fullActionName)
+    if (typeof fn !== "function") return undefined
+    return fn
+  }
+
+  hasAction(fullActionName: string): boolean {
+    return this.getAction(fullActionName) !== undefined
+  }
+
+  unknownActionError(fullActionName: string) {
+    return new Error(
+      `Action provider '${typeof this}' does not provide action '${fullActionName}'!`,
+    )
+  }
+
+  invokeAction(
+    fullActionName: string,
+    context: ActionContextType,
+    args: ActionArgsType,
+  ): ActionReturnType {
+    const fn = this.getAction(fullActionName)
+    if (!fn) throw this.unknownActionError(fullActionName)
+    let result: ActionReturnType = { status: true }
+    try {
+      result = {
+        ...fn(context, args),
+      } as ActionReturnType
+    } catch (e) {
+      result = {
+        status: false,
+        error: e,
       }
-      ActionRegistry.setMeta("actionMap", map)
-    } else {
-      throw new Error(`Duplicate actionName decorator '${actionName}'!`)
     }
-  }
-
-  public static getActionMap(): Record<string, unknown> {
-    return ActionRegistry.getMeta("actionMap", {})
-  }
-
-  public static getProviderMap(): Record<
-    string,
-    (context: ProcessingContext) => ActionType
-  > {
-    return ActionRegistry.getMeta("actionProviderMap", {})
-  }
-}
-
-export function action(value = "") {
-  return function (
-    target: unknown,
-    propertyKey: string,
-    descriptor: PropertyDescriptor,
-  ) {
-    ActionRegistry.addAction(
-      value !== "" ? value : propertyKey,
-      target,
-      propertyKey,
-      descriptor,
-    )
+    return result
   }
 }

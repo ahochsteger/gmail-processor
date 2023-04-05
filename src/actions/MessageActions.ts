@@ -1,70 +1,64 @@
-import { AbstractActions } from "./AbstractActions"
-import { action } from "./ActionRegistry"
 import { MessageContext } from "../context/MessageContext"
-import { GmailAdapter } from "../adapter/GmailAdapter"
 import { ConflictStrategy } from "../adapter/GDriveAdapter"
+import { ActionArgsType, ActionProvider } from "./ActionRegistry"
 
-export class MessageActions extends AbstractActions {
-  private gmailAdapter: GmailAdapter
-  private message: GoogleAppsScript.Gmail.GmailMessage
-  constructor(protected messageContext: MessageContext) {
-    super(messageContext)
-    this.gmailAdapter = messageContext.gmailAdapter
-    this.message = messageContext.message
-  }
-
-  @action("message.forward")
-  public forward(to: string) {
-    this.gmailAdapter.messageForward(this.message, to)
-  }
-
-  @action("message.markProcessed")
-  public markProcessed() {
-    if (this.processingContext.config.settings.processedMode == "read") {
-      this.gmailAdapter.messageMarkRead(this.message)
+export class MessageActions extends ActionProvider {
+  public forward(
+    context: MessageContext,
+    args: ActionArgsType & { to: string },
+  ) {
+    return {
+      message: context.gmailAdapter.messageForward(context.message, args.to),
     }
   }
 
-  @action("message.markRead")
-  public markRead() {
-    this.gmailAdapter.messageMarkRead(this.message)
+  public markProcessed(context: MessageContext) {
+    let message
+    if (context.config.settings.processedMode == "read") {
+      message = context.gmailAdapter.messageMarkRead(context.message)
+    }
+    return { message }
   }
 
-  @action("message.markUnread")
-  public markUnread() {
-    this.gmailAdapter.messageMarkUnread(this.message)
+  public markRead(context: MessageContext) {
+    return { message: context.gmailAdapter.messageMarkRead(context.message) }
   }
 
-  @action("message.moveToTrash")
-  public moveToTrash() {
-    this.gmailAdapter.messageMoveToTrash(this.message)
+  public markUnread(context: MessageContext) {
+    return { message: context.gmailAdapter.messageMarkUnread(context.message) }
   }
 
-  @action("message.star")
-  public star() {
-    this.gmailAdapter.messageStar(this.message)
+  public moveToTrash(context: MessageContext) {
+    return { message: context.gmailAdapter.messageMoveToTrash(context.message) }
   }
 
-  @action("message.unstar")
-  public unstar() {
-    this.gmailAdapter.messageUnstar(this.message)
+  public star(context: MessageContext) {
+    return { message: context.gmailAdapter.messageStar(context.message) }
+  }
+
+  public unstar(context: MessageContext) {
+    return { message: context.gmailAdapter.messageUnstar(context.message) }
   }
 
   /**
    * Generate a PDF document from the message and store it to GDrive.
    */
-  @action("message.storeAsPdfToGDrive")
   public storeAsPdfToGDrive(
-    location: string,
-    conflictStrategy: ConflictStrategy,
-    skipHeader = false,
+    context: MessageContext,
+    args: ActionArgsType & {
+      location: string
+      conflictStrategy: ConflictStrategy
+      skipHeader: boolean
+    },
   ) {
-    return this.processingContext.gdriveAdapter.createFile(
-      location,
-      this.gmailAdapter.messageAsPdf(this.messageContext.message, skipHeader),
-      "application/pdf",
-      "",
-      conflictStrategy,
-    )
+    return {
+      file: context.gdriveAdapter.createFile(
+        args.location,
+        context.gmailAdapter.messageAsPdf(context.message, args.skipHeader),
+        "application/pdf",
+        "",
+        args.conflictStrategy,
+      ),
+    }
   }
 }

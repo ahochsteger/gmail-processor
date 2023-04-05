@@ -1,24 +1,29 @@
 import { ConflictStrategy } from "../adapter/GDriveAdapter"
-import { AbstractActions } from "./AbstractActions"
-import { action } from "./ActionRegistry"
 import { AttachmentContext } from "../context/AttachmentContext"
+import {
+  ActionArgsType,
+  ActionProvider,
+  ActionReturnType,
+} from "./ActionRegistry"
 
-export class AttachmentActions extends AbstractActions {
-  constructor(protected attachmentContext: AttachmentContext) {
-    super(attachmentContext)
-  }
-
-  @action("attachment.storeToGDrive")
+export class AttachmentActions extends ActionProvider {
   public storeToGDrive(
-    location: string,
-    conflictStrategy: ConflictStrategy,
-    description: string,
-  ) {
-    return this.processingContext.gdriveAdapter.storeAttachment(
-      this.attachmentContext.attachment,
-      location,
-      conflictStrategy,
-      description,
+    context: AttachmentContext,
+    args: ActionArgsType & {
+      location: string
+      conflictStrategy: ConflictStrategy
+      description: string
+    },
+  ): ActionReturnType & { gdriveFile: GoogleAppsScript.Drive.File } {
+    const gdriveFile = context.gdriveAdapter.storeAttachment(
+      context.attachment,
+      args.location,
+      args.conflictStrategy,
+      args.description,
     )
+    return {
+      status: true,
+      gdriveFile,
+    }
   }
 }

@@ -7,6 +7,9 @@ import { Timer } from "../utils/Timer"
 import { V1Config } from "../config/v1/V1Config"
 import { V1ToV2Converter } from "../config/v1/V1ToV2Converter"
 import { plainToClass } from "class-transformer"
+import { ThreadActions } from "../actions/ThreadActions"
+import { MessageActions } from "../actions/MessageActions"
+import { AttachmentActions } from "../actions/AttachmentActions"
 
 export class GmailProcessor {
   public patternUtil: PatternUtil = new PatternUtil()
@@ -31,6 +34,10 @@ export class GmailProcessor {
       config,
       dryRun,
     )
+    const actionRegistry = processingContext.actionRegistry
+    actionRegistry.registerActionProvider("thread", new ThreadActions())
+    actionRegistry.registerActionProvider("message", new MessageActions())
+    actionRegistry.registerActionProvider("attachment", new AttachmentActions())
     const threadProcessor = new ThreadProcessor(processingContext)
     threadProcessor.processThreadConfigs(config.threadHandler)
     console.info("Processing of GMail2GDrive config finished.")
@@ -52,6 +59,7 @@ export class GmailProcessor {
 
   public runWithV1ConfigJson(v1configJson: object, dryRun = false) {
     const v1config = plainToClass(V1Config, v1configJson)
+    console.log("v1config: ", v1config)
     this.runWithV1Config(v1config, dryRun)
   }
 

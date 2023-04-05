@@ -1,3 +1,4 @@
+import { ActionRegistry } from "../actions/ActionRegistry"
 import { GDriveAdapter } from "../adapter/GDriveAdapter"
 import { GmailAdapter } from "../adapter/GmailAdapter"
 import { SpreadsheetAdapter } from "../adapter/SpreadsheetAdapter"
@@ -8,6 +9,7 @@ export class ProcessingContext {
   public gmailAdapter: GmailAdapter
   public gdriveAdapter: GDriveAdapter
   public spreadsheetAdapter: SpreadsheetAdapter
+  public actionRegistry: ActionRegistry
   constructor(
     public gasContext: GoogleAppsScriptContext,
     public config: Config,
@@ -16,5 +18,6 @@ export class ProcessingContext {
     this.gmailAdapter = new GmailAdapter(this)
     this.gdriveAdapter = new GDriveAdapter(this)
     this.spreadsheetAdapter = new SpreadsheetAdapter(this)
+    this.actionRegistry = new ActionRegistry()
   }
 }

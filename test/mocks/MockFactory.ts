@@ -70,19 +70,19 @@ export class Mocks {
       new ThreadConfig(),
       this.thread,
     )
-    this.threadActions = new ThreadActions(this.threadContext)
+    this.threadActions = new ThreadActions()
     this.messageContext = new MessageContext(
       this.threadContext,
       new MessageConfig(),
       this.message,
     )
-    this.messageActions = new MessageActions(this.messageContext)
+    this.messageActions = new MessageActions()
     this.attachmentContext = new AttachmentContext(
       this.messageContext,
       new AttachmentConfig(),
       this.attachment,
     )
-    this.attachmentActions = new AttachmentActions(this.attachmentContext)
+    this.attachmentActions = new AttachmentActions()
     this.blob.getAs.mockReturnValue(this.blob)
     this.blob.getDataAsString.mockReturnValue("PDF-Contents")
     this.utilities.newBlob.mockReturnValue(this.blob)

@@ -5,7 +5,6 @@ import { ProcessingContext } from "../context/ProcessingContext"
 import { ThreadConfig } from "../config/ThreadConfig"
 import { ThreadContext } from "../context/ThreadContext"
 import { Timer } from "../utils/Timer"
-import { ThreadActions } from "../actions/ThreadActions"
 
 export class ThreadProcessor extends BaseProcessor {
   public type = "thread"
@@ -71,7 +70,6 @@ export class ThreadProcessor extends BaseProcessor {
     // TODO: Check, if this.processingContext would be better here!
     const thread: GoogleAppsScript.Gmail.GmailThread = threadContext.thread
     const threadConfig: ThreadConfig = threadContext.threadConfig
-    const threadActions = new ThreadActions(threadContext)
     const messageProcessor = new MessageProcessor(threadContext)
     console.info(
       `    Processing of thread '${thread.getFirstMessageSubject()}' started ...`,
@@ -87,7 +85,7 @@ export class ThreadProcessor extends BaseProcessor {
     // }
 
     // Mark a thread as processed:
-    threadActions.markProcessed()
+    threadContext.threadActions.markProcessed(threadContext)
     console.info(
       `    Processing of thread '${thread.getFirstMessageSubject()}' finished.`,
     )

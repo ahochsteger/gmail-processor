@@ -1,7 +1,9 @@
+import { MessageActions } from "../actions/MessageActions"
 import { MessageConfig } from "../config/MessageConfig"
 import { ThreadContext } from "./ThreadContext"
 
 export class MessageContext extends ThreadContext {
+  public messageActions = new MessageActions()
   constructor(
     public threadContext: ThreadContext,
     public messageConfig: MessageConfig,

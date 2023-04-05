@@ -2,40 +2,44 @@ import { ActionRegistry } from "./ActionRegistry"
 import { ConflictStrategy } from "../adapter/GDriveAdapter"
 import { Config } from "../config/Config"
 import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
+import { AttachmentActions } from "./AttachmentActions"
 
 let mocks: Mocks
 let dryRunMocks: Mocks
+let actionRegistry: ActionRegistry
+let actionProvider: AttachmentActions
 
 beforeEach(() => {
   mocks = MockFactory.newMocks(new Config(), false)
+  actionRegistry = new ActionRegistry()
+  actionProvider = new AttachmentActions()
+  actionRegistry.registerActionProvider("attachment", actionProvider)
+
   dryRunMocks = MockFactory.newMocks(new Config(), true)
 })
 
-it("should provide actions in the action registry", () => {
-  expect(mocks.attachmentActions).not.toBeNull()
+describe("AttachmenActions", () => {
+  it("should provide attachment.storeToGDrive in the action registry", () => {
+    expect(actionRegistry.getAction("attachment.storeToGDrive")).toBe(
+      actionProvider.storeToGDrive,
+    )
+  })
 
-  const actionMap = ActionRegistry.getActionMap()
-  expect(
-    Object.keys(actionMap)
-      .filter((v) => v.startsWith("attachment"))
-      .sort(),
-  ).toEqual(["attachment.storeToGDrive"])
-})
+  it("should create a file", () => {
+    mocks.attachmentActions.storeToGDrive(mocks.attachmentContext, {
+      location: "test-location",
+      conflictStrategy: ConflictStrategy.REPLACE,
+      description: "automated test",
+    })
+    expect(mocks.folder.createFile).toBeCalled()
+  })
 
-it("should create a file", () => {
-  mocks.attachmentActions.storeToGDrive(
-    "test-location",
-    ConflictStrategy.REPLACE,
-    "automated test",
-  )
-  expect(mocks.folder.createFile).toBeCalled()
-})
-
-it("should not create a file on dry-run", () => {
-  dryRunMocks.attachmentActions.storeToGDrive(
-    "test-location",
-    ConflictStrategy.REPLACE,
-    "automated test",
-  )
-  expect(mocks.folder.createFile).not.toBeCalled()
+  it("should not create a file on dry-run", () => {
+    dryRunMocks.attachmentActions.storeToGDrive(dryRunMocks.attachmentContext, {
+      location: "test-location",
+      conflictStrategy: ConflictStrategy.REPLACE,
+      description: "automated test",
+    })
+    expect(mocks.folder.createFile).not.toBeCalled()
+  })
 })
