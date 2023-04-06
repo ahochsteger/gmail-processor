@@ -1,5 +1,5 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$schema": "http://json-schema.org/draft-07/schema",
   "definitions": {
     "ActionConfig": {
       "description": "Represents a config to perform a certain action for a GMail thread/message/attachment.",

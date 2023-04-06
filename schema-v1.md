@@ -1,5 +1,3 @@
-> WETZEL_WARNING: Unrecognized JSON Schema.
-
 # Objects
 * [`Config (v1)`](#reference-config-(v1)) (root object)
 
