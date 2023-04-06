@@ -1,5 +1,4 @@
 {
-  "$ref": "#/definitions/Config",
   "$schema": "http://json-schema.org/draft-07/schema#",
   "definitions": {
     "ActionConfig": {
@@ -8,23 +7,28 @@
         "args": {
           "additionalProperties": {},
           "description": "The arguments for a certain action",
+          "title": "args",
           "type": "object"
         },
         "description": {
           "default": "",
           "description": "The description for the action",
+          "title": "description",
           "type": "string"
         },
         "name": {
           "description": "The name of the action to be executed",
+          "title": "name",
           "type": "string"
         },
         "scope": {
           "description": "The handler type to which this action is bound to (defaults to the handler type where the action is defined)",
           "enum": ["attachments", "global", "messages", "threads"],
+          "title": "scope",
           "type": "string"
         }
       },
+      "title": "ActionConfig",
       "type": "object"
     },
     "AttachmentConfig": {
@@ -36,28 +40,35 @@
           "items": {
             "$ref": "#/definitions/ActionConfig"
           },
+          "title": "actions",
           "type": "array"
         },
         "description": {
           "default": "",
           "description": "The description of the attachment handler config",
+          "title": "description",
           "type": "string"
         },
         "match": {
           "$ref": "#/definitions/AttachmentMatchConfig",
-          "description": "Specifies which attachments match for further processing"
+          "description": "Specifies which attachments match for further processing",
+          "title": "match"
         },
         "name": {
           "default": "",
           "description": "The unique name of the attachment config (will be generated if not set)",
+          "title": "name",
           "type": "string"
         },
         "type": {
           "default": "attachments",
           "description": "The type of handler",
+          "title": "type",
           "type": "string"
         }
       },
+      "required": ["actions", "match", "type"],
+      "title": "AttachmentConfig",
       "type": "object"
     },
     "AttachmentMatchConfig": {
@@ -66,61 +77,49 @@
         "contentType": {
           "default": ".*",
           "description": "A RegEx matching the content type of the attachment",
+          "title": "contentType",
           "type": "string"
         },
         "includeAttachments": {
           "default": true,
           "description": "Should regular attachments be included in attachment processing (default: true)",
+          "title": "includeAttachments",
           "type": "boolean"
         },
         "includeInlineImages": {
           "default": true,
           "description": "Should inline images be included in attachment processing (default: true)",
+          "title": "includeInlineImages",
           "type": "boolean"
         },
         "largerThan": {
           "default": -1,
           "description": "Only include attachments larger than the given size in bytes",
+          "title": "largerThan",
           "type": "number"
         },
         "name": {
           "default": "(.*)",
           "description": "A RegEx matching the name of the attachment",
+          "title": "name",
           "type": "string"
         },
         "smallerThan": {
           "default": -1,
           "description": "Only include attachments smaller than the given size in bytes",
+          "title": "smallerThan",
           "type": "number"
         }
       },
-      "type": "object"
-    },
-    "Config": {
-      "description": "Represents a configuration for GMail2GDrive",
-      "properties": {
-        "description": {
-          "default": "",
-          "description": "The description of the GMail2GDrive config",
-          "type": "string"
-        },
-        "global": {
-          "$ref": "#/definitions/GlobalConfig",
-          "description": "The global configuration that defines matching for all threads as well as actions for all threads, messages or attachments."
-        },
-        "settings": {
-          "$ref": "#/definitions/SettingsConfig",
-          "description": "Represents a settings config that affect the way GMail2GDrive works."
-        },
-        "threadHandler": {
-          "default": [],
-          "description": "The list of handler that define the way nested threads, messages or attachments are processed",
-          "items": {
-            "$ref": "#/definitions/ThreadConfig"
-          },
-          "type": "array"
-        }
-      },
+      "required": [
+        "contentType",
+        "includeAttachments",
+        "includeInlineImages",
+        "largerThan",
+        "name",
+        "smallerThan"
+      ],
+      "title": "AttachmentMatchConfig",
       "type": "object"
     },
     "GlobalConfig": {
@@ -132,18 +131,23 @@
           "items": {
             "$ref": "#/definitions/ActionConfig"
           },
+          "title": "actions",
           "type": "array"
         },
         "match": {
           "$ref": "#/definitions/ThreadMatchConfig",
-          "description": "The global thread matching parameters applied in addition to each thread configuration"
+          "description": "The global thread matching parameters applied in addition to each thread configuration",
+          "title": "match"
         },
         "type": {
           "default": "global",
           "description": "The type of handler",
+          "title": "type",
           "type": "string"
         }
       },
+      "required": ["actions", "match", "type"],
+      "title": "GlobalConfig",
       "type": "object"
     },
     "MessageConfig": {
@@ -155,6 +159,7 @@
           "items": {
             "$ref": "#/definitions/ActionConfig"
           },
+          "title": "actions",
           "type": "array"
         },
         "attachmentHandler": {
@@ -163,67 +168,86 @@
           "items": {
             "$ref": "#/definitions/AttachmentConfig"
           },
+          "title": "attachmentHandler",
           "type": "array"
         },
         "description": {
           "default": "",
           "description": "The description of the message handler config",
+          "title": "description",
           "type": "string"
         },
         "match": {
           "$ref": "#/definitions/MessageMatchConfig",
-          "description": "Specifies which attachments match for further processing"
+          "description": "Specifies which attachments match for further processing",
+          "title": "match"
         },
         "name": {
           "default": "",
           "description": "The unique name of the message config (will be generated if not set)",
+          "title": "name",
           "type": "string"
         },
         "type": {
           "default": "messages",
           "description": "The type of handler",
+          "title": "type",
           "type": "string"
         }
       },
+      "required": ["actions", "attachmentHandler", "match", "type"],
+      "title": "MessageConfig",
       "type": "object"
+    },
+    "MessageFlag": {
+      "enum": ["read", "starred", "unread", "unstarred"],
+      "title": "MessageFlag",
+      "type": "string"
     },
     "MessageMatchConfig": {
       "description": "Represents a config to match a certain GMail message",
       "properties": {
         "from": {
           "default": ".*",
+          "title": "from",
           "type": "string"
         },
         "is": {
           "default": [],
           "description": "A list of properties matching messages should have",
           "items": {
-            "enum": ["read", "starred", "unread", "unstarred"],
-            "type": "string"
+            "$ref": "#/definitions/MessageFlag"
           },
+          "title": "is",
           "type": "array"
         },
         "newerThan": {
           "default": "",
           "description": "A relative date/time according to https://github.com/cmaurer/relative.time.parser#readme or an RFC 3339 date/time format matching messages newer than the given date/time",
+          "title": "newerThan",
           "type": "string"
         },
         "olderThan": {
           "default": "",
           "description": "An RFC 3339 date/time format matching messages older than the given date/time",
+          "title": "olderThan",
           "type": "string"
         },
         "subject": {
           "default": ".*",
           "description": "A RegEx matching the subject of messages",
+          "title": "subject",
           "type": "string"
         },
         "to": {
           "default": ".*",
           "description": "A RegEx matching the recipient email address of messages",
+          "title": "to",
           "type": "string"
         }
       },
+      "required": ["from", "is", "newerThan", "olderThan", "subject", "to"],
+      "title": "MessageMatchConfig",
       "type": "object"
     },
     "SettingsConfig": {
@@ -232,55 +256,78 @@
         "logSheetFile": {
           "default": "Gmail2GDrive/Gmail2GDrive-logs",
           "description": "Path of the spreadsheet log file",
+          "title": "logSheetFile",
           "type": "string"
         },
         "logSheetFolderId": {
           "default": "",
           "description": "Folder ID in case of a shared drive",
+          "title": "logSheetFolderId",
           "type": "string"
         },
         "maxBatchSize": {
           "default": 10,
           "description": "The maximum batch size of threads to process in a single run to respect Google processing limits",
+          "title": "maxBatchSize",
           "type": "number"
         },
         "maxRuntime": {
           "default": 280,
           "description": "The maximum runtime in seconds for a single run to respect Google processing limits",
+          "title": "maxRuntime",
           "type": "number"
         },
         "processedLabel": {
           "default": "to-gdrive/processed",
           "description": "The label to be added to processed GMail threads (only for markProcessedMode=\"label\", deprecated - only for compatibility to v1)",
+          "title": "processedLabel",
           "type": "string"
         },
         "processedMode": {
           "default": "read",
           "description": "The mode to mark processed threads/messages.\n* `label`: Add the label from `processedLabel` to the thread. This is just for compatibility to v1 and is limited to one message per thread.\n* `read`: Mark the message as read. This is the new default since it provides more flexibility esp. when threads contain multiple messages.",
           "enum": ["label", "read"],
+          "title": "processedMode",
           "type": "string"
         },
         "sleepTimeAttachments": {
           "default": 0,
           "description": "The sleep time in milliseconds between processing each attachment",
+          "title": "sleepTimeAttachments",
           "type": "number"
         },
         "sleepTimeMessages": {
           "default": 0,
           "description": "The sleep time in milliseconds between processing each message",
+          "title": "sleepTimeMessages",
           "type": "number"
         },
         "sleepTimeThreads": {
           "default": 100,
           "description": "The sleep time in milliseconds between processing each thread",
+          "title": "sleepTimeThreads",
           "type": "number"
         },
         "timezone": {
           "default": "UTC",
           "description": "The timezone used for formatting file and folder names",
+          "title": "timezone",
           "type": "string"
         }
       },
+      "required": [
+        "logSheetFile",
+        "logSheetFolderId",
+        "maxBatchSize",
+        "maxRuntime",
+        "processedLabel",
+        "processedMode",
+        "sleepTimeAttachments",
+        "sleepTimeMessages",
+        "sleepTimeThreads",
+        "timezone"
+      ],
+      "title": "SettingsConfig",
       "type": "object"
     },
     "ThreadConfig": {
@@ -292,16 +339,19 @@
           "items": {
             "$ref": "#/definitions/ActionConfig"
           },
+          "title": "actions",
           "type": "array"
         },
         "description": {
           "default": "",
           "description": "The description of the thread handler config",
+          "title": "description",
           "type": "string"
         },
         "match": {
           "$ref": "#/definitions/ThreadMatchConfig",
-          "description": "Specifies which threads match for further processing"
+          "description": "Specifies which threads match for further processing",
+          "title": "match"
         },
         "messageHandler": {
           "default": [],
@@ -309,19 +359,24 @@
           "items": {
             "$ref": "#/definitions/MessageConfig"
           },
+          "title": "messageHandler",
           "type": "array"
         },
         "name": {
           "default": "",
           "description": "The unique name of the thread config (will be generated if not set)",
+          "title": "name",
           "type": "string"
         },
         "type": {
           "default": "threads",
           "description": "The type of handler",
+          "title": "type",
           "type": "string"
         }
       },
+      "required": ["actions", "match", "messageHandler", "type"],
+      "title": "ThreadConfig",
       "type": "object"
     },
     "ThreadMatchConfig": {
@@ -330,25 +385,62 @@
         "maxMessageCount": {
           "default": -1,
           "description": "The maximum number of messages a matching thread is allowed to have",
+          "title": "maxMessageCount",
           "type": "number"
         },
         "minMessageCount": {
           "default": 1,
           "description": "The minimum number of messages a matching thread must have",
+          "title": "minMessageCount",
           "type": "number"
         },
         "newerThan": {
           "default": "",
           "description": "Only process threads with message newer than (leave empty for no restriction; use d, m and y for day, month and year)",
+          "title": "newerThan",
           "type": "string"
         },
         "query": {
           "default": "",
           "description": "The GMail search query to find threads to be processed (see http://support.google.com/mail/bin/answer.py?hl=en&answer=7190 for details)",
+          "title": "query",
           "type": "string"
         }
       },
+      "required": ["maxMessageCount", "minMessageCount", "newerThan", "query"],
+      "title": "ThreadMatchConfig",
       "type": "object"
     }
-  }
+  },
+  "description": "Represents a configuration for GMail2GDrive",
+  "properties": {
+    "description": {
+      "default": "",
+      "description": "The description of the GMail2GDrive config",
+      "title": "description",
+      "type": "string"
+    },
+    "global": {
+      "$ref": "#/definitions/GlobalConfig",
+      "description": "The global configuration that defines matching for all threads as well as actions for all threads, messages or attachments.",
+      "title": "global"
+    },
+    "settings": {
+      "$ref": "#/definitions/SettingsConfig",
+      "description": "Represents a settings config that affect the way GMail2GDrive works.",
+      "title": "settings"
+    },
+    "threadHandler": {
+      "default": [],
+      "description": "The list of handler that define the way nested threads, messages or attachments are processed",
+      "items": {
+        "$ref": "#/definitions/ThreadConfig"
+      },
+      "title": "threadHandler",
+      "type": "array"
+    }
+  },
+  "required": ["global", "settings", "threadHandler"],
+  "type": "object",
+  "title": "Config (v2)"
 }

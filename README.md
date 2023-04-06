@@ -41,7 +41,12 @@ This way the attachments of periodic emails can be automatically organized in fo
 7. Test the script by manually executing the function 'Gmail2GDrive'.
 8. Create a time based trigger which periodically executes 'Gmail2GDrive' (e.g. once per day) to automatically organize your Gmail attachments within Google Drive.
 
-## Global Configuration (TODO: Update)
+## Configuration
+
+The documentation of the configuration schema can be found in [schema-v2.md](schema-v2.md).
+To support the migration from the v1 configuration format the documentation can be found in [schema-v1.md](schema-v1.md).
+
+## Global Configuration (TODO: Remove when all is in generated docs)
 
 - globalFilter: Global filter expression (see [https://support.google.com/mail/answer/7190?hl=en](https://support.google.com/mail/answer/7190?hl=en) for avialable search operators)
   - Example: "globalFilter": "has:attachment -in:trash -in:drafts -in:spam"
@@ -58,7 +63,7 @@ This way the attachments of periodic emails can be automatically organized in fo
 - rules: List of rules to be processed
   - Example: "rules": [ {..rule1..}, {..rule2..}, ... ]
 
-## Rule Configuration (Version 1)
+## Rule Configuration (Version 1) (TODO: Remove when all is in generated docs)
 
 A rule supports the following parameters documentation:
 
@@ -72,7 +77,7 @@ A rule supports the following parameters documentation:
   - See [https://developers.google.com/apps-script/reference/utilities/utilities#formatDate(Date,String,String)](<https://developers.google.com/apps-script/reference/utilities/utilities#formatDate(Date,String,String)>) for more information on the possible date format strings.
 - saveThreadPDF (boolean, optional): Should the thread be saved as a PDF? (default: false)
 
-## Processing Commands
+## Processing Commands (TODO: Remove when all is in generated docs)
 
 ### Thread Commands
 
@@ -81,7 +86,7 @@ A rule supports the following parameters documentation:
 | "archive": true       | thread.moveToArchive       | -                          |       |
 | "saveThreadPDF": true | thread.exportAsPdfToGDrive | location, conflictStrategy |       |
 
-## Example Configuration (TODO: Update)
+## Example Configuration (TODO: Remove when all is in generated docs)
 
 ```javascript
 /**

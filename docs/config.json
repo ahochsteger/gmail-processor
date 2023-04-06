@@ -7,33 +7,33 @@
     "sleepTimeAttachments": 1,
     "timezone": "GMT"
   },
-  "handler": [
-    {
-      "type": "global",
-      "match": {
-        "query": "has:attachment -in:trash -in:drafts -in:spam",
-        "maxMessageCount": 123,
-        "minMessageCount": 0,
-        "newerThan": "1m"
-      },
-      "actions": [
-        {
-          "name": "message.markRead",
-          "scope": "attachments"
-        },
-        {
-          "name": "message.markRead",
-          "scope": "messages"
-        },
-        {
-          "name": "thread.addLabel",
-          "scope": "threads",
-          "args": {
-            "label": "to-gdrive/processed"
-          }
-        }
-      ]
+  "global": {
+    "type": "global",
+    "match": {
+      "query": "has:attachment -in:trash -in:drafts -in:spam",
+      "maxMessageCount": 123,
+      "minMessageCount": 0,
+      "newerThan": "1m"
     },
+    "actions": [
+      {
+        "name": "message.markRead",
+        "scope": "attachments"
+      },
+      {
+        "name": "message.markRead",
+        "scope": "messages"
+      },
+      {
+        "name": "thread.addLabel",
+        "scope": "threads",
+        "args": {
+          "label": "to-gdrive/processed"
+        }
+      }
+    ]
+  },
+  "threadHandler": [
     {
       "type": "threads",
       "match": {
@@ -41,7 +41,7 @@
         "maxMessageCount": 123,
         "minMessageCount": 1
       },
-      "handler": [
+      "messageHandler": [
         {
           "type": "messages",
           "match": {
@@ -50,7 +50,7 @@
             "to": "my\\.address\\+(.+)@gmail.com",
             "is": ["unread"]
           },
-          "handler": [
+          "attachmentHandler": [
             {
               "type": "attachments",
               "match": {

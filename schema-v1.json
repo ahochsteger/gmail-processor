@@ -1,113 +1,154 @@
 {
-  "$ref": "#/definitions/V1Config",
   "$schema": "http://json-schema.org/draft-07/schema#",
   "definitions": {
-    "V1Config": {
-      "properties": {
-        "globalFilter": {
-          "default": "has:attachment -in:trash -in:drafts -in:spam",
-          "description": "Global filter",
-          "type": "string"
-        },
-        "maxRuntime": {
-          "default": 280,
-          "description": "Maximum script runtime in seconds (google scripts will be killed after 5 minutes)",
-          "type": "number"
-        },
-        "newerThan": {
-          "default": "2m",
-          "description": "Only process message newer than (leave empty for no restriction; use d, m and y for day, month and year)",
-          "type": "string"
-        },
-        "processedLabel": {
-          "default": "to-gdrive/processed",
-          "description": "Gmail label for processed threads (will be created, if not existing)",
-          "type": "string"
-        },
-        "rules": {
-          "description": "Processing rules",
-          "items": {
-            "$ref": "#/definitions/V1Rule"
-          },
-          "type": "array"
-        },
-        "sleepTime": {
-          "default": 100,
-          "description": "Sleep time in milliseconds between processed messages",
-          "type": "number"
-        },
-        "timezone": {
-          "default": "GMT",
-          "description": "Timezone for date/time operations",
-          "type": "string"
-        }
-      },
-      "type": "object"
-    },
     "V1Rule": {
       "properties": {
         "archive": {
           "default": false,
           "description": "Archive thread after processing",
+          "title": "archive",
           "type": "boolean"
         },
         "filenameFrom": {
           "default": "",
           "description": "Rename matching attachments from the given filename",
+          "title": "filenameFrom",
           "type": "string"
         },
         "filenameFromRegexp": {
           "default": "",
           "description": "Rename matching attachments from the given filename regex",
+          "title": "filenameFromRegexp",
           "type": "string"
         },
         "filenameTo": {
           "default": "",
           "description": "Rename matching attachments to the given filename",
+          "title": "filenameTo",
           "type": "string"
         },
         "filter": {
           "default": "",
           "description": "Search filter for threads",
+          "title": "filter",
           "type": "string"
         },
         "folder": {
           "default": "",
           "description": "GDrive folder to store attachments to",
+          "title": "folder",
           "type": "string"
         },
         "newerThan": {
           "default": "",
           "description": "Restrict to threads containing messages newer than the given relative date/time",
+          "title": "newerThan",
           "type": "string"
         },
         "parentFolderId": {
           "default": "",
           "description": "Parent folder ID to be used (for shared drives)",
+          "title": "parentFolderId",
           "type": "string"
         },
         "ruleLabel": {
           "default": "",
           "description": "Add the given label to the processed thread",
+          "title": "ruleLabel",
           "type": "string"
         },
         "saveMessagePDF": {
           "default": false,
           "description": "Save the message to PDF",
+          "title": "saveMessagePDF",
           "type": "boolean"
         },
         "saveThreadPDF": {
           "default": false,
           "description": "Save the thread to PDF",
+          "title": "saveThreadPDF",
           "type": "boolean"
         },
         "skipPDFHeader": {
           "default": false,
           "description": "Skip header for PDF",
+          "title": "skipPDFHeader",
           "type": "boolean"
         }
       },
+      "required": [
+        "archive",
+        "filenameFrom",
+        "filenameFromRegexp",
+        "filenameTo",
+        "filter",
+        "folder",
+        "newerThan",
+        "parentFolderId",
+        "ruleLabel",
+        "saveMessagePDF",
+        "saveThreadPDF",
+        "skipPDFHeader"
+      ],
+      "title": "V1Rule",
       "type": "object"
     }
-  }
+  },
+  "properties": {
+    "globalFilter": {
+      "default": "has:attachment -in:trash -in:drafts -in:spam",
+      "description": "Global filter",
+      "title": "globalFilter",
+      "type": "string"
+    },
+    "maxRuntime": {
+      "default": 280,
+      "description": "Maximum script runtime in seconds (google scripts will be killed after 5 minutes)",
+      "title": "maxRuntime",
+      "type": "number"
+    },
+    "newerThan": {
+      "default": "2m",
+      "description": "Only process message newer than (leave empty for no restriction; use d, m and y for day, month and year)",
+      "title": "newerThan",
+      "type": "string"
+    },
+    "processedLabel": {
+      "default": "to-gdrive/processed",
+      "description": "Gmail label for processed threads (will be created, if not existing)",
+      "title": "processedLabel",
+      "type": "string"
+    },
+    "rules": {
+      "description": "Processing rules",
+      "items": {
+        "$ref": "#/definitions/V1Rule"
+      },
+      "title": "rules",
+      "type": "array"
+    },
+    "sleepTime": {
+      "default": 100,
+      "description": "Sleep time in milliseconds between processed messages",
+      "title": "sleepTime",
+      "type": "number"
+    },
+    "timezone": {
+      "default": "GMT",
+      "description": "Timezone for date/time operations",
+      "title": "timezone",
+      "type": "string"
+    }
+  },
+  "required": [
+    "globalFilter",
+    "maxRuntime",
+    "newerThan",
+    "processedLabel",
+    "rules",
+    "sleepTime",
+    "timezone"
+  ],
+  "type": "object",
+  "title": "Config (v1)"
 }
