@@ -1,7 +1,6 @@
 import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
 import { Config } from "../config/Config"
-import { MessageContext } from "../context/MessageContext"
-import { ThreadContext } from "../context/ThreadContext"
+import { MessageContext, ThreadContext } from "../Context"
 import {
   ActionArgsType,
   ActionContextType,

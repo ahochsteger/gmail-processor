@@ -1,7 +1,9 @@
-import { AttachmentContext } from "../context/AttachmentContext"
-import { MessageContext } from "../context/MessageContext"
-import { ProcessingContext } from "../context/ProcessingContext"
-import { ThreadContext } from "../context/ThreadContext"
+import {
+  AttachmentContext,
+  MessageContext,
+  ProcessingContext,
+  ThreadContext,
+} from "../Context"
 
 export type ActionArgType = boolean | number | string
 export type ActionArgsType = Record<string, ActionArgType | never>
@@ -11,7 +13,7 @@ export type ActionContextType =
   | MessageContext
   | AttachmentContext
 export type ActionReturnType = {
-  status?: boolean
+  status?: boolean // TODO: Status should be enum or renamed to success/ok
   error?: unknown
   [k: string]: unknown
 }

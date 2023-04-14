@@ -1,17 +1,17 @@
 import { Config } from "../config/Config"
 import { BaseProcessor } from "./BaseProcessor"
 import { MessageProcessor } from "./MessageProcessor"
-import { ProcessingContext } from "../context/ProcessingContext"
 import { ThreadConfig } from "../config/ThreadConfig"
-import { ThreadContext } from "../context/ThreadContext"
 import { Timer } from "../utils/Timer"
+import { ProcessingContext, ThreadContext } from "../Context"
+import { ThreadActions } from "../actions/ThreadActions"
 
 export class ThreadProcessor extends BaseProcessor {
   public type = "thread"
   public timer: Timer
   public config: Config
 
-  constructor(public processingContext: ProcessingContext) {
+  constructor(protected processingContext: ProcessingContext) {
     super()
     this.timer = new Timer()
     this.config = processingContext.config
@@ -22,7 +22,7 @@ export class ThreadProcessor extends BaseProcessor {
       const threadConfig = threadConfigs[i]
       threadConfig.name =
         threadConfig.name !== "" ? threadConfig.name : `thread-cfg-${i + 1}`
-      this.processThreadConfig(threadConfig)
+      this.processThreadConfig(threadConfig, i)
     }
   }
 
@@ -39,26 +39,37 @@ export class ThreadProcessor extends BaseProcessor {
     return gSearchExp.trim()
   }
 
-  public processThreadConfig(threadConfig: ThreadConfig) {
+  public processThreadConfig(
+    threadConfig: ThreadConfig,
+    threadConfigIndex: number,
+  ) {
     const gSearchExp = this.getQueryFromThreadConfig(threadConfig)
     // Process all threads matching the search expression:
-    const threads = this.processingContext.gmailAdapter.search(gSearchExp)
+    const threads = this.processingContext.gmailAdapter.search(
+      gSearchExp,
+      this.config.settings.maxBatchSize,
+    )
     console.info(
       `  Processing of thread config '${threadConfig.name}' started ...`,
     )
-    for (const thread of threads) {
+    for (let threadIndex = 0; threadIndex < threads.length; threadIndex++) {
+      const thread = threads[threadIndex]
       const runTime = this.timer.getRunTime()
       if (runTime >= this.config.settings.maxRuntime) {
+        // TODO: Simplify/refactor timer handling (->Base class?)
         console.warn(
           `Processing terminated due to reaching runtime of ${runTime}s (max:${this.config.settings.maxRuntime}s).`,
         )
         return
       }
-      const threadContext: ThreadContext = new ThreadContext(
-        this.processingContext,
-        threadConfig,
+      const threadContext: ThreadContext = {
+        ...this.processingContext,
         thread,
-      )
+        threadActions: new ThreadActions(), // TODO: Move to processing context?
+        threadConfig,
+        threadConfigIndex,
+        threadIndex,
+      }
       this.processThread(threadContext)
     }
     console.info(
@@ -70,7 +81,7 @@ export class ThreadProcessor extends BaseProcessor {
     // TODO: Check, if this.processingContext would be better here!
     const thread: GoogleAppsScript.Gmail.GmailThread = threadContext.thread
     const threadConfig: ThreadConfig = threadContext.threadConfig
-    const messageProcessor = new MessageProcessor(threadContext)
+    const messageProcessor = new MessageProcessor(threadContext) // TODO: Do not instanciate here - only once and pass different context during instanciation time and runtime!
     console.info(
       `    Processing of thread '${thread.getFirstMessageSubject()}' started ...`,
     )

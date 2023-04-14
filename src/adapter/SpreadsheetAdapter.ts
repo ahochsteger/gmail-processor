@@ -1,4 +1,4 @@
-import { ProcessingContext } from "../context/ProcessingContext"
+import { EnvContext } from "../Context"
 import { skipOnDryRun } from "../utils/Decorators"
 import { BaseAdapter } from "./BaseAdapter"
 
@@ -9,11 +9,11 @@ export class SpreadsheetAdapter extends BaseAdapter {
   private logSheetId: string | null = null
   private logSpreadsheet: GoogleAppsScript.Spreadsheet.Spreadsheet | null = null
   private logSheet: GoogleAppsScript.Spreadsheet.Sheet | null = null
-  constructor(public processingContext: ProcessingContext) {
-    super(processingContext)
-    this.spreadsheetApp = processingContext.gasContext.spreadsheetApp
-    this.driveApp = processingContext.gasContext.gdriveApp
-    this.cacheService = processingContext.gasContext.cacheService
+  constructor(public envContext: EnvContext) {
+    super(envContext)
+    this.spreadsheetApp = envContext.spreadsheetApp
+    this.driveApp = envContext.gdriveApp
+    this.cacheService = envContext.cacheService
     this.logSheetId = this.cacheService.getScriptCache().get("logSheetId")
   }
 

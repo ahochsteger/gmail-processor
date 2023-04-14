@@ -1,9 +1,9 @@
 import { MessageFlag } from "../config/MessageFlag"
 import { MessageConfig } from "../config/MessageConfig"
-import { MessageContext } from "../context/MessageContext"
-import { ThreadContext } from "../context/ThreadContext"
 import { AttachmentProcessor } from "../processors/AttachmentProcessor"
 import { BaseProcessor } from "./BaseProcessor"
+import { MessageContext, ThreadContext } from "../Context"
+import { MessageActions } from "../actions/MessageActions"
 
 export class MessageProcessor extends BaseProcessor {
   constructor(public threadContext: ThreadContext) {
@@ -15,7 +15,7 @@ export class MessageProcessor extends BaseProcessor {
       const messageConfig = messageConfigs[i]
       messageConfig.name =
         messageConfig.name !== "" ? messageConfig.name : `message-cfg-${i + 1}`
-      this.processMessageConfig(messageConfig)
+      this.processMessageConfig(messageConfig, i)
     }
   }
 
@@ -46,19 +46,27 @@ export class MessageProcessor extends BaseProcessor {
     return true
   }
 
-  public processMessageConfig(messageConfig: MessageConfig) {
+  public processMessageConfig(
+    messageConfig: MessageConfig,
+    messageConfigIndex: number,
+  ) {
     console.info(
       `      Processing of message config '${messageConfig.name}' started ...`,
     )
-    for (const message of this.threadContext.thread.getMessages()) {
+    const messages = this.threadContext.thread.getMessages()
+    for (let messageIndex = 0; messageIndex < messages.length; messageIndex++) {
+      const message = messages[messageIndex]
       if (!this.matches(messageConfig, message)) {
         continue
       }
-      const messageContext = new MessageContext(
-        this.threadContext,
-        messageConfig,
+      const messageContext: MessageContext = {
+        ...this.threadContext,
         message,
-      )
+        messageActions: new MessageActions(), // TODO: Move to processing context?
+        messageConfig,
+        messageConfigIndex,
+        messageIndex,
+      }
       this.processMessage(messageContext)
     }
     console.info(
@@ -80,7 +88,7 @@ export class MessageProcessor extends BaseProcessor {
     )
     const attachmentProcessor: AttachmentProcessor = new AttachmentProcessor(
       messageContext,
-    )
+    ) // TODO: Do not instanciate here - only once and pass different context during instanciation time and runtime!
     if (messageConfig.attachmentHandler) {
       // New rule configuration format
       attachmentProcessor.processAttachmentConfigs(

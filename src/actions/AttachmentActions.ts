@@ -1,5 +1,5 @@
 import { ConflictStrategy } from "../adapter/GDriveAdapter"
-import { AttachmentContext } from "../context/AttachmentContext"
+import { AttachmentContext } from "../Context"
 import {
   ActionArgsType,
   ActionProvider,

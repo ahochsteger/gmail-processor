@@ -1,6 +1,6 @@
+import { AttachmentActions } from "../actions/AttachmentActions"
 import { AttachmentConfig } from "../config/AttachmentConfig"
-import { AttachmentContext } from "../context/AttachmentContext"
-import { MessageContext } from "../context/MessageContext"
+import { AttachmentContext, MessageContext } from "../Context"
 import { PatternUtil } from "../utils/PatternUtil"
 import { BaseProcessor } from "./BaseProcessor"
 
@@ -16,20 +16,32 @@ export class AttachmentProcessor extends BaseProcessor {
         attachmentConfig.name !== ""
           ? attachmentConfig.name
           : `attachment-cfg-${i + 1}`
-      this.processAttachmentConfig(attachmentConfig)
+      this.processAttachmentConfig(attachmentConfig, i)
     }
   }
 
-  public processAttachmentConfig(attachmentConfig: AttachmentConfig) {
+  public processAttachmentConfig(
+    attachmentConfig: AttachmentConfig,
+    attachmentConfigIndex: number,
+  ) {
     console.info(
       `          Processing of attachment config '${attachmentConfig.name}' started ...`,
     )
-    for (const attachment of this.messageContext.message.getAttachments()) {
-      const attachmentContext = new AttachmentContext(
-        this.messageContext,
+    const attachments = this.messageContext.message.getAttachments()
+    for (
+      let attachmentIndex = 0;
+      attachmentIndex < attachments.length;
+      attachmentIndex++
+    ) {
+      const attachment = attachments[attachmentIndex]
+      const attachmentContext: AttachmentContext = {
+        ...this.messageContext,
         attachmentConfig,
         attachment,
-      )
+        attachmentConfigIndex,
+        attachmentIndex,
+        attachmentActions: new AttachmentActions(),
+      }
       this.processAttachment(attachmentContext)
     }
     console.info(

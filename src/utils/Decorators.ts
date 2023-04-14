@@ -14,7 +14,7 @@ export function skipOnDryRun() {
   ) {
     const originalMethod = descriptor.value
     descriptor.value = function (this: T, ...args: unknown[]) {
-      if (this.processingContext.dryRun) {
+      if (this.envContext.dryRun) {
         console.log(`Skipped calling method '${propertyKey}'`)
         return
       } else {

@@ -1,8 +1,6 @@
 import { AttachmentMatchConfig } from "../config/AttachmentMatchConfig"
 import { MessageMatchConfig } from "../config/MessageMatchConfig"
-import { AttachmentContext } from "../context/AttachmentContext"
-import { MessageContext } from "../context/MessageContext"
-import { ThreadContext } from "../context/ThreadContext"
+import { AttachmentContext, MessageContext, ThreadContext } from "../Context"
 import moment from "moment-timezone"
 
 export class SubstMap extends Map<string, unknown> {}
@@ -192,10 +190,10 @@ export class PatternUtil {
     ctx: MessageContext,
     substMap = new SubstMap(),
   ) {
-    let m = this.buildSubstitutionMapFromThreadContext(
-      ctx.threadContext,
-      substMap,
-    )
+    const threadContext: ThreadContext = {
+      ...ctx,
+    }
+    let m = this.buildSubstitutionMapFromThreadContext(threadContext, substMap)
     // Message data
     const message = ctx.message
     m = PatternUtil.mergeMaps(m, this.getSubstitutionMapFromMessage(message))
@@ -228,8 +226,11 @@ export class PatternUtil {
     ctx: AttachmentContext,
     substMap = new SubstMap(),
   ): SubstMap {
+    const messageContext: MessageContext = {
+      ...ctx,
+    }
     let m = this.buildSubstitutionMapFromMessageContext(
-      ctx.messageContext,
+      messageContext,
       substMap,
     )
     // Attachment data

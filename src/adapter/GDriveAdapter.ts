@@ -1,4 +1,4 @@
-import { ProcessingContext } from "../context/ProcessingContext"
+import { EnvContext } from "../Context"
 import { skipOnDryRun } from "../utils/Decorators"
 import { BaseAdapter } from "./BaseAdapter"
 
@@ -11,9 +11,9 @@ export enum ConflictStrategy {
 
 export class GDriveAdapter extends BaseAdapter {
   private gdriveApp: GoogleAppsScript.Drive.DriveApp
-  constructor(public processingContext: ProcessingContext) {
-    super(processingContext)
-    this.gdriveApp = processingContext.gasContext.gdriveApp
+  constructor(public envContext: EnvContext) {
+    super(envContext)
+    this.gdriveApp = envContext.gdriveApp
   }
 
   // TODO: Continue here!!!

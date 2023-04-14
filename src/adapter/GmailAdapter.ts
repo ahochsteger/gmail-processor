@@ -1,28 +1,20 @@
-import { ProcessingContext } from "../context/ProcessingContext"
+import { EnvContext } from "../Context"
 import { skipOnDryRun } from "../utils/Decorators"
-import { BaseAdapter } from "./BaseAdapter"
+import { Adapter } from "./BaseAdapter"
 
-export class GmailAdapter extends BaseAdapter {
-  private gmailApp: GoogleAppsScript.Gmail.GmailApp
-  constructor(public processingContext: ProcessingContext) {
-    super(processingContext)
-    this.gmailApp = processingContext.gasContext.gmailApp
-  }
+export class GmailAdapter implements Adapter {
+  constructor(public envContext: EnvContext) {}
 
-  public search(query: string): GoogleAppsScript.Gmail.GmailThread[] {
-    return this.processingContext.gasContext.gmailApp.search(
-      query,
-      1,
-      this.processingContext.config.settings.maxBatchSize,
-    )
+  public search(
+    query: string,
+    max: number,
+  ): GoogleAppsScript.Gmail.GmailThread[] {
+    return this.envContext.gmailApp.search(query, 1, max)
   }
 
   // TODO: Maybe move to a utility class - is not Gmail-specific
   public convertHtmlToPdf(html: string): string {
-    const htmlBlob = this.processingContext.gasContext.utilities.newBlob(
-      html,
-      "text/html",
-    )
+    const htmlBlob = this.envContext.utilities.newBlob(html, "text/html")
     return htmlBlob.getAs("application/pdf").getDataAsString()
   }
 
@@ -97,7 +89,7 @@ Subject: ${message.getSubject()}<br />
     labelName: string,
   ) {
     if (labelName !== "") {
-      const label = this.gmailApp.getUserLabelByName(labelName)
+      const label = this.envContext.gmailApp.getUserLabelByName(labelName)
       console.info(
         `Adding label '${labelName}' to thread '${thread.getFirstMessageSubject()}' ...`,
       )
@@ -111,7 +103,7 @@ Subject: ${message.getSubject()}<br />
     labelName: string,
   ) {
     if (labelName !== "") {
-      const label = this.gmailApp.getUserLabelByName(labelName)
+      const label = this.envContext.gmailApp.getUserLabelByName(labelName)
       console.info(
         `Removing label '${labelName}' from thread '${thread.getFirstMessageSubject()}' ...`,
       )

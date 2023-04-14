@@ -1,44 +1,37 @@
 import { Config } from "../config/Config"
-import { GoogleAppsScriptContext } from "../context/GoogleAppsScriptContext"
-import { ProcessingContext } from "../context/ProcessingContext"
 import { ThreadProcessor } from "./ThreadProcessor"
 import { PatternUtil } from "../utils/PatternUtil"
 import { Timer } from "../utils/Timer"
 import { V1Config } from "../config/v1/V1Config"
 import { V1ToV2Converter } from "../config/v1/V1ToV2Converter"
 import { plainToClass } from "class-transformer"
-import { ThreadActions } from "../actions/ThreadActions"
-import { MessageActions } from "../actions/MessageActions"
-import { AttachmentActions } from "../actions/AttachmentActions"
+import { EnvContext, ProcessingContext } from "../Context"
+import { ActionRegistry } from "../actions/ActionRegistry"
+import { GDriveAdapter } from "../adapter/GDriveAdapter"
+import { GmailAdapter } from "../adapter/GmailAdapter"
+import { SpreadsheetAdapter } from "../adapter/SpreadsheetAdapter"
 
 export class GmailProcessor {
   public patternUtil: PatternUtil = new PatternUtil()
   public timer: Timer
 
-  constructor(
-    public gasContext = new GoogleAppsScriptContext(
-      GmailApp,
-      DriveApp,
-      Utilities,
-      SpreadsheetApp,
-      CacheService,
-    ),
-  ) {
+  constructor(protected envContext: EnvContext) {
     this.timer = new Timer()
   }
 
   public run(config: Config, dryRun = false) {
     console.info("Processing of GMail2GDrive config started ...")
-    const processingContext = new ProcessingContext(
-      this.gasContext,
+    const actionRegistry = new ActionRegistry()
+    const processingContext: ProcessingContext = {
+      ...this.envContext,
+      actionRegistry: actionRegistry,
+      gdriveAdapter: new GDriveAdapter(this.envContext),
+      gmailAdapter: new GmailAdapter(this.envContext),
+      spreadsheetAdapter: new SpreadsheetAdapter(this.envContext),
       config,
       dryRun,
-    )
-    const actionRegistry = processingContext.actionRegistry
-    actionRegistry.registerActionProvider("thread", new ThreadActions())
-    actionRegistry.registerActionProvider("message", new MessageActions())
-    actionRegistry.registerActionProvider("attachment", new AttachmentActions())
-    const threadProcessor = new ThreadProcessor(processingContext)
+    }
+    const threadProcessor = new ThreadProcessor(processingContext) // TODO: Do not instanciate here - only once and pass different context during instanciation time and runtime!
     threadProcessor.processThreadConfigs(config.threadHandler)
     console.info("Processing of GMail2GDrive config finished.")
   }

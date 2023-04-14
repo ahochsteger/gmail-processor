@@ -1,5 +1,5 @@
 import { ConflictStrategy } from "../adapter/GDriveAdapter"
-import { ThreadContext } from "../context/ThreadContext"
+import { ThreadContext } from "../Context"
 import {
   ActionArgsType,
   ActionProvider,

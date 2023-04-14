@@ -9,13 +9,13 @@ let gmailProcessor: GmailProcessor
 beforeEach(() => {
   config = MockFactory.newDefaultConfig()
   mocks = MockFactory.newMocks(config, true)
-  gmailProcessor = new GmailProcessor(mocks.gasContext)
+  gmailProcessor = new GmailProcessor(mocks.envContext)
 })
 
 describe("run", () => {
   it("should process a v2 config object", () => {
     gmailProcessor.run(config, true)
-    expect(mocks.gasContext.gmailApp.search).toHaveBeenCalledTimes(
+    expect(mocks.envContext.gmailApp.search).toHaveBeenCalledTimes(
       config.threadHandler.length,
     )
   })

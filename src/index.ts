@@ -1,6 +1,14 @@
+import { EnvContext } from "./Context"
 import { GmailProcessor } from "./processors/GmailProcessor"
 
-const gmailProcessor = new GmailProcessor()
+const envContext: EnvContext = {
+  cacheService: CacheService,
+  gdriveApp: DriveApp,
+  gmailApp: GmailApp,
+  spreadsheetApp: SpreadsheetApp,
+  utilities: Utilities,
+}
+const gmailProcessor = new GmailProcessor(envContext)
 
 /**
  * @param configJson GMail2GDrive configuration JSON

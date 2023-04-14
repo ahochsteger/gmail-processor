@@ -1,9 +1,9 @@
-import { ProcessingContext } from "../context/ProcessingContext"
+import { EnvContext } from "../Context"
 
 export interface Adapter {
-  processingContext: ProcessingContext
+  envContext: EnvContext
 }
 
 export class BaseAdapter implements Adapter {
-  constructor(public processingContext: ProcessingContext) {}
+  constructor(public envContext: EnvContext) {}
 }

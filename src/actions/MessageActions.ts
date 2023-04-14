@@ -1,5 +1,5 @@
-import { MessageContext } from "../context/MessageContext"
 import { ConflictStrategy } from "../adapter/GDriveAdapter"
+import { MessageContext } from "../Context"
 import { ActionArgsType, ActionProvider } from "./ActionRegistry"
 
 export class MessageActions extends ActionProvider {
