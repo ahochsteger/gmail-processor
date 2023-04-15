@@ -71,26 +71,26 @@ describe("ActionRegistry.hasAction()", () => {
 describe("ActionRegistry.invokeAction()", () => {
   it("should throw an error for an undefined action provider name", () => {
     expect(() => {
-      actionRegistry.invokeAction(
-        "someprefix.myAction",
+      actionRegistry.executeAction(
         mocks.processingContext,
+        "someprefix.myAction",
         { someArg: "some value" },
       )
     }).toThrow()
   })
   it("should throw an error for an undefined action name of a registered provider", () => {
     expect(() => {
-      actionRegistry.invokeAction(
-        "test.someUnavailableAction",
+      actionRegistry.executeAction(
         mocks.processingContext,
+        "test.someUnavailableAction",
         { someArg: "some value" },
       )
     }).toThrow()
   })
   it("should return a function for an available action", () => {
-    const actual = actionRegistry.invokeAction(
-      "test.myThreadFunction",
+    const actual = actionRegistry.executeAction(
       mocks.threadContext,
+      "test.myThreadFunction",
       { threadBoolArg: true, threadStringArg: "my string" },
     )
     expect(actual).toBeTruthy()

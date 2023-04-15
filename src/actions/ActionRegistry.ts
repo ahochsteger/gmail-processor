@@ -79,9 +79,9 @@ export class ActionRegistry {
     )
   }
 
-  invokeAction(
-    fullActionName: string,
+  executeAction(
     context: ActionContextType,
+    fullActionName: string,
     args: ActionArgsType,
   ): ActionReturnType {
     const fn = this.getAction(fullActionName)
