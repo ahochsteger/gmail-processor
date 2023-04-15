@@ -1,14 +1,24 @@
 import { ConflictStrategy } from "../adapter/GDriveAdapter"
 import { MessageContext } from "../Context"
-import { ActionArgsType, ActionProvider } from "./ActionRegistry"
+import {
+  ActionArgsType,
+  ActionFunction,
+  ActionProvider,
+} from "./ActionRegistry"
 
-export class MessageActions extends ActionProvider {
+export class MessageActions implements ActionProvider<MessageContext> {
+  [key: string]: ActionFunction<MessageContext>
   public forward(
     context: MessageContext,
-    args: ActionArgsType & { to: string },
+    _args: ActionArgsType,
+    // { to: string },
   ) {
+    const args = _args as { to: string }
     return {
-      message: context.gmailAdapter.messageForward(context.message, args.to),
+      message: context.gmailAdapter.messageForward(
+        context.message,
+        args.to as string,
+      ),
     }
   }
 
@@ -21,23 +31,33 @@ export class MessageActions extends ActionProvider {
   }
 
   public markRead(context: MessageContext) {
-    return { message: context.gmailAdapter.messageMarkRead(context.message) }
+    return {
+      message: context.gmailAdapter.messageMarkRead(context.message),
+    }
   }
 
   public markUnread(context: MessageContext) {
-    return { message: context.gmailAdapter.messageMarkUnread(context.message) }
+    return {
+      message: context.gmailAdapter.messageMarkUnread(context.message),
+    }
   }
 
   public moveToTrash(context: MessageContext) {
-    return { message: context.gmailAdapter.messageMoveToTrash(context.message) }
+    return {
+      message: context.gmailAdapter.messageMoveToTrash(context.message),
+    }
   }
 
   public star(context: MessageContext) {
-    return { message: context.gmailAdapter.messageStar(context.message) }
+    return {
+      message: context.gmailAdapter.messageStar(context.message),
+    }
   }
 
   public unstar(context: MessageContext) {
-    return { message: context.gmailAdapter.messageUnstar(context.message) }
+    return {
+      message: context.gmailAdapter.messageUnstar(context.message),
+    }
   }
 
   /**
@@ -45,19 +65,23 @@ export class MessageActions extends ActionProvider {
    */
   public storeAsPdfToGDrive(
     context: MessageContext,
-    args: ActionArgsType & {
-      location: string
-      conflictStrategy: ConflictStrategy
-      skipHeader: boolean
-    },
+    args: ActionArgsType,
+    // {
+    //   location: string
+    //   conflictStrategy: ConflictStrategy
+    //   skipHeader: boolean
+    // },
   ) {
     return {
       file: context.gdriveAdapter.createFile(
-        args.location,
-        context.gmailAdapter.messageAsPdf(context.message, args.skipHeader),
+        args.location as string,
+        context.gmailAdapter.messageAsPdf(
+          context.message,
+          args.skipHeader as boolean,
+        ),
         "application/pdf",
         "",
-        args.conflictStrategy,
+        args.conflictStrategy as ConflictStrategy,
       ),
     }
   }

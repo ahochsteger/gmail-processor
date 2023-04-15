@@ -10,7 +10,7 @@ import { Config } from "./config/Config"
 import { MessageConfig } from "./config/MessageConfig"
 import { ThreadConfig } from "./config/ThreadConfig"
 
-export type EnvContext = {
+export interface EnvContext {
   gmailApp: GoogleAppsScript.Gmail.GmailApp
   gdriveApp: GoogleAppsScript.Drive.DriveApp
   utilities: GoogleAppsScript.Utilities.Utilities
@@ -19,7 +19,7 @@ export type EnvContext = {
   dryRun: boolean
 }
 
-export type ProcessingContext = EnvContext & {
+export interface ProcessingContext extends EnvContext {
   actionRegistry: ActionRegistry
   config: Config
   gdriveAdapter: GDriveAdapter
@@ -27,7 +27,7 @@ export type ProcessingContext = EnvContext & {
   spreadsheetAdapter: SpreadsheetAdapter
 }
 
-export type ThreadContext = ProcessingContext & {
+export interface ThreadContext extends ProcessingContext {
   thread: GoogleAppsScript.Gmail.GmailThread
   threadActions: ThreadActions
   threadConfig: ThreadConfig
@@ -35,7 +35,7 @@ export type ThreadContext = ProcessingContext & {
   threadIndex: number // TODO: Really required?
 }
 
-export type MessageContext = ThreadContext & {
+export interface MessageContext extends ThreadContext {
   message: GoogleAppsScript.Gmail.GmailMessage
   messageActions: MessageActions
   messageConfig: MessageConfig
@@ -43,7 +43,7 @@ export type MessageContext = ThreadContext & {
   messageIndex: number // TODO: Really required?
 }
 
-export type AttachmentContext = MessageContext & {
+export interface AttachmentContext extends MessageContext {
   attachment: GoogleAppsScript.Gmail.GmailAttachment
   attachmentActions: AttachmentActions
   attachmentConfig: AttachmentConfig

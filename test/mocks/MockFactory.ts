@@ -12,6 +12,10 @@ import { ThreadActions } from "../../src/actions/ThreadActions"
 import { MessageActions } from "../../src/actions/MessageActions"
 import { AttachmentActions } from "../../src/actions/AttachmentActions"
 import { V1Config } from "../../src/config/v1/V1Config"
+import { GDriveAdapter } from "../../src/adapter/GDriveAdapter"
+import { GmailAdapter } from "../../src/adapter/GmailAdapter"
+import { SpreadsheetAdapter } from "../../src/adapter/SpreadsheetAdapter"
+import { ActionRegistry } from "../../src/actions/ActionRegistry"
 import {
   AttachmentContext,
   EnvContext,
@@ -19,10 +23,6 @@ import {
   ProcessingContext,
   ThreadContext,
 } from "../../src/Context"
-import { GDriveAdapter } from "../../src/adapter/GDriveAdapter"
-import { GmailAdapter } from "../../src/adapter/GmailAdapter"
-import { SpreadsheetAdapter } from "../../src/adapter/SpreadsheetAdapter"
-import { ActionRegistry } from "../../src/actions/ActionRegistry"
 
 export class Mocks {
   // Create Google Apps Script Context mock objects:

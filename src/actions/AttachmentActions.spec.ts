@@ -1,19 +1,23 @@
-import { ActionRegistry } from "./ActionRegistry"
+import { ActionProvider, ActionRegistry } from "./ActionRegistry"
 import { ConflictStrategy } from "../adapter/GDriveAdapter"
 import { Config } from "../config/Config"
 import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
 import { AttachmentActions } from "./AttachmentActions"
+import { AttachmentContext, ProcessingContext } from "../Context"
 
 let mocks: Mocks
 let dryRunMocks: Mocks
 let actionRegistry: ActionRegistry
-let actionProvider: AttachmentActions
+let actionProvider: ActionProvider<AttachmentContext>
 
 beforeEach(() => {
   mocks = MockFactory.newMocks(new Config(), false)
   actionRegistry = new ActionRegistry()
   actionProvider = new AttachmentActions()
-  actionRegistry.registerActionProvider("attachment", actionProvider)
+  actionRegistry.registerActionProvider(
+    "attachment",
+    actionProvider as ActionProvider<ProcessingContext>,
+  )
 
   dryRunMocks = MockFactory.newMocks(new Config(), true)
 })

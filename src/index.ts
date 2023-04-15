@@ -7,6 +7,7 @@ const envContext: EnvContext = {
   gmailApp: GmailApp,
   spreadsheetApp: SpreadsheetApp,
   utilities: Utilities,
+  dryRun: false,
 }
 const gmailProcessor = new GmailProcessor(envContext)
 

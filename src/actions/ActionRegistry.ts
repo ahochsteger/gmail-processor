@@ -1,17 +1,8 @@
-import {
-  AttachmentContext,
-  MessageContext,
-  ProcessingContext,
-  ThreadContext,
-} from "../Context"
+import { ProcessingContext } from "../Context"
 
 export type ActionArgType = boolean | number | string
-export type ActionArgsType = Record<string, ActionArgType | never>
-export type ActionContextType =
-  | ProcessingContext
-  | ThreadContext
-  | MessageContext
-  | AttachmentContext
+export type ActionArgsType = Record<string, ActionArgType>
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export type ActionReturnType = {
   ok?: boolean
   error?: unknown
@@ -20,14 +11,15 @@ export type ActionReturnType = {
 
 // Define a type for the function that takes context and args as arguments
 export type ActionFunction<
-  TContext extends ActionContextType = ProcessingContext,
+  TContext extends ProcessingContext = ProcessingContext,
   TArgs extends ActionArgsType = ActionArgsType,
   TReturn extends ActionReturnType = ActionReturnType,
 > = (context: TContext, args: TArgs) => TReturn | void
 
-export class ActionProvider {
-  // TODO: Make generic type to define default context type to simplify typing of each action function
-  // [key: string | symbol]: ActionFunction<ActionContextType, ActionArgsType>
+export interface ActionProvider<
+  TContext extends ProcessingContext = ProcessingContext,
+> {
+  [key: string]: ActionFunction<TContext>
 }
 
 export class ActionRegistry {
@@ -38,7 +30,10 @@ export class ActionRegistry {
     return Object.getOwnPropertyNames(provider.constructor.prototype)
   }
 
-  public registerActionProvider(providerName: string, provider: ActionProvider) {
+  public registerActionProvider(
+    providerName: string,
+    provider: ActionProvider,
+  ) {
     if (this.actionProviders.get(providerName))
       throw new Error(
         `An action provider with name ${providerName} is already registered!`,
@@ -80,7 +75,7 @@ export class ActionRegistry {
   }
 
   public executeAction(
-    context: ActionContextType,
+    context: ProcessingContext,
     name: string,
     args: ActionArgsType,
   ): ActionReturnType {

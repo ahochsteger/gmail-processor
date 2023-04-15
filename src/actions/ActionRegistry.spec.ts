@@ -1,16 +1,20 @@
 import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
+import { ProcessingContext, ThreadContext } from "../Context"
 import { Config } from "../config/Config"
-import { MessageContext, ThreadContext } from "../Context"
 import {
   ActionArgsType,
-  ActionContextType,
   ActionFunction,
   ActionProvider,
   ActionRegistry,
 } from "./ActionRegistry"
 
-class MyActionProvider extends ActionProvider {
-  public myThreadFunction(context: ActionContextType, args: ActionArgsType) {
+class MyThreadActionProvider implements ActionProvider {
+  [key: string]: ActionFunction
+  public myThreadFunction(
+    context: ProcessingContext,
+    args: ActionArgsType,
+    // { threadBoolArg: boolean, threadStringArg: string },
+  ) {
     console.log(
       `Subject:${
         (context as ThreadContext).thread.getFirstMessageSubject
@@ -18,24 +22,19 @@ class MyActionProvider extends ActionProvider {
         args.threadStringArg
       }`,
     )
-  }
-  public myMessageFunction: ActionFunction<
-    MessageContext,
-    { msgBoolArg: boolean; msgStringArg: string }
-  > = (context, args) => {
-    console.log(`${context}, ${args}`)
+    return { ok: true }
   }
 }
 
 let mocks: Mocks
-let myActionProvider: MyActionProvider
+let myThreadActionProvider: MyThreadActionProvider
 let actionRegistry: ActionRegistry
 
 beforeEach(() => {
   mocks = MockFactory.newMocks(new Config(), false)
   actionRegistry = new ActionRegistry()
-  myActionProvider = new MyActionProvider()
-  actionRegistry.registerActionProvider("test", myActionProvider)
+  myThreadActionProvider = new MyThreadActionProvider()
+  actionRegistry.registerActionProvider("test", myThreadActionProvider)
 })
 
 describe("ActionRegistry.getAction()", () => {
@@ -49,7 +48,7 @@ describe("ActionRegistry.getAction()", () => {
   })
   it("should return a function for an available action", () => {
     const actual = actionRegistry.getAction("test.myThreadFunction")
-    expect(actual).toBe(myActionProvider.myThreadFunction)
+    expect(actual).toBe(myThreadActionProvider.myThreadFunction)
   })
 })
 

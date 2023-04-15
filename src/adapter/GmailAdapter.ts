@@ -12,7 +12,6 @@ export class GmailAdapter implements Adapter {
     return this.envContext.gmailApp.search(query, 1, max)
   }
 
-  // TODO: Maybe move to a utility class - is not Gmail-specific
   public convertHtmlToPdf(html: string): string {
     const htmlBlob = this.envContext.utilities.newBlob(html, "text/html")
     return htmlBlob.getAs("application/pdf").getDataAsString()
