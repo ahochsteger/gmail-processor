@@ -34,17 +34,17 @@ export class ActionRegistry {
   private actionProviders = new Map<string, ActionProvider>()
   private actions = new Map<string, ActionFunction>()
 
-  getActionNamesFromProvider(provider: ActionProvider): string[] {
+  private getActionNamesFromProvider(provider: ActionProvider): string[] {
     return Object.getOwnPropertyNames(provider.constructor.prototype)
   }
 
-  registerActionProvider(providerName: string, provider: ActionProvider) {
+  public registerActionProvider(providerName: string, provider: ActionProvider) {
     if (this.actionProviders.get(providerName))
       throw new Error(
         `An action provider with name ${providerName} is already registered!`,
       )
     this.actionProviders.set(providerName, provider)
-    Object.getOwnPropertyNames(provider.constructor.prototype).forEach(
+    this.getActionNamesFromProvider(provider.constructor.prototype).forEach(
       (actionName) => {
         const fullActionName = `${providerName}.${String(actionName)}`
         const action = provider[actionName as keyof typeof provider]
@@ -55,37 +55,37 @@ export class ActionRegistry {
     )
   }
 
-  getActionProviders(): Map<string, ActionProvider> {
+  public getActionProviders(): Map<string, ActionProvider> {
     return this.actionProviders
   }
 
-  getActions(): Map<string, ActionFunction> {
+  public getActions(): Map<string, ActionFunction> {
     return this.actions
   }
 
-  getAction(fullActionName: string): ActionFunction | undefined {
+  public getAction(fullActionName: string): ActionFunction | undefined {
     const fn = this.actions.get(fullActionName)
     if (typeof fn !== "function") return undefined
     return fn
   }
 
-  hasAction(fullActionName: string): boolean {
+  public hasAction(fullActionName: string): boolean {
     return this.getAction(fullActionName) !== undefined
   }
 
-  unknownActionError(fullActionName: string) {
+  private unknownActionError(fullActionName: string) {
     return new Error(
       `Action provider '${typeof this}' does not provide action '${fullActionName}'!`,
     )
   }
 
-  executeAction(
+  public executeAction(
     context: ActionContextType,
-    fullActionName: string,
+    name: string,
     args: ActionArgsType,
   ): ActionReturnType {
-    const fn = this.getAction(fullActionName)
-    if (!fn) throw this.unknownActionError(fullActionName)
+    const fn = this.getAction(name)
+    if (!fn) throw this.unknownActionError(name)
     let result: ActionReturnType = { ok: true }
     try {
       result = {
