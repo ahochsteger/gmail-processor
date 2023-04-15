@@ -13,7 +13,7 @@ export type ActionContextType =
   | MessageContext
   | AttachmentContext
 export type ActionReturnType = {
-  status?: boolean // TODO: Status should be enum or renamed to success/ok
+  ok?: boolean
   error?: unknown
   [k: string]: unknown
 }
@@ -86,14 +86,14 @@ export class ActionRegistry {
   ): ActionReturnType {
     const fn = this.getAction(fullActionName)
     if (!fn) throw this.unknownActionError(fullActionName)
-    let result: ActionReturnType = { status: true }
+    let result: ActionReturnType = { ok: true }
     try {
       result = {
         ...fn(context, args),
       } as ActionReturnType
     } catch (e) {
       result = {
-        status: false,
+        ok: false,
         error: e,
       }
     }

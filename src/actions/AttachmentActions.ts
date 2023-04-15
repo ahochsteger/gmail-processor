@@ -22,7 +22,7 @@ export class AttachmentActions extends ActionProvider {
       args.description,
     )
     return {
-      status: true,
+      ok: true,
       gdriveFile,
     }
   }
