@@ -9,10 +9,7 @@ import {
 
 export class ThreadActions implements ActionProvider<ThreadContext> {
   [key: string]: ActionFunction<ThreadContext>
-  public markProcessed(
-    context: ThreadContext,
-    _args: ActionArgsType = {},
-  ): ActionReturnType {
+  public markProcessed(context: ThreadContext): ActionReturnType {
     let thread
     if (context.config.settings.processedMode == "label") {
       thread = this.addLabel(context, {
@@ -70,47 +67,45 @@ export class ThreadActions implements ActionProvider<ThreadContext> {
     }
   }
 
-  public addLabel(context: ThreadContext, args: ActionArgsType) {
+  public addLabel<T extends { name: string }>(
+    context: ThreadContext,
+    args: ActionArgsType,
+  ) {
+    const a = args as T
     return {
-      thread: context.gmailAdapter.threadAddLabel(
-        context.thread,
-        args.name as string,
-      ),
+      thread: context.gmailAdapter.threadAddLabel(context.thread, a.name),
     }
   }
 
-  public removeLabel(context: ThreadContext, args: ActionArgsType) {
+  public removeLabel<T extends { name: string }>(
+    context: ThreadContext,
+    args: ActionArgsType,
+  ) {
+    const a = args as T
     return {
-      thread: context.gmailAdapter.threadRemoveLabel(
-        context.thread,
-        args.name as string,
-      ),
+      thread: context.gmailAdapter.threadRemoveLabel(context.thread, a.name),
     }
   }
 
   /**
    * Generate a PDF document for the whole thread and store it to GDrive.
    */
-  public storeAsPdfToGDrive(
-    context: ThreadContext,
-    args: ActionArgsType,
-    // {
-    //   location: string
-    //   conflictStrategy: ConflictStrategy
-    //   skipHeader: boolean
-    // }
-  ) {
+  public storeAsPdfToGDrive<
+    T extends {
+      location: string
+      conflictStrategy: ConflictStrategy
+      skipHeader?: boolean
+    },
+  >(context: ThreadContext, args: ActionArgsType) {
+    const a = args as T
     return {
       ok: true,
       file: context.gdriveAdapter.createFile(
-        args.location as string,
-        context.gmailAdapter.threadAsPdf(
-          context.thread,
-          args.skipHeader as boolean,
-        ),
+        a.location,
+        context.gmailAdapter.threadAsPdf(context.thread, a.skipHeader),
         "application/pdf",
         "",
-        args.conflictStrategy as ConflictStrategy,
+        a.conflictStrategy,
       ),
     }
   }

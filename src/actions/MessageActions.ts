@@ -8,16 +8,15 @@ import {
 
 export class MessageActions implements ActionProvider<MessageContext> {
   [key: string]: ActionFunction<MessageContext>
-  public forward(
+  public forward<T extends { to: string }>(
     context: MessageContext,
-    _args: ActionArgsType,
-    // { to: string },
+    args: ActionArgsType,
   ) {
-    const args = _args as { to: string }
+    const a = args as T
     return {
       message: context.gmailAdapter.messageForward(
         context.message,
-        args.to as string,
+        a.to as string,
       ),
     }
   }
@@ -63,25 +62,24 @@ export class MessageActions implements ActionProvider<MessageContext> {
   /**
    * Generate a PDF document from the message and store it to GDrive.
    */
-  public storeAsPdfToGDrive(
-    context: MessageContext,
-    args: ActionArgsType,
-    // {
-    //   location: string
-    //   conflictStrategy: ConflictStrategy
-    //   skipHeader: boolean
-    // },
-  ) {
+  public storeAsPdfToGDrive<
+    T extends {
+      location: string
+      conflictStrategy: ConflictStrategy
+      skipHeader: boolean
+    },
+  >(context: MessageContext, args: ActionArgsType) {
+    const a = args as T
     return {
       file: context.gdriveAdapter.createFile(
-        args.location as string,
+        a.location as string,
         context.gmailAdapter.messageAsPdf(
           context.message,
-          args.skipHeader as boolean,
+          a.skipHeader as boolean,
         ),
         "application/pdf",
         "",
-        args.conflictStrategy as ConflictStrategy,
+        a.conflictStrategy as ConflictStrategy,
       ),
     }
   }
