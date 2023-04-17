@@ -5,6 +5,7 @@ import {
   ActionFunction,
   ActionProvider,
   ActionReturnType,
+  typedArgs,
 } from "./ActionRegistry"
 
 export class ThreadActions implements ActionProvider<ThreadContext> {
@@ -71,7 +72,7 @@ export class ThreadActions implements ActionProvider<ThreadContext> {
     context: ThreadContext,
     args: ActionArgsType,
   ) {
-    const a = args as T
+    const a = typedArgs<T>(args)
     return {
       thread: context.gmailAdapter.threadAddLabel(context.thread, a.name),
     }
@@ -81,7 +82,7 @@ export class ThreadActions implements ActionProvider<ThreadContext> {
     context: ThreadContext,
     args: ActionArgsType,
   ) {
-    const a = args as T
+    const a = typedArgs<T>(args)
     return {
       thread: context.gmailAdapter.threadRemoveLabel(context.thread, a.name),
     }
@@ -97,7 +98,7 @@ export class ThreadActions implements ActionProvider<ThreadContext> {
       skipHeader?: boolean
     },
   >(context: ThreadContext, args: ActionArgsType) {
-    const a = args as T
+    const a = typedArgs<T>(args)
     return {
       ok: true,
       file: context.gdriveAdapter.createFile(

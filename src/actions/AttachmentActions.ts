@@ -5,6 +5,7 @@ import {
   ActionFunction,
   ActionProvider,
   ActionReturnType,
+  typedArgs,
 } from "./ActionRegistry"
 
 export class AttachmentActions implements ActionProvider<AttachmentContext> {
@@ -19,7 +20,7 @@ export class AttachmentActions implements ActionProvider<AttachmentContext> {
     context: AttachmentContext,
     args: ActionArgsType,
   ): ActionReturnType & { gdriveFile: GoogleAppsScript.Drive.File } {
-    const a = args as T
+    const a = typedArgs<T>(args)
     const gdriveFile = context.gdriveAdapter.storeAttachment(
       context.attachment,
       a.location as string,

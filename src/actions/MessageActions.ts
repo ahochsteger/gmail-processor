@@ -4,6 +4,7 @@ import {
   ActionArgsType,
   ActionFunction,
   ActionProvider,
+  typedArgs,
 } from "./ActionRegistry"
 
 export class MessageActions implements ActionProvider<MessageContext> {
@@ -12,7 +13,7 @@ export class MessageActions implements ActionProvider<MessageContext> {
     context: MessageContext,
     args: ActionArgsType,
   ) {
-    const a = args as T
+    const a = typedArgs<T>(args)
     return {
       message: context.gmailAdapter.messageForward(
         context.message,
@@ -69,7 +70,7 @@ export class MessageActions implements ActionProvider<MessageContext> {
       skipHeader: boolean
     },
   >(context: MessageContext, args: ActionArgsType) {
-    const a = args as T
+    const a = typedArgs<T>(args)
     return {
       file: context.gdriveAdapter.createFile(
         a.location as string,

@@ -6,20 +6,20 @@ import {
   ActionFunction,
   ActionProvider,
   ActionRegistry,
+  typedArgs,
 } from "./ActionRegistry"
 
 class MyThreadActionProvider implements ActionProvider {
   [key: string]: ActionFunction
-  public myThreadFunction(
-    context: ProcessingContext,
-    args: ActionArgsType,
-    // { threadBoolArg: boolean, threadStringArg: string },
-  ) {
+  public myThreadFunction<
+    T extends { threadBoolArg: boolean; threadStringArg: string },
+  >(context: ProcessingContext, args: ActionArgsType) {
+    const a = typedArgs<T>(args)
     console.log(
       `Subject:${
         (context as ThreadContext).thread.getFirstMessageSubject
-      }, threadBoolArg:${args.threadBoolArg}, threadStringArg:${
-        args.threadStringArg
+      }, threadBoolArg:${a.threadBoolArg}, threadStringArg:${
+        a.threadStringArg
       }`,
     )
     return { ok: true }
@@ -94,4 +94,28 @@ describe("ActionRegistry.invokeAction()", () => {
     )
     expect(actual).toBeTruthy()
   })
+})
+
+describe("ActionProvider", () => {
+  it("should execute an action with correct arguments", () => {
+    const result = myThreadActionProvider.myThreadFunction(
+      mocks.threadContext,
+      { threadBoolArg: true, threadStringArg: "myString" },
+    )
+    expect(result.ok).toBeTruthy()
+  })
+  // it("should throw an error when executing an action with extra arguments", () => {
+  //   expect(() => {
+  //     myThreadActionProvider.myThreadFunction(mocks.threadContext, {
+  //       threadBoolArg: true,
+  //       threadStringArg: "myString",
+  //       additionalArg: 123,
+  //     })
+  //   }).toThrow()
+  // })
+  // it("should throw an error when executing an action with missing arguments", () => {
+  //   expect(() => {
+  //     myThreadActionProvider.myThreadFunction(mocks.threadContext, {})
+  //   }).toThrow()
+  // })
 })
