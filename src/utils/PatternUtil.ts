@@ -147,6 +147,7 @@ export class PatternUtil {
     m = this.mapAdd(m, "message.cc", message.getCc())
     m = this.mapAdd(m, "message.date", message.getDate())
     m = this.mapAdd(m, "message.from", message.getFrom())
+    m = this.mapAdd(m, "message.from.domain", message.getFrom().split("@")[1])
     m = this.mapAdd(m, "message.id", message.getId())
     m = this.mapAdd(m, "message.isDraft", message.isDraft())
     m = this.mapAdd(m, "message.isInChats", message.isInChats())

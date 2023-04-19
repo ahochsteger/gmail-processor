@@ -40,6 +40,9 @@ describe("Features", () => {
     test.todo(
       "should be able to use replyTo and from as folder/file names (PR #76)",
     )
+    test.todo(
+      "should be able to specify storage location from sender domain (issue #84)",
+    )
   })
   describe("Filtering", () => {
     test.todo("should be able to exclude inline attachments (issue #13,#26)")
