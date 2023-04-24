@@ -17,25 +17,25 @@ it("Schema-generated Config Types Test", () => {
 describe("normalizeConfig", () => {
   it("should expand shorthand config", () => {
     const cfg = jsonToConfig({
-      threadHandler: [{ description: "Thread handler 1" }],
-      messageHandler: [{ description: "Message handler 1" }],
-      attachmentHandler: [{ description: "Attachment handler 1" }],
+      threads: [{ description: "Thread handler 1" }],
+      messages: [{ description: "Message handler 1" }],
+      attachments: [{ description: "Attachment handler 1" }],
     })
     const normCfg = normalizeConfig(cfg)
     const expected = {
-      threadHandler: [
+      threads: [
         { description: "Thread handler 1" },
-        { messageHandler: [{ description: "Message handler 1" }] },
+        { messages: [{ description: "Message handler 1" }] },
         {
-          messageHandler: [
-            { attachmentHandler: [{ description: "Attachment handler 1" }] },
+          messages: [
+            { attachments: [{ description: "Attachment handler 1" }] },
           ],
         },
       ],
     }
     expect(normCfg).toMatchObject(expected)
-    expect(normCfg.attachmentHandler).toEqual([])
-    expect(normCfg.messageHandler).toEqual([])
+    expect(normCfg.attachments).toEqual([])
+    expect(normCfg.messages).toEqual([])
   })
 })
 
@@ -76,7 +76,7 @@ describe("jsonToConfig", () => {
       settings: {
         processedLabel: "some-label",
       },
-      threadHandler: [
+      threads: [
         {
           description: "Thread Handler 1",
           match: {
@@ -86,7 +86,7 @@ describe("jsonToConfig", () => {
       ],
     }
     const config = jsonToConfig(json)
-    config.threadHandler[0].match.query
+    config.threads[0].match.query
     expect(config.global.match.query).toEqual(json.global.match.query)
     expect(config.settings.processedLabel).toEqual(json.settings.processedLabel)
   })
@@ -99,14 +99,14 @@ describe("configToJson", () => {
       settings: {
         processedLabel: "some label",
       },
-      threadHandler: [{ description: "thread description" }],
+      threads: [{ description: "thread description" }],
     }
     const cfg = new Config()
     cfg.description = expected.description
     cfg.settings.processedLabel = expected.settings.processedLabel
     const tcfg = new ThreadConfig()
-    tcfg.description = expected.threadHandler[0].description
-    cfg.threadHandler.push(tcfg)
+    tcfg.description = expected.threads[0].description
+    cfg.threads.push(tcfg)
     const actual = configToJson(cfg, true)
     expect((actual as any).settings.timezone).toEqual("UTC")
     expect(actual).toMatchObject(expected)
@@ -118,14 +118,14 @@ describe("configToJson", () => {
   //     settings: {
   //       processedLabel: "some label",
   //     },
-  //     threadHandler: [{ description: "thread description" }],
+  //     threads: [{ description: "thread description" }],
   //   }
   //   const cfg = new Config()
   //   cfg.description = expected.description
   //   cfg.settings.processedLabel = expected.settings.processedLabel
   //   const tcfg = new ThreadConfig()
-  //   tcfg.description = expected.threadHandler[0].description
-  //   cfg.threadHandler.push(tcfg)
+  //   tcfg.description = expected.threads[0].description
+  //   cfg.threads.push(tcfg)
   //   const actual = configToJson(cfg, false)
   //   expect(actual).toMatchObject(expected)
   //   expect((actual as any).settings?.processedMode).toBeUndefined()

@@ -1,10 +1,10 @@
-import { Config } from "../config/Config"
-import { BaseProcessor } from "./BaseProcessor"
-import { MessageProcessor } from "./MessageProcessor"
-import { ThreadConfig } from "../config/ThreadConfig"
-import { Timer } from "../utils/Timer"
 import { ProcessingContext, ThreadContext } from "../Context"
 import { ThreadActions } from "../actions/ThreadActions"
+import { Config } from "../config/Config"
+import { ThreadConfig } from "../config/ThreadConfig"
+import { Timer } from "../utils/Timer"
+import { BaseProcessor } from "./BaseProcessor"
+import { MessageProcessor } from "./MessageProcessor"
 
 export class ThreadProcessor extends BaseProcessor {
   public type = "thread"
@@ -86,7 +86,7 @@ export class ThreadProcessor extends BaseProcessor {
     console.info(
       `    Processing of thread '${thread.getFirstMessageSubject()}' started ...`,
     )
-    messageProcessor.processMessageConfigs(threadConfig.messageHandler)
+    messageProcessor.processMessageConfigs(threadConfig.messages)
     // // Process all messages of a thread:
     // for (const messageRule of threadRule.messageRules) {
     //     for (const message of thread.getMessages()) {

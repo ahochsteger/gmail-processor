@@ -1,14 +1,14 @@
-import { Config, jsonToConfig, normalizeConfig } from "../config/Config"
-import { ThreadProcessor } from "./ThreadProcessor"
-import { PatternUtil } from "../utils/PatternUtil"
-import { Timer } from "../utils/Timer"
-import { V1Config, jsonToV1Config } from "../config/v1/V1Config"
-import { V1ToV2Converter } from "../config/v1/V1ToV2Converter"
 import { EnvContext, ProcessingContext } from "../Context"
 import { ActionRegistry } from "../actions/ActionRegistry"
 import { GDriveAdapter } from "../adapter/GDriveAdapter"
 import { GmailAdapter } from "../adapter/GmailAdapter"
 import { SpreadsheetAdapter } from "../adapter/SpreadsheetAdapter"
+import { Config, jsonToConfig, normalizeConfig } from "../config/Config"
+import { V1Config, jsonToV1Config } from "../config/v1/V1Config"
+import { V1ToV2Converter } from "../config/v1/V1ToV2Converter"
+import { PatternUtil } from "../utils/PatternUtil"
+import { Timer } from "../utils/Timer"
+import { ThreadProcessor } from "./ThreadProcessor"
 
 export class GmailProcessor {
   public patternUtil: PatternUtil = new PatternUtil()
@@ -32,7 +32,7 @@ export class GmailProcessor {
       dryRun,
     }
     const threadProcessor = new ThreadProcessor(processingContext) // TODO: Do not instanciate here - only once and pass different context during instanciation time and runtime!
-    threadProcessor.processThreadConfigs(config.threadHandler)
+    threadProcessor.processThreadConfigs(config.threads)
     console.info("Processing of GMail2GDrive config finished.")
   }
 

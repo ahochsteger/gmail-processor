@@ -33,9 +33,9 @@ it("should convert filenameTo patterns", () => {
         newerThan: "2m",
       },
     },
-    threadHandler: [
+    threads: [
       {
-        attachmentHandler: [
+        attachments: [
           {
             actions: [
               {
@@ -51,7 +51,7 @@ it("should convert filenameTo patterns", () => {
         ],
       },
       {
-        attachmentHandler: [
+        attachments: [
           {
             actions: [
               {
@@ -67,7 +67,7 @@ it("should convert filenameTo patterns", () => {
         ],
       },
       {
-        attachmentHandler: [
+        attachments: [
           {
             actions: [
               {
@@ -91,7 +91,7 @@ it("should convert filenameTo patterns", () => {
             name: "thread.archive",
           },
         ],
-        attachmentHandler: [
+        attachments: [
           {
             actions: [
               {

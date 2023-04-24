@@ -1,9 +1,9 @@
-import { MessageFlag } from "../config/MessageFlag"
-import { MessageConfig } from "../config/MessageConfig"
-import { AttachmentProcessor } from "../processors/AttachmentProcessor"
-import { BaseProcessor } from "./BaseProcessor"
 import { MessageContext, ThreadContext } from "../Context"
 import { MessageActions } from "../actions/MessageActions"
+import { MessageConfig } from "../config/MessageConfig"
+import { MessageFlag } from "../config/MessageFlag"
+import { AttachmentProcessor } from "../processors/AttachmentProcessor"
+import { BaseProcessor } from "./BaseProcessor"
 
 export class MessageProcessor extends BaseProcessor {
   constructor(public threadContext: ThreadContext) {
@@ -90,11 +90,9 @@ export class MessageProcessor extends BaseProcessor {
     const attachmentProcessor: AttachmentProcessor = new AttachmentProcessor(
       messageContext,
     ) // TODO: Do not instanciate here - only once and pass different context during instanciation time and runtime!
-    if (messageConfig.attachmentHandler) {
+    if (messageConfig.attachments) {
       // New rule configuration format
-      attachmentProcessor.processAttachmentConfigs(
-        messageConfig.attachmentHandler,
-      )
+      attachmentProcessor.processAttachmentConfigs(messageConfig.attachments)
     }
     // } else { // Old rule configuration format
     //     // TODO: Convert old rule configuration into new format instead of duplicate implementation

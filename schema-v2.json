@@ -20,12 +20,6 @@
           "description": "The name of the action to be executed",
           "title": "name",
           "type": "string"
-        },
-        "scope": {
-          "description": "The handler type to which this action is bound to (defaults to the handler type where the action is defined)",
-          "enum": ["attachments", "global", "messages", "threads"],
-          "title": "scope",
-          "type": "string"
         }
       },
       "title": "ActionConfig",
@@ -59,15 +53,9 @@
           "description": "The unique name of the attachment config (will be generated if not set)",
           "title": "name",
           "type": "string"
-        },
-        "type": {
-          "default": "attachments",
-          "description": "The type of handler",
-          "title": "type",
-          "type": "string"
         }
       },
-      "required": ["actions", "match", "type"],
+      "required": ["actions", "match"],
       "title": "AttachmentConfig",
       "type": "object"
     },
@@ -138,15 +126,9 @@
           "$ref": "#/definitions/ThreadMatchConfig",
           "description": "The global thread matching parameters applied in addition to each thread configuration",
           "title": "match"
-        },
-        "type": {
-          "default": "global",
-          "description": "The type of handler",
-          "title": "type",
-          "type": "string"
         }
       },
-      "required": ["actions", "match", "type"],
+      "required": ["actions", "match"],
       "title": "GlobalConfig",
       "type": "object"
     },
@@ -162,13 +144,13 @@
           "title": "actions",
           "type": "array"
         },
-        "attachmentHandler": {
+        "attachments": {
           "default": [],
           "description": "The list of handler that define the way attachments are processed",
           "items": {
             "$ref": "#/definitions/AttachmentConfig"
           },
-          "title": "attachmentHandler",
+          "title": "attachments",
           "type": "array"
         },
         "description": {
@@ -187,15 +169,9 @@
           "description": "The unique name of the message config (will be generated if not set)",
           "title": "name",
           "type": "string"
-        },
-        "type": {
-          "default": "messages",
-          "description": "The type of handler",
-          "title": "type",
-          "type": "string"
         }
       },
-      "required": ["actions", "attachmentHandler", "match", "type"],
+      "required": ["actions", "attachments", "match"],
       "title": "MessageConfig",
       "type": "object"
     },
@@ -342,13 +318,13 @@
           "title": "actions",
           "type": "array"
         },
-        "attachmentHandler": {
+        "attachments": {
           "default": [],
           "description": "The list of handler that define the way attachments are processed",
           "items": {
             "$ref": "#/definitions/AttachmentConfig"
           },
-          "title": "attachmentHandler",
+          "title": "attachments",
           "type": "array"
         },
         "description": {
@@ -362,13 +338,13 @@
           "description": "Specifies which threads match for further processing",
           "title": "match"
         },
-        "messageHandler": {
+        "messages": {
           "default": [],
           "description": "The list of handler that define the way nested messages or attachments are processed",
           "items": {
             "$ref": "#/definitions/MessageConfig"
           },
-          "title": "messageHandler",
+          "title": "messages",
           "type": "array"
         },
         "name": {
@@ -376,15 +352,9 @@
           "description": "The unique name of the thread config (will be generated if not set)",
           "title": "name",
           "type": "string"
-        },
-        "type": {
-          "default": "threads",
-          "description": "The type of handler",
-          "title": "type",
-          "type": "string"
         }
       },
-      "required": ["actions", "match", "messageHandler", "type"],
+      "required": ["actions", "match", "messages"],
       "title": "ThreadConfig",
       "type": "object"
     },
@@ -423,13 +393,13 @@
   },
   "description": "Represents a configuration for GMail2GDrive",
   "properties": {
-    "attachmentHandler": {
+    "attachments": {
       "default": [],
       "description": "The list of handler that define the way attachments are processed",
       "items": {
         "$ref": "#/definitions/AttachmentConfig"
       },
-      "title": "attachmentHandler",
+      "title": "attachments",
       "type": "array"
     },
     "description": {
@@ -443,13 +413,13 @@
       "description": "The global configuration that defines matching for all threads as well as actions for all threads, messages or attachments.",
       "title": "global"
     },
-    "messageHandler": {
+    "messages": {
       "default": [],
       "description": "The list of handler that define the way nested messages or attachments are processed",
       "items": {
         "$ref": "#/definitions/MessageConfig"
       },
-      "title": "messageHandler",
+      "title": "messages",
       "type": "array"
     },
     "settings": {
@@ -457,17 +427,17 @@
       "description": "Represents a settings config that affect the way GMail2GDrive works.",
       "title": "settings"
     },
-    "threadHandler": {
+    "threads": {
       "default": [],
       "description": "The list of handler that define the way nested threads, messages or attachments are processed",
       "items": {
         "$ref": "#/definitions/ThreadConfig"
       },
-      "title": "threadHandler",
+      "title": "threads",
       "type": "array"
     }
   },
-  "required": ["global", "settings", "threadHandler"],
+  "required": ["global", "settings", "threads"],
   "type": "object",
   "title": "Config (v2)"
 }

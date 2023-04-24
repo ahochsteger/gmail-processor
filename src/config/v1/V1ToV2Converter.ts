@@ -1,15 +1,15 @@
-import { Config } from "../Config"
+import { PatternUtil } from "../../utils/PatternUtil"
 import { jsonToActionConfig } from "../ActionConfig"
 import { AttachmentConfig } from "../AttachmentConfig"
+import { Config } from "../Config"
 import { ThreadConfig } from "../ThreadConfig"
-import { V1Rule } from "./V1Rule"
 import { V1Config } from "./V1Config"
-import { PatternUtil } from "../../utils/PatternUtil"
+import { V1Rule } from "./V1Rule"
 
 export class V1ToV2Converter {
   static v1RuleToV2ThreadConfig(rule: V1Rule): ThreadConfig {
     const threadConfig = new ThreadConfig()
-    threadConfig.attachmentHandler = []
+    threadConfig.attachments = []
     const attachmentConfig = new AttachmentConfig()
     // Handle filename filtering:
     if (rule.filenameFrom) {
@@ -32,7 +32,7 @@ export class V1ToV2Converter {
         },
       }),
     )
-    threadConfig.attachmentHandler.push(attachmentConfig)
+    threadConfig.attachments.push(attachmentConfig)
     if (rule.newerThan != "") {
       threadConfig.match.newerThan = rule.newerThan
     }
@@ -75,7 +75,7 @@ export class V1ToV2Converter {
     config.global.match.newerThan = v1config.newerThan
     config.settings.timezone = v1config.timezone
     for (const rule of v1config.rules) {
-      config.threadHandler.push(this.v1RuleToV2ThreadConfig(rule))
+      config.threads.push(this.v1RuleToV2ThreadConfig(rule))
     }
     return config
   }

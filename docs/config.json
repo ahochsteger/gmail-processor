@@ -33,7 +33,7 @@
       }
     ]
   },
-  "threadHandler": [
+  "threads": [
     {
       "type": "threads",
       "match": {
@@ -41,7 +41,7 @@
         "maxMessageCount": 123,
         "minMessageCount": 1
       },
-      "messageHandler": [
+      "messages": [
         {
           "type": "messages",
           "match": {
@@ -50,7 +50,7 @@
             "to": "my\\.address\\+(.+)@gmail.com",
             "is": ["unread"]
           },
-          "attachmentHandler": [
+          "attachments": [
             {
               "type": "attachments",
               "match": {

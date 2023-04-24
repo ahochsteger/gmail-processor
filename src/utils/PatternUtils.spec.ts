@@ -1,8 +1,8 @@
 import { MockFactory } from "../../test/mocks/MockFactory"
-import { jsonToMessageConfig } from "../config/MessageConfig"
-import { PatternUtil } from "./PatternUtil"
 import { AttachmentConfig } from "../config/AttachmentConfig"
 import { Config } from "../config/Config"
+import { jsonToMessageConfig } from "../config/MessageConfig"
+import { PatternUtil } from "./PatternUtil"
 
 function getMocks(dryRun = true, config = new Config()) {
   const mocks = MockFactory.newMocks(config, dryRun)
@@ -86,9 +86,8 @@ describe("Pattern Substitution", () => {
         subject: "Message ([0-9]+): (.*)",
         to: "my\\.email\\+(.+)@example.com",
       },
-      attachmentHandler: [
+      attachments: [
         {
-          type: "attachments",
           match: { name: "attachment([0-9]+)\\.jpg" },
           actions: [
             {

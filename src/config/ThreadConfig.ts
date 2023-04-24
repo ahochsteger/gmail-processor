@@ -24,13 +24,13 @@ export class ThreadConfig {
    */
   @Expose()
   @Type(() => MessageConfig)
-  messageHandler: MessageConfig[] = []
+  messages: MessageConfig[] = []
   /**
    * The list of handler that define the way attachments are processed
    */
   @Expose()
   @Type(() => AttachmentConfig)
-  attachmentHandler?: AttachmentConfig[] = []
+  attachments?: AttachmentConfig[] = []
   /**
    * Specifies which threads match for further processing
    */
@@ -42,11 +42,6 @@ export class ThreadConfig {
    */
   @Expose()
   name? = ""
-  /**
-   * The type of handler
-   */
-  @Expose()
-  type = "threads"
 }
 
 export function jsonToThreadConfig(

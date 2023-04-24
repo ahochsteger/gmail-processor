@@ -23,7 +23,7 @@ export class MessageConfig {
    */
   @Expose()
   @Type(() => AttachmentConfig)
-  attachmentHandler: AttachmentConfig[] = []
+  attachments: AttachmentConfig[] = []
   /**
    * Specifies which attachments match for further processing
    */
@@ -35,11 +35,6 @@ export class MessageConfig {
    */
   @Expose()
   name? = ""
-  /**
-   * The type of handler
-   */
-  @Expose()
-  type = "messages"
 }
 
 export function jsonToMessageConfig(

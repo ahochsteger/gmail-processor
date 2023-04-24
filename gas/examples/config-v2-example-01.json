@@ -19,7 +19,7 @@
     },
     "actions": []
   },
-  "threadHandler": [
+  "threads": [
     {
       "description": "Store all attachments sent to my.name+scans@gmail.com to the folder 'Scans'",
       "match": {

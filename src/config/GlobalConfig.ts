@@ -1,7 +1,7 @@
 import { Expose, Type } from "class-transformer"
+import "reflect-metadata"
 import { ActionConfig } from "./ActionConfig"
 import { ThreadMatchConfig } from "./ThreadMatchConfig"
-import "reflect-metadata"
 
 /**
  * The global configuration that defines matching for all threads as well as actions for all threads, messages or attachments.
@@ -19,9 +19,4 @@ export class GlobalConfig {
   @Expose()
   @Type(() => ActionConfig)
   actions: ActionConfig[] = []
-  /**
-   * The type of handler
-   */
-  @Expose()
-  type = "global"
 }

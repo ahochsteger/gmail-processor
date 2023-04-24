@@ -29,11 +29,6 @@ export class AttachmentConfig {
    */
   @Expose()
   name? = ""
-  /**
-   * The type of handler
-   */
-  @Expose()
-  type = "attachments"
 }
 
 export function jsonToAttachmentConfig(

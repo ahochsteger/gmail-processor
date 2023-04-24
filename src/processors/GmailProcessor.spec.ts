@@ -1,6 +1,6 @@
 import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
-import { GmailProcessor } from "./GmailProcessor"
 import { Config } from "../config/Config"
+import { GmailProcessor } from "./GmailProcessor"
 
 let config: Config
 let mocks: Mocks
@@ -16,7 +16,7 @@ describe("run", () => {
   it("should process a v2 config object", () => {
     gmailProcessor.run(config, true)
     expect(mocks.envContext.gmailApp.search).toHaveBeenCalledTimes(
-      config.threadHandler.length,
+      config.threads.length,
     )
   })
 })
@@ -48,11 +48,10 @@ describe("getEffectiveConfig", () => {
               newerThan: "",
             },
             actions: [],
-            type: "global",
           },
-          threadHandler: [],
-          messageHandler: [],
-          attachmentHandler: [],
+          threads: [],
+          messages: [],
+          attachments: [],
           settings: {
             logSheetFile: "Gmail2GDrive/Gmail2GDrive-logs",
             logSheetFolderId: "",

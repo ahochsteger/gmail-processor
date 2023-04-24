@@ -1,6 +1,5 @@
 import { Expose, plainToInstance } from "class-transformer"
 import "reflect-metadata"
-import { HandlerType } from "./ConfigTypes"
 
 /**
  * Represents a config to perform a certain action for a GMail thread/message/attachment.
@@ -21,11 +20,6 @@ export class ActionConfig {
    */
   @Expose()
   name?: string
-  /**
-   * The handler type to which this action is bound to (defaults to the handler type where the action is defined)
-   */
-  @Expose()
-  scope?: HandlerType
 }
 
 export function jsonToActionConfig(

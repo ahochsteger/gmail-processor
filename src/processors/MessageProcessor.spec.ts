@@ -94,7 +94,6 @@ it("should match messages with matching parameters", () => {
   for (let i = 0; i < matchExamples.length; i++) {
     const e = matchExamples[i]
     const messageConfig = jsonToMessageConfig({
-      type: "messages",
       match: e.config,
     })
     const res = []

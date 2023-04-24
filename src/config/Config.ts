@@ -31,19 +31,19 @@ export class Config {
    */
   @Expose()
   @Type(() => ThreadConfig)
-  threadHandler: ThreadConfig[] = []
+  threads: ThreadConfig[] = []
   /**
    * The list of handler that define the way nested messages or attachments are processed
    */
   @Expose()
   @Type(() => MessageConfig)
-  messageHandler?: MessageConfig[] = []
+  messages?: MessageConfig[] = []
   /**
    * The list of handler that define the way attachments are processed
    */
   @Expose()
   @Type(() => AttachmentConfig)
-  attachmentHandler?: AttachmentConfig[] = []
+  attachments?: AttachmentConfig[] = []
   /**
    * Represents a settings config that affect the way GMail2GDrive works.
    */
@@ -54,22 +54,22 @@ export class Config {
 
 export function normalizeConfig(cfg: Config): Config {
   // Normalize top-level messages config:
-  while (cfg.messageHandler && cfg.messageHandler.length) {
-    const mcfg = cfg.messageHandler.shift()
+  while (cfg.messages && cfg.messages.length) {
+    const mcfg = cfg.messages.shift()
     if (!mcfg) break
     const tcfg = new ThreadConfig()
-    tcfg.messageHandler.push(mcfg)
-    cfg.threadHandler.push(tcfg)
+    tcfg.messages.push(mcfg)
+    cfg.threads.push(tcfg)
   }
   // Normalize top-level attachments config:
-  while (cfg.attachmentHandler && cfg.attachmentHandler.length) {
-    const acfg = cfg.attachmentHandler.shift()
+  while (cfg.attachments && cfg.attachments.length) {
+    const acfg = cfg.attachments.shift()
     if (!acfg) break
     const mcfg = new MessageConfig()
-    mcfg.attachmentHandler.push(acfg)
+    mcfg.attachments.push(acfg)
     const tcfg = new ThreadConfig()
-    tcfg.messageHandler.push(mcfg)
-    cfg.threadHandler.push(tcfg)
+    tcfg.messages.push(mcfg)
+    cfg.threads.push(tcfg)
   }
   return cfg
 }

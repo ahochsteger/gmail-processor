@@ -1,18 +1,4 @@
-import { Config, jsonToConfig } from "../../src/config/Config"
 import { mock } from "jest-mock-extended"
-import { GmailProcessor } from "../../src/processors/GmailProcessor"
-import { MessageConfig } from "../../src/config/MessageConfig"
-import { AttachmentConfig } from "../../src/config/AttachmentConfig"
-import { ThreadConfig, jsonToThreadConfig } from "../../src/config/ThreadConfig"
-import { MessageFlag } from "../../src/config/MessageFlag"
-import { ThreadActions } from "../../src/actions/ThreadActions"
-import { MessageActions } from "../../src/actions/MessageActions"
-import { AttachmentActions } from "../../src/actions/AttachmentActions"
-import { V1Config, jsonToV1Config } from "../../src/config/v1/V1Config"
-import { GDriveAdapter } from "../../src/adapter/GDriveAdapter"
-import { GmailAdapter } from "../../src/adapter/GmailAdapter"
-import { SpreadsheetAdapter } from "../../src/adapter/SpreadsheetAdapter"
-import { ActionRegistry } from "../../src/actions/ActionRegistry"
 import {
   AttachmentContext,
   EnvContext,
@@ -20,6 +6,20 @@ import {
   ProcessingContext,
   ThreadContext,
 } from "../../src/Context"
+import { ActionRegistry } from "../../src/actions/ActionRegistry"
+import { AttachmentActions } from "../../src/actions/AttachmentActions"
+import { MessageActions } from "../../src/actions/MessageActions"
+import { ThreadActions } from "../../src/actions/ThreadActions"
+import { GDriveAdapter } from "../../src/adapter/GDriveAdapter"
+import { GmailAdapter } from "../../src/adapter/GmailAdapter"
+import { SpreadsheetAdapter } from "../../src/adapter/SpreadsheetAdapter"
+import { AttachmentConfig } from "../../src/config/AttachmentConfig"
+import { Config, jsonToConfig } from "../../src/config/Config"
+import { MessageConfig } from "../../src/config/MessageConfig"
+import { MessageFlag } from "../../src/config/MessageFlag"
+import { ThreadConfig, jsonToThreadConfig } from "../../src/config/ThreadConfig"
+import { V1Config, jsonToV1Config } from "../../src/config/v1/V1Config"
+import { GmailProcessor } from "../../src/processors/GmailProcessor"
 
 export class Mocks {
   // Create Google Apps Script Context mock objects:
@@ -155,7 +155,6 @@ export class MockFactory {
     return {
       name: "default-attachment-config",
       description: "Default attachment config",
-      type: "attachment",
       actions: includeCommands ? [this.newDefaultActionConfigJson()] : [],
       match: {
         name: "Image-([0-9]+)\\.jpg",
@@ -175,7 +174,6 @@ export class MockFactory {
     return {
       name: "default-message-config",
       description: "Default message config",
-      type: "message",
       match: {
         from: "(.+)@example.com",
         subject: "Prefix - (.*) - Suffix(.*)",
@@ -185,7 +183,7 @@ export class MockFactory {
         olderThan: "",
       },
       actions: includeCommands ? [this.newDefaultActionConfigJson()] : [],
-      attachmentHandler: includeAttachmentConfigs
+      attachments: includeAttachmentConfigs
         ? [this.newDefaultAttachmentConfigJson()]
         : [],
     }
@@ -198,18 +196,15 @@ export class MockFactory {
     return {
       name: "default-thread-config",
       description: "A sample thread config",
-      type: "thread",
       actions: includeCommands ? [this.newDefaultActionConfigJson()] : [],
-      messageHandler: includeMessages
-        ? [this.newDefaultMessageConfigJson()]
-        : [],
+      messages: includeMessages ? [this.newDefaultMessageConfigJson()] : [],
       match: {
         query: "has:attachment from:example@example.com",
         maxMessageCount: -1,
         minMessageCount: -1,
         newerThan: "",
       },
-      attachmentHandler: [],
+      attachments: [],
     }
   }
 
@@ -269,7 +264,7 @@ export class MockFactory {
               // Pro: More flexible (e.g. forward message, if a certain attachment rule matches)
               { name: "markMessageRead" },
             ],
-            attachmentHandler: [
+            attachments: [
               {
                 match: { name: "Image-([0-9]+)\\.jpg" },
                 actions: [
@@ -306,7 +301,7 @@ export class MockFactory {
   public static newDefaultConfigJson(): Record<string, unknown> {
     return {
       settings: this.newDefaultSettingsConfigJson(),
-      threadHandler: this.newComplexThreadConfigList(),
+      threads: this.newComplexThreadConfigList(),
     }
   }
 
@@ -360,7 +355,7 @@ export class MockFactory {
 
   public static newDefaultConfig(): Config {
     return jsonToConfig({
-      threadHandler: this.newComplexThreadConfigList(),
+      threads: this.newComplexThreadConfigList(),
     })
   }
 
@@ -633,7 +628,7 @@ export class MockFactory {
     config = new Config(),
     dryRun = true,
   ) {
-    config.threadHandler.push(threadConfig)
+    config.threads.push(threadConfig)
 
     const ctx: ThreadContext = {
       ...MockFactory.newProcessingContextMock(),
@@ -658,8 +653,8 @@ export class MockFactory {
     threadConfig = new ThreadConfig(),
     config = new Config(),
   ) {
-    threadConfig.messageHandler.push(messageConfig)
-    config.threadHandler.push(threadConfig)
+    threadConfig.messages.push(messageConfig)
+    config.threads.push(threadConfig)
     const message = thread.getMessages()[messageIndex]
 
     const ctx: MessageContext = {
@@ -689,9 +684,9 @@ export class MockFactory {
     threadConfig = new ThreadConfig(),
     config = new Config(),
   ) {
-    messageConfig.attachmentHandler.push(attachmentConfig)
-    threadConfig.messageHandler.push(messageConfig)
-    config.threadHandler.push(threadConfig)
+    messageConfig.attachments.push(attachmentConfig)
+    threadConfig.messages.push(messageConfig)
+    config.threads.push(threadConfig)
     const message = thread.getMessages()[messageIndex]
     const attachment = message.getAttachments()[attachmentIndex]
 

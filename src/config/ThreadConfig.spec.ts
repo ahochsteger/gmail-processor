@@ -18,7 +18,7 @@ it("should ensure nested object defaults", () => {
     },
   })
   expect(threadConfig.actions).toEqual([])
-  expect(threadConfig.messageHandler).toEqual([])
+  expect(threadConfig.messages).toEqual([])
   expect(threadConfig.match).toBeDefined()
   expect(threadConfig.match.query).toBe("test")
   expect(threadConfig.match.newerThan).toBe("")
