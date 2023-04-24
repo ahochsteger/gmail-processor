@@ -26,6 +26,7 @@ export interface ActionProvider<
 
 export function typedArgs<T>(args: ActionArgsType): T {
   // TODO: Add runtime type checking and throw Error on invalid types.
+  // Maybe possible with ts-runtime-checks or io-ts, but initial tests failed to reliably detect non-conformant args.
   return args as T
 }
 
