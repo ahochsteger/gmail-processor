@@ -51,6 +51,8 @@ describe("getEffectiveConfig", () => {
             type: "global",
           },
           threadHandler: [],
+          messageHandler: [],
+          attachmentHandler: [],
           settings: {
             logSheetFile: "Gmail2GDrive/Gmail2GDrive-logs",
             logSheetFolderId: "",

@@ -1,11 +1,9 @@
-import { plainToClass } from "class-transformer"
 import { MockFactory } from "../../test/mocks/MockFactory"
-import { AttachmentConfig } from "./AttachmentConfig"
+import { jsonToAttachmentConfig } from "./AttachmentConfig"
 
 it("should expect a JSON config", () => {
-  const attachmentConfig = plainToClass(
-    AttachmentConfig,
-    MockFactory.newDefaultAttachmentConfig(),
+  const attachmentConfig = jsonToAttachmentConfig(
+    MockFactory.newDefaultAttachmentConfigJson(),
   )
   expect(attachmentConfig.match).toBeDefined()
   expect(attachmentConfig.match.name).toBe("Image-([0-9]+)\\.jpg")
@@ -13,7 +11,7 @@ it("should expect a JSON config", () => {
 })
 
 it("should ensure nested object defaults", () => {
-  const attachmentConfig = plainToClass(AttachmentConfig, {
+  const attachmentConfig = jsonToAttachmentConfig({
     match: {
       name: "test",
     },

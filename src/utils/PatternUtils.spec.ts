@@ -1,7 +1,6 @@
 import { MockFactory } from "../../test/mocks/MockFactory"
-import { MessageConfig } from "../config/MessageConfig"
+import { jsonToMessageConfig } from "../config/MessageConfig"
 import { PatternUtil } from "./PatternUtil"
-import { plainToClass } from "class-transformer"
 import { AttachmentConfig } from "../config/AttachmentConfig"
 import { Config } from "../config/Config"
 
@@ -81,13 +80,13 @@ describe("Pattern Substitution", () => {
       "message.from: some.email@example.com, message.to: my.email+emailsuffix@example.com, " +
       "message.date: 2019-05-01_18-48-31, message.subject.match.1: 01, " +
       "message.subject.match.2: Some more text"
-    const rule = plainToClass(MessageConfig, {
+    const rule = jsonToMessageConfig({
       match: {
         from: "(.+)@example.com",
         subject: "Message ([0-9]+): (.*)",
         to: "my\\.email\\+(.+)@example.com",
       },
-      handler: [
+      attachmentHandler: [
         {
           type: "attachments",
           match: { name: "attachment([0-9]+)\\.jpg" },

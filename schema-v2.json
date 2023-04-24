@@ -342,6 +342,15 @@
           "title": "actions",
           "type": "array"
         },
+        "attachmentHandler": {
+          "default": [],
+          "description": "The list of handler that define the way attachments are processed",
+          "items": {
+            "$ref": "#/definitions/AttachmentConfig"
+          },
+          "title": "attachmentHandler",
+          "type": "array"
+        },
         "description": {
           "default": "",
           "description": "The description of the thread handler config",
@@ -414,6 +423,15 @@
   },
   "description": "Represents a configuration for GMail2GDrive",
   "properties": {
+    "attachmentHandler": {
+      "default": [],
+      "description": "The list of handler that define the way attachments are processed",
+      "items": {
+        "$ref": "#/definitions/AttachmentConfig"
+      },
+      "title": "attachmentHandler",
+      "type": "array"
+    },
     "description": {
       "default": "",
       "description": "The description of the GMail2GDrive config",
@@ -424,6 +442,15 @@
       "$ref": "#/definitions/GlobalConfig",
       "description": "The global configuration that defines matching for all threads as well as actions for all threads, messages or attachments.",
       "title": "global"
+    },
+    "messageHandler": {
+      "default": [],
+      "description": "The list of handler that define the way nested messages or attachments are processed",
+      "items": {
+        "$ref": "#/definitions/MessageConfig"
+      },
+      "title": "messageHandler",
+      "type": "array"
     },
     "settings": {
       "$ref": "#/definitions/SettingsConfig",

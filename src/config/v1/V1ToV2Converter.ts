@@ -1,24 +1,15 @@
 import { Config } from "../Config"
-import { ActionConfig } from "../ActionConfig"
+import { jsonToActionConfig } from "../ActionConfig"
 import { AttachmentConfig } from "../AttachmentConfig"
-import { MessageConfig } from "../MessageConfig"
 import { ThreadConfig } from "../ThreadConfig"
 import { V1Rule } from "./V1Rule"
 import { V1Config } from "./V1Config"
-import { plainToClass } from "class-transformer"
 import { PatternUtil } from "../../utils/PatternUtil"
 
 export class V1ToV2Converter {
   static v1RuleToV2ThreadConfig(rule: V1Rule): ThreadConfig {
     const threadConfig = new ThreadConfig()
-    if (rule.archive) {
-      threadConfig.actions.push(
-        plainToClass(ActionConfig, {
-          name: "thread.archive",
-        }),
-      )
-    }
-    const messageConfig = new MessageConfig()
+    threadConfig.attachmentHandler = []
     const attachmentConfig = new AttachmentConfig()
     // Handle filename filtering:
     if (rule.filenameFrom) {
@@ -30,7 +21,7 @@ export class V1ToV2Converter {
       attachmentConfig.match.name = rule.filenameFromRegexp
     }
     attachmentConfig.actions.push(
-      plainToClass(ActionConfig, {
+      jsonToActionConfig({
         name: "file.storeToGDrive",
         args: {
           folderType: "path",
@@ -41,14 +32,13 @@ export class V1ToV2Converter {
         },
       }),
     )
-    messageConfig.attachmentHandler.push(attachmentConfig)
-    threadConfig.messageHandler.push(messageConfig)
+    threadConfig.attachmentHandler.push(attachmentConfig)
     if (rule.newerThan != "") {
       threadConfig.match.newerThan = rule.newerThan
     }
     if (rule.ruleLabel != "") {
       threadConfig.actions.push(
-        plainToClass(ActionConfig, {
+        jsonToActionConfig({
           name: "thread.addLabel",
           args: {
             label: rule.ruleLabel,
@@ -58,11 +48,18 @@ export class V1ToV2Converter {
     }
     if (rule.saveThreadPDF) {
       threadConfig.actions.push(
-        plainToClass(ActionConfig, {
+        jsonToActionConfig({
           name: "thread.exportAsPdfToGDrive",
           args: {
             location: PatternUtil.convertFromV1Pattern(rule.filenameTo),
           },
+        }),
+      )
+    }
+    if (rule.archive) {
+      threadConfig.actions.push(
+        jsonToActionConfig({
+          name: "thread.archive",
         }),
       )
     }

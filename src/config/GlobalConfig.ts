@@ -1,4 +1,4 @@
-import { Type } from "class-transformer"
+import { Expose, Type } from "class-transformer"
 import { ActionConfig } from "./ActionConfig"
 import { ThreadMatchConfig } from "./ThreadMatchConfig"
 import "reflect-metadata"
@@ -10,15 +10,18 @@ export class GlobalConfig {
   /**
    * The global thread matching parameters applied in addition to each thread configuration
    */
+  @Expose()
   @Type(() => ThreadMatchConfig)
   match = new ThreadMatchConfig()
   /**
    * The list of global actions that are always executed for their respective handler scopes
    */
+  @Expose()
   @Type(() => ActionConfig)
   actions: ActionConfig[] = []
   /**
    * The type of handler
    */
+  @Expose()
   type = "global"
 }

@@ -1,11 +1,10 @@
-import { Config } from "../config/Config"
-import { ThreadConfig } from "../config/ThreadConfig"
-import { plainToClass } from "class-transformer"
+import { jsonToConfig } from "../config/Config"
+import { jsonToThreadConfig } from "../config/ThreadConfig"
 import { ThreadProcessor } from "./ThreadProcessor"
 import { MockFactory } from "../../test/mocks/MockFactory"
 
 it("should construct a GMail search query with globals (query, newerThan) and processedLabel", () => {
-  const config = plainToClass(Config, {
+  const config = jsonToConfig({
     global: {
       match: {
         query: "some-global-query",
@@ -16,13 +15,16 @@ it("should construct a GMail search query with globals (query, newerThan) and pr
       processedLabel: "some-label",
     },
   })
-  const threadConfig = plainToClass(ThreadConfig, {
+  const threadConfig = jsonToThreadConfig({
     match: {
       query: "some-thread-specific-query",
     },
   })
-  const mocks = MockFactory.newMocks(config, false)
-  const threadProcessor = new ThreadProcessor(mocks.processingContext)
+  const ctx = MockFactory.newProcessingContextMock(
+    MockFactory.newEnvContextMock(),
+    config,
+  )
+  const threadProcessor = new ThreadProcessor(ctx)
   const actualQuery = threadProcessor.getQueryFromThreadConfig(threadConfig)
   expect(actualQuery).toBe(
     "some-global-query some-thread-specific-query -label:some-label newer_than:3m",
@@ -30,7 +32,7 @@ it("should construct a GMail search query with globals (query, newerThan) and pr
 })
 
 it("should construct a GMail search query without globals and no processedLabel", () => {
-  const config = plainToClass(Config, {
+  const config = jsonToConfig({
     global: {
       match: {
         query: "",
@@ -41,7 +43,7 @@ it("should construct a GMail search query without globals and no processedLabel"
       processedLabel: "",
     },
   })
-  const threadConfig = plainToClass(ThreadConfig, {
+  const threadConfig = jsonToThreadConfig({
     match: {
       query: "some-thread-specific-query",
     },

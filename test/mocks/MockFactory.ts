@@ -1,17 +1,14 @@
-import { Config } from "../../src/config/Config"
+import { Config, jsonToConfig } from "../../src/config/Config"
 import { mock } from "jest-mock-extended"
 import { GmailProcessor } from "../../src/processors/GmailProcessor"
 import { MessageConfig } from "../../src/config/MessageConfig"
 import { AttachmentConfig } from "../../src/config/AttachmentConfig"
-import { ThreadConfig } from "../../src/config/ThreadConfig"
-import { ActionConfig } from "../../src/config/ActionConfig"
+import { ThreadConfig, jsonToThreadConfig } from "../../src/config/ThreadConfig"
 import { MessageFlag } from "../../src/config/MessageFlag"
-import { SettingsConfig } from "../../src/config/SettingsConfig"
-import { plainToClass } from "class-transformer"
 import { ThreadActions } from "../../src/actions/ThreadActions"
 import { MessageActions } from "../../src/actions/MessageActions"
 import { AttachmentActions } from "../../src/actions/AttachmentActions"
-import { V1Config } from "../../src/config/v1/V1Config"
+import { V1Config, jsonToV1Config } from "../../src/config/v1/V1Config"
 import { GDriveAdapter } from "../../src/adapter/GDriveAdapter"
 import { GmailAdapter } from "../../src/adapter/GmailAdapter"
 import { SpreadsheetAdapter } from "../../src/adapter/SpreadsheetAdapter"
@@ -127,7 +124,7 @@ export class MockFactory {
     return envContext
   }
 
-  public static newDefaultSettingsConfig(): Partial<SettingsConfig> {
+  public static newDefaultSettingsConfigJson(): Record<string, unknown> {
     return {
       maxBatchSize: 100,
       maxRuntime: 280,
@@ -139,7 +136,7 @@ export class MockFactory {
     }
   }
 
-  public static newDefaultActionConfig(): ActionConfig {
+  public static newDefaultActionConfigJson(): Record<string, unknown> {
     return {
       args: {
         folderType: "path",
@@ -152,14 +149,14 @@ export class MockFactory {
     }
   }
 
-  public static newDefaultAttachmentConfig(
+  public static newDefaultAttachmentConfigJson(
     includeCommands = false,
-  ): AttachmentConfig {
+  ): Record<string, unknown> {
     return {
       name: "default-attachment-config",
       description: "Default attachment config",
       type: "attachment",
-      actions: includeCommands ? [this.newDefaultActionConfig()] : [],
+      actions: includeCommands ? [this.newDefaultActionConfigJson()] : [],
       match: {
         name: "Image-([0-9]+)\\.jpg",
         contentType: "image/.+",
@@ -171,10 +168,10 @@ export class MockFactory {
     }
   }
 
-  public static newDefaultMessageConfig(
+  public static newDefaultMessageConfigJson(
     includeCommands = false,
     includeAttachmentConfigs = false,
-  ): MessageConfig {
+  ): Record<string, unknown> {
     return {
       name: "default-message-config",
       description: "Default message config",
@@ -187,33 +184,36 @@ export class MockFactory {
         newerThan: "",
         olderThan: "",
       },
-      actions: includeCommands ? [this.newDefaultActionConfig()] : [],
+      actions: includeCommands ? [this.newDefaultActionConfigJson()] : [],
       attachmentHandler: includeAttachmentConfigs
-        ? [this.newDefaultAttachmentConfig()]
+        ? [this.newDefaultAttachmentConfigJson()]
         : [],
     }
   }
 
-  public static newDefaultThreadConfig(
+  public static newDefaultThreadConfigJson(
     includeCommands = false,
     includeMessages = false,
-  ): ThreadConfig {
+  ): Record<string, unknown> {
     return {
       name: "default-thread-config",
       description: "A sample thread config",
       type: "thread",
-      actions: includeCommands ? [this.newDefaultActionConfig()] : [],
-      messageHandler: includeMessages ? [this.newDefaultMessageConfig()] : [],
+      actions: includeCommands ? [this.newDefaultActionConfigJson()] : [],
+      messageHandler: includeMessages
+        ? [this.newDefaultMessageConfigJson()]
+        : [],
       match: {
         query: "has:attachment from:example@example.com",
         maxMessageCount: -1,
         minMessageCount: -1,
         newerThan: "",
       },
+      attachmentHandler: [],
     }
   }
 
-  public static newComplexThreadConfigList(): unknown[] {
+  public static newComplexThreadConfigList(): Record<string, unknown>[] {
     // TODO: Continue here (make fields optional in config)
     return [
       {
@@ -235,7 +235,7 @@ export class MockFactory {
         match: {
           query: "has:attachment from:example@example.com",
         },
-        handler: [
+        hessageHandler: [
           {
             actions: [
               {
@@ -255,7 +255,7 @@ export class MockFactory {
         match: {
           query: "has:attachment from:example4@example.com",
         },
-        handler: [
+        hessageHandler: [
           {
             match: {
               from: "(.+)@example.com",
@@ -269,7 +269,7 @@ export class MockFactory {
               // Pro: More flexible (e.g. forward message, if a certain attachment rule matches)
               { name: "markMessageRead" },
             ],
-            handler: [
+            attachmentHandler: [
               {
                 match: { name: "Image-([0-9]+)\\.jpg" },
                 actions: [
@@ -303,7 +303,14 @@ export class MockFactory {
     ]
   }
 
-  public static newDefaultV1ConfigJson(): object {
+  public static newDefaultConfigJson(): Record<string, unknown> {
+    return {
+      settings: this.newDefaultSettingsConfigJson(),
+      threadHandler: this.newComplexThreadConfigList(),
+    }
+  }
+
+  public static newDefaultV1ConfigJson(): Record<string, unknown> {
     return {
       globalFilter: "has:attachment -in:trash -in:drafts -in:spam",
       processedLabel: "gmail2gdrive/client-test",
@@ -347,13 +354,13 @@ export class MockFactory {
   }
 
   public static newDefaultV1Config(): V1Config {
-    const v1config = this.newDefaultV1Config()
-    return plainToClass(V1Config, v1config)
+    const v1config = this.newDefaultV1ConfigJson()
+    return jsonToV1Config(v1config)
   }
 
   public static newDefaultConfig(): Config {
-    return plainToClass(Config, {
-      handler: this.newComplexThreadConfigList(),
+    return jsonToConfig({
+      threadHandler: this.newComplexThreadConfigList(),
     })
   }
 
@@ -382,12 +389,13 @@ export class MockFactory {
 
   public static newThreadContextMock(
     processingContext = this.newProcessingContextMock(),
-    threadConfig = this.newDefaultThreadConfig(),
+    threadConfig = this.newDefaultThreadConfigJson(),
     thread = this.newThreadMock(),
   ): ThreadContext {
+    jsonToThreadConfig(threadConfig)
     return {
       ...processingContext,
-      threadConfig,
+      threadConfig: jsonToThreadConfig(threadConfig),
       thread,
       threadActions: new ThreadActions(),
       threadConfigIndex: 0,

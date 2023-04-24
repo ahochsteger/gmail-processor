@@ -7,6 +7,7 @@ import { MessageActions } from "../actions/MessageActions"
 
 export class MessageProcessor extends BaseProcessor {
   constructor(public threadContext: ThreadContext) {
+    // TODO: Pass context on methods, not in constructor
     super()
   }
 

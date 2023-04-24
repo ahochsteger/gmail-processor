@@ -1,3 +1,5 @@
+import "reflect-metadata"
+
 export class V1Rule {
   /** Archive thread after processing */
   archive = false

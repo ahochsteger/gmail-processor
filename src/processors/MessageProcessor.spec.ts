@@ -1,9 +1,8 @@
 import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
-import { MessageConfig } from "../config/MessageConfig"
 import { MessageFlag } from "../config/MessageFlag"
-import { plainToClass } from "class-transformer"
 import { MessageProcessor } from "./MessageProcessor"
 import { Config } from "../config/Config"
+import { jsonToMessageConfig } from "../config/MessageConfig"
 
 let mocks: Mocks
 
@@ -94,7 +93,7 @@ it("should match messages with matching parameters", () => {
   })
   for (let i = 0; i < matchExamples.length; i++) {
     const e = matchExamples[i]
-    const messageConfig = plainToClass(MessageConfig, {
+    const messageConfig = jsonToMessageConfig({
       type: "messages",
       match: e.config,
     })

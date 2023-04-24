@@ -1,5 +1,4 @@
-import { Config } from "../config/Config"
-import { plainToClass } from "class-transformer"
+import { Config, jsonToConfig } from "../config/Config"
 import { ActionProvider, ActionRegistry } from "./ActionRegistry"
 import { ConflictStrategy } from "../adapter/GDriveAdapter"
 import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
@@ -52,7 +51,7 @@ it("should not mark a thread as important (dryRun)", () => {
 })
 
 it("should mark a thread as processed by adding a label if processedMode='label'", () => {
-  const config = plainToClass(Config, {
+  const config = jsonToConfig({
     settings: {
       processedLabel: "some-label",
       processedMode: "label",
@@ -64,7 +63,7 @@ it("should mark a thread as processed by adding a label if processedMode='label'
 })
 
 it("should not add a label to a thread if processedMode='read'", () => {
-  const config = plainToClass(Config, {
+  const config = jsonToConfig({
     settings: {
       processedMode: "read",
     },

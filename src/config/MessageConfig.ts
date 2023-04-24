@@ -1,4 +1,5 @@
-import { Type } from "class-transformer"
+import { Expose, Type, plainToInstance } from "class-transformer"
+import "reflect-metadata"
 import { ActionConfig } from "./ActionConfig"
 import { AttachmentConfig } from "./AttachmentConfig"
 import { MessageMatchConfig } from "./MessageMatchConfig"
@@ -10,27 +11,42 @@ export class MessageConfig {
   /**
    * The list actions to be executed for their respective handler scopes
    */
+  @Expose()
   actions: ActionConfig[] = []
   /**
    * The description of the message handler config
    */
+  @Expose()
   description? = ""
   /**
    * The list of handler that define the way attachments are processed
    */
+  @Expose()
   @Type(() => AttachmentConfig)
   attachmentHandler: AttachmentConfig[] = []
   /**
    * Specifies which attachments match for further processing
    */
+  @Expose()
   @Type(() => MessageMatchConfig)
   match = new MessageMatchConfig()
   /**
    * The unique name of the message config (will be generated if not set)
    */
+  @Expose()
   name? = ""
   /**
    * The type of handler
    */
+  @Expose()
   type = "messages"
+}
+
+export function jsonToMessageConfig(
+  json: Record<string, unknown>,
+): MessageConfig {
+  return plainToInstance(MessageConfig, json, {
+    exposeDefaultValues: true,
+    exposeUnsetFields: false,
+  })
 }

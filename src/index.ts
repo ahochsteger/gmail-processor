@@ -15,7 +15,7 @@ const gmailProcessor = new GmailProcessor(envContext)
  * @param configJson GMail2GDrive configuration JSON
  * @param dryRun Just show what would have been done but don't write anything to GMail or GDrive.
  */
-export function run(configJson: object, dryRun = false) {
+export function run(configJson: Record<string, unknown>, dryRun = false) {
   console.log("Processing started ...")
   gmailProcessor.runWithConfigJson(configJson, dryRun)
   console.log("Processing finished ...")
@@ -25,7 +25,10 @@ export function run(configJson: object, dryRun = false) {
  * @param configJson GMail2GDrive v1 configuration JSON
  * @param dryRun Just show what would have been done but don't write anything to GMail or GDrive.
  */
-export function runWithV1Config(configJson: object, dryRun = false) {
+export function runWithV1Config(
+  configJson: Record<string, unknown>,
+  dryRun = false,
+) {
   gmailProcessor.runWithV1ConfigJson(configJson, dryRun)
 }
 
@@ -34,6 +37,6 @@ export function runWithV1Config(configJson: object, dryRun = false) {
  * @param configJson JSON representation of the configuration without defaults
  * @returns JSON representation of the configuration with defaults added
  */
-export function getEffectiveConfig(configJson: object) {
+export function getEffectiveConfig(configJson: Record<string, unknown>) {
   return gmailProcessor.getEffectiveConfig(configJson)
 }

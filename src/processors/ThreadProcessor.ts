@@ -12,6 +12,7 @@ export class ThreadProcessor extends BaseProcessor {
   public config: Config
 
   constructor(protected processingContext: ProcessingContext) {
+    // TODO: Pass context on methods, not in constructor
     super()
     this.timer = new Timer()
     this.config = processingContext.config

@@ -1,8 +1,12 @@
 # Objects
 
 - [`ActionConfig`](#reference-actionconfig)
+- [`AttachmentConfig`](#reference-attachmentconfig)
+  - [`AttachmentMatchConfig`](#reference-attachmentmatchconfig)
 - [`Config (v2)`](<#reference-config-(v2)>) (root object)
 - [`GlobalConfig`](#reference-globalconfig)
+- [`MessageConfig`](#reference-messageconfig)
+  - [`MessageMatchConfig`](#reference-messagematchconfig)
 - [`SettingsConfig`](#reference-settingsconfig)
 - [`ThreadMatchConfig`](#reference-threadmatchconfig)
 
@@ -186,14 +190,23 @@ Represents a configuration for GMail2GDrive
 
 **`Config (v2)` Properties**
 
-|                   | Type                | Description                                                                                                                 | Required     |
-| ----------------- | ------------------- | --------------------------------------------------------------------------------------------------------------------------- | ------------ |
-| **description**   | `string`            | The description of the GMail2GDrive config                                                                                  | No, default: |
-| **global**        | `GlobalConfig`      | The global configuration that defines matching for all threads as well as actions for all threads, messages or attachments. | &#10003; Yes |
-| **settings**      | `SettingsConfig`    | Represents a settings config that affect the way GMail2GDrive works.                                                        | &#10003; Yes |
-| **threadHandler** | `ThreadConfig` `[]` | The list of handler that define the way nested threads, messages or attachments are processed                               | &#10003; Yes |
+|                       | Type                    | Description                                                                                                                 | Required          |
+| --------------------- | ----------------------- | --------------------------------------------------------------------------------------------------------------------------- | ----------------- |
+| **attachmentHandler** | `AttachmentConfig` `[]` | The list of handler that define the way attachments are processed                                                           | No, default: `[]` |
+| **description**       | `string`                | The description of the GMail2GDrive config                                                                                  | No, default:      |
+| **global**            | `GlobalConfig`          | The global configuration that defines matching for all threads as well as actions for all threads, messages or attachments. | &#10003; Yes      |
+| **messageHandler**    | `MessageConfig` `[]`    | The list of handler that define the way nested messages or attachments are processed                                        | No, default: `[]` |
+| **settings**          | `SettingsConfig`        | Represents a settings config that affect the way GMail2GDrive works.                                                        | &#10003; Yes      |
+| **threadHandler**     | `ThreadConfig` `[]`     | The list of handler that define the way nested threads, messages or attachments are processed                               | &#10003; Yes      |
 
 Additional properties are allowed.
+
+### Config (v2).attachmentHandler
+
+The list of handler that define the way attachments are processed
+
+- **Type**: `AttachmentConfig` `[]`
+- **Required**: No, default: `[]`
 
 ### Config (v2).description
 
@@ -208,6 +221,13 @@ The global configuration that defines matching for all threads as well as action
 
 - **Type**: `GlobalConfig`
 - **Required**: &#10003; Yes
+
+### Config (v2).messageHandler
+
+The list of handler that define the way nested messages or attachments are processed
+
+- **Type**: `MessageConfig` `[]`
+- **Required**: No, default: `[]`
 
 ### Config (v2).settings
 
@@ -511,14 +531,15 @@ Represents a config handle a certain GMail thread
 
 **`ThreadConfig` Properties**
 
-|                    | Type                 | Description                                                                          | Required     |
-| ------------------ | -------------------- | ------------------------------------------------------------------------------------ | ------------ |
-| **actions**        | `ActionConfig` `[]`  | The list actions to be executed for their respective handler scopes                  | &#10003; Yes |
-| **description**    | `string`             | The description of the thread handler config                                         | No, default: |
-| **match**          | `ThreadMatchConfig`  | Represents a config to match a certain GMail thread                                  | &#10003; Yes |
-| **messageHandler** | `MessageConfig` `[]` | The list of handler that define the way nested messages or attachments are processed | &#10003; Yes |
-| **name**           | `string`             | The unique name of the thread config (will be generated if not set)                  | No, default: |
-| **type**           | `string`             | The type of handler                                                                  | &#10003; Yes |
+|                       | Type                    | Description                                                                          | Required          |
+| --------------------- | ----------------------- | ------------------------------------------------------------------------------------ | ----------------- |
+| **actions**           | `ActionConfig` `[]`     | The list actions to be executed for their respective handler scopes                  | &#10003; Yes      |
+| **attachmentHandler** | `AttachmentConfig` `[]` | The list of handler that define the way attachments are processed                    | No, default: `[]` |
+| **description**       | `string`                | The description of the thread handler config                                         | No, default:      |
+| **match**             | `ThreadMatchConfig`     | Represents a config to match a certain GMail thread                                  | &#10003; Yes      |
+| **messageHandler**    | `MessageConfig` `[]`    | The list of handler that define the way nested messages or attachments are processed | &#10003; Yes      |
+| **name**              | `string`                | The unique name of the thread config (will be generated if not set)                  | No, default:      |
+| **type**              | `string`                | The type of handler                                                                  | &#10003; Yes      |
 
 Additional properties are allowed.
 
@@ -528,6 +549,13 @@ The list actions to be executed for their respective handler scopes
 
 - **Type**: `ActionConfig` `[]`
 - **Required**: &#10003; Yes
+
+### ThreadConfig.attachmentHandler
+
+The list of handler that define the way attachments are processed
+
+- **Type**: `AttachmentConfig` `[]`
+- **Required**: No, default: `[]`
 
 ### ThreadConfig.description
 

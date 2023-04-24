@@ -1,4 +1,5 @@
-import { Type } from "class-transformer"
+import { Type, plainToInstance } from "class-transformer"
+import "reflect-metadata"
 import { V1Rule } from "./V1Rule"
 
 export class V1Config {
@@ -17,6 +18,13 @@ export class V1Config {
   /** Processing rules */
   @Type(() => V1Rule)
   rules!: V1Rule[]
+}
+
+export function jsonToV1Config(json: Record<string, unknown>): V1Config {
+  return plainToInstance(V1Config, json, {
+    exposeDefaultValues: true,
+    exposeUnsetFields: false,
+  })
 }
 
 /*

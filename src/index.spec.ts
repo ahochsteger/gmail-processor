@@ -1,13 +1,14 @@
 import { MockFactory, Mocks } from "../test/mocks/MockFactory"
-import { Config } from "./config/Config"
+import { jsonToConfig } from "./config/Config"
 import { GmailProcessor } from "./processors/GmailProcessor"
 
-let config: Config
+let configJson: Record<string, unknown>
 let mocks: Mocks
 let gmailProcessor: GmailProcessor
 
 beforeEach(() => {
-  config = MockFactory.newDefaultConfig()
+  configJson = MockFactory.newDefaultConfigJson()
+  const config = jsonToConfig(configJson)
   mocks = MockFactory.newMocks(config, true)
   gmailProcessor = new GmailProcessor(mocks.envContext)
 })
@@ -15,7 +16,7 @@ beforeEach(() => {
 describe("run", () => {
   it("test", () => {
     console.log("Processing started ...")
-    gmailProcessor.runWithConfigJson(config, true)
+    gmailProcessor.runWithConfigJson(configJson, true)
     console.log("Processing finished ...")
   })
 })

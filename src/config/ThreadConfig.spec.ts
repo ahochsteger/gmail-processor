@@ -1,11 +1,9 @@
 import { MockFactory } from "../../test/mocks/MockFactory"
-import { ThreadConfig } from "./ThreadConfig"
-import { plainToClass } from "class-transformer"
+import { jsonToThreadConfig } from "./ThreadConfig"
 
 it("should expect a JSON config", () => {
-  const threadConfig = plainToClass(
-    ThreadConfig,
-    MockFactory.newDefaultThreadConfig(),
+  const threadConfig = jsonToThreadConfig(
+    MockFactory.newDefaultThreadConfigJson(),
   )
   expect(threadConfig.match).toBeDefined()
   expect(threadConfig.match.query).toBe(
@@ -14,7 +12,7 @@ it("should expect a JSON config", () => {
 })
 
 it("should ensure nested object defaults", () => {
-  const threadConfig = plainToClass(ThreadConfig, {
+  const threadConfig = jsonToThreadConfig({
     match: {
       query: "test",
     },

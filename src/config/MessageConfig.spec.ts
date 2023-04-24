@@ -1,12 +1,10 @@
-import { plainToClass } from "class-transformer"
 import { MockFactory } from "../../test/mocks/MockFactory"
-import { MessageConfig } from "./MessageConfig"
+import { jsonToMessageConfig } from "./MessageConfig"
 import { MessageFlag } from "./MessageFlag"
 
 it("should expect a JSON config", () => {
-  const messageConfig = plainToClass(
-    MessageConfig,
-    MockFactory.newDefaultMessageConfig(),
+  const messageConfig = jsonToMessageConfig(
+    MockFactory.newDefaultMessageConfigJson(),
   )
   expect(messageConfig.match).toBeDefined()
   expect(messageConfig.match.from).toBe("(.+)@example.com")
@@ -16,7 +14,7 @@ it("should expect a JSON config", () => {
 })
 
 it("should ensure nested object defaults", () => {
-  const messageConfig = plainToClass(MessageConfig, {
+  const messageConfig = jsonToMessageConfig({
     match: {
       from: "test",
     },

@@ -6,6 +6,7 @@ import { BaseProcessor } from "./BaseProcessor"
 
 export class AttachmentProcessor extends BaseProcessor {
   constructor(public messageContext: MessageContext) {
+    // TODO: Pass context on methods, not in constructor
     super()
   }
 

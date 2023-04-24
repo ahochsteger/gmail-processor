@@ -134,7 +134,7 @@
       "type": "number"
     },
     "timezone": {
-      "default": "GMT",
+      "default": "UTC",
       "description": "Timezone for date/time operations",
       "title": "timezone",
       "type": "string"

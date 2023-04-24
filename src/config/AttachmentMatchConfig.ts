@@ -1,3 +1,5 @@
+import "reflect-metadata"
+
 /**
  * Represents a config to match a certain GMail attachment
  */
