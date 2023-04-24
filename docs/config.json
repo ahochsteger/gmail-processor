@@ -8,7 +8,6 @@
     "timezone": "GMT"
   },
   "global": {
-    "type": "global",
     "match": {
       "query": "has:attachment -in:trash -in:drafts -in:spam",
       "maxMessageCount": 123,
@@ -17,16 +16,10 @@
     },
     "actions": [
       {
-        "name": "message.markRead",
-        "scope": "attachments"
-      },
-      {
-        "name": "message.markRead",
-        "scope": "messages"
+        "name": "message.markRead"
       },
       {
         "name": "thread.addLabel",
-        "scope": "threads",
         "args": {
           "label": "to-gdrive/processed"
         }
@@ -35,7 +28,6 @@
   },
   "threads": [
     {
-      "type": "threads",
       "match": {
         "query": "has:attachment from:example4@example.com",
         "maxMessageCount": 123,
@@ -43,7 +35,6 @@
       },
       "messages": [
         {
-          "type": "messages",
           "match": {
             "from": "(.+)@example.com",
             "subject": "Prefix - (.*) - Suffix(.*)",
@@ -52,7 +43,6 @@
           },
           "attachments": [
             {
-              "type": "attachments",
               "match": {
                 "name": "Image-([0-9]+)\\.jpg",
                 "contentType": "image/.*",
