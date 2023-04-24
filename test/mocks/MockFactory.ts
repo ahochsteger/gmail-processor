@@ -310,7 +310,7 @@ export class MockFactory {
       sleepTime: 100,
       maxRuntime: 280,
       newerThan: "1d",
-      timezone: "GMT",
+      timezone: "UTC",
       rules: [
         {
           filter: "to:my.name+scans@gmail.com",

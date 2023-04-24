@@ -24,7 +24,7 @@ export class SpreadsheetAdapter extends BaseAdapter {
     const folder = this.getOrCreateFolder(folderPath, parentFolderId)
     const logSheetFileName = `logsheet-${Utilities.formatDate(
       new Date(),
-      "GMT",
+      "UTC",
       "yyyy-MM-dd_HH-mm-ss",
     )}`
     this.logSpreadsheet = this.spreadsheetApp.create(logSheetFileName)
