@@ -19,7 +19,7 @@ import { MessageConfig } from "../../src/config/MessageConfig"
 import { MessageFlag } from "../../src/config/MessageFlag"
 import { ThreadConfig, jsonToThreadConfig } from "../../src/config/ThreadConfig"
 import { V1Config, jsonToV1Config } from "../../src/config/v1/V1Config"
-import { GmailProcessor } from "../../src/processors/GmailProcessor"
+import { Timer } from "../../src/utils/Timer"
 
 export class Mocks {
   // Create Google Apps Script Context mock objects:
@@ -64,6 +64,7 @@ export class Mocks {
       spreadsheetApp: this.spreadsheetApp,
       cacheService: this.cacheService,
       dryRun,
+      timer: new Timer(),
     }
     this.processingContext = MockFactory.newProcessingContextMock(
       this.envContext,
@@ -120,6 +121,7 @@ export class MockFactory {
       spreadsheetApp: mocks.spreadsheetApp,
       cacheService: mocks.cacheService,
       dryRun,
+      timer: new Timer(),
     }
     return envContext
   }
@@ -373,13 +375,6 @@ export class MockFactory {
       dryRun,
       actionRegistry: new ActionRegistry(),
     }
-  }
-
-  public static newGmailProcessorMock(
-    envContext = MockFactory.newEnvContextMock(),
-  ) {
-    const gmailProcessor = new GmailProcessor(envContext)
-    return gmailProcessor
   }
 
   public static newThreadContextMock(

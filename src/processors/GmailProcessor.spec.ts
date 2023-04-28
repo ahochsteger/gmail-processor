@@ -9,12 +9,12 @@ let gmailProcessor: GmailProcessor
 beforeEach(() => {
   config = MockFactory.newDefaultConfig()
   mocks = MockFactory.newMocks(config, true)
-  gmailProcessor = new GmailProcessor(mocks.envContext)
+  gmailProcessor = new GmailProcessor()
 })
 
 describe("run", () => {
   it("should process a v2 config object", () => {
-    gmailProcessor.run(config, true)
+    gmailProcessor.run(mocks.envContext, config, true)
     expect(mocks.envContext.gmailApp.search).toHaveBeenCalledTimes(
       config.threads.length,
     )
@@ -24,7 +24,7 @@ describe("run", () => {
 describe("runWithV1ConfigJson", () => {
   it("should process a v1 config JSON", () => {
     const v1config = MockFactory.newDefaultV1ConfigJson()
-    gmailProcessor.runWithV1ConfigJson(v1config)
+    gmailProcessor.runWithV1ConfigJson(mocks.envContext, v1config)
   })
 })
 

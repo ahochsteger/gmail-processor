@@ -1,8 +1,9 @@
-import { Config, jsonToConfig } from "../config/Config"
-import { ActionProvider, ActionRegistry } from "./ActionRegistry"
-import { ConflictStrategy } from "../adapter/GDriveAdapter"
 import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
 import { ProcessingContext } from "../Context"
+import { ConflictStrategy } from "../adapter/GDriveAdapter"
+import { Config, jsonToConfig } from "../config/Config"
+import { ActionProvider, ActionRegistry } from "./ActionRegistry"
+import { ThreadActions } from "./ThreadActions"
 
 let mocks: Mocks
 let dryRunMocks: Mocks
@@ -13,14 +14,12 @@ beforeEach(() => {
   actionRegistry = new ActionRegistry()
   actionRegistry.registerActionProvider(
     "thread",
-    mocks.threadActions as unknown as ActionProvider<ProcessingContext>,
+    new ThreadActions() as unknown as ActionProvider<ProcessingContext>,
   )
   dryRunMocks = MockFactory.newMocks(new Config(), true)
 })
 
 it("should provide actions in the action registry", () => {
-  expect(mocks.threadActions).not.toBeNull()
-
   const actionNames = Array.from(actionRegistry.getActions().keys())
     .filter((v) => v.startsWith("thread."))
     .sort()
@@ -41,12 +40,12 @@ it("should provide actions in the action registry", () => {
 })
 
 it("should mark a thread as important", () => {
-  mocks.threadActions.markImportant(mocks.threadContext)
+  ThreadActions.markImportant(mocks.threadContext)
   expect(mocks.thread.markImportant).toBeCalled()
 })
 
 it("should not mark a thread as important (dryRun)", () => {
-  dryRunMocks.threadActions.markImportant(dryRunMocks.threadContext)
+  ThreadActions.markImportant(dryRunMocks.threadContext)
   expect(dryRunMocks.thread.markImportant).not.toBeCalled()
 })
 
@@ -58,7 +57,7 @@ it("should mark a thread as processed by adding a label if processedMode='label'
     },
   })
   const mocks = MockFactory.newMocks(config, false)
-  mocks.threadActions.markProcessed(mocks.threadContext)
+  ThreadActions.markProcessed(mocks.threadContext)
   expect(mocks.thread.addLabel).toBeCalled()
 })
 
@@ -69,12 +68,12 @@ it("should not add a label to a thread if processedMode='read'", () => {
     },
   })
   const mocks = MockFactory.newMocks(config, false)
-  mocks.threadActions.markProcessed(mocks.threadContext)
+  ThreadActions.markProcessed(mocks.threadContext)
   expect(mocks.thread.addLabel).not.toBeCalled()
 })
 
 it("should store a thread as PDF with header", () => {
-  mocks.threadActions.storeAsPdfToGDrive(mocks.threadContext, {
+  ThreadActions.storeAsPdfToGDrive(mocks.threadContext, {
     location: "thread.pdf",
     conflictStrategy: ConflictStrategy.REPLACE,
     skipHeader: false,
@@ -85,7 +84,7 @@ it("should store a thread as PDF with header", () => {
 })
 
 it("should store a thread as PDF without header", () => {
-  mocks.threadActions.storeAsPdfToGDrive(mocks.threadContext, {
+  ThreadActions.storeAsPdfToGDrive(mocks.threadContext, {
     location: "thread.pdf",
     conflictStrategy: ConflictStrategy.REPLACE,
     skipHeader: true,

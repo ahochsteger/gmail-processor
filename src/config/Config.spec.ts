@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { MockFactory } from "../../test/mocks/MockFactory"
 import { Config, configToJson, jsonToConfig, normalizeConfig } from "./Config"
 import { ThreadConfig } from "./ThreadConfig"

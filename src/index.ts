@@ -1,5 +1,6 @@
 import { EnvContext } from "./Context"
 import { GmailProcessor } from "./processors/GmailProcessor"
+import { Timer } from "./utils/Timer"
 
 const envContext: EnvContext = {
   cacheService: CacheService,
@@ -8,8 +9,9 @@ const envContext: EnvContext = {
   spreadsheetApp: SpreadsheetApp,
   utilities: Utilities,
   dryRun: false,
+  timer: new Timer(),
 }
-const gmailProcessor = new GmailProcessor(envContext)
+const gmailProcessor = new GmailProcessor()
 
 /**
  * @param configJson GMail2GDrive configuration JSON
@@ -17,7 +19,7 @@ const gmailProcessor = new GmailProcessor(envContext)
  */
 export function run(configJson: Record<string, unknown>, dryRun = false) {
   console.log("Processing started ...")
-  gmailProcessor.runWithConfigJson(configJson, dryRun)
+  gmailProcessor.runWithConfigJson(envContext, configJson, dryRun)
   console.log("Processing finished ...")
 }
 
@@ -29,7 +31,7 @@ export function runWithV1Config(
   configJson: Record<string, unknown>,
   dryRun = false,
 ) {
-  gmailProcessor.runWithV1ConfigJson(configJson, dryRun)
+  gmailProcessor.runWithV1ConfigJson(envContext, configJson, dryRun)
 }
 
 /**

@@ -10,13 +10,13 @@ beforeEach(() => {
   configJson = MockFactory.newDefaultConfigJson()
   const config = jsonToConfig(configJson)
   mocks = MockFactory.newMocks(config, true)
-  gmailProcessor = new GmailProcessor(mocks.envContext)
+  gmailProcessor = new GmailProcessor()
 })
 
 describe("run", () => {
   it("test", () => {
     console.log("Processing started ...")
-    gmailProcessor.runWithConfigJson(configJson, true)
+    gmailProcessor.runWithConfigJson(mocks.envContext, configJson, true)
     console.log("Processing finished ...")
   })
 })

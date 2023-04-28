@@ -7,7 +7,7 @@ let gmailProcessor: GmailProcessor
 
 beforeEach(() => {
   mocks = MockFactory.newMocks(new Config(), false)
-  gmailProcessor = new GmailProcessor(mocks.envContext)
+  gmailProcessor = new GmailProcessor()
 })
 
 describe("v1config", () => {
@@ -52,6 +52,6 @@ describe("v1config", () => {
         },
       ],
     }
-    gmailProcessor.runWithV1ConfigJson(configJson, true)
+    gmailProcessor.runWithV1ConfigJson(mocks.envContext, configJson, true)
   })
 })

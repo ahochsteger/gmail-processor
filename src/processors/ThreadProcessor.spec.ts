@@ -1,7 +1,7 @@
+import { MockFactory } from "../../test/mocks/MockFactory"
 import { jsonToConfig } from "../config/Config"
 import { jsonToThreadConfig } from "../config/ThreadConfig"
 import { ThreadProcessor } from "./ThreadProcessor"
-import { MockFactory } from "../../test/mocks/MockFactory"
 
 it("should construct a GMail search query with globals (query, newerThan) and processedLabel", () => {
   const config = jsonToConfig({
@@ -24,8 +24,10 @@ it("should construct a GMail search query with globals (query, newerThan) and pr
     MockFactory.newEnvContextMock(),
     config,
   )
-  const threadProcessor = new ThreadProcessor(ctx)
-  const actualQuery = threadProcessor.getQueryFromThreadConfig(threadConfig)
+  const actualQuery = ThreadProcessor.getQueryFromThreadConfig(
+    ctx,
+    threadConfig,
+  )
   expect(actualQuery).toBe(
     "some-global-query some-thread-specific-query -label:some-label newer_than:3m",
   )
@@ -49,7 +51,9 @@ it("should construct a GMail search query without globals and no processedLabel"
     },
   })
   const mocks = MockFactory.newMocks(config, false)
-  const threadProcessor = new ThreadProcessor(mocks.processingContext)
-  const actualQuery = threadProcessor.getQueryFromThreadConfig(threadConfig)
+  const actualQuery = ThreadProcessor.getQueryFromThreadConfig(
+    mocks.processingContext,
+    threadConfig,
+  )
   expect(actualQuery).toBe("some-thread-specific-query")
 })

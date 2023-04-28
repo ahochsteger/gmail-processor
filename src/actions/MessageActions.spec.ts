@@ -1,8 +1,9 @@
-import { ActionProvider, ActionRegistry } from "./ActionRegistry"
-import { Config } from "../config/Config"
-import { ConflictStrategy } from "../adapter/GDriveAdapter"
 import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
 import { ProcessingContext } from "../Context"
+import { ConflictStrategy } from "../adapter/GDriveAdapter"
+import { Config } from "../config/Config"
+import { ActionProvider, ActionRegistry } from "./ActionRegistry"
+import { MessageActions } from "./MessageActions"
 
 let mocks: Mocks
 let dryRunMocks: Mocks
@@ -13,13 +14,13 @@ beforeEach(() => {
   actionRegistry = new ActionRegistry()
   actionRegistry.registerActionProvider(
     "message",
-    mocks.messageActions as unknown as ActionProvider<ProcessingContext>,
+    new MessageActions() as ActionProvider<ProcessingContext>,
   )
   dryRunMocks = MockFactory.newMocks(new Config(), true)
 })
 
 it("should provide actions in the action registry", () => {
-  expect(mocks.messageActions).not.toBeNull()
+  expect(MessageActions).not.toBeNull()
 
   const actionNames = Array.from(actionRegistry.getActions().keys())
     .filter((v) => v.startsWith("message."))
@@ -37,17 +38,17 @@ it("should provide actions in the action registry", () => {
 })
 
 it("should forward a message", () => {
-  mocks.messageActions.forward(mocks.messageContext, { to: "test" })
+  MessageActions.forward(mocks.messageContext, { to: "test" })
   expect(mocks.message.forward).toBeCalled()
 })
 
 it("should not forward a message (dryRun)", () => {
-  dryRunMocks.messageActions.forward(dryRunMocks.messageContext, { to: "test" })
+  MessageActions.forward(dryRunMocks.messageContext, { to: "test" })
   expect(dryRunMocks.message.forward).not.toBeCalled()
 })
 
 it("should store a message as PDF with header", () => {
-  mocks.messageActions.storeAsPdfToGDrive(mocks.messageContext, {
+  MessageActions.storeAsPdfToGDrive(mocks.messageContext, {
     location: "message",
     conflictStrategy: ConflictStrategy.REPLACE,
     skipHeader: false,
@@ -58,7 +59,7 @@ it("should store a message as PDF with header", () => {
 })
 
 it("should store a message as PDF without header", () => {
-  mocks.messageActions.storeAsPdfToGDrive(mocks.messageContext, {
+  MessageActions.storeAsPdfToGDrive(mocks.messageContext, {
     location: "message",
     conflictStrategy: ConflictStrategy.REPLACE,
     skipHeader: true,

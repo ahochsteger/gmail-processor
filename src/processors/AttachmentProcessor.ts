@@ -2,33 +2,31 @@ import { AttachmentActions } from "../actions/AttachmentActions"
 import { AttachmentConfig } from "../config/AttachmentConfig"
 import { AttachmentContext, MessageContext } from "../Context"
 import { PatternUtil } from "../utils/PatternUtil"
-import { BaseProcessor } from "./BaseProcessor"
 
-export class AttachmentProcessor extends BaseProcessor {
-  constructor(public messageContext: MessageContext) {
-    // TODO: Pass context on methods, not in constructor
-    super()
-  }
-
-  public processAttachmentConfigs(attachmentConfigs: AttachmentConfig[]) {
+export class AttachmentProcessor {
+  public static processAttachmentConfigs(
+    ctx: MessageContext,
+    attachmentConfigs: AttachmentConfig[],
+  ) {
     for (let i = 0; i < attachmentConfigs.length; i++) {
       const attachmentConfig = attachmentConfigs[i]
       attachmentConfig.name =
         attachmentConfig.name !== ""
           ? attachmentConfig.name
           : `attachment-cfg-${i + 1}`
-      this.processAttachmentConfig(attachmentConfig, i)
+      this.processAttachmentConfig(ctx, attachmentConfig, i)
     }
   }
 
-  public processAttachmentConfig(
+  public static processAttachmentConfig(
+    ctx: MessageContext,
     attachmentConfig: AttachmentConfig,
     attachmentConfigIndex: number,
   ) {
     console.info(
       `          Processing of attachment config '${attachmentConfig.name}' started ...`,
     )
-    const attachments = this.messageContext.message.getAttachments()
+    const attachments = ctx.message.getAttachments()
     for (
       let attachmentIndex = 0;
       attachmentIndex < attachments.length;
@@ -36,7 +34,7 @@ export class AttachmentProcessor extends BaseProcessor {
     ) {
       const attachment = attachments[attachmentIndex]
       const attachmentContext: AttachmentContext = {
-        ...this.messageContext,
+        ...ctx,
         attachmentConfig,
         attachment,
         attachmentConfigIndex,
@@ -50,7 +48,7 @@ export class AttachmentProcessor extends BaseProcessor {
     )
   }
 
-  public processAttachment(attachmentContext: AttachmentContext) {
+  public static processAttachment(attachmentContext: AttachmentContext) {
     const attachment = attachmentContext.attachment
     console.info(
       `            Processing of attachment '${attachment.getName()}' started ...`,

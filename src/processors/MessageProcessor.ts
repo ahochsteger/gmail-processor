@@ -3,24 +3,21 @@ import { MessageActions } from "../actions/MessageActions"
 import { MessageConfig } from "../config/MessageConfig"
 import { MessageFlag } from "../config/MessageFlag"
 import { AttachmentProcessor } from "../processors/AttachmentProcessor"
-import { BaseProcessor } from "./BaseProcessor"
 
-export class MessageProcessor extends BaseProcessor {
-  constructor(public threadContext: ThreadContext) {
-    // TODO: Pass context on methods, not in constructor
-    super()
-  }
-
-  public processMessageConfigs(messageConfigs: MessageConfig[]) {
+export class MessageProcessor {
+  public static processMessageConfigs(
+    ctx: ThreadContext,
+    messageConfigs: MessageConfig[],
+  ) {
     for (let i = 0; i < messageConfigs.length; i++) {
       const messageConfig = messageConfigs[i]
       messageConfig.name =
         messageConfig.name !== "" ? messageConfig.name : `message-cfg-${i + 1}`
-      this.processMessageConfig(messageConfig, i)
+      this.processMessageConfig(ctx, messageConfig, i)
     }
   }
 
-  public matches(
+  public static matches(
     messageConfig: MessageConfig,
     message: GoogleAppsScript.Gmail.GmailMessage,
   ) {
@@ -47,21 +44,22 @@ export class MessageProcessor extends BaseProcessor {
     return true
   }
 
-  public processMessageConfig(
+  public static processMessageConfig(
+    ctx: ThreadContext,
     messageConfig: MessageConfig,
     messageConfigIndex: number,
   ) {
     console.info(
       `      Processing of message config '${messageConfig.name}' started ...`,
     )
-    const messages = this.threadContext.thread.getMessages()
+    const messages = ctx.thread.getMessages()
     for (let messageIndex = 0; messageIndex < messages.length; messageIndex++) {
       const message = messages[messageIndex]
       if (!this.matches(messageConfig, message)) {
         continue
       }
       const messageContext: MessageContext = {
-        ...this.threadContext,
+        ...ctx,
         message,
         messageActions: new MessageActions(), // TODO: Move to processing context?
         messageConfig,
@@ -80,19 +78,19 @@ export class MessageProcessor extends BaseProcessor {
    * @param message The message to be processed.
    * @param rule The rule to be processed.
    */
-  public processMessage(messageContext: MessageContext) {
+  public static processMessage(messageContext: MessageContext) {
     // TODO: Check, if this.processingContext would be better here!
     const messageConfig: MessageConfig = messageContext.messageConfig
     const message = messageContext.message
     console.info(
       `        Processing of message '${message.getSubject()}' (id:${message.getId()}) started ...`,
     )
-    const attachmentProcessor: AttachmentProcessor = new AttachmentProcessor(
-      messageContext,
-    ) // TODO: Do not instanciate here - only once and pass different context during instanciation time and runtime!
     if (messageConfig.attachments) {
       // New rule configuration format
-      attachmentProcessor.processAttachmentConfigs(messageConfig.attachments)
+      AttachmentProcessor.processAttachmentConfigs(
+        messageContext,
+        messageConfig.attachments,
+      )
     }
     // } else { // Old rule configuration format
     //     // TODO: Convert old rule configuration into new format instead of duplicate implementation

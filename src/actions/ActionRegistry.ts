@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ProcessingContext } from "../Context"
 
 export type JsonPrimitive = number | string | boolean | null
@@ -35,7 +36,19 @@ export class ActionRegistry {
   private actions = new Map<string, ActionFunction>()
 
   private getActionNamesFromProvider(provider: ActionProvider): string[] {
-    return Object.getOwnPropertyNames(provider.constructor.prototype)
+    return Object.getOwnPropertyNames(provider.constructor)
+      .filter(
+        (propertyName) =>
+          typeof (provider.constructor as any)[propertyName] === "function",
+      )
+      .concat(
+        Object.getOwnPropertyNames(provider.constructor.prototype).filter(
+          (actionName: string) =>
+            provider[actionName as keyof typeof provider] &&
+            actionName !== "constructor",
+        ),
+      )
+      .sort()
   }
 
   public registerActionProvider(
@@ -47,15 +60,12 @@ export class ActionRegistry {
         `An action provider with name ${providerName} is already registered!`,
       )
     this.actionProviders.set(providerName, provider)
-    this.getActionNamesFromProvider(provider.constructor.prototype).forEach(
-      (actionName) => {
-        const fullActionName = `${providerName}.${String(actionName)}`
-        const action = provider[actionName as keyof typeof provider]
-        if (action && actionName !== "constructor") {
-          this.actions.set(fullActionName, action)
-        }
-      },
-    )
+    const actionNames = this.getActionNamesFromProvider(provider) || []
+    actionNames.forEach((actionName) => {
+      const fullActionName = `${providerName}.${String(actionName)}`
+      const action = provider[actionName as keyof typeof provider]
+      this.actions.set(fullActionName, action)
+    })
   }
 
   public getActionProviders(): Map<string, ActionProvider> {

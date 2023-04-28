@@ -9,7 +9,7 @@ import {
 
 export class MessageActions implements ActionProvider<MessageContext> {
   [key: string]: ActionFunction<MessageContext>
-  public forward<T extends { to: string }>(
+  public static forward<T extends { to: string }>(
     context: MessageContext,
     args: ActionArgsType,
   ) {
@@ -22,7 +22,7 @@ export class MessageActions implements ActionProvider<MessageContext> {
     }
   }
 
-  public markProcessed(context: MessageContext) {
+  public static markProcessed(context: MessageContext) {
     let message
     if (context.config.settings.processedMode == "read") {
       message = context.gmailAdapter.messageMarkRead(context.message)
@@ -30,31 +30,31 @@ export class MessageActions implements ActionProvider<MessageContext> {
     return { message }
   }
 
-  public markRead(context: MessageContext) {
+  public static markRead(context: MessageContext) {
     return {
       message: context.gmailAdapter.messageMarkRead(context.message),
     }
   }
 
-  public markUnread(context: MessageContext) {
+  public static markUnread(context: MessageContext) {
     return {
       message: context.gmailAdapter.messageMarkUnread(context.message),
     }
   }
 
-  public moveToTrash(context: MessageContext) {
+  public static moveToTrash(context: MessageContext) {
     return {
       message: context.gmailAdapter.messageMoveToTrash(context.message),
     }
   }
 
-  public star(context: MessageContext) {
+  public static star(context: MessageContext) {
     return {
       message: context.gmailAdapter.messageStar(context.message),
     }
   }
 
-  public unstar(context: MessageContext) {
+  public static unstar(context: MessageContext) {
     return {
       message: context.gmailAdapter.messageUnstar(context.message),
     }
@@ -63,7 +63,7 @@ export class MessageActions implements ActionProvider<MessageContext> {
   /**
    * Generate a PDF document from the message and store it to GDrive.
    */
-  public storeAsPdfToGDrive<
+  public static storeAsPdfToGDrive<
     T extends {
       location: string
       conflictStrategy: ConflictStrategy

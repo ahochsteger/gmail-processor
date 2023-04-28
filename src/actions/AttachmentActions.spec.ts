@@ -1,9 +1,9 @@
-import { ActionProvider, ActionRegistry } from "./ActionRegistry"
+import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
+import { AttachmentContext, ProcessingContext } from "../Context"
 import { ConflictStrategy } from "../adapter/GDriveAdapter"
 import { Config } from "../config/Config"
-import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
+import { ActionProvider, ActionRegistry } from "./ActionRegistry"
 import { AttachmentActions } from "./AttachmentActions"
-import { AttachmentContext, ProcessingContext } from "../Context"
 
 let mocks: Mocks
 let dryRunMocks: Mocks
@@ -23,6 +23,15 @@ beforeEach(() => {
 })
 
 describe("AttachmenActions", () => {
+  it("should provide actions in the action registry", () => {
+    expect(mocks.attachmentActions).not.toBeNull()
+
+    const actionNames = Array.from(actionRegistry.getActions().keys())
+      .filter((v) => v.startsWith("attachment."))
+      .sort()
+    expect(actionNames).toEqual(["attachment.storeToGDrive"])
+  })
+
   it("should provide attachment.storeToGDrive in the action registry", () => {
     expect(actionRegistry.getAction("attachment.storeToGDrive")).toBe(
       actionProvider.storeToGDrive,
@@ -30,7 +39,7 @@ describe("AttachmenActions", () => {
   })
 
   it("should create a file", () => {
-    mocks.attachmentActions.storeToGDrive(mocks.attachmentContext, {
+    actionProvider.storeToGDrive(mocks.attachmentContext, {
       location: "test-location",
       conflictStrategy: ConflictStrategy.REPLACE,
       description: "automated test",
@@ -39,7 +48,7 @@ describe("AttachmenActions", () => {
   })
 
   it("should not create a file on dry-run", () => {
-    dryRunMocks.attachmentActions.storeToGDrive(dryRunMocks.attachmentContext, {
+    actionProvider.storeToGDrive(dryRunMocks.attachmentContext, {
       location: "test-location",
       conflictStrategy: ConflictStrategy.REPLACE,
       description: "automated test",

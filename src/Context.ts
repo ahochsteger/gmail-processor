@@ -9,6 +9,7 @@ import { AttachmentConfig } from "./config/AttachmentConfig"
 import { Config } from "./config/Config"
 import { MessageConfig } from "./config/MessageConfig"
 import { ThreadConfig } from "./config/ThreadConfig"
+import { Timer } from "./utils/Timer"
 
 export interface EnvContext {
   gmailApp: GoogleAppsScript.Gmail.GmailApp
@@ -17,6 +18,7 @@ export interface EnvContext {
   spreadsheetApp: GoogleAppsScript.Spreadsheet.SpreadsheetApp
   cacheService: GoogleAppsScript.Cache.CacheService
   dryRun: boolean
+  timer: Timer
 }
 
 export interface ProcessingContext extends EnvContext {
