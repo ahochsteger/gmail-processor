@@ -1,5 +1,6 @@
 import { EnvContext } from "../Context"
 import { skipOnDryRun } from "../utils/Decorators"
+import { PatternUtil } from "../utils/PatternUtil"
 import { BaseAdapter } from "./BaseAdapter"
 
 export class SpreadsheetAdapter extends BaseAdapter {
@@ -22,10 +23,10 @@ export class SpreadsheetAdapter extends BaseAdapter {
     parentFolderId: string,
   ): GoogleAppsScript.Spreadsheet.Sheet | null {
     const folder = this.getOrCreateFolder(folderPath, parentFolderId)
-    const logSheetFileName = `logsheet-${Utilities.formatDate(
+    const logSheetFileName = `logsheet-${PatternUtil.formatDate(
       new Date(),
+      "YYYY-MM-DD_HH-mm-ss",
       "UTC",
-      "yyyy-MM-dd_HH-mm-ss",
     )}`
     this.logSpreadsheet = this.spreadsheetApp.create(logSheetFileName)
     this.logSheetId = this.logSpreadsheet.getId()
