@@ -20,7 +20,7 @@
 | **sleepTime**      | `number`      | Sleep time in milliseconds between processed messages                                                    | &#10003; Yes |
 | **timezone**       | `string`      | Timezone for date/time operations                                                                        | &#10003; Yes |
 
-Additional properties are allowed.
+Additional properties are not allowed.
 
 ### Config (v1).globalFilter
 
@@ -94,7 +94,7 @@ Timezone for date/time operations
 | **saveThreadPDF**      | `boolean` | Save the thread to PDF                                                          | &#10003; Yes |
 | **skipPDFHeader**      | `boolean` | Skip header for PDF                                                             | &#10003; Yes |
 
-Additional properties are allowed.
+Additional properties are not allowed.
 
 ### V1Rule.archive
 

@@ -1,7 +1,9 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema",
+  "additionalProperties": false,
   "definitions": {
     "ActionConfig": {
+      "additionalProperties": false,
       "description": "Represents a config to perform a certain action for a GMail thread/message/attachment.",
       "properties": {
         "args": {
@@ -26,6 +28,7 @@
       "type": "object"
     },
     "AttachmentConfig": {
+      "additionalProperties": false,
       "description": "Represents a config to handle a certain GMail attachment",
       "properties": {
         "actions": {
@@ -60,6 +63,7 @@
       "type": "object"
     },
     "AttachmentMatchConfig": {
+      "additionalProperties": false,
       "description": "Represents a config to match a certain GMail attachment",
       "properties": {
         "contentType": {
@@ -111,6 +115,7 @@
       "type": "object"
     },
     "GlobalConfig": {
+      "additionalProperties": false,
       "description": "The global configuration that defines matching for all threads as well as actions for all threads, messages or attachments.",
       "properties": {
         "actions": {
@@ -133,6 +138,7 @@
       "type": "object"
     },
     "MessageConfig": {
+      "additionalProperties": false,
       "description": "Represents a config to handle a certain GMail message",
       "properties": {
         "actions": {
@@ -181,6 +187,7 @@
       "type": "string"
     },
     "MessageMatchConfig": {
+      "additionalProperties": false,
       "description": "Represents a config to match a certain GMail message",
       "properties": {
         "from": {
@@ -227,6 +234,7 @@
       "type": "object"
     },
     "SettingsConfig": {
+      "additionalProperties": false,
       "description": "Represents a settings config that affect the way GMail2GDrive works.",
       "properties": {
         "logSheetFile": {
@@ -237,7 +245,7 @@
         },
         "logSheetFolderId": {
           "default": "",
-          "description": "Folder ID in case of a shared drive",
+          "description": "Folder ID of the spreadsheet log file in case of a shared drive (instead of logSheetFile)",
           "title": "logSheetFolderId",
           "type": "string"
         },
@@ -307,6 +315,7 @@
       "type": "object"
     },
     "ThreadConfig": {
+      "additionalProperties": false,
       "description": "Represents a config handle a certain GMail thread",
       "properties": {
         "actions": {
@@ -359,6 +368,7 @@
       "type": "object"
     },
     "ThreadMatchConfig": {
+      "additionalProperties": false,
       "description": "Represents a config to match a certain GMail thread",
       "properties": {
         "maxMessageCount": {

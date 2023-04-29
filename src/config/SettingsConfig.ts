@@ -11,7 +11,7 @@ export class SettingsConfig {
   @Expose()
   logSheetFile = "Gmail2GDrive/Gmail2GDrive-logs"
   /**
-   * Folder ID in case of a shared drive
+   * Folder ID of the spreadsheet log file in case of a shared drive (instead of logSheetFile)
    */
   @Expose()
   logSheetFolderId = ""

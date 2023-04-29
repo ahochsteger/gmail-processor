@@ -2,6 +2,7 @@
   "compilerOptions": {
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
+    "inlineSourceMap": true,
     "target": "ES6",
     "module": "commonjs",
     "strict": true,
@@ -12,7 +13,7 @@
     "esModuleInterop": true,
     "outDir": "build",
     "lib": ["ES2020"],
-    "types": ["google-apps-script", "jest"],
+    "types": ["google-apps-script", "jest", "node"],
     "baseUrl": "src/",
     "resolveJsonModule": true
   },

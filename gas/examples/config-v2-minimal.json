@@ -1,4 +1,7 @@
 {
+  "global": {
+    "match": {}
+  },
   "settings": {
     "timezone": "Europe/Vienna"
   }

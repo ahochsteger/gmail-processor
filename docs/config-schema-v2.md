@@ -26,7 +26,7 @@ Represents a config to perform a certain action for a GMail thread/message/attac
 | **description** | `string` | The description for the action        | No, default: |
 | **name**        | `string` | The name of the action to be executed | No           |
 
-Additional properties are allowed.
+Additional properties are not allowed.
 
 ### ActionConfig.args
 
@@ -66,7 +66,7 @@ Represents a config to handle a certain GMail attachment
 | **match**       | `AttachmentMatchConfig` | Represents a config to match a certain GMail attachment                 | &#10003; Yes |
 | **name**        | `string`                | The unique name of the attachment config (will be generated if not set) | No, default: |
 
-Additional properties are allowed.
+Additional properties are not allowed.
 
 ### AttachmentConfig.actions
 
@@ -115,7 +115,7 @@ Represents a config to match a certain GMail attachment
 | **name**                | `string`  | A RegEx matching the name of the attachment                                     | &#10003; Yes |
 | **smallerThan**         | `number`  | Only include attachments smaller than the given size in bytes                   | &#10003; Yes |
 
-Additional properties are allowed.
+Additional properties are not allowed.
 
 ### AttachmentMatchConfig.contentType
 
@@ -178,7 +178,7 @@ Represents a configuration for GMail2GDrive
 | **settings**    | `SettingsConfig`        | Represents a settings config that affect the way GMail2GDrive works.                                                        | &#10003; Yes      |
 | **threads**     | `ThreadConfig` `[]`     | The list of handler that define the way nested threads, messages or attachments are processed                               | &#10003; Yes      |
 
-Additional properties are allowed.
+Additional properties are not allowed.
 
 ### Config (v2).attachments
 
@@ -237,7 +237,7 @@ The global configuration that defines matching for all threads as well as action
 | **actions** | `ActionConfig` `[]` | The list of global actions that are always executed for their respective handler scopes | &#10003; Yes |
 | **match**   | `ThreadMatchConfig` | Represents a config to match a certain GMail thread                                     | &#10003; Yes |
 
-Additional properties are allowed.
+Additional properties are not allowed.
 
 ### GlobalConfig.actions
 
@@ -271,7 +271,7 @@ Represents a config to handle a certain GMail message
 | **match**       | `MessageMatchConfig`    | Represents a config to match a certain GMail message                 | &#10003; Yes |
 | **name**        | `string`                | The unique name of the message config (will be generated if not set) | No, default: |
 
-Additional properties are allowed.
+Additional properties are not allowed.
 
 ### MessageConfig.actions
 
@@ -333,7 +333,7 @@ Represents a config to match a certain GMail message
 | **subject**   | `string`      | A RegEx matching the subject of messages                                                                                                                                  | &#10003; Yes |
 | **to**        | `string`      | A RegEx matching the recipient email address of messages                                                                                                                  | &#10003; Yes |
 
-Additional properties are allowed.
+Additional properties are not allowed.
 
 ### MessageMatchConfig.from
 
@@ -393,7 +393,7 @@ Represents a settings config that affect the way GMail2GDrive works.
 |                      | Type     | Description                                                                                                                      | Required     |
 | -------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------- | ------------ |
 | **logSheetFile**     | `string` | Path of the spreadsheet log file                                                                                                 | &#10003; Yes |
-| **logSheetFolderId** | `string` | Folder ID in case of a shared drive                                                                                              | &#10003; Yes |
+| **logSheetFolderId** | `string` | Folder ID of the spreadsheet log file in case of a shared drive (instead of logSheetFile)                                        | &#10003; Yes |
 | **maxBatchSize**     | `number` | The maximum batch size of threads to process in a single run to respect Google processing limits                                 | &#10003; Yes |
 | **maxRuntime**       | `number` | The maximum runtime in seconds for a single run to respect Google processing limits                                              | &#10003; Yes |
 | **processedLabel**   | `string` | The label to be added to processed GMail threads (only for markProcessedMode="label", deprecated - only for compatibility to v1) | &#10003; Yes |
@@ -406,7 +406,7 @@ Represents a settings config that affect the way GMail2GDrive works.
   |**sleepTimeThreads**|`number`|The sleep time in milliseconds between processing each thread| &#10003; Yes|
   |**timezone**|`string`|The timezone used for formatting file and folder names| &#10003; Yes|
 
-Additional properties are allowed.
+Additional properties are not allowed.
 
 ### SettingsConfig.logSheetFile
 
@@ -417,7 +417,7 @@ Path of the spreadsheet log file
 
 ### SettingsConfig.logSheetFolderId
 
-Folder ID in case of a shared drive
+Folder ID of the spreadsheet log file in case of a shared drive (instead of logSheetFile)
 
 - **Type**: `string`
 - **Required**: &#10003; Yes
@@ -503,7 +503,7 @@ Represents a config handle a certain GMail thread
 | **messages**    | `MessageConfig` `[]`    | The list of handler that define the way nested messages or attachments are processed | &#10003; Yes      |
 | **name**        | `string`                | The unique name of the thread config (will be generated if not set)                  | No, default:      |
 
-Additional properties are allowed.
+Additional properties are not allowed.
 
 ### ThreadConfig.actions
 
@@ -564,7 +564,7 @@ Represents a config to match a certain GMail thread
 | **newerThan**       | `string` | Only process threads with message newer than (leave empty for no restriction; use d, m and y for day, month and year)                   | &#10003; Yes |
 | **query**           | `string` | The GMail search query to find threads to be processed (see http://support.google.com/mail/bin/answer.py?hl=en&answer=7190 for details) | &#10003; Yes |
 
-Additional properties are allowed.
+Additional properties are not allowed.
 
 ### ThreadMatchConfig.maxMessageCount
 

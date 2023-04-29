@@ -8,12 +8,8 @@
     "build-examples": "scripts/build-examples.sh",
     "clean": "rm -rf build",
     "format": "prettier -w .",
-    "generate-schema": "npm run generate-schema-v1 && npm run generate-schema-v2",
-    "generate-schema-v1": "scripts/gen-schema.sh V1Config v1 'Config (v1)'",
-    "generate-schema-v2": "scripts/gen-schema.sh Config v2 'Config (v2)'",
-    "lint-config": "npm run lint-config-v1 && npm run lint-config-v2",
-    "lint-config-v1": "npx ajv validate -s schema-v1.json -d gas-examples/config-v1*.json --verbose",
-    "lint-config-v2": "npx ajv validate -s schema-v2.json -d gas-examples/config-v2*.json --verbose",
+    "generate-schema": "scripts/gen-schema.sh",
+    "lint-config": "scripts/lint-config.sh",
     "lint": "npx eslint . && npm run lint-config",
     "login": "cd gas && clasp login",
     "pre-commit": "npm run clean && npm run build && npm run test && npm run format && npm run lint",
@@ -41,10 +37,9 @@
     "@types/dateformat": "^5.0.0",
     "@types/google-apps-script": "^1.0.59",
     "@types/jest": "^29.5.0",
-    "@types/node": "^18.15.11",
+    "@types/node": "^18.16.3",
     "@typescript-eslint/eslint-plugin": "^5.57.1",
     "@typescript-eslint/parser": "^5.57.1",
-    "ajv-cli": "^5.0.0",
     "eslint": "^8.37.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-googleappsscript": "^1.0.4",
@@ -64,16 +59,16 @@
     "typescript": "^5.0.3",
     "typescript-json-schema": "^0.55.0",
     "webpack": "^5.78.0",
-    "webpack-cli": "^5.0.1",
-    "wetzel": "^0.2.3"
+    "webpack-cli": "^5.0.1"
   },
   "private": true,
   "dependencies": {
+    "ajv": "^8.12.0",
     "class-transformer": "^0.5.1",
     "moment": "^2.29.4",
     "moment-timezone": "^0.5.43",
     "reflect-metadata": "^0.1.13",
-    "relative-time-parser": "^1.0.15"
+    "tslog": "^4.8.2"
   },
   "engines": {
     "node": ">=10.0.0"

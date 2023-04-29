@@ -43,8 +43,8 @@ This way the attachments of periodic emails can be automatically organized in fo
 
 ## Configuration
 
-The documentation of the configuration schema can be found in [schema-v2.md](schema-v2.md).
-To support the migration from the v1 configuration format the documentation can be found in [schema-v1.md](schema-v1.md).
+The documentation of the configuration schema can be found in [docs/config-schema-v2.md](docs/config-schema-v2.md).
+To support the migration from the v1 configuration format the documentation can be found in [docs/config-schema-v1.md](docs/config-schema-v1.md).
 
 ## Global Configuration (TODO: Remove when all is in generated docs)
 

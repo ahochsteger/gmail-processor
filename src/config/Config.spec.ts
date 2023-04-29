@@ -42,29 +42,25 @@ describe("normalizeConfig", () => {
 
 describe("jsonToConfig", () => {
   it("should set defaults for missing properties from JSON", () => {
-    {
-      const cfg: Record<string, any> = MockFactory.newDefaultConfig()
-      const actual = jsonToConfig(cfg)
-      expect(actual).toMatchObject(cfg)
-    }
+    const cfg: Record<string, any> = MockFactory.newDefaultConfig()
+    const actual = jsonToConfig(cfg)
+    expect(actual).toMatchObject(cfg)
   })
   it("should remove additional properties from JSON", () => {
-    {
-      const expected = {
-        global: {
-          match: {
-            query: "global-query",
-          },
+    const expected = {
+      global: {
+        match: {
+          query: "global-query",
         },
-        settings: {
-          processedLabel: "processed-label",
-        },
-      }
-      const cfgJson = { ...expected, additionalProperty: "additional" }
-      const actual = jsonToConfig(cfgJson)
-      expect((actual as any).additionalProperty).toBeUndefined()
-      expect(actual).toMatchObject(expected)
+      },
+      settings: {
+        processedLabel: "processed-label",
+      },
     }
+    const cfgJson = { ...expected, additionalProperty: "additional" }
+    const actual = jsonToConfig(cfgJson)
+    expect((actual as any).additionalProperty).toBeUndefined()
+    expect(actual).toMatchObject(expected)
   })
   it("should create a nested config object from JSON", () => {
     const json = {
