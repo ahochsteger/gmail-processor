@@ -1,57 +1,21 @@
 import { MockFactory } from "../../test/mocks/MockFactory"
-import { AttachmentConfig } from "../config/AttachmentConfig"
 import { Config } from "../config/Config"
 import { jsonToMessageConfig } from "../config/MessageConfig"
 import { PatternUtil } from "./PatternUtil"
 
 function getMocks(dryRun = true, config = new Config()) {
-  const mocks = MockFactory.newMocks(config, dryRun)
-  const threadContext = MockFactory.newThreadContext(mocks.thread)
-  const messageContext = MockFactory.newMessageContextMock(threadContext)
-  const attachmentContext = MockFactory.newAttachmentContext(
-    mocks.thread,
-    0,
-    0,
-    0,
-  )
-  return {
-    mocks,
-    threadContext,
-    messageContext,
-    attachmentContext,
-  }
+  return MockFactory.newMocks(config, dryRun)
 }
 
 describe("Pattern Substitution", () => {
   it("should handle a thread", () => {
-    const thread1 = MockFactory.newThreadMock({
-      messages: [
-        {
-          date: new Date("2018-05-27T12:34:56Z"),
-          from: "msgFrom",
-          id: "msgId",
-          subject: "msgSubject",
-          to: "msgTo",
-          attachments: [
-            {
-              contentType: "attContentType0",
-              name: "attName0",
-            },
-            {
-              contentType: "attContentType1",
-              name: "attName1",
-            },
-          ],
-        },
-      ],
-    })
     const s1 = PatternUtil.substituteFromAttachmentContext(
       "${message.from}/${message.to}/${attachment.contentType}/${message.subject}-${message.id}-" +
         "${attachment.index}-${attachment.name}-${message.date:dateformat:YYYY-MM-DD}",
-      MockFactory.newAttachmentContext(thread1),
+      MockFactory.newAttachmentContextMock(),
     )
     expect(s1).toBe(
-      "msgFrom/msgTo/attContentType0/msgSubject-msgId-1-attName0-2018-05-27",
+      "message-from@example.com/message-to@example.com/text/plain/message subject-message-id-0-attachment.txt-2019-05-02",
     )
   })
   it("should handle a thread with a message rule", () => {
@@ -80,7 +44,7 @@ describe("Pattern Substitution", () => {
       "message.from: some.email@example.com, message.to: my.email+emailsuffix@example.com, " +
       "message.date: 2019-05-01_18-48-31, message.subject.match.1: 01, " +
       "message.subject.match.2: Some more text"
-    const rule = jsonToMessageConfig({
+    const messageConfig = jsonToMessageConfig({
       match: {
         from: "(.+)@example.com",
         subject: "Message ([0-9]+): (.*)",
@@ -103,16 +67,13 @@ describe("Pattern Substitution", () => {
         },
       ],
     })
+    const attachmentContext = MockFactory.newAttachmentContextMock()
+    attachmentContext.thread.object = thread2
+    attachmentContext.message.object = thread2.getMessages()[0]
+    attachmentContext.message.config = messageConfig
     const s2 = PatternUtil.substituteFromAttachmentContext(
       pattern,
-      MockFactory.newAttachmentContext(
-        thread2,
-        0,
-        0,
-        0,
-        new AttachmentConfig(),
-        rule,
-      ),
+      attachmentContext,
     )
     expect(s2).toBe(expRslt)
   })
@@ -142,19 +103,20 @@ describe("Pattern Substitution", () => {
     const s = PatternUtil.substituteFromMessageContext(
       "${message.from},${message.to},${message.subject}," +
         "${message.id},${message.date:dateformat:YYYY-MM-DD}",
-      MockFactory.newMessageContext(sharedThread),
+      MockFactory.newMessageContextMock(),
     )
-    expect(s).toBe("msgFrom,msgTo,msgSubject,msgId,2018-05-27")
+    expect(s).toBe(
+      "message-from@example.com,message-to@example.com,message subject,message-id,2019-05-02",
+    )
   })
 
   it("should substitute all thread attributes", () => {
-    const thread = MockFactory.newThreadMock()
     const s = PatternUtil.substituteFromThreadContext(
       "${thread.firstMessageSubject}," +
         "${thread.hasStarredMessages},${thread.id},${thread.isImportant},${thread.isInPriorityInbox}," +
         "${thread.labels},${thread.lastMessageDate:dateformat:YYYY-MM-DD},${thread.messageCount}," +
         "${thread.permalink}",
-      MockFactory.newMessageContext(thread),
+      MockFactory.newMessageContextMock(),
     )
     expect(s).toBe(
       "message subject,false,threadId123,false,false,,2019-05-02,2,some-permalink-url",
@@ -162,26 +124,37 @@ describe("Pattern Substitution", () => {
   })
 
   it("should handle a thread with one message and attachment 1 of 2", () => {
+    const ctx = MockFactory.newAttachmentContextMock()
+    const msg = sharedThread.getMessages()[0]
+    ctx.thread.object = sharedThread
+    ctx.message.object = msg
+    ctx.attachment.object = msg.getAttachments()[0]
     const s = PatternUtil.substituteFromAttachmentContext(
       "${message.from}/${message.to}/${attachment.contentType}" +
         "/${message.subject}-${message.id}-${attachment.index}-${attachment.name}-" +
         "${message.date:dateformat:YYYY-MM-DD}",
-      MockFactory.newAttachmentContext(sharedThread, 0, 0, 0),
+      ctx,
     )
     expect(s).toBe(
-      "msgFrom/msgTo/attContentType1/msgSubject-msgId-1-attName1-2018-05-27",
+      "msgFrom/msgTo/attContentType1/msgSubject-msgId-0-attName1-2018-05-27",
     )
   })
 
   it("should substitute advanced message + attachment pattern", () => {
+    const ctx = MockFactory.newAttachmentContextMock()
+    const msg = sharedThread.getMessages()[0]
+    ctx.thread.object = sharedThread
+    ctx.message.object = msg
+    ctx.attachment.object = msg.getAttachments()[1]
+    ctx.attachment.index = 1
     const s = PatternUtil.substituteFromAttachmentContext(
       "${message.from}/${message.to}/${attachment.contentType}" +
         "/${message.subject}-${message.id}-${attachment.index}-${attachment.name}-" +
         "${message.date:dateformat:YYYY-MM-DD}",
-      MockFactory.newAttachmentContext(sharedThread, 0, 0, 1),
+      ctx,
     )
     expect(s).toBe(
-      "msgFrom/msgTo/attContentType2/msgSubject-msgId-2-attName2-2018-05-27",
+      "msgFrom/msgTo/attContentType2/msgSubject-msgId-1-attName2-2018-05-27",
     )
   })
 
@@ -190,10 +163,10 @@ describe("Pattern Substitution", () => {
       "${message.from}/${message.to}/${attachment.contentType}/" +
         "${message.subject}-${message.id}-${attachment.index}-${attachment.name}-" +
         "${message.date:dateformat:YYYY-MM-DD}",
-      MockFactory.newAttachmentContext(sharedThread),
+      MockFactory.newAttachmentContextMock(),
     )
     expect(s).toBe(
-      "msgFrom/msgTo/attContentType1/msgSubject-msgId-1-attName1-2018-05-27",
+      "message-from@example.com/message-to@example.com/text/plain/message subject-message-id-0-attachment.txt-2019-05-02",
     )
   })
 })
@@ -204,68 +177,51 @@ describe("Substitutions", () => {
         "${thread.firstMessageSubject},${thread.hasStarredMessages}," +
           "${thread.id},${thread.isImportant},${thread.isInPriorityInbox},${thread.labels}," +
           "${thread.lastMessageDate:dateformat:YYYY-MM-DD HH:mm:ss},${thread.messageCount},${thread.permalink}",
-        MockFactory.newThreadContext(
-          MockFactory.newThreadMock({
-            firstMessageSubject: "tfms",
-            hasStarredMessages: true,
-            id: "tid",
-            isImportant: true,
-            isInPriorityInbox: true,
-            labels: ["l1", "l2"],
-            lastMessageDate: new Date("2019-05-06T12:34:56Z"),
-            messageCount: 3,
-            permalink: "tpl",
-          }),
-        ),
+        MockFactory.newThreadContextMock(),
       ),
-    ).toBe("tfms,true,tid,true,true,l1,l2,2019-05-06 12:34:56,3,tpl")
+    ).toBe(
+      "message subject,false,threadId123,false,false,,2019-05-02 05:15:28,2,some-permalink-url",
+    )
   })
   it("should substitute all message attributes", () => {
     expect(
       PatternUtil.substituteFromMessageContext(
         "${message.bcc},${message.cc},${message.date:dateformat:YYYY-MM-DD HH:mm:ss},${message.from}," +
           "${message.id},${message.replyTo},${message.subject},${message.to}",
-        MockFactory.newMessageContext(
-          MockFactory.newThreadMock({
-            messages: [
-              {
-                bcc: "mbcc",
-                cc: "mcc",
-                date: new Date("2019-05-06T12:34:56Z"),
-                from: "mfrom",
-                id: "mid",
-                replyTo: "mrt",
-                subject: "msj",
-                to: "mto",
-              },
-            ],
-          }),
-        ),
+        MockFactory.newMessageContextMock(),
       ),
-    ).toBe("mbcc,mcc,2019-05-06 12:34:56,mfrom,mid,mrt,msj,mto")
+    ).toBe(
+      "message-bcc@example.com,message-cc@example.com,2019-05-02 05:15:28,message-from@example.com,message-id,message-reply-to@example.com,message subject,message-to@example.com",
+    )
   })
   it("should substitute all attachment attributes", () => {
+    const thread = MockFactory.newThreadMock({
+      messages: [
+        {
+          attachments: [
+            {
+              contentType: "act",
+              hash: "ah",
+              isGoogleType: true,
+              name: "aname",
+              size: 12345,
+            },
+          ],
+        },
+      ],
+    })
+    const ctx = MockFactory.newAttachmentContextMock()
+    const msg = thread.getMessages()[0]
+    ctx.thread.object = thread
+    ctx.message.object = msg
+    ctx.attachment.object = msg.getAttachments()[0]
+    ctx.attachment.index = 1
+
     expect(
       PatternUtil.substituteFromAttachmentContext(
         "${attachment.contentType},${attachment.hash},${attachment.isGoogleType},${attachment.name}," +
           "${attachment.size}",
-        MockFactory.newAttachmentContext(
-          MockFactory.newThreadMock({
-            messages: [
-              {
-                attachments: [
-                  {
-                    contentType: "act",
-                    hash: "ah",
-                    isGoogleType: true,
-                    name: "aname",
-                    size: 12345,
-                  },
-                ],
-              },
-            ],
-          }),
-        ),
+        ctx,
       ),
     ).toBe("act,ah,true,aname,12345")
   })
@@ -285,45 +241,13 @@ describe("Handle single messages", () => {
           "${message.id},${message.replyTo},${message.subject},${message.to}," +
           "${attachment.contentType},${attachment.hash},${attachment.isGoogleType},${attachment.name}," +
           "${attachment.size}",
-        MockFactory.newAttachmentContext(
-          MockFactory.newThreadMock({
-            firstMessageSubject: "tfms",
-            hasStarredMessages: true,
-            id: "tid",
-            isImportant: true,
-            isInPriorityInbox: true,
-            labels: ["l1", "l2"],
-            lastMessageDate: new Date("2019-05-06T12:34:56Z"),
-            messageCount: 3,
-            permalink: "tpl",
-            messages: [
-              {
-                bcc: "mbcc",
-                cc: "mcc",
-                date: new Date("2019-05-06T12:34:56Z"),
-                from: "mfrom",
-                id: "mid",
-                replyTo: "mrt",
-                subject: "msj",
-                to: "mto",
-                attachments: [
-                  {
-                    contentType: "act",
-                    hash: "ah",
-                    isGoogleType: true,
-                    name: "aname",
-                    size: 12345,
-                  },
-                ],
-              },
-            ],
-          }),
-        ),
+        MockFactory.newAttachmentContextMock(),
       ),
     ).toBe(
-      "tfms,true,tid,true,true,l1,l2,2019-05-06 12:34:56,3,tpl," +
-        "mbcc,mcc,2019-05-06 12:34:56,mfrom,mid,mrt,msj,mto," +
-        "act,ah,true,aname,12345",
+      "message subject,false,threadId123,false,false,,2019-05-02 05:15:28,2,some-permalink-url," +
+        "message-bcc@example.com,message-cc@example.com,2019-05-02 05:15:28,message-from@example.com," +
+        "message-id,message-reply-to@example.com,message subject,message-to@example.com,text/plain," +
+        "some-hash-value,false,attachment.txt,19",
     )
   })
 })
@@ -355,16 +279,22 @@ describe("Handle multiple attachments", () => {
       PatternUtil.substituteFromAttachmentContext(
         "${attachment.contentType},${attachment.hash},${attachment.isGoogleType},${attachment.name}," +
           "${attachment.size}",
-        MockFactory.newAttachmentContext(thread),
+        MockFactory.newAttachmentContextMock(),
       ),
-    ).toBe("act1,ah1,true,aname1,12345")
+    ).toBe("text/plain,some-hash-value,false,attachment.txt,19")
   })
   it("should handle a thread with one message and attachment 2 of 2", () => {
+    const ctx = MockFactory.newAttachmentContextMock()
+    const msg = thread.getMessages()[0]
+    ctx.thread.object = thread
+    ctx.message.object = msg
+    ctx.attachment.object = msg.getAttachments()[1]
+    ctx.attachment.index = 1
     expect(
       PatternUtil.substituteFromAttachmentContext(
         "${attachment.contentType},${attachment.hash},${attachment.isGoogleType},${attachment.name}," +
           "${attachment.size}",
-        MockFactory.newAttachmentContext(thread, 0, 0, 1),
+        ctx,
       ),
     ).toBe("act2,ah2,false,aname2,23456")
   })
@@ -431,15 +361,22 @@ describe("Handle multiple messages", () => {
           "${message.id},${message.replyTo},${message.subject},${message.to}," +
           "${attachment.contentType},${attachment.hash},${attachment.isGoogleType},${attachment.name}," +
           "${attachment.size}",
-        MockFactory.newAttachmentContext(thread),
+        MockFactory.newAttachmentContextMock(),
       ),
     ).toBe(
-      "tfms,true,tid,true,true,l1,l2,2019-05-06 12:34:56,3,tpl," +
-        "mbcc1,mcc1,2019-05-06 01:23:45,mfrom1,mid1,mrt1,msj1,mto1," +
-        "act1,ah1,true,aname1,12345",
+      "message subject,false,threadId123,false,false,,2019-05-02 05:15:28,2,some-permalink-url," +
+        "message-bcc@example.com,message-cc@example.com,2019-05-02 05:15:28,message-from@example.com," +
+        "message-id,message-reply-to@example.com,message subject,message-to@example.com,text/plain," +
+        "some-hash-value,false,attachment.txt,19",
     )
   })
   it("should handle a thread with message 2 of 2 and one attachment", () => {
+    const ctx = MockFactory.newAttachmentContextMock()
+    const msg = thread.getMessages()[1]
+    ctx.thread.object = thread
+    ctx.message.object = msg
+    ctx.attachment.object = msg.getAttachments()[0]
+    ctx.attachment.index = 1
     expect(
       PatternUtil.substituteFromAttachmentContext(
         "${thread.firstMessageSubject},${thread.hasStarredMessages},${thread.id},${thread.isImportant}," +
@@ -449,7 +386,7 @@ describe("Handle multiple messages", () => {
           "${message.id},${message.replyTo},${message.subject},${message.to}," +
           "${attachment.contentType},${attachment.hash},${attachment.isGoogleType},${attachment.name}," +
           "${attachment.size}",
-        MockFactory.newAttachmentContext(thread, 0, 1),
+        ctx,
       ),
     ).toBe(
       "tfms,true,tid,true,true,l1,l2,2019-05-06 12:34:56,3,tpl," +

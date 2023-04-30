@@ -1,4 +1,4 @@
-import { mock } from "jest-mock-extended"
+import { MockProxy, mock } from "jest-mock-extended"
 import {
   AttachmentContext,
   EnvContext,
@@ -7,9 +7,6 @@ import {
   ThreadContext,
 } from "../../src/Context"
 import { ActionRegistry } from "../../src/actions/ActionRegistry"
-import { AttachmentActions } from "../../src/actions/AttachmentActions"
-import { MessageActions } from "../../src/actions/MessageActions"
-import { ThreadActions } from "../../src/actions/ThreadActions"
 import { GDriveAdapter } from "../../src/adapter/GDriveAdapter"
 import { GmailAdapter } from "../../src/adapter/GmailAdapter"
 import { SpreadsheetAdapter } from "../../src/adapter/SpreadsheetAdapter"
@@ -17,113 +14,79 @@ import { AttachmentConfig } from "../../src/config/AttachmentConfig"
 import { Config, jsonToConfig } from "../../src/config/Config"
 import { MessageConfig } from "../../src/config/MessageConfig"
 import { MessageFlag } from "../../src/config/MessageFlag"
-import { ThreadConfig, jsonToThreadConfig } from "../../src/config/ThreadConfig"
+import { jsonToThreadConfig } from "../../src/config/ThreadConfig"
 import { V1Config, jsonToV1Config } from "../../src/config/v1/V1Config"
 import { Timer } from "../../src/utils/Timer"
 
 export class Mocks {
-  // Create Google Apps Script Context mock objects:
-  public envContext: EnvContext
-  public gmailApp = mock<GoogleAppsScript.Gmail.GmailApp>()
-  public gdriveApp = mock<GoogleAppsScript.Drive.DriveApp>()
-  public spreadsheetApp = mock<GoogleAppsScript.Spreadsheet.SpreadsheetApp>()
-  public cacheService = mock<GoogleAppsScript.Cache.CacheService>()
-  public utilities = mock<GoogleAppsScript.Utilities.Utilities>()
-  public processingContext: ProcessingContext
-
-  // Objects for behavior mocking:
-  public thread = MockFactory.newThreadMock()
-  public threadContext: ThreadContext
-  public threadActions: ThreadActions
-  public message = MockFactory.newMessageMock()
-  public messageContext: MessageContext
-  public messageActions: MessageActions
-  public attachment = MockFactory.newAttachmentMock()
-  public attachmentContext: AttachmentContext
-  public attachmentActions: AttachmentActions
-  public folder = mock<GoogleAppsScript.Drive.Folder>()
-  public file = mock<GoogleAppsScript.Drive.File>()
-  public fileIterator = mock<GoogleAppsScript.Drive.FileIterator>()
-  public folderIterator = mock<GoogleAppsScript.Drive.FolderIterator>()
-  public cache = mock<GoogleAppsScript.Cache.Cache>()
+  public attachmentContext = mock<AttachmentContext>()
+  public attachment = mock<GoogleAppsScript.Gmail.GmailAttachment>()
   public blob = mock<GoogleAppsScript.Base.Blob>()
-
-  constructor(config = new Config(), dryRun = true) {
-    // Setup mock behavior:
-    this.folder.getFilesByName.mockReturnValue(this.fileIterator)
-    this.folder.createFile.mockReturnValue(this.file)
-    this.gdriveApp.getRootFolder.mockReturnValue(this.folder)
-    this.gdriveApp.getFoldersByName.mockReturnValue(this.folderIterator)
-    this.cache.get.mockReturnValue("some-id")
-    this.cacheService.getScriptCache.mockReturnValue(this.cache)
-    this.envContext = {
-      env: {
-        // TODO: Merge with newEnvContextMock()
-        gmailApp: this.gmailApp,
-        gdriveApp: this.gdriveApp,
-        utilities: this.utilities,
-        spreadsheetApp: this.spreadsheetApp,
-        cacheService: this.cacheService,
-        dryRun,
-      },
-    }
-    this.processingContext = MockFactory.newProcessingContextMock(
-      this.envContext,
-      config,
-    )
-    this.threadActions = new ThreadActions()
-    this.threadContext = {
-      // TODO: Merge with newThreadContextMock()
-      ...this.processingContext,
-      thread: {
-        configIndex: 0,
-        config: new ThreadConfig(),
-        index: 0,
-        object: this.thread,
-      },
-    }
-    this.messageActions = new MessageActions()
-    this.messageContext = {
-      // TODO: Merge with newMessageContextMock()
-      ...this.threadContext,
-      message: {
-        configIndex: 0,
-        config: new MessageConfig(),
-        index: 0,
-        object: this.message,
-      },
-    }
-    this.attachmentActions = new AttachmentActions()
-    this.attachmentContext = {
-      // TODO: Merge with newAttachmentContextMock()
-      ...this.messageContext,
-      attachment: {
-        configIndex: 0,
-        config: new AttachmentConfig(),
-        index: 0,
-        object: this.attachment,
-      },
-    }
-    this.blob.getAs.mockReturnValue(this.blob)
-    this.blob.getDataAsString.mockReturnValue("PDF-Contents")
-    this.utilities.newBlob.mockReturnValue(this.blob)
-    this.gmailApp.search.mockReturnValue([this.thread])
-  }
+  public cache = mock<GoogleAppsScript.Cache.Cache>()
+  public cacheService = mock<GoogleAppsScript.Cache.CacheService>()
+  public envContext = mock<EnvContext>()
+  public fileIterator = mock<GoogleAppsScript.Drive.FileIterator>()
+  public file = mock<GoogleAppsScript.Drive.File>()
+  public folderIterator = mock<GoogleAppsScript.Drive.FolderIterator>()
+  public folder = mock<GoogleAppsScript.Drive.Folder>()
+  public gdriveApp = mock<GoogleAppsScript.Drive.DriveApp>()
+  public gmailApp = mock<GoogleAppsScript.Gmail.GmailApp>()
+  public messageContext = mock<MessageContext>()
+  public message = mock<GoogleAppsScript.Gmail.GmailMessage>()
+  public processingContext = mock<ProcessingContext>()
+  public spreadsheetApp = mock<GoogleAppsScript.Spreadsheet.SpreadsheetApp>()
+  public threadContext = mock<ThreadContext>()
+  public thread = mock<GoogleAppsScript.Gmail.GmailThread>()
+  public utilities = mock<GoogleAppsScript.Utilities.Utilities>()
 }
 
 export class MockFactory {
   public static newMocks(config = new Config(), dryRun = true): Mocks {
-    return new Mocks(config, dryRun)
+    const mocks = new Mocks()
+    mocks.thread = MockFactory.newThreadMock()
+    mocks.message = MockFactory.newMessageMock()
+    mocks.attachment = MockFactory.newAttachmentMock()
+
+    mocks.envContext = MockFactory.newEnvContextMock(dryRun, mocks)
+    mocks.processingContext = MockFactory.newProcessingContextMock(
+      mocks.envContext,
+      config,
+    )
+    mocks.threadContext = MockFactory.newThreadContextMock(
+      mocks.processingContext,
+      mocks.thread,
+    )
+    mocks.messageContext = MockFactory.newMessageContextMock(
+      mocks.threadContext,
+      mocks.message,
+    )
+    mocks.attachmentContext = MockFactory.newAttachmentContextMock(
+      mocks.messageContext,
+      mocks.attachment,
+    )
+
+    return mocks
   }
 
-  public static newEnvContextMock(mocks = new Mocks(), dryRun = true) {
+  public static newEnvContextMock(dryRun = true, mocks = new Mocks()) {
+    // Setup mock behavior:
+    mocks.folder.getFilesByName.mockReturnValue(mocks.fileIterator)
+    mocks.folder.createFile.mockReturnValue(mocks.file)
+    mocks.gdriveApp.getRootFolder.mockReturnValue(mocks.folder)
+    mocks.gdriveApp.getFoldersByName.mockReturnValue(mocks.folderIterator)
+    mocks.cache.get.mockReturnValue("some-id")
+    mocks.cacheService.getScriptCache.mockReturnValue(mocks.cache)
+    mocks.blob.getAs.mockReturnValue(mocks.blob)
+    mocks.blob.getDataAsString.mockReturnValue("PDF-Contents")
+    mocks.utilities.newBlob.mockReturnValue(mocks.blob)
+    mocks.gmailApp.search.mockReturnValue([mocks.thread])
     const envContext: EnvContext = {
       env: {
         gmailApp: mocks.gmailApp,
         gdriveApp: mocks.gdriveApp,
-        utilities: mocks.utilities,
         spreadsheetApp: mocks.spreadsheetApp,
         cacheService: mocks.cacheService,
+        utilities: mocks.utilities,
         dryRun,
       },
     }
@@ -215,7 +178,6 @@ export class MockFactory {
   }
 
   public static newComplexThreadConfigList(): Record<string, unknown>[] {
-    // TODO: Continue here (make fields optional in config)
     return [
       {
         actions: [
@@ -384,14 +346,12 @@ export class MockFactory {
 
   public static newThreadContextMock(
     processingContext = this.newProcessingContextMock(),
-    threadConfig = this.newDefaultThreadConfigJson(),
     thread = this.newThreadMock(),
   ): ThreadContext {
-    jsonToThreadConfig(threadConfig)
     return {
       ...processingContext,
       thread: {
-        config: jsonToThreadConfig(threadConfig),
+        config: jsonToThreadConfig(this.newDefaultThreadConfigJson()),
         object: thread,
         configIndex: 0,
         index: 0,
@@ -401,14 +361,28 @@ export class MockFactory {
 
   public static newMessageContextMock(
     threadContext = this.newThreadContextMock(),
-    messageConfig = new MessageConfig(),
     message = this.newMessageMock(),
   ): MessageContext {
     return {
       ...threadContext,
       message: {
-        config: messageConfig,
+        config: new MessageConfig(),
         object: message,
+        configIndex: 0,
+        index: 0,
+      },
+    }
+  }
+
+  public static newAttachmentContextMock(
+    messageContext = this.newMessageContextMock(),
+    attachment = this.newAttachmentMock(),
+  ): AttachmentContext {
+    return {
+      ...messageContext,
+      attachment: {
+        config: new AttachmentConfig(),
+        object: attachment,
         configIndex: 0,
         index: 0,
       },
@@ -417,7 +391,7 @@ export class MockFactory {
 
   public static newThreadMock(
     data: Record<string, unknown> = {},
-  ): GoogleAppsScript.Gmail.GmailThread {
+  ): MockProxy<GoogleAppsScript.Gmail.GmailThread> {
     const threadData = MockFactory.getThreadSampleData(data)
     threadData.messages =
       threadData.messages !== undefined ? threadData.messages : []
@@ -462,7 +436,7 @@ export class MockFactory {
 
   public static newMessageMock(
     data1: Record<string, unknown> = {},
-  ): GoogleAppsScript.Gmail.GmailMessage {
+  ): MockProxy<GoogleAppsScript.Gmail.GmailMessage> {
     const msgData = MockFactory.getMessageSampleData(data1)
     msgData.attachments = msgData.attachments ? msgData.attachments : [] // Make sure attachments is defined
     const mockedGmailMessage = mock<GoogleAppsScript.Gmail.GmailMessage>()
@@ -485,7 +459,7 @@ export class MockFactory {
 
   public static newAttachmentMock(
     data: Record<string, unknown> = {},
-  ): GoogleAppsScript.Gmail.GmailAttachment {
+  ): MockProxy<GoogleAppsScript.Gmail.GmailAttachment> {
     const attData = MockFactory.getAttachmentSampleData(data)
     const mockedGmailAttachment = mock<GoogleAppsScript.Gmail.GmailAttachment>()
     mockedGmailAttachment.getContentType.mockReturnValue(
@@ -620,97 +594,5 @@ export class MockFactory {
     }
     Object.assign(sampleData, data)
     return sampleData
-  }
-
-  public static newThreadContext(
-    // TODO: Merge with newThreadContextMock()
-    thread: GoogleAppsScript.Gmail.GmailThread,
-    threadIndex = 0,
-    threadConfig = new ThreadConfig(),
-    config = new Config(),
-    dryRun = true,
-  ) {
-    config.threads.push(threadConfig)
-
-    const ctx: ThreadContext = {
-      ...MockFactory.newProcessingContextMock(
-        MockFactory.newEnvContextMock(MockFactory.newMocks(), dryRun),
-        config,
-      ),
-      thread: {
-        object: thread,
-        config: threadConfig,
-        configIndex: 0,
-        index: threadIndex,
-      },
-    }
-    ctx.thread.index = threadIndex + 1
-    return ctx
-  }
-
-  public static newMessageContext(
-    // TODO: Merge with newMessageContextMock()
-    thread: GoogleAppsScript.Gmail.GmailThread,
-    threadIndex = 0,
-    messageIndex = 0,
-    messageConfig = new MessageConfig(),
-    threadConfig = new ThreadConfig(),
-    config = new Config(),
-  ) {
-    threadConfig.messages.push(messageConfig)
-    config.threads.push(threadConfig)
-    const message = thread.getMessages()[messageIndex]
-
-    const ctx: MessageContext = {
-      ...MockFactory.newThreadContext(
-        thread,
-        threadIndex,
-        threadConfig,
-        config,
-      ),
-      message: {
-        object: message,
-        config: messageConfig,
-        configIndex: 0,
-        index: messageIndex,
-      },
-    }
-    ctx.message.index = messageIndex + 1
-    return ctx
-  }
-
-  public static newAttachmentContext(
-    thread: GoogleAppsScript.Gmail.GmailThread,
-    threadIndex = 0,
-    messageIndex = 0,
-    attachmentIndex = 0,
-    attachmentConfig = new AttachmentConfig(),
-    messageConfig = new MessageConfig(),
-    threadConfig = new ThreadConfig(),
-    config = new Config(),
-  ) {
-    messageConfig.attachments.push(attachmentConfig)
-    threadConfig.messages.push(messageConfig)
-    config.threads.push(threadConfig)
-    const message = thread.getMessages()[messageIndex]
-    const attachment = message.getAttachments()[attachmentIndex]
-
-    const ctx: AttachmentContext = {
-      ...MockFactory.newMessageContext(
-        thread,
-        threadIndex,
-        messageIndex,
-        messageConfig,
-        threadConfig,
-      ),
-      attachment: {
-        object: attachment,
-        config: attachmentConfig,
-        configIndex: 0,
-        index: attachmentIndex,
-      },
-    }
-    ctx.attachment.index = attachmentIndex + 1
-    return ctx
   }
 }
