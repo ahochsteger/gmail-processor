@@ -345,8 +345,7 @@
           "type": "number"
         },
         "timezone": {
-          "default": "UTC",
-          "description": "The timezone used for formatting file and folder names",
+          "description": "Overrides the <a href=\"https://developers.google.com/apps-script/reference/base/session#getscripttimezone\">script timezone</a>, which is used by default.",
           "title": "timezone",
           "type": "string"
         }
@@ -360,8 +359,7 @@
         "processedMode",
         "sleepTimeAttachments",
         "sleepTimeMessages",
-        "sleepTimeThreads",
-        "timezone"
+        "sleepTimeThreads"
       ],
       "title": "SettingsConfig",
       "type": "object"

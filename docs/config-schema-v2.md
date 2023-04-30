@@ -404,7 +404,7 @@ Represents a settings config that affect the way GMail2GDrive works.
   |**sleepTimeAttachments**|`number`|The sleep time in milliseconds between processing each attachment| &#10003; Yes|
   |**sleepTimeMessages**|`number`|The sleep time in milliseconds between processing each message| &#10003; Yes|
   |**sleepTimeThreads**|`number`|The sleep time in milliseconds between processing each thread| &#10003; Yes|
-  |**timezone**|`string`|The timezone used for formatting file and folder names| &#10003; Yes|
+  |**timezone**|`string`|Overrides the <a href="https://developers.google.com/apps-script/reference/base/session#getscripttimezone">script timezone</a>, which is used by default.|No|
 
 Additional properties are not allowed.
 
@@ -479,10 +479,10 @@ The sleep time in milliseconds between processing each thread
 
 ### SettingsConfig.timezone
 
-The timezone used for formatting file and folder names
+Overrides the <a href="https://developers.google.com/apps-script/reference/base/session#getscripttimezone">script timezone</a>, which is used by default.
 
 - **Type**: `string`
-- **Required**: &#10003; Yes
+- **Required**: No
 
 ---
 
