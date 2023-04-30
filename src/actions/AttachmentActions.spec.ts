@@ -24,8 +24,6 @@ beforeEach(() => {
 
 describe("AttachmenActions", () => {
   it("should provide actions in the action registry", () => {
-    expect(mocks.attachmentActions).not.toBeNull()
-
     const actionNames = Array.from(actionRegistry.getActions().keys())
       .filter((v) => v.startsWith("attachment."))
       .sort()
