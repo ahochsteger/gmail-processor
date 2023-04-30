@@ -5,7 +5,6 @@ set -eufo pipefail
 function genSchema() {
   local typeName="${1:?}"
   local schemaName="${2:?}"
-  local rootTitle="${3:?}"
 
   case "${schemaName}" in
     v1)
