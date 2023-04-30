@@ -65,7 +65,6 @@ export class Mocks {
         spreadsheetApp: this.spreadsheetApp,
         cacheService: this.cacheService,
         dryRun,
-        timer: new Timer(),
       },
     }
     this.processingContext = MockFactory.newProcessingContextMock(
@@ -126,7 +125,6 @@ export class MockFactory {
         spreadsheetApp: mocks.spreadsheetApp,
         cacheService: mocks.cacheService,
         dryRun,
-        timer: new Timer(),
       },
     }
     return envContext
@@ -379,6 +377,7 @@ export class MockFactory {
         spreadsheetAdapter: new SpreadsheetAdapter(envContext),
         config,
         actionRegistry: new ActionRegistry(),
+        timer: new Timer(config.settings.maxRuntime),
       },
     }
   }

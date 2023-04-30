@@ -1,7 +1,9 @@
+export class MaxRuntimeReachedError extends Error {}
+
 export class Timer {
   private startTime: Date
 
-  constructor() {
+  constructor(private maxRuntime: number) {
     this.startTime = new Date()
   }
 
@@ -20,5 +22,19 @@ export class Timer {
   }
   public stop() {
     return this.getSecondsUntil(new Date())
+  }
+
+  public checkMaxRuntimeReached(throwError = true) {
+    const runTime = this.getRunTime()
+    if (runTime >= this.maxRuntime) {
+      const msg = `Processing terminated due to reaching runtime of ${runTime}s (max:${this.maxRuntime}s).`
+      console.warn(msg)
+      if (throwError) {
+        throw new MaxRuntimeReachedError(msg)
+      } else {
+        return true
+      }
+    }
+    return false
   }
 }

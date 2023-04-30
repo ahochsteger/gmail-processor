@@ -16,7 +16,6 @@ export type EnvInfo = {
   cacheService: GoogleAppsScript.Cache.CacheService
   dryRun: boolean
   timezone?: string
-  timer: Timer
 }
 
 export type ProcessingInfo = {
@@ -25,6 +24,7 @@ export type ProcessingInfo = {
   gdriveAdapter: GDriveAdapter
   gmailAdapter: GmailAdapter
   spreadsheetAdapter: SpreadsheetAdapter
+  timer: Timer
 }
 
 export type ThreadInfo = {

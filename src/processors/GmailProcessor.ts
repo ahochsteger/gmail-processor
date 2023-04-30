@@ -9,6 +9,7 @@ import { SpreadsheetAdapter } from "../adapter/SpreadsheetAdapter"
 import { Config, jsonToConfig, normalizeConfig } from "../config/Config"
 import { V1Config, jsonToV1Config } from "../config/v1/V1Config"
 import { V1ToV2Converter } from "../config/v1/V1ToV2Converter"
+import { Timer } from "../utils/Timer"
 import { ThreadProcessor } from "./ThreadProcessor"
 
 export class GmailProcessor {
@@ -36,6 +37,7 @@ export class GmailProcessor {
         gmailAdapter: new GmailAdapter(envContext),
         spreadsheetAdapter: new SpreadsheetAdapter(envContext),
         config: normalizeConfig(config),
+        timer: new Timer(config.settings.maxRuntime),
       },
     }
     ThreadProcessor.processThreadConfigs(processingContext, config.threads)

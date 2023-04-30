@@ -1,6 +1,5 @@
 import { EnvContext } from "./Context"
 import { GmailProcessor } from "./processors/GmailProcessor"
-import { Timer } from "./utils/Timer"
 
 const envContext: EnvContext = {
   env: {
@@ -11,7 +10,6 @@ const envContext: EnvContext = {
     utilities: Utilities,
     dryRun: false,
     timezone: Session?.getScriptTimeZone() || "UTC",
-    timer: new Timer(),
   },
 }
 const gmailProcessor = new GmailProcessor()

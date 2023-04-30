@@ -55,14 +55,7 @@ export class ThreadProcessor {
     )
     for (let threadIndex = 0; threadIndex < threads.length; threadIndex++) {
       const thread = threads[threadIndex]
-      const runTime = ctx.env.timer.getRunTime()
-      if (runTime >= ctx.proc.config.settings.maxRuntime) {
-        // TODO: Simplify/refactor timer handling (->Base class?)
-        console.warn(
-          `Processing terminated due to reaching runtime of ${runTime}s (max:${ctx.proc.config.settings.maxRuntime}s).`,
-        )
-        return
-      }
+      ctx.proc.timer.checkMaxRuntimeReached()
       const threadContext: ThreadContext = {
         ...ctx,
         thread: {
