@@ -3,14 +3,16 @@ import { GmailProcessor } from "./processors/GmailProcessor"
 import { Timer } from "./utils/Timer"
 
 const envContext: EnvContext = {
-  cacheService: CacheService,
-  gdriveApp: DriveApp,
-  gmailApp: GmailApp,
-  spreadsheetApp: SpreadsheetApp,
-  utilities: Utilities,
-  dryRun: false,
-  timezone: Session?.getScriptTimeZone() || "UTC",
-  timer: new Timer(),
+  env: {
+    cacheService: CacheService,
+    gdriveApp: DriveApp,
+    gmailApp: GmailApp,
+    spreadsheetApp: SpreadsheetApp,
+    utilities: Utilities,
+    dryRun: false,
+    timezone: Session?.getScriptTimeZone() || "UTC",
+    timer: new Timer(),
+  },
 }
 const gmailProcessor = new GmailProcessor()
 
