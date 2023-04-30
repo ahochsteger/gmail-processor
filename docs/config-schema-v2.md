@@ -3,7 +3,7 @@
 - [`ActionConfig`](#reference-actionconfig)
 - [`AttachmentConfig`](#reference-attachmentconfig)
   - [`AttachmentMatchConfig`](#reference-attachmentmatchconfig)
-- [`Config (v2)`](<#reference-config-(v2)>) (root object)
+- [`Config`](#reference-config) (root object)
 - [`GlobalConfig`](#reference-globalconfig)
 - [`MessageConfig`](#reference-messageconfig)
   - [`MessageMatchConfig`](#reference-messagematchconfig)
@@ -161,13 +161,13 @@ Only include attachments smaller than the given size in bytes
 
 ---
 
-<a name="reference-config-(v2)"></a>
+<a name="reference-config"></a>
 
-## Config (v2)
+## Config
 
 Represents a configuration for GMail2GDrive
 
-**`Config (v2)` Properties**
+**`Config` Properties**
 
 |                 | Type                    | Description                                                                                                                 | Required          |
 | --------------- | ----------------------- | --------------------------------------------------------------------------------------------------------------------------- | ----------------- |
@@ -180,42 +180,42 @@ Represents a configuration for GMail2GDrive
 
 Additional properties are not allowed.
 
-### Config (v2).attachments
+### Config.attachments
 
 The list of handler that define the way attachments are processed
 
 - **Type**: `AttachmentConfig` `[]`
 - **Required**: No, default: `[]`
 
-### Config (v2).description
+### Config.description
 
 The description of the GMail2GDrive config
 
 - **Type**: `string`
 - **Required**: No, default:
 
-### Config (v2).global
+### Config.global
 
 The global configuration that defines matching for all threads as well as actions for all threads, messages or attachments.
 
 - **Type**: `GlobalConfig`
 - **Required**: &#10003; Yes
 
-### Config (v2).messages
+### Config.messages
 
 The list of handler that define the way nested messages or attachments are processed
 
 - **Type**: `MessageConfig` `[]`
 - **Required**: No, default: `[]`
 
-### Config (v2).settings
+### Config.settings
 
 Represents a settings config that affect the way GMail2GDrive works.
 
 - **Type**: `SettingsConfig`
 - **Required**: &#10003; Yes
 
-### Config (v2).threads
+### Config.threads
 
 The list of handler that define the way nested threads, messages or attachments are processed
 
@@ -593,3 +593,9 @@ The GMail search query to find threads to be processed (see http://support.googl
 
 - **Type**: `string`
 - **Required**: &#10003; Yes
+
+---
+
+<a name="reference-"></a>
+
+##

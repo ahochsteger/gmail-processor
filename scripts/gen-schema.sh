@@ -19,12 +19,15 @@ function genSchema() {
   esac
 
   npx typescript-json-schema tsconfig.json \
-    "${typeName}" --noExtraProps --required --titles \
-  | node_modules/node-jq/bin/jq "
-    .[\"\$schema\"]=\"http://json-schema.org/draft-07/schema\"
-    | .\"title\"=\"${rootTitle}\"
-  " >"${schemaPath}/config-schema-${schemaName}.json"
-  npx wetzel "${schemaPath}/config-schema-${schemaName}.json" \
+    "${typeName}" \
+    --noExtraProps \
+    --required \
+    --titles \
+    --topRef \
+    --validationKeywords \
+  >"${schemaPath}/config-schema-${schemaName}.json"
+  npx wetzel -w \
+    "${schemaPath}/config-schema-${schemaName}.json" \
     >"docs/config-schema-${schemaName}.md"
   npx prettier -w \
     "${schemaPath}/config-schema-${schemaName}.json" \

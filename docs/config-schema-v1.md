@@ -1,14 +1,20 @@
 # Objects
 
-- [`Config (v1)`](<#reference-config-(v1)>) (root object)
+- [`V1Config`](#reference-v1config) (root object)
 
 ---
 
-<a name="reference-config-(v1)"></a>
+<a name="reference-"></a>
 
-## Config (v1)
+##
 
-**`Config (v1)` Properties**
+---
+
+<a name="reference-v1config"></a>
+
+## V1Config
+
+**`V1Config` Properties**
 
 |                    | Type          | Description                                                                                              | Required     |
 | ------------------ | ------------- | -------------------------------------------------------------------------------------------------------- | ------------ |
@@ -22,49 +28,49 @@
 
 Additional properties are not allowed.
 
-### Config (v1).globalFilter
+### V1Config.globalFilter
 
 Global filter
 
 - **Type**: `string`
 - **Required**: &#10003; Yes
 
-### Config (v1).maxRuntime
+### V1Config.maxRuntime
 
 Maximum script runtime in seconds (google scripts will be killed after 5 minutes)
 
 - **Type**: `number`
 - **Required**: &#10003; Yes
 
-### Config (v1).newerThan
+### V1Config.newerThan
 
 Only process message newer than (leave empty for no restriction; use d, m and y for day, month and year)
 
 - **Type**: `string`
 - **Required**: &#10003; Yes
 
-### Config (v1).processedLabel
+### V1Config.processedLabel
 
 Gmail label for processed threads (will be created, if not existing)
 
 - **Type**: `string`
 - **Required**: &#10003; Yes
 
-### Config (v1).rules
+### V1Config.rules
 
 Processing rules
 
 - **Type**: `V1Rule` `[]`
 - **Required**: &#10003; Yes
 
-### Config (v1).sleepTime
+### V1Config.sleepTime
 
 Sleep time in milliseconds between processed messages
 
 - **Type**: `number`
 - **Required**: &#10003; Yes
 
-### Config (v1).timezone
+### V1Config.timezone
 
 Timezone for date/time operations
 
