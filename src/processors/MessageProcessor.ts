@@ -79,7 +79,6 @@ export class MessageProcessor {
    * @param rule The rule to be processed.
    */
   public static processMessage(messageContext: MessageContext) {
-    // TODO: Check, if this.processingContext would be better here!
     const messageConfig: MessageConfig = messageContext.message.config
     const message = messageContext.message.object
     console.info(

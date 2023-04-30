@@ -73,7 +73,6 @@ export class ThreadProcessor {
   }
 
   public static processThread(threadContext: ThreadContext) {
-    // TODO: Check, if this.processingContext would be better here!
     const thread: GoogleAppsScript.Gmail.GmailThread =
       threadContext.thread.object
     const threadConfig: ThreadConfig = threadContext.thread.config

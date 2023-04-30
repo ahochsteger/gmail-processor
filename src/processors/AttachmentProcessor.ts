@@ -53,7 +53,6 @@ export class AttachmentProcessor {
     console.info(
       `            Processing of attachment '${attachment.getName()}' started ...`,
     )
-    // TODO: Check, if this.processingContext would be better here!
     // var match = true;
     // if (rule.filenameFromRegexp) {
     // var re = new RegExp(rule.filenameFromRegexp);
