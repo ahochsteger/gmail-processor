@@ -9,11 +9,11 @@ export class GmailAdapter implements Adapter {
     query: string,
     max: number,
   ): GoogleAppsScript.Gmail.GmailThread[] {
-    return this.envContext.gmailApp.search(query, 1, max)
+    return this.envContext.env.gmailApp.search(query, 1, max)
   }
 
   public convertHtmlToPdf(html: string): string {
-    const htmlBlob = this.envContext.utilities.newBlob(html, "text/html")
+    const htmlBlob = this.envContext.env.utilities.newBlob(html, "text/html")
     return htmlBlob.getAs("application/pdf").getDataAsString()
   }
 
@@ -88,7 +88,7 @@ Subject: ${message.getSubject()}<br />
     labelName: string,
   ) {
     if (labelName !== "") {
-      const label = this.envContext.gmailApp.getUserLabelByName(labelName)
+      const label = this.envContext.env.gmailApp.getUserLabelByName(labelName)
       console.info(
         `Adding label '${labelName}' to thread '${thread.getFirstMessageSubject()}' ...`,
       )
@@ -102,7 +102,7 @@ Subject: ${message.getSubject()}<br />
     labelName: string,
   ) {
     if (labelName !== "") {
-      const label = this.envContext.gmailApp.getUserLabelByName(labelName)
+      const label = this.envContext.env.gmailApp.getUserLabelByName(labelName)
       console.info(
         `Removing label '${labelName}' from thread '${thread.getFirstMessageSubject()}' ...`,
       )

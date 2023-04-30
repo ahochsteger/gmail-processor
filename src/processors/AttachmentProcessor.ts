@@ -1,4 +1,3 @@
-import { AttachmentActions } from "../actions/AttachmentActions"
 import { AttachmentConfig } from "../config/AttachmentConfig"
 import { AttachmentContext, MessageContext } from "../Context"
 import { PatternUtil } from "../utils/PatternUtil"
@@ -26,7 +25,7 @@ export class AttachmentProcessor {
     console.info(
       `          Processing of attachment config '${attachmentConfig.name}' started ...`,
     )
-    const attachments = ctx.message.getAttachments()
+    const attachments = ctx.message.object.getAttachments()
     for (
       let attachmentIndex = 0;
       attachmentIndex < attachments.length;
@@ -35,11 +34,12 @@ export class AttachmentProcessor {
       const attachment = attachments[attachmentIndex]
       const attachmentContext: AttachmentContext = {
         ...ctx,
-        attachmentConfig,
-        attachment,
-        attachmentConfigIndex,
-        attachmentIndex,
-        attachmentActions: new AttachmentActions(),
+        attachment: {
+          config: attachmentConfig,
+          object: attachment,
+          configIndex: attachmentConfigIndex,
+          index: attachmentIndex,
+        },
       }
       this.processAttachment(attachmentContext)
     }
@@ -49,7 +49,7 @@ export class AttachmentProcessor {
   }
 
   public static processAttachment(attachmentContext: AttachmentContext) {
-    const attachment = attachmentContext.attachment
+    const attachment = attachmentContext.attachment.object
     console.info(
       `            Processing of attachment '${attachment.getName()}' started ...`,
     )

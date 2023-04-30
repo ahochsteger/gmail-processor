@@ -1,6 +1,12 @@
 import { Expose } from "class-transformer"
 import "reflect-metadata"
 
+// TODO: Use these constants in SettingsConfig below, when typescript-json-schema bug is resolved.
+// See https://github.com/YousefED/typescript-json-schema/issues/336#issuecomment-1528969616
+export const DEFAULT_SETTING_BATCH_SIZE = 10
+export const DEFAULT_SETTING_MAX_RUNTIME = 280
+export const DEFAULT_SETTING_SLEEP_TIME_THREADS = 100
+
 /**
  * Represents a settings config that affect the way GMail2GDrive works.
  */
@@ -53,8 +59,8 @@ export class SettingsConfig {
   @Expose()
   sleepTimeAttachments = 0
   /**
-   * The timezone used for formatting file and folder names
+   * Overrides the <a href="https://developers.google.com/apps-script/reference/base/session#getscripttimezone">script timezone</a>, which is used by default.
    */
   @Expose()
-  timezone = "UTC"
+  timezone?: string
 }

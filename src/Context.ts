@@ -1,7 +1,4 @@
 import { ActionRegistry } from "./actions/ActionRegistry"
-import { AttachmentActions } from "./actions/AttachmentActions"
-import { MessageActions } from "./actions/MessageActions"
-import { ThreadActions } from "./actions/ThreadActions"
 import { GDriveAdapter } from "./adapter/GDriveAdapter"
 import { GmailAdapter } from "./adapter/GmailAdapter"
 import { SpreadsheetAdapter } from "./adapter/SpreadsheetAdapter"
@@ -11,17 +8,18 @@ import { MessageConfig } from "./config/MessageConfig"
 import { ThreadConfig } from "./config/ThreadConfig"
 import { Timer } from "./utils/Timer"
 
-export interface EnvContext {
+export type EnvInfo = {
   gmailApp: GoogleAppsScript.Gmail.GmailApp
   gdriveApp: GoogleAppsScript.Drive.DriveApp
   utilities: GoogleAppsScript.Utilities.Utilities
   spreadsheetApp: GoogleAppsScript.Spreadsheet.SpreadsheetApp
   cacheService: GoogleAppsScript.Cache.CacheService
   dryRun: boolean
+  timezone?: string
   timer: Timer
 }
 
-export interface ProcessingContext extends EnvContext {
+export type ProcessingInfo = {
   actionRegistry: ActionRegistry
   config: Config
   gdriveAdapter: GDriveAdapter
@@ -29,26 +27,29 @@ export interface ProcessingContext extends EnvContext {
   spreadsheetAdapter: SpreadsheetAdapter
 }
 
-export interface ThreadContext extends ProcessingContext {
-  thread: GoogleAppsScript.Gmail.GmailThread
-  threadActions: ThreadActions
-  threadConfig: ThreadConfig
-  threadConfigIndex: number // TODO: Really required?
-  threadIndex: number // TODO: Really required?
+export type ThreadInfo = {
+  object: GoogleAppsScript.Gmail.GmailThread
+  config: ThreadConfig
+  configIndex: number
+  index: number
 }
 
-export interface MessageContext extends ThreadContext {
-  message: GoogleAppsScript.Gmail.GmailMessage
-  messageActions: MessageActions
-  messageConfig: MessageConfig
-  messageConfigIndex: number // TODO: Really required?
-  messageIndex: number // TODO: Really required?
+export type MessageInfo = {
+  object: GoogleAppsScript.Gmail.GmailMessage
+  config: MessageConfig
+  configIndex: number
+  index: number
 }
 
-export interface AttachmentContext extends MessageContext {
-  attachment: GoogleAppsScript.Gmail.GmailAttachment
-  attachmentActions: AttachmentActions
-  attachmentConfig: AttachmentConfig
-  attachmentConfigIndex: number // TODO: Really required?
-  attachmentIndex: number // TODO: Really required?
+export type AttachmentInfo = {
+  object: GoogleAppsScript.Gmail.GmailAttachment
+  config: AttachmentConfig
+  configIndex: number
+  index: number
 }
+
+export type EnvContext = { env: EnvInfo }
+export type ProcessingContext = EnvContext & { proc: ProcessingInfo }
+export type ThreadContext = ProcessingContext & { thread: ThreadInfo }
+export type MessageContext = ThreadContext & { message: MessageInfo }
+export type AttachmentContext = MessageContext & { attachment: AttachmentInfo }

@@ -1,13 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { MockFactory } from "../../test/mocks/MockFactory"
 import { Config, configToJson, jsonToConfig, normalizeConfig } from "./Config"
+import { DEFAULT_SETTING_MAX_RUNTIME } from "./SettingsConfig"
 import { ThreadConfig } from "./ThreadConfig"
 // import * as configSchema from "../../schema-v2.json"
 // import { defaults } from "json-schema-defaults"
 
 it("Schema-generated Config Types Test", () => {
   const cfg = MockFactory.newDefaultConfig()
-  expect(cfg.settings?.timezone).toBe("UTC")
+  expect(cfg.settings?.maxRuntime).toBe(DEFAULT_SETTING_MAX_RUNTIME)
 })
 
 // it('Should use default values from JSON schema', () => {
@@ -105,7 +106,9 @@ describe("configToJson", () => {
     tcfg.description = expected.threads[0].description
     cfg.threads.push(tcfg)
     const actual = configToJson(cfg, true)
-    expect((actual as any).settings.timezone).toEqual("UTC")
+    expect((actual as any).settings.maxRuntime).toEqual(
+      DEFAULT_SETTING_MAX_RUNTIME,
+    )
     expect(actual).toMatchObject(expected)
   })
   test.todo("should serialize config to JSON without default values")

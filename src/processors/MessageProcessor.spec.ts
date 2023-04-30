@@ -113,8 +113,8 @@ describe("processMessage()", () => {
     const ctx = mocks.messageContext
     MessageProcessor.processMessageConfig(
       ctx,
-      ctx.messageConfig,
-      ctx.messageConfigIndex,
+      ctx.message.config,
+      ctx.message.configIndex,
     )
   })
 })

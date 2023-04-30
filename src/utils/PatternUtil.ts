@@ -1,7 +1,7 @@
+import moment from "moment-timezone"
+import { AttachmentContext, MessageContext, ThreadContext } from "../Context"
 import { AttachmentMatchConfig } from "../config/AttachmentMatchConfig"
 import { MessageMatchConfig } from "../config/MessageMatchConfig"
-import { AttachmentContext, MessageContext, ThreadContext } from "../Context"
-import moment from "moment-timezone"
 
 export class SubstMap extends Map<string, unknown> {}
 
@@ -180,10 +180,10 @@ export class PatternUtil {
   ) {
     substMap = PatternUtil.mergeMaps(
       substMap,
-      this.getSubstitutionMapFromThread(ctx.thread),
+      this.getSubstitutionMapFromThread(ctx.thread.object),
     )
-    substMap.set("thread.index", ctx.threadIndex)
-    substMap.set("threadConfig.index", ctx.threadConfigIndex)
+    substMap.set("thread.index", ctx.thread.index)
+    substMap.set("threadConfig.index", ctx.thread.configIndex)
     return substMap
   }
 
@@ -196,11 +196,11 @@ export class PatternUtil {
     }
     let m = this.buildSubstitutionMapFromThreadContext(threadContext, substMap)
     // Message data
-    const message = ctx.message
+    const message = ctx.message.object
     m = PatternUtil.mergeMaps(m, this.getSubstitutionMapFromMessage(message))
-    m.set("message.index", ctx.messageIndex)
-    m.set("messageConfig.index", ctx.messageConfigIndex)
-    const messageConfig = ctx.messageConfig
+    m.set("message.index", ctx.message.index)
+    m.set("messageConfig.index", ctx.message.configIndex)
+    const messageConfig = ctx.message.config
     if (messageConfig.match) {
       // Test for message rules
       const messgageMatch = this.buildRegExpSubustitutionMap(
@@ -236,14 +236,14 @@ export class PatternUtil {
     )
     // Attachment data
     // Substitute values for a specific attachment, if provided
-    const attachment = ctx.attachment
+    const attachment = ctx.attachment.object
     m = PatternUtil.mergeMaps(
       m,
       this.getSubstitutionMapFromAttachment(attachment),
     )
-    m.set("attachment.index", ctx.attachmentIndex)
-    m.set("attachmentConfig.index", ctx.attachmentConfigIndex)
-    const attachmentConfig = ctx.attachmentConfig
+    m.set("attachment.index", ctx.attachment.index)
+    m.set("attachmentConfig.index", ctx.attachment.configIndex)
+    const attachmentConfig = ctx.attachment.config
     const attachmentMatch = this.buildRegExpSubustitutionMap(
       m,
       "attachment",

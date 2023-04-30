@@ -13,6 +13,7 @@ import { ThreadProcessor } from "./ThreadProcessor"
 
 export class GmailProcessor {
   public run(envContext: EnvContext, config: Config, dryRun = false) {
+    envContext.env.dryRun = dryRun
     console.info("Processing of GMail2GDrive config started ...")
     const actionRegistry = new ActionRegistry()
     actionRegistry.registerActionProvider(
@@ -29,12 +30,13 @@ export class GmailProcessor {
     )
     const processingContext: ProcessingContext = {
       ...envContext,
-      actionRegistry: actionRegistry,
-      gdriveAdapter: new GDriveAdapter(envContext),
-      gmailAdapter: new GmailAdapter(envContext),
-      spreadsheetAdapter: new SpreadsheetAdapter(envContext),
-      config: normalizeConfig(config),
-      dryRun,
+      proc: {
+        actionRegistry: actionRegistry,
+        gdriveAdapter: new GDriveAdapter(envContext),
+        gmailAdapter: new GmailAdapter(envContext),
+        spreadsheetAdapter: new SpreadsheetAdapter(envContext),
+        config: normalizeConfig(config),
+      },
     }
     ThreadProcessor.processThreadConfigs(processingContext, config.threads)
     console.info("Processing of GMail2GDrive config finished.")

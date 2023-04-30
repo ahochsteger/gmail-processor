@@ -15,8 +15,8 @@ export class MessageActions implements ActionProvider<MessageContext> {
   ) {
     const a = typedArgs<T>(args)
     return {
-      message: context.gmailAdapter.messageForward(
-        context.message,
+      message: context.proc.gmailAdapter.messageForward(
+        context.message.object,
         a.to as string,
       ),
     }
@@ -24,39 +24,47 @@ export class MessageActions implements ActionProvider<MessageContext> {
 
   public static markProcessed(context: MessageContext) {
     let message
-    if (context.config.settings.processedMode == "read") {
-      message = context.gmailAdapter.messageMarkRead(context.message)
+    if (context.proc.config.settings.processedMode == "read") {
+      message = context.proc.gmailAdapter.messageMarkRead(
+        context.message.object,
+      )
     }
     return { message }
   }
 
   public static markRead(context: MessageContext) {
     return {
-      message: context.gmailAdapter.messageMarkRead(context.message),
+      message: context.proc.gmailAdapter.messageMarkRead(
+        context.message.object,
+      ),
     }
   }
 
   public static markUnread(context: MessageContext) {
     return {
-      message: context.gmailAdapter.messageMarkUnread(context.message),
+      message: context.proc.gmailAdapter.messageMarkUnread(
+        context.message.object,
+      ),
     }
   }
 
   public static moveToTrash(context: MessageContext) {
     return {
-      message: context.gmailAdapter.messageMoveToTrash(context.message),
+      message: context.proc.gmailAdapter.messageMoveToTrash(
+        context.message.object,
+      ),
     }
   }
 
   public static star(context: MessageContext) {
     return {
-      message: context.gmailAdapter.messageStar(context.message),
+      message: context.proc.gmailAdapter.messageStar(context.message.object),
     }
   }
 
   public static unstar(context: MessageContext) {
     return {
-      message: context.gmailAdapter.messageUnstar(context.message),
+      message: context.proc.gmailAdapter.messageUnstar(context.message.object),
     }
   }
 
@@ -72,10 +80,10 @@ export class MessageActions implements ActionProvider<MessageContext> {
   >(context: MessageContext, args: ActionArgsType) {
     const a = typedArgs<T>(args)
     return {
-      file: context.gdriveAdapter.createFile(
+      file: context.proc.gdriveAdapter.createFile(
         a.location as string,
-        context.gmailAdapter.messageAsPdf(
-          context.message,
+        context.proc.gmailAdapter.messageAsPdf(
+          context.message.object,
           a.skipHeader as boolean,
         ),
         "application/pdf",

@@ -13,7 +13,7 @@ export class GDriveAdapter extends BaseAdapter {
   private gdriveApp: GoogleAppsScript.Drive.DriveApp
   constructor(public envContext: EnvContext) {
     super(envContext)
-    this.gdriveApp = envContext.gdriveApp
+    this.gdriveApp = envContext.env.gdriveApp
   }
 
   // TODO: Continue here!!!

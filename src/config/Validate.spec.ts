@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { DEFAULT_SETTING_MAX_RUNTIME } from "./SettingsConfig"
 import { validateConfig } from "./Validate"
 
 describe("validate()", () => {
@@ -19,7 +20,9 @@ describe("validate()", () => {
       },
     }
     validateConfig(config)
-    expect((config.settings as any).timezone).toEqual("UTC")
+    expect((config.settings as any).maxRuntime).toEqual(
+      DEFAULT_SETTING_MAX_RUNTIME,
+    )
     expect(config.settings.additional).toBeUndefined()
   })
   it("should remove additional properties", () => {
@@ -30,7 +33,9 @@ describe("validate()", () => {
       },
     }
     validateConfig(config)
-    expect((config.settings as any).timezone).toEqual("UTC")
+    expect((config.settings as any).maxRuntime).toEqual(
+      DEFAULT_SETTING_MAX_RUNTIME,
+    )
     expect(config.settings.additional).toBeUndefined()
   })
   it("should report missing properties in config root", () => {

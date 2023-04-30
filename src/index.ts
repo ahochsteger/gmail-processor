@@ -9,6 +9,7 @@ const envContext: EnvContext = {
   spreadsheetApp: SpreadsheetApp,
   utilities: Utilities,
   dryRun: false,
+  timezone: Session?.getScriptTimeZone() || "UTC",
   timer: new Timer(),
 }
 const gmailProcessor = new GmailProcessor()

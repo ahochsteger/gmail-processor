@@ -21,7 +21,7 @@ class TestProcessingActionProvider implements ActionProvider {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _args: ActionArgsType = {},
   ) {
-    console.log(`Dry-run:${(ctx as ProcessingContext).dryRun}`)
+    console.log(`Dry-run:${ctx.env.dryRun}`)
     return { ok: true }
   }
 }
@@ -36,7 +36,7 @@ class TestThreadActionProvider implements ActionProvider {
     console.log(
       `Subject:${(
         ctx as ThreadContext
-      ).thread.getFirstMessageSubject()}, threadBoolArg:${
+      ).thread.object.getFirstMessageSubject()}, threadBoolArg:${
         a.threadBoolArg
       }, threadStringArg:${a.threadStringArg}`,
     )
@@ -50,7 +50,7 @@ class TestThreadActionProvider implements ActionProvider {
   >(ctx: ProcessingContext, args: ActionArgsType) {
     const a = typedArgs<T>(args)
     console.log(
-      `Subject:${(ctx as MessageContext).message.getSubject()}, num:${
+      `Subject:${(ctx as MessageContext).message.object.getSubject()}, num:${
         a.num
       }, str:${a.str}`,
     )
@@ -65,7 +65,7 @@ class TestMessageActionProvider implements ActionProvider {
   >(ctx: ProcessingContext, args: ActionArgsType) {
     const a = typedArgs<T>(args)
     console.log(
-      `Name:${(ctx as AttachmentContext).attachment.getName()}, num:${
+      `Name:${(ctx as AttachmentContext).attachment.object.getName()}, num:${
         a.num
       }, str:${a.str}`,
     )
@@ -80,7 +80,7 @@ class TestAttachmentActionProvider implements ActionProvider {
   >(ctx: ProcessingContext, args: ActionArgsType) {
     const a = typedArgs<T>(args)
     console.log(
-      `Subject:${(ctx as AttachmentContext).message.getSubject}, num:${
+      `Subject:${(ctx as AttachmentContext).message.object.getSubject}, num:${
         a.num
       }, str:${a.str}`,
     )

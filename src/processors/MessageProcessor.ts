@@ -1,5 +1,4 @@
 import { MessageContext, ThreadContext } from "../Context"
-import { MessageActions } from "../actions/MessageActions"
 import { MessageConfig } from "../config/MessageConfig"
 import { MessageFlag } from "../config/MessageFlag"
 import { AttachmentProcessor } from "../processors/AttachmentProcessor"
@@ -52,7 +51,7 @@ export class MessageProcessor {
     console.info(
       `      Processing of message config '${messageConfig.name}' started ...`,
     )
-    const messages = ctx.thread.getMessages()
+    const messages = ctx.thread.object.getMessages()
     for (let messageIndex = 0; messageIndex < messages.length; messageIndex++) {
       const message = messages[messageIndex]
       if (!this.matches(messageConfig, message)) {
@@ -60,11 +59,12 @@ export class MessageProcessor {
       }
       const messageContext: MessageContext = {
         ...ctx,
-        message,
-        messageActions: new MessageActions(), // TODO: Move to processing context?
-        messageConfig,
-        messageConfigIndex,
-        messageIndex,
+        message: {
+          object: message,
+          config: messageConfig,
+          configIndex: messageConfigIndex,
+          index: messageIndex,
+        },
       }
       this.processMessage(messageContext)
     }
@@ -80,8 +80,8 @@ export class MessageProcessor {
    */
   public static processMessage(messageContext: MessageContext) {
     // TODO: Check, if this.processingContext would be better here!
-    const messageConfig: MessageConfig = messageContext.messageConfig
-    const message = messageContext.message
+    const messageConfig: MessageConfig = messageContext.message.config
+    const message = messageContext.message.object
     console.info(
       `        Processing of message '${message.getSubject()}' (id:${message.getId()}) started ...`,
     )

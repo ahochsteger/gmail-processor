@@ -57,49 +57,53 @@ export class Mocks {
     this.cache.get.mockReturnValue("some-id")
     this.cacheService.getScriptCache.mockReturnValue(this.cache)
     this.envContext = {
-      // TODO: Merge with newEnvContextMock()
-      gmailApp: this.gmailApp,
-      gdriveApp: this.gdriveApp,
-      utilities: this.utilities,
-      spreadsheetApp: this.spreadsheetApp,
-      cacheService: this.cacheService,
-      dryRun,
-      timer: new Timer(),
+      env: {
+        // TODO: Merge with newEnvContextMock()
+        gmailApp: this.gmailApp,
+        gdriveApp: this.gdriveApp,
+        utilities: this.utilities,
+        spreadsheetApp: this.spreadsheetApp,
+        cacheService: this.cacheService,
+        dryRun,
+        timer: new Timer(),
+      },
     }
     this.processingContext = MockFactory.newProcessingContextMock(
       this.envContext,
       config,
-      dryRun,
     )
     this.threadActions = new ThreadActions()
     this.threadContext = {
       // TODO: Merge with newThreadContextMock()
       ...this.processingContext,
-      threadActions: this.threadActions,
-      threadConfigIndex: 0,
-      threadConfig: new ThreadConfig(),
-      threadIndex: 0,
-      thread: this.thread,
+      thread: {
+        configIndex: 0,
+        config: new ThreadConfig(),
+        index: 0,
+        object: this.thread,
+      },
     }
     this.messageActions = new MessageActions()
     this.messageContext = {
       // TODO: Merge with newMessageContextMock()
       ...this.threadContext,
-      messageActions: this.messageActions,
-      messageConfigIndex: 0,
-      messageConfig: new MessageConfig(),
-      messageIndex: 0,
-      message: this.message,
+      message: {
+        configIndex: 0,
+        config: new MessageConfig(),
+        index: 0,
+        object: this.message,
+      },
     }
     this.attachmentActions = new AttachmentActions()
     this.attachmentContext = {
       // TODO: Merge with newAttachmentContextMock()
       ...this.messageContext,
-      attachmentActions: this.attachmentActions,
-      attachmentConfigIndex: 0,
-      attachmentConfig: new AttachmentConfig(),
-      attachmentIndex: 0,
-      attachment: this.attachment,
+      attachment: {
+        configIndex: 0,
+        config: new AttachmentConfig(),
+        index: 0,
+        object: this.attachment,
+      },
     }
     this.blob.getAs.mockReturnValue(this.blob)
     this.blob.getDataAsString.mockReturnValue("PDF-Contents")
@@ -115,13 +119,15 @@ export class MockFactory {
 
   public static newEnvContextMock(mocks = new Mocks(), dryRun = true) {
     const envContext: EnvContext = {
-      gmailApp: mocks.gmailApp,
-      gdriveApp: mocks.gdriveApp,
-      utilities: mocks.utilities,
-      spreadsheetApp: mocks.spreadsheetApp,
-      cacheService: mocks.cacheService,
-      dryRun,
-      timer: new Timer(),
+      env: {
+        gmailApp: mocks.gmailApp,
+        gdriveApp: mocks.gdriveApp,
+        utilities: mocks.utilities,
+        spreadsheetApp: mocks.spreadsheetApp,
+        cacheService: mocks.cacheService,
+        dryRun,
+        timer: new Timer(),
+      },
     }
     return envContext
   }
@@ -364,16 +370,16 @@ export class MockFactory {
   public static newProcessingContextMock(
     envContext = this.newEnvContextMock(),
     config = new Config(),
-    dryRun = true,
   ): ProcessingContext {
     return {
       ...envContext,
-      gdriveAdapter: new GDriveAdapter(envContext),
-      gmailAdapter: new GmailAdapter(envContext),
-      spreadsheetAdapter: new SpreadsheetAdapter(envContext),
-      config,
-      dryRun,
-      actionRegistry: new ActionRegistry(),
+      proc: {
+        gdriveAdapter: new GDriveAdapter(envContext),
+        gmailAdapter: new GmailAdapter(envContext),
+        spreadsheetAdapter: new SpreadsheetAdapter(envContext),
+        config,
+        actionRegistry: new ActionRegistry(),
+      },
     }
   }
 
@@ -385,11 +391,12 @@ export class MockFactory {
     jsonToThreadConfig(threadConfig)
     return {
       ...processingContext,
-      threadConfig: jsonToThreadConfig(threadConfig),
-      thread,
-      threadActions: new ThreadActions(),
-      threadConfigIndex: 0,
-      threadIndex: 0,
+      thread: {
+        config: jsonToThreadConfig(threadConfig),
+        object: thread,
+        configIndex: 0,
+        index: 0,
+      },
     }
   }
 
@@ -400,11 +407,12 @@ export class MockFactory {
   ): MessageContext {
     return {
       ...threadContext,
-      messageConfig,
-      message,
-      messageActions: new MessageActions(),
-      messageConfigIndex: 0,
-      messageIndex: 0,
+      message: {
+        config: messageConfig,
+        object: message,
+        configIndex: 0,
+        index: 0,
+      },
     }
   }
 
@@ -626,16 +634,18 @@ export class MockFactory {
     config.threads.push(threadConfig)
 
     const ctx: ThreadContext = {
-      ...MockFactory.newProcessingContextMock(),
-      config,
-      dryRun,
-      thread,
-      threadActions: new ThreadActions(),
-      threadConfig,
-      threadConfigIndex: 0,
-      threadIndex,
+      ...MockFactory.newProcessingContextMock(
+        MockFactory.newEnvContextMock(MockFactory.newMocks(), dryRun),
+        config,
+      ),
+      thread: {
+        object: thread,
+        config: threadConfig,
+        configIndex: 0,
+        index: threadIndex,
+      },
     }
-    ctx.threadIndex = threadIndex + 1
+    ctx.thread.index = threadIndex + 1
     return ctx
   }
 
@@ -659,13 +669,14 @@ export class MockFactory {
         threadConfig,
         config,
       ),
-      message,
-      messageActions: new MessageActions(),
-      messageConfig,
-      messageConfigIndex: 0,
-      messageIndex,
+      message: {
+        object: message,
+        config: messageConfig,
+        configIndex: 0,
+        index: messageIndex,
+      },
     }
-    ctx.messageIndex = messageIndex + 1
+    ctx.message.index = messageIndex + 1
     return ctx
   }
 
@@ -693,13 +704,14 @@ export class MockFactory {
         messageConfig,
         threadConfig,
       ),
-      attachment,
-      attachmentActions: new AttachmentActions(),
-      attachmentConfig,
-      attachmentConfigIndex: 0,
-      attachmentIndex,
+      attachment: {
+        object: attachment,
+        config: attachmentConfig,
+        configIndex: 0,
+        index: attachmentIndex,
+      },
     }
-    ctx.attachmentIndex = attachmentIndex + 1
+    ctx.attachment.index = attachmentIndex + 1
     return ctx
   }
 }

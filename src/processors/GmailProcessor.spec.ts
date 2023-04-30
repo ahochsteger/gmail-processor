@@ -15,7 +15,7 @@ beforeEach(() => {
 describe("run", () => {
   it("should process a v2 config object", () => {
     gmailProcessor.run(mocks.envContext, config, true)
-    expect(mocks.envContext.gmailApp.search).toHaveBeenCalledTimes(
+    expect(mocks.envContext.env.gmailApp.search).toHaveBeenCalledTimes(
       config.threads.length,
     )
   })
