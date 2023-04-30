@@ -18,7 +18,7 @@ while read -r path; do
     "${srcdir}/Example-${bn}.js" \
     >>"${outfile}"
 done < <(
-  find "${srcdir}" -path "${srcdir}/config-*.json"
+  find "${srcdir}" -path "${srcdir}/config-*.json" || true
 )
 cp \
   "${srcdir}/.clasp.json" \
