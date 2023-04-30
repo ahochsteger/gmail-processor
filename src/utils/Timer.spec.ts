@@ -14,7 +14,7 @@ function getProcessingContextWithRuntime(
   return ctx
 }
 
-describe("checkTimeout()", () => {
+describe("checkMaxRuntimeReached()", () => {
   it("should do nothing if maxRuntime is not reached", () => {
     const ctx = getProcessingContextWithRuntime(DEFAULT_SETTING_MAX_RUNTIME)
     expect(ctx.proc.timer.checkMaxRuntimeReached()).toBeFalsy()
