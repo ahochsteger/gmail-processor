@@ -1,4 +1,4 @@
-import { EnvContext, ProcessingContext } from "../Context"
+import { EnvContext, ProcessingContext, RunMode } from "../Context"
 import { ActionProvider, ActionRegistry } from "../actions/ActionRegistry"
 import { AttachmentActions } from "../actions/AttachmentActions"
 import { MessageActions } from "../actions/MessageActions"
@@ -13,8 +13,12 @@ import { Timer } from "../utils/Timer"
 import { ThreadProcessor } from "./ThreadProcessor"
 
 export class GmailProcessor {
-  public run(envContext: EnvContext, config: Config, dryRun = false) {
-    envContext.env.dryRun = dryRun
+  public run(
+    envContext: EnvContext,
+    config: Config,
+    runMode = RunMode.SAFE_MODE,
+  ) {
+    envContext.env.runMode = runMode
     console.info("Processing of GMail2GDrive config started ...")
     const actionRegistry = new ActionRegistry()
     actionRegistry.registerActionProvider(
@@ -47,33 +51,33 @@ export class GmailProcessor {
   public runWithConfigJson(
     envContext: EnvContext,
     configJson: Record<string, unknown>,
-    dryRun = false,
+    runMode = RunMode.SAFE_MODE,
   ) {
     const config = this.getEffectiveConfig(configJson)
     console.info("Effective configuration: " + JSON.stringify(config))
-    this.run(envContext, config, dryRun)
+    this.run(envContext, config, runMode)
   }
 
   public runWithV1Config(
     envContext: EnvContext,
     v1config: V1Config,
-    dryRun = false,
+    runMode = RunMode.SAFE_MODE,
   ) {
     const config = V1ToV2Converter.v1ConfigToV2Config(v1config)
     console.warn(
       "Using deprecated v1 config format - switching to the new v2 config format is strongly recommended!",
     )
-    this.run(envContext, config, dryRun)
+    this.run(envContext, config, runMode)
   }
 
   public runWithV1ConfigJson(
     envContext: EnvContext,
     v1configJson: Record<string, unknown>,
-    dryRun = false,
+    runMode = RunMode.SAFE_MODE,
   ) {
     const v1config = jsonToV1Config(v1configJson)
     console.log("v1config: ", v1config)
-    this.runWithV1Config(envContext, v1config, dryRun)
+    this.runWithV1Config(envContext, v1config, runMode)
   }
 
   public getEffectiveConfig(configJson: Record<string, unknown>) {

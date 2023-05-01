@@ -1,5 +1,5 @@
 import { EnvContext } from "../Context"
-import { skipOnDryRun } from "../utils/Decorators"
+import { reading, writing } from "../utils/Decorators"
 import { PatternUtil } from "../utils/PatternUtil"
 import { BaseAdapter } from "./BaseAdapter"
 
@@ -18,6 +18,7 @@ export class SpreadsheetAdapter extends BaseAdapter {
     this.logSheetId = this.cacheService.getScriptCache().get("logSheetId")
   }
 
+  @writing()
   private createLogSheet(
     folderPath: string,
     parentFolderId: string,
@@ -45,6 +46,7 @@ export class SpreadsheetAdapter extends BaseAdapter {
     return this.logSheet
   }
 
+  @writing()
   private appendToLogSheet(...args: unknown[]) {
     const values = [args]
     const logSheet = this.getLogSheet()
@@ -56,6 +58,7 @@ export class SpreadsheetAdapter extends BaseAdapter {
     logSheet.getRange(lastRow, args.length, 1, args.length).setValues(values)
   }
 
+  @writing()
   private getOrCreateFolder(
     path: string,
     parentFolderId = "",
@@ -83,6 +86,7 @@ export class SpreadsheetAdapter extends BaseAdapter {
     return folder
   }
 
+  @reading()
   private getLogSheet(): GoogleAppsScript.Spreadsheet.Sheet | null {
     if (this.logSheet) return this.logSheet
     if (this.logSheetId) {
@@ -93,6 +97,7 @@ export class SpreadsheetAdapter extends BaseAdapter {
     return null
   }
 
+  @writing()
   public initLogSheet(
     folderPath: string,
     parentFolderId: string,
@@ -102,7 +107,7 @@ export class SpreadsheetAdapter extends BaseAdapter {
     this.appendToLogSheet(...args)
   }
 
-  @skipOnDryRun()
+  @writing()
   public logAttachmentStored(
     message: GoogleAppsScript.Gmail.GmailMessage,
     attachment: GoogleAppsScript.Gmail.GmailAttachment,
@@ -123,7 +128,7 @@ export class SpreadsheetAdapter extends BaseAdapter {
     )
   }
 
-  @skipOnDryRun()
+  @writing()
   public logAttachmentInfo(
     message: GoogleAppsScript.Gmail.GmailMessage,
     attachment: GoogleAppsScript.Gmail.GmailAttachment,
@@ -144,7 +149,7 @@ export class SpreadsheetAdapter extends BaseAdapter {
     )
   }
 
-  @skipOnDryRun()
+  @writing()
   public logThreadPdf(
     thread: GoogleAppsScript.Gmail.GmailThread,
     location: string,

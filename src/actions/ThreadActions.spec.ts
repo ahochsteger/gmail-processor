@@ -1,5 +1,5 @@
 import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
-import { ProcessingContext } from "../Context"
+import { ProcessingContext, RunMode } from "../Context"
 import { ConflictStrategy } from "../adapter/GDriveAdapter"
 import { Config, jsonToConfig } from "../config/Config"
 import { ActionProvider, ActionRegistry } from "./ActionRegistry"
@@ -10,13 +10,13 @@ let dryRunMocks: Mocks
 let actionRegistry: ActionRegistry
 
 beforeEach(() => {
-  mocks = MockFactory.newMocks(new Config(), false)
+  mocks = MockFactory.newMocks(new Config(), RunMode.SAFE_MODE)
   actionRegistry = new ActionRegistry()
   actionRegistry.registerActionProvider(
     "thread",
     new ThreadActions() as unknown as ActionProvider<ProcessingContext>,
   )
-  dryRunMocks = MockFactory.newMocks(new Config(), true)
+  dryRunMocks = MockFactory.newMocks(new Config(), RunMode.DRY_RUN)
 })
 
 it("should provide actions in the action registry", () => {
@@ -56,7 +56,7 @@ it("should mark a thread as processed by adding a label if processedMode='label'
       processedMode: "label",
     },
   })
-  const mocks = MockFactory.newMocks(config, false)
+  const mocks = MockFactory.newMocks(config, RunMode.SAFE_MODE)
   ThreadActions.markProcessed(mocks.threadContext)
   expect(mocks.thread.addLabel).toBeCalled()
 })
@@ -67,7 +67,7 @@ it("should not add a label to a thread if processedMode='read'", () => {
       processedMode: "read",
     },
   })
-  const mocks = MockFactory.newMocks(config, false)
+  const mocks = MockFactory.newMocks(config, RunMode.SAFE_MODE)
   ThreadActions.markProcessed(mocks.threadContext)
   expect(mocks.thread.addLabel).not.toBeCalled()
 })

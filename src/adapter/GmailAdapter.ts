@@ -1,10 +1,11 @@
 import { EnvContext } from "../Context"
-import { skipOnDryRun } from "../utils/Decorators"
+import { destructive, reading, writing } from "../utils/Decorators"
 import { Adapter } from "./BaseAdapter"
 
 export class GmailAdapter implements Adapter {
   constructor(public envContext: EnvContext) {}
 
+  @reading()
   public search(
     query: string,
     max: number,
@@ -12,11 +13,13 @@ export class GmailAdapter implements Adapter {
     return this.envContext.env.gmailApp.search(query, 1, max)
   }
 
+  @reading()
   public convertHtmlToPdf(html: string): string {
     const htmlBlob = this.envContext.env.utilities.newBlob(html, "text/html")
     return htmlBlob.getAs("application/pdf").getDataAsString()
   }
 
+  @reading()
   public messageAsHtml(
     message: GoogleAppsScript.Gmail.GmailMessage,
     skipHeader = false,
@@ -36,6 +39,7 @@ Subject: ${message.getSubject()}<br />
     return html
   }
 
+  @reading()
   public messageAsPdf(
     message: GoogleAppsScript.Gmail.GmailMessage,
     skipHeader = false,
@@ -43,7 +47,7 @@ Subject: ${message.getSubject()}<br />
     return this.convertHtmlToPdf(this.messageAsHtml(message, skipHeader))
   }
 
-  @skipOnDryRun()
+  @writing()
   public messageForward(
     message: GoogleAppsScript.Gmail.GmailMessage,
     to: string,
@@ -52,37 +56,37 @@ Subject: ${message.getSubject()}<br />
     return message.forward(to)
   }
 
-  @skipOnDryRun()
+  @writing()
   public messageMarkRead(message: GoogleAppsScript.Gmail.GmailMessage) {
     console.info(`Marking message '${message.getSubject()}' as read ...`)
     return message.markRead()
   }
 
-  @skipOnDryRun()
+  @writing()
   public messageMarkUnread(message: GoogleAppsScript.Gmail.GmailMessage) {
     console.info(`Marking message '${message.getSubject()}' as unread ...`)
     return message.markUnread()
   }
 
-  @skipOnDryRun()
+  @destructive()
   public messageMoveToTrash(message: GoogleAppsScript.Gmail.GmailMessage) {
     console.info(`Moving message '${message.getSubject()}' to trash ...`)
     return message.moveToTrash()
   }
 
-  @skipOnDryRun()
+  @writing()
   public messageStar(message: GoogleAppsScript.Gmail.GmailMessage) {
     console.info(`Marking message '${message.getSubject()}' as starred ...`)
     return message.star()
   }
 
-  @skipOnDryRun()
+  @writing()
   public messageUnstar(message: GoogleAppsScript.Gmail.GmailMessage) {
     console.info(`Marking message '${message.getSubject()}' as unstarred ...`)
     return message.unstar()
   }
 
-  @skipOnDryRun()
+  @writing()
   public threadAddLabel(
     thread: GoogleAppsScript.Gmail.GmailThread,
     labelName: string,
@@ -96,7 +100,7 @@ Subject: ${message.getSubject()}<br />
     }
   }
 
-  @skipOnDryRun()
+  @writing()
   public threadRemoveLabel(
     thread: GoogleAppsScript.Gmail.GmailThread,
     labelName: string,
@@ -113,6 +117,7 @@ Subject: ${message.getSubject()}<br />
   /**
    * Generate HTML code for one message of a thread.
    */
+  @reading()
   public threadAsHtml(
     thread: GoogleAppsScript.Gmail.GmailThread,
     skipHeader = false,
@@ -130,6 +135,7 @@ Subject: ${message.getSubject()}<br />
     return html
   }
 
+  @reading()
   public threadAsPdf(
     thread: GoogleAppsScript.Gmail.GmailThread,
     skipHeader = false,
@@ -137,7 +143,7 @@ Subject: ${message.getSubject()}<br />
     return this.convertHtmlToPdf(this.threadAsHtml(thread, skipHeader))
   }
 
-  @skipOnDryRun()
+  @writing()
   public threadMarkImportant(thread: GoogleAppsScript.Gmail.GmailThread) {
     console.info(
       `Marking thread '${thread.getFirstMessageSubject()}' as important ...`,
@@ -145,7 +151,7 @@ Subject: ${message.getSubject()}<br />
     return thread.markImportant()
   }
 
-  @skipOnDryRun()
+  @writing()
   public threadMarkRead(thread: GoogleAppsScript.Gmail.GmailThread) {
     console.info(
       `Marking thread '${thread.getFirstMessageSubject()}' as read ...`,
@@ -153,7 +159,7 @@ Subject: ${message.getSubject()}<br />
     return thread.markRead()
   }
 
-  @skipOnDryRun()
+  @writing()
   public threadMarkUnimportant(thread: GoogleAppsScript.Gmail.GmailThread) {
     console.info(
       `Marking thread '${thread.getFirstMessageSubject()}' as unimportant ...`,
@@ -161,7 +167,7 @@ Subject: ${message.getSubject()}<br />
     return thread.markUnimportant()
   }
 
-  @skipOnDryRun()
+  @writing()
   public threadMarkUnread(thread: GoogleAppsScript.Gmail.GmailThread) {
     console.info(
       `Marking thread '${thread.getFirstMessageSubject()}' as unread ...`,
@@ -169,7 +175,7 @@ Subject: ${message.getSubject()}<br />
     return thread.markUnread()
   }
 
-  @skipOnDryRun()
+  @writing()
   public threadMoveToArchive(thread: GoogleAppsScript.Gmail.GmailThread) {
     console.info(
       `Moving thread '${thread.getFirstMessageSubject()}' to archive ...`,
@@ -177,7 +183,7 @@ Subject: ${message.getSubject()}<br />
     return thread.moveToArchive()
   }
 
-  @skipOnDryRun()
+  @writing()
   public threadMoveToInbox(thread: GoogleAppsScript.Gmail.GmailThread) {
     console.info(
       `Moving thread '${thread.getFirstMessageSubject()}' to inbox ...`,
@@ -185,7 +191,7 @@ Subject: ${message.getSubject()}<br />
     return thread.moveToInbox()
   }
 
-  @skipOnDryRun()
+  @writing()
   public threadMoveToSpam(thread: GoogleAppsScript.Gmail.GmailThread) {
     console.info(
       `Moving thread '${thread.getFirstMessageSubject()}' to spam ...`,
@@ -193,7 +199,7 @@ Subject: ${message.getSubject()}<br />
     return thread.moveToSpam()
   }
 
-  @skipOnDryRun()
+  @destructive()
   public threadMoveToTrash(thread: GoogleAppsScript.Gmail.GmailThread) {
     console.info(
       `Moving thread '${thread.getFirstMessageSubject()}' to trash ...`,

@@ -1,4 +1,5 @@
 import { MockFactory } from "../../test/mocks/MockFactory"
+import { RunMode } from "../Context"
 import { jsonToConfig } from "../config/Config"
 import { jsonToThreadConfig } from "../config/ThreadConfig"
 import { ThreadProcessor } from "./ThreadProcessor"
@@ -50,7 +51,7 @@ it("should construct a GMail search query without globals and no processedLabel"
       query: "some-thread-specific-query",
     },
   })
-  const mocks = MockFactory.newMocks(config, false)
+  const mocks = MockFactory.newMocks(config, RunMode.SAFE_MODE)
   const actualQuery = ThreadProcessor.getQueryFromThreadConfig(
     mocks.processingContext,
     threadConfig,

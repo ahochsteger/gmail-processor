@@ -1,4 +1,4 @@
-import { EnvContext } from "./Context"
+import { EnvContext, RunMode } from "./Context"
 import { GmailProcessor } from "./processors/GmailProcessor"
 
 const envContext: EnvContext = {
@@ -8,7 +8,7 @@ const envContext: EnvContext = {
     gmailApp: GmailApp,
     spreadsheetApp: SpreadsheetApp,
     utilities: Utilities,
-    dryRun: false,
+    runMode: RunMode.SAFE_MODE,
     timezone: Session?.getScriptTimeZone() || "UTC",
   },
 }
@@ -16,23 +16,26 @@ const gmailProcessor = new GmailProcessor()
 
 /**
  * @param configJson GMail2GDrive configuration JSON
- * @param dryRun Just show what would have been done but don't write anything to GMail or GDrive.
+ * @param runMode Just show what would have been done but don't write anything to GMail or GDrive.
  */
-export function run(configJson: Record<string, unknown>, dryRun = false) {
+export function run(
+  configJson: Record<string, unknown>,
+  runMode = RunMode.SAFE_MODE,
+) {
   console.log("Processing started ...")
-  gmailProcessor.runWithConfigJson(envContext, configJson, dryRun)
+  gmailProcessor.runWithConfigJson(envContext, configJson, runMode)
   console.log("Processing finished ...")
 }
 
 /**
  * @param configJson GMail2GDrive v1 configuration JSON
- * @param dryRun Just show what would have been done but don't write anything to GMail or GDrive.
+ * @param runMode The runtime mode controls the behavior of actions
  */
 export function runWithV1Config(
   configJson: Record<string, unknown>,
-  dryRun = false,
+  runMode = RunMode.SAFE_MODE,
 ) {
-  gmailProcessor.runWithV1ConfigJson(envContext, configJson, dryRun)
+  gmailProcessor.runWithV1ConfigJson(envContext, configJson, runMode)
 }
 
 /**

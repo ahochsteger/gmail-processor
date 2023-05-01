@@ -8,13 +8,22 @@ import { MessageConfig } from "./config/MessageConfig"
 import { ThreadConfig } from "./config/ThreadConfig"
 import { Timer } from "./utils/Timer"
 
+export enum RunMode {
+  /** Don't execute writing actions */
+  DRY_RUN = "dry-run",
+  /** Don't execute deleting actions */
+  SAFE_MODE = "safe-mode",
+  /** Execute all actions including deletes. I know exactly what I'm doing and won't complain if something goes wrong! */
+  DANGEROUS = "dangerous",
+}
+
 export type EnvInfo = {
   gmailApp: GoogleAppsScript.Gmail.GmailApp
   gdriveApp: GoogleAppsScript.Drive.DriveApp
   utilities: GoogleAppsScript.Utilities.Utilities
   spreadsheetApp: GoogleAppsScript.Spreadsheet.SpreadsheetApp
   cacheService: GoogleAppsScript.Cache.CacheService
-  dryRun: boolean
+  runMode: RunMode
   timezone?: string
 }
 

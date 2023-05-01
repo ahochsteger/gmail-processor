@@ -4,6 +4,7 @@ import {
   EnvContext,
   MessageContext,
   ProcessingContext,
+  RunMode,
   ThreadContext,
 } from "../../src/Context"
 import { ActionRegistry } from "../../src/actions/ActionRegistry"
@@ -41,13 +42,16 @@ export class Mocks {
 }
 
 export class MockFactory {
-  public static newMocks(config = new Config(), dryRun = true): Mocks {
+  public static newMocks(
+    config = new Config(),
+    runMode = RunMode.DRY_RUN,
+  ): Mocks {
     const mocks = new Mocks()
     mocks.thread = MockFactory.newThreadMock()
     mocks.message = MockFactory.newMessageMock()
     mocks.attachment = MockFactory.newAttachmentMock()
 
-    mocks.envContext = MockFactory.newEnvContextMock(dryRun, mocks)
+    mocks.envContext = MockFactory.newEnvContextMock(runMode, mocks)
     mocks.processingContext = MockFactory.newProcessingContextMock(
       mocks.envContext,
       config,
@@ -68,7 +72,10 @@ export class MockFactory {
     return mocks
   }
 
-  public static newEnvContextMock(dryRun = true, mocks = new Mocks()) {
+  public static newEnvContextMock(
+    runMode = RunMode.DRY_RUN,
+    mocks = new Mocks(),
+  ) {
     // Setup mock behavior:
     mocks.folder.getFilesByName.mockReturnValue(mocks.fileIterator)
     mocks.folder.createFile.mockReturnValue(mocks.file)
@@ -87,7 +94,7 @@ export class MockFactory {
         spreadsheetApp: mocks.spreadsheetApp,
         cacheService: mocks.cacheService,
         utilities: mocks.utilities,
-        dryRun,
+        runMode,
       },
     }
     return envContext

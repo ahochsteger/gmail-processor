@@ -3,6 +3,7 @@ import {
   AttachmentContext,
   MessageContext,
   ProcessingContext,
+  RunMode,
   ThreadContext,
 } from "../Context"
 import { Config } from "../config/Config"
@@ -21,7 +22,7 @@ class TestProcessingActionProvider implements ActionProvider {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _args: ActionArgsType = {},
   ) {
-    console.log(`Dry-run:${ctx.env.dryRun}`)
+    console.log(`runMode:${ctx.env.runMode}`)
     return { ok: true }
   }
 }
@@ -93,7 +94,7 @@ let myThreadActionProvider: TestThreadActionProvider
 let actionRegistry: ActionRegistry
 
 beforeEach(() => {
-  mocks = MockFactory.newMocks(new Config(), false)
+  mocks = MockFactory.newMocks(new Config(), RunMode.SAFE_MODE)
   actionRegistry = new ActionRegistry()
   myThreadActionProvider = new TestThreadActionProvider()
   actionRegistry.registerActionProvider(

@@ -1,3 +1,4 @@
+import { RunMode } from "../Context"
 import { Adapter } from "../adapter/BaseAdapter"
 
 export function deprecated(message: string) {
@@ -6,21 +7,66 @@ export function deprecated(message: string) {
   }
 }
 
-export function skipOnDryRun() {
+function callRunModeAware<T extends Adapter>(
+  _target: T,
+  propertyKey: string,
+  descriptor: PropertyDescriptor,
+  callOnRunmodes: RunMode[],
+) {
+  const originalMethod = descriptor.value
+  descriptor.value = function (this: T, ...args: unknown[]) {
+    const runMode = this.envContext.env.runMode
+    const doCall = callOnRunmodes.reduce(
+      (acc, curr) => acc || curr === runMode,
+      false,
+    )
+    if (doCall) {
+      console.log(`Calling method '${propertyKey}' ...`)
+      return originalMethod.apply(this, args)
+    } else {
+      console.log(
+        `Skipped calling method '${propertyKey}' (runMode:${runMode})`,
+      )
+      return
+    }
+  }
+}
+
+export function reading() {
   return function <T extends Adapter>(
     _target: T,
     propertyKey: string,
     descriptor: PropertyDescriptor,
   ) {
-    const originalMethod = descriptor.value
-    descriptor.value = function (this: T, ...args: unknown[]) {
-      if (this.envContext.env.dryRun) {
-        console.log(`Skipped calling method '${propertyKey}'`)
-        return
-      } else {
-        console.log(`Calling method '${propertyKey}' ...`)
-        return originalMethod.apply(this, args)
-      }
-    }
+    return callRunModeAware(_target, propertyKey, descriptor, [
+      RunMode.DRY_RUN,
+      RunMode.SAFE_MODE,
+      RunMode.DANGEROUS,
+    ])
+  }
+}
+
+export function writing() {
+  return function <T extends Adapter>(
+    _target: T,
+    propertyKey: string,
+    descriptor: PropertyDescriptor,
+  ) {
+    return callRunModeAware(_target, propertyKey, descriptor, [
+      RunMode.SAFE_MODE,
+      RunMode.DANGEROUS,
+    ])
+  }
+}
+
+export function destructive() {
+  return function <T extends Adapter>(
+    _target: T,
+    propertyKey: string,
+    descriptor: PropertyDescriptor,
+  ) {
+    return callRunModeAware(_target, propertyKey, descriptor, [
+      RunMode.DANGEROUS,
+    ])
   }
 }

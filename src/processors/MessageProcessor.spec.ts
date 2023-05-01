@@ -1,4 +1,5 @@
 import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
+import { RunMode } from "../Context"
 import { Config } from "../config/Config"
 import { jsonToMessageConfig } from "../config/MessageConfig"
 import { MessageFlag } from "../config/MessageFlag"
@@ -7,7 +8,7 @@ import { MessageProcessor } from "./MessageProcessor"
 let mocks: Mocks
 
 beforeEach(() => {
-  mocks = MockFactory.newMocks(new Config(), true)
+  mocks = MockFactory.newMocks(new Config(), RunMode.DRY_RUN)
 })
 
 describe("match()", () => {

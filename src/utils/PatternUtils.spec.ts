@@ -1,10 +1,11 @@
 import { MockFactory } from "../../test/mocks/MockFactory"
+import { RunMode } from "../Context"
 import { Config } from "../config/Config"
 import { jsonToMessageConfig } from "../config/MessageConfig"
 import { PatternUtil } from "./PatternUtil"
 
-function getMocks(dryRun = true, config = new Config()) {
-  return MockFactory.newMocks(config, dryRun)
+function getMocks(runMode = RunMode.DRY_RUN, config = new Config()) {
+  return MockFactory.newMocks(config, runMode)
 }
 
 describe("Pattern Substitution", () => {

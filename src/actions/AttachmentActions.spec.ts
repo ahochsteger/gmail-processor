@@ -1,5 +1,5 @@
 import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
-import { AttachmentContext, ProcessingContext } from "../Context"
+import { AttachmentContext, ProcessingContext, RunMode } from "../Context"
 import { ConflictStrategy } from "../adapter/GDriveAdapter"
 import { Config } from "../config/Config"
 import { ActionProvider, ActionRegistry } from "./ActionRegistry"
@@ -11,7 +11,7 @@ let actionRegistry: ActionRegistry
 let actionProvider: ActionProvider<AttachmentContext>
 
 beforeEach(() => {
-  mocks = MockFactory.newMocks(new Config(), false)
+  mocks = MockFactory.newMocks(new Config(), RunMode.SAFE_MODE)
   actionRegistry = new ActionRegistry()
   actionProvider = new AttachmentActions()
   actionRegistry.registerActionProvider(
@@ -19,7 +19,7 @@ beforeEach(() => {
     actionProvider as ActionProvider<ProcessingContext>,
   )
 
-  dryRunMocks = MockFactory.newMocks(new Config(), true)
+  dryRunMocks = MockFactory.newMocks(new Config(), RunMode.DRY_RUN)
 })
 
 describe("AttachmenActions", () => {

@@ -1,3 +1,4 @@
+import { RunMode } from "../../src/Context"
 import { Config } from "../../src/config/Config"
 import { GmailProcessor } from "../../src/processors/GmailProcessor"
 import { MockFactory, Mocks } from "../mocks/MockFactory"
@@ -6,7 +7,7 @@ let mocks: Mocks
 let gmailProcessor: GmailProcessor
 
 beforeEach(() => {
-  mocks = MockFactory.newMocks(new Config(), false)
+  mocks = MockFactory.newMocks(new Config(), RunMode.SAFE_MODE)
   gmailProcessor = new GmailProcessor()
 })
 
@@ -52,6 +53,10 @@ describe("v1config", () => {
         },
       ],
     }
-    gmailProcessor.runWithV1ConfigJson(mocks.envContext, configJson, true)
+    gmailProcessor.runWithV1ConfigJson(
+      mocks.envContext,
+      configJson,
+      RunMode.DRY_RUN,
+    )
   })
 })

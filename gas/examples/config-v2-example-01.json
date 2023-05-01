@@ -1,7 +1,7 @@
 {
   "description": "An example V2 configuration",
   "settings": {
-    "dryRun": true,
+    "runMode": "dry-run",
     "maxBatchSize": 10,
     "maxRuntime": 280,
     "processedMode": "read",
