@@ -10,6 +10,7 @@ files="
 
 mkdir -p "${dest_dir}"
 for f in ${files}; do
+  echo "${f}"
   curl -sfL "https://github.com/ahochsteger/gmail2gdrive/raw/master/${f}" \
   >"${dest_dir}/${f}"
 done
