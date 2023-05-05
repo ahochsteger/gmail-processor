@@ -1,5 +1,4 @@
 import { EnvContext } from "../Context"
-import { reading, writing } from "../utils/Decorators"
 import { BaseAdapter } from "./BaseAdapter"
 
 export enum ConflictStrategy {
@@ -24,7 +23,6 @@ export class GDriveAdapter extends BaseAdapter {
   /**
    * Returns the GDrive folder with the given path.
    */
-  @reading()
   public getFolderFromPath(path: string): GoogleAppsScript.Drive.Folder {
     const parts = path.split("/")
 
@@ -56,7 +54,6 @@ export class GDriveAdapter extends BaseAdapter {
    * @param description The description of the file
    * @param conflictStrategy The conflict strategy in case a file already exists at the file location (skip, replace)
    */
-  @writing()
   public createFile(
     location: string,
     content: string,
@@ -122,7 +119,6 @@ export class GDriveAdapter extends BaseAdapter {
     return file
   }
 
-  @writing()
   public storeAttachment(
     attachment: GoogleAppsScript.Gmail.GmailAttachment,
     location: string,
@@ -145,7 +141,6 @@ export class GDriveAdapter extends BaseAdapter {
   /**
    * Returns the GDrive folder with the given name or creates it if not existing.
    */
-  @writing()
   private getOrCreateFolderFromPath(
     path: string,
   ): GoogleAppsScript.Drive.Folder {
@@ -162,7 +157,6 @@ export class GDriveAdapter extends BaseAdapter {
     return folder
   }
 
-  @reading()
   private getFilesFromPath(location: string) {
     const folderPath = this.getFolderPathFromLocation(location)
     const filename = this.getFilenameFromLocation(location)
@@ -174,7 +168,6 @@ export class GDriveAdapter extends BaseAdapter {
   /**
    * Recursive function to create and return a complete folder path.
    */
-  @writing()
   private getOrCreateSubFolder(
     baseFolder: GoogleAppsScript.Drive.Folder,
     folderArray: string[],
@@ -203,12 +196,10 @@ export class GDriveAdapter extends BaseAdapter {
     return this.getOrCreateSubFolder(nextFolder, folderArray)
   }
 
-  @reading()
   private getFolderPathFromLocation(location: string) {
     return location.substring(0, location.lastIndexOf("/"))
   }
 
-  @reading()
   private getFilenameFromLocation(location: string) {
     return location.substring(location.lastIndexOf("/") + 1)
   }

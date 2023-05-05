@@ -1,5 +1,6 @@
 import { ConflictStrategy } from "../adapter/GDriveAdapter"
 import { ThreadContext } from "../Context"
+import { destructiveAction, writingAction } from "../utils/Decorators"
 import {
   ActionArgsType,
   ActionFunction,
@@ -10,6 +11,8 @@ import {
 
 export class ThreadActions implements ActionProvider<ThreadContext> {
   [key: string]: ActionFunction<ThreadContext>
+
+  @writingAction()
   public static markProcessed(context: ThreadContext): ActionReturnType {
     let thread
     if (context.proc.config.settings.processedMode == "label") {
@@ -20,6 +23,7 @@ export class ThreadActions implements ActionProvider<ThreadContext> {
     return { thread }
   }
 
+  @writingAction()
   public static markImportant(context: ThreadContext): ActionReturnType {
     return {
       thread: context.proc.gmailAdapter.threadMarkImportant(
@@ -28,12 +32,14 @@ export class ThreadActions implements ActionProvider<ThreadContext> {
     }
   }
 
+  @writingAction()
   public static markRead(context: ThreadContext): ActionReturnType {
     return {
       thread: context.proc.gmailAdapter.threadMarkRead(context.thread.object),
     }
   }
 
+  @writingAction()
   public static markUnimportant(context: ThreadContext): ActionReturnType {
     return {
       thread: context.proc.gmailAdapter.threadMarkUnimportant(
@@ -42,12 +48,14 @@ export class ThreadActions implements ActionProvider<ThreadContext> {
     }
   }
 
+  @writingAction()
   public static markUnread(context: ThreadContext): ActionReturnType {
     return {
       thread: context.proc.gmailAdapter.threadMarkUnread(context.thread.object),
     }
   }
 
+  @writingAction()
   public static moveToArchive(context: ThreadContext): ActionReturnType {
     return {
       thread: context.proc.gmailAdapter.threadMoveToArchive(
@@ -56,6 +64,7 @@ export class ThreadActions implements ActionProvider<ThreadContext> {
     }
   }
 
+  @writingAction()
   public static moveToInbox(context: ThreadContext): ActionReturnType {
     return {
       thread: context.proc.gmailAdapter.threadMoveToInbox(
@@ -64,12 +73,14 @@ export class ThreadActions implements ActionProvider<ThreadContext> {
     }
   }
 
+  @writingAction()
   public static moveToSpam(context: ThreadContext): ActionReturnType {
     return {
       thread: context.proc.gmailAdapter.threadMoveToSpam(context.thread.object),
     }
   }
 
+  @destructiveAction()
   public static moveToTrash(context: ThreadContext): ActionReturnType {
     return {
       thread: context.proc.gmailAdapter.threadMoveToTrash(
@@ -78,6 +89,7 @@ export class ThreadActions implements ActionProvider<ThreadContext> {
     }
   }
 
+  @writingAction()
   public static addLabel<T extends { name: string }>(
     context: ThreadContext,
     args: ActionArgsType,
@@ -91,6 +103,7 @@ export class ThreadActions implements ActionProvider<ThreadContext> {
     }
   }
 
+  @writingAction()
   public static removeLabel<T extends { name: string }>(
     context: ThreadContext,
     args: ActionArgsType,
@@ -107,6 +120,7 @@ export class ThreadActions implements ActionProvider<ThreadContext> {
   /**
    * Generate a PDF document for the whole thread and store it to GDrive.
    */
+  @writingAction()
   public static storeAsPdfToGDrive<
     T extends {
       location: string

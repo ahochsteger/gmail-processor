@@ -1,5 +1,6 @@
 import { ConflictStrategy } from "../adapter/GDriveAdapter"
-import { AttachmentContext } from "../Context"
+import { AttachmentContext, MessageContext } from "../Context"
+import { writingAction } from "../utils/Decorators"
 import {
   ActionArgsType,
   ActionFunction,
@@ -8,9 +9,30 @@ import {
   typedArgs,
 } from "./ActionRegistry"
 
+export class MyMessageActions implements ActionProvider<MessageContext> {
+  [key: string]: ActionFunction<MessageContext>
+  @writingAction()
+  public static forward<TArgs extends { to: string }>(
+    context: MessageContext,
+    args: ActionArgsType,
+  ): ActionReturnType {
+    const a = typedArgs<TArgs>(args)
+    return {
+      message: context.proc.gmailAdapter.messageForward(
+        context.message.object,
+        a.to as string,
+      ),
+    }
+  }
+}
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface MyMessageActions
+  extends Record<string, ActionFunction<MessageContext>> {}
+
 export class AttachmentActions implements ActionProvider<AttachmentContext> {
   [key: string]: ActionFunction<AttachmentContext>
-  public storeToGDrive<
+  @writingAction<AttachmentContext>()
+  public static storeToGDrive<
     T extends {
       location: string
       conflictStrategy: ConflictStrategy

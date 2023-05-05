@@ -37,7 +37,7 @@ describe("AttachmenActions", () => {
   })
 
   it("should create a file", () => {
-    actionProvider.storeToGDrive(mocks.attachmentContext, {
+    AttachmentActions.storeToGDrive(mocks.attachmentContext, {
       location: "test-location",
       conflictStrategy: ConflictStrategy.REPLACE,
       description: "automated test",
@@ -46,7 +46,7 @@ describe("AttachmenActions", () => {
   })
 
   it("should not create a file on dry-run", () => {
-    actionProvider.storeToGDrive(dryRunMocks.attachmentContext, {
+    AttachmentActions.storeToGDrive(dryRunMocks.attachmentContext, {
       location: "test-location",
       conflictStrategy: ConflictStrategy.REPLACE,
       description: "automated test",
