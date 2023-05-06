@@ -32,8 +32,10 @@ jobs:
           clientId: ${{ secrets.CLASP_CLIENT_ID }}
           clientSecret: ${{ secrets.CLASP_CLIENT_SECRET }}
           scriptId: ${{ secrets.CLASP_SCRIPT_ID }}
-          command: "push"
+          command: "deploy"
           rootDir: "build/gas/lib"
+          description: "Development Snapshot"
+          deployId: ${{ secrets.CLASP_DEPLOYMENT_ID_LIB_DEV }}
       - uses: daikikatsuragawa/clasp-action@v1.1.0
         if: github.ref == 'refs/heads/v2'
         with:
@@ -43,5 +45,7 @@ jobs:
           clientId: ${{ secrets.CLASP_CLIENT_ID }}
           clientSecret: ${{ secrets.CLASP_CLIENT_SECRET }}
           scriptId: ${{ secrets.CLASP_SCRIPT_ID }}
-          command: "push"
+          command: "deploy"
           rootDir: "build/gas/examples"
+          description: "Development Snapshot"
+          deployId: ${{ secrets.CLASP_DEPLOYMENT_ID_EXAMPLES_DEV }}
