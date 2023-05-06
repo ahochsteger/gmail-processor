@@ -4,7 +4,7 @@
   "description": "Gmail2GDrive is a Google Apps Script which automatically stores and sorts Gmail attachments into Google Drive folders, and can also save the thread as a PDF file.",
   "scripts": {
     "build": "npm run build-lib && npm run build-examples",
-    "build-lib": "scripts/build-lib.sh && npm run generate-schema",
+    "build-lib": "scripts/build-lib.sh",
     "build-examples": "scripts/build-examples.sh",
     "clean": "rm -rf build",
     "format": "prettier -w .",
@@ -12,7 +12,7 @@
     "lint-config": "scripts/lint-config.sh",
     "lint": "npx eslint . && npm run lint-config",
     "login": "cd gas && clasp login",
-    "pre-commit": "npm run clean && npm run build && npm run test && npm run format && npm run lint",
+    "pre-commit": "npm run clean && npm run generate-schema && npm run build && npm run test && npm run format && npm run lint",
     "push": "npm run push-lib && npm run push-examples",
     "push-examples": "cd build/gas/examples && clasp push -f",
     "push-lib": "cd build/gas/lib && clasp push -f",
