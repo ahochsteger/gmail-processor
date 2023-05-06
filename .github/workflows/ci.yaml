@@ -3,11 +3,7 @@ name: Node.js CI
 on:
   push:
     branches:
-      - main
       - v2
-  pull_request:
-    branches:
-      - main
 
 jobs:
   build:
@@ -26,3 +22,25 @@ jobs:
       - run: npm ci
       - run: npm run build --if-present
       - run: npm test
+      - uses: daikikatsuragawa/clasp-action@v1.1.0
+        if: github.ref == 'refs/heads/v2'
+        with:
+          accessToken: ${{ secrets.CLASP_ACCESS_TOKEN }}
+          idToken: ${{ secrets.CLASP_ID_TOKEN }}
+          refreshToken: ${{ secrets.CLASP_REFRESH_TOKEN }}
+          clientId: ${{ secrets.CLASP_CLIENT_ID }}
+          clientSecret: ${{ secrets.CLASP_CLIENT_SECRET }}
+          scriptId: ${{ secrets.CLASP_SCRIPT_ID }}
+          command: "push"
+          rootDir: "build/gas/lib"
+      - uses: daikikatsuragawa/clasp-action@v1.1.0
+        if: github.ref == 'refs/heads/v2'
+        with:
+          accessToken: ${{ secrets.CLASP_ACCESS_TOKEN }}
+          idToken: ${{ secrets.CLASP_ID_TOKEN }}
+          refreshToken: ${{ secrets.CLASP_REFRESH_TOKEN }}
+          clientId: ${{ secrets.CLASP_CLIENT_ID }}
+          clientSecret: ${{ secrets.CLASP_CLIENT_SECRET }}
+          scriptId: ${{ secrets.CLASP_SCRIPT_ID }}
+          command: "push"
+          rootDir: "build/gas/examples"
