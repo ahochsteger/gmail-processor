@@ -1,21 +1,21 @@
 {
   "compilerOptions": {
-    "experimentalDecorators": true,
+    "baseUrl": "src/",
     "emitDecoratorMetadata": true,
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
     "inlineSourceMap": true,
-    "target": "ES6",
+    "lib": ["ES2020"],
     "module": "commonjs",
-    "strict": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitReturns": false,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noImplicitReturns": false,
-    "noFallthroughCasesInSwitch": true,
-    "esModuleInterop": true,
     "outDir": "build",
-    "lib": ["ES2020"],
-    "types": ["google-apps-script", "jest", "node"],
-    "baseUrl": "src/",
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "strict": true,
+    "target": "ES6",
+    "types": ["google-apps-script", "jest", "node"]
   },
   "include": ["src/*", "src/**/*", "test/*", "test/**/*"]
 }
