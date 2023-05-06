@@ -181,7 +181,7 @@ describe("Substitutions", () => {
         MockFactory.newThreadContextMock(),
       ),
     ).toBe(
-      "message subject,false,threadId123,false,false,,2019-05-02 05:15:28,2,some-permalink-url",
+      "message subject,false,threadId123,false,false,,2019-05-02 07:15:28,2,some-permalink-url",
     )
   })
   it("should substitute all message attributes", () => {
@@ -192,7 +192,7 @@ describe("Substitutions", () => {
         MockFactory.newMessageContextMock(),
       ),
     ).toBe(
-      "message-bcc@example.com,message-cc@example.com,2019-05-02 05:15:28,message-from@example.com,message-id,message-reply-to@example.com,message subject,message-to@example.com",
+      "message-bcc@example.com,message-cc@example.com,2019-05-02 07:15:28,message-from@example.com,message-id,message-reply-to@example.com,message subject,message-to@example.com",
     )
   })
   it("should substitute all attachment attributes", () => {
@@ -245,8 +245,8 @@ describe("Handle single messages", () => {
         MockFactory.newAttachmentContextMock(),
       ),
     ).toBe(
-      "message subject,false,threadId123,false,false,,2019-05-02 05:15:28,2,some-permalink-url," +
-        "message-bcc@example.com,message-cc@example.com,2019-05-02 05:15:28,message-from@example.com," +
+      "message subject,false,threadId123,false,false,,2019-05-02 07:15:28,2,some-permalink-url," +
+        "message-bcc@example.com,message-cc@example.com,2019-05-02 07:15:28,message-from@example.com," +
         "message-id,message-reply-to@example.com,message subject,message-to@example.com,text/plain," +
         "some-hash-value,false,attachment.txt,19",
     )
@@ -365,8 +365,8 @@ describe("Handle multiple messages", () => {
         MockFactory.newAttachmentContextMock(),
       ),
     ).toBe(
-      "message subject,false,threadId123,false,false,,2019-05-02 05:15:28,2,some-permalink-url," +
-        "message-bcc@example.com,message-cc@example.com,2019-05-02 05:15:28,message-from@example.com," +
+      "message subject,false,threadId123,false,false,,2019-05-02 07:15:28,2,some-permalink-url," +
+        "message-bcc@example.com,message-cc@example.com,2019-05-02 07:15:28,message-from@example.com," +
         "message-id,message-reply-to@example.com,message subject,message-to@example.com,text/plain," +
         "some-hash-value,false,attachment.txt,19",
     )

@@ -566,7 +566,7 @@ export class MockFactory {
     const sampleData = {
       bcc: "message-bcc@example.com",
       cc: "message-cc@example.com",
-      date: new Date("2019-05-02T07:15:28"),
+      date: new Date("2019-05-02T07:15:28Z"),
       from: "message-from@example.com",
       id: "message-id",
       subject: "message subject",
