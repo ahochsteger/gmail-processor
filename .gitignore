@@ -4,5 +4,5 @@ build/
 coverage/
 dist/
 dist-examples/
-gas/.clasp.json
 node_modules/
+.clasp.json

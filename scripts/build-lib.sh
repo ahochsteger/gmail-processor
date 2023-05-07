@@ -11,6 +11,5 @@ mkdir -p "${outdir}"
 npx tsc
 npx webpack
 cp \
-  "${srcdir}/.clasp.json" \
   "${srcdir}/appsscript.json" \
   "${outdir}/"

@@ -21,6 +21,5 @@ done < <(
   find "${srcdir}" -path "${srcdir}/config-*.json" || true
 )
 cp \
-  "${srcdir}/.clasp.json" \
   "${srcdir}/appsscript.json" \
   "${outdir}/"
