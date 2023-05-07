@@ -22,7 +22,6 @@ jobs:
       - run: npm ci
       - run: npm run build --if-present
       - run: npm test
-      - run: ls -al build/gas/lib build/gas/examples
       - uses: daikikatsuragawa/clasp-action@v1.1.0
         if: github.ref == 'refs/heads/v2'
         with:
@@ -49,7 +48,3 @@ jobs:
           rootDir: "build/gas/examples"
           description: "Development Snapshot"
           deployId: ${{ secrets.CLASP_DEPLOYMENT_ID_EXAMPLES_DEV }}
-      - run: cd build/gas/lib && ls -al && cat .clasp.json
-        if: ${{ !cancelled() }}
-      - run: cd build/gas/examples && ls -al && cat .clasp.json
-        if: ${{ !cancelled() }}
