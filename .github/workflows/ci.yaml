@@ -31,7 +31,7 @@ jobs:
           refreshToken: ${{ secrets.CLASP_REFRESH_TOKEN }}
           clientId: ${{ secrets.CLASP_CLIENT_ID }}
           clientSecret: ${{ secrets.CLASP_CLIENT_SECRET }}
-          scriptId: ${{ secrets.CLASP_SCRIPT_ID }}
+          scriptId: ${{ secrets.CLASP_SCRIPT_ID_LIB }}
           command: "deploy"
           rootDir: "build/gas/lib"
           description: "Development Snapshot"
@@ -44,7 +44,7 @@ jobs:
           refreshToken: ${{ secrets.CLASP_REFRESH_TOKEN }}
           clientId: ${{ secrets.CLASP_CLIENT_ID }}
           clientSecret: ${{ secrets.CLASP_CLIENT_SECRET }}
-          scriptId: ${{ secrets.CLASP_SCRIPT_ID }}
+          scriptId: ${{ secrets.CLASP_SCRIPT_ID_EXAMPLES }}
           command: "deploy"
           rootDir: "build/gas/examples"
           description: "Development Snapshot"
