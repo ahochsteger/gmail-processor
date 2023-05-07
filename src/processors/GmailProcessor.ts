@@ -83,4 +83,10 @@ export class GmailProcessor {
   public getEffectiveConfig(configJson: Record<string, unknown>) {
     return jsonToConfig(configJson)
   }
+
+  public getEffectiveConfigV1(v1configJson: Record<string, unknown>) {
+    const v1config = jsonToV1Config(v1configJson)
+    const config = V1ToV2Converter.v1ConfigToV2Config(v1config)
+    return config
+  }
 }

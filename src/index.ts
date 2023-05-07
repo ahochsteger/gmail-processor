@@ -46,3 +46,12 @@ export function runWithV1Config(
 export function getEffectiveConfig(configJson: Record<string, unknown>) {
   return gmailProcessor.getEffectiveConfig(configJson)
 }
+
+/**
+ * Add defaults to a JSON v1 configuration
+ * @param v1configJson JSON representation of the v1 configuration without defaults
+ * @returns JSON representation of the configuration with defaults added
+ */
+export function getEffectiveConfigV1(v1configJson: Record<string, unknown>) {
+  return gmailProcessor.getEffectiveConfigV1(v1configJson)
+}
