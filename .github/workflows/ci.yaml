@@ -50,6 +50,6 @@ jobs:
           description: "Development Snapshot"
           deployId: ${{ secrets.CLASP_DEPLOYMENT_ID_EXAMPLES_DEV }}
       - run: cd build/gas/lib && ls -al && cat .clasp.json
-        if: !cancelled()
+        if: ${{ !cancelled() }}
       - run: cd build/gas/examples && ls -al && cat .clasp.json
-        if: !cancelled()
+        if: ${{ !cancelled() }}
