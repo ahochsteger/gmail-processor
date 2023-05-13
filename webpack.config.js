@@ -14,4 +14,11 @@ module.exports = {
   },
   plugins: [new GasPlugin()],
   devtool: false,
+  resolve: {
+    fallback: {
+      os: false,
+      path: false,
+      util: false,
+    },
+  },
 }

@@ -8,43 +8,30 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [18.x]
+    environment: dev
+    env:
+      CLASP_ACCESS_TOKEN: ${{secrets.CLASP_ACCESS_TOKEN}}
+      CLASP_CLIENT_ID: ${{secrets.CLASP_CLIENT_ID}}
+      CLASP_CLIENT_SECRET: ${{secrets.CLASP_CLIENT_SECRET}}
+      CLASP_EXAMPLES_DEPLOYMENT_ID_DEV: ${{secrets.CLASP_EXAMPLES_DEPLOYMENT_ID_DEV}}
+      CLASP_EXAMPLES_DEPLOYMENT_ID_STABLE: ${{secrets.CLASP_EXAMPLES_DEPLOYMENT_ID_STABLE}}
+      CLASP_EXAMPLES_DEPLOYMENT_ID_TESTING: ${{secrets.CLASP_EXAMPLES_DEPLOYMENT_ID_TESTING}}
+      CLASP_ID_TOKEN: ${{secrets.CLASP_ID_TOKEN}}
+      CLASP_LIB_DEPLOYMENT_ID_DEV: ${{secrets.CLASP_LIB_DEPLOYMENT_ID_DEV}}
+      CLASP_LIB_DEPLOYMENT_ID_STABLE: ${{secrets.CLASP_LIB_DEPLOYMENT_ID_STABLE}}
+      CLASP_LIB_DEPLOYMENT_ID_TESTING: ${{secrets.CLASP_LIB_DEPLOYMENT_ID_TESTING}}
+      CLASP_REFRESH_TOKEN: ${{secrets.CLASP_REFRESH_TOKEN}}
+      CLASP_EXAMPLES_SCRIPT_ID: ${{secrets.CLASP_EXAMPLES_SCRIPT_ID}}
+      CLASP_LIB_SCRIPT_ID: ${{secrets.CLASP_LIB_SCRIPT_ID}}
+      GCLOUD_PROJECT_ID: ${{secrets.GCLOUD_PROJECT_ID}}
+      GCLOUD_PROJECT_NR: ${{secrets.GCLOUD_PROJECT_NR}}
 
     steps:
       - uses: actions/checkout@v3
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Use Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
-      - run: npm ci
-      - run: npm run build --if-present
-      - run: npm test
-      - uses: daikikatsuragawa/clasp-action@v1.1.0
+          node-version: 18.x
+      - run: npm run ci-build
+      - run: npm run ci-deploy
         if: github.ref == 'refs/heads/v2'
-        with:
-          accessToken: ${{ secrets.CLASP_ACCESS_TOKEN }}
-          idToken: ${{ secrets.CLASP_ID_TOKEN }}
-          refreshToken: ${{ secrets.CLASP_REFRESH_TOKEN }}
-          clientId: ${{ secrets.CLASP_CLIENT_ID }}
-          clientSecret: ${{ secrets.CLASP_CLIENT_SECRET }}
-          scriptId: ${{ secrets.CLASP_SCRIPT_ID_LIB }}
-          command: "deploy"
-          rootDir: "build/gas/lib"
-          description: "Development Snapshot"
-          deployId: ${{ secrets.CLASP_DEPLOYMENT_ID_LIB_DEV }}
-      - uses: daikikatsuragawa/clasp-action@v1.1.0
-        if: github.ref == 'refs/heads/v2'
-        with:
-          accessToken: ${{ secrets.CLASP_ACCESS_TOKEN }}
-          idToken: ${{ secrets.CLASP_ID_TOKEN }}
-          refreshToken: ${{ secrets.CLASP_REFRESH_TOKEN }}
-          clientId: ${{ secrets.CLASP_CLIENT_ID }}
-          clientSecret: ${{ secrets.CLASP_CLIENT_SECRET }}
-          scriptId: ${{ secrets.CLASP_SCRIPT_ID_EXAMPLES }}
-          command: "deploy"
-          rootDir: "build/gas/examples"
-          description: "Development Snapshot"
-          deployId: ${{ secrets.CLASP_DEPLOYMENT_ID_EXAMPLES_DEV }}

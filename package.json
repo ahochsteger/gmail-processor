@@ -3,21 +3,29 @@
   "version": "2.0.0",
   "description": "Gmail2GDrive is a Google Apps Script which automatically stores and sorts Gmail attachments into Google Drive folders, and can also save the thread as a PDF file.",
   "scripts": {
-    "build": "npm run build-lib && npm run build-examples",
-    "build-lib": "scripts/build-lib.sh",
     "build-examples": "scripts/build-examples.sh",
+    "build-lib": "scripts/build-lib.sh",
+    "build": "npm run build-lib && npm run build-examples",
+    "ci-build": "npm ci && npm run build && npm run test",
+    "ci-deploy": "npm run deploy",
     "clean": "rm -rf build",
+    "deploy-examples": "scripts/clasp.sh examples deploy",
+    "deploy-lib": "scripts/clasp.sh lib deploy",
+    "deploy": "npm run deploy-lib && npm run deploy-examples",
     "format": "prettier -w .",
     "generate-schema": "scripts/gen-schema.sh",
     "lint-config": "scripts/lint-config.sh",
     "lint": "npx eslint . && npm run lint-config",
     "login": "cd gas && clasp login",
     "pre-commit": "npm run clean && npm run generate-schema && npm run build && npm run test && npm run format && npm run lint",
+    "push-examples": "scripts/clasp.sh examples push",
+    "push-lib": "scripts/clasp.sh lib push",
     "push": "npm run push-lib && npm run push-examples",
-    "push-examples": "cd build/gas/examples && clasp push -f",
-    "push-lib": "cd build/gas/lib && clasp push -f",
     "redeploy": "npm run pre-commit && npm run push",
-    "test": "jest --silent --detectOpenHandles"
+    "test": "jest --silent --detectOpenHandles",
+    "test-gh-push": "act push",
+    "test-verbose": "jest --detectOpenHandles",
+    "update-secrets": "gh secret set -f .env"
   },
   "repository": {
     "type": "git",
@@ -25,6 +33,7 @@
   },
   "keywords": [
     "gmail",
+    "gmail2gdrive",
     "gdrive",
     "email",
     "attachment",
@@ -34,12 +43,12 @@
   "devDependencies": {
     "@google/clasp": "^2.4.2",
     "@types/dateformat": "^5.0.0",
-    "@types/google-apps-script": "^1.0.62",
+    "@types/google-apps-script": "^1.0.64",
     "@types/jest": "^29.5.1",
-    "@types/node": "^18.16.3",
-    "@typescript-eslint/eslint-plugin": "^5.59.1",
-    "@typescript-eslint/parser": "^5.59.1",
-    "eslint": "^8.39.0",
+    "@types/node": "^18.16.8",
+    "@typescript-eslint/eslint-plugin": "^5.59.5",
+    "@typescript-eslint/parser": "^5.59.5",
+    "eslint": "^8.40.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-googleappsscript": "^1.0.4",
     "eslint-plugin-prettier": "^4.2.1",
@@ -50,8 +59,8 @@
     "ts-jest": "^29.1.0",
     "typescript": "^5.0.4",
     "typescript-json-schema": "^0.56.0",
-    "webpack": "^5.81.0",
-    "webpack-cli": "^5.0.2"
+    "webpack": "^5.82.1",
+    "webpack-cli": "^5.1.1"
   },
   "private": true,
   "dependencies": {
@@ -62,6 +71,6 @@
     "tslog": "^4.8.2"
   },
   "engines": {
-    "node": ">=10.0.0"
+    "node": ">=18"
   }
 }
