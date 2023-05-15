@@ -140,7 +140,7 @@ export class MockFactory {
       actions: includeCommands ? [this.newDefaultActionConfigJson()] : [],
       match: {
         name: "Image-([0-9]+)\\.jpg",
-        contentType: "image/.+",
+        contentTypeRegex: "image/.+",
         includeAttachments: true,
         includeInlineImages: true,
         largerThan: -1,

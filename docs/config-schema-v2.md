@@ -108,7 +108,7 @@ Represents a config to match a certain GMail attachment
 
 |                         | Type      | Description                                                                     | Required              |
 | ----------------------- | --------- | ------------------------------------------------------------------------------- | --------------------- |
-| **contentType**         | `string`  | A RegEx matching the content type of the attachment                             | No, default: `".*"`   |
+| **contentTypeRegex**    | `string`  | A RegEx matching the content type of the attachment                             | No, default: `".*"`   |
 | **includeAttachments**  | `boolean` | Should regular attachments be included in attachment processing (default: true) | No, default: `true`   |
 | **includeInlineImages** | `boolean` | Should inline images be included in attachment processing (default: true)       | No, default: `true`   |
 | **largerThan**          | `number`  | Only include attachments larger than the given size in bytes                    | No, default: `-1`     |
@@ -117,7 +117,7 @@ Represents a config to match a certain GMail attachment
 
 Additional properties are not allowed.
 
-### AttachmentMatchConfig.contentType
+### AttachmentMatchConfig.contentTypeRegex
 
 A RegEx matching the content type of the attachment
 

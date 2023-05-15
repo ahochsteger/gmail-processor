@@ -271,7 +271,7 @@ export class PatternUtil {
       return m
     }
     if (amc.name) m.set("name", amc.name)
-    if (amc.contentType) m.set("contentType", amc.contentType)
+    if (amc.contentTypeRegex) m.set("contentTypeRegex", amc.contentTypeRegex)
     return m
   }
 

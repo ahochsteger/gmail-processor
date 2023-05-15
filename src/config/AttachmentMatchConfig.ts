@@ -9,7 +9,7 @@ export class AttachmentMatchConfig {
   /**
    * A RegEx matching the content type of the attachment
    */
-  contentType? = ".*"
+  contentTypeRegex? = ".*"
   /**
    * Should regular attachments be included in attachment processing (default: true)
    */

@@ -45,7 +45,7 @@
             {
               "match": {
                 "name": "Image-([0-9]+)\\.jpg",
-                "contentType": "image/.*",
+                "contentTypeRegex": "image/.*",
                 "largerThan": 12345,
                 "smallerThan": 123456
               },
