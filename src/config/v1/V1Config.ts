@@ -1,10 +1,11 @@
-import { Type, plainToInstance } from "class-transformer"
+import { Type, instanceToPlain, plainToInstance } from "class-transformer"
 import "reflect-metadata"
+import { RequiredDeep } from "../../utils/UtilityTypes"
 import { V1Rule } from "./V1Rule"
 
 export class V1Config {
   /** Global filter */
-  globalFilter = "has:attachment -in:trash -in:drafts -in:spam"
+  globalFilter? = "has:attachment -in:trash -in:drafts -in:spam"
   /** Gmail label for processed threads (will be created, if not existing) */
   processedLabel = "to-gdrive/processed"
   /** Sleep time in milliseconds between processed messages */
@@ -17,14 +18,33 @@ export class V1Config {
   timezone = "UTC"
   /** Processing rules */
   @Type(() => V1Rule)
-  rules!: V1Rule[]
+  rules: V1Rule[] = []
 }
 
-export function jsonToV1Config(json: Record<string, unknown>): V1Config {
+export type RequiredV1Config = RequiredDeep<V1Config>
+
+export function jsonToV1Config(
+  json: Record<string, unknown>,
+): RequiredV1Config {
   return plainToInstance(V1Config, json, {
     exposeDefaultValues: true,
     exposeUnsetFields: false,
+  }) as RequiredV1Config
+}
+
+export function v1ConfigToJson<T = V1Config>(
+  config: T,
+  withDefaults = false,
+): Record<string, unknown> {
+  return instanceToPlain(config, {
+    exposeDefaultValues: withDefaults,
   })
+}
+
+export function newV1Config(
+  json: Record<string, unknown> = {},
+): RequiredV1Config {
+  return jsonToV1Config(json)
 }
 
 /*

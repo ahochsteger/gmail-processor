@@ -1,72 +1,53 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { DEFAULT_SETTING_MAX_RUNTIME } from "./SettingsConfig"
+import { MockFactory } from "../../test/mocks/MockFactory"
 import { validateConfig } from "./Validate"
+
+// TODO: Add partial schema validation
+// See:
+// - https://github.com/ajv-validator/ajv/issues/211
+// - https://stackoverflow.com/questions/59951929/how-can-i-compile-a-subset-of-a-json-schema-with-ajv
 
 describe("validate()", () => {
   it("should validate a minimum compliant v2 config without errors", () => {
-    validateConfig({
-      global: {
-        match: {},
-      },
-      settings: {},
-    })
-    expect(validateConfig.errors).toBeFalsy()
-  })
-  it("should add missing properties with default values", () => {
-    const config = {
-      global: { match: {} },
-      settings: {
-        additional: "some-value",
-      },
-    }
-    validateConfig(config)
-    expect((config.settings as any).maxRuntime).toEqual(
-      DEFAULT_SETTING_MAX_RUNTIME,
-    )
-    expect(config.settings.additional).toBeUndefined()
-  })
-  it("should remove additional properties", () => {
-    const config = {
-      global: { match: {} },
-      settings: {
-        additional: "some-value",
-      },
-    }
-    validateConfig(config)
-    expect((config.settings as any).maxRuntime).toEqual(
-      DEFAULT_SETTING_MAX_RUNTIME,
-    )
-    expect(config.settings.additional).toBeUndefined()
-  })
-  it("should report missing properties in config root", () => {
     validateConfig({})
+    expect(validateConfig.errors).toBeNull()
+  })
+  it("should validate all MockFactory config JSON without errors", () => {
+    validateConfig({
+      global: { actions: [MockFactory.newDefaultActionConfigJson()] },
+    })
+    expect(validateConfig.errors).toBeNull()
+    validateConfig({
+      attachments: [MockFactory.newDefaultAttachmentConfigJson()],
+    })
+    expect(validateConfig.errors).toBeNull()
+    validateConfig(MockFactory.newDefaultConfigJson())
+    expect(validateConfig.errors).toBeNull()
+    validateConfig({ messages: [MockFactory.newDefaultMessageConfigJson()] })
+    expect(validateConfig.errors).toBeNull()
+    validateConfig({ settings: MockFactory.newDefaultSettingsConfigJson() })
+    expect(validateConfig.errors).toBeNull()
+    validateConfig({ threads: [MockFactory.newDefaultThreadConfigJson()] })
+    expect(validateConfig.errors).toBeNull()
+  })
+  it("should report additional properties", () => {
+    const config = {
+      rules: [],
+      additional: "some-value",
+    }
     const expected = [
       {
-        keyword: "required",
-        params: {
-          missingProperty: "global",
-        },
-        schemaPath: "#/required",
+        instancePath: "",
+        keyword: "additionalProperties",
+        params: { additionalProperty: "rules" },
       },
       {
-        keyword: "required",
-        params: {
-          missingProperty: "settings",
-        },
-        schemaPath: "#/required",
+        instancePath: "",
+        keyword: "additionalProperties",
+        params: { additionalProperty: "additional" },
       },
     ]
+    validateConfig(config)
     expect(validateConfig.errors).toMatchObject(expected)
   })
-  test.todo(
-    "should remove additional properties (unsupported: see https://ajv.js.org/guide/modifying-data.html#general-considerations)",
-  )
-  // it("should remove additional properties", () => {
-  //   const config = {
-  //     rules: [],
-  //     additional: "some-value",
-  //   }
-  //   expect(validateConfig(validateConfig.errors)).toBeFalsy()
-  //   expect(config.additional).toBeUndefined()
-  // })
 })

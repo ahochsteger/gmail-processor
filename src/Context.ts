@@ -2,10 +2,10 @@ import { ActionRegistry } from "./actions/ActionRegistry"
 import { GDriveAdapter } from "./adapter/GDriveAdapter"
 import { GmailAdapter } from "./adapter/GmailAdapter"
 import { SpreadsheetAdapter } from "./adapter/SpreadsheetAdapter"
-import { AttachmentConfig } from "./config/AttachmentConfig"
-import { Config } from "./config/Config"
-import { MessageConfig } from "./config/MessageConfig"
-import { ThreadConfig } from "./config/ThreadConfig"
+import { RequiredAttachmentConfig } from "./config/AttachmentConfig"
+import { RequiredConfig } from "./config/Config"
+import { RequiredMessageConfig } from "./config/MessageConfig"
+import { RequiredThreadConfig } from "./config/ThreadConfig"
 import { Logger } from "./utils/Logging"
 import { Timer } from "./utils/Timer"
 
@@ -30,7 +30,7 @@ export type EnvInfo = {
 
 export type ProcessingInfo = {
   actionRegistry: ActionRegistry
-  config: Config
+  config: RequiredConfig
   gdriveAdapter: GDriveAdapter
   gmailAdapter: GmailAdapter
   spreadsheetAdapter: SpreadsheetAdapter
@@ -39,21 +39,21 @@ export type ProcessingInfo = {
 
 export type ThreadInfo = {
   object: GoogleAppsScript.Gmail.GmailThread
-  config: ThreadConfig
+  config: RequiredThreadConfig
   configIndex: number
   index: number
 }
 
 export type MessageInfo = {
   object: GoogleAppsScript.Gmail.GmailMessage
-  config: MessageConfig
+  config: RequiredMessageConfig
   configIndex: number
   index: number
 }
 
 export type AttachmentInfo = {
   object: GoogleAppsScript.Gmail.GmailAttachment
-  config: AttachmentConfig
+  config: RequiredAttachmentConfig
   configIndex: number
   index: number
 }

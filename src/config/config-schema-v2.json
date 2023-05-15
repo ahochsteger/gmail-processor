@@ -19,11 +19,13 @@
           "type": "string"
         },
         "name": {
+          "default": "",
           "description": "The name of the action to be executed",
           "title": "name",
           "type": "string"
         }
       },
+      "required": ["name"],
       "title": "ActionConfig",
       "type": "object"
     },
@@ -58,7 +60,6 @@
           "type": "string"
         }
       },
-      "required": ["actions", "match"],
       "title": "AttachmentConfig",
       "type": "object"
     },
@@ -103,14 +104,6 @@
           "type": "number"
         }
       },
-      "required": [
-        "contentType",
-        "includeAttachments",
-        "includeInlineImages",
-        "largerThan",
-        "name",
-        "smallerThan"
-      ],
       "title": "AttachmentMatchConfig",
       "type": "object"
     },
@@ -162,7 +155,6 @@
           "type": "array"
         }
       },
-      "required": ["global", "settings", "threads"],
       "title": "Config",
       "type": "object"
     },
@@ -185,7 +177,6 @@
           "title": "match"
         }
       },
-      "required": ["actions", "match"],
       "title": "GlobalConfig",
       "type": "object"
     },
@@ -229,7 +220,6 @@
           "type": "string"
         }
       },
-      "required": ["actions", "attachments", "match"],
       "title": "MessageConfig",
       "type": "object"
     },
@@ -281,7 +271,6 @@
           "type": "string"
         }
       },
-      "required": ["from", "is", "newerThan", "olderThan", "subject", "to"],
       "title": "MessageMatchConfig",
       "type": "object"
     },
@@ -350,17 +339,6 @@
           "type": "string"
         }
       },
-      "required": [
-        "logSheetFile",
-        "logSheetFolderId",
-        "maxBatchSize",
-        "maxRuntime",
-        "processedLabel",
-        "processedMode",
-        "sleepTimeAttachments",
-        "sleepTimeMessages",
-        "sleepTimeThreads"
-      ],
       "title": "SettingsConfig",
       "type": "object"
     },
@@ -413,7 +391,6 @@
           "type": "string"
         }
       },
-      "required": ["actions", "match", "messages"],
       "title": "ThreadConfig",
       "type": "object"
     },
@@ -446,7 +423,6 @@
           "type": "string"
         }
       },
-      "required": ["maxMessageCount", "minMessageCount", "newerThan", "query"],
       "title": "ThreadMatchConfig",
       "type": "object"
     }

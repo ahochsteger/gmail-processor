@@ -2,6 +2,7 @@
   "processedLabel": "gmail2gdrive/client-test",
   "sleepTime": 100,
   "maxRuntime": 280,
+  "newerThan": "2m",
   "timezone": "GMT",
   "rules": [
     {

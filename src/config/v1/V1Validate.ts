@@ -7,4 +7,4 @@ const ajv = new Ajv({
   strict: false,
   useDefaults: true,
 })
-export const validateV1Config = ajv.compile<V1Config>(schema)
+export const validateV1Config = ajv.compile<V1Config>(schema, true)

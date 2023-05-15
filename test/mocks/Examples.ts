@@ -1,17 +1,17 @@
 import { RunMode } from "../../src/Context"
-import { Config } from "../../src/config/Config"
+import { newConfig } from "../../src/config/Config"
 import { GmailProcessor } from "../../src/processors/GmailProcessor"
 import { MockFactory } from "../mocks/MockFactory"
 
 const gmailProcessor = new GmailProcessor()
 const envContext = MockFactory.newMocks(
-  new Config(),
+  newConfig(),
   RunMode.SAFE_MODE,
 ).envContext
 
-function run(configJson: Record<string, unknown>, runMode = RunMode.SAFE_MODE) {
+function run(configJson: Record<string, unknown>) {
   console.log("Processing started ...")
-  gmailProcessor.runWithConfigJson(envContext, configJson, runMode)
+  gmailProcessor.runWithConfigJson(envContext, configJson)
   console.log("Processing finished ...")
 }
 
@@ -19,11 +19,8 @@ function run(configJson: Record<string, unknown>, runMode = RunMode.SAFE_MODE) {
  * @param configJson GMail2GDrive v1 configuration JSON
  * @param runMode The runtime mode controls the behavior of actions
  */
-function runWithV1Config(
-  configJson: Record<string, unknown>,
-  runMode = RunMode.SAFE_MODE,
-) {
-  gmailProcessor.runWithV1ConfigJson(envContext, configJson, runMode)
+function runWithV1Config(configJson: Record<string, unknown>) {
+  gmailProcessor.runWithV1ConfigJson(envContext, configJson)
 }
 
 /**

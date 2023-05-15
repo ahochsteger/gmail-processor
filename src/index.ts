@@ -26,10 +26,8 @@ export function run(
   configJson: Record<string, unknown>,
   runMode = RunMode.SAFE_MODE,
 ) {
-  ctx.log.info("Processing started ...")
-  ctx.log.logEnvContext(ctx)
-  gmailProcessor.runWithConfigJson(ctx, configJson, runMode)
-  ctx.log.info("Processing finished ...")
+  ctx.env.runMode = runMode
+  gmailProcessor.runWithConfigJson(ctx, configJson)
 }
 
 /**
@@ -40,7 +38,8 @@ export function runWithV1Config(
   configJson: Record<string, unknown>,
   runMode = RunMode.SAFE_MODE,
 ) {
-  gmailProcessor.runWithV1ConfigJson(ctx, configJson, runMode)
+  ctx.env.runMode = runMode
+  gmailProcessor.runWithV1ConfigJson(ctx, configJson)
 }
 
 /**

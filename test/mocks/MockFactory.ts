@@ -11,9 +11,13 @@ import { ActionRegistry } from "../../src/actions/ActionRegistry"
 import { GDriveAdapter } from "../../src/adapter/GDriveAdapter"
 import { GmailAdapter } from "../../src/adapter/GmailAdapter"
 import { SpreadsheetAdapter } from "../../src/adapter/SpreadsheetAdapter"
-import { AttachmentConfig } from "../../src/config/AttachmentConfig"
-import { Config, jsonToConfig } from "../../src/config/Config"
-import { MessageConfig } from "../../src/config/MessageConfig"
+import { newAttachmentConfig } from "../../src/config/AttachmentConfig"
+import {
+  RequiredConfig,
+  jsonToConfig,
+  newConfig,
+} from "../../src/config/Config"
+import { newMessageConfig } from "../../src/config/MessageConfig"
 import { MessageFlag } from "../../src/config/MessageFlag"
 import { jsonToThreadConfig } from "../../src/config/ThreadConfig"
 import { V1Config, jsonToV1Config } from "../../src/config/v1/V1Config"
@@ -44,7 +48,7 @@ export class Mocks {
 
 export class MockFactory {
   public static newMocks(
-    config = new Config(),
+    config = newConfig(),
     runMode = RunMode.DRY_RUN,
   ): Mocks {
     const mocks = new Mocks()
@@ -207,7 +211,7 @@ export class MockFactory {
         match: {
           query: "has:attachment from:example@example.com",
         },
-        hessageHandler: [
+        messages: [
           {
             actions: [
               {
@@ -227,7 +231,7 @@ export class MockFactory {
         match: {
           query: "has:attachment from:example4@example.com",
         },
-        hessageHandler: [
+        messages: [
           {
             match: {
               from: "(.+)@example.com",
@@ -330,7 +334,7 @@ export class MockFactory {
     return jsonToV1Config(v1config)
   }
 
-  public static newDefaultConfig(): Config {
+  public static newDefaultConfig(): RequiredConfig {
     return jsonToConfig({
       threads: this.newComplexThreadConfigList(),
     })
@@ -338,7 +342,7 @@ export class MockFactory {
 
   public static newProcessingContextMock(
     envContext = this.newEnvContextMock(),
-    config = new Config(),
+    config = newConfig() as RequiredConfig,
   ): ProcessingContext {
     return {
       ...envContext,
@@ -375,7 +379,7 @@ export class MockFactory {
     return {
       ...threadContext,
       message: {
-        config: new MessageConfig(),
+        config: newMessageConfig(),
         object: message,
         configIndex: 0,
         index: 0,
@@ -390,7 +394,7 @@ export class MockFactory {
     return {
       ...messageContext,
       attachment: {
-        config: new AttachmentConfig(),
+        config: newAttachmentConfig(),
         object: attachment,
         configIndex: 0,
         index: 0,

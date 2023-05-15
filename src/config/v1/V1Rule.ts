@@ -1,30 +1,53 @@
+import { instanceToPlain, plainToInstance } from "class-transformer"
 import "reflect-metadata"
+import { RequiredDeep } from "../../utils/UtilityTypes"
 
 export class V1Rule {
   /** Archive thread after processing */
-  archive = false
+  archive? = false
   /** Rename matching attachments from the given filename */
-  filenameFrom = ""
+  filenameFrom? = ""
   /** Rename matching attachments from the given filename regex */
-  filenameFromRegexp = ""
+  filenameFromRegexp? = ""
   /** Rename matching attachments to the given filename */
-  filenameTo = ""
+  filenameTo? = ""
   /** Search filter for threads */
   filter = ""
   /** GDrive folder to store attachments to */
   folder = ""
   /** Restrict to threads containing messages newer than the given relative date/time */
-  newerThan = ""
+  newerThan? = ""
   /** Parent folder ID to be used (for shared drives) */
-  parentFolderId = ""
+  parentFolderId? = ""
   /** Add the given label to the processed thread */
-  ruleLabel = ""
+  ruleLabel? = ""
   /** Save the message to PDF */
-  saveMessagePDF = false
+  saveMessagePDF? = false
   /** Save the thread to PDF */
-  saveThreadPDF = false
+  saveThreadPDF? = false
   /** Skip header for PDF */
-  skipPDFHeader = false
+  skipPDFHeader? = false
+}
+export type RequiredV1Rule = RequiredDeep<V1Rule>
+
+export function jsonToV1Rule(json: Record<string, unknown>): RequiredV1Rule {
+  return plainToInstance(V1Rule, json, {
+    exposeDefaultValues: true,
+    exposeUnsetFields: false,
+  }) as RequiredV1Rule
+}
+
+export function v1RuleToJson<T = V1Rule>(
+  config: T,
+  withDefaults = false,
+): Record<string, unknown> {
+  return instanceToPlain(config, {
+    exposeDefaultValues: withDefaults,
+  })
+}
+
+export function newV1Rule(json: Record<string, unknown> = {}): RequiredV1Rule {
+  return jsonToV1Rule(json)
 }
 
 /*

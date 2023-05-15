@@ -6,7 +6,7 @@ import {
   RunMode,
   ThreadContext,
 } from "../Context"
-import { Config } from "../config/Config"
+import { newConfig } from "../config/Config"
 import {
   ActionArgsType,
   ActionFunction,
@@ -94,7 +94,7 @@ let myThreadActionProvider: TestThreadActionProvider
 let actionRegistry: ActionRegistry
 
 beforeEach(() => {
-  mocks = MockFactory.newMocks(new Config(), RunMode.SAFE_MODE)
+  mocks = MockFactory.newMocks(newConfig(), RunMode.SAFE_MODE)
   actionRegistry = new ActionRegistry()
   myThreadActionProvider = new TestThreadActionProvider()
   actionRegistry.registerActionProvider(

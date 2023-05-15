@@ -1,7 +1,7 @@
 import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
 import { ProcessingContext, RunMode } from "../Context"
 import { ConflictStrategy } from "../adapter/GDriveAdapter"
-import { Config } from "../config/Config"
+import { newConfig } from "../config/Config"
 import { ActionProvider, ActionRegistry } from "./ActionRegistry"
 import { MessageActions } from "./MessageActions"
 
@@ -10,13 +10,13 @@ let dryRunMocks: Mocks
 let actionRegistry: ActionRegistry
 
 beforeEach(() => {
-  mocks = MockFactory.newMocks(new Config(), RunMode.SAFE_MODE)
+  mocks = MockFactory.newMocks(newConfig(), RunMode.SAFE_MODE)
   actionRegistry = new ActionRegistry()
   actionRegistry.registerActionProvider(
     "message",
     new MessageActions() as ActionProvider<ProcessingContext>,
   )
-  dryRunMocks = MockFactory.newMocks(new Config(), RunMode.DRY_RUN)
+  dryRunMocks = MockFactory.newMocks(newConfig(), RunMode.DRY_RUN)
 })
 
 it("should provide actions in the action registry", () => {

@@ -1,12 +1,12 @@
 import { ProcessingContext, ThreadContext } from "../Context"
 import { ThreadActions } from "../actions/ThreadActions"
-import { ThreadConfig } from "../config/ThreadConfig"
+import { RequiredThreadConfig } from "../config/ThreadConfig"
 import { MessageProcessor } from "./MessageProcessor"
 
 export class ThreadProcessor {
   public static processThreadConfigs(
     ctx: ProcessingContext,
-    threadConfigs: ThreadConfig[],
+    threadConfigs: RequiredThreadConfig[],
   ) {
     for (let i = 0; i < threadConfigs.length; i++) {
       const threadConfig = threadConfigs[i]
@@ -16,7 +16,7 @@ export class ThreadProcessor {
     }
   }
 
-  private static isSet(value: string) {
+  private static isSet(value: string | undefined) {
     return value !== undefined && value != null && value != ""
   }
   private static getStr(value: string, defaultVal = "") {
@@ -25,7 +25,7 @@ export class ThreadProcessor {
 
   public static getQueryFromThreadConfig(
     ctx: ProcessingContext,
-    threadConfig: ThreadConfig,
+    threadConfig: RequiredThreadConfig,
   ) {
     let gSearchExp = ""
     gSearchExp += this.getStr(ctx.proc.config.global?.match?.query)
@@ -41,7 +41,7 @@ export class ThreadProcessor {
 
   public static processThreadConfig(
     ctx: ProcessingContext,
-    threadConfig: ThreadConfig,
+    threadConfig: RequiredThreadConfig,
     threadConfigIndex: number,
   ) {
     const gSearchExp = this.getQueryFromThreadConfig(ctx, threadConfig)
@@ -75,7 +75,7 @@ export class ThreadProcessor {
   public static processThread(threadContext: ThreadContext) {
     const thread: GoogleAppsScript.Gmail.GmailThread =
       threadContext.thread.object
-    const threadConfig: ThreadConfig = threadContext.thread.config
+    const threadConfig: RequiredThreadConfig = threadContext.thread.config
     console.info(
       `    Processing of thread '${thread.getFirstMessageSubject()}' started ...`,
     )

@@ -8,4 +8,4 @@ const ajv = new Ajv({
   strict: false,
   useDefaults: true,
 })
-export const validateConfig = ajv.compile<Config>(schema)
+export const validateConfig = ajv.compile<Config>(schema, true)

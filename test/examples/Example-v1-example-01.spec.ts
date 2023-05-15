@@ -1,4 +1,3 @@
-import { RunMode } from "../../src/Context"
 import { GMail2GDrive } from "../mocks/Examples"
 
 const config = {
@@ -43,7 +42,7 @@ const config = {
 }
 
 it("should process a v1 config example", () => {
-  GMail2GDrive.Lib.runWithV1Config(config, RunMode.DRY_RUN)
+  GMail2GDrive.Lib.runWithV1Config(config)
 })
 
 it("should process a v1 config example", () => {

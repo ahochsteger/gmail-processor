@@ -1,10 +1,10 @@
 import { MockFactory } from "../../test/mocks/MockFactory"
 import { RunMode } from "../Context"
-import { Config } from "../config/Config"
+import { newConfig } from "../config/Config"
 import { jsonToMessageConfig } from "../config/MessageConfig"
 import { PatternUtil } from "./PatternUtil"
 
-function getMocks(runMode = RunMode.DRY_RUN, config = new Config()) {
+function getMocks(runMode = RunMode.DRY_RUN, config = newConfig()) {
   return MockFactory.newMocks(config, runMode)
 }
 

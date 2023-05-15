@@ -1,11 +1,11 @@
-import { AttachmentConfig } from "../config/AttachmentConfig"
+import { RequiredAttachmentConfig } from "../config/AttachmentConfig"
 import { AttachmentContext, MessageContext } from "../Context"
 import { PatternUtil } from "../utils/PatternUtil"
 
 export class AttachmentProcessor {
   public static processAttachmentConfigs(
     ctx: MessageContext,
-    attachmentConfigs: AttachmentConfig[],
+    attachmentConfigs: RequiredAttachmentConfig[],
   ) {
     for (let i = 0; i < attachmentConfigs.length; i++) {
       const attachmentConfig = attachmentConfigs[i]
@@ -19,7 +19,7 @@ export class AttachmentProcessor {
 
   public static processAttachmentConfig(
     ctx: MessageContext,
-    attachmentConfig: AttachmentConfig,
+    attachmentConfig: RequiredAttachmentConfig,
     attachmentConfigIndex: number,
   ) {
     console.info(

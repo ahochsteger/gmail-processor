@@ -24,7 +24,7 @@ Represents a config to perform a certain action for a GMail thread/message/attac
 | --------------- | -------- | ------------------------------------- | ------------ |
 | **args**        | `object` | The arguments for a certain action    | No           |
 | **description** | `string` | The description for the action        | No, default: |
-| **name**        | `string` | The name of the action to be executed | No           |
+| **name**        | `string` | The name of the action to be executed | &#10003; Yes |
 
 Additional properties are not allowed.
 
@@ -47,7 +47,7 @@ The description for the action
 The name of the action to be executed
 
 - **Type**: `string`
-- **Required**: No
+- **Required**: &#10003; Yes
 
 ---
 
@@ -59,12 +59,12 @@ Represents a config to handle a certain GMail attachment
 
 **`AttachmentConfig` Properties**
 
-|                 | Type                    | Description                                                             | Required     |
-| --------------- | ----------------------- | ----------------------------------------------------------------------- | ------------ |
-| **actions**     | `ActionConfig` `[]`     | The list actions to be executed for their respective handler scopes     | &#10003; Yes |
-| **description** | `string`                | The description of the attachment handler config                        | No, default: |
-| **match**       | `AttachmentMatchConfig` | Represents a config to match a certain GMail attachment                 | &#10003; Yes |
-| **name**        | `string`                | The unique name of the attachment config (will be generated if not set) | No, default: |
+|                 | Type                    | Description                                                             | Required          |
+| --------------- | ----------------------- | ----------------------------------------------------------------------- | ----------------- |
+| **actions**     | `ActionConfig` `[]`     | The list actions to be executed for their respective handler scopes     | No, default: `[]` |
+| **description** | `string`                | The description of the attachment handler config                        | No, default:      |
+| **match**       | `AttachmentMatchConfig` | Represents a config to match a certain GMail attachment                 | No                |
+| **name**        | `string`                | The unique name of the attachment config (will be generated if not set) | No, default:      |
 
 Additional properties are not allowed.
 
@@ -73,7 +73,7 @@ Additional properties are not allowed.
 The list actions to be executed for their respective handler scopes
 
 - **Type**: `ActionConfig` `[]`
-- **Required**: &#10003; Yes
+- **Required**: No, default: `[]`
 
 ### AttachmentConfig.description
 
@@ -87,7 +87,7 @@ The description of the attachment handler config
 Represents a config to match a certain GMail attachment
 
 - **Type**: `AttachmentMatchConfig`
-- **Required**: &#10003; Yes
+- **Required**: No
 
 ### AttachmentConfig.name
 
@@ -106,14 +106,14 @@ Represents a config to match a certain GMail attachment
 
 **`AttachmentMatchConfig` Properties**
 
-|                         | Type      | Description                                                                     | Required     |
-| ----------------------- | --------- | ------------------------------------------------------------------------------- | ------------ |
-| **contentType**         | `string`  | A RegEx matching the content type of the attachment                             | &#10003; Yes |
-| **includeAttachments**  | `boolean` | Should regular attachments be included in attachment processing (default: true) | &#10003; Yes |
-| **includeInlineImages** | `boolean` | Should inline images be included in attachment processing (default: true)       | &#10003; Yes |
-| **largerThan**          | `number`  | Only include attachments larger than the given size in bytes                    | &#10003; Yes |
-| **name**                | `string`  | A RegEx matching the name of the attachment                                     | &#10003; Yes |
-| **smallerThan**         | `number`  | Only include attachments smaller than the given size in bytes                   | &#10003; Yes |
+|                         | Type      | Description                                                                     | Required              |
+| ----------------------- | --------- | ------------------------------------------------------------------------------- | --------------------- |
+| **contentType**         | `string`  | A RegEx matching the content type of the attachment                             | No, default: `".*"`   |
+| **includeAttachments**  | `boolean` | Should regular attachments be included in attachment processing (default: true) | No, default: `true`   |
+| **includeInlineImages** | `boolean` | Should inline images be included in attachment processing (default: true)       | No, default: `true`   |
+| **largerThan**          | `number`  | Only include attachments larger than the given size in bytes                    | No, default: `-1`     |
+| **name**                | `string`  | A RegEx matching the name of the attachment                                     | No, default: `"(.*)"` |
+| **smallerThan**         | `number`  | Only include attachments smaller than the given size in bytes                   | No, default: `-1`     |
 
 Additional properties are not allowed.
 
@@ -122,42 +122,42 @@ Additional properties are not allowed.
 A RegEx matching the content type of the attachment
 
 - **Type**: `string`
-- **Required**: &#10003; Yes
+- **Required**: No, default: `".*"`
 
 ### AttachmentMatchConfig.includeAttachments
 
 Should regular attachments be included in attachment processing (default: true)
 
 - **Type**: `boolean`
-- **Required**: &#10003; Yes
+- **Required**: No, default: `true`
 
 ### AttachmentMatchConfig.includeInlineImages
 
 Should inline images be included in attachment processing (default: true)
 
 - **Type**: `boolean`
-- **Required**: &#10003; Yes
+- **Required**: No, default: `true`
 
 ### AttachmentMatchConfig.largerThan
 
 Only include attachments larger than the given size in bytes
 
 - **Type**: `number`
-- **Required**: &#10003; Yes
+- **Required**: No, default: `-1`
 
 ### AttachmentMatchConfig.name
 
 A RegEx matching the name of the attachment
 
 - **Type**: `string`
-- **Required**: &#10003; Yes
+- **Required**: No, default: `"(.*)"`
 
 ### AttachmentMatchConfig.smallerThan
 
 Only include attachments smaller than the given size in bytes
 
 - **Type**: `number`
-- **Required**: &#10003; Yes
+- **Required**: No, default: `-1`
 
 ---
 
@@ -173,10 +173,10 @@ Represents a configuration for GMail2GDrive
 | --------------- | ----------------------- | --------------------------------------------------------------------------------------------------------------------------- | ----------------- |
 | **attachments** | `AttachmentConfig` `[]` | The list of handler that define the way attachments are processed                                                           | No, default: `[]` |
 | **description** | `string`                | The description of the GMail2GDrive config                                                                                  | No, default:      |
-| **global**      | `GlobalConfig`          | The global configuration that defines matching for all threads as well as actions for all threads, messages or attachments. | &#10003; Yes      |
+| **global**      | `GlobalConfig`          | The global configuration that defines matching for all threads as well as actions for all threads, messages or attachments. | No                |
 | **messages**    | `MessageConfig` `[]`    | The list of handler that define the way nested messages or attachments are processed                                        | No, default: `[]` |
-| **settings**    | `SettingsConfig`        | Represents a settings config that affect the way GMail2GDrive works.                                                        | &#10003; Yes      |
-| **threads**     | `ThreadConfig` `[]`     | The list of handler that define the way nested threads, messages or attachments are processed                               | &#10003; Yes      |
+| **settings**    | `SettingsConfig`        | Represents a settings config that affect the way GMail2GDrive works.                                                        | No                |
+| **threads**     | `ThreadConfig` `[]`     | The list of handler that define the way nested threads, messages or attachments are processed                               | No, default: `[]` |
 
 Additional properties are not allowed.
 
@@ -199,7 +199,7 @@ The description of the GMail2GDrive config
 The global configuration that defines matching for all threads as well as actions for all threads, messages or attachments.
 
 - **Type**: `GlobalConfig`
-- **Required**: &#10003; Yes
+- **Required**: No
 
 ### Config.messages
 
@@ -213,14 +213,14 @@ The list of handler that define the way nested messages or attachments are proce
 Represents a settings config that affect the way GMail2GDrive works.
 
 - **Type**: `SettingsConfig`
-- **Required**: &#10003; Yes
+- **Required**: No
 
 ### Config.threads
 
 The list of handler that define the way nested threads, messages or attachments are processed
 
 - **Type**: `ThreadConfig` `[]`
-- **Required**: &#10003; Yes
+- **Required**: No, default: `[]`
 
 ---
 
@@ -232,10 +232,10 @@ The global configuration that defines matching for all threads as well as action
 
 **`GlobalConfig` Properties**
 
-|             | Type                | Description                                                                             | Required     |
-| ----------- | ------------------- | --------------------------------------------------------------------------------------- | ------------ |
-| **actions** | `ActionConfig` `[]` | The list of global actions that are always executed for their respective handler scopes | &#10003; Yes |
-| **match**   | `ThreadMatchConfig` | Represents a config to match a certain GMail thread                                     | &#10003; Yes |
+|             | Type                | Description                                                                             | Required          |
+| ----------- | ------------------- | --------------------------------------------------------------------------------------- | ----------------- |
+| **actions** | `ActionConfig` `[]` | The list of global actions that are always executed for their respective handler scopes | No, default: `[]` |
+| **match**   | `ThreadMatchConfig` | Represents a config to match a certain GMail thread                                     | No                |
 
 Additional properties are not allowed.
 
@@ -244,14 +244,14 @@ Additional properties are not allowed.
 The list of global actions that are always executed for their respective handler scopes
 
 - **Type**: `ActionConfig` `[]`
-- **Required**: &#10003; Yes
+- **Required**: No, default: `[]`
 
 ### GlobalConfig.match
 
 Represents a config to match a certain GMail thread
 
 - **Type**: `ThreadMatchConfig`
-- **Required**: &#10003; Yes
+- **Required**: No
 
 ---
 
@@ -263,13 +263,13 @@ Represents a config to handle a certain GMail message
 
 **`MessageConfig` Properties**
 
-|                 | Type                    | Description                                                          | Required     |
-| --------------- | ----------------------- | -------------------------------------------------------------------- | ------------ |
-| **actions**     | `ActionConfig` `[]`     | The list actions to be executed for their respective handler scopes  | &#10003; Yes |
-| **attachments** | `AttachmentConfig` `[]` | The list of handler that define the way attachments are processed    | &#10003; Yes |
-| **description** | `string`                | The description of the message handler config                        | No, default: |
-| **match**       | `MessageMatchConfig`    | Represents a config to match a certain GMail message                 | &#10003; Yes |
-| **name**        | `string`                | The unique name of the message config (will be generated if not set) | No, default: |
+|                 | Type                    | Description                                                          | Required          |
+| --------------- | ----------------------- | -------------------------------------------------------------------- | ----------------- |
+| **actions**     | `ActionConfig` `[]`     | The list actions to be executed for their respective handler scopes  | No, default: `[]` |
+| **attachments** | `AttachmentConfig` `[]` | The list of handler that define the way attachments are processed    | No, default: `[]` |
+| **description** | `string`                | The description of the message handler config                        | No, default:      |
+| **match**       | `MessageMatchConfig`    | Represents a config to match a certain GMail message                 | No                |
+| **name**        | `string`                | The unique name of the message config (will be generated if not set) | No, default:      |
 
 Additional properties are not allowed.
 
@@ -278,14 +278,14 @@ Additional properties are not allowed.
 The list actions to be executed for their respective handler scopes
 
 - **Type**: `ActionConfig` `[]`
-- **Required**: &#10003; Yes
+- **Required**: No, default: `[]`
 
 ### MessageConfig.attachments
 
 The list of handler that define the way attachments are processed
 
 - **Type**: `AttachmentConfig` `[]`
-- **Required**: &#10003; Yes
+- **Required**: No, default: `[]`
 
 ### MessageConfig.description
 
@@ -299,7 +299,7 @@ The description of the message handler config
 Represents a config to match a certain GMail message
 
 - **Type**: `MessageMatchConfig`
-- **Required**: &#10003; Yes
+- **Required**: No
 
 ### MessageConfig.name
 
@@ -324,21 +324,21 @@ Represents a config to match a certain GMail message
 
 **`MessageMatchConfig` Properties**
 
-|               | Type          | Description                                                                                                                                                               | Required     |
-| ------------- | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ |
-| **from**      | `string`      |                                                                                                                                                                           | &#10003; Yes |
-| **is**        | `string` `[]` | A list of properties matching messages should have                                                                                                                        | &#10003; Yes |
-| **newerThan** | `string`      | A relative date/time according to https://github.com/cmaurer/relative.time.parser#readme or an RFC 3339 date/time format matching messages newer than the given date/time | &#10003; Yes |
-| **olderThan** | `string`      | An RFC 3339 date/time format matching messages older than the given date/time                                                                                             | &#10003; Yes |
-| **subject**   | `string`      | A RegEx matching the subject of messages                                                                                                                                  | &#10003; Yes |
-| **to**        | `string`      | A RegEx matching the recipient email address of messages                                                                                                                  | &#10003; Yes |
+|               | Type          | Description                                                                                                                                                               | Required            |
+| ------------- | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------- |
+| **from**      | `string`      |                                                                                                                                                                           | No, default: `".*"` |
+| **is**        | `string` `[]` | A list of properties matching messages should have                                                                                                                        | No, default: `[]`   |
+| **newerThan** | `string`      | A relative date/time according to https://github.com/cmaurer/relative.time.parser#readme or an RFC 3339 date/time format matching messages newer than the given date/time | No, default:        |
+| **olderThan** | `string`      | An RFC 3339 date/time format matching messages older than the given date/time                                                                                             | No, default:        |
+| **subject**   | `string`      | A RegEx matching the subject of messages                                                                                                                                  | No, default: `".*"` |
+| **to**        | `string`      | A RegEx matching the recipient email address of messages                                                                                                                  | No, default: `".*"` |
 
 Additional properties are not allowed.
 
 ### MessageMatchConfig.from
 
 - **Type**: `string`
-- **Required**: &#10003; Yes
+- **Required**: No, default: `".*"`
 
 ### MessageMatchConfig.is
 
@@ -350,35 +350,35 @@ A list of properties matching messages should have
     - `starred`
     - `unread`
     - `unstarred`
-- **Required**: &#10003; Yes
+- **Required**: No, default: `[]`
 
 ### MessageMatchConfig.newerThan
 
 A relative date/time according to https://github.com/cmaurer/relative.time.parser#readme or an RFC 3339 date/time format matching messages newer than the given date/time
 
 - **Type**: `string`
-- **Required**: &#10003; Yes
+- **Required**: No, default:
 
 ### MessageMatchConfig.olderThan
 
 An RFC 3339 date/time format matching messages older than the given date/time
 
 - **Type**: `string`
-- **Required**: &#10003; Yes
+- **Required**: No, default:
 
 ### MessageMatchConfig.subject
 
 A RegEx matching the subject of messages
 
 - **Type**: `string`
-- **Required**: &#10003; Yes
+- **Required**: No, default: `".*"`
 
 ### MessageMatchConfig.to
 
 A RegEx matching the recipient email address of messages
 
 - **Type**: `string`
-- **Required**: &#10003; Yes
+- **Required**: No, default: `".*"`
 
 ---
 
@@ -390,20 +390,20 @@ Represents a settings config that affect the way GMail2GDrive works.
 
 **`SettingsConfig` Properties**
 
-|                      | Type     | Description                                                                                                                      | Required     |
-| -------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------- | ------------ |
-| **logSheetFile**     | `string` | Path of the spreadsheet log file                                                                                                 | &#10003; Yes |
-| **logSheetFolderId** | `string` | Folder ID of the spreadsheet log file in case of a shared drive (instead of logSheetFile)                                        | &#10003; Yes |
-| **maxBatchSize**     | `number` | The maximum batch size of threads to process in a single run to respect Google processing limits                                 | &#10003; Yes |
-| **maxRuntime**       | `number` | The maximum runtime in seconds for a single run to respect Google processing limits                                              | &#10003; Yes |
-| **processedLabel**   | `string` | The label to be added to processed GMail threads (only for markProcessedMode="label", deprecated - only for compatibility to v1) | &#10003; Yes |
+|                      | Type     | Description                                                                                                                      | Required                                        |
+| -------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
+| **logSheetFile**     | `string` | Path of the spreadsheet log file                                                                                                 | No, default: `"Gmail2GDrive/Gmail2GDrive-logs"` |
+| **logSheetFolderId** | `string` | Folder ID of the spreadsheet log file in case of a shared drive (instead of logSheetFile)                                        | No, default:                                    |
+| **maxBatchSize**     | `number` | The maximum batch size of threads to process in a single run to respect Google processing limits                                 | No, default: `10`                               |
+| **maxRuntime**       | `number` | The maximum runtime in seconds for a single run to respect Google processing limits                                              | No, default: `280`                              |
+| **processedLabel**   | `string` | The label to be added to processed GMail threads (only for markProcessedMode="label", deprecated - only for compatibility to v1) | No, default: `"to-gdrive/processed"`            |
 | **processedMode**    | `string` | The mode to mark processed threads/messages.                                                                                     |
 
 - `label`: Add the label from `processedLabel` to the thread. This is just for compatibility to v1 and is limited to one message per thread.
-- `read`: Mark the message as read. This is the new default since it provides more flexibility esp. when threads contain multiple messages.| &#10003; Yes|
-  |**sleepTimeAttachments**|`number`|The sleep time in milliseconds between processing each attachment| &#10003; Yes|
-  |**sleepTimeMessages**|`number`|The sleep time in milliseconds between processing each message| &#10003; Yes|
-  |**sleepTimeThreads**|`number`|The sleep time in milliseconds between processing each thread| &#10003; Yes|
+- `read`: Mark the message as read. This is the new default since it provides more flexibility esp. when threads contain multiple messages.|No, default: `"read"`|
+  |**sleepTimeAttachments**|`number`|The sleep time in milliseconds between processing each attachment|No, default: `0`|
+  |**sleepTimeMessages**|`number`|The sleep time in milliseconds between processing each message|No, default: `0`|
+  |**sleepTimeThreads**|`number`|The sleep time in milliseconds between processing each thread|No, default: `100`|
   |**timezone**|`string`|Overrides the <a href="https://developers.google.com/apps-script/reference/base/session#getscripttimezone">script timezone</a>, which is used by default.|No|
 
 Additional properties are not allowed.
@@ -413,35 +413,35 @@ Additional properties are not allowed.
 Path of the spreadsheet log file
 
 - **Type**: `string`
-- **Required**: &#10003; Yes
+- **Required**: No, default: `"Gmail2GDrive/Gmail2GDrive-logs"`
 
 ### SettingsConfig.logSheetFolderId
 
 Folder ID of the spreadsheet log file in case of a shared drive (instead of logSheetFile)
 
 - **Type**: `string`
-- **Required**: &#10003; Yes
+- **Required**: No, default:
 
 ### SettingsConfig.maxBatchSize
 
 The maximum batch size of threads to process in a single run to respect Google processing limits
 
 - **Type**: `number`
-- **Required**: &#10003; Yes
+- **Required**: No, default: `10`
 
 ### SettingsConfig.maxRuntime
 
 The maximum runtime in seconds for a single run to respect Google processing limits
 
 - **Type**: `number`
-- **Required**: &#10003; Yes
+- **Required**: No, default: `280`
 
 ### SettingsConfig.processedLabel
 
 The label to be added to processed GMail threads (only for markProcessedMode="label", deprecated - only for compatibility to v1)
 
 - **Type**: `string`
-- **Required**: &#10003; Yes
+- **Required**: No, default: `"to-gdrive/processed"`
 
 ### SettingsConfig.processedMode
 
@@ -451,7 +451,7 @@ The mode to mark processed threads/messages.
 - `read`: Mark the message as read. This is the new default since it provides more flexibility esp. when threads contain multiple messages.
 
 - **Type**: `string`
-- **Required**: &#10003; Yes
+- **Required**: No, default: `"read"`
 - **Allowed values**:
   - `"label"`
   - `"read"`
@@ -461,21 +461,21 @@ The mode to mark processed threads/messages.
 The sleep time in milliseconds between processing each attachment
 
 - **Type**: `number`
-- **Required**: &#10003; Yes
+- **Required**: No, default: `0`
 
 ### SettingsConfig.sleepTimeMessages
 
 The sleep time in milliseconds between processing each message
 
 - **Type**: `number`
-- **Required**: &#10003; Yes
+- **Required**: No, default: `0`
 
 ### SettingsConfig.sleepTimeThreads
 
 The sleep time in milliseconds between processing each thread
 
 - **Type**: `number`
-- **Required**: &#10003; Yes
+- **Required**: No, default: `100`
 
 ### SettingsConfig.timezone
 
@@ -496,11 +496,11 @@ Represents a config handle a certain GMail thread
 
 |                 | Type                    | Description                                                                          | Required          |
 | --------------- | ----------------------- | ------------------------------------------------------------------------------------ | ----------------- |
-| **actions**     | `ActionConfig` `[]`     | The list actions to be executed for their respective handler scopes                  | &#10003; Yes      |
+| **actions**     | `ActionConfig` `[]`     | The list actions to be executed for their respective handler scopes                  | No, default: `[]` |
 | **attachments** | `AttachmentConfig` `[]` | The list of handler that define the way attachments are processed                    | No, default: `[]` |
 | **description** | `string`                | The description of the thread handler config                                         | No, default:      |
-| **match**       | `ThreadMatchConfig`     | Represents a config to match a certain GMail thread                                  | &#10003; Yes      |
-| **messages**    | `MessageConfig` `[]`    | The list of handler that define the way nested messages or attachments are processed | &#10003; Yes      |
+| **match**       | `ThreadMatchConfig`     | Represents a config to match a certain GMail thread                                  | No                |
+| **messages**    | `MessageConfig` `[]`    | The list of handler that define the way nested messages or attachments are processed | No, default: `[]` |
 | **name**        | `string`                | The unique name of the thread config (will be generated if not set)                  | No, default:      |
 
 Additional properties are not allowed.
@@ -510,7 +510,7 @@ Additional properties are not allowed.
 The list actions to be executed for their respective handler scopes
 
 - **Type**: `ActionConfig` `[]`
-- **Required**: &#10003; Yes
+- **Required**: No, default: `[]`
 
 ### ThreadConfig.attachments
 
@@ -531,14 +531,14 @@ The description of the thread handler config
 Represents a config to match a certain GMail thread
 
 - **Type**: `ThreadMatchConfig`
-- **Required**: &#10003; Yes
+- **Required**: No
 
 ### ThreadConfig.messages
 
 The list of handler that define the way nested messages or attachments are processed
 
 - **Type**: `MessageConfig` `[]`
-- **Required**: &#10003; Yes
+- **Required**: No, default: `[]`
 
 ### ThreadConfig.name
 
@@ -557,12 +557,12 @@ Represents a config to match a certain GMail thread
 
 **`ThreadMatchConfig` Properties**
 
-|                     | Type     | Description                                                                                                                             | Required     |
-| ------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------- | ------------ |
-| **maxMessageCount** | `number` | The maximum number of messages a matching thread is allowed to have                                                                     | &#10003; Yes |
-| **minMessageCount** | `number` | The minimum number of messages a matching thread must have                                                                              | &#10003; Yes |
-| **newerThan**       | `string` | Only process threads with message newer than (leave empty for no restriction; use d, m and y for day, month and year)                   | &#10003; Yes |
-| **query**           | `string` | The GMail search query to find threads to be processed (see http://support.google.com/mail/bin/answer.py?hl=en&answer=7190 for details) | &#10003; Yes |
+|                     | Type     | Description                                                                                                                             | Required          |
+| ------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------- | ----------------- |
+| **maxMessageCount** | `number` | The maximum number of messages a matching thread is allowed to have                                                                     | No, default: `-1` |
+| **minMessageCount** | `number` | The minimum number of messages a matching thread must have                                                                              | No, default: `1`  |
+| **newerThan**       | `string` | Only process threads with message newer than (leave empty for no restriction; use d, m and y for day, month and year)                   | No, default:      |
+| **query**           | `string` | The GMail search query to find threads to be processed (see http://support.google.com/mail/bin/answer.py?hl=en&answer=7190 for details) | No, default:      |
 
 Additional properties are not allowed.
 
@@ -571,28 +571,28 @@ Additional properties are not allowed.
 The maximum number of messages a matching thread is allowed to have
 
 - **Type**: `number`
-- **Required**: &#10003; Yes
+- **Required**: No, default: `-1`
 
 ### ThreadMatchConfig.minMessageCount
 
 The minimum number of messages a matching thread must have
 
 - **Type**: `number`
-- **Required**: &#10003; Yes
+- **Required**: No, default: `1`
 
 ### ThreadMatchConfig.newerThan
 
 Only process threads with message newer than (leave empty for no restriction; use d, m and y for day, month and year)
 
 - **Type**: `string`
-- **Required**: &#10003; Yes
+- **Required**: No, default:
 
 ### ThreadMatchConfig.query
 
 The GMail search query to find threads to be processed (see http://support.google.com/mail/bin/answer.py?hl=en&answer=7190 for details)
 
 - **Type**: `string`
-- **Required**: &#10003; Yes
+- **Required**: No, default:
 
 ---
 

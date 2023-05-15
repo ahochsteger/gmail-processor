@@ -7,16 +7,16 @@ import {
 } from "../Context"
 
 export class Logger {
-  debug(message?: any, ...optionalParams: any[]) {
+  debug(message?: unknown, ...optionalParams: unknown[]) {
     console.debug(message, ...optionalParams)
   }
-  info(message?: any, ...optionalParams: any[]) {
+  info(message?: unknown, ...optionalParams: unknown[]) {
     console.info(message, ...optionalParams)
   }
-  warn(message?: any, ...optionalParams: any[]) {
+  warn(message?: unknown, ...optionalParams: unknown[]) {
     console.warn(message, ...optionalParams)
   }
-  error(message?: any, ...optionalParams: any[]) {
+  error(message?: unknown, ...optionalParams: unknown[]) {
     console.error(message, ...optionalParams)
   }
   logEnvContext(ctx: EnvContext) {

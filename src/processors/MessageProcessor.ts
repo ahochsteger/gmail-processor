@@ -1,12 +1,12 @@
 import { MessageContext, ThreadContext } from "../Context"
-import { MessageConfig } from "../config/MessageConfig"
+import { RequiredMessageConfig } from "../config/MessageConfig"
 import { MessageFlag } from "../config/MessageFlag"
 import { AttachmentProcessor } from "../processors/AttachmentProcessor"
 
 export class MessageProcessor {
   public static processMessageConfigs(
     ctx: ThreadContext,
-    messageConfigs: MessageConfig[],
+    messageConfigs: RequiredMessageConfig[],
   ) {
     for (let i = 0; i < messageConfigs.length; i++) {
       const messageConfig = messageConfigs[i]
@@ -17,7 +17,7 @@ export class MessageProcessor {
   }
 
   public static matches(
-    messageConfig: MessageConfig,
+    messageConfig: RequiredMessageConfig,
     message: GoogleAppsScript.Gmail.GmailMessage,
   ) {
     if (!message.getFrom().match(messageConfig.match.from)) return false
@@ -45,7 +45,7 @@ export class MessageProcessor {
 
   public static processMessageConfig(
     ctx: ThreadContext,
-    messageConfig: MessageConfig,
+    messageConfig: RequiredMessageConfig,
     messageConfigIndex: number,
   ) {
     console.info(
@@ -79,7 +79,7 @@ export class MessageProcessor {
    * @param rule The rule to be processed.
    */
   public static processMessage(messageContext: MessageContext) {
-    const messageConfig: MessageConfig = messageContext.message.config
+    const messageConfig = messageContext.message.config
     const message = messageContext.message.object
     console.info(
       `        Processing of message '${message.getSubject()}' (id:${message.getId()}) started ...`,

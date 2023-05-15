@@ -1,21 +1,21 @@
 import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
 import { RunMode } from "../Context"
-import { Config } from "../config/Config"
+import { RequiredConfig } from "../config/Config"
 import { GmailProcessor } from "./GmailProcessor"
 
-let config: Config
+let config: RequiredConfig
 let mocks: Mocks
 let gmailProcessor: GmailProcessor
 
 beforeEach(() => {
   config = MockFactory.newDefaultConfig()
-  mocks = MockFactory.newMocks(config, RunMode.DRY_RUN)
+  mocks = MockFactory.newMocks(config as RequiredConfig, RunMode.DRY_RUN)
   gmailProcessor = new GmailProcessor()
 })
 
 describe("run", () => {
   it("should process a v2 config object", () => {
-    gmailProcessor.run(mocks.envContext, config, RunMode.DRY_RUN)
+    gmailProcessor.run(mocks.envContext, config)
     expect(mocks.envContext.env.gmailApp.search).toHaveBeenCalledTimes(
       config.threads.length,
     )

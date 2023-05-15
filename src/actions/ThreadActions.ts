@@ -15,7 +15,10 @@ export class ThreadActions implements ActionProvider<ThreadContext> {
   @writingAction()
   public static markProcessed(context: ThreadContext): ActionReturnType {
     let thread
-    if (context.proc.config.settings.processedMode == "label") {
+    if (
+      context.proc.config.settings.processedMode == "label" &&
+      context.proc.config.settings.processedLabel
+    ) {
       thread = this.addLabel(context, {
         name: context.proc.config.settings.processedLabel,
       })

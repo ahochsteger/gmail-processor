@@ -30,6 +30,7 @@
           "type": "string"
         },
         "rules": {
+          "default": [],
           "description": "Processing rules",
           "items": {
             "$ref": "#/definitions/V1Rule"
@@ -51,7 +52,6 @@
         }
       },
       "required": [
-        "globalFilter",
         "maxRuntime",
         "newerThan",
         "processedLabel",
@@ -138,20 +138,7 @@
           "type": "boolean"
         }
       },
-      "required": [
-        "archive",
-        "filenameFrom",
-        "filenameFromRegexp",
-        "filenameTo",
-        "filter",
-        "folder",
-        "newerThan",
-        "parentFolderId",
-        "ruleLabel",
-        "saveMessagePDF",
-        "saveThreadPDF",
-        "skipPDFHeader"
-      ],
+      "required": ["filter", "folder"],
       "title": "V1Rule",
       "type": "object"
     }

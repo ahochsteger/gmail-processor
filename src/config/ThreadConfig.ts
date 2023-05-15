@@ -1,5 +1,11 @@
-import { Expose, Type, plainToInstance } from "class-transformer"
+import {
+  Expose,
+  Type,
+  instanceToPlain,
+  plainToInstance,
+} from "class-transformer"
 import "reflect-metadata"
+import { RequiredDeep } from "../utils/UtilityTypes"
 import { ActionConfig } from "./ActionConfig"
 import { AttachmentConfig } from "./AttachmentConfig"
 import { MessageConfig } from "./MessageConfig"
@@ -13,7 +19,7 @@ export class ThreadConfig {
    * The list actions to be executed for their respective handler scopes
    */
   @Expose()
-  actions: ActionConfig[] = []
+  actions?: ActionConfig[] = []
   /**
    * The description of the thread handler config
    */
@@ -24,7 +30,7 @@ export class ThreadConfig {
    */
   @Expose()
   @Type(() => MessageConfig)
-  messages: MessageConfig[] = []
+  messages?: MessageConfig[] = []
   /**
    * The list of handler that define the way attachments are processed
    */
@@ -36,7 +42,7 @@ export class ThreadConfig {
    */
   @Expose()
   @Type(() => ThreadMatchConfig)
-  match = new ThreadMatchConfig()
+  match? = new ThreadMatchConfig()
   /**
    * The unique name of the thread config (will be generated if not set)
    */
@@ -44,11 +50,28 @@ export class ThreadConfig {
   name? = ""
 }
 
+export type RequiredThreadConfig = RequiredDeep<ThreadConfig>
+
 export function jsonToThreadConfig(
   json: Record<string, unknown>,
-): ThreadConfig {
+): RequiredThreadConfig {
   return plainToInstance(ThreadConfig, json, {
     exposeDefaultValues: true,
     exposeUnsetFields: false,
+  }) as RequiredThreadConfig
+}
+
+export function threadConfigToJson<T = ThreadConfig>(
+  config: T,
+  withDefaults = false,
+): Record<string, unknown> {
+  return instanceToPlain(config, {
+    exposeDefaultValues: withDefaults,
   })
+}
+
+export function newThreadConfig(
+  json: Record<string, unknown> = {},
+): RequiredThreadConfig {
+  return jsonToThreadConfig(json)
 }

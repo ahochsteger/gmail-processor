@@ -1,10 +1,24 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { MockFactory } from "../../test/mocks/MockFactory"
-import { Config, configToJson, jsonToConfig, normalizeConfig } from "./Config"
+import {
+  RequiredConfig,
+  configToJson,
+  jsonToConfig,
+  newConfig,
+  normalizeConfig,
+} from "./Config"
 import { DEFAULT_SETTING_MAX_RUNTIME } from "./SettingsConfig"
-import { ThreadConfig } from "./ThreadConfig"
+import { newThreadConfig } from "./ThreadConfig"
 // import * as configSchema from "../../schema-v2.json"
 // import { defaults } from "json-schema-defaults"
+
+it("New instance should contain defaults", () => {
+  const cfg = newConfig() as RequiredConfig
+  expect(cfg.description).toEqual("")
+  expect(cfg.threads).toEqual([])
+  expect(cfg.messages).toEqual([])
+  expect(cfg.attachments).toEqual([])
+})
 
 it("Schema-generated Config Types Test", () => {
   const cfg = MockFactory.newDefaultConfig()
@@ -99,10 +113,10 @@ describe("configToJson", () => {
       },
       threads: [{ description: "thread description" }],
     }
-    const cfg = new Config()
+    const cfg = newConfig()
     cfg.description = expected.description
     cfg.settings.processedLabel = expected.settings.processedLabel
-    const tcfg = new ThreadConfig()
+    const tcfg = newThreadConfig()
     tcfg.description = expected.threads[0].description
     cfg.threads.push(tcfg)
     const actual = configToJson(cfg, true)
@@ -120,10 +134,10 @@ describe("configToJson", () => {
   //     },
   //     threads: [{ description: "thread description" }],
   //   }
-  //   const cfg = new Config()
+  //   const cfg = newConfig()
   //   cfg.description = expected.description
   //   cfg.settings.processedLabel = expected.settings.processedLabel
-  //   const tcfg = new ThreadConfig()
+  //   const tcfg = newThreadConfig()
   //   tcfg.description = expected.threads[0].description
   //   cfg.threads.push(tcfg)
   //   const actual = configToJson(cfg, false)
