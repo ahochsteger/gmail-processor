@@ -50,7 +50,7 @@ export class ThreadProcessor {
       gSearchExp,
       ctx.proc.config.settings.maxBatchSize,
     )
-    console.info(
+    ctx.log.info(
       `  Processing of thread config '${threadConfig.name}' started ...`,
     )
     for (let threadIndex = 0; threadIndex < threads.length; threadIndex++) {
@@ -67,19 +67,18 @@ export class ThreadProcessor {
       }
       this.processThread(threadContext)
     }
-    console.info(
+    ctx.log.info(
       `  Processing of thread config '${threadConfig.name}' finished.`,
     )
   }
 
-  public static processThread(threadContext: ThreadContext) {
-    const thread: GoogleAppsScript.Gmail.GmailThread =
-      threadContext.thread.object
-    const threadConfig: RequiredThreadConfig = threadContext.thread.config
-    console.info(
+  public static processThread(ctx: ThreadContext) {
+    const thread: GoogleAppsScript.Gmail.GmailThread = ctx.thread.object
+    const threadConfig: RequiredThreadConfig = ctx.thread.config
+    ctx.log.info(
       `    Processing of thread '${thread.getFirstMessageSubject()}' started ...`,
     )
-    MessageProcessor.processMessageConfigs(threadContext, threadConfig.messages)
+    MessageProcessor.processMessageConfigs(ctx, threadConfig.messages)
     // // Process all messages of a thread:
     // for (const messageRule of threadRule.messageRules) {
     //     for (const message of thread.getMessages()) {
@@ -90,8 +89,8 @@ export class ThreadProcessor {
     // }
 
     // Mark a thread as processed:
-    ThreadActions.markProcessed(threadContext)
-    console.info(
+    ThreadActions.markProcessed(ctx)
+    ctx.log.info(
       `    Processing of thread '${thread.getFirstMessageSubject()}' finished.`,
     )
   }

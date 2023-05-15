@@ -22,7 +22,7 @@ export class AttachmentProcessor {
     attachmentConfig: RequiredAttachmentConfig,
     attachmentConfigIndex: number,
   ) {
-    console.info(
+    ctx.log.info(
       `          Processing of attachment config '${attachmentConfig.name}' started ...`,
     )
     const attachments = ctx.message.object.getAttachments()
@@ -43,14 +43,14 @@ export class AttachmentProcessor {
       }
       this.processAttachment(attachmentContext)
     }
-    console.info(
+    ctx.log.info(
       `          Processing of attachment config '${attachmentConfig.name}' finished.`,
     )
   }
 
-  public static processAttachment(attachmentContext: AttachmentContext) {
-    const attachment = attachmentContext.attachment.object
-    console.info(
+  public static processAttachment(ctx: AttachmentContext) {
+    const attachment = ctx.attachment.object
+    ctx.log.info(
       `            Processing of attachment '${attachment.getName()}' started ...`,
     )
     // var match = true;
@@ -63,12 +63,11 @@ export class AttachmentProcessor {
     //   continue;
     // }
 
-    const dataMap =
-      PatternUtil.buildSubstitutionMapFromAttachmentContext(attachmentContext)
+    const dataMap = PatternUtil.buildSubstitutionMapFromAttachmentContext(ctx)
     // TODO: Implement attachment handling including dry-run
-    console.log("Dumping dataMap:")
-    console.log(dataMap)
-    console.info(
+    ctx.log.debug("Dumping dataMap:")
+    ctx.log.debug(dataMap)
+    ctx.log.info(
       `            Processing of attachment '${attachment.getName()}' finished.`,
     )
   }

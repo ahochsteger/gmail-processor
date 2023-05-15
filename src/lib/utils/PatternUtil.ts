@@ -210,7 +210,7 @@ export class PatternUtil {
       )
       if (messgageMatch == null) {
         m.set("message.matched", false)
-        console.log(
+        ctx.log.info(
           "  Skipped message with id " +
             message.getId() +
             " because it did not match the regex rules ...",
@@ -251,7 +251,7 @@ export class PatternUtil {
     )
     if (attachmentMatch == null) {
       m.set("attachment.matched", false)
-      console.log(
+      ctx.log.info(
         "  Skipped attachment with name '" +
           attachment.getName() +
           "' because it did not match the regex rules ...",

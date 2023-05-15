@@ -48,7 +48,7 @@ export class MessageProcessor {
     messageConfig: RequiredMessageConfig,
     messageConfigIndex: number,
   ) {
-    console.info(
+    ctx.log.info(
       `      Processing of message config '${messageConfig.name}' started ...`,
     )
     const messages = ctx.thread.object.getMessages()
@@ -68,7 +68,7 @@ export class MessageProcessor {
       }
       this.processMessage(messageContext)
     }
-    console.info(
+    ctx.log.info(
       `      Processing of message config '${messageConfig.name}' finished.`,
     )
   }
@@ -78,16 +78,16 @@ export class MessageProcessor {
    * @param message The message to be processed.
    * @param rule The rule to be processed.
    */
-  public static processMessage(messageContext: MessageContext) {
-    const messageConfig = messageContext.message.config
-    const message = messageContext.message.object
-    console.info(
+  public static processMessage(ctx: MessageContext) {
+    const messageConfig = ctx.message.config
+    const message = ctx.message.object
+    ctx.log.info(
       `        Processing of message '${message.getSubject()}' (id:${message.getId()}) started ...`,
     )
     if (messageConfig.attachments) {
       // New rule configuration format
       AttachmentProcessor.processAttachmentConfigs(
-        messageContext,
+        ctx,
         messageConfig.attachments,
       )
     }
@@ -98,7 +98,7 @@ export class MessageProcessor {
     //         processAttachment(thread, msgIdx, messageRule, config, attIdx)
     //     }
     // }
-    console.info(
+    ctx.log.info(
       `        Processing of message '${message.getSubject()}' (id:${message.getId()}) finished.`,
     )
   }

@@ -6,15 +6,20 @@ import { ThreadActions } from "../actions/ThreadActions"
 import { GDriveAdapter } from "../adapter/GDriveAdapter"
 import { GmailAdapter } from "../adapter/GmailAdapter"
 import { SpreadsheetAdapter } from "../adapter/SpreadsheetAdapter"
-import { RequiredConfig, jsonToConfig, normalizeConfig } from "../config/Config"
+import {
+  RequiredConfig,
+  configToJson,
+  jsonToConfig,
+  normalizeConfig,
+} from "../config/Config"
 import { V1Config, jsonToV1Config } from "../config/v1/V1Config"
 import { V1ToV2Converter } from "../config/v1/V1ToV2Converter"
 import { Timer } from "../utils/Timer"
 import { ThreadProcessor } from "./ThreadProcessor"
 
 export class GmailProcessor {
-  public run(envContext: EnvContext, config: RequiredConfig) {
-    console.info("Processing of GMail2GDrive config started ...")
+  public run(ctx: EnvContext, config: RequiredConfig) {
+    ctx.log.info("Processing of GMail2GDrive config started ...")
     const actionRegistry = new ActionRegistry()
     actionRegistry.registerActionProvider(
       "thread",
@@ -29,45 +34,46 @@ export class GmailProcessor {
       new AttachmentActions() as unknown as ActionProvider<ProcessingContext>,
     )
     const processingContext: ProcessingContext = {
-      ...envContext,
+      ...ctx,
       proc: {
         actionRegistry: actionRegistry,
-        gdriveAdapter: new GDriveAdapter(envContext),
-        gmailAdapter: new GmailAdapter(envContext),
-        spreadsheetAdapter: new SpreadsheetAdapter(envContext),
+        gdriveAdapter: new GDriveAdapter(ctx),
+        gmailAdapter: new GmailAdapter(ctx),
+        spreadsheetAdapter: new SpreadsheetAdapter(ctx),
         config: config,
         timer: new Timer(config.settings.maxRuntime),
       },
     }
-    envContext.log.logProcessingContext(processingContext)
+    ctx.log.logProcessingContext(processingContext)
     ThreadProcessor.processThreadConfigs(processingContext, config.threads)
-    console.info("Processing of GMail2GDrive config finished.")
+    ctx.log.info("Processing of GMail2GDrive config finished.")
   }
 
   public runWithConfigJson(
-    envContext: EnvContext,
+    ctx: EnvContext,
     configJson: Record<string, unknown>,
   ) {
     const config = this.getEffectiveConfig(configJson)
-    console.info("Effective configuration: " + JSON.stringify(config))
-    this.run(envContext, config)
+    ctx.log.info("Effective configuration: " + JSON.stringify(config))
+    this.run(ctx, config)
   }
 
-  public runWithV1Config(envContext: EnvContext, v1config: V1Config) {
+  public runWithV1Config(ctx: EnvContext, v1config: V1Config) {
     const config = V1ToV2Converter.v1ConfigToV2Config(v1config)
-    console.warn(
-      "Using deprecated v1 config format - switching to the new v2 config format is strongly recommended!",
+    ctx.log.warn(
+      "Using deprecated v1 config format - switching to the new v2 config format is strongly recommended: ",
+      configToJson(config),
     )
-    this.run(envContext, normalizeConfig(config))
+    this.run(ctx, normalizeConfig(config))
   }
 
   public runWithV1ConfigJson(
-    envContext: EnvContext,
+    ctx: EnvContext,
     v1configJson: Record<string, unknown>,
   ) {
     const v1config = jsonToV1Config(v1configJson)
-    console.log("v1config: ", v1config)
-    this.runWithV1Config(envContext, v1config)
+    ctx.log.info("v1 legacy config: ", v1config)
+    this.runWithV1Config(ctx, v1config)
   }
 
   public getEffectiveConfig(

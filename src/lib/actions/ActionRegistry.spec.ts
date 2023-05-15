@@ -22,7 +22,7 @@ class TestProcessingActionProvider implements ActionProvider {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _args: ActionArgsType = {},
   ) {
-    console.log(`runMode:${ctx.env.runMode}`)
+    ctx.log.info(`runMode:${ctx.env.runMode}`)
     return { ok: true }
   }
 }
@@ -34,7 +34,7 @@ class TestThreadActionProvider implements ActionProvider {
   >(ctx: ProcessingContext, args: ActionArgsType) {
     // const myNum = this.myPrivateFunction()
     const a = typedArgs<T>(args)
-    console.log(
+    ctx.log.info(
       `Subject:${(
         ctx as ThreadContext
       ).thread.object.getFirstMessageSubject()}, threadBoolArg:${
@@ -50,7 +50,7 @@ class TestThreadActionProvider implements ActionProvider {
     T extends { num: number; str: string },
   >(ctx: ProcessingContext, args: ActionArgsType) {
     const a = typedArgs<T>(args)
-    console.log(
+    ctx.log.info(
       `Subject:${(ctx as MessageContext).message.object.getSubject()}, num:${
         a.num
       }, str:${a.str}`,
@@ -65,7 +65,7 @@ class TestMessageActionProvider implements ActionProvider {
     T extends { num: number; str: string },
   >(ctx: ProcessingContext, args: ActionArgsType) {
     const a = typedArgs<T>(args)
-    console.log(
+    ctx.log.info(
       `Name:${(ctx as AttachmentContext).attachment.object.getName()}, num:${
         a.num
       }, str:${a.str}`,
@@ -80,7 +80,7 @@ class TestAttachmentActionProvider implements ActionProvider {
     T extends { num: number; str: string },
   >(ctx: ProcessingContext, args: ActionArgsType) {
     const a = typedArgs<T>(args)
-    console.log(
+    ctx.log.info(
       `Subject:${(ctx as AttachmentContext).message.object.getSubject}, num:${
         a.num
       }, str:${a.str}`,
