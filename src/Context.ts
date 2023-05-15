@@ -6,6 +6,7 @@ import { AttachmentConfig } from "./config/AttachmentConfig"
 import { Config } from "./config/Config"
 import { MessageConfig } from "./config/MessageConfig"
 import { ThreadConfig } from "./config/ThreadConfig"
+import { Logger } from "./utils/Logging"
 import { Timer } from "./utils/Timer"
 
 export enum RunMode {
@@ -57,7 +58,7 @@ export type AttachmentInfo = {
   index: number
 }
 
-export type EnvContext = { env: EnvInfo }
+export type EnvContext = { env: EnvInfo; log: Logger }
 export type ProcessingContext = EnvContext & { proc: ProcessingInfo }
 export type ThreadContext = ProcessingContext & { thread: ThreadInfo }
 export type MessageContext = ThreadContext & { message: MessageInfo }

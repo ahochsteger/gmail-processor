@@ -17,6 +17,7 @@ import { MessageConfig } from "../../src/config/MessageConfig"
 import { MessageFlag } from "../../src/config/MessageFlag"
 import { jsonToThreadConfig } from "../../src/config/ThreadConfig"
 import { V1Config, jsonToV1Config } from "../../src/config/v1/V1Config"
+import { Logger } from "../../src/utils/Logging"
 import { Timer } from "../../src/utils/Timer"
 
 export class Mocks {
@@ -96,6 +97,7 @@ export class MockFactory {
         utilities: mocks.utilities,
         runMode,
       },
+      log: new Logger(),
     }
     return envContext
   }

@@ -1,7 +1,10 @@
 import { EnvContext, RunMode } from "./Context"
 import { GmailProcessor } from "./processors/GmailProcessor"
+import { Logger } from "./utils/Logging"
 
-const envContext: EnvContext = {
+const logger = new Logger()
+
+const ctx: EnvContext = {
   env: {
     cacheService: CacheService,
     gdriveApp: DriveApp,
@@ -11,6 +14,7 @@ const envContext: EnvContext = {
     runMode: RunMode.SAFE_MODE,
     timezone: Session?.getScriptTimeZone() || "UTC",
   },
+  log: logger,
 }
 const gmailProcessor = new GmailProcessor()
 
@@ -22,9 +26,10 @@ export function run(
   configJson: Record<string, unknown>,
   runMode = RunMode.SAFE_MODE,
 ) {
-  console.log("Processing started ...")
-  gmailProcessor.runWithConfigJson(envContext, configJson, runMode)
-  console.log("Processing finished ...")
+  ctx.log.info("Processing started ...")
+  ctx.log.logEnvContext(ctx)
+  gmailProcessor.runWithConfigJson(ctx, configJson, runMode)
+  ctx.log.info("Processing finished ...")
 }
 
 /**
@@ -35,7 +40,7 @@ export function runWithV1Config(
   configJson: Record<string, unknown>,
   runMode = RunMode.SAFE_MODE,
 ) {
-  gmailProcessor.runWithV1ConfigJson(envContext, configJson, runMode)
+  gmailProcessor.runWithV1ConfigJson(ctx, configJson, runMode)
 }
 
 /**
