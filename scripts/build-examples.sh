@@ -2,7 +2,7 @@
 
 set -eufo pipefail
 
-srcdir="${1:-gas/examples}"
+srcdir="${1:-src/gas/examples}"
 outdir="${2:-build/gas/examples}"
 
 rm -rf "${outdir}"

@@ -6,23 +6,23 @@ import {
   ProcessingContext,
   RunMode,
   ThreadContext,
-} from "../../src/Context"
-import { ActionRegistry } from "../../src/actions/ActionRegistry"
-import { GDriveAdapter } from "../../src/adapter/GDriveAdapter"
-import { GmailAdapter } from "../../src/adapter/GmailAdapter"
-import { SpreadsheetAdapter } from "../../src/adapter/SpreadsheetAdapter"
-import { newAttachmentConfig } from "../../src/config/AttachmentConfig"
+} from "../../lib/Context"
+import { ActionRegistry } from "../../lib/actions/ActionRegistry"
+import { GDriveAdapter } from "../../lib/adapter/GDriveAdapter"
+import { GmailAdapter } from "../../lib/adapter/GmailAdapter"
+import { SpreadsheetAdapter } from "../../lib/adapter/SpreadsheetAdapter"
+import { newAttachmentConfig } from "../../lib/config/AttachmentConfig"
 import {
   RequiredConfig,
   jsonToConfig,
   newConfig,
-} from "../../src/config/Config"
-import { newMessageConfig } from "../../src/config/MessageConfig"
-import { MessageFlag } from "../../src/config/MessageFlag"
-import { jsonToThreadConfig } from "../../src/config/ThreadConfig"
-import { V1Config, jsonToV1Config } from "../../src/config/v1/V1Config"
-import { Logger } from "../../src/utils/Logging"
-import { Timer } from "../../src/utils/Timer"
+} from "../../lib/config/Config"
+import { newMessageConfig } from "../../lib/config/MessageConfig"
+import { MessageFlag } from "../../lib/config/MessageFlag"
+import { jsonToThreadConfig } from "../../lib/config/ThreadConfig"
+import { V1Config, jsonToV1Config } from "../../lib/config/v1/V1Config"
+import { Logger } from "../../lib/utils/Logging"
+import { Timer } from "../../lib/utils/Timer"
 
 export class Mocks {
   public attachmentContext = mock<AttachmentContext>()

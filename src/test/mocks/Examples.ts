@@ -1,6 +1,6 @@
-import { RunMode } from "../../src/Context"
-import { newConfig } from "../../src/config/Config"
-import { GmailProcessor } from "../../src/processors/GmailProcessor"
+import { RunMode } from "../../lib/Context"
+import { newConfig } from "../../lib/config/Config"
+import { GmailProcessor } from "../../lib/processors/GmailProcessor"
 import { MockFactory } from "../mocks/MockFactory"
 
 const gmailProcessor = new GmailProcessor()

@@ -1,7 +1,7 @@
 import { ValidateFunction } from "ajv"
 import fs from "fs"
-import { validateConfig } from "../src/config/Validate"
-import { validateV1Config } from "../src/config/v1/V1Validate"
+import { validateConfig } from "../src/lib/config/Validate"
+import { validateV1Config } from "../src/lib/config/v1/V1Validate"
 
 let validate: ValidateFunction
 

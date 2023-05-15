@@ -8,10 +8,10 @@ function genSchema() {
 
   case "${schemaName}" in
     v1)
-      schemaPath="src/config/v1"
+      schemaPath="src/lib/config/v1"
     ;;
     v2)
-      schemaPath="src/config"
+      schemaPath="src/lib/config"
     ;;
     *)
     ;;
