@@ -6,12 +6,7 @@ import { ThreadActions } from "../actions/ThreadActions"
 import { GDriveAdapter } from "../adapter/GDriveAdapter"
 import { GmailAdapter } from "../adapter/GmailAdapter"
 import { SpreadsheetAdapter } from "../adapter/SpreadsheetAdapter"
-import {
-  RequiredConfig,
-  configToJson,
-  jsonToConfig,
-  normalizeConfig,
-} from "../config/Config"
+import { RequiredConfig, configToJson, jsonToConfig } from "../config/Config"
 import { V1Config, jsonToV1Config } from "../config/v1/V1Config"
 import { V1ToV2Converter } from "../config/v1/V1ToV2Converter"
 import { Timer } from "../utils/Timer"
@@ -64,7 +59,7 @@ export class GmailProcessor {
       "Using deprecated v1 config format - switching to the new v2 config format is strongly recommended: ",
       configToJson(config),
     )
-    this.run(ctx, normalizeConfig(config))
+    this.run(ctx, config)
   }
 
   public runWithV1ConfigJson(
@@ -79,15 +74,13 @@ export class GmailProcessor {
   public getEffectiveConfig(
     configJson: Record<string, unknown>,
   ): RequiredConfig {
-    const config = jsonToConfig(configJson)
-    return normalizeConfig(config)
+    return jsonToConfig(configJson)
   }
 
   public getEffectiveConfigV1(
     v1configJson: Record<string, unknown>,
   ): RequiredConfig {
     const v1config = jsonToV1Config(v1configJson)
-    const config = V1ToV2Converter.v1ConfigToV2Config(v1config)
-    return normalizeConfig(config)
+    return V1ToV2Converter.v1ConfigToV2Config(v1config)
   }
 }

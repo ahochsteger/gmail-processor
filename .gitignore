@@ -6,3 +6,4 @@ dist/
 dist-examples/
 node_modules/
 .clasp.json
+!.vscode/settings.json

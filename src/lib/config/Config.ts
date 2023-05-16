@@ -22,9 +22,9 @@ import { SettingsConfig } from "./SettingsConfig"
 import { ThreadConfig, newThreadConfig } from "./ThreadConfig"
 
 /**
- * Represents a configuration for GMail2GDrive
+ * Represents a configuration for GMail2GDrive in normalized form
  */
-export class Config {
+export class ProcessingConfig {
   /**
    * The description of the GMail2GDrive config
    */
@@ -43,6 +43,18 @@ export class Config {
   @Type(() => ThreadConfig)
   threads?: ThreadConfig[] = []
   /**
+   * Represents a settings config that affect the way GMail2GDrive works.
+   */
+  @Expose()
+  @Type(() => SettingsConfig)
+  settings? = new SettingsConfig()
+}
+
+/**
+ * Represents a configuration for GMail2GDrive
+ */
+export class Config extends ProcessingConfig {
+  /**
    * The list of handler that define the way nested messages or attachments are processed
    */
   @Expose()
@@ -54,27 +66,21 @@ export class Config {
   @Expose()
   @Type(() => AttachmentConfig)
   attachments?: AttachmentConfig[] = []
-  /**
-   * Represents a settings config that affect the way GMail2GDrive works.
-   */
-  @Expose()
-  @Type(() => SettingsConfig)
-  settings? = new SettingsConfig()
 }
 
-export type RequiredConfig = RequiredDeep<Config>
+export type RequiredConfig = RequiredDeep<ProcessingConfig>
 
 export function jsonToConfig(
   json: Record<string, unknown> = {},
 ): RequiredConfig {
-  return plainToInstance(Config, json, {
+  return plainToInstance(ProcessingConfig, normalizeConfig(json), {
     excludeExtraneousValues: true,
     exposeDefaultValues: true,
     exposeUnsetFields: false,
   }) as RequiredConfig
 }
 
-export function configToJson<T = Config>(
+export function configToJson<T = ProcessingConfig>(
   config: T,
   withDefaults = false,
 ): Record<string, unknown> {
@@ -87,25 +93,36 @@ export function newConfig(json: Record<string, unknown> = {}): RequiredConfig {
   return jsonToConfig(json)
 }
 
-export function normalizeConfig(inputConfig: Config): RequiredConfig {
-  const cfg = jsonToConfig(configToJson(inputConfig))
+export function normalizeConfig(
+  cfg: Record<string, unknown>,
+): Record<string, unknown> {
+  const addThreads = []
+
   // Normalize top-level messages config:
-  while (cfg.messages && cfg.messages.length) {
+  while (Array.isArray(cfg.messages) && cfg.messages.length) {
     const mcfg = cfg.messages.shift()
     if (!mcfg) break
     const tcfg = newThreadConfig()
     tcfg.messages.push(jsonToMessageConfig(messageConfigToJson(mcfg)))
-    cfg.threads.push(tcfg)
+    addThreads.push(tcfg)
   }
+  delete cfg.messages
+
   // Normalize top-level attachments config:
-  while (cfg.attachments && cfg.attachments.length) {
+  while (Array.isArray(cfg.attachments) && cfg.attachments.length) {
     const acfg = cfg.attachments.shift()
     if (!acfg) break
     const mcfg = newMessageConfig()
     mcfg.attachments.push(jsonToAttachmentConfig(attachmentConfigToJson(acfg)))
     const tcfg = newThreadConfig()
     tcfg.messages.push(mcfg)
-    cfg.threads.push(tcfg)
+    addThreads.push(tcfg)
   }
+  delete cfg.attachments
+
+  // Add additional thread config:
+  cfg.threads = (Array.isArray(cfg.threads) ? cfg.threads : []).concat(
+    addThreads,
+  )
   return cfg
 }

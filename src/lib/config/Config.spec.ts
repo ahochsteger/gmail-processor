@@ -16,8 +16,6 @@ it("New instance should contain defaults", () => {
   const cfg = newConfig() as RequiredConfig
   expect(cfg.description).toEqual("")
   expect(cfg.threads).toEqual([])
-  expect(cfg.messages).toEqual([])
-  expect(cfg.attachments).toEqual([])
 })
 
 it("Schema-generated Config Types Test", () => {
@@ -32,26 +30,16 @@ it("Schema-generated Config Types Test", () => {
 
 describe("normalizeConfig", () => {
   it("should expand shorthand config", () => {
-    const cfg = jsonToConfig({
-      threads: [{ description: "Thread handler 1" }],
-      messages: [{ description: "Message handler 1" }],
-      attachments: [{ description: "Attachment handler 1" }],
-    })
-    const normCfg = normalizeConfig(cfg)
-    const expected = {
-      threads: [
-        { description: "Thread handler 1" },
-        { messages: [{ description: "Message handler 1" }] },
-        {
-          messages: [
-            { attachments: [{ description: "Attachment handler 1" }] },
-          ],
-        },
-      ],
-    }
-    expect(normCfg).toMatchObject(expected)
-    expect(normCfg.attachments).toEqual([])
-    expect(normCfg.messages).toEqual([])
+    const cfg = normalizeConfig({
+      threads: [{ description: "Thread config 1" }],
+      messages: [{ description: "Message config 1" }],
+      attachments: [{ description: "Attachment config 1" }],
+    }) as any
+    expect(cfg.threads[0].description).toEqual("Thread config 1")
+    expect(cfg.threads[1]?.messages[0]?.description).toEqual("Message config 1")
+    expect(cfg.threads[2].messages[0].attachments[0].description).toEqual(
+      "Attachment config 1",
+    )
   })
 })
 

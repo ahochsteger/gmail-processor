@@ -1,7 +1,7 @@
 import { PatternUtil } from "../../utils/PatternUtil"
 import { jsonToActionConfig } from "../ActionConfig"
 import { newAttachmentConfig } from "../AttachmentConfig"
-import { Config, jsonToConfig } from "../Config"
+import { RequiredConfig, newConfig } from "../Config"
 import { RequiredThreadConfig, newThreadConfig } from "../ThreadConfig"
 import { V1Config } from "./V1Config"
 import { V1Rule } from "./V1Rule"
@@ -66,8 +66,8 @@ export class V1ToV2Converter {
     return threadConfig
   }
 
-  static v1ConfigToV2Config(v1Config: V1Config): Config {
-    const config = jsonToConfig({})
+  static v1ConfigToV2Config(v1Config: V1Config): RequiredConfig {
+    const config = newConfig()
     config.global.match.query =
       v1Config.globalFilter || "has:attachment -in:trash -in:drafts -in:spam"
     config.settings.processedLabel = v1Config.processedLabel
