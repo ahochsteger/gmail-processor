@@ -1,4 +1,6 @@
+import { RunMode } from "../../lib/Context"
 import { GMail2GDrive } from "../mocks/Examples"
+import { MockFactory } from "../mocks/MockFactory"
 
 const config = {
   globalFilter: "has:attachment -in:trash -in:drafts -in:spam",
@@ -42,7 +44,11 @@ const config = {
 }
 
 it("should process a v1 config example", () => {
-  GMail2GDrive.Lib.runWithV1Config(config)
+  GMail2GDrive.Lib.runWithV1Config(
+    config,
+    RunMode.DRY_RUN,
+    MockFactory.newEnvContextMock(),
+  )
 })
 
 it("should process a v1 config example", () => {

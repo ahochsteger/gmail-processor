@@ -1,21 +1,9 @@
 import { EnvContext, RunMode } from "./Context"
+import { configToJson } from "./config/Config"
+import { jsonToV1Config } from "./config/v1/V1Config"
+import { V1ToV2Converter } from "./config/v1/V1ToV2Converter"
 import { GmailProcessor } from "./processors/GmailProcessor"
-import { Logger } from "./utils/Logging"
 
-const logger = new Logger()
-
-const ctx: EnvContext = {
-  env: {
-    cacheService: CacheService,
-    gdriveApp: DriveApp,
-    gmailApp: GmailApp,
-    spreadsheetApp: SpreadsheetApp,
-    utilities: Utilities,
-    runMode: RunMode.SAFE_MODE,
-    timezone: Session?.getScriptTimeZone() || "UTC",
-  },
-  log: logger,
-}
 const gmailProcessor = new GmailProcessor()
 
 /**
@@ -25,21 +13,29 @@ const gmailProcessor = new GmailProcessor()
 export function run(
   configJson: Record<string, unknown>,
   runMode = RunMode.SAFE_MODE,
+  ctx: EnvContext = gmailProcessor.defaultContext(runMode),
 ) {
-  ctx.env.runMode = runMode
-  gmailProcessor.runWithConfigJson(ctx, configJson)
+  gmailProcessor.runWithJson(configJson, runMode, ctx)
 }
 
 /**
- * @param configJson GMail2GDrive v1 configuration JSON
+ * @param v1configJson GMail2GDrive v1 configuration JSON
  * @param runMode The runtime mode controls the behavior of actions
  */
 export function runWithV1Config(
-  configJson: Record<string, unknown>,
+  v1configJson: Record<string, unknown>,
   runMode = RunMode.SAFE_MODE,
+  ctx: EnvContext = gmailProcessor.defaultContext(runMode),
 ) {
+  ctx.log.info("Processing v1 legacy config: ", v1configJson)
   ctx.env.runMode = runMode
-  gmailProcessor.runWithV1ConfigJson(ctx, configJson)
+  const v1config = jsonToV1Config(v1configJson)
+  const config = V1ToV2Converter.v1ConfigToV2Config(v1config)
+  ctx.log.warn(
+    "Using deprecated v1 config format - switching to the new v2 config format is strongly recommended:\n",
+    configToJson(config),
+  )
+  gmailProcessor.run(config, ctx)
 }
 
 /**
@@ -57,5 +53,6 @@ export function getEffectiveConfig(configJson: Record<string, unknown>) {
  * @returns JSON representation of the configuration with defaults added
  */
 export function getEffectiveConfigV1(v1configJson: Record<string, unknown>) {
-  return gmailProcessor.getEffectiveConfigV1(v1configJson)
+  const v1config = jsonToV1Config(v1configJson)
+  return V1ToV2Converter.v1ConfigToV2Config(v1config)
 }

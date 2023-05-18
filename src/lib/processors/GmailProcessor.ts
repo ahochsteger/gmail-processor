@@ -1,4 +1,4 @@
-import { EnvContext, ProcessingContext } from "../Context"
+import { EnvContext, ProcessingContext, RunMode } from "../Context"
 import { ActionProvider, ActionRegistry } from "../actions/ActionRegistry"
 import { AttachmentActions } from "../actions/AttachmentActions"
 import { MessageActions } from "../actions/MessageActions"
@@ -6,14 +6,13 @@ import { ThreadActions } from "../actions/ThreadActions"
 import { GDriveAdapter } from "../adapter/GDriveAdapter"
 import { GmailAdapter } from "../adapter/GmailAdapter"
 import { SpreadsheetAdapter } from "../adapter/SpreadsheetAdapter"
-import { RequiredConfig, configToJson, jsonToConfig } from "../config/Config"
-import { V1Config, jsonToV1Config } from "../config/v1/V1Config"
-import { V1ToV2Converter } from "../config/v1/V1ToV2Converter"
+import { RequiredConfig, jsonToConfig } from "../config/Config"
+import { Logger } from "../utils/Logging"
 import { Timer } from "../utils/Timer"
 import { ThreadProcessor } from "./ThreadProcessor"
 
 export class GmailProcessor {
-  public run(ctx: EnvContext, config: RequiredConfig) {
+  public run(config: RequiredConfig, ctx: EnvContext = this.defaultContext()) {
     ctx.log.info("Processing of GMail2GDrive config started ...")
     const actionRegistry = new ActionRegistry()
     actionRegistry.registerActionProvider(
@@ -44,31 +43,14 @@ export class GmailProcessor {
     ctx.log.info("Processing of GMail2GDrive config finished.")
   }
 
-  public runWithConfigJson(
-    ctx: EnvContext,
+  public runWithJson(
     configJson: Record<string, unknown>,
+    runMode = RunMode.SAFE_MODE,
+    ctx: EnvContext = this.defaultContext(runMode),
   ) {
     const config = this.getEffectiveConfig(configJson)
     ctx.log.info("Effective configuration: " + JSON.stringify(config))
-    this.run(ctx, config)
-  }
-
-  public runWithV1Config(ctx: EnvContext, v1config: V1Config) {
-    const config = V1ToV2Converter.v1ConfigToV2Config(v1config)
-    ctx.log.warn(
-      "Using deprecated v1 config format - switching to the new v2 config format is strongly recommended: ",
-      configToJson(config),
-    )
-    this.run(ctx, config)
-  }
-
-  public runWithV1ConfigJson(
-    ctx: EnvContext,
-    v1configJson: Record<string, unknown>,
-  ) {
-    const v1config = jsonToV1Config(v1configJson)
-    ctx.log.info("v1 legacy config: ", v1config)
-    this.runWithV1Config(ctx, v1config)
+    this.run(config, ctx)
   }
 
   public getEffectiveConfig(
@@ -77,10 +59,20 @@ export class GmailProcessor {
     return jsonToConfig(configJson)
   }
 
-  public getEffectiveConfigV1(
-    v1configJson: Record<string, unknown>,
-  ): RequiredConfig {
-    const v1config = jsonToV1Config(v1configJson)
-    return V1ToV2Converter.v1ConfigToV2Config(v1config)
+  public defaultContext(runMode = RunMode.SAFE_MODE) {
+    const logger = new Logger()
+    const ctx: EnvContext = {
+      env: {
+        cacheService: CacheService,
+        gdriveApp: DriveApp,
+        gmailApp: GmailApp,
+        spreadsheetApp: SpreadsheetApp,
+        utilities: Utilities,
+        runMode: runMode,
+        timezone: Session?.getScriptTimeZone() || "UTC",
+      },
+      log: logger,
+    }
+    return ctx
   }
 }
