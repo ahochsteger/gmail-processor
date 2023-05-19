@@ -1,4 +1,9 @@
-import { EnvContext, ProcessingContext, RunMode } from "../Context"
+import {
+  EnvContext,
+  ProcessingContext,
+  ProcessingResult,
+  RunMode,
+} from "../Context"
 import { ActionProvider, ActionRegistry } from "../actions/ActionRegistry"
 import { AttachmentActions } from "../actions/AttachmentActions"
 import { MessageActions } from "../actions/MessageActions"
@@ -39,18 +44,22 @@ export class GmailProcessor {
       },
     }
     ctx.log.logProcessingContext(processingContext)
-    ThreadProcessor.processThreadConfigs(processingContext, config.threads)
+    const result = ThreadProcessor.processThreadConfigs(
+      processingContext,
+      config.threads,
+    )
     ctx.log.info("Processing of GMail2GDrive config finished.")
+    return result
   }
 
   public runWithJson(
     configJson: Record<string, unknown>,
     runMode = RunMode.SAFE_MODE,
     ctx: EnvContext = this.defaultContext(runMode),
-  ) {
+  ): ProcessingResult {
     const config = this.getEffectiveConfig(configJson)
     ctx.log.info("Effective configuration: " + JSON.stringify(config))
-    this.run(config, ctx)
+    return this.run(config, ctx)
   }
 
   public getEffectiveConfig(

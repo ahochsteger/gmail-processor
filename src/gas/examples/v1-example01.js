@@ -1,8 +1,6 @@
-import { RunMode } from "../../lib/Context"
-import { GMail2GDrive } from "../mocks/Examples"
-import { MockFactory } from "../mocks/MockFactory"
+/* global GMail2GDrive */
 
-const config = {
+var example01ConfigV1 = {
   globalFilter: "has:attachment -in:trash -in:drafts -in:spam",
   processedLabel: "gmail2gdrive/client-test",
   sleepTime: 100,
@@ -43,15 +41,12 @@ const config = {
   ],
 }
 
-it("should process a v1 config example", () => {
-  GMail2GDrive.Lib.runWithV1Config(
-    config,
-    RunMode.DRY_RUN,
-    MockFactory.newEnvContextMock(),
-  )
-})
+function example01EffectiveConfig() {
+  const effectiveConfig =
+    GMail2GDrive.Lib.getEffectiveConfigV1(example01ConfigV1)
+  console.log(JSON.stringify(effectiveConfig), null, 2)
+}
 
-it("should process a v1 config example", () => {
-  const actualConfig = GMail2GDrive.Lib.getEffectiveConfigV1(config)
-  expect(actualConfig.settings.processedLabel).toEqual(config.processedLabel)
-})
+function example01Run() {
+  GMail2GDrive.Lib.run(example01ConfigV1, "dry-run")
+}

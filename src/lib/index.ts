@@ -1,4 +1,4 @@
-import { EnvContext, RunMode } from "./Context"
+import { EnvContext, ProcessingResult, RunMode } from "./Context"
 import { configToJson } from "./config/Config"
 import { jsonToV1Config } from "./config/v1/V1Config"
 import { V1ToV2Converter } from "./config/v1/V1ToV2Converter"
@@ -12,10 +12,10 @@ const gmailProcessor = new GmailProcessor()
  */
 export function run(
   configJson: Record<string, unknown>,
-  runMode = RunMode.SAFE_MODE,
-  ctx: EnvContext = gmailProcessor.defaultContext(runMode),
-) {
-  gmailProcessor.runWithJson(configJson, runMode, ctx)
+  runMode: string = RunMode.SAFE_MODE,
+  ctx: EnvContext = gmailProcessor.defaultContext(runMode as RunMode),
+): ProcessingResult {
+  return gmailProcessor.runWithJson(configJson, runMode as RunMode, ctx)
 }
 
 /**
@@ -24,18 +24,18 @@ export function run(
  */
 export function runWithV1Config(
   v1configJson: Record<string, unknown>,
-  runMode = RunMode.SAFE_MODE,
-  ctx: EnvContext = gmailProcessor.defaultContext(runMode),
-) {
+  runMode: string = RunMode.SAFE_MODE,
+  ctx: EnvContext = gmailProcessor.defaultContext(runMode as RunMode),
+): ProcessingResult {
   ctx.log.info("Processing v1 legacy config: ", v1configJson)
-  ctx.env.runMode = runMode
+  ctx.env.runMode = runMode as RunMode
   const v1config = jsonToV1Config(v1configJson)
   const config = V1ToV2Converter.v1ConfigToV2Config(v1config)
   ctx.log.warn(
     "Using deprecated v1 config format - switching to the new v2 config format is strongly recommended:\n",
     configToJson(config),
   )
-  gmailProcessor.run(config, ctx)
+  return gmailProcessor.run(config, ctx)
 }
 
 /**

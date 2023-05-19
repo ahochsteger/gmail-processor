@@ -1,4 +1,4 @@
-import { ActionRegistry } from "./actions/ActionRegistry"
+import { ActionArgsType, ActionRegistry } from "./actions/ActionRegistry"
 import { GDriveAdapter } from "./adapter/GDriveAdapter"
 import { GmailAdapter } from "./adapter/GmailAdapter"
 import { SpreadsheetAdapter } from "./adapter/SpreadsheetAdapter"
@@ -63,3 +63,12 @@ export type ProcessingContext = EnvContext & { proc: ProcessingInfo }
 export type ThreadContext = ProcessingContext & { thread: ThreadInfo }
 export type MessageContext = ThreadContext & { message: MessageInfo }
 export type AttachmentContext = MessageContext & { attachment: AttachmentInfo }
+
+export type PerformedAction = {
+  name: string
+  args: ActionArgsType
+}
+export type ProcessingResult = {
+  status: "ok" | "error"
+  performedActions: PerformedAction[]
+}

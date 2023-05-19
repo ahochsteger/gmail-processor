@@ -1,4 +1,4 @@
-import { ProcessingContext, ThreadContext } from "../Context"
+import { ProcessingContext, ProcessingResult, ThreadContext } from "../Context"
 import { ThreadActions } from "../actions/ThreadActions"
 import { RequiredThreadConfig } from "../config/ThreadConfig"
 import { MessageProcessor } from "./MessageProcessor"
@@ -14,6 +14,11 @@ export class ThreadProcessor {
         threadConfig.name !== "" ? threadConfig.name : `thread-cfg-${i + 1}`
       this.processThreadConfig(ctx, threadConfig, i)
     }
+    const result: ProcessingResult = {
+      status: "ok",
+      performedActions: [],
+    }
+    return result
   }
 
   private static isSet(value: string | undefined) {
