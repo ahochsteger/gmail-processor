@@ -32,6 +32,6 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18.x
-      - run: npm run ci-build
-      - run: npm run ci-deploy
+      - run: npm run ci
+      - run: npm run deploy
         if: github.ref == 'refs/heads/v2'
