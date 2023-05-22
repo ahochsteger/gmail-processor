@@ -343,6 +343,7 @@ export class PatternUtil {
       .replace(/%filename/g, "${attachment.name}") // Alternative syntax from issue #50
       .replace(/#SUBJECT#/g, "${message.subject}") // Alternative syntax (from PR #22)
       .replace(/#FILE#/g, "${attachment.name}") // Alternative syntax (from PR #22)
+      .replace(/%d/g, "${threadConfig.index}") // Original subject syntax
   }
 
   private static mergeMaps(map1: SubstMap, map2: SubstMap): SubstMap {
