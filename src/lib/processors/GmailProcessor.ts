@@ -59,7 +59,6 @@ export class GmailProcessor {
     ctx: EnvContext = this.defaultContext(runMode),
   ): ProcessingResult {
     const config = this.getEffectiveConfig(configJson)
-    ctx.log.info("Effective configuration: " + JSON.stringify(config))
     return this.run(config, ctx)
   }
 
