@@ -5,8 +5,9 @@ import {
   plainToInstance,
 } from "class-transformer"
 import "reflect-metadata"
+import { PartialDeep } from "type-fest"
 import { RequiredDeep } from "../utils/UtilityTypes"
-import { ActionConfig } from "./ActionConfig"
+import { ThreadActionConfig } from "./ActionConfig"
 import { AttachmentConfig } from "./AttachmentConfig"
 import { MessageConfig } from "./MessageConfig"
 import { ThreadMatchConfig } from "./ThreadMatchConfig"
@@ -19,7 +20,7 @@ export class ThreadConfig {
    * The list actions to be executed for their respective handler scopes
    */
   @Expose()
-  actions?: ActionConfig[] = []
+  actions?: ThreadActionConfig[] = []
   /**
    * The description of the thread handler config
    */
@@ -53,7 +54,7 @@ export class ThreadConfig {
 export type RequiredThreadConfig = RequiredDeep<ThreadConfig>
 
 export function jsonToThreadConfig(
-  json: Record<string, unknown>,
+  json: PartialDeep<ThreadConfig>,
 ): RequiredThreadConfig {
   return plainToInstance(ThreadConfig, json, {
     exposeDefaultValues: true,
@@ -64,14 +65,14 @@ export function jsonToThreadConfig(
 export function threadConfigToJson<T = ThreadConfig>(
   config: T,
   withDefaults = false,
-): Record<string, unknown> {
+): PartialDeep<ThreadConfig> {
   return instanceToPlain(config, {
     exposeDefaultValues: withDefaults,
   })
 }
 
 export function newThreadConfig(
-  json: Record<string, unknown> = {},
+  json: PartialDeep<ThreadConfig> = {},
 ): RequiredThreadConfig {
   return jsonToThreadConfig(json)
 }

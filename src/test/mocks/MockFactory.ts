@@ -1,4 +1,5 @@
 import { MockProxy, mock } from "jest-mock-extended"
+import { PartialDeep } from "type-fest"
 import {
   AttachmentContext,
   EnvContext,
@@ -11,15 +12,25 @@ import { ActionRegistry } from "../../lib/actions/ActionRegistry"
 import { GDriveAdapter } from "../../lib/adapter/GDriveAdapter"
 import { GmailAdapter } from "../../lib/adapter/GmailAdapter"
 import { SpreadsheetAdapter } from "../../lib/adapter/SpreadsheetAdapter"
-import { newAttachmentConfig } from "../../lib/config/AttachmentConfig"
 import {
+  AttachmentActionConfig,
+  MessageActionConfig,
+  ThreadActionConfig,
+} from "../../lib/config/ActionConfig"
+import {
+  AttachmentConfig,
+  newAttachmentConfig,
+} from "../../lib/config/AttachmentConfig"
+import {
+  Config,
   RequiredConfig,
   jsonToConfig,
   newConfig,
 } from "../../lib/config/Config"
-import { newMessageConfig } from "../../lib/config/MessageConfig"
+import { MessageConfig, newMessageConfig } from "../../lib/config/MessageConfig"
 import { MessageFlag } from "../../lib/config/MessageFlag"
-import { jsonToThreadConfig } from "../../lib/config/ThreadConfig"
+import { SettingsConfig } from "../../lib/config/SettingsConfig"
+import { ThreadConfig, jsonToThreadConfig } from "../../lib/config/ThreadConfig"
 import { V1Config, jsonToV1Config } from "../../lib/config/v1/V1Config"
 import { Logger } from "../../lib/utils/Logging"
 import { Timer } from "../../lib/utils/Timer"
@@ -79,7 +90,7 @@ export class MockFactory {
 
   public static newEnvContextMock(
     runMode = RunMode.DRY_RUN,
-    mocks = new Mocks(),
+    mocks = this.newMocks(),
   ) {
     // Setup mock behavior:
     mocks.folder.getFilesByName.mockReturnValue(mocks.fileIterator)
@@ -106,7 +117,7 @@ export class MockFactory {
     return envContext
   }
 
-  public static newDefaultSettingsConfigJson(): Record<string, unknown> {
+  public static newDefaultSettingsConfigJson(): PartialDeep<SettingsConfig> {
     return {
       maxBatchSize: 100,
       maxRuntime: 280,
@@ -118,7 +129,7 @@ export class MockFactory {
     }
   }
 
-  public static newDefaultActionConfigJson(): Record<string, unknown> {
+  public static newDefaultThreadActionConfigJson(): PartialDeep<ThreadActionConfig> {
     return {
       args: {
         folderType: "path",
@@ -126,18 +137,48 @@ export class MockFactory {
         filename: "${message.subject} - ${match.file.1}.jpg",
         onExists: "replace",
       },
-      name: "file.storeToGDrive",
+      name: "thread.storeAsPdfToGDrive",
+      description: "Default action config",
+    }
+  }
+
+  public static newDefaultMessageActionConfigJson(): PartialDeep<MessageActionConfig> {
+    return {
+      args: {
+        folderType: "path",
+        folder: "Folder2/Subfolder2/${message.subject.match.1}",
+        filename: "${message.subject} - ${match.file.1}.jpg",
+        onExists: "replace",
+      },
+      name: "message.storeAsPdfToGDrive",
+      description: "Default action config",
+    }
+  }
+
+  public static newDefaultAttachmentActionConfigJson(): PartialDeep<AttachmentActionConfig> {
+    return {
+      args: {
+        folderType: "path",
+        folder: "Folder2/Subfolder2/${message.subject.match.1}",
+        filename: "${message.subject} - ${match.file.1}.jpg",
+        onExists: "replace",
+      },
+      name: "attachment.storeToGDrive",
       description: "Default action config",
     }
   }
 
   public static newDefaultAttachmentConfigJson(
     includeCommands = false,
-  ): Record<string, unknown> {
+  ): PartialDeep<AttachmentConfig> {
     return {
       name: "default-attachment-config",
       description: "Default attachment config",
-      actions: includeCommands ? [this.newDefaultActionConfigJson()] : [],
+      actions: includeCommands
+        ? [
+            this.newDefaultAttachmentActionConfigJson() as AttachmentActionConfig,
+          ]
+        : [],
       match: {
         name: "Image-([0-9]+)\\.jpg",
         contentTypeRegex: "image/.+",
@@ -152,7 +193,7 @@ export class MockFactory {
   public static newDefaultMessageConfigJson(
     includeCommands = false,
     includeAttachmentConfigs = false,
-  ): Record<string, unknown> {
+  ): PartialDeep<MessageConfig> {
     return {
       name: "default-message-config",
       description: "Default message config",
@@ -164,7 +205,9 @@ export class MockFactory {
         newerThan: "",
         olderThan: "",
       },
-      actions: includeCommands ? [this.newDefaultActionConfigJson()] : [],
+      actions: includeCommands
+        ? [this.newDefaultMessageActionConfigJson() as MessageActionConfig]
+        : [],
       attachments: includeAttachmentConfigs
         ? [this.newDefaultAttachmentConfigJson()]
         : [],
@@ -174,11 +217,13 @@ export class MockFactory {
   public static newDefaultThreadConfigJson(
     includeCommands = false,
     includeMessages = false,
-  ): Record<string, unknown> {
+  ): PartialDeep<ThreadConfig> {
     return {
       name: "default-thread-config",
       description: "A sample thread config",
-      actions: includeCommands ? [this.newDefaultActionConfigJson()] : [],
+      actions: includeCommands
+        ? [this.newDefaultThreadActionConfigJson() as ThreadActionConfig]
+        : [],
       messages: includeMessages ? [this.newDefaultMessageConfigJson()] : [],
       match: {
         query: "has:attachment from:example@example.com",
@@ -190,13 +235,15 @@ export class MockFactory {
     }
   }
 
-  public static newComplexThreadConfigList(): Record<string, unknown>[] {
+  public static newComplexThreadConfigList(): PartialDeep<ThreadConfig>[] {
     return [
       {
         actions: [
           {
-            name: "attachment.storeToGDrive",
-            args: { location: "Folder1/Subfolder1/${attachment.name}" },
+            name: "thread.storeAsPdfToGDrive",
+            args: {
+              location: "Folder1/Subfolder1/${thread.firstMessageSubject}",
+            },
           },
         ],
         description:
@@ -215,8 +262,8 @@ export class MockFactory {
           {
             actions: [
               {
-                name: "attachment.storeToGDrive",
-                args: { location: "Folder1/Subfolder1/${attachment.name}" },
+                name: "message.storeAsPdfToGDrive",
+                args: { location: "Folder1/Subfolder1/${message.subject}.pdf" },
               },
             ],
             match: {
@@ -237,13 +284,13 @@ export class MockFactory {
               from: "(.+)@example.com",
               subject: "Prefix - (.*) - Suffix(.*)",
               to: "my\\.address\\+(.+)@gmail.com",
-              is: ["unread"],
+              is: [MessageFlag.READ],
               // TODO: Find out how to match only read/unread or starred/unstarred messages?
             },
             actions: [
               // TODO: Decide if only actions of a certain type (thread, message, attachment) are allowed?
               // Pro: More flexible (e.g. forward message, if a certain attachment rule matches)
-              { name: "markMessageRead" },
+              { name: "message.markRead" },
             ],
             attachments: [
               {
@@ -263,7 +310,7 @@ export class MockFactory {
                 match: { name: ".+\\..+" },
                 actions: [
                   {
-                    name: "storeAttachment",
+                    name: "attachment.storeToGDrive",
                     args: {
                       location:
                         "Folder3/Subfolder3/${att.basename}-${date:yyyy-MM-dd}.${att.ext}",
@@ -279,14 +326,14 @@ export class MockFactory {
     ]
   }
 
-  public static newDefaultConfigJson(): Record<string, unknown> {
+  public static newDefaultConfigJson(): PartialDeep<Config> {
     return {
       settings: this.newDefaultSettingsConfigJson(),
       threads: this.newComplexThreadConfigList(),
     }
   }
 
-  public static newDefaultV1ConfigJson(): Record<string, unknown> {
+  public static newDefaultV1ConfigJson(): PartialDeep<V1Config> {
     return {
       globalFilter: "has:attachment -in:trash -in:drafts -in:spam",
       processedLabel: "gmail2gdrive/client-test",

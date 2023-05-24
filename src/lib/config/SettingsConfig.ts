@@ -1,5 +1,6 @@
 import { Expose, instanceToPlain, plainToInstance } from "class-transformer"
 import "reflect-metadata"
+import { PartialDeep } from "type-fest"
 import { RequiredDeep } from "../utils/UtilityTypes"
 
 // TODO: Use these constants in SettingsConfig below, when typescript-json-schema bug is resolved.
@@ -69,7 +70,7 @@ export class SettingsConfig {
 export type RequiredSettingsConfig = RequiredDeep<SettingsConfig>
 
 export function jsonToSettingsConfig(
-  json: Record<string, unknown>,
+  json: PartialDeep<SettingsConfig>,
 ): RequiredSettingsConfig {
   return plainToInstance(SettingsConfig, json, {
     exposeDefaultValues: true,
@@ -80,14 +81,14 @@ export function jsonToSettingsConfig(
 export function settingsConfigToJson<T = SettingsConfig>(
   config: T,
   withDefaults = false,
-): Record<string, unknown> {
+): PartialDeep<SettingsConfig> {
   return instanceToPlain(config, {
     exposeDefaultValues: withDefaults,
   })
 }
 
 export function newSettingsConfig(
-  json: Record<string, unknown> = {},
+  json: PartialDeep<SettingsConfig> = {},
 ): RequiredSettingsConfig {
   return jsonToSettingsConfig(json)
 }

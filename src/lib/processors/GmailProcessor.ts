@@ -1,3 +1,4 @@
+import { PartialDeep } from "type-fest"
 import {
   EnvContext,
   ProcessingContext,
@@ -11,7 +12,7 @@ import { ThreadActions } from "../actions/ThreadActions"
 import { GDriveAdapter } from "../adapter/GDriveAdapter"
 import { GmailAdapter } from "../adapter/GmailAdapter"
 import { SpreadsheetAdapter } from "../adapter/SpreadsheetAdapter"
-import { RequiredConfig, jsonToConfig } from "../config/Config"
+import { Config, RequiredConfig, jsonToConfig } from "../config/Config"
 import { Logger } from "../utils/Logging"
 import { Timer } from "../utils/Timer"
 import { ThreadProcessor } from "./ThreadProcessor"
@@ -53,7 +54,7 @@ export class GmailProcessor {
   }
 
   public runWithJson(
-    configJson: Record<string, unknown>,
+    configJson: PartialDeep<Config>,
     runMode = RunMode.SAFE_MODE,
     ctx: EnvContext = this.defaultContext(runMode),
   ): ProcessingResult {
@@ -62,9 +63,7 @@ export class GmailProcessor {
     return this.run(config, ctx)
   }
 
-  public getEffectiveConfig(
-    configJson: Record<string, unknown>,
-  ): RequiredConfig {
+  public getEffectiveConfig(configJson: PartialDeep<Config>): RequiredConfig {
     return jsonToConfig(configJson)
   }
 

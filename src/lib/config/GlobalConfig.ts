@@ -6,8 +6,9 @@ import {
 } from "class-transformer"
 import "reflect-metadata"
 import { RequiredDeep } from "../utils/UtilityTypes"
-import { ActionConfig } from "./ActionConfig"
+import { ThreadActionConfig } from "./ActionConfig"
 import { ThreadMatchConfig } from "./ThreadMatchConfig"
+import { PartialDeep } from "type-fest"
 
 /**
  * The global configuration that defines matching for all threads as well as actions for all threads, messages or attachments.
@@ -23,14 +24,14 @@ export class GlobalConfig {
    * The list of global actions that are always executed for their respective handler scopes
    */
   @Expose()
-  @Type(() => ActionConfig)
-  actions?: ActionConfig[] = []
+  @Type(() => ThreadActionConfig)
+  actions?: ThreadActionConfig[] = []
 }
 
 export type RequiredGlobalConfig = RequiredDeep<GlobalConfig>
 
 export function jsonToGlobalConfig(
-  json: Record<string, unknown>,
+  json: PartialDeep<GlobalConfig>,
 ): RequiredGlobalConfig {
   return plainToInstance(GlobalConfig, json, {
     exposeDefaultValues: true,
@@ -41,14 +42,14 @@ export function jsonToGlobalConfig(
 export function globalConfigToJson<T = GlobalConfig>(
   config: T,
   withDefaults = false,
-): Record<string, unknown> {
+): PartialDeep<GlobalConfig> {
   return instanceToPlain(config, {
     exposeDefaultValues: withDefaults,
   })
 }
 
 export function newGlobalConfig(
-  json: Record<string, unknown> = {},
+  json: PartialDeep<GlobalConfig> = {},
 ): RequiredGlobalConfig {
   return jsonToGlobalConfig(json)
 }

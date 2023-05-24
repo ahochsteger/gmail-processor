@@ -2,9 +2,9 @@
   "$ref": "#/definitions/Config",
   "$schema": "http://json-schema.org/draft-07/schema#",
   "definitions": {
-    "ActionConfig": {
+    "AttachmentActionConfig": {
       "additionalProperties": false,
-      "description": "Represents a config to perform a certain action for a GMail thread/message/attachment.",
+      "description": "Represents a config to perform a actions for a GMail attachment.",
       "properties": {
         "args": {
           "additionalProperties": {},
@@ -19,15 +19,20 @@
           "type": "string"
         },
         "name": {
+          "$ref": "#/definitions/AttachmentActionNames",
           "default": "",
           "description": "The name of the action to be executed",
-          "title": "name",
-          "type": "string"
+          "title": "name"
         }
       },
       "required": ["name"],
-      "title": "ActionConfig",
+      "title": "AttachmentActionConfig",
       "type": "object"
+    },
+    "AttachmentActionNames": {
+      "enum": ["", "attachment.storeToGDrive"],
+      "title": "AttachmentActionNames",
+      "type": "string"
     },
     "AttachmentConfig": {
       "additionalProperties": false,
@@ -37,7 +42,7 @@
           "default": [],
           "description": "The list actions to be executed for their respective handler scopes",
           "items": {
-            "$ref": "#/definitions/ActionConfig"
+            "$ref": "#/definitions/AttachmentActionConfig"
           },
           "title": "actions",
           "type": "array"
@@ -166,7 +171,7 @@
           "default": [],
           "description": "The list of global actions that are always executed for their respective handler scopes",
           "items": {
-            "$ref": "#/definitions/ActionConfig"
+            "$ref": "#/definitions/ThreadActionConfig"
           },
           "title": "actions",
           "type": "array"
@@ -180,6 +185,48 @@
       "title": "GlobalConfig",
       "type": "object"
     },
+    "MessageActionConfig": {
+      "additionalProperties": false,
+      "description": "Represents a config to perform a actions for a GMail message.",
+      "properties": {
+        "args": {
+          "additionalProperties": {},
+          "description": "The arguments for a certain action",
+          "title": "args",
+          "type": "object"
+        },
+        "description": {
+          "default": "",
+          "description": "The description for the action",
+          "title": "description",
+          "type": "string"
+        },
+        "name": {
+          "$ref": "#/definitions/MessageActionNames",
+          "default": "",
+          "description": "The name of the action to be executed",
+          "title": "name"
+        }
+      },
+      "required": ["name"],
+      "title": "MessageActionConfig",
+      "type": "object"
+    },
+    "MessageActionNames": {
+      "enum": [
+        "",
+        "message.forward",
+        "message.markProcessed",
+        "message.markRead",
+        "message.markUnread",
+        "message.moveToTrash",
+        "message.star",
+        "message.storeAsPdfToGDrive",
+        "message.unstar"
+      ],
+      "title": "MessageActionNames",
+      "type": "string"
+    },
     "MessageConfig": {
       "additionalProperties": false,
       "description": "Represents a config to handle a certain GMail message",
@@ -188,7 +235,7 @@
           "default": [],
           "description": "The list actions to be executed for their respective handler scopes",
           "items": {
-            "$ref": "#/definitions/ActionConfig"
+            "$ref": "#/definitions/MessageActionConfig"
           },
           "title": "actions",
           "type": "array"
@@ -342,6 +389,52 @@
       "title": "SettingsConfig",
       "type": "object"
     },
+    "ThreadActionConfig": {
+      "additionalProperties": false,
+      "description": "Represents a config to perform a actions for a GMail thread.",
+      "properties": {
+        "args": {
+          "additionalProperties": {},
+          "description": "The arguments for a certain action",
+          "title": "args",
+          "type": "object"
+        },
+        "description": {
+          "default": "",
+          "description": "The description for the action",
+          "title": "description",
+          "type": "string"
+        },
+        "name": {
+          "$ref": "#/definitions/ThreadActionNames",
+          "default": "",
+          "description": "The name of the action to be executed",
+          "title": "name"
+        }
+      },
+      "required": ["name"],
+      "title": "ThreadActionConfig",
+      "type": "object"
+    },
+    "ThreadActionNames": {
+      "enum": [
+        "",
+        "thread.addLabel",
+        "thread.markImportant",
+        "thread.markProcessed",
+        "thread.markRead",
+        "thread.markUnimportant",
+        "thread.markUnread",
+        "thread.moveToArchive",
+        "thread.moveToInbox",
+        "thread.moveToSpam",
+        "thread.moveToTrash",
+        "thread.removeLabel",
+        "thread.storeAsPdfToGDrive"
+      ],
+      "title": "ThreadActionNames",
+      "type": "string"
+    },
     "ThreadConfig": {
       "additionalProperties": false,
       "description": "Represents a config handle a certain GMail thread",
@@ -350,7 +443,7 @@
           "default": [],
           "description": "The list actions to be executed for their respective handler scopes",
           "items": {
-            "$ref": "#/definitions/ActionConfig"
+            "$ref": "#/definitions/ThreadActionConfig"
           },
           "title": "actions",
           "type": "array"

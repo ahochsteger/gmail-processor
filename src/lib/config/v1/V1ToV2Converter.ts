@@ -1,6 +1,11 @@
+import { PartialDeep } from "type-fest"
 import { ConflictStrategy } from "../../adapter/GDriveAdapter"
 import { PatternUtil } from "../../utils/PatternUtil"
-import { newActionConfig } from "../ActionConfig"
+import {
+  newAttachmentActionConfig,
+  newMessageActionConfig,
+  newThreadActionConfig,
+} from "../ActionConfig"
 import { newAttachmentConfig } from "../AttachmentConfig"
 import { RequiredConfig, newConfig } from "../Config"
 import { newMessageConfig } from "../MessageConfig"
@@ -51,7 +56,7 @@ export class V1ToV2Converter {
     //   processMessageToPdf(message, rule, config);
     if (rule.saveMessagePDF) {
       messageConfig.actions.push(
-        newActionConfig({
+        newMessageActionConfig({
           name: "message.storeAsPdfToGDrive",
           args: {
             location: this.getLocationFromRule(rule, "${message.subject}.pdf"),
@@ -105,8 +110,8 @@ export class V1ToV2Converter {
       // Old processing logic:
       //     file.setDescription("Mail title: " + message.getSubject() + "\nMail date: " + message.getDate() + "\nMail link: https://mail.google.com/mail/u/0/#inbox/" + message.getId());
       attachmentConfig.actions.push(
-        newActionConfig({
-          name: "file.storeToGDrive",
+        newAttachmentActionConfig({
+          name: "attachment.storeToGDrive",
           args: {
             conflictStrategy: ConflictStrategy.KEEP,
             description:
@@ -124,7 +129,7 @@ export class V1ToV2Converter {
     // }
     if (rule.saveThreadPDF) {
       threadConfig.actions.push(
-        newActionConfig({
+        newThreadActionConfig({
           name: "thread.storeAsPdfToGDrive",
           args: {
             location: this.getLocationFromRule(
@@ -142,7 +147,7 @@ export class V1ToV2Converter {
     // thread.addLabel(label);
     if (rule.ruleLabel != "") {
       threadConfig.actions.push(
-        newActionConfig({
+        newThreadActionConfig({
           name: "thread.addLabel",
           args: {
             label: rule.ruleLabel,
@@ -157,7 +162,7 @@ export class V1ToV2Converter {
     // }
     if (rule.archive) {
       threadConfig.actions.push(
-        newActionConfig({
+        newThreadActionConfig({
           name: "thread.moveToArchive",
         }),
       )
@@ -166,7 +171,7 @@ export class V1ToV2Converter {
   }
 
   static v1ConfigToV2Config(
-    partialV1Config: Partial<V1Config>,
+    partialV1Config: PartialDeep<V1Config>,
   ): RequiredConfig {
     const v1Config = newV1Config(partialV1Config)
     const config = newConfig()

@@ -76,7 +76,7 @@ it("should convert rule with filter and folder", () => {
                 args: {
                   location: "Examples/example1/${attachment.name}",
                 },
-                name: "file.storeToGDrive",
+                name: "attachment.storeToGDrive",
               },
             ],
           },
@@ -111,7 +111,7 @@ it("should convert rule with filter and folder containing a date format", () => 
                   location:
                     "Scans-${message.date:dateformat:YYYY-MM-DD}/${attachment.name}",
                 },
-                name: "file.storeToGDrive",
+                name: "attachment.storeToGDrive",
               },
             ],
           },
@@ -146,7 +146,7 @@ it("should convert rule with filter, folder and filenameFromRegexp", () => {
                 args: {
                   location: "Examples/example2/${attachment.name.match.1}",
                 },
-                name: "file.storeToGDrive",
+                name: "attachment.storeToGDrive",
               },
             ],
             match: {
@@ -186,7 +186,7 @@ it("should convert rule with filter, folder, filenameTo and archive", () => {
                   location:
                     "Examples/example3ab/file-${message.date:dateformat:YYYY-MM-DD-}${message.subject}.txt",
                 },
-                name: "file.storeToGDrive",
+                name: "attachment.storeToGDrive",
               },
             ],
           },
@@ -228,7 +228,7 @@ it("should convert rule with filter, folder and parentFolderId", () => {
                   location:
                     "${folderId:FOLDER_ID_FOR_Examples_FOLDER}/example1/${attachment.name}",
                 },
-                name: "file.storeToGDrive",
+                name: "attachment.storeToGDrive",
               },
             ],
           },
@@ -273,7 +273,7 @@ it("should convert rule with filter, folder, filenameTo and archive", () => {
                   location:
                     "Examples/example3ab/file-${message.date:dateformat:YYYY-MM-DD-}${message.subject}.txt",
                 },
-                name: "file.storeToGDrive",
+                name: "attachment.storeToGDrive",
               },
             ],
           },
@@ -317,7 +317,7 @@ it("should convert rule with filter, saveThreadPDF and folder", () => {
                 args: {
                   location: "PDF Emails/${attachment.name}",
                 },
-                name: "file.storeToGDrive",
+                name: "attachment.storeToGDrive",
               },
             ],
           },
@@ -478,7 +478,7 @@ it("should convert rule with filter, folder filenameFrom and filenameTo", () => 
                   location:
                     "Examples/example4/file-${message.date:dateformat:YYYY-MM-DD-}${message.subject}.txt",
                 },
-                name: "file.storeToGDrive",
+                name: "attachment.storeToGDrive",
               },
             ],
           },
@@ -519,7 +519,7 @@ it("should convert rule with filter, folder filenameFrom and filenameTo", () => 
                 args: {
                   location: "Examples/example5/zoom-${threadConfig.index}.pdf",
                 },
-                name: "file.storeToGDrive",
+                name: "attachment.storeToGDrive",
               },
             ],
           },

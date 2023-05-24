@@ -1,10 +1,11 @@
+import { PartialDeep } from "type-fest"
 import { runWithV1Config } from "."
 import { MockFactory, Mocks } from "../test/mocks/MockFactory"
 import { RunMode } from "./Context"
-import { jsonToConfig } from "./config/Config"
+import { Config, jsonToConfig } from "./config/Config"
 import { GmailProcessor } from "./processors/GmailProcessor"
 
-let configJson: Record<string, unknown>
+let configJson: PartialDeep<Config>
 let mocks: Mocks
 let gmailProcessor: GmailProcessor
 

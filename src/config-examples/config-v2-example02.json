@@ -42,7 +42,7 @@
       },
       "actions": [
         {
-          "name": "attachment.storeToGDrive",
+          "name": "thread.storeAsPdfToGDrive",
           "args": {
             "folder": "Scans-${message.date:dateformat:yyyy-MM-dd}"
           }

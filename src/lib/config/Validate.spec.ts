@@ -14,7 +14,7 @@ describe("validate()", () => {
   })
   it("should validate all MockFactory config JSON without errors", () => {
     validateConfig({
-      global: { actions: [MockFactory.newDefaultActionConfigJson()] },
+      global: { actions: [MockFactory.newDefaultThreadActionConfigJson()] },
     })
     expect(validateConfig.errors).toBeNull()
     validateConfig({

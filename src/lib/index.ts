@@ -1,6 +1,7 @@
+import { PartialDeep } from "type-fest"
 import { EnvContext, ProcessingResult, RunMode } from "./Context"
-import { configToJson } from "./config/Config"
-import { jsonToV1Config } from "./config/v1/V1Config"
+import { Config, RequiredConfig, configToJson } from "./config/Config"
+import { V1Config, jsonToV1Config } from "./config/v1/V1Config"
 import { V1ToV2Converter } from "./config/v1/V1ToV2Converter"
 import { GmailProcessor } from "./processors/GmailProcessor"
 
@@ -11,7 +12,7 @@ const gmailProcessor = new GmailProcessor()
  * @param runMode Just show what would have been done but don't write anything to GMail or GDrive.
  */
 export function run(
-  configJson: Record<string, unknown>,
+  configJson: PartialDeep<Config>,
   runMode: string = RunMode.SAFE_MODE,
   ctx: EnvContext = gmailProcessor.defaultContext(runMode as RunMode),
 ): ProcessingResult {
@@ -23,7 +24,7 @@ export function run(
  * @param runMode The runtime mode controls the behavior of actions
  */
 export function runWithV1Config(
-  v1configJson: Record<string, unknown>,
+  v1configJson: PartialDeep<V1Config>,
   runMode: string = RunMode.SAFE_MODE,
   ctx: EnvContext = gmailProcessor.defaultContext(runMode as RunMode),
 ): ProcessingResult {
@@ -43,7 +44,9 @@ export function runWithV1Config(
  * @param configJson JSON representation of the configuration without defaults
  * @returns JSON representation of the configuration with defaults added
  */
-export function getEffectiveConfig(configJson: Record<string, unknown>) {
+export function getEffectiveConfig(
+  configJson: PartialDeep<Config>,
+): RequiredConfig {
   return gmailProcessor.getEffectiveConfig(configJson)
 }
 
@@ -52,7 +55,9 @@ export function getEffectiveConfig(configJson: Record<string, unknown>) {
  * @param v1configJson JSON representation of the v1 configuration without defaults
  * @returns JSON representation of the configuration with defaults added
  */
-export function getEffectiveConfigV1(v1configJson: Record<string, unknown>) {
+export function getEffectiveConfigV1(
+  v1configJson: PartialDeep<V1Config>,
+): RequiredConfig {
   const v1config = jsonToV1Config(v1configJson)
   return V1ToV2Converter.v1ConfigToV2Config(v1config)
 }

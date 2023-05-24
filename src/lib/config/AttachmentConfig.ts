@@ -5,8 +5,9 @@ import {
   plainToInstance,
 } from "class-transformer"
 import "reflect-metadata"
+import { PartialDeep } from "type-fest"
 import { RequiredDeep } from "../utils/UtilityTypes"
-import { ActionConfig } from "./ActionConfig"
+import { ActionConfig, AttachmentActionConfig } from "./ActionConfig"
 import { AttachmentMatchConfig } from "./AttachmentMatchConfig"
 
 /**
@@ -18,7 +19,7 @@ export class AttachmentConfig {
    */
   @Expose()
   @Type(() => ActionConfig)
-  actions?: ActionConfig[] = []
+  actions?: AttachmentActionConfig[] = []
   /**
    * The description of the attachment handler config
    */
@@ -40,7 +41,7 @@ export class AttachmentConfig {
 export type RequiredAttachmentConfig = RequiredDeep<AttachmentConfig>
 
 export function jsonToAttachmentConfig(
-  json: Record<string, unknown>,
+  json: PartialDeep<AttachmentConfig>,
 ): RequiredAttachmentConfig {
   return plainToInstance(AttachmentConfig, json, {
     exposeDefaultValues: true,
@@ -51,14 +52,14 @@ export function jsonToAttachmentConfig(
 export function attachmentConfigToJson<T = AttachmentConfig>(
   config: T,
   withDefaults = false,
-): Record<string, unknown> {
+): PartialDeep<AttachmentConfig> {
   return instanceToPlain(config, {
     exposeDefaultValues: withDefaults,
   })
 }
 
 export function newAttachmentConfig(
-  json: Record<string, unknown> = {},
+  json: PartialDeep<AttachmentConfig> = {},
 ): RequiredAttachmentConfig {
   return jsonToAttachmentConfig(json)
 }

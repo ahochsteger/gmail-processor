@@ -5,8 +5,9 @@ import {
   plainToInstance,
 } from "class-transformer"
 import "reflect-metadata"
+import { PartialDeep } from "type-fest"
 import { RequiredDeep } from "../utils/UtilityTypes"
-import { ActionConfig } from "./ActionConfig"
+import { MessageActionConfig } from "./ActionConfig"
 import { AttachmentConfig } from "./AttachmentConfig"
 import { MessageMatchConfig } from "./MessageMatchConfig"
 
@@ -18,7 +19,7 @@ export class MessageConfig {
    * The list actions to be executed for their respective handler scopes
    */
   @Expose()
-  actions?: ActionConfig[] = []
+  actions?: MessageActionConfig[] = []
   /**
    * The description of the message handler config
    */
@@ -46,7 +47,7 @@ export class MessageConfig {
 export type RequiredMessageConfig = RequiredDeep<MessageConfig>
 
 export function jsonToMessageConfig(
-  json: Record<string, unknown>,
+  json: PartialDeep<MessageConfig>,
 ): RequiredMessageConfig {
   return plainToInstance(MessageConfig, json, {
     exposeDefaultValues: true,
@@ -57,14 +58,14 @@ export function jsonToMessageConfig(
 export function messageConfigToJson<T = MessageConfig>(
   config: T,
   withDefaults = false,
-): Record<string, unknown> {
+): PartialDeep<MessageConfig> {
   return instanceToPlain(config, {
     exposeDefaultValues: withDefaults,
   })
 }
 
 export function newMessageConfig(
-  json: Record<string, unknown> = {},
+  json: PartialDeep<MessageConfig> = {},
 ): RequiredMessageConfig {
   return jsonToMessageConfig(json)
 }

@@ -29,7 +29,7 @@ var example01ConfigV2 = {
       },
       actions: [
         {
-          name: "attachment.storeToGDrive",
+          name: "thread.storeAsPdfToGDrive",
           args: {
             folder: "Scans-${message.date:dateformat:yyyy-MM-dd}",
           },
@@ -45,5 +45,5 @@ function example01EffectiveConfig() {
 }
 
 function example01Run() {
-  GMail2GDrive.Lib.runWithV1Config(example01ConfigV2, "dry-run")
+  GMail2GDrive.Lib.run(example01ConfigV2, "dry-run")
 }

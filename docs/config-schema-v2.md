@@ -1,6 +1,5 @@
 # Objects
 
-- [`ActionConfig`](#reference-actionconfig)
 - [`AttachmentConfig`](#reference-attachmentconfig)
   - [`AttachmentMatchConfig`](#reference-attachmentmatchconfig)
 - [`Config`](#reference-config) (root object)
@@ -8,46 +7,54 @@
 - [`MessageConfig`](#reference-messageconfig)
   - [`MessageMatchConfig`](#reference-messagematchconfig)
 - [`SettingsConfig`](#reference-settingsconfig)
+- [`ThreadActionConfig`](#reference-threadactionconfig)
+  - [`ThreadActionNames`](#reference-threadactionnames)
 - [`ThreadMatchConfig`](#reference-threadmatchconfig)
 
 ---
 
-<a name="reference-actionconfig"></a>
+<a name="reference-attachmentactionconfig"></a>
 
-## ActionConfig
+## AttachmentActionConfig
 
-Represents a config to perform a certain action for a GMail thread/message/attachment.
+Represents a config to perform a actions for a GMail attachment.
 
-**`ActionConfig` Properties**
+**`AttachmentActionConfig` Properties**
 
-|                 | Type     | Description                           | Required     |
-| --------------- | -------- | ------------------------------------- | ------------ |
-| **args**        | `object` | The arguments for a certain action    | No           |
-| **description** | `string` | The description for the action        | No, default: |
-| **name**        | `string` | The name of the action to be executed | &#10003; Yes |
+|                 | Type                    | Description                        | Required     |
+| --------------- | ----------------------- | ---------------------------------- | ------------ |
+| **args**        | `object`                | The arguments for a certain action | No           |
+| **description** | `string`                | The description for the action     | No, default: |
+| **name**        | `AttachmentActionNames` |                                    | &#10003; Yes |
 
 Additional properties are not allowed.
 
-### ActionConfig.args
+### AttachmentActionConfig.args
 
 The arguments for a certain action
 
 - **Type**: `object`
 - **Required**: No
 
-### ActionConfig.description
+### AttachmentActionConfig.description
 
 The description for the action
 
 - **Type**: `string`
 - **Required**: No, default:
 
-### ActionConfig.name
+### AttachmentActionConfig.name
 
-The name of the action to be executed
-
-- **Type**: `string`
+- **Type**: `AttachmentActionNames`
 - **Required**: &#10003; Yes
+- ## **Allowed values**:
+  - `attachment.storeToGDrive`
+
+---
+
+<a name="reference-attachmentactionnames"></a>
+
+## AttachmentActionNames
 
 ---
 
@@ -59,12 +66,12 @@ Represents a config to handle a certain GMail attachment
 
 **`AttachmentConfig` Properties**
 
-|                 | Type                    | Description                                                             | Required          |
-| --------------- | ----------------------- | ----------------------------------------------------------------------- | ----------------- |
-| **actions**     | `ActionConfig` `[]`     | The list actions to be executed for their respective handler scopes     | No, default: `[]` |
-| **description** | `string`                | The description of the attachment handler config                        | No, default:      |
-| **match**       | `AttachmentMatchConfig` | Represents a config to match a certain GMail attachment                 | No                |
-| **name**        | `string`                | The unique name of the attachment config (will be generated if not set) | No, default:      |
+|                 | Type                          | Description                                                             | Required          |
+| --------------- | ----------------------------- | ----------------------------------------------------------------------- | ----------------- |
+| **actions**     | `AttachmentActionConfig` `[]` | The list actions to be executed for their respective handler scopes     | No, default: `[]` |
+| **description** | `string`                      | The description of the attachment handler config                        | No, default:      |
+| **match**       | `AttachmentMatchConfig`       | Represents a config to match a certain GMail attachment                 | No                |
+| **name**        | `string`                      | The unique name of the attachment config (will be generated if not set) | No, default:      |
 
 Additional properties are not allowed.
 
@@ -72,7 +79,7 @@ Additional properties are not allowed.
 
 The list actions to be executed for their respective handler scopes
 
-- **Type**: `ActionConfig` `[]`
+- **Type**: `AttachmentActionConfig` `[]`
 - **Required**: No, default: `[]`
 
 ### AttachmentConfig.description
@@ -232,10 +239,10 @@ The global configuration that defines matching for all threads as well as action
 
 **`GlobalConfig` Properties**
 
-|             | Type                | Description                                                                             | Required          |
-| ----------- | ------------------- | --------------------------------------------------------------------------------------- | ----------------- |
-| **actions** | `ActionConfig` `[]` | The list of global actions that are always executed for their respective handler scopes | No, default: `[]` |
-| **match**   | `ThreadMatchConfig` | Represents a config to match a certain GMail thread                                     | No                |
+|             | Type                      | Description                                                                             | Required          |
+| ----------- | ------------------------- | --------------------------------------------------------------------------------------- | ----------------- |
+| **actions** | `ThreadActionConfig` `[]` | The list of global actions that are always executed for their respective handler scopes | No, default: `[]` |
+| **match**   | `ThreadMatchConfig`       | Represents a config to match a certain GMail thread                                     | No                |
 
 Additional properties are not allowed.
 
@@ -243,7 +250,7 @@ Additional properties are not allowed.
 
 The list of global actions that are always executed for their respective handler scopes
 
-- **Type**: `ActionConfig` `[]`
+- **Type**: `ThreadActionConfig` `[]`
 - **Required**: No, default: `[]`
 
 ### GlobalConfig.match
@@ -255,6 +262,58 @@ Represents a config to match a certain GMail thread
 
 ---
 
+<a name="reference-messageactionconfig"></a>
+
+## MessageActionConfig
+
+Represents a config to perform a actions for a GMail message.
+
+**`MessageActionConfig` Properties**
+
+|                 | Type                 | Description                        | Required     |
+| --------------- | -------------------- | ---------------------------------- | ------------ |
+| **args**        | `object`             | The arguments for a certain action | No           |
+| **description** | `string`             | The description for the action     | No, default: |
+| **name**        | `MessageActionNames` |                                    | &#10003; Yes |
+
+Additional properties are not allowed.
+
+### MessageActionConfig.args
+
+The arguments for a certain action
+
+- **Type**: `object`
+- **Required**: No
+
+### MessageActionConfig.description
+
+The description for the action
+
+- **Type**: `string`
+- **Required**: No, default:
+
+### MessageActionConfig.name
+
+- **Type**: `MessageActionNames`
+- **Required**: &#10003; Yes
+- ## **Allowed values**:
+  - `message.forward`
+  - `message.markProcessed`
+  - `message.markRead`
+  - `message.markUnread`
+  - `message.moveToTrash`
+  - `message.star`
+  - `message.storeAsPdfToGDrive`
+  - `message.unstar`
+
+---
+
+<a name="reference-messageactionnames"></a>
+
+## MessageActionNames
+
+---
+
 <a name="reference-messageconfig"></a>
 
 ## MessageConfig
@@ -263,13 +322,13 @@ Represents a config to handle a certain GMail message
 
 **`MessageConfig` Properties**
 
-|                 | Type                    | Description                                                          | Required          |
-| --------------- | ----------------------- | -------------------------------------------------------------------- | ----------------- |
-| **actions**     | `ActionConfig` `[]`     | The list actions to be executed for their respective handler scopes  | No, default: `[]` |
-| **attachments** | `AttachmentConfig` `[]` | The list of handler that define the way attachments are processed    | No, default: `[]` |
-| **description** | `string`                | The description of the message handler config                        | No, default:      |
-| **match**       | `MessageMatchConfig`    | Represents a config to match a certain GMail message                 | No                |
-| **name**        | `string`                | The unique name of the message config (will be generated if not set) | No, default:      |
+|                 | Type                       | Description                                                          | Required          |
+| --------------- | -------------------------- | -------------------------------------------------------------------- | ----------------- |
+| **actions**     | `MessageActionConfig` `[]` | The list actions to be executed for their respective handler scopes  | No, default: `[]` |
+| **attachments** | `AttachmentConfig` `[]`    | The list of handler that define the way attachments are processed    | No, default: `[]` |
+| **description** | `string`                   | The description of the message handler config                        | No, default:      |
+| **match**       | `MessageMatchConfig`       | Represents a config to match a certain GMail message                 | No                |
+| **name**        | `string`                   | The unique name of the message config (will be generated if not set) | No, default:      |
 
 Additional properties are not allowed.
 
@@ -277,7 +336,7 @@ Additional properties are not allowed.
 
 The list actions to be executed for their respective handler scopes
 
-- **Type**: `ActionConfig` `[]`
+- **Type**: `MessageActionConfig` `[]`
 - **Required**: No, default: `[]`
 
 ### MessageConfig.attachments
@@ -486,6 +545,62 @@ Overrides the <a href="https://developers.google.com/apps-script/reference/base/
 
 ---
 
+<a name="reference-threadactionconfig"></a>
+
+## ThreadActionConfig
+
+Represents a config to perform a actions for a GMail thread.
+
+**`ThreadActionConfig` Properties**
+
+|                 | Type                | Description                        | Required     |
+| --------------- | ------------------- | ---------------------------------- | ------------ |
+| **args**        | `object`            | The arguments for a certain action | No           |
+| **description** | `string`            | The description for the action     | No, default: |
+| **name**        | `ThreadActionNames` |                                    | &#10003; Yes |
+
+Additional properties are not allowed.
+
+### ThreadActionConfig.args
+
+The arguments for a certain action
+
+- **Type**: `object`
+- **Required**: No
+
+### ThreadActionConfig.description
+
+The description for the action
+
+- **Type**: `string`
+- **Required**: No, default:
+
+### ThreadActionConfig.name
+
+- **Type**: `ThreadActionNames`
+- **Required**: &#10003; Yes
+- ## **Allowed values**:
+  - `thread.addLabel`
+  - `thread.markImportant`
+  - `thread.markProcessed`
+  - `thread.markRead`
+  - `thread.markUnimportant`
+  - `thread.markUnread`
+  - `thread.moveToArchive`
+  - `thread.moveToInbox`
+  - `thread.moveToSpam`
+  - `thread.moveToTrash`
+  - `thread.removeLabel`
+  - `thread.storeAsPdfToGDrive`
+
+---
+
+<a name="reference-threadactionnames"></a>
+
+## ThreadActionNames
+
+---
+
 <a name="reference-threadconfig"></a>
 
 ## ThreadConfig
@@ -494,14 +609,14 @@ Represents a config handle a certain GMail thread
 
 **`ThreadConfig` Properties**
 
-|                 | Type                    | Description                                                                          | Required          |
-| --------------- | ----------------------- | ------------------------------------------------------------------------------------ | ----------------- |
-| **actions**     | `ActionConfig` `[]`     | The list actions to be executed for their respective handler scopes                  | No, default: `[]` |
-| **attachments** | `AttachmentConfig` `[]` | The list of handler that define the way attachments are processed                    | No, default: `[]` |
-| **description** | `string`                | The description of the thread handler config                                         | No, default:      |
-| **match**       | `ThreadMatchConfig`     | Represents a config to match a certain GMail thread                                  | No                |
-| **messages**    | `MessageConfig` `[]`    | The list of handler that define the way nested messages or attachments are processed | No, default: `[]` |
-| **name**        | `string`                | The unique name of the thread config (will be generated if not set)                  | No, default:      |
+|                 | Type                      | Description                                                                          | Required          |
+| --------------- | ------------------------- | ------------------------------------------------------------------------------------ | ----------------- |
+| **actions**     | `ThreadActionConfig` `[]` | The list actions to be executed for their respective handler scopes                  | No, default: `[]` |
+| **attachments** | `AttachmentConfig` `[]`   | The list of handler that define the way attachments are processed                    | No, default: `[]` |
+| **description** | `string`                  | The description of the thread handler config                                         | No, default:      |
+| **match**       | `ThreadMatchConfig`       | Represents a config to match a certain GMail thread                                  | No                |
+| **messages**    | `MessageConfig` `[]`      | The list of handler that define the way nested messages or attachments are processed | No, default: `[]` |
+| **name**        | `string`                  | The unique name of the thread config (will be generated if not set)                  | No, default:      |
 
 Additional properties are not allowed.
 
@@ -509,7 +624,7 @@ Additional properties are not allowed.
 
 The list actions to be executed for their respective handler scopes
 
-- **Type**: `ActionConfig` `[]`
+- **Type**: `ThreadActionConfig` `[]`
 - **Required**: No, default: `[]`
 
 ### ThreadConfig.attachments

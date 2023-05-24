@@ -21,5 +21,5 @@ function exampleMinEffectiveConfig() {
 }
 
 function exampleMinRun() {
-  GMail2GDrive.Lib.run(exampleMinConfigV1, "dry-run")
+  GMail2GDrive.Lib.runWithV1Config(exampleMinConfigV1, "dry-run")
 }

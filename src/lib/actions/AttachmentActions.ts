@@ -55,3 +55,12 @@ export class AttachmentActions implements ActionProvider<AttachmentContext> {
     }
   }
 }
+
+type MethodNames<T> = keyof T
+export type AttachmentActionMethodNames = Exclude<
+  MethodNames<typeof AttachmentActions>,
+  "prototype"
+>
+export type AttachmentActionNames =
+  | `attachment.${AttachmentActionMethodNames}`
+  | ""

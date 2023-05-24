@@ -1,5 +1,6 @@
 import { instanceToPlain, plainToInstance } from "class-transformer"
 import "reflect-metadata"
+import { PartialDeep } from "type-fest"
 import { RequiredDeep } from "../../utils/UtilityTypes"
 
 export class V1Rule {
@@ -30,7 +31,7 @@ export class V1Rule {
 }
 export type RequiredV1Rule = RequiredDeep<V1Rule>
 
-export function jsonToV1Rule(json: Record<string, unknown>): RequiredV1Rule {
+export function jsonToV1Rule(json: PartialDeep<V1Rule>): RequiredV1Rule {
   return plainToInstance(V1Rule, json, {
     exposeDefaultValues: true,
     exposeUnsetFields: false,
@@ -40,13 +41,13 @@ export function jsonToV1Rule(json: Record<string, unknown>): RequiredV1Rule {
 export function v1RuleToJson<T = V1Rule>(
   config: T,
   withDefaults = false,
-): Record<string, unknown> {
+): PartialDeep<V1Rule> {
   return instanceToPlain(config, {
     exposeDefaultValues: withDefaults,
   })
 }
 
-export function newV1Rule(json: Record<string, unknown> = {}): RequiredV1Rule {
+export function newV1Rule(json: PartialDeep<V1Rule> = {}): RequiredV1Rule {
   return jsonToV1Rule(json)
 }
 

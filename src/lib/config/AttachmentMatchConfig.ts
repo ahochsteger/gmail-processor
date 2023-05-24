@@ -1,6 +1,7 @@
 import { instanceToPlain, plainToInstance } from "class-transformer"
 import "reflect-metadata"
 import { RequiredDeep } from "../utils/UtilityTypes"
+import { PartialDeep } from "type-fest"
 
 /**
  * Represents a config to match a certain GMail attachment
@@ -35,7 +36,7 @@ export class AttachmentMatchConfig {
 export type RequiredAttachmentMatchConfig = RequiredDeep<AttachmentMatchConfig>
 
 export function jsonToAttachmentMatchConfig(
-  json: Record<string, unknown>,
+  json: PartialDeep<AttachmentMatchConfig>,
 ): RequiredAttachmentMatchConfig {
   return plainToInstance(AttachmentMatchConfig, json, {
     exposeDefaultValues: true,
@@ -46,14 +47,14 @@ export function jsonToAttachmentMatchConfig(
 export function attachmentMatchConfigToJson<T = AttachmentMatchConfig>(
   config: T,
   withDefaults = false,
-): Record<string, unknown> {
+): PartialDeep<AttachmentMatchConfig> {
   return instanceToPlain(config, {
     exposeDefaultValues: withDefaults,
   })
 }
 
 export function newAttachmentMatchConfig(
-  json: Record<string, unknown> = {},
+  json: PartialDeep<AttachmentMatchConfig> = {},
 ): RequiredAttachmentMatchConfig {
   return jsonToAttachmentMatchConfig(json)
 }

@@ -5,6 +5,7 @@ import {
   plainToInstance,
 } from "class-transformer"
 import "reflect-metadata"
+import { PartialDeep } from "type-fest"
 import { RequiredDeep } from "../utils/UtilityTypes"
 import {
   AttachmentConfig,
@@ -70,9 +71,7 @@ export class Config extends ProcessingConfig {
 
 export type RequiredConfig = RequiredDeep<ProcessingConfig>
 
-export function jsonToConfig(
-  json: Record<string, unknown> = {},
-): RequiredConfig {
+export function jsonToConfig(json: PartialDeep<Config> = {}): RequiredConfig {
   return plainToInstance(ProcessingConfig, normalizeConfig(json), {
     excludeExtraneousValues: true,
     exposeDefaultValues: true,
@@ -83,19 +82,17 @@ export function jsonToConfig(
 export function configToJson<T = ProcessingConfig>(
   config: T,
   withDefaults = false,
-): Record<string, unknown> {
+): PartialDeep<Config> {
   return instanceToPlain(config, {
     exposeDefaultValues: withDefaults,
   })
 }
 
-export function newConfig(json: Record<string, unknown> = {}): RequiredConfig {
+export function newConfig(json: PartialDeep<Config> = {}): RequiredConfig {
   return jsonToConfig(json)
 }
 
-export function normalizeConfig(
-  cfg: Record<string, unknown>,
-): Record<string, unknown> {
+export function normalizeConfig(cfg: PartialDeep<Config>): PartialDeep<Config> {
   const addThreads = []
 
   // Normalize top-level messages config:

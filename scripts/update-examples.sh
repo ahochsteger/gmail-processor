@@ -3,50 +3,77 @@
 
 set -eufo pipefail
 
-function generateGasExample() {
+declare -A cfgMap
+export cfgMap
+
+function buildCfgMap() {
   local version="${1}"
   local fnName="${2}"
-  local configName="${3}"
-  local runFn="${4}"
-  local getCfgFn="${5}"
-  local configJson="${6}"
+  local cfgFile="${3}"
+
+  case "${version}" in
+    1)
+      cfgMap=(
+        [cfgType]="V1Config"
+        [cfgImport]="import { V1Config } from \"../../lib/config/v1/V1Config\""
+        [getCfgFn]="getEffectiveConfigV1"
+        [runFn]="runWithV1Config"
+      )
+    ;;
+    2)
+      cfgMap=(
+        [cfgType]="Config"
+        [cfgImport]="import { Config } from \"../../lib/config/Config\""
+        [getCfgFn]="getEffectiveConfig"
+        [runFn]="run"
+      )
+    ;;
+    *)
+      echo "Unknown version: ${version}"
+      exit 1
+    ;;
+  esac
+  cfgMap[version]="${version}"
+  cfgMap[fnName]="${fnName}"
+  cfgMap[cfgFile]="${cfgFile}"
+  cfgMap[cfgName]="${fnName}ConfigV${version}"
+}
+
+function generateGasExample() {
   cat <<EOF
 /* global GMail2GDrive */
 
-var ${configName} = ${configJson}
+var ${cfgMap[cfgName]} = $(cat "${cfgMap[cfgFile]}")
 
-function ${fnName}EffectiveConfig() {
-  const effectiveConfig = GMail2GDrive.Lib.${getCfgFn}(${configName})
+function ${cfgMap[fnName]}EffectiveConfig() {
+  const effectiveConfig = GMail2GDrive.Lib.${cfgMap[getCfgFn]}(${cfgMap[cfgName]})
   console.log(JSON.stringify(effectiveConfig), null, 2)
 }
 
-function ${fnName}Run() {
-  GMail2GDrive.Lib.${runFn}(${configName}, "dry-run")
+function ${cfgMap[fnName]}Run() {
+  GMail2GDrive.Lib.${cfgMap[runFn]}(${cfgMap[cfgName]}, "dry-run")
 }
 EOF
 }
 
 function generateTestExample() {
-  local version="${1}"
-  local fnName="${2}"
-  local configName="${3}"
-  local runFn="${4}"
-  local getCfgFn="${5}"
-  local configJson="${6}"
+
   cat <<EOF
+${cfgMap[cfgImport]}
+import { PartialDeep } from "type-fest"
 import { ProcessingConfig } from "../../lib/config/Config"
 import { GMail2GDrive } from "../mocks/Examples"
 import { MockFactory } from "../mocks/MockFactory"
 
-const ${configName} = ${configJson}
+const ${cfgMap[cfgName]} = $(cat "${cfgMap[cfgFile]}")
 
-it("should provide the effective config of v${version} example ${fnName}", () => {
-  const effectiveConfig = GMail2GDrive.Lib.${getCfgFn}(${configName})
+it("should provide the effective config of v${version} example ${cfgMap[fnName]}", () => {
+  const effectiveConfig = GMail2GDrive.Lib.${cfgMap[getCfgFn]}(${cfgMap[cfgName]} as PartialDeep<${cfgMap[cfgType]}>)
     expect(effectiveConfig).toBeInstanceOf(ProcessingConfig)
 })
 
-it("should process a v${version} config example", () => {
-  const result = GMail2GDrive.Lib.${runFn}(${configName}, "dry-run", MockFactory.newEnvContextMock())
+it("should process a v${cfgMap[version]} config example", () => {
+  const result = GMail2GDrive.Lib.${cfgMap[runFn]}(${cfgMap[cfgName]} as PartialDeep<${cfgMap[cfgType]}>, "dry-run", MockFactory.newEnvContextMock())
   expect(result.status).toEqual("ok")
 })
 EOF
@@ -59,30 +86,16 @@ outdir_tests="${3:-src/test/examples}"
 rm -f "${outdir_gas}"/v[12]-*.js "${outdir_tests}"/v[12]-*.spec.ts
 
 while read -r version fnName; do
-  case "${version}" in
-    1)
-      getCfgFn="getEffectiveConfigV1"
-      runFn="run"
-    ;;
-    2)
-      getCfgFn="getEffectiveConfig"
-      runFn="runWithV1Config"
-    ;;
-    *)
-      echo "ERROR: Wrong config type: ${version}!"
-      exit 1
-    ;;
-  esac
-  configName="${fnName}ConfigV${version}"
-  
+  buildCfgMap "${version}" "${fnName}" "${srcdir}/config-v${version}-${fnName}.json"
+
   # Generate GAS example:
   mkdir -p "${outdir_gas}"
-  generateGasExample "${version}" "${fnName}" "${configName}" "${runFn}" "${getCfgFn}" "$(cat "${srcdir}/config-v${version}-${fnName}.json")" \
+  generateGasExample \
   >"${outdir_gas}/v${version}-${fnName}.js"
   
   # Generate test example:
   mkdir -p "${outdir_tests}"
-  generateTestExample "${version}" "${fnName}" "${configName}" "${runFn}" "${getCfgFn}" "$(cat "${srcdir}/config-v${version}-${fnName}.json")" \
+  generateTestExample \
   >"${outdir_tests}/v${version}-${fnName}.spec.ts"
 done < <(
   find "${srcdir}" -path "${srcdir}/config-v*-*.json" \

@@ -1,3 +1,5 @@
+import { Config } from "../../lib/config/Config"
+import { PartialDeep } from "type-fest"
 import { ProcessingConfig } from "../../lib/config/Config"
 import { GMail2GDrive } from "../mocks/Examples"
 import { MockFactory } from "../mocks/MockFactory"
@@ -31,7 +33,7 @@ const example01ConfigV2 = {
       },
       actions: [
         {
-          name: "attachment.storeToGDrive",
+          name: "thread.storeAsPdfToGDrive",
           args: {
             folder: "Scans-${message.date:dateformat:yyyy-MM-dd}",
           },
@@ -42,13 +44,15 @@ const example01ConfigV2 = {
 }
 
 it("should provide the effective config of v2 example example01", () => {
-  const effectiveConfig = GMail2GDrive.Lib.getEffectiveConfig(example01ConfigV2)
+  const effectiveConfig = GMail2GDrive.Lib.getEffectiveConfig(
+    example01ConfigV2 as PartialDeep<Config>,
+  )
   expect(effectiveConfig).toBeInstanceOf(ProcessingConfig)
 })
 
 it("should process a v2 config example", () => {
-  const result = GMail2GDrive.Lib.runWithV1Config(
-    example01ConfigV2,
+  const result = GMail2GDrive.Lib.run(
+    example01ConfigV2 as PartialDeep<Config>,
     "dry-run",
     MockFactory.newEnvContextMock(),
   )
