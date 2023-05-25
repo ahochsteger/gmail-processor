@@ -47,7 +47,7 @@ var ${cfgMap[cfgName]} = $(cat "${cfgMap[cfgFile]}")
 
 function ${cfgMap[fnName]}EffectiveConfig() {
   const effectiveConfig = GMail2GDrive.Lib.${cfgMap[getCfgFn]}(${cfgMap[cfgName]})
-  console.log(JSON.stringify(effectiveConfig), null, 2)
+  console.log(JSON.stringify(effectiveConfig, null, 2))
 }
 
 function ${cfgMap[fnName]}Run() {

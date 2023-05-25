@@ -17,7 +17,7 @@ var exampleMinConfigV1 = {
 function exampleMinEffectiveConfig() {
   const effectiveConfig =
     GMail2GDrive.Lib.getEffectiveConfigV1(exampleMinConfigV1)
-  console.log(JSON.stringify(effectiveConfig), null, 2)
+  console.log(JSON.stringify(effectiveConfig, null, 2))
 }
 
 function exampleMinRun() {

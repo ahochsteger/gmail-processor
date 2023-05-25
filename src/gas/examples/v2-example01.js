@@ -41,7 +41,7 @@ var example01ConfigV2 = {
 
 function example01EffectiveConfig() {
   const effectiveConfig = GMail2GDrive.Lib.getEffectiveConfig(example01ConfigV2)
-  console.log(JSON.stringify(effectiveConfig), null, 2)
+  console.log(JSON.stringify(effectiveConfig, null, 2))
 }
 
 function example01Run() {
