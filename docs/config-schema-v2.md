@@ -8,7 +8,6 @@
   - [`MessageMatchConfig`](#reference-messagematchconfig)
 - [`SettingsConfig`](#reference-settingsconfig)
 - [`ThreadActionConfig`](#reference-threadactionconfig)
-  - [`ThreadActionNames`](#reference-threadactionnames)
 - [`ThreadMatchConfig`](#reference-threadmatchconfig)
 
 ---
@@ -21,12 +20,12 @@ Represents a config to perform a actions for a GMail attachment.
 
 **`AttachmentActionConfig` Properties**
 
-|                     | Type                    | Description                                                                  | Required     |
-| ------------------- | ----------------------- | ---------------------------------------------------------------------------- | ------------ |
-| **args**            | `object`                | The arguments for a certain action                                           | No           |
-| **description**     | `string`                | The description for the action                                               | No, default: |
-| **name**            | `AttachmentActionNames` |                                                                              | &#10003; Yes |
-| **processingStage** | `string`                | The processing stage in which the action should run (pre or post processing) | No           |
+|                     | Type     | Description                                                                  | Required     |
+| ------------------- | -------- | ---------------------------------------------------------------------------- | ------------ |
+| **args**            | `object` | The arguments for a certain action                                           | No           |
+| **description**     | `string` | The description for the action                                               | No, default: |
+| **name**            | `string` | The name of the action to be executed                                        | &#10003; Yes |
+| **processingStage** | `string` | The processing stage in which the action should run (pre or post processing) | No           |
 
 Additional properties are not allowed.
 
@@ -46,10 +45,33 @@ The description for the action
 
 ### AttachmentActionConfig.name
 
-- **Type**: `AttachmentActionNames`
+The name of the action to be executed
+
+- **Type**: `string`
 - **Required**: &#10003; Yes
 - ## **Allowed values**:
-  - `attachment.storeToGDrive`
+  - `"attachment.storeToGDrive"`
+  - `"global.logsheetLog"`
+  - `"message.forward"`
+  - `"message.markProcessed"`
+  - `"message.markRead"`
+  - `"message.markUnread"`
+  - `"message.moveToTrash"`
+  - `"message.star"`
+  - `"message.storeAsPdfToGDrive"`
+  - `"message.unstar"`
+  - `"thread.addLabel"`
+  - `"thread.markImportant"`
+  - `"thread.markProcessed"`
+  - `"thread.markRead"`
+  - `"thread.markUnimportant"`
+  - `"thread.markUnread"`
+  - `"thread.moveToArchive"`
+  - `"thread.moveToInbox"`
+  - `"thread.moveToSpam"`
+  - `"thread.moveToTrash"`
+  - `"thread.removeLabel"`
+  - `"thread.storeAsPdfToGDrive"`
 
 ### AttachmentActionConfig.processingStage
 
@@ -60,12 +82,6 @@ The processing stage in which the action should run (pre or post processing)
 - **Allowed values**:
   - `"post"`
   - `"pre"`
-
----
-
-<a name="reference-attachmentactionnames"></a>
-
-## AttachmentActionNames
 
 ---
 
@@ -281,12 +297,12 @@ Represents a config to perform a actions for a GMail message.
 
 **`MessageActionConfig` Properties**
 
-|                     | Type                 | Description                                                                  | Required     |
-| ------------------- | -------------------- | ---------------------------------------------------------------------------- | ------------ |
-| **args**            | `object`             | The arguments for a certain action                                           | No           |
-| **description**     | `string`             | The description for the action                                               | No, default: |
-| **name**            | `MessageActionNames` |                                                                              | &#10003; Yes |
-| **processingStage** | `string`             | The processing stage in which the action should run (pre or post processing) | No           |
+|                     | Type     | Description                                                                  | Required     |
+| ------------------- | -------- | ---------------------------------------------------------------------------- | ------------ |
+| **args**            | `object` | The arguments for a certain action                                           | No           |
+| **description**     | `string` | The description for the action                                               | No, default: |
+| **name**            | `string` | The name of the action to be executed                                        | &#10003; Yes |
+| **processingStage** | `string` | The processing stage in which the action should run (pre or post processing) | No           |
 
 Additional properties are not allowed.
 
@@ -306,17 +322,32 @@ The description for the action
 
 ### MessageActionConfig.name
 
-- **Type**: `MessageActionNames`
+The name of the action to be executed
+
+- **Type**: `string`
 - **Required**: &#10003; Yes
 - ## **Allowed values**:
-  - `message.forward`
-  - `message.markProcessed`
-  - `message.markRead`
-  - `message.markUnread`
-  - `message.moveToTrash`
-  - `message.star`
-  - `message.storeAsPdfToGDrive`
-  - `message.unstar`
+  - `"global.logsheetLog"`
+  - `"message.forward"`
+  - `"message.markProcessed"`
+  - `"message.markRead"`
+  - `"message.markUnread"`
+  - `"message.moveToTrash"`
+  - `"message.star"`
+  - `"message.storeAsPdfToGDrive"`
+  - `"message.unstar"`
+  - `"thread.addLabel"`
+  - `"thread.markImportant"`
+  - `"thread.markProcessed"`
+  - `"thread.markRead"`
+  - `"thread.markUnimportant"`
+  - `"thread.markUnread"`
+  - `"thread.moveToArchive"`
+  - `"thread.moveToInbox"`
+  - `"thread.moveToSpam"`
+  - `"thread.moveToTrash"`
+  - `"thread.removeLabel"`
+  - `"thread.storeAsPdfToGDrive"`
 
 ### MessageActionConfig.processingStage
 
@@ -327,12 +358,6 @@ The processing stage in which the action should run (pre or post processing)
 - **Allowed values**:
   - `"post"`
   - `"pre"`
-
----
-
-<a name="reference-messageactionnames"></a>
-
-## MessageActionNames
 
 ---
 
@@ -575,12 +600,12 @@ Represents a config to perform a actions for a GMail thread.
 
 **`ThreadActionConfig` Properties**
 
-|                     | Type                | Description                                                                  | Required     |
-| ------------------- | ------------------- | ---------------------------------------------------------------------------- | ------------ |
-| **args**            | `object`            | The arguments for a certain action                                           | No           |
-| **description**     | `string`            | The description for the action                                               | No, default: |
-| **name**            | `ThreadActionNames` |                                                                              | &#10003; Yes |
-| **processingStage** | `string`            | The processing stage in which the action should run (pre or post processing) | No           |
+|                     | Type     | Description                                                                  | Required     |
+| ------------------- | -------- | ---------------------------------------------------------------------------- | ------------ |
+| **args**            | `object` | The arguments for a certain action                                           | No           |
+| **description**     | `string` | The description for the action                                               | No, default: |
+| **name**            | `string` | The name of the action to be executed                                        | &#10003; Yes |
+| **processingStage** | `string` | The processing stage in which the action should run (pre or post processing) | No           |
 
 Additional properties are not allowed.
 
@@ -600,21 +625,24 @@ The description for the action
 
 ### ThreadActionConfig.name
 
-- **Type**: `ThreadActionNames`
+The name of the action to be executed
+
+- **Type**: `string`
 - **Required**: &#10003; Yes
 - ## **Allowed values**:
-  - `thread.addLabel`
-  - `thread.markImportant`
-  - `thread.markProcessed`
-  - `thread.markRead`
-  - `thread.markUnimportant`
-  - `thread.markUnread`
-  - `thread.moveToArchive`
-  - `thread.moveToInbox`
-  - `thread.moveToSpam`
-  - `thread.moveToTrash`
-  - `thread.removeLabel`
-  - `thread.storeAsPdfToGDrive`
+  - `"global.logsheetLog"`
+  - `"thread.addLabel"`
+  - `"thread.markImportant"`
+  - `"thread.markProcessed"`
+  - `"thread.markRead"`
+  - `"thread.markUnimportant"`
+  - `"thread.markUnread"`
+  - `"thread.moveToArchive"`
+  - `"thread.moveToInbox"`
+  - `"thread.moveToSpam"`
+  - `"thread.moveToTrash"`
+  - `"thread.removeLabel"`
+  - `"thread.storeAsPdfToGDrive"`
 
 ### ThreadActionConfig.processingStage
 
@@ -625,12 +653,6 @@ The processing stage in which the action should run (pre or post processing)
 - **Allowed values**:
   - `"post"`
   - `"pre"`
-
----
-
-<a name="reference-threadactionnames"></a>
-
-## ThreadActionNames
 
 ---
 
