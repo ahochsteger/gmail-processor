@@ -33,5 +33,7 @@ jobs:
         with:
           node-version: 18.x
       - run: npm run ci
+      - name: Jest coverage report
+        uses: ArtiomTr/jest-coverage-report-action@v2
       - run: npm run deploy
         if: github.ref == 'refs/heads/v2'
