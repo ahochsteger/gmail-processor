@@ -6,22 +6,40 @@ import { MessageActionNames } from "../actions/MessageActions"
 import { ThreadActionNames } from "../actions/ThreadActions"
 import { RequiredDeep } from "../utils/UtilityTypes"
 
+/**
+ * The stage of processing
+ */
+export enum ProcessingStage {
+  /** The stage before processing an entity */
+  PRE = "pre",
+  /** The stage after processing an entity */
+  POST = "post",
+}
+
 export abstract class ActionConfig {
   /**
    * The arguments for a certain action
    */
   @Expose()
   args?: { [k: string]: unknown } = {}
+
   /**
    * The description for the action
    */
   @Expose()
   description? = ""
+
   /**
    * The name of the action to be executed
    */
   @Expose()
   name = ""
+
+  /**
+   * The processing stage in which the action should run (pre or post processing)
+   */
+  @Expose()
+  processingStage? = ProcessingStage.POST
 }
 
 /**

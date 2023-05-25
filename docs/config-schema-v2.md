@@ -21,11 +21,12 @@ Represents a config to perform a actions for a GMail attachment.
 
 **`AttachmentActionConfig` Properties**
 
-|                 | Type                    | Description                        | Required     |
-| --------------- | ----------------------- | ---------------------------------- | ------------ |
-| **args**        | `object`                | The arguments for a certain action | No           |
-| **description** | `string`                | The description for the action     | No, default: |
-| **name**        | `AttachmentActionNames` |                                    | &#10003; Yes |
+|                     | Type                    | Description                                                                  | Required     |
+| ------------------- | ----------------------- | ---------------------------------------------------------------------------- | ------------ |
+| **args**            | `object`                | The arguments for a certain action                                           | No           |
+| **description**     | `string`                | The description for the action                                               | No, default: |
+| **name**            | `AttachmentActionNames` |                                                                              | &#10003; Yes |
+| **processingStage** | `string`                | The processing stage in which the action should run (pre or post processing) | No           |
 
 Additional properties are not allowed.
 
@@ -49,6 +50,16 @@ The description for the action
 - **Required**: &#10003; Yes
 - ## **Allowed values**:
   - `attachment.storeToGDrive`
+
+### AttachmentActionConfig.processingStage
+
+The processing stage in which the action should run (pre or post processing)
+
+- **Type**: `string`
+- **Required**: No
+- **Allowed values**:
+  - `"post"`
+  - `"pre"`
 
 ---
 
@@ -270,11 +281,12 @@ Represents a config to perform a actions for a GMail message.
 
 **`MessageActionConfig` Properties**
 
-|                 | Type                 | Description                        | Required     |
-| --------------- | -------------------- | ---------------------------------- | ------------ |
-| **args**        | `object`             | The arguments for a certain action | No           |
-| **description** | `string`             | The description for the action     | No, default: |
-| **name**        | `MessageActionNames` |                                    | &#10003; Yes |
+|                     | Type                 | Description                                                                  | Required     |
+| ------------------- | -------------------- | ---------------------------------------------------------------------------- | ------------ |
+| **args**            | `object`             | The arguments for a certain action                                           | No           |
+| **description**     | `string`             | The description for the action                                               | No, default: |
+| **name**            | `MessageActionNames` |                                                                              | &#10003; Yes |
+| **processingStage** | `string`             | The processing stage in which the action should run (pre or post processing) | No           |
 
 Additional properties are not allowed.
 
@@ -305,6 +317,16 @@ The description for the action
   - `message.star`
   - `message.storeAsPdfToGDrive`
   - `message.unstar`
+
+### MessageActionConfig.processingStage
+
+The processing stage in which the action should run (pre or post processing)
+
+- **Type**: `string`
+- **Required**: No
+- **Allowed values**:
+  - `"post"`
+  - `"pre"`
 
 ---
 
@@ -553,11 +575,12 @@ Represents a config to perform a actions for a GMail thread.
 
 **`ThreadActionConfig` Properties**
 
-|                 | Type                | Description                        | Required     |
-| --------------- | ------------------- | ---------------------------------- | ------------ |
-| **args**        | `object`            | The arguments for a certain action | No           |
-| **description** | `string`            | The description for the action     | No, default: |
-| **name**        | `ThreadActionNames` |                                    | &#10003; Yes |
+|                     | Type                | Description                                                                  | Required     |
+| ------------------- | ------------------- | ---------------------------------------------------------------------------- | ------------ |
+| **args**            | `object`            | The arguments for a certain action                                           | No           |
+| **description**     | `string`            | The description for the action                                               | No, default: |
+| **name**            | `ThreadActionNames` |                                                                              | &#10003; Yes |
+| **processingStage** | `string`            | The processing stage in which the action should run (pre or post processing) | No           |
 
 Additional properties are not allowed.
 
@@ -592,6 +615,16 @@ The description for the action
   - `thread.moveToTrash`
   - `thread.removeLabel`
   - `thread.storeAsPdfToGDrive`
+
+### ThreadActionConfig.processingStage
+
+The processing stage in which the action should run (pre or post processing)
+
+- **Type**: `string`
+- **Required**: No
+- **Allowed values**:
+  - `"post"`
+  - `"pre"`
 
 ---
 
