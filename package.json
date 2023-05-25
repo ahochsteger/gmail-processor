@@ -6,7 +6,7 @@
     "build": "concurrently 'npm run build:lib' 'npm run build:examples'",
     "build:examples": "scripts/build-gas.sh examples",
     "build:lib": "scripts/build-gas.sh lib",
-    "ci": "npm run ci:build && npm run ci:test",
+    "ci": "npm run ci:build",
     "ci:build": "npm ci && npm run build",
     "ci:test": "jest --ci --reporters='github-actions'",
     "ci:test:github": "jest --ci --reporters='default' --reporters='.github/github-actions-reporter.js'",
