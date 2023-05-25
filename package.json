@@ -27,8 +27,8 @@
     "lint:config": "scripts/lint-config.sh",
     "lint:fix": "prettier -w .",
     "pre-commit": "npm run clean && npm run build && npm run lint:fix && npm run lint && npm run test",
-    "test": "jest --silent --reporters='default'",
-    "test:verbose": "jest --detectOpenHandles --runInBand --verbose",
+    "test": "jest --reporters=summary --silent",
+    "test:verbose": "jest --detectOpenHandles --reporters='default' --runInBand --verbose",
     "update": "npm run update:schema",
     "update:examples": "scripts/update-examples.sh",
     "update:schema": "scripts/update-schema.sh"

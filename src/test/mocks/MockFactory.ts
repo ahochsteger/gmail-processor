@@ -52,6 +52,10 @@ export class Mocks {
   public message = mock<GoogleAppsScript.Gmail.GmailMessage>()
   public processingContext = mock<ProcessingContext>()
   public spreadsheetApp = mock<GoogleAppsScript.Spreadsheet.SpreadsheetApp>()
+  public logSheetRange = mock<GoogleAppsScript.Spreadsheet.Range>()
+  public logSheet = mock<GoogleAppsScript.Spreadsheet.Sheet>()
+  public logSpreadsheet = mock<GoogleAppsScript.Spreadsheet.Spreadsheet>()
+  public logSpreadsheetFile = mock<GoogleAppsScript.Drive.File>()
   public threadContext = mock<ThreadContext>()
   public thread = mock<GoogleAppsScript.Gmail.GmailThread>()
   public utilities = mock<GoogleAppsScript.Utilities.Utilities>()
@@ -94,8 +98,10 @@ export class MockFactory {
   ) {
     // Setup mock behavior:
     mocks.folder.getFilesByName.mockReturnValue(mocks.fileIterator)
+    mocks.folder.getFolders.mockReturnValue(mocks.folderIterator)
     mocks.folder.createFile.mockReturnValue(mocks.file)
     mocks.gdriveApp.getRootFolder.mockReturnValue(mocks.folder)
+    mocks.gdriveApp.getFolderById.mockReturnValue(mocks.folder)
     mocks.gdriveApp.getFoldersByName.mockReturnValue(mocks.folderIterator)
     mocks.cache.get.mockReturnValue("some-id")
     mocks.cacheService.getScriptCache.mockReturnValue(mocks.cache)
@@ -103,6 +109,17 @@ export class MockFactory {
     mocks.blob.getDataAsString.mockReturnValue("PDF-Contents")
     mocks.utilities.newBlob.mockReturnValue(mocks.blob)
     mocks.gmailApp.search.mockReturnValue([mocks.thread])
+
+    // SpreadsheetAdapter Mocks:
+    mocks.logSheet.getLastRow.mockReturnValue(3)
+    mocks.logSheet.getRange.mockReturnValue(mocks.logSheetRange)
+    mocks.logSheetRange.setValues.mockReturnValue(mocks.logSheetRange)
+    mocks.logSpreadsheet.getId.mockReturnValue("some-spreadsheet-id")
+    mocks.logSpreadsheet.getSheets.mockReturnValue([mocks.logSheet])
+    mocks.spreadsheetApp.create.mockReturnValue(mocks.logSpreadsheet)
+    mocks.spreadsheetApp.openById.mockReturnValue(mocks.logSpreadsheet)
+    mocks.gdriveApp.getFileById.mockReturnValue(mocks.logSpreadsheetFile)
+    mocks.logSpreadsheetFile.moveTo.mockReturnValue(mocks.logSpreadsheetFile)
     const envContext: EnvContext = {
       env: {
         gmailApp: mocks.gmailApp,

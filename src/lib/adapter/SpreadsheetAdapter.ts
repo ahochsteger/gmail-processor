@@ -55,6 +55,7 @@ export class SpreadsheetAdapter extends BaseAdapter {
     logSheet.getRange(lastRow, args.length, 1, args.length).setValues(values)
   }
 
+  // TODO: Consolidate with folder logic from GDriveAdapter
   private getOrCreateFolder(
     path: string,
     parentFolderId = "",
@@ -138,6 +139,25 @@ export class SpreadsheetAdapter extends BaseAdapter {
       "Attachment",
       attachment.getName(),
       logMessage,
+    )
+  }
+
+  public logMessagePdf(
+    message: GoogleAppsScript.Gmail.GmailMessage,
+    location: string,
+    pdf: GoogleAppsScript.Drive.File,
+  ) {
+    console.info(
+      `Creating spreadsheet log entry for PDF export of message '${message.getSubject()}' stored to ${location} ...`,
+    )
+    this.appendToLogSheet(
+      message.getSubject(),
+      message.getDate(),
+      message.getId(),
+      "https://mail.google.com/mail/u/0/#inbox/" + message.getId(),
+      "Thread",
+      pdf.getName(),
+      pdf.getUrl(),
     )
   }
 
