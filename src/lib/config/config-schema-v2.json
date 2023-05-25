@@ -19,10 +19,35 @@
           "type": "string"
         },
         "name": {
-          "$ref": "#/definitions/AttachmentActionNames",
           "default": "",
           "description": "The name of the action to be executed",
-          "title": "name"
+          "enum": [
+            "",
+            "attachment.storeToGDrive",
+            "global.logsheetLog",
+            "message.forward",
+            "message.markProcessed",
+            "message.markRead",
+            "message.markUnread",
+            "message.moveToTrash",
+            "message.star",
+            "message.storeAsPdfToGDrive",
+            "message.unstar",
+            "thread.addLabel",
+            "thread.markImportant",
+            "thread.markProcessed",
+            "thread.markRead",
+            "thread.markUnimportant",
+            "thread.markUnread",
+            "thread.moveToArchive",
+            "thread.moveToInbox",
+            "thread.moveToSpam",
+            "thread.moveToTrash",
+            "thread.removeLabel",
+            "thread.storeAsPdfToGDrive"
+          ],
+          "title": "name",
+          "type": "string"
         },
         "processingStage": {
           "description": "The processing stage in which the action should run (pre or post processing)",
@@ -34,11 +59,6 @@
       "required": ["name"],
       "title": "AttachmentActionConfig",
       "type": "object"
-    },
-    "AttachmentActionNames": {
-      "enum": ["", "attachment.storeToGDrive"],
-      "title": "AttachmentActionNames",
-      "type": "string"
     },
     "AttachmentConfig": {
       "additionalProperties": false,
@@ -208,10 +228,34 @@
           "type": "string"
         },
         "name": {
-          "$ref": "#/definitions/MessageActionNames",
           "default": "",
           "description": "The name of the action to be executed",
-          "title": "name"
+          "enum": [
+            "",
+            "global.logsheetLog",
+            "message.forward",
+            "message.markProcessed",
+            "message.markRead",
+            "message.markUnread",
+            "message.moveToTrash",
+            "message.star",
+            "message.storeAsPdfToGDrive",
+            "message.unstar",
+            "thread.addLabel",
+            "thread.markImportant",
+            "thread.markProcessed",
+            "thread.markRead",
+            "thread.markUnimportant",
+            "thread.markUnread",
+            "thread.moveToArchive",
+            "thread.moveToInbox",
+            "thread.moveToSpam",
+            "thread.moveToTrash",
+            "thread.removeLabel",
+            "thread.storeAsPdfToGDrive"
+          ],
+          "title": "name",
+          "type": "string"
         },
         "processingStage": {
           "description": "The processing stage in which the action should run (pre or post processing)",
@@ -223,21 +267,6 @@
       "required": ["name"],
       "title": "MessageActionConfig",
       "type": "object"
-    },
-    "MessageActionNames": {
-      "enum": [
-        "",
-        "message.forward",
-        "message.markProcessed",
-        "message.markRead",
-        "message.markUnread",
-        "message.moveToTrash",
-        "message.star",
-        "message.storeAsPdfToGDrive",
-        "message.unstar"
-      ],
-      "title": "MessageActionNames",
-      "type": "string"
     },
     "MessageConfig": {
       "additionalProperties": false,
@@ -418,10 +447,26 @@
           "type": "string"
         },
         "name": {
-          "$ref": "#/definitions/ThreadActionNames",
           "default": "",
           "description": "The name of the action to be executed",
-          "title": "name"
+          "enum": [
+            "",
+            "global.logsheetLog",
+            "thread.addLabel",
+            "thread.markImportant",
+            "thread.markProcessed",
+            "thread.markRead",
+            "thread.markUnimportant",
+            "thread.markUnread",
+            "thread.moveToArchive",
+            "thread.moveToInbox",
+            "thread.moveToSpam",
+            "thread.moveToTrash",
+            "thread.removeLabel",
+            "thread.storeAsPdfToGDrive"
+          ],
+          "title": "name",
+          "type": "string"
         },
         "processingStage": {
           "description": "The processing stage in which the action should run (pre or post processing)",
@@ -433,25 +478,6 @@
       "required": ["name"],
       "title": "ThreadActionConfig",
       "type": "object"
-    },
-    "ThreadActionNames": {
-      "enum": [
-        "",
-        "thread.addLabel",
-        "thread.markImportant",
-        "thread.markProcessed",
-        "thread.markRead",
-        "thread.markUnimportant",
-        "thread.markUnread",
-        "thread.moveToArchive",
-        "thread.moveToInbox",
-        "thread.moveToSpam",
-        "thread.moveToTrash",
-        "thread.removeLabel",
-        "thread.storeAsPdfToGDrive"
-      ],
-      "title": "ThreadActionNames",
-      "type": "string"
     },
     "ThreadConfig": {
       "additionalProperties": false,

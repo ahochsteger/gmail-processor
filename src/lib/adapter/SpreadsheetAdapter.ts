@@ -142,6 +142,11 @@ export class SpreadsheetAdapter extends BaseAdapter {
     )
   }
 
+  public log(logMessage: string) {
+    console.info(`Creating spreadsheet log entry: '${logMessage}' ...`)
+    this.appendToLogSheet("", "", "", "", "", "", logMessage)
+  }
+
   public logMessagePdf(
     message: GoogleAppsScript.Gmail.GmailMessage,
     location: string,

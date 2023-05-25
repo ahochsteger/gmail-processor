@@ -26,7 +26,7 @@
     "lint:code": "eslint .",
     "lint:config": "scripts/lint-config.sh",
     "lint:fix": "prettier -w .",
-    "pre-commit": "npm run clean && npm run build && npm run lint:fix && npm run lint && npm run test",
+    "pre-commit": "npm run clean && npm run update && npm run build && npm run lint:fix && npm run lint && npm run test",
     "test": "jest --reporters=summary --silent",
     "test:verbose": "jest --detectOpenHandles --reporters='default' --runInBand --verbose",
     "update": "npm run update:schema",

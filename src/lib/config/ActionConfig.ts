@@ -2,6 +2,7 @@ import { Expose, instanceToPlain, plainToInstance } from "class-transformer"
 import "reflect-metadata"
 import { PartialDeep } from "type-fest"
 import { AttachmentActionNames } from "../actions/AttachmentActions"
+import { GlobalActionNames } from "../actions/GlobalActions"
 import { MessageActionNames } from "../actions/MessageActions"
 import { ThreadActionNames } from "../actions/ThreadActions"
 import { RequiredDeep } from "../utils/UtilityTypes"
@@ -45,22 +46,33 @@ export abstract class ActionConfig {
 /**
  * Represents a config to perform a actions for a GMail thread.
  */
+export class GlobalActionConfig extends ActionConfig {
+  name: GlobalActionNames = ""
+}
+
+/**
+ * Represents a config to perform a actions for a GMail thread.
+ */
 export class ThreadActionConfig extends ActionConfig {
-  name: ThreadActionNames = ""
+  name: GlobalActionNames | ThreadActionNames = ""
 }
 
 /**
  * Represents a config to perform a actions for a GMail message.
  */
 export class MessageActionConfig extends ActionConfig {
-  name: MessageActionNames = ""
+  name: GlobalActionNames | ThreadActionNames | MessageActionNames = ""
 }
 
 /**
  * Represents a config to perform a actions for a GMail attachment.
  */
 export class AttachmentActionConfig extends ActionConfig {
-  name: AttachmentActionNames = ""
+  name:
+    | GlobalActionNames
+    | ThreadActionNames
+    | MessageActionNames
+    | AttachmentActionNames = ""
 }
 
 export function actionConfigToJson<T = ActionConfig>(
