@@ -1,10 +1,5 @@
 import { PartialDeep } from "type-fest"
-import {
-  EnvContext,
-  ProcessingContext,
-  ProcessingResult,
-  RunMode,
-} from "../Context"
+import { EnvContext, ProcessingContext, ProcessingResult } from "../Context"
 import { ActionProvider, ActionRegistry } from "../actions/ActionRegistry"
 import { AttachmentActions } from "../actions/AttachmentActions"
 import { MessageActions } from "../actions/MessageActions"
@@ -13,12 +8,11 @@ import { GDriveAdapter } from "../adapter/GDriveAdapter"
 import { GmailAdapter } from "../adapter/GmailAdapter"
 import { SpreadsheetAdapter } from "../adapter/SpreadsheetAdapter"
 import { Config, RequiredConfig, jsonToConfig } from "../config/Config"
-import { Logger } from "../utils/Logging"
 import { Timer } from "../utils/Timer"
 import { ThreadProcessor } from "./ThreadProcessor"
 
 export class GmailProcessor {
-  public run(config: RequiredConfig, ctx: EnvContext = this.defaultContext()) {
+  public run(config: RequiredConfig, ctx: EnvContext) {
     ctx.log.info("Processing of GMail2GDrive config started ...")
     const actionRegistry = new ActionRegistry()
     actionRegistry.registerActionProvider(
@@ -55,8 +49,7 @@ export class GmailProcessor {
 
   public runWithJson(
     configJson: PartialDeep<Config>,
-    runMode = RunMode.SAFE_MODE,
-    ctx: EnvContext = this.defaultContext(runMode),
+    ctx: EnvContext,
   ): ProcessingResult {
     const config = this.getEffectiveConfig(configJson)
     return this.run(config, ctx)
@@ -64,22 +57,5 @@ export class GmailProcessor {
 
   public getEffectiveConfig(configJson: PartialDeep<Config>): RequiredConfig {
     return jsonToConfig(configJson)
-  }
-
-  public defaultContext(runMode = RunMode.SAFE_MODE) {
-    const logger = new Logger()
-    const ctx: EnvContext = {
-      env: {
-        cacheService: CacheService,
-        gdriveApp: DriveApp,
-        gmailApp: GmailApp,
-        spreadsheetApp: SpreadsheetApp,
-        utilities: Utilities,
-        runMode: runMode,
-        timezone: Session?.getScriptTimeZone() || "UTC",
-      },
-      log: logger,
-    }
-    return ctx
   }
 }

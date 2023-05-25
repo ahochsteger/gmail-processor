@@ -18,11 +18,7 @@ beforeEach(() => {
 
 describe("run", () => {
   it("test", () => {
-    const result = gmailProcessor.runWithJson(
-      configJson,
-      RunMode.DRY_RUN,
-      mocks.envContext,
-    )
+    const result = gmailProcessor.runWithJson(configJson, mocks.envContext)
     expect(result.status).toEqual("ok")
   })
 })

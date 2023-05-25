@@ -4,8 +4,26 @@ import { Config, RequiredConfig, configToJson } from "./config/Config"
 import { V1Config, jsonToV1Config } from "./config/v1/V1Config"
 import { V1ToV2Converter } from "./config/v1/V1ToV2Converter"
 import { GmailProcessor } from "./processors/GmailProcessor"
+import { Logger } from "./utils/Logging"
 
 const gmailProcessor = new GmailProcessor()
+
+function defaultContext(runMode = RunMode.SAFE_MODE) {
+  const logger = new Logger()
+  const ctx: EnvContext = {
+    env: {
+      cacheService: CacheService,
+      gdriveApp: DriveApp,
+      gmailApp: GmailApp,
+      spreadsheetApp: SpreadsheetApp,
+      utilities: Utilities,
+      runMode: runMode,
+      timezone: Session?.getScriptTimeZone() || "UTC",
+    },
+    log: logger,
+  }
+  return ctx
+}
 
 /**
  * @param configJson GMail2GDrive configuration JSON
@@ -14,9 +32,9 @@ const gmailProcessor = new GmailProcessor()
 export function run(
   configJson: PartialDeep<Config>,
   runMode: string = RunMode.SAFE_MODE,
-  ctx: EnvContext = gmailProcessor.defaultContext(runMode as RunMode),
+  ctx: EnvContext = defaultContext(runMode as RunMode),
 ): ProcessingResult {
-  return gmailProcessor.runWithJson(configJson, runMode as RunMode, ctx)
+  return gmailProcessor.runWithJson(configJson, ctx)
 }
 
 /**
@@ -26,7 +44,7 @@ export function run(
 export function runWithV1Config(
   v1configJson: PartialDeep<V1Config>,
   runMode: string = RunMode.SAFE_MODE,
-  ctx: EnvContext = gmailProcessor.defaultContext(runMode as RunMode),
+  ctx: EnvContext = defaultContext(runMode as RunMode),
 ): ProcessingResult {
   ctx.log.info("Processing v1 legacy config: ", v1configJson)
   ctx.env.runMode = runMode as RunMode
