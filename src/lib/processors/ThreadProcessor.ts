@@ -1,5 +1,5 @@
 import { ProcessingContext, ProcessingResult, ThreadContext } from "../Context"
-import { ThreadActions } from "../actions/ThreadActions"
+import { ProcessingStage } from "../config/ActionConfig"
 import { RequiredThreadConfig } from "../config/ThreadConfig"
 import { MessageProcessor } from "./MessageProcessor"
 
@@ -83,18 +83,24 @@ export class ThreadProcessor {
     ctx.log.info(
       `    Processing of thread '${thread.getFirstMessageSubject()}' started ...`,
     )
-    MessageProcessor.processMessageConfigs(ctx, threadConfig.messages)
-    // // Process all messages of a thread:
-    // for (const messageRule of threadRule.messageRules) {
-    //     for (const message of thread.getMessages()) {
-    //         const messageContext = new MessageContext(
-    //             messageRule, message, thread.getMessages().indexOf(message))
-    //         messageProcessor.processMessage(message)
-    //     }
-    // }
+    // Execute pre-actions:
+    ctx.thread.config.actions
+      .filter((cfg) => cfg.processingStage == ProcessingStage.PRE)
+      .forEach((action) =>
+        ctx.proc.actionRegistry.executeAction(ctx, action.name, action.args),
+      )
 
-    // Mark a thread as processed:
-    ThreadActions.markProcessed(ctx)
+    // Process message configs:
+    if (threadConfig.messages) {
+      MessageProcessor.processMessageConfigs(ctx, threadConfig.messages)
+    }
+
+    // Execute post-actions:
+    ctx.thread.config.actions
+      .filter((cfg) => cfg.processingStage == ProcessingStage.POST)
+      .forEach((action) =>
+        ctx.proc.actionRegistry.executeAction(ctx, action.name, action.args),
+      )
     ctx.log.info(
       `    Processing of thread '${thread.getFirstMessageSubject()}' finished.`,
     )

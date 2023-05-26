@@ -1,6 +1,6 @@
+import { ProcessingStage } from "../config/ActionConfig"
 import { RequiredAttachmentConfig } from "../config/AttachmentConfig"
 import { AttachmentContext, MessageContext } from "../Context"
-import { PatternUtil } from "../utils/PatternUtil"
 
 export class AttachmentProcessor {
   public static processAttachmentConfigs(
@@ -53,49 +53,21 @@ export class AttachmentProcessor {
     ctx.log.info(
       `            Processing of attachment '${attachment.getName()}' started ...`,
     )
-    // var match = true;
-    // if (rule.filenameFromRegexp) {
-    // var re = new RegExp(rule.filenameFromRegexp);
-    //   match = (attachment.getName()).match(re);
-    // }
-    // if (!match) {
-    //   Logger.log("INFO:           Rejecting file '" + attachment.getName() + " not matching" + rule.filenameFromRegexp);
-    //   continue;
-    // }
+    // Execute pre-actions:
+    ctx.attachment.config.actions
+      .filter((cfg) => cfg.processingStage == ProcessingStage.PRE)
+      .forEach((action) =>
+        ctx.proc.actionRegistry.executeAction(ctx, action.name, action.args),
+      )
 
-    const dataMap = PatternUtil.buildSubstitutionMapFromAttachmentContext(ctx)
-    // TODO: Implement attachment handling including dry-run
-    ctx.log.debug("Dumping dataMap:")
-    ctx.log.debug(dataMap)
+    // Execute post-actions:
+    ctx.attachment.config.actions
+      .filter((cfg) => cfg.processingStage == ProcessingStage.POST)
+      .forEach((action) =>
+        ctx.proc.actionRegistry.executeAction(ctx, action.name, action.args),
+      )
     ctx.log.info(
       `            Processing of attachment '${attachment.getName()}' finished.`,
     )
   }
-
-  // public processAttachmentRule_old(
-  //     attachmentContext: AttachmentContext,
-  // ) {
-  //     const thread: GoogleAppsScript.Gmail.GmailThread,
-  //     const msgIdx: number: messageC.index
-  //     const message = thread.getMessages()[msgIdx]
-  //     console.info("        Processing attachment rule: "
-  //         + attachmentRule.getSubject() + " (" + message.getId() + ")")
-  //     for (let attIdx = 0; attIdx < message.getAttachments().length; attIdx++) {
-  //         // TODO: Add support for attachment rules
-  //         const dataMap = PatternUtil.buildSubstitutionMap(thread, msgIdx, attIdx, attachmentRule)
-  //         // buildSubstitutionMap(
-  //         //     thread: GoogleAppsScript.Gmail.GmailThread, msgIdx: number, attIdx: number,
-  //         //     rule: any, attRuleIdx: number)
-  //         if (dataMap != null) {
-  //             const location = PatternUtil.evaluatePattern(attachmentRule.location, dataMap, this.config.timezone)
-  //             const conflictStrategy = attachmentRule.conflictStrategy ? attachmentRule.conflictStrategy : "create"
-  //             const description = evaluatePattern(
-  //                 "Mail title: ${message.subject}\n" +
-  //                 "Mail date: ${message.date:dateformat:yyyy-mm-dd HH:MM:ss}\n" +
-  //                 "Mail link: ${thread.permalink}", data, this.config.timezone)
-  //             // TODO: Replace with GDriveActions.storeAttachment()
-  //             storeAttachment(message.attachments[attIdx], description, location, conflictStrategy)
-  //         }
-  //     }
-  // }
 }

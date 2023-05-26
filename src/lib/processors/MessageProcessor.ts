@@ -1,4 +1,5 @@
 import { MessageContext, ThreadContext } from "../Context"
+import { ProcessingStage } from "../config/ActionConfig"
 import { RequiredMessageConfig } from "../config/MessageConfig"
 import { MessageFlag } from "../config/MessageFlag"
 import { AttachmentProcessor } from "../processors/AttachmentProcessor"
@@ -23,6 +24,7 @@ export class MessageProcessor {
     if (!message.getFrom().match(messageConfig.match.from)) return false
     if (!message.getTo().match(messageConfig.match.to)) return false
     if (!message.getSubject().match(messageConfig.match.subject)) return false
+    // TODO: Simplify using map/reduce:
     for (let i = 0; i < messageConfig.match.is.length; i++) {
       const flag = messageConfig.match.is[i]
       switch (flag) {
@@ -84,6 +86,14 @@ export class MessageProcessor {
     ctx.log.info(
       `        Processing of message '${message.getSubject()}' (id:${message.getId()}) started ...`,
     )
+    // Execute pre-actions:
+    ctx.message.config.actions
+      .filter((cfg) => cfg.processingStage == ProcessingStage.PRE)
+      .forEach((action) =>
+        ctx.proc.actionRegistry.executeAction(ctx, action.name, action.args),
+      )
+
+    // Process attachment configs:
     if (messageConfig.attachments) {
       // New rule configuration format
       AttachmentProcessor.processAttachmentConfigs(
@@ -91,13 +101,13 @@ export class MessageProcessor {
         messageConfig.attachments,
       )
     }
-    // } else { // Old rule configuration format
-    //     // TODO: Convert old rule configuration into new format instead of duplicate implementation
-    //     const attachments = message.getAttachments()
-    //     for (let attIdx = 0; attIdx < attachments.length; attIdx++) {
-    //         processAttachment(thread, msgIdx, messageRule, config, attIdx)
-    //     }
-    // }
+
+    // Execute post-actions:
+    ctx.thread.config.actions
+      .filter((cfg) => cfg.processingStage == ProcessingStage.POST)
+      .forEach((action) =>
+        ctx.proc.actionRegistry.executeAction(ctx, action.name, action.args),
+      )
     ctx.log.info(
       `        Processing of message '${message.getSubject()}' (id:${message.getId()}) finished.`,
     )
