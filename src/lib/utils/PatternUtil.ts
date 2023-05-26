@@ -1,5 +1,10 @@
 import moment from "moment-timezone"
-import { AttachmentContext, MessageContext, ThreadContext } from "../Context"
+import {
+  AttachmentContext,
+  MessageContext,
+  ProcessingContext,
+  ThreadContext,
+} from "../Context"
 import { AttachmentMatchConfig } from "../config/AttachmentMatchConfig"
 import { MessageMatchConfig } from "../config/MessageMatchConfig"
 
@@ -174,6 +179,18 @@ export class PatternUtil {
     return m
   }
 
+  public static buildSubstitutionMapFromProcessingContext(
+    ctx: ProcessingContext,
+    substMap = new SubstMap(),
+  ) {
+    substMap.set("env.runMode", ctx.env.runMode)
+    substMap.set("env.timezone", ctx.env.timezone)
+    substMap.set("timer.now", new Date())
+    substMap.set("timer.runTime", ctx.proc.timer.getRunTime())
+    substMap.set("timer.startTime", ctx.proc.timer.getStartTime())
+    return substMap
+  }
+
   public static buildSubstitutionMapFromThreadContext(
     ctx: ThreadContext,
     substMap = new SubstMap(),
@@ -288,36 +305,8 @@ export class PatternUtil {
     return m
   }
 
-  public static substituteFromThreadContext(
-    pattern: string,
-    threadContext: ThreadContext,
-  ) {
-    const m = this.buildSubstitutionMapFromThreadContext(threadContext)
-    return this.substitutePatternFromMap(pattern, m)
-  }
-
-  public static substituteFromMessageContext(
-    pattern: string,
-    messageContext: MessageContext,
-  ) {
-    const m = this.buildSubstitutionMapFromMessageContext(messageContext)
-    return this.substitutePatternFromMap(pattern, m)
-  }
-
-  public static substituteFromAttachmentContext(
-    pattern: string,
-    attachmentContext: AttachmentContext,
-    substMap = new SubstMap(),
-  ) {
-    const m = this.buildSubstitutionMapFromAttachmentContext(
-      attachmentContext,
-      substMap,
-    )
-    return this.substitutePatternFromMap(pattern, m)
-  }
-
   public static substitute(
-    ctx: ThreadContext | MessageContext | AttachmentContext,
+    ctx: ProcessingContext | ThreadContext | MessageContext | AttachmentContext,
     pattern: string,
     substMap = new SubstMap(),
   ) {
@@ -332,9 +321,14 @@ export class PatternUtil {
         ctx as MessageContext,
         substMap,
       )
-    } else {
+    } else if ((ctx as ThreadContext).thread) {
       m = this.buildSubstitutionMapFromThreadContext(
         ctx as ThreadContext,
+        substMap,
+      )
+    } else {
+      m = this.buildSubstitutionMapFromProcessingContext(
+        ctx as ProcessingContext,
         substMap,
       )
     }

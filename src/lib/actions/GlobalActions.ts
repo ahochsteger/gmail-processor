@@ -1,4 +1,5 @@
 import { ProcessingContext } from "../Context"
+import { PatternUtil } from "../utils/PatternUtil"
 import {
   ActionArgsType,
   ActionFunction,
@@ -15,7 +16,9 @@ export class GlobalActions implements ActionProvider<ProcessingContext> {
     },
   >(context: ProcessingContext, args: ActionArgsType): ActionReturnType {
     const a = typedArgs<T>(args)
-    context.proc.spreadsheetAdapter.log(a.logMessage as string)
+    context.proc.spreadsheetAdapter.log(
+      PatternUtil.substitute(context, a.logMessage),
+    )
     return {
       ok: true,
     }
