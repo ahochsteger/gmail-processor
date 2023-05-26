@@ -6,17 +6,15 @@ import { ActionProvider, ActionRegistry } from "./ActionRegistry"
 import { ThreadActions } from "./ThreadActions"
 
 let mocks: Mocks
-let dryRunMocks: Mocks
 let actionRegistry: ActionRegistry
 
 beforeEach(() => {
-  mocks = MockFactory.newMocks(newConfig(), RunMode.SAFE_MODE)
+  mocks = MockFactory.newMocks(newConfig(), RunMode.DANGEROUS)
   actionRegistry = new ActionRegistry()
   actionRegistry.registerActionProvider(
     "thread",
     new ThreadActions() as unknown as ActionProvider<ProcessingContext>,
   )
-  dryRunMocks = MockFactory.newMocks(newConfig(), RunMode.DRY_RUN)
 })
 
 it("should provide actions in the action registry", () => {
@@ -44,6 +42,7 @@ it("should mark a thread as important", () => {
 })
 
 it("should not mark a thread as important (dryRun)", () => {
+  const dryRunMocks = MockFactory.newMocks(newConfig(), RunMode.DRY_RUN)
   ThreadActions.markImportant(dryRunMocks.threadContext)
   expect(dryRunMocks.thread.markImportant).not.toBeCalled()
 })
@@ -57,6 +56,38 @@ it("should store a thread as PDF", () => {
   expect(mocks.blob.getAs).toBeCalledWith("application/pdf")
   expect(mocks.blob.getDataAsString()).toEqual("PDF-Contents")
   expect(result.file).toBeDefined()
+})
+
+it("should execute all actions using the action registry", () => {
+  const ctx = mocks.threadContext
+  // Execute all non-arg actions:
+  ;[
+    "thread.markImportant",
+    "thread.markRead",
+    "thread.markUnimportant",
+    "thread.markUnread",
+    "thread.moveToArchive",
+    "thread.moveToInbox",
+    "thread.moveToSpam",
+    "thread.moveToTrash",
+  ].forEach((actionName) => {
+    actionRegistry.executeAction(ctx, actionName, {})
+  })
+
+  // Execute all label actions:
+  ;["thread.addLabel", "thread.removeLabel"].forEach((actionName) => {
+    actionRegistry.executeAction(ctx, actionName, {
+      name: "my-label",
+    })
+  })
+
+  // Execute all actions with special arguments:
+  actionRegistry.executeAction(ctx, "thread.storeAsPdfToGDrive", {
+    location: "my-location",
+    conflictStrategy: ConflictStrategy.REPLACE,
+    description: "my description",
+    skipHeader: false,
+  })
 })
 
 it.todo("should use filenameTo as the output filename") // See PR #61

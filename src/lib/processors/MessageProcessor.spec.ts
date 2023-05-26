@@ -8,7 +8,7 @@ import { MessageProcessor } from "./MessageProcessor"
 let mocks: Mocks
 
 beforeEach(() => {
-  mocks = MockFactory.newMocks(newConfig(), RunMode.DRY_RUN)
+  mocks = MockFactory.newMocks(newConfig(), RunMode.DANGEROUS)
 })
 
 describe("match()", () => {

@@ -12,7 +12,7 @@ let gmailProcessor: GmailProcessor
 beforeEach(() => {
   configJson = MockFactory.newDefaultConfigJson()
   const config = jsonToConfig(configJson)
-  mocks = MockFactory.newMocks(config, RunMode.DRY_RUN)
+  mocks = MockFactory.newMocks(config, RunMode.DANGEROUS)
   gmailProcessor = new GmailProcessor()
 })
 
@@ -28,7 +28,7 @@ describe("runWithV1ConfigJson", () => {
     const v1config = MockFactory.newDefaultV1ConfigJson()
     const result = runWithV1Config(
       v1config,
-      RunMode.DRY_RUN,
+      RunMode.DANGEROUS,
       MockFactory.newEnvContextMock(),
     )
     expect(result.status).toEqual("ok")

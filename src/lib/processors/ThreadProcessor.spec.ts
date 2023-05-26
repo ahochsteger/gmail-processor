@@ -51,7 +51,7 @@ it("should construct a GMail search query without globals and no processedLabel"
       query: "some-thread-specific-query",
     },
   })
-  const mocks = MockFactory.newMocks(config, RunMode.SAFE_MODE)
+  const mocks = MockFactory.newMocks(config, RunMode.DANGEROUS)
   const actualQuery = ThreadProcessor.getQueryFromThreadConfig(
     mocks.processingContext,
     threadConfig,

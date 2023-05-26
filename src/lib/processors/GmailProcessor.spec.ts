@@ -9,7 +9,7 @@ let gmailProcessor: GmailProcessor
 
 beforeEach(() => {
   config = MockFactory.newDefaultConfig()
-  mocks = MockFactory.newMocks(config as RequiredConfig, RunMode.DRY_RUN)
+  mocks = MockFactory.newMocks(config as RequiredConfig, RunMode.DANGEROUS)
   gmailProcessor = new GmailProcessor()
 })
 

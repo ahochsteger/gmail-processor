@@ -7,7 +7,7 @@ let ctx: EnvContext
 let mocks: Mocks
 beforeEach(() => {
   mocks = MockFactory.newMocks()
-  ctx = MockFactory.newEnvContextMock(RunMode.DRY_RUN, mocks)
+  ctx = MockFactory.newEnvContextMock(RunMode.DANGEROUS, mocks)
   ctx.env.spreadsheetApp
   spreadsheetAdapter = new SpreadsheetAdapter(ctx)
 })

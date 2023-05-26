@@ -64,7 +64,7 @@ export class Mocks {
 export class MockFactory {
   public static newMocks(
     config = newConfig(),
-    runMode = RunMode.DRY_RUN,
+    runMode = RunMode.DANGEROUS,
   ): Mocks {
     const mocks = new Mocks()
     mocks.thread = MockFactory.newThreadMock()
@@ -93,7 +93,7 @@ export class MockFactory {
   }
 
   public static newEnvContextMock(
-    runMode = RunMode.DRY_RUN,
+    runMode = RunMode.DANGEROUS,
     mocks = this.newMocks(),
   ) {
     // Setup mock behavior:

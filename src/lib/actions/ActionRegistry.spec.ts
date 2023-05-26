@@ -94,7 +94,7 @@ let myThreadActionProvider: TestThreadActionProvider
 let actionRegistry: ActionRegistry
 
 beforeEach(() => {
-  mocks = MockFactory.newMocks(newConfig(), RunMode.SAFE_MODE)
+  mocks = MockFactory.newMocks(newConfig(), RunMode.DANGEROUS)
   actionRegistry = new ActionRegistry()
   myThreadActionProvider = new TestThreadActionProvider()
   actionRegistry.registerActionProvider(

@@ -7,7 +7,7 @@ let mocks: Mocks
 let gmailAdapter: GmailAdapter
 
 beforeEach(() => {
-  mocks = MockFactory.newMocks(newConfig(), RunMode.DRY_RUN)
+  mocks = MockFactory.newMocks(newConfig(), RunMode.DANGEROUS)
   gmailAdapter = new GmailAdapter(mocks.envContext)
 })
 
