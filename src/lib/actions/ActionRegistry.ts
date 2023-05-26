@@ -63,7 +63,11 @@ export class ActionRegistry {
     const actionNames = this.getActionNamesFromProvider(provider) || []
     actionNames.forEach((actionName) => {
       const fullActionName = `${providerName}.${String(actionName)}`
-      const action = provider[actionName as keyof typeof provider]
+      const action =
+        provider[actionName as keyof typeof provider] ||
+        Object.getPrototypeOf(provider).constructor[
+          actionName as keyof typeof provider
+        ]
       this.actions.set(fullActionName, action)
     })
   }

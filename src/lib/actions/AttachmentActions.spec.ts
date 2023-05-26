@@ -31,9 +31,9 @@ describe("AttachmenActions", () => {
   })
 
   it("should provide attachment.storeToGDrive in the action registry", () => {
-    expect(actionRegistry.getAction("attachment.storeToGDrive")).toBe(
-      actionProvider.storeToGDrive,
-    )
+    const actual = actionRegistry.getAction("attachment.storeToGDrive")
+    const expected = AttachmentActions.storeToGDrive
+    expect(actual).toEqual(expected)
   })
 
   it("should create a file", () => {

@@ -216,10 +216,18 @@ describe("ActionRegistry.invokeAction()", () => {
       )
     }).toThrow()
   })
-  it("should return a function for an available action", () => {
+  it("should return an instance function for an available action", () => {
     const actual = actionRegistry.executeAction(
       mocks.threadContext,
       "testThread.instanceThreadMethodWithArgs",
+      { threadBoolArg: true, threadStringArg: "my string" },
+    )
+    expect(actual).toBeTruthy()
+  })
+  it("should return a static function for an available action", () => {
+    const actual = actionRegistry.executeAction(
+      mocks.threadContext,
+      "testThread.staticThreadMethodWithArgs",
       { threadBoolArg: true, threadStringArg: "my string" },
     )
     expect(actual).toBeTruthy()
