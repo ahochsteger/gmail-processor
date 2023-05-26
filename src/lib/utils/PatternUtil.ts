@@ -316,6 +316,31 @@ export class PatternUtil {
     return this.substitutePatternFromMap(pattern, m)
   }
 
+  public static substitute(
+    ctx: ThreadContext | MessageContext | AttachmentContext,
+    pattern: string,
+    substMap = new SubstMap(),
+  ) {
+    let m: SubstMap
+    if ((ctx as AttachmentContext).attachment) {
+      m = this.buildSubstitutionMapFromAttachmentContext(
+        ctx as AttachmentContext,
+        substMap,
+      )
+    } else if ((ctx as MessageContext).message) {
+      m = this.buildSubstitutionMapFromMessageContext(
+        ctx as MessageContext,
+        substMap,
+      )
+    } else {
+      m = this.buildSubstitutionMapFromThreadContext(
+        ctx as ThreadContext,
+        substMap,
+      )
+    }
+    return this.substitutePatternFromMap(pattern, m)
+  }
+
   public static convertFromV1Pattern(s: string, dateKey = "message.date") {
     if (s.replace(/'([^'\n]+)'/g, "") !== "") {
       // Support original date format

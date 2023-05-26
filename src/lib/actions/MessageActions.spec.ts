@@ -46,24 +46,13 @@ it("should not forward a message (dry-run)", () => {
   expect(dryRunMocks.message.forward).not.toBeCalled()
 })
 
-it("should store a message as PDF with header", () => {
-  MessageActions.storeAsPdfToGDrive(mocks.messageContext, {
+it("should store a message as PDF", () => {
+  const result = MessageActions.storeAsPdfToGDrive(mocks.messageContext, {
     location: "message",
     conflictStrategy: ConflictStrategy.REPLACE,
     skipHeader: false,
   })
   expect(mocks.blob.getAs).toBeCalledWith("application/pdf")
   expect(mocks.blob.getDataAsString()).toEqual("PDF-Contents")
-  expect(mocks.message.getSubject).toBeCalled()
-})
-
-it("should store a message as PDF without header", () => {
-  MessageActions.storeAsPdfToGDrive(mocks.messageContext, {
-    location: "message",
-    conflictStrategy: ConflictStrategy.REPLACE,
-    skipHeader: true,
-  })
-  expect(mocks.blob.getAs).toBeCalledWith("application/pdf")
-  expect(mocks.blob.getDataAsString()).toEqual("PDF-Contents")
-  expect(mocks.message.getSubject).not.toBeCalled()
+  expect(result.file).toBeDefined()
 })

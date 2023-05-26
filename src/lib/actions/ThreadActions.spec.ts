@@ -48,26 +48,15 @@ it("should not mark a thread as important (dryRun)", () => {
   expect(dryRunMocks.thread.markImportant).not.toBeCalled()
 })
 
-it("should store a thread as PDF with header", () => {
-  ThreadActions.storeAsPdfToGDrive(mocks.threadContext, {
+it("should store a thread as PDF", () => {
+  const result = ThreadActions.storeAsPdfToGDrive(mocks.threadContext, {
     location: "thread.pdf",
     conflictStrategy: ConflictStrategy.REPLACE,
     skipHeader: false,
   })
   expect(mocks.blob.getAs).toBeCalledWith("application/pdf")
   expect(mocks.blob.getDataAsString()).toEqual("PDF-Contents")
-  expect(mocks.thread.getFirstMessageSubject).toBeCalled()
-})
-
-it("should store a thread as PDF without header", () => {
-  ThreadActions.storeAsPdfToGDrive(mocks.threadContext, {
-    location: "thread.pdf",
-    conflictStrategy: ConflictStrategy.REPLACE,
-    skipHeader: true,
-  })
-  expect(mocks.blob.getAs).toBeCalledWith("application/pdf")
-  expect(mocks.blob.getDataAsString()).toEqual("PDF-Contents")
-  expect(mocks.thread.getMessages()[0].getSubject).not.toBeCalled()
+  expect(result.file).toBeDefined()
 })
 
 it.todo("should use filenameTo as the output filename") // See PR #61

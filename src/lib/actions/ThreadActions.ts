@@ -1,6 +1,7 @@
 import { ConflictStrategy } from "../adapter/GDriveAdapter"
 import { ThreadContext } from "../Context"
 import { destructiveAction, writingAction } from "../utils/Decorators"
+import { PatternUtil } from "../utils/PatternUtil"
 import {
   ActionArgsType,
   ActionFunction,
@@ -114,6 +115,7 @@ export class ThreadActions implements ActionProvider<ThreadContext> {
     T extends {
       location: string
       conflictStrategy: ConflictStrategy
+      description?: string
       skipHeader?: boolean
     },
   >(context: ThreadContext, args: ActionArgsType) {
@@ -121,13 +123,13 @@ export class ThreadActions implements ActionProvider<ThreadContext> {
     return {
       ok: true,
       file: context.proc.gdriveAdapter.createFile(
-        a.location,
+        PatternUtil.substitute(context, a.location),
         context.proc.gmailAdapter.threadAsPdf(
           context.thread.object,
           a.skipHeader,
         ),
         "application/pdf",
-        "",
+        PatternUtil.substitute(context, a.description || ""),
         a.conflictStrategy,
       ),
     }

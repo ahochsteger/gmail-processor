@@ -1,6 +1,7 @@
 import { ConflictStrategy } from "../adapter/GDriveAdapter"
 import { MessageContext } from "../Context"
 import { destructiveAction, writingAction } from "../utils/Decorators"
+import { PatternUtil } from "../utils/PatternUtil"
 import {
   ActionArgsType,
   ActionFunction,
@@ -75,19 +76,20 @@ export class MessageActions implements ActionProvider<MessageContext> {
     T extends {
       location: string
       conflictStrategy: ConflictStrategy
+      description?: string
       skipHeader: boolean
     },
   >(context: MessageContext, args: ActionArgsType) {
     const a = typedArgs<T>(args)
     return {
       file: context.proc.gdriveAdapter.createFile(
-        a.location as string,
+        PatternUtil.substitute(context, a.location),
         context.proc.gmailAdapter.messageAsPdf(
           context.message.object,
           a.skipHeader as boolean,
         ),
         "application/pdf",
-        "",
+        PatternUtil.substitute(context, a.description || ""),
         a.conflictStrategy as ConflictStrategy,
       ),
     }

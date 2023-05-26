@@ -1,6 +1,7 @@
 import { ConflictStrategy } from "../adapter/GDriveAdapter"
 import { AttachmentContext, MessageContext } from "../Context"
 import { writingAction } from "../utils/Decorators"
+import { PatternUtil } from "../utils/PatternUtil"
 import {
   ActionArgsType,
   ActionFunction,
@@ -36,7 +37,7 @@ export class AttachmentActions implements ActionProvider<AttachmentContext> {
     T extends {
       location: string
       conflictStrategy: ConflictStrategy
-      description: string
+      description?: string
     },
   >(
     context: AttachmentContext,
@@ -45,9 +46,9 @@ export class AttachmentActions implements ActionProvider<AttachmentContext> {
     const a = typedArgs<T>(args)
     const gdriveFile = context.proc.gdriveAdapter.storeAttachment(
       context.attachment.object,
-      a.location as string,
+      PatternUtil.substitute(context, a.location),
       a.conflictStrategy as ConflictStrategy,
-      a.description as string,
+      PatternUtil.substitute(context, a.description || ""),
     )
     return {
       ok: true,
