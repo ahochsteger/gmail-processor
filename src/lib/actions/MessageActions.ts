@@ -27,17 +27,6 @@ export class MessageActions implements ActionProvider<MessageContext> {
   }
 
   @writingAction()
-  public static markProcessed(context: MessageContext) {
-    let message
-    if (context.proc.config.settings.processedMode == "read") {
-      message = context.proc.gmailAdapter.messageMarkRead(
-        context.message.object,
-      )
-    }
-    return { message }
-  }
-
-  @writingAction()
   public static markRead(context: MessageContext) {
     return {
       message: context.proc.gmailAdapter.messageMarkRead(

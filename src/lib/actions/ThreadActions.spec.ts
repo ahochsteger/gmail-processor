@@ -1,7 +1,7 @@
 import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
 import { ProcessingContext, RunMode } from "../Context"
 import { ConflictStrategy } from "../adapter/GDriveAdapter"
-import { jsonToConfig, newConfig } from "../config/Config"
+import { newConfig } from "../config/Config"
 import { ActionProvider, ActionRegistry } from "./ActionRegistry"
 import { ThreadActions } from "./ThreadActions"
 
@@ -26,7 +26,6 @@ it("should provide actions in the action registry", () => {
   expect(actionNames).toEqual([
     "thread.addLabel",
     "thread.markImportant",
-    "thread.markProcessed",
     "thread.markRead",
     "thread.markUnimportant",
     "thread.markUnread",
@@ -47,29 +46,6 @@ it("should mark a thread as important", () => {
 it("should not mark a thread as important (dryRun)", () => {
   ThreadActions.markImportant(dryRunMocks.threadContext)
   expect(dryRunMocks.thread.markImportant).not.toBeCalled()
-})
-
-it("should mark a thread as processed by adding a label if processedMode='label'", () => {
-  const config = jsonToConfig({
-    settings: {
-      processedLabel: "some-label",
-      processedMode: "label",
-    },
-  })
-  const mocks = MockFactory.newMocks(config, RunMode.SAFE_MODE)
-  ThreadActions.markProcessed(mocks.threadContext)
-  expect(mocks.thread.addLabel).toBeCalled()
-})
-
-it("should not add a label to a thread if processedMode='read'", () => {
-  const config = jsonToConfig({
-    settings: {
-      processedMode: "read",
-    },
-  })
-  const mocks = MockFactory.newMocks(config, RunMode.SAFE_MODE)
-  ThreadActions.markProcessed(mocks.threadContext)
-  expect(mocks.thread.addLabel).not.toBeCalled()
 })
 
 it("should store a thread as PDF with header", () => {

@@ -27,7 +27,6 @@ it("should provide actions in the action registry", () => {
     .sort()
   expect(actionNames).toEqual([
     "message.forward",
-    "message.markProcessed",
     "message.markRead",
     "message.markUnread",
     "message.moveToTrash",

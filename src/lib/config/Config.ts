@@ -8,6 +8,11 @@ import "reflect-metadata"
 import { PartialDeep } from "type-fest"
 import { RequiredDeep } from "../utils/UtilityTypes"
 import {
+  ProcessingStage,
+  newMessageActionConfig,
+  newThreadActionConfig,
+} from "./ActionConfig"
+import {
   AttachmentConfig,
   attachmentConfigToJson,
   jsonToAttachmentConfig,
@@ -121,5 +126,30 @@ export function normalizeConfig(cfg: PartialDeep<Config>): PartialDeep<Config> {
   cfg.threads = (Array.isArray(cfg.threads) ? cfg.threads : []).concat(
     addThreads,
   )
+
+  const addGlobalThreadActions = []
+  const addGlobalMessageActions = []
+  cfg.settings = cfg.settings ? cfg.settings : new SettingsConfig()
+  if (cfg.settings.processedMode == "label") {
+    addGlobalThreadActions.push(
+      newThreadActionConfig({
+        name: "thread.addLabel",
+        args: {
+          label: cfg.settings.processedLabel,
+        },
+        processingStage: ProcessingStage.POST,
+      }),
+    )
+  } else if (cfg.settings.processedMode == "read") {
+    addGlobalMessageActions.push(
+      newMessageActionConfig({
+        name: "message.markRead",
+        processingStage: ProcessingStage.POST,
+      }),
+    )
+  }
+
+  // TODO: Expand global config
+
   return cfg
 }

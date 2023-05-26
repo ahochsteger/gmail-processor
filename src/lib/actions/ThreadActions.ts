@@ -13,20 +13,6 @@ export class ThreadActions implements ActionProvider<ThreadContext> {
   [key: string]: ActionFunction<ThreadContext>
 
   @writingAction()
-  public static markProcessed(context: ThreadContext): ActionReturnType {
-    let thread
-    if (
-      context.proc.config.settings.processedMode == "label" &&
-      context.proc.config.settings.processedLabel
-    ) {
-      thread = this.addLabel(context, {
-        name: context.proc.config.settings.processedLabel,
-      })
-    }
-    return { thread }
-  }
-
-  @writingAction()
   public static markImportant(context: ThreadContext): ActionReturnType {
     return {
       thread: context.proc.gmailAdapter.threadMarkImportant(

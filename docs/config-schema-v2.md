@@ -53,7 +53,6 @@ The name of the action to be executed
   - `"attachment.storeToGDrive"`
   - `"global.logsheetLog"`
   - `"message.forward"`
-  - `"message.markProcessed"`
   - `"message.markRead"`
   - `"message.markUnread"`
   - `"message.moveToTrash"`
@@ -62,7 +61,6 @@ The name of the action to be executed
   - `"message.unstar"`
   - `"thread.addLabel"`
   - `"thread.markImportant"`
-  - `"thread.markProcessed"`
   - `"thread.markRead"`
   - `"thread.markUnimportant"`
   - `"thread.markUnread"`
@@ -329,7 +327,6 @@ The name of the action to be executed
 - ## **Allowed values**:
   - `"global.logsheetLog"`
   - `"message.forward"`
-  - `"message.markProcessed"`
   - `"message.markRead"`
   - `"message.markUnread"`
   - `"message.moveToTrash"`
@@ -338,7 +335,6 @@ The name of the action to be executed
   - `"message.unstar"`
   - `"thread.addLabel"`
   - `"thread.markImportant"`
-  - `"thread.markProcessed"`
   - `"thread.markRead"`
   - `"thread.markUnimportant"`
   - `"thread.markUnread"`
@@ -633,7 +629,6 @@ The name of the action to be executed
   - `"global.logsheetLog"`
   - `"thread.addLabel"`
   - `"thread.markImportant"`
-  - `"thread.markProcessed"`
   - `"thread.markRead"`
   - `"thread.markUnimportant"`
   - `"thread.markUnread"`
