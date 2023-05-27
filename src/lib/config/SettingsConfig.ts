@@ -5,7 +5,7 @@ import { RequiredDeep } from "../utils/UtilityTypes"
 
 // TODO: Use these constants in SettingsConfig below, when typescript-json-schema bug is resolved.
 // See https://github.com/YousefED/typescript-json-schema/issues/336#issuecomment-1528969616
-export const DEFAULT_SETTING_BATCH_SIZE = 10
+export const DEFAULT_SETTING_MAX_BATCH_SIZE = 10
 export const DEFAULT_SETTING_MAX_RUNTIME = 280
 export const DEFAULT_SETTING_SLEEP_TIME_THREADS = 100
 

@@ -5,27 +5,34 @@ import {
   plainToInstance,
 } from "class-transformer"
 import "reflect-metadata"
-import { RequiredDeep } from "../utils/UtilityTypes"
-import { ThreadActionConfig } from "./ActionConfig"
-import { ThreadMatchConfig } from "./ThreadMatchConfig"
 import { PartialDeep } from "type-fest"
+import { RequiredDeep } from "../utils/UtilityTypes"
+import { AttachmentConfig } from "./AttachmentConfig"
+import { MessageConfig } from "./MessageConfig"
+import { ThreadConfig } from "./ThreadConfig"
 
 /**
  * The global configuration that defines matching for all threads as well as actions for all threads, messages or attachments.
  */
 export class GlobalConfig {
   /**
-   * The global thread matching parameters applied in addition to each thread configuration
+   * The global attachment config affecting each attachment
    */
   @Expose()
-  @Type(() => ThreadMatchConfig)
-  match? = new ThreadMatchConfig()
+  @Type(() => AttachmentConfig)
+  attachment?: AttachmentConfig = new AttachmentConfig()
   /**
-   * The list of global actions that are always executed for their respective handler scopes
+   * The global message config affecting each message
    */
   @Expose()
-  @Type(() => ThreadActionConfig)
-  actions?: ThreadActionConfig[] = []
+  @Type(() => MessageConfig)
+  message?: Exclude<MessageConfig, "attachments"> = new MessageConfig()
+  /**
+   * The list of global thread affecting each thread
+   */
+  @Expose()
+  @Type(() => ThreadConfig)
+  thread?: Exclude<ThreadConfig, "messages"> = new ThreadConfig()
 }
 
 export type RequiredGlobalConfig = RequiredDeep<GlobalConfig>

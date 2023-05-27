@@ -10,13 +10,15 @@
     "timezone": "UTC"
   },
   "global": {
-    "match": {
-      "query": "has:attachment -in:trash -in:drafts -in:spam",
-      "maxMessageCount": -1,
-      "minMessageCount": 1,
-      "newerThan": "1d"
-    },
-    "actions": []
+    "thread": {
+      "match": {
+        "query": "has:attachment -in:trash -in:drafts -in:spam",
+        "maxMessageCount": -1,
+        "minMessageCount": 1,
+        "newerThan": "1d"
+      },
+      "actions": []
+    }
   },
   "threads": [
     {

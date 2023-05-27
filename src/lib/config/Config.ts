@@ -137,19 +137,17 @@ export function normalizeConfig(cfg: PartialDeep<Config>): PartialDeep<Config> {
         args: {
           label: cfg.settings.processedLabel,
         },
-        processingStage: ProcessingStage.POST,
+        processingStage: ProcessingStage.POST_MAIN,
       }),
     )
   } else if (cfg.settings.processedMode == "read") {
     addGlobalMessageActions.push(
       newMessageActionConfig({
         name: "message.markRead",
-        processingStage: ProcessingStage.POST,
+        processingStage: ProcessingStage.POST_MAIN,
       }),
     )
   }
-
-  // TODO: Expand global config
 
   return cfg
 }

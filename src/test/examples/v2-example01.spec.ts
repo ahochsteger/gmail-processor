@@ -16,13 +16,15 @@ const example01ConfigV2 = {
     timezone: "UTC",
   },
   global: {
-    match: {
-      query: "has:attachment -in:trash -in:drafts -in:spam",
-      maxMessageCount: -1,
-      minMessageCount: 1,
-      newerThan: "1d",
+    thread: {
+      match: {
+        query: "has:attachment -in:trash -in:drafts -in:spam",
+        maxMessageCount: -1,
+        minMessageCount: 1,
+        newerThan: "1d",
+      },
+      actions: [],
     },
-    actions: [],
   },
   threads: [
     {

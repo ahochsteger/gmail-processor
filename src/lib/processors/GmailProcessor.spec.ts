@@ -1,6 +1,7 @@
+import { PartialDeep } from "type-fest"
 import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
 import { RunMode } from "../Context"
-import { RequiredConfig } from "../config/Config"
+import { Config, RequiredConfig } from "../config/Config"
 import { GmailProcessor } from "./GmailProcessor"
 
 let config: RequiredConfig
@@ -29,37 +30,36 @@ describe("getEffectiveConfig", () => {
         timezone: "Europe/Vienna",
       },
     }
-    const actual = gmailProcessor.getEffectiveConfig(simpleConfig)
-    expect(JSON.stringify(actual, null, 2)).toEqual(
-      JSON.stringify(
-        {
-          description: "",
-          global: {
-            match: {
-              query: "",
-              maxMessageCount: -1,
-              minMessageCount: 1,
-              newerThan: "",
-            },
-            actions: [],
+    const expected: PartialDeep<Config> = {
+      description: "",
+      global: {
+        thread: {
+          match: {
+            query: "",
+            maxMessageCount: -1,
+            minMessageCount: 1,
+            newerThan: "",
           },
-          threads: [],
-          settings: {
-            logSheetFile: "Gmail2GDrive/Gmail2GDrive-logs",
-            logSheetFolderId: "",
-            maxBatchSize: 10,
-            maxRuntime: 280,
-            processedLabel: "to-gdrive/processed",
-            processedMode: "read",
-            sleepTimeThreads: 100,
-            sleepTimeMessages: 0,
-            sleepTimeAttachments: 0,
-            timezone: "Europe/Vienna",
-          },
+          actions: [],
         },
-        null,
-        2,
-      ),
-    )
+        message: { actions: [] },
+        attachment: { actions: [] },
+      },
+      threads: [],
+      settings: {
+        logSheetFile: "Gmail2GDrive/Gmail2GDrive-logs",
+        logSheetFolderId: "",
+        maxBatchSize: 10,
+        maxRuntime: 280,
+        processedLabel: "to-gdrive/processed",
+        processedMode: "read",
+        sleepTimeThreads: 100,
+        sleepTimeMessages: 0,
+        sleepTimeAttachments: 0,
+        timezone: "Europe/Vienna",
+      },
+    }
+    const actual = gmailProcessor.getEffectiveConfig(simpleConfig)
+    expect(actual).toMatchObject(expected)
   })
 })

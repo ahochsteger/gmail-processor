@@ -1,14 +1,19 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { PartialDeep } from "type-fest"
 import { MockFactory } from "../../test/mocks/MockFactory"
 import {
+  ProcessingConfig,
   RequiredConfig,
   configToJson,
   jsonToConfig,
   newConfig,
   normalizeConfig,
 } from "./Config"
-import { DEFAULT_SETTING_MAX_RUNTIME } from "./SettingsConfig"
-import { newThreadConfig } from "./ThreadConfig"
+import {
+  DEFAULT_SETTING_MAX_BATCH_SIZE,
+  DEFAULT_SETTING_MAX_RUNTIME,
+  DEFAULT_SETTING_SLEEP_TIME_THREADS,
+} from "./SettingsConfig"
 // import * as configSchema from "../../schema-v2.json"
 // import { defaults } from "json-schema-defaults"
 
@@ -45,15 +50,18 @@ describe("normalizeConfig", () => {
 
 describe("jsonToConfig", () => {
   it("should set defaults for missing properties from JSON", () => {
-    const cfg: Record<string, any> = MockFactory.newDefaultConfig()
-    const actual = jsonToConfig(cfg)
-    expect(actual).toMatchObject(cfg)
+    const expected: Record<string, any> = MockFactory.newDefaultConfig()
+    const actual = jsonToConfig(expected)
+    expect(actual).toMatchObject(expected)
   })
+
   it("should remove additional properties from JSON", () => {
-    const expected = {
+    const expected: PartialDeep<ProcessingConfig> = {
       global: {
-        match: {
-          query: "global-query",
+        thread: {
+          match: {
+            query: "global-query",
+          },
         },
       },
       settings: {
@@ -65,12 +73,15 @@ describe("jsonToConfig", () => {
     expect((actual as any).additionalProperty).toBeUndefined()
     expect(actual).toMatchObject(expected)
   })
+
   it("should create a nested config object from JSON", () => {
-    const json = {
+    const expected: PartialDeep<ProcessingConfig> = {
       global: {
-        match: {
-          query: "global-query",
-          newerThan: "3m",
+        thread: {
+          match: {
+            query: "global-query",
+            newerThan: "3m",
+          },
         },
       },
       settings: {
@@ -85,51 +96,30 @@ describe("jsonToConfig", () => {
         },
       ],
     }
-    const config = jsonToConfig(json)
-    config.threads[0].match.query
-    expect(config.global.match.query).toEqual(json.global.match.query)
-    expect(config.settings.processedLabel).toEqual(json.settings.processedLabel)
+    const actual = jsonToConfig(expected)
+    expect(actual).toMatchObject(expected)
   })
 })
 
 describe("configToJson", () => {
   it("should serialize config to JSON with default values", () => {
-    const expected = {
+    const configJson: PartialDeep<ProcessingConfig> = {
       description: "config description",
       settings: {
         processedLabel: "some label",
       },
       threads: [{ description: "thread description" }],
     }
-    const cfg = newConfig()
-    cfg.description = expected.description
-    cfg.settings.processedLabel = expected.settings.processedLabel
-    const tcfg = newThreadConfig()
-    tcfg.description = expected.threads[0].description
-    cfg.threads.push(tcfg)
+    const expected: PartialDeep<ProcessingConfig> = {
+      ...configJson,
+      settings: {
+        maxBatchSize: DEFAULT_SETTING_MAX_BATCH_SIZE,
+        maxRuntime: DEFAULT_SETTING_MAX_RUNTIME,
+        sleepTimeThreads: DEFAULT_SETTING_SLEEP_TIME_THREADS,
+      },
+    }
+    const cfg = newConfig(configJson)
     const actual = configToJson(cfg, true)
-    expect((actual as any).settings.maxRuntime).toEqual(
-      DEFAULT_SETTING_MAX_RUNTIME,
-    )
     expect(actual).toMatchObject(expected)
   })
-  test.todo("should serialize config to JSON without default values")
-  // it("should serialize config to JSON without default values", () => {
-  //   const expected = {
-  //     description: "config description",
-  //     settings: {
-  //       processedLabel: "some label",
-  //     },
-  //     threads: [{ description: "thread description" }],
-  //   }
-  //   const cfg = newConfig()
-  //   cfg.description = expected.description
-  //   cfg.settings.processedLabel = expected.settings.processedLabel
-  //   const tcfg = newThreadConfig()
-  //   tcfg.description = expected.threads[0].description
-  //   cfg.threads.push(tcfg)
-  //   const actual = configToJson(cfg, false)
-  //   expect(actual).toMatchObject(expected)
-  //   expect((actual as any).settings?.processedMode).toBeUndefined()
-  // })
 })

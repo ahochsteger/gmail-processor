@@ -26,9 +26,11 @@ it("should create default gobal config", () => {
   const v1config: PartialDeep<V1Config> = {}
   const expected: PartialDeep<Config> = {
     global: {
-      match: {
-        query: "has:attachment -in:trash -in:drafts -in:spam",
-        newerThan: "2m",
+      thread: {
+        match: {
+          query: "has:attachment -in:trash -in:drafts -in:spam",
+          newerThan: "2m",
+        },
       },
     },
   }
@@ -44,9 +46,12 @@ it("should convert global config", () => {
   }
   const expected: PartialDeep<Config> = {
     global: {
-      match: {
-        query: "has:attachment -in:trash -in:drafts -in:spam -label:some-label",
-        newerThan: "3d",
+      thread: {
+        match: {
+          query:
+            "has:attachment -in:trash -in:drafts -in:spam -label:some-label",
+          newerThan: "3d",
+        },
       },
     },
   }

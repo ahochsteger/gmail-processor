@@ -7,9 +7,11 @@ import { ThreadProcessor } from "./ThreadProcessor"
 it("should construct a GMail search query with globals (query, newerThan) and processedLabel", () => {
   const config = jsonToConfig({
     global: {
-      match: {
-        query: "some-global-query",
-        newerThan: "3m",
+      thread: {
+        match: {
+          query: "some-global-query",
+          newerThan: "3m",
+        },
       },
     },
     settings: {
@@ -37,9 +39,11 @@ it("should construct a GMail search query with globals (query, newerThan) and pr
 it("should construct a GMail search query without globals and no processedLabel", () => {
   const config = jsonToConfig({
     global: {
-      match: {
-        query: "",
-        newerThan: "",
+      thread: {
+        match: {
+          query: "",
+          newerThan: "",
+        },
       },
     },
     settings: {

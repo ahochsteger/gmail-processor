@@ -3,8 +3,9 @@ import { ProcessingStage } from "../config/ActionConfig"
 import { RequiredMessageConfig } from "../config/MessageConfig"
 import { MessageFlag } from "../config/MessageFlag"
 import { AttachmentProcessor } from "../processors/AttachmentProcessor"
+import { BaseProcessor } from "./BaseProcessor"
 
-export class MessageProcessor {
+export class MessageProcessor extends BaseProcessor {
   public static processMessageConfigs(
     ctx: ThreadContext,
     messageConfigs: RequiredMessageConfig[],
@@ -86,12 +87,13 @@ export class MessageProcessor {
     ctx.log.info(
       `        Processing of message '${message.getSubject()}' (id:${message.getId()}) started ...`,
     )
-    // Execute pre-actions:
-    ctx.message.config.actions
-      .filter((cfg) => cfg.processingStage == ProcessingStage.PRE)
-      .forEach((action) =>
-        ctx.proc.actionRegistry.executeAction(ctx, action.name, action.args),
-      )
+    // Execute pre-main actions:
+    this.executeActions(
+      ctx,
+      ProcessingStage.PRE_MAIN,
+      ctx.proc.config.global.message.actions,
+      ctx.message.config.actions,
+    )
 
     // Process attachment configs:
     if (messageConfig.attachments) {
@@ -102,12 +104,13 @@ export class MessageProcessor {
       )
     }
 
-    // Execute post-actions:
-    ctx.thread.config.actions
-      .filter((cfg) => cfg.processingStage == ProcessingStage.POST)
-      .forEach((action) =>
-        ctx.proc.actionRegistry.executeAction(ctx, action.name, action.args),
-      )
+    // Execute post-main actions:
+    this.executeActions(
+      ctx,
+      ProcessingStage.POST_MAIN,
+      ctx.message.config.actions,
+      ctx.proc.config.global.message.actions,
+    )
     ctx.log.info(
       `        Processing of message '${message.getSubject()}' (id:${message.getId()}) finished.`,
     )

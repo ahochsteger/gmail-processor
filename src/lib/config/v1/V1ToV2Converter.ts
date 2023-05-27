@@ -179,14 +179,14 @@ export class V1ToV2Converter {
     // if (config.globalFilter===undefined) {
     //   config.globalFilter = "has:attachment -in:trash -in:drafts -in:spam";
     // }
-    config.global.match.query =
+    config.global.thread.match.query =
       v1Config.globalFilter || "has:attachment -in:trash -in:drafts -in:spam"
     // Old processing logic:
     // var gSearchExp  = config.globalFilter + " " + rule.filter + " -label:" + config.processedLabel;
     config.settings.processedLabel = v1Config.processedLabel
     config.settings.sleepTimeThreads = v1Config.sleepTime
     config.settings.maxRuntime = v1Config.maxRuntime
-    config.global.match.newerThan = v1Config.newerThan
+    config.global.thread.match.newerThan = v1Config.newerThan
     config.settings.timezone = v1Config.timezone
     v1Config.rules.forEach((rule) => {
       config.threads.push(this.v1RuleToV2ThreadConfig(rule))

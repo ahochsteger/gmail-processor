@@ -1,9 +1,10 @@
 import { ProcessingContext, ProcessingResult, ThreadContext } from "../Context"
 import { ProcessingStage } from "../config/ActionConfig"
 import { RequiredThreadConfig } from "../config/ThreadConfig"
+import { BaseProcessor } from "./BaseProcessor"
 import { MessageProcessor } from "./MessageProcessor"
 
-export class ThreadProcessor {
+export class ThreadProcessor extends BaseProcessor {
   public static processThreadConfigs(
     ctx: ProcessingContext,
     threadConfigs: RequiredThreadConfig[],
@@ -33,13 +34,13 @@ export class ThreadProcessor {
     threadConfig: RequiredThreadConfig,
   ) {
     let gSearchExp = ""
-    gSearchExp += this.getStr(ctx.proc.config.global?.match?.query)
+    gSearchExp += this.getStr(ctx.proc.config.global?.thread.match?.query)
     gSearchExp += " " + this.getStr(threadConfig.match.query)
     gSearchExp += this.isSet(ctx.proc.config.settings?.processedLabel)
       ? " -label:" + ctx.proc.config.settings.processedLabel
       : ""
-    gSearchExp += this.isSet(ctx.proc.config.global?.match?.newerThan)
-      ? " newer_than:" + ctx.proc.config.global.match.newerThan
+    gSearchExp += this.isSet(ctx.proc.config.global?.thread.match?.newerThan)
+      ? " newer_than:" + ctx.proc.config.global.thread.match.newerThan
       : ""
     return gSearchExp.trim()
   }
@@ -83,24 +84,26 @@ export class ThreadProcessor {
     ctx.log.info(
       `    Processing of thread '${thread.getFirstMessageSubject()}' started ...`,
     )
-    // Execute pre-actions:
-    ctx.thread.config.actions
-      .filter((cfg) => cfg.processingStage == ProcessingStage.PRE)
-      .forEach((action) =>
-        ctx.proc.actionRegistry.executeAction(ctx, action.name, action.args),
-      )
+    // Execute pre-main actions:
+    this.executeActions(
+      ctx,
+      ProcessingStage.PRE_MAIN,
+      ctx.proc.config.global.thread.actions,
+      ctx.thread.config.actions,
+    )
 
     // Process message configs:
     if (threadConfig.messages) {
       MessageProcessor.processMessageConfigs(ctx, threadConfig.messages)
     }
 
-    // Execute post-actions:
-    ctx.thread.config.actions
-      .filter((cfg) => cfg.processingStage == ProcessingStage.POST)
-      .forEach((action) =>
-        ctx.proc.actionRegistry.executeAction(ctx, action.name, action.args),
-      )
+    // Execute post-main actions:
+    this.executeActions(
+      ctx,
+      ProcessingStage.POST_MAIN,
+      ctx.thread.config.actions,
+      ctx.proc.config.global.thread.actions,
+    )
     ctx.log.info(
       `    Processing of thread '${thread.getFirstMessageSubject()}' finished.`,
     )

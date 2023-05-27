@@ -7,8 +7,8 @@
 - [`MessageConfig`](#reference-messageconfig)
   - [`MessageMatchConfig`](#reference-messagematchconfig)
 - [`SettingsConfig`](#reference-settingsconfig)
-- [`ThreadActionConfig`](#reference-threadactionconfig)
-- [`ThreadMatchConfig`](#reference-threadmatchconfig)
+- [`ThreadConfig`](#reference-threadconfig)
+  - [`ThreadMatchConfig`](#reference-threadmatchconfig)
 
 ---
 
@@ -78,8 +78,9 @@ The processing stage in which the action should run (pre or post processing)
 - **Type**: `string`
 - **Required**: No
 - **Allowed values**:
-  - `"post"`
-  - `"pre"`
+  - `"after-main"`
+  - `"before-main"`
+  - `"main"`
 
 ---
 
@@ -264,25 +265,33 @@ The global configuration that defines matching for all threads as well as action
 
 **`GlobalConfig` Properties**
 
-|             | Type                      | Description                                                                             | Required          |
-| ----------- | ------------------------- | --------------------------------------------------------------------------------------- | ----------------- |
-| **actions** | `ThreadActionConfig` `[]` | The list of global actions that are always executed for their respective handler scopes | No, default: `[]` |
-| **match**   | `ThreadMatchConfig`       | Represents a config to match a certain GMail thread                                     | No                |
+|                | Type               | Description                                              | Required |
+| -------------- | ------------------ | -------------------------------------------------------- | -------- |
+| **attachment** | `AttachmentConfig` | Represents a config to handle a certain GMail attachment | No       |
+| **message**    | `MessageConfig`    | Represents a config to handle a certain GMail message    | No       |
+| **thread**     | `ThreadConfig`     | Represents a config handle a certain GMail thread        | No       |
 
 Additional properties are not allowed.
 
-### GlobalConfig.actions
+### GlobalConfig.attachment
 
-The list of global actions that are always executed for their respective handler scopes
+Represents a config to handle a certain GMail attachment
 
-- **Type**: `ThreadActionConfig` `[]`
-- **Required**: No, default: `[]`
+- **Type**: `AttachmentConfig`
+- **Required**: No
 
-### GlobalConfig.match
+### GlobalConfig.message
 
-Represents a config to match a certain GMail thread
+Represents a config to handle a certain GMail message
 
-- **Type**: `ThreadMatchConfig`
+- **Type**: `MessageConfig`
+- **Required**: No
+
+### GlobalConfig.thread
+
+Represents a config handle a certain GMail thread
+
+- **Type**: `ThreadConfig`
 - **Required**: No
 
 ---
@@ -352,8 +361,9 @@ The processing stage in which the action should run (pre or post processing)
 - **Type**: `string`
 - **Required**: No
 - **Allowed values**:
-  - `"post"`
-  - `"pre"`
+  - `"after-main"`
+  - `"before-main"`
+  - `"main"`
 
 ---
 
@@ -646,8 +656,9 @@ The processing stage in which the action should run (pre or post processing)
 - **Type**: `string`
 - **Required**: No
 - **Allowed values**:
-  - `"post"`
-  - `"pre"`
+  - `"after-main"`
+  - `"before-main"`
+  - `"main"`
 
 ---
 

@@ -1,8 +1,9 @@
 import { ProcessingStage } from "../config/ActionConfig"
 import { RequiredAttachmentConfig } from "../config/AttachmentConfig"
 import { AttachmentContext, MessageContext } from "../Context"
+import { BaseProcessor } from "./BaseProcessor"
 
-export class AttachmentProcessor {
+export class AttachmentProcessor extends BaseProcessor {
   public static processAttachmentConfigs(
     ctx: MessageContext,
     attachmentConfigs: RequiredAttachmentConfig[],
@@ -23,7 +24,7 @@ export class AttachmentProcessor {
     attachmentConfigIndex: number,
   ) {
     ctx.log.info(
-      `          Processing of attachment config '${attachmentConfig.name}' started ...`,
+      `Processing of attachment config '${attachmentConfig.name}' started ...`,
     )
     const attachments = ctx.message.object.getAttachments()
     for (
@@ -44,30 +45,38 @@ export class AttachmentProcessor {
       this.processAttachment(attachmentContext)
     }
     ctx.log.info(
-      `          Processing of attachment config '${attachmentConfig.name}' finished.`,
+      `Processing of attachment config '${attachmentConfig.name}' finished.`,
     )
   }
 
   public static processAttachment(ctx: AttachmentContext) {
     const attachment = ctx.attachment.object
     ctx.log.info(
-      `            Processing of attachment '${attachment.getName()}' started ...`,
+      `Processing of attachment '${attachment.getName()}' started ...`,
     )
-    // Execute pre-actions:
-    ctx.attachment.config.actions
-      .filter((cfg) => cfg.processingStage == ProcessingStage.PRE)
-      .forEach((action) =>
-        ctx.proc.actionRegistry.executeAction(ctx, action.name, action.args),
-      )
+    // Execute pre-main actions:
+    this.executeActions(
+      ctx,
+      ProcessingStage.PRE_MAIN,
+      ctx.proc.config.global.attachment.actions,
+      ctx.attachment.config.actions,
+    )
 
-    // Execute post-actions:
-    ctx.attachment.config.actions
-      .filter((cfg) => cfg.processingStage == ProcessingStage.POST)
-      .forEach((action) =>
-        ctx.proc.actionRegistry.executeAction(ctx, action.name, action.args),
-      )
-    ctx.log.info(
-      `            Processing of attachment '${attachment.getName()}' finished.`,
+    // Execute main actions:
+    this.executeActions(
+      ctx,
+      ProcessingStage.MAIN,
+      ctx.proc.config.global.attachment.actions,
+      ctx.attachment.config.actions,
     )
+
+    // Execute post-main actions:
+    this.executeActions(
+      ctx,
+      ProcessingStage.POST_MAIN,
+      ctx.attachment.config.actions,
+      ctx.proc.config.global.attachment.actions,
+    )
+    ctx.log.info(`Processing of attachment '${attachment.getName()}' finished.`)
   }
 }

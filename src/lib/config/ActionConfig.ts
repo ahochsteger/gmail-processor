@@ -11,10 +11,12 @@ import { RequiredDeep } from "../utils/UtilityTypes"
  * The stage of processing
  */
 export enum ProcessingStage {
-  /** The stage before processing an entity */
-  PRE = "pre",
-  /** The stage after processing an entity */
-  POST = "post",
+  /** The stage before processing the main object (thread, message, attachment) */
+  PRE_MAIN = "before-main",
+  /** The stage during processing the main object (thread, message, attachment) */
+  MAIN = "main",
+  /** The stage after processing the main object (thread, message, attachment) */
+  POST_MAIN = "after-main",
 }
 
 export abstract class ActionConfig {
@@ -40,7 +42,7 @@ export abstract class ActionConfig {
    * The processing stage in which the action should run (pre or post processing)
    */
   @Expose()
-  processingStage? = ProcessingStage.POST
+  processingStage? = ProcessingStage.POST_MAIN
 }
 
 /**
