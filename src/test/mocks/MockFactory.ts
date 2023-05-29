@@ -32,7 +32,7 @@ import { MessageFlag } from "../../lib/config/MessageFlag"
 import { SettingsConfig } from "../../lib/config/SettingsConfig"
 import { ThreadConfig, jsonToThreadConfig } from "../../lib/config/ThreadConfig"
 import { V1Config, jsonToV1Config } from "../../lib/config/v1/V1Config"
-import { Logger } from "../../lib/utils/Logging"
+import { Logger } from "../../lib/utils/Logger"
 import { Timer } from "../../lib/utils/Timer"
 
 export class Mocks {

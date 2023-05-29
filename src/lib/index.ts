@@ -4,7 +4,7 @@ import { Config, RequiredConfig, configToJson } from "./config/Config"
 import { V1Config, jsonToV1Config } from "./config/v1/V1Config"
 import { V1ToV2Converter } from "./config/v1/V1ToV2Converter"
 import { GmailProcessor } from "./processors/GmailProcessor"
-import { Logger } from "./utils/Logging"
+import { Logger } from "./utils/Logger"
 
 const gmailProcessor = new GmailProcessor()
 

@@ -7,7 +7,7 @@ import { RequiredAttachmentConfig } from "./config/AttachmentConfig"
 import { RequiredConfig } from "./config/Config"
 import { RequiredMessageConfig } from "./config/MessageConfig"
 import { RequiredThreadConfig } from "./config/ThreadConfig"
-import { Logger } from "./utils/Logging"
+import { Logger } from "./utils/Logger"
 import { Timer } from "./utils/Timer"
 
 export enum RunMode {

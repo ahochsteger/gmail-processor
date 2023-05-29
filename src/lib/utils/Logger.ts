@@ -8,16 +8,16 @@ import {
 
 export class Logger {
   debug(message?: unknown, ...optionalParams: unknown[]) {
-    console.debug(message, ...optionalParams)
+    console.debug(`DEBUG: ${message}`, ...optionalParams)
   }
   info(message?: unknown, ...optionalParams: unknown[]) {
-    console.info(message, ...optionalParams)
+    console.info(`INFO: ${message}`, ...optionalParams)
   }
   warn(message?: unknown, ...optionalParams: unknown[]) {
-    console.warn(message, ...optionalParams)
+    console.warn(`WARNING: ${message}`, ...optionalParams)
   }
   error(message?: unknown, ...optionalParams: unknown[]) {
-    console.error(message, ...optionalParams)
+    console.error(`ERROR: ${message}`, ...optionalParams)
   }
   logEnvContext(ctx: EnvContext) {
     const logObj = {
