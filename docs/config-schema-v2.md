@@ -49,7 +49,8 @@ The name of the action to be executed
 
 - **Type**: `string`
 - **Required**: &#10003; Yes
-- ## **Allowed values**:
+- **Allowed values**:
+  -
   - `"attachment.storeToGDrive"`
   - `"global.logsheetLog"`
   - `"message.forward"`
@@ -146,7 +147,7 @@ Represents a config to match a certain GMail attachment
 | **includeInlineImages** | `boolean` | Should inline images be included in attachment processing (default: true)       | No, default: `true`   |
 | **largerThan**          | `number`  | Only include attachments larger than the given size in bytes                    | No, default: `-1`     |
 | **name**                | `string`  | A RegEx matching the name of the attachment                                     | No, default: `"(.*)"` |
-| **smallerThan**         | `number`  | Only include attachments smaller than the given size in bytes                   | No, default: `-1`     |
+| **smallerThan**         | `number`  | Only include attachments smaller than the given size in bytes                   | No                    |
 
 Additional properties are not allowed.
 
@@ -190,7 +191,7 @@ A RegEx matching the name of the attachment
 Only include attachments smaller than the given size in bytes
 
 - **Type**: `number`
-- **Required**: No, default: `-1`
+- **Required**: No
 
 ---
 
@@ -333,7 +334,8 @@ The name of the action to be executed
 
 - **Type**: `string`
 - **Required**: &#10003; Yes
-- ## **Allowed values**:
+- **Allowed values**:
+  -
   - `"global.logsheetLog"`
   - `"message.forward"`
   - `"message.markRead"`
@@ -635,7 +637,8 @@ The name of the action to be executed
 
 - **Type**: `string`
 - **Required**: &#10003; Yes
-- ## **Allowed values**:
+- **Allowed values**:
+  -
   - `"global.logsheetLog"`
   - `"thread.addLabel"`
   - `"thread.markImportant"`

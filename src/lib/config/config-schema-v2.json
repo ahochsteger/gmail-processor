@@ -127,7 +127,6 @@
           "type": "string"
         },
         "smallerThan": {
-          "default": -1,
           "description": "Only include attachments smaller than the given size in bytes",
           "title": "smallerThan",
           "type": "number"
