@@ -34,6 +34,7 @@ import { ThreadConfig, jsonToThreadConfig } from "../../lib/config/ThreadConfig"
 import { V1Config, jsonToV1Config } from "../../lib/config/v1/V1Config"
 import { Logger } from "../../lib/utils/Logger"
 import { Timer } from "../../lib/utils/Timer"
+import { RequiredDeep } from "../../lib/utils/UtilityTypes"
 
 export class Mocks {
   public attachmentContext = mock<AttachmentContext>()
@@ -46,6 +47,7 @@ export class Mocks {
   public file = mock<GoogleAppsScript.Drive.File>()
   public folderIterator = mock<GoogleAppsScript.Drive.FolderIterator>()
   public folder = mock<GoogleAppsScript.Drive.Folder>()
+  public rootFolder = mock<GoogleAppsScript.Drive.Folder>()
   public gdriveApp = mock<GoogleAppsScript.Drive.DriveApp>()
   public gmailApp = mock<GoogleAppsScript.Gmail.GmailApp>()
   public messageContext = mock<MessageContext>()
@@ -97,11 +99,20 @@ export class MockFactory {
     mocks = this.newMocks(),
   ) {
     // Setup mock behavior:
+    mocks.folderIterator.hasNext.mockReturnValueOnce(true)
+    mocks.folderIterator.hasNext.mockReturnValue(false)
+    mocks.folderIterator.next.mockReturnValue(mocks.folder)
+    mocks.fileIterator.hasNext.mockReturnValue(false)
     mocks.folder.getFilesByName.mockReturnValue(mocks.fileIterator)
     mocks.folder.getFolders.mockReturnValue(mocks.folderIterator)
+    mocks.folder.getFoldersByName.mockReturnValue(mocks.folderIterator)
     mocks.folder.createFile.mockReturnValue(mocks.file)
-    mocks.gdriveApp.getRootFolder.mockReturnValue(mocks.folder)
-    mocks.gdriveApp.getFolderById.mockReturnValue(mocks.folder)
+    mocks.rootFolder.getFilesByName.mockReturnValue(mocks.fileIterator)
+    mocks.rootFolder.getFolders.mockReturnValue(mocks.folderIterator)
+    mocks.rootFolder.getFoldersByName.mockReturnValue(mocks.folderIterator)
+    mocks.rootFolder.createFile.mockReturnValue(mocks.file)
+    mocks.gdriveApp.getRootFolder.mockReturnValue(mocks.rootFolder)
+    mocks.gdriveApp.getFolderById.mockReturnValue(mocks.rootFolder)
     mocks.gdriveApp.getFoldersByName.mockReturnValue(mocks.folderIterator)
     mocks.cache.get.mockReturnValue("some-id")
     mocks.cacheService.getScriptCache.mockReturnValue(mocks.cache)
@@ -467,7 +478,7 @@ export class MockFactory {
   }
 
   public static newThreadMock(
-    data: Record<string, unknown> = {},
+    data: ThreadData = {},
   ): MockProxy<GoogleAppsScript.Gmail.GmailThread> {
     const threadData = MockFactory.getThreadSampleData(data)
     threadData.messages =
@@ -512,7 +523,7 @@ export class MockFactory {
   }
 
   public static newMessageMock(
-    data1: Record<string, unknown> = {},
+    data1: MessageData = {},
   ): MockProxy<GoogleAppsScript.Gmail.GmailMessage> {
     const msgData = MockFactory.getMessageSampleData(data1)
     msgData.attachments = msgData.attachments ? msgData.attachments : [] // Make sure attachments is defined
@@ -521,30 +532,28 @@ export class MockFactory {
     mockedGmailMessage.getAttachments.mockReturnValue(
       MockFactory.getAttachments(msgData),
     )
-    mockedGmailMessage.getBcc.mockReturnValue(msgData.bcc as string)
-    mockedGmailMessage.getCc.mockReturnValue(msgData.cc as string)
-    mockedGmailMessage.getDate.mockReturnValue(msgData.date as Date)
-    mockedGmailMessage.getFrom.mockReturnValue(msgData.from as string)
-    mockedGmailMessage.getId.mockReturnValue(msgData.id as string)
-    mockedGmailMessage.getReplyTo.mockReturnValue(msgData.replyTo as string)
-    mockedGmailMessage.getSubject.mockReturnValue(msgData.subject as string)
-    mockedGmailMessage.getTo.mockReturnValue(msgData.to as string)
-    mockedGmailMessage.isStarred.mockReturnValue(msgData.isStarred as boolean)
-    mockedGmailMessage.isUnread.mockReturnValue(msgData.isUnread as boolean)
+    mockedGmailMessage.getBcc.mockReturnValue(msgData.bcc)
+    mockedGmailMessage.getCc.mockReturnValue(msgData.cc)
+    mockedGmailMessage.getDate.mockReturnValue(msgData.date)
+    mockedGmailMessage.getFrom.mockReturnValue(msgData.from)
+    mockedGmailMessage.getId.mockReturnValue(msgData.id)
+    mockedGmailMessage.getReplyTo.mockReturnValue(msgData.replyTo)
+    mockedGmailMessage.getSubject.mockReturnValue(msgData.subject)
+    mockedGmailMessage.getTo.mockReturnValue(msgData.to)
+    mockedGmailMessage.isStarred.mockReturnValue(msgData.isStarred)
+    mockedGmailMessage.isUnread.mockReturnValue(msgData.isUnread)
     return mockedGmailMessage
   }
 
   public static newAttachmentMock(
-    data: Record<string, unknown> = {},
+    data: AttachmentData = {},
   ): MockProxy<GoogleAppsScript.Gmail.GmailAttachment> {
     const attData = MockFactory.getAttachmentSampleData(data)
     const mockedGmailAttachment = mock<GoogleAppsScript.Gmail.GmailAttachment>()
-    mockedGmailAttachment.getContentType.mockReturnValue(
-      attData.contentType as string,
-    )
-    mockedGmailAttachment.getHash.mockReturnValue(attData.hash as string)
-    mockedGmailAttachment.getName.mockReturnValue(attData.name as string)
-    mockedGmailAttachment.getSize.mockReturnValue(attData.size as number)
+    mockedGmailAttachment.getContentType.mockReturnValue(attData.contentType)
+    mockedGmailAttachment.getHash.mockReturnValue(attData.hash)
+    mockedGmailAttachment.getName.mockReturnValue(attData.name)
+    mockedGmailAttachment.getSize.mockReturnValue(attData.size)
     mockedGmailAttachment.isGoogleType.mockReturnValue(
       attData.isGoogleType as boolean,
     )
@@ -554,26 +563,21 @@ export class MockFactory {
     return mockedGmailAttachment
   }
 
-  private static getMessages(
-    data: Record<string, unknown>,
-  ): GoogleAppsScript.Gmail.GmailMessage[] {
-    const dataMessages =
-      data.messages !== undefined
-        ? (data.messages as Record<string, unknown>[])
-        : []
+  private static getMessages(data: {
+    messages: MessageData[]
+  }): GoogleAppsScript.Gmail.GmailMessage[] {
+    const dataMessages = data.messages !== undefined ? data.messages : []
     const a: GoogleAppsScript.Gmail.GmailMessage[] = []
     dataMessages.forEach((dm) => a.push(MockFactory.newMessageMock(dm)))
     return a
   }
 
-  private static getAttachments(
-    data: Record<string, unknown>,
-  ): GoogleAppsScript.Gmail.GmailAttachment[] {
+  private static getAttachments(data: {
+    attachments: AttachmentData[]
+  }): GoogleAppsScript.Gmail.GmailAttachment[] {
     const a: GoogleAppsScript.Gmail.GmailAttachment[] = []
     const dataAttachments =
-      data.attachments !== undefined
-        ? (data.attachments as Record<string, unknown>[])
-        : []
+      data.attachments !== undefined ? data.attachments : []
     dataAttachments.forEach((da) => a.push(MockFactory.newAttachmentMock(da)))
     return a
   }
@@ -586,10 +590,9 @@ export class MockFactory {
   }
 
   private static getThreadSampleData(
-    data: Record<string, unknown>,
-  ): Record<string, unknown> {
-    data = data === undefined ? { messages: [] } : data // Allows calling without data parameter
-    const dataMessages = data.messages as Record<string, object>[]
+    data: ThreadData = {},
+  ): RequiredDeep<ThreadData> {
+    const dataMessages = data.messages
     const sampleMessages = [
       MockFactory.getMessageSampleData(
         dataMessages && dataMessages.length > 0 ? dataMessages[0] : {},
@@ -598,7 +601,7 @@ export class MockFactory {
         dataMessages && dataMessages.length > 1 ? dataMessages[1] : {},
       ),
     ]
-    const sampleData = {
+    const sampleData: RequiredDeep<ThreadData> = {
       firstMessageSubject: sampleMessages[0].subject,
       hasStarredMessages: false,
       id: "threadId123",
@@ -614,26 +617,27 @@ export class MockFactory {
     return sampleData
   }
 
-  private static getMessageSampleData(data: Record<string, unknown>) {
-    data = typeof data === "undefined" ? {} : data // Allows calling without data parameter
-    const sampleAttachments = [
-      MockFactory.getAttachmentSampleData({
+  private static getMessageSampleData(
+    data: MessageData = {},
+  ): RequiredDeep<MessageData> {
+    const sampleAttachments: RequiredDeep<AttachmentData>[] = [
+      this.getAttachmentSampleData({
         name: "attachment1.pdf",
         contentType: "application/pdf",
         content: "Sample PDF Content",
       }),
-      MockFactory.getAttachmentSampleData({
+      this.getAttachmentSampleData({
         name: "attachment2.txt",
         contentType: "text/plain",
         content: "Sample Text Content",
       }),
-      MockFactory.getAttachmentSampleData({
+      this.getAttachmentSampleData({
         name: "attachment3.jpg",
         contentType: "image/jpeg",
         content: "Sample JPEG Content",
       }),
     ]
-    const sampleData = {
+    const sampleData: RequiredDeep<MessageData> = {
       bcc: "message-bcc@example.com",
       cc: "message-cc@example.com",
       date: new Date("2019-05-02T07:15:28Z"),
@@ -650,19 +654,22 @@ export class MockFactory {
     return sampleData
   }
 
-  private static getAttachmentSampleData(data: Record<string, unknown>) {
-    data = typeof data === "undefined" ? {} : data // Allows calling without data parameter
+  private static getAttachmentSampleData(
+    data: AttachmentData = {},
+  ): RequiredDeep<AttachmentData> {
     const sampleContent = data.content
       ? (data.content as string)
       : "Sample text content"
-    const sampleData = {
+    const sampleData: RequiredDeep<AttachmentData> = {
       contentType: "text/plain",
       hash:
         typeof Utilities === "undefined" // NOTE: this fallback is done to run tests
           ? "some-hash-value" // locally without Google Apps Script
-          : Utilities.computeDigest(
-              Utilities.DigestAlgorithm.SHA_1,
-              sampleContent,
+          : String(
+              Utilities.computeDigest(
+                Utilities.DigestAlgorithm.SHA_1,
+                sampleContent,
+              ),
             ),
       name: "attachment.txt",
       size: MockFactory.lengthInUtf8Bytes(sampleContent),
@@ -672,4 +679,38 @@ export class MockFactory {
     Object.assign(sampleData, data)
     return sampleData
   }
+}
+
+export type ThreadData = {
+  firstMessageSubject?: string
+  hasStarredMessages?: boolean
+  id?: string
+  isImportant?: boolean
+  isInPriorityInbox?: boolean
+  labels?: string[]
+  lastMessageDate?: Date
+  messageCount?: number
+  permalink?: string
+  messages?: MessageData[]
+}
+export type MessageData = {
+  bcc?: string
+  cc?: string
+  date?: Date
+  from?: string
+  id?: string
+  subject?: string
+  to?: string
+  replyTo?: string
+  attachments?: AttachmentData[]
+  isStarred?: boolean
+  isUnread?: boolean
+}
+export type AttachmentData = {
+  contentType?: string
+  hash?: string
+  name?: string
+  size?: number
+  isGoogleType?: boolean
+  content?: string
 }

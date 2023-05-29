@@ -1,7 +1,6 @@
 import { ProcessingStage } from "../config/ActionConfig"
 import { RequiredAttachmentConfig } from "../config/AttachmentConfig"
 import {
-  AttachmentMatchConfig,
   newAttachmentMatchConfig,
   RequiredAttachmentMatchConfig,
 } from "../config/AttachmentMatchConfig"
@@ -27,32 +26,21 @@ export class AttachmentProcessor extends BaseProcessor {
   }
 
   public static buildMatchConfig(
-    global: AttachmentMatchConfig,
+    global: RequiredAttachmentMatchConfig,
     local: RequiredAttachmentMatchConfig,
   ): RequiredAttachmentMatchConfig {
     return newAttachmentMatchConfig({
-      contentTypeRegex: this.effectiveValue(
-        global.contentTypeRegex,
-        local.contentTypeRegex,
-        "",
-      ),
-      includeAttachments: this.effectiveValue(
-        global.includeAttachments,
-        local.includeAttachments,
-        true,
-      ),
-      includeInlineImages: this.effectiveValue(
-        global.includeInlineImages,
-        local.includeInlineImages,
-        true,
-      ),
-      largerThan: this.effectiveValue(global.largerThan, local.largerThan, -1),
-      name: this.effectiveValue(global.name, local.name, ""),
-      smallerThan: this.effectiveValue(
-        global.smallerThan,
-        local.smallerThan,
-        -1,
-      ),
+      contentTypeRegex: `${global.contentTypeRegex}|${local.contentTypeRegex}`
+        .replace(".*|", "")
+        .replace("|.*", ""),
+      includeAttachments: global.includeAttachments && local.includeAttachments,
+      includeInlineImages:
+        global.includeInlineImages && local.includeInlineImages,
+      largerThan: Math.max(global.largerThan, local.largerThan),
+      name: `${global.name}|${local.name}`
+        .replace("(.*)|", "")
+        .replace("|(.*)", ""),
+      smallerThan: Math.min(global.smallerThan, local.smallerThan),
     })
   }
 
@@ -68,12 +56,9 @@ export class AttachmentProcessor extends BaseProcessor {
       ctx.log.info(
         `Processing of attachment config '${config.name}' started ...`,
       )
-      const opts: GoogleAppsScript.Gmail.GmailAttachmentOptions = {}
-      if (config.match.includeAttachments !== undefined) {
-        opts.includeAttachments = config.match.includeAttachments
-      }
-      if (config.match.includeInlineImages !== undefined) {
-        opts.includeInlineImages = config.match.includeInlineImages
+      const opts: GoogleAppsScript.Gmail.GmailAttachmentOptions = {
+        includeAttachments: config.match.includeAttachments,
+        includeInlineImages: config.match.includeInlineImages,
       }
       const attachments = ctx.message.object.getAttachments(opts)
       const matchConfig = this.buildMatchConfig(

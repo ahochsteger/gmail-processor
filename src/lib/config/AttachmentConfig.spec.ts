@@ -23,5 +23,5 @@ it("should ensure nested object defaults", () => {
   expect(attachmentConfig.match.includeAttachments).toBe(true)
   expect(attachmentConfig.match.includeInlineImages).toBe(true)
   expect(attachmentConfig.match.largerThan).toBe(-1)
-  expect(attachmentConfig.match.smallerThan).toBe(-1)
+  expect(attachmentConfig.match.smallerThan).toBe(Number.MAX_SAFE_INTEGER)
 })

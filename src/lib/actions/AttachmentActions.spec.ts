@@ -34,11 +34,11 @@ it("should provide attachment.storeToGDrive in the action registry", () => {
 
 it("should create a file", () => {
   AttachmentActions.storeToGDrive(mocks.attachmentContext, {
-    location: "test-location",
+    location: "test-file.txt",
     conflictStrategy: ConflictStrategy.REPLACE,
     description: "automated test",
   })
-  expect(mocks.folder.createFile).toBeCalled()
+  expect(mocks.rootFolder.createFile).toBeCalled()
 })
 
 it("should not create a file on dry-run", () => {

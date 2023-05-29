@@ -1,7 +1,7 @@
 import { instanceToPlain, plainToInstance } from "class-transformer"
 import "reflect-metadata"
-import { RequiredDeep } from "../utils/UtilityTypes"
 import { PartialDeep } from "type-fest"
+import { RequiredDeep } from "../utils/UtilityTypes"
 
 /**
  * Represents a config to match a certain GMail attachment
@@ -30,7 +30,7 @@ export class AttachmentMatchConfig {
   /**
    * Only include attachments smaller than the given size in bytes
    */
-  smallerThan? = -1
+  smallerThan? = Number.MAX_SAFE_INTEGER
 }
 
 export type RequiredAttachmentMatchConfig = RequiredDeep<AttachmentMatchConfig>
