@@ -24,7 +24,7 @@ import {
   messageConfigToJson,
   newMessageConfig,
 } from "./MessageConfig"
-import { SettingsConfig } from "./SettingsConfig"
+import { MarkProcessedMethod, SettingsConfig } from "./SettingsConfig"
 import { ThreadConfig, newThreadConfig } from "./ThreadConfig"
 
 /**
@@ -130,17 +130,21 @@ export function normalizeConfig(cfg: PartialDeep<Config>): PartialDeep<Config> {
   const addGlobalThreadActions = []
   const addGlobalMessageActions = []
   cfg.settings = cfg.settings ? cfg.settings : new SettingsConfig()
-  if (cfg.settings.processedMode == "label") {
+  if (
+    cfg.settings.markProcessedMethod == MarkProcessedMethod.ADD_THREAD_LABEL
+  ) {
     addGlobalThreadActions.push(
       newThreadActionConfig({
         name: "thread.addLabel",
         args: {
-          label: cfg.settings.processedLabel,
+          label: cfg.settings.markProcessedLabel,
         },
         processingStage: ProcessingStage.POST_MAIN,
       }),
     )
-  } else if (cfg.settings.processedMode == "read") {
+  } else if (
+    cfg.settings.markProcessedMethod == MarkProcessedMethod.MARK_MESSAGE_READ
+  ) {
     addGlobalMessageActions.push(
       newMessageActionConfig({
         name: "message.markRead",

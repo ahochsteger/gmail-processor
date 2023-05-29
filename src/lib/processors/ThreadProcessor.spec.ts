@@ -1,6 +1,7 @@
 import { MockFactory } from "../../test/mocks/MockFactory"
 import { RunMode } from "../Context"
 import { jsonToConfig } from "../config/Config"
+import { MarkProcessedMethod } from "../config/SettingsConfig"
 import { jsonToThreadConfig } from "../config/ThreadConfig"
 import { ThreadProcessor } from "./ThreadProcessor"
 
@@ -15,39 +16,38 @@ it("should construct a GMail search query with globals (query, newerThan) and pr
       },
     },
     settings: {
-      processedLabel: "some-label",
+      markProcessedMethod: MarkProcessedMethod.ADD_THREAD_LABEL,
+      markProcessedLabel: "some-label",
     },
   })
   const threadConfig = jsonToThreadConfig({
     match: {
       query: "some-thread-specific-query",
+      newerThan: "2m",
     },
   })
   const ctx = MockFactory.newProcessingContextMock(
     MockFactory.newEnvContextMock(),
     config,
   )
-  const actualQuery = ThreadProcessor.getQueryFromThreadConfig(
-    ctx,
-    threadConfig,
+  const effectiveThreadMatchConfig = ThreadProcessor.getEffectiveMatchConfig(
+    ctx.proc.config.global.thread.match,
+    threadConfig.match,
   )
-  expect(actualQuery).toBe(
-    "some-global-query some-thread-specific-query -label:some-label newer_than:3m",
+  const actualQuery = ThreadProcessor.buildQuery(
+    ctx,
+    effectiveThreadMatchConfig,
+  )
+  expect(actualQuery).toEqual(
+    "some-global-query some-thread-specific-query -label:some-label newer_than:2m",
   )
 })
 
 it("should construct a GMail search query without globals and no processedLabel", () => {
   const config = jsonToConfig({
-    global: {
-      thread: {
-        match: {
-          query: "",
-          newerThan: "",
-        },
-      },
-    },
     settings: {
-      processedLabel: "",
+      markProcessedLabel: "",
+      markProcessedMethod: MarkProcessedMethod.MARK_MESSAGE_READ,
     },
   })
   const threadConfig = jsonToThreadConfig({
@@ -56,9 +56,9 @@ it("should construct a GMail search query without globals and no processedLabel"
     },
   })
   const mocks = MockFactory.newMocks(config, RunMode.DANGEROUS)
-  const actualQuery = ThreadProcessor.getQueryFromThreadConfig(
+  const actualQuery = ThreadProcessor.buildQuery(
     mocks.processingContext,
-    threadConfig,
+    threadConfig.match,
   )
-  expect(actualQuery).toBe("some-thread-specific-query")
+  expect(actualQuery).toEqual("some-thread-specific-query")
 })

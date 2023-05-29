@@ -13,7 +13,7 @@ it("should convert settings", () => {
   const expected: PartialDeep<Config> = {
     settings: {
       maxRuntime: 234,
-      processedLabel: "gmail2gdrive/client-test",
+      markProcessedLabel: "gmail2gdrive/client-test",
       sleepTimeThreads: 123,
       timezone: "Europe/Vienna",
     },

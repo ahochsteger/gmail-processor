@@ -39,7 +39,7 @@ export class GmailProcessor {
       },
     }
     ctx.log.logProcessingContext(processingContext)
-    const result = ThreadProcessor.processThreadConfigs(
+    const result = ThreadProcessor.processConfigs(
       processingContext,
       config.threads,
     )

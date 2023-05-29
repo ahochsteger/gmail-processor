@@ -502,17 +502,17 @@ Represents a settings config that affect the way GMail2GDrive works.
 
 **`SettingsConfig` Properties**
 
-|                      | Type     | Description                                                                                                                      | Required                                        |
-| -------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
-| **logSheetFile**     | `string` | Path of the spreadsheet log file                                                                                                 | No, default: `"Gmail2GDrive/Gmail2GDrive-logs"` |
-| **logSheetFolderId** | `string` | Folder ID of the spreadsheet log file in case of a shared drive (instead of logSheetFile)                                        | No, default:                                    |
-| **maxBatchSize**     | `number` | The maximum batch size of threads to process in a single run to respect Google processing limits                                 | No, default: `10`                               |
-| **maxRuntime**       | `number` | The maximum runtime in seconds for a single run to respect Google processing limits                                              | No, default: `280`                              |
-| **processedLabel**   | `string` | The label to be added to processed GMail threads (only for markProcessedMode="label", deprecated - only for compatibility to v1) | No, default: `"to-gdrive/processed"`            |
-| **processedMode**    | `string` | The mode to mark processed threads/messages.                                                                                     |
+|                         | Type     | Description                                                                                                                      | Required                                        |
+| ----------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
+| **logSheetFile**        | `string` | Path of the spreadsheet log file                                                                                                 | No, default: `"Gmail2GDrive/Gmail2GDrive-logs"` |
+| **logSheetFolderId**    | `string` | Folder ID of the spreadsheet log file in case of a shared drive (instead of logSheetFile)                                        | No, default:                                    |
+| **markProcessedLabel**  | `string` | The label to be added to processed GMail threads (only for markProcessedMode="label", deprecated - only for compatibility to v1) | No, default:                                    |
+| **markProcessedMethod** | `string` | The method to mark processed threads/messages.                                                                                   |
 
-- `label`: Add the label from `processedLabel` to the thread. This is just for compatibility to v1 and is limited to one message per thread.
-- `read`: Mark the message as read. This is the new default since it provides more flexibility esp. when threads contain multiple messages.|No, default: `"read"`|
+- `add-thread-label`: Add the label from `markProcessedLabel` to the thread. This is just for compatibility to v1 and is limited to one message per thread.
+- `mark-message-read`: Mark the message as read. This is the new default since it provides more flexibility esp. when threads contain multiple messages.|No|
+  |**maxBatchSize**|`number`|The maximum batch size of threads to process in a single run to respect Google processing limits|No, default: `10`|
+  |**maxRuntime**|`number`|The maximum runtime in seconds for a single run to respect Google processing limits|No, default: `280`|
   |**sleepTimeAttachments**|`number`|The sleep time in milliseconds between processing each attachment|No, default: `0`|
   |**sleepTimeMessages**|`number`|The sleep time in milliseconds between processing each message|No, default: `0`|
   |**sleepTimeThreads**|`number`|The sleep time in milliseconds between processing each thread|No, default: `100`|
@@ -534,6 +534,26 @@ Folder ID of the spreadsheet log file in case of a shared drive (instead of logS
 - **Type**: `string`
 - **Required**: No, default:
 
+### SettingsConfig.markProcessedLabel
+
+The label to be added to processed GMail threads (only for markProcessedMode="label", deprecated - only for compatibility to v1)
+
+- **Type**: `string`
+- **Required**: No, default:
+
+### SettingsConfig.markProcessedMethod
+
+The method to mark processed threads/messages.
+
+- `add-thread-label`: Add the label from `markProcessedLabel` to the thread. This is just for compatibility to v1 and is limited to one message per thread.
+- `mark-message-read`: Mark the message as read. This is the new default since it provides more flexibility esp. when threads contain multiple messages.
+
+- **Type**: `string`
+- **Required**: No
+- **Allowed values**:
+  - `"add-thread-label"`
+  - `"mark-message-read"`
+
 ### SettingsConfig.maxBatchSize
 
 The maximum batch size of threads to process in a single run to respect Google processing limits
@@ -547,26 +567,6 @@ The maximum runtime in seconds for a single run to respect Google processing lim
 
 - **Type**: `number`
 - **Required**: No, default: `280`
-
-### SettingsConfig.processedLabel
-
-The label to be added to processed GMail threads (only for markProcessedMode="label", deprecated - only for compatibility to v1)
-
-- **Type**: `string`
-- **Required**: No, default: `"to-gdrive/processed"`
-
-### SettingsConfig.processedMode
-
-The mode to mark processed threads/messages.
-
-- `label`: Add the label from `processedLabel` to the thread. This is just for compatibility to v1 and is limited to one message per thread.
-- `read`: Mark the message as read. This is the new default since it provides more flexibility esp. when threads contain multiple messages.
-
-- **Type**: `string`
-- **Required**: No, default: `"read"`
-- **Allowed values**:
-  - `"label"`
-  - `"read"`
 
 ### SettingsConfig.sleepTimeAttachments
 

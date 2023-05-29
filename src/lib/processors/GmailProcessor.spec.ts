@@ -2,6 +2,7 @@ import { PartialDeep } from "type-fest"
 import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
 import { RunMode } from "../Context"
 import { Config, RequiredConfig } from "../config/Config"
+import { MarkProcessedMethod } from "../config/SettingsConfig"
 import { GmailProcessor } from "./GmailProcessor"
 
 let config: RequiredConfig
@@ -51,8 +52,8 @@ describe("getEffectiveConfig", () => {
         logSheetFolderId: "",
         maxBatchSize: 10,
         maxRuntime: 280,
-        processedLabel: "to-gdrive/processed",
-        processedMode: "read",
+        markProcessedLabel: "",
+        markProcessedMethod: MarkProcessedMethod.MARK_MESSAGE_READ,
         sleepTimeThreads: 100,
         sleepTimeMessages: 0,
         sleepTimeAttachments: 0,

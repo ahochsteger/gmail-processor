@@ -9,20 +9,22 @@ const example02ConfigV2 = {
   settings: {
     maxBatchSize: 10,
     maxRuntime: 280,
-    processedMode: "read",
+    markProcessedMethod: "mark-message-read",
     sleepTimeThreads: 100,
     sleepTimeMessages: 0,
     sleepTimeAttachments: 0,
     timezone: "UTC",
   },
   global: {
-    match: {
-      query: "has:attachment -in:trash -in:drafts -in:spam",
-      maxMessageCount: -1,
-      minMessageCount: 1,
-      newerThan: "1d",
+    thread: {
+      match: {
+        query: "has:attachment -in:trash -in:drafts -in:spam",
+        maxMessageCount: -1,
+        minMessageCount: 1,
+        newerThan: "1d",
+      },
+      actions: [],
     },
-    actions: [],
   },
   messages: [
     {

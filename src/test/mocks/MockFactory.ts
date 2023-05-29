@@ -138,7 +138,7 @@ export class MockFactory {
     return {
       maxBatchSize: 100,
       maxRuntime: 280,
-      processedLabel: "to-gdrive/processed",
+      markProcessedLabel: "to-gdrive/processed",
       sleepTimeThreads: 100,
       sleepTimeMessages: 10,
       sleepTimeAttachments: 1,

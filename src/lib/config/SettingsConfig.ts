@@ -10,6 +10,16 @@ export const DEFAULT_SETTING_MAX_RUNTIME = 280
 export const DEFAULT_SETTING_SLEEP_TIME_THREADS = 100
 
 /**
+ * The method to mark processed threads/messages.
+ * * `add-thread-label`: Add the label from `markProcessedLabel` to the thread. This is just for compatibility to v1 and is limited to one message per thread.
+ * * `mark-message-read`: Mark the message as read. This is the new default since it provides more flexibility esp. when threads contain multiple messages.
+ */
+export enum MarkProcessedMethod {
+  ADD_THREAD_LABEL = "add-thread-label",
+  MARK_MESSAGE_READ = "mark-message-read",
+}
+
+/**
  * Represents a settings config that affect the way GMail2GDrive works.
  */
 export class SettingsConfig {
@@ -37,14 +47,15 @@ export class SettingsConfig {
    * The label to be added to processed GMail threads (only for markProcessedMode="label", deprecated - only for compatibility to v1)
    */
   @Expose()
-  processedLabel? = "to-gdrive/processed"
+  markProcessedLabel? = ""
   /**
-   * The mode to mark processed threads/messages.
-   * * `label`: Add the label from `processedLabel` to the thread. This is just for compatibility to v1 and is limited to one message per thread.
-   * * `read`: Mark the message as read. This is the new default since it provides more flexibility esp. when threads contain multiple messages.
+   * The method to mark processed threads/messages.
+   * * `add-thread-label`: Add the label from `markProcessedLabel` to the thread. This is just for compatibility to v1 and is limited to one message per thread.
+   * * `mark-message-read`: Mark the message as read. This is the new default since it provides more flexibility esp. when threads contain multiple messages.
    */
   @Expose()
-  processedMode?: "label" | "read" = "read"
+  markProcessedMethod?: MarkProcessedMethod =
+    MarkProcessedMethod.MARK_MESSAGE_READ
   /**
    * The sleep time in milliseconds between processing each thread
    */

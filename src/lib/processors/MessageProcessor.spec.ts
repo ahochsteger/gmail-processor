@@ -100,7 +100,7 @@ describe("match()", () => {
       })
       const res = []
       for (const m of mockedThread.getMessages()) {
-        if (MessageProcessor.matches(messageConfig, m)) {
+        if (MessageProcessor.matches(messageConfig.match, m)) {
           res.push(m.getSubject())
         }
       }
@@ -112,7 +112,7 @@ describe("match()", () => {
 describe("processMessage()", () => {
   it("should process a message config", () => {
     const ctx = mocks.messageContext
-    MessageProcessor.processMessageConfig(
+    MessageProcessor.processConfig(
       ctx,
       ctx.message.config,
       ctx.message.configIndex,

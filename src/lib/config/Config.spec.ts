@@ -65,7 +65,7 @@ describe("jsonToConfig", () => {
         },
       },
       settings: {
-        processedLabel: "processed-label",
+        markProcessedLabel: "processed-label",
       },
     }
     const cfgJson = { ...expected, additionalProperty: "additional" }
@@ -85,7 +85,7 @@ describe("jsonToConfig", () => {
         },
       },
       settings: {
-        processedLabel: "some-label",
+        markProcessedLabel: "some-label",
       },
       threads: [
         {
@@ -106,7 +106,7 @@ describe("configToJson", () => {
     const configJson: PartialDeep<ProcessingConfig> = {
       description: "config description",
       settings: {
-        processedLabel: "some label",
+        markProcessedLabel: "some label",
       },
       threads: [{ description: "thread description" }],
     }

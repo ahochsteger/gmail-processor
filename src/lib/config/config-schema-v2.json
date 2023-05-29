@@ -375,6 +375,18 @@
           "title": "logSheetFolderId",
           "type": "string"
         },
+        "markProcessedLabel": {
+          "default": "",
+          "description": "The label to be added to processed GMail threads (only for markProcessedMode=\"label\", deprecated - only for compatibility to v1)",
+          "title": "markProcessedLabel",
+          "type": "string"
+        },
+        "markProcessedMethod": {
+          "description": "The method to mark processed threads/messages.\n* `add-thread-label`: Add the label from `markProcessedLabel` to the thread. This is just for compatibility to v1 and is limited to one message per thread.\n* `mark-message-read`: Mark the message as read. This is the new default since it provides more flexibility esp. when threads contain multiple messages.",
+          "enum": ["add-thread-label", "mark-message-read"],
+          "title": "markProcessedMethod",
+          "type": "string"
+        },
         "maxBatchSize": {
           "default": 10,
           "description": "The maximum batch size of threads to process in a single run to respect Google processing limits",
@@ -386,19 +398,6 @@
           "description": "The maximum runtime in seconds for a single run to respect Google processing limits",
           "title": "maxRuntime",
           "type": "number"
-        },
-        "processedLabel": {
-          "default": "to-gdrive/processed",
-          "description": "The label to be added to processed GMail threads (only for markProcessedMode=\"label\", deprecated - only for compatibility to v1)",
-          "title": "processedLabel",
-          "type": "string"
-        },
-        "processedMode": {
-          "default": "read",
-          "description": "The mode to mark processed threads/messages.\n* `label`: Add the label from `processedLabel` to the thread. This is just for compatibility to v1 and is limited to one message per thread.\n* `read`: Mark the message as read. This is the new default since it provides more flexibility esp. when threads contain multiple messages.",
-          "enum": ["label", "read"],
-          "title": "processedMode",
-          "type": "string"
         },
         "sleepTimeAttachments": {
           "default": 0,
