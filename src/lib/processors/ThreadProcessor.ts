@@ -1,4 +1,9 @@
-import { ProcessingContext, ProcessingResult, ThreadContext } from "../Context"
+import {
+  ProcessingContext,
+  ProcessingResult,
+  ThreadContext,
+  newProcessingResult,
+} from "../Context"
 import { ProcessingStage } from "../config/ActionConfig"
 import { MarkProcessedMethod } from "../config/SettingsConfig"
 import { RequiredThreadConfig } from "../config/ThreadConfig"
@@ -11,23 +16,7 @@ import { BaseProcessor } from "./BaseProcessor"
 import { MessageProcessor } from "./MessageProcessor"
 
 export class ThreadProcessor extends BaseProcessor {
-  public static processConfigs(
-    ctx: ProcessingContext,
-    configs: RequiredThreadConfig[],
-  ) {
-    for (let i = 0; i < configs.length; i++) {
-      const config = configs[i]
-      config.name = config.name !== "" ? config.name : `thread-cfg-${i + 1}`
-      this.processConfig(ctx, config, i)
-    }
-    const result: ProcessingResult = {
-      status: "ok",
-      performedActions: [],
-    }
-    return result
-  }
-
-  private static getFilter(prefix: string, value: string): string {
+  private static buildFilter(prefix: string, value: string): string {
     return this.isSet(value, "") ? ` ${prefix}${value}` : ""
   }
   public static buildQuery(
@@ -35,18 +24,18 @@ export class ThreadProcessor extends BaseProcessor {
     threadMatchConfig: RequiredThreadMatchConfig,
   ) {
     let gSearchExp = this.getStr(threadMatchConfig.query)
-    gSearchExp += this.getFilter(
+    gSearchExp += this.buildFilter(
       " -label:",
       ctx.proc.config.settings?.markProcessedMethod ===
         MarkProcessedMethod.ADD_THREAD_LABEL
         ? ctx.proc.config.settings?.markProcessedLabel
         : "",
     )
-    gSearchExp += this.getFilter(" newer_than:", threadMatchConfig.newerThan)
+    gSearchExp += this.buildFilter(" newer_than:", threadMatchConfig.newerThan)
     return gSearchExp.trim().replace(/[ ]+/g, " ")
   }
 
-  public static getEffectiveMatchConfig(
+  public static buildMatchConfig(
     global: ThreadMatchConfig,
     local: RequiredThreadMatchConfig,
   ): RequiredThreadMatchConfig {
@@ -67,67 +56,80 @@ export class ThreadProcessor extends BaseProcessor {
         : global.newerThan,
     })
   }
-  public static processConfig(
+
+  public static processConfigs(
     ctx: ProcessingContext,
-    config: RequiredThreadConfig,
-    configIndex: number,
-  ) {
-    const effectiveThreadMatchConfig = this.getEffectiveMatchConfig(
-      ctx.proc.config.global.thread.match,
-      config.match,
-    )
-    const gSearchExp = this.buildQuery(ctx, effectiveThreadMatchConfig)
-    // Process all threads matching the search expression:
-    const threads = ctx.proc.gmailAdapter.search(
-      gSearchExp,
-      ctx.proc.config.settings.maxBatchSize,
-    )
-    ctx.log.info(`  Processing of thread config '${config.name}' started ...`)
-    for (let threadIndex = 0; threadIndex < threads.length; threadIndex++) {
-      const thread = threads[threadIndex]
-      ctx.proc.timer.checkMaxRuntimeReached()
-      const threadContext: ThreadContext = {
-        ...ctx,
-        thread: {
-          object: thread,
-          config: config,
-          configIndex: configIndex,
-          index: threadIndex,
-        },
+    configs: RequiredThreadConfig[],
+    result: ProcessingResult = newProcessingResult(),
+  ): ProcessingResult {
+    for (let configIndex = 0; configIndex < configs.length; configIndex++) {
+      const config = configs[configIndex]
+      config.name =
+        config.name !== "" ? config.name : `thread-cfg-${configIndex}`
+      ctx.log.info(`Processing of thread config '${config.name}' started ...`)
+      const matchConfig = this.buildMatchConfig(
+        ctx.proc.config.global.thread.match,
+        config.match,
+      )
+      const gSearchExp = this.buildQuery(ctx, matchConfig)
+      // Process all threads matching the search expression:
+      const threads = ctx.proc.gmailAdapter.search(
+        gSearchExp,
+        ctx.proc.config.settings.maxBatchSize,
+      )
+      for (let threadIndex = 0; threadIndex < threads.length; threadIndex++) {
+        const thread = threads[threadIndex]
+        ctx.proc.timer.checkMaxRuntimeReached()
+        const threadContext: ThreadContext = {
+          ...ctx,
+          thread: {
+            object: thread,
+            config: config,
+            configIndex: configIndex,
+            index: threadIndex,
+          },
+        }
+        result = this.processEntity(threadContext, result)
       }
-      this.processThread(threadContext)
+      ctx.log.info(`Processing of thread config '${config.name}' finished.`)
     }
-    ctx.log.info(`  Processing of thread config '${config.name}' finished.`)
+    return result
   }
 
-  public static processThread(ctx: ThreadContext) {
+  public static processEntity(
+    ctx: ThreadContext,
+    result: ProcessingResult = newProcessingResult(),
+  ): ProcessingResult {
     const thread: GoogleAppsScript.Gmail.GmailThread = ctx.thread.object
     const config: RequiredThreadConfig = ctx.thread.config
     ctx.log.info(
       `    Processing of thread '${thread.getFirstMessageSubject()}' started ...`,
     )
     // Execute pre-main actions:
-    this.executeActions(
+    result = this.executeActions(
       ctx,
       ProcessingStage.PRE_MAIN,
+      result,
       ctx.proc.config.global.thread.actions,
       ctx.thread.config.actions,
     )
 
     // Process message configs:
     if (config.messages) {
-      MessageProcessor.processConfigs(ctx, config.messages)
+      result = MessageProcessor.processConfigs(ctx, config.messages, result)
     }
 
     // Execute post-main actions:
-    this.executeActions(
+    result = this.executeActions(
       ctx,
       ProcessingStage.POST_MAIN,
+      result,
       ctx.thread.config.actions,
       ctx.proc.config.global.thread.actions,
     )
     ctx.log.info(
       `    Processing of thread '${thread.getFirstMessageSubject()}' finished.`,
     )
+    return result
   }
 }

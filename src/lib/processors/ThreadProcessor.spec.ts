@@ -30,14 +30,11 @@ it("should construct a GMail search query with globals (query, newerThan) and pr
     MockFactory.newEnvContextMock(),
     config,
   )
-  const effectiveThreadMatchConfig = ThreadProcessor.getEffectiveMatchConfig(
+  const matchConfig = ThreadProcessor.buildMatchConfig(
     ctx.proc.config.global.thread.match,
     threadConfig.match,
   )
-  const actualQuery = ThreadProcessor.buildQuery(
-    ctx,
-    effectiveThreadMatchConfig,
-  )
+  const actualQuery = ThreadProcessor.buildQuery(ctx, matchConfig)
   expect(actualQuery).toEqual(
     "some-global-query some-thread-specific-query -label:some-label newer_than:2m",
   )

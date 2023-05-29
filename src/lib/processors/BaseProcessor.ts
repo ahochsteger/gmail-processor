@@ -1,4 +1,9 @@
-import { ProcessingContext } from "../Context"
+import {
+  ProcessingContext,
+  ProcessingError,
+  ProcessingResult,
+  ProcessingStatus,
+} from "../Context"
 import { ActionArgsType } from "../actions/ActionRegistry"
 import { ActionConfig, ProcessingStage } from "../config/ActionConfig"
 
@@ -6,19 +11,38 @@ export abstract class BaseProcessor {
   protected static executeActions(
     ctx: ProcessingContext,
     processingStage: ProcessingStage,
+    result: ProcessingResult,
     ...actionSets: ActionConfig[][]
-  ) {
+  ): ProcessingResult {
     actionSets.forEach((actions) => {
       actions
         .filter((action) => action.processingStage === processingStage)
-        .forEach((action) =>
-          ctx.proc.actionRegistry.executeAction(
-            ctx,
-            action.name,
-            action.args as ActionArgsType,
-          ),
-        )
+        .forEach((action) => {
+          try {
+            ctx.proc.actionRegistry.executeAction(
+              ctx,
+              action.name,
+              action.args as ActionArgsType,
+            )
+            result.performedActions.push(action)
+          } catch (err) {
+            result.failedAction = action
+            result.status = ProcessingStatus.ERROR
+            if (err instanceof Error) {
+              result.error = err
+            } else {
+              result.error = new Error(String(err))
+            }
+            throw new ProcessingError(
+              `Error "${result.error.message}" during execution of action ${
+                action.name
+              } using args ${JSON.stringify(action.args)}!`,
+              result,
+            )
+          }
+        })
     })
+    return result
   }
 
   protected static isSet(

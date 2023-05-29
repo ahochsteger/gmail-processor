@@ -1,4 +1,9 @@
-import { MessageContext, ThreadContext } from "../Context"
+import {
+  MessageContext,
+  ProcessingResult,
+  ThreadContext,
+  newProcessingResult,
+} from "../Context"
 import { ProcessingStage } from "../config/ActionConfig"
 import { RequiredMessageConfig } from "../config/MessageConfig"
 import { MessageFlag } from "../config/MessageFlag"
@@ -11,17 +16,6 @@ import { AttachmentProcessor } from "../processors/AttachmentProcessor"
 import { BaseProcessor } from "./BaseProcessor"
 
 export class MessageProcessor extends BaseProcessor {
-  public static processConfigs(
-    ctx: ThreadContext,
-    configs: RequiredMessageConfig[],
-  ) {
-    for (let i = 0; i < configs.length; i++) {
-      const config = configs[i]
-      config.name = config.name !== "" ? config.name : `message-cfg-${i + 1}`
-      this.processConfig(ctx, config, i)
-    }
-  }
-
   public static matches(
     matchConfig: RequiredMessageMatchConfig,
     message: GoogleAppsScript.Gmail.GmailMessage,
@@ -50,7 +44,7 @@ export class MessageProcessor extends BaseProcessor {
     return true
   }
 
-  public static getEffectiveMatchConfig(
+  public static buildMatchConfig(
     global: MessageMatchConfig,
     local: RequiredMessageMatchConfig,
   ): RequiredMessageMatchConfig {
@@ -64,38 +58,40 @@ export class MessageProcessor extends BaseProcessor {
     })
   }
 
-  public static processConfig(
+  public static processConfigs(
     ctx: ThreadContext,
-    config: RequiredMessageConfig,
-    configIndex: number,
-  ) {
-    ctx.log.info(
-      `      Processing of message config '${config.name}' started ...`,
-    )
-    const messages = ctx.thread.object.getMessages()
-    const effectiveMatchConfig = this.getEffectiveMatchConfig(
-      ctx.proc.config.global.message.match,
-      config.match,
-    )
-    for (let index = 0; index < messages.length; index++) {
-      const message = messages[index]
-      if (!this.matches(effectiveMatchConfig, message)) {
-        continue
+    configs: RequiredMessageConfig[],
+    result: ProcessingResult = newProcessingResult(),
+  ): ProcessingResult {
+    for (let configIndex = 0; configIndex < configs.length; configIndex++) {
+      const config = configs[configIndex]
+      config.name =
+        config.name !== "" ? config.name : `message-cfg-${configIndex}`
+      ctx.log.info(`Processing of message config '${config.name}' started ...`)
+      const messages = ctx.thread.object.getMessages()
+      const matchConfig = this.buildMatchConfig(
+        ctx.proc.config.global.message.match,
+        config.match,
+      )
+      for (let index = 0; index < messages.length; index++) {
+        const message = messages[index]
+        if (!this.matches(matchConfig, message)) {
+          continue
+        }
+        const messageContext: MessageContext = {
+          ...ctx,
+          message: {
+            object: message,
+            config: config,
+            configIndex: configIndex,
+            index: index,
+          },
+        }
+        result = this.processEntity(messageContext, result)
       }
-      const messageContext: MessageContext = {
-        ...ctx,
-        message: {
-          object: message,
-          config: config,
-          configIndex: configIndex,
-          index: index,
-        },
-      }
-      this.processMessage(messageContext)
+      ctx.log.info(`Processing of message config '${config.name}' finished.`)
     }
-    ctx.log.info(
-      `      Processing of message config '${config.name}' finished.`,
-    )
+    return result
   }
 
   /**
@@ -103,16 +99,20 @@ export class MessageProcessor extends BaseProcessor {
    * @param message The message to be processed.
    * @param rule The rule to be processed.
    */
-  public static processMessage(ctx: MessageContext) {
+  public static processEntity(
+    ctx: MessageContext,
+    result: ProcessingResult = newProcessingResult(),
+  ): ProcessingResult {
     const config = ctx.message.config
     const message = ctx.message.object
     ctx.log.info(
       `        Processing of message '${message.getSubject()}' (id:${message.getId()}) started ...`,
     )
     // Execute pre-main actions:
-    this.executeActions(
+    result = this.executeActions(
       ctx,
       ProcessingStage.PRE_MAIN,
+      result,
       ctx.proc.config.global.message.actions,
       ctx.message.config.actions,
     )
@@ -120,18 +120,24 @@ export class MessageProcessor extends BaseProcessor {
     // Process attachment configs:
     if (config.attachments) {
       // New rule configuration format
-      AttachmentProcessor.processConfigs(ctx, config.attachments)
+      result = AttachmentProcessor.processConfigs(
+        ctx,
+        config.attachments,
+        result,
+      )
     }
 
     // Execute post-main actions:
-    this.executeActions(
+    result = this.executeActions(
       ctx,
       ProcessingStage.POST_MAIN,
+      result,
       ctx.message.config.actions,
       ctx.proc.config.global.message.actions,
     )
     ctx.log.info(
       `        Processing of message '${message.getSubject()}' (id:${message.getId()}) finished.`,
     )
+    return result
   }
 }

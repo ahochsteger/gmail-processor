@@ -1,7 +1,8 @@
-import { ActionArgsType, ActionRegistry } from "./actions/ActionRegistry"
+import { ActionRegistry } from "./actions/ActionRegistry"
 import { GDriveAdapter } from "./adapter/GDriveAdapter"
 import { GmailAdapter } from "./adapter/GmailAdapter"
 import { SpreadsheetAdapter } from "./adapter/SpreadsheetAdapter"
+import { ActionConfig } from "./config/ActionConfig"
 import { RequiredAttachmentConfig } from "./config/AttachmentConfig"
 import { RequiredConfig } from "./config/Config"
 import { RequiredMessageConfig } from "./config/MessageConfig"
@@ -64,11 +65,26 @@ export type ThreadContext = ProcessingContext & { thread: ThreadInfo }
 export type MessageContext = ThreadContext & { message: MessageInfo }
 export type AttachmentContext = MessageContext & { attachment: AttachmentInfo }
 
-export type PerformedAction = {
-  name: string
-  args: ActionArgsType
+export enum ProcessingStatus {
+  ERROR = "error",
+  OK = "ok",
 }
+
+export class ProcessingError extends Error {
+  constructor(message: string, public cause: ProcessingResult) {
+    super(message)
+  }
+}
+
 export type ProcessingResult = {
-  status: "ok" | "error"
-  performedActions: PerformedAction[]
+  status: ProcessingStatus
+  performedActions: ActionConfig[]
+  failedAction?: ActionConfig
+  error?: Error
+}
+export function newProcessingResult(): ProcessingResult {
+  return {
+    status: ProcessingStatus.OK,
+    performedActions: [],
+  }
 }

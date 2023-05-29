@@ -109,13 +109,9 @@ describe("match()", () => {
   })
 })
 
-describe("processMessage()", () => {
+describe("processEntity()", () => {
   it("should process a message config", () => {
     const ctx = mocks.messageContext
-    MessageProcessor.processConfig(
-      ctx,
-      ctx.message.config,
-      ctx.message.configIndex,
-    )
+    MessageProcessor.processEntity(ctx)
   })
 })
