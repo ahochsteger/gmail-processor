@@ -17,6 +17,7 @@ describe("getFolderFromPath()", () => {
     expect(actual).toMatchObject({})
   })
   it("should find folder from root path", () => {
+    mocks.fileIterator.hasNext.mockReset()
     const actual = gdriveAdapter.getFolderFromPath("/some-folder")
     expect(actual).toMatchObject({})
   })
@@ -51,6 +52,30 @@ describe("createFile()", () => {
     expect(file).toBeDefined()
     expect(mocks.rootFolder.createFile).toBeCalled()
   })
+  it("should throw an error if file exists and replace mode but running in dry-run mode", () => {
+    gdriveAdapter.ctx.env.runMode = RunMode.DRY_RUN
+    expect(() => {
+      gdriveAdapter.createFile(
+        "/some-file.txt",
+        "some content",
+        "text/plain",
+        "some description",
+        ConflictStrategy.REPLACE,
+      )
+    }).toThrowError(/Skipped/)
+  })
+  it("should throw an error if file exists and replace mode but running in safe mode", () => {
+    gdriveAdapter.ctx.env.runMode = RunMode.SAFE_MODE
+    expect(() => {
+      gdriveAdapter.createFile(
+        "/some-file.txt",
+        "some content",
+        "text/plain",
+        "some description",
+        ConflictStrategy.REPLACE,
+      )
+    }).toThrowError(/Skipped/)
+  })
   it("should not create a file if existing and skip mode", () => {
     gdriveAdapter.createFile(
       "/some-file.txt",
@@ -60,6 +85,17 @@ describe("createFile()", () => {
       ConflictStrategy.SKIP,
     )
     expect(mocks.rootFolder.createFile).not.toBeCalled()
+  })
+  it("should throw an error if file exists and error mode", () => {
+    expect(() => {
+      gdriveAdapter.createFile(
+        "/some-file.txt",
+        "some content",
+        "text/plain",
+        "some description",
+        ConflictStrategy.ERROR,
+      )
+    }).toThrowError(/Conflict/)
   })
 })
 

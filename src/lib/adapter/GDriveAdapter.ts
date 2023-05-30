@@ -1,4 +1,4 @@
-import { EnvContext } from "../Context"
+import { EnvContext, RunMode } from "../Context"
 import { BaseAdapter } from "./BaseAdapter"
 
 export enum ConflictStrategy {
@@ -10,9 +10,9 @@ export enum ConflictStrategy {
 
 export class GDriveAdapter extends BaseAdapter {
   private gdriveApp: GoogleAppsScript.Drive.DriveApp
-  constructor(public envContext: EnvContext) {
-    super(envContext)
-    this.gdriveApp = envContext.env.gdriveApp
+  constructor(public ctx: EnvContext) {
+    super(ctx)
+    this.gdriveApp = ctx.env.gdriveApp
   }
 
   // TODO: Continue here!!!
@@ -65,43 +65,35 @@ export class GDriveAdapter extends BaseAdapter {
     const filename = this.getFilenameFromLocation(location)
     const folder = this.getOrCreateFolderFromPath(folderpath)
     const existingFiles = folder.getFilesByName(filename)
+    const fileExists = existingFiles.hasNext()
 
     // Handle conflicts with existing files:
-    if (
-      existingFiles != null &&
-      existingFiles.hasNext() &&
-      conflictStrategy === ConflictStrategy.SKIP
-    ) {
+    if (fileExists && conflictStrategy === ConflictStrategy.SKIP) {
       console.warn(
         "   Skipping existing file '" +
           location +
           "' (using conflict strategy 'SKIP')!",
       )
       return existingFiles.next()
-    } else if (
-      existingFiles != null &&
-      existingFiles.hasNext() &&
-      conflictStrategy === ConflictStrategy.REPLACE
-    ) {
-      while (existingFiles.hasNext()) {
-        const existingFile = existingFiles.next()
-        const existingFileId = existingFile.getId()
-        const removeStatus = this.gdriveApp.removeFile(existingFile)
-        console.warn(
-          '   Existing file "' +
-            existingFile +
-            '" (id:"' +
-            existingFileId +
-            '", status:' +
-            removeStatus +
-            ") has been deleted (using conflict strategy 'REPLACE')!",
+    } else if (fileExists && conflictStrategy === ConflictStrategy.REPLACE) {
+      if (this.ctx.env.runMode !== RunMode.DANGEROUS) {
+        throw new Error(
+          `Skipped replacing existing file '${location}' due to run mode ${this.ctx.env.runMode}!`,
         )
       }
-    } else if (
-      existingFiles != null &&
-      existingFiles.hasNext() &&
-      conflictStrategy === ConflictStrategy.ERROR
-    ) {
+      const existingFile = existingFiles.next()
+      const existingFileId = existingFile.getId()
+      const removeStatus = this.gdriveApp.removeFile(existingFile)
+      console.warn(
+        '   Existing file "' +
+          existingFile +
+          '" (id:"' +
+          existingFileId +
+          '", status:' +
+          removeStatus +
+          ") has been deleted (using conflict strategy 'REPLACE')!",
+      )
+    } else if (fileExists && conflictStrategy === ConflictStrategy.ERROR) {
       throw new Error(
         "Conflict with existing file at location '" +
           location +

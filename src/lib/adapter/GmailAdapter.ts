@@ -2,17 +2,17 @@ import { EnvContext } from "../Context"
 import { Adapter } from "./BaseAdapter"
 
 export class GmailAdapter implements Adapter {
-  constructor(public envContext: EnvContext) {}
+  constructor(public ctx: EnvContext) {}
 
   public search(
     query: string,
     max: number,
   ): GoogleAppsScript.Gmail.GmailThread[] {
-    return this.envContext.env.gmailApp.search(query, 1, max)
+    return this.ctx.env.gmailApp.search(query, 1, max)
   }
 
   public convertHtmlToPdf(html: string): string {
-    const htmlBlob = this.envContext.env.utilities.newBlob(html, "text/html")
+    const htmlBlob = this.ctx.env.utilities.newBlob(html, "text/html")
     return htmlBlob.getAs("application/pdf").getDataAsString()
   }
 
@@ -80,7 +80,7 @@ Subject: ${message.getSubject()}<br />
     labelName: string,
   ) {
     if (labelName !== "") {
-      const label = this.envContext.env.gmailApp.getUserLabelByName(labelName)
+      const label = this.ctx.env.gmailApp.getUserLabelByName(labelName)
       console.info(
         `Adding label '${labelName}' to thread '${thread.getFirstMessageSubject()}' ...`,
       )
@@ -93,7 +93,7 @@ Subject: ${message.getSubject()}<br />
     labelName: string,
   ) {
     if (labelName !== "") {
-      const label = this.envContext.env.gmailApp.getUserLabelByName(labelName)
+      const label = this.ctx.env.gmailApp.getUserLabelByName(labelName)
       console.info(
         `Removing label '${labelName}' from thread '${thread.getFirstMessageSubject()}' ...`,
       )

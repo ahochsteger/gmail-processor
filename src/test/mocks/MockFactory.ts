@@ -31,13 +31,14 @@ import { MessageConfig, newMessageConfig } from "../../lib/config/MessageConfig"
 import { MessageFlag } from "../../lib/config/MessageFlag"
 import { SettingsConfig } from "../../lib/config/SettingsConfig"
 import { ThreadConfig, jsonToThreadConfig } from "../../lib/config/ThreadConfig"
-import { V1Config, jsonToV1Config } from "../../lib/config/v1/V1Config"
+import { V1Config } from "../../lib/config/v1/V1Config"
 import { Logger } from "../../lib/utils/Logger"
 import { Timer } from "../../lib/utils/Timer"
 import { RequiredDeep } from "../../lib/utils/UtilityTypes"
 
 export class Mocks {
-  // TODO split folder, file, iterator, ... into different purpose objects
+  // TODO: split folder, file, iterator, ... into different purpose objects
+  // TODO: split large mock factory into different classes
   public attachmentContext = mock<AttachmentContext>()
   public attachment = mock<GoogleAppsScript.Gmail.GmailAttachment>()
   public blob = mock<GoogleAppsScript.Base.Blob>()
@@ -100,6 +101,22 @@ export class MockFactory {
     mocks = this.newMocks(),
   ) {
     // Setup mock behavior:
+    MockFactory.setupMocks(mocks)
+    const envContext: EnvContext = {
+      env: {
+        gmailApp: mocks.gmailApp,
+        gdriveApp: mocks.gdriveApp,
+        spreadsheetApp: mocks.spreadsheetApp,
+        cacheService: mocks.cacheService,
+        utilities: mocks.utilities,
+        runMode,
+      },
+      log: new Logger(),
+    }
+    return envContext
+  }
+
+  public static setupMocks(mocks: Mocks) {
     mocks.folderIterator.hasNext.mockReturnValueOnce(true)
     mocks.folderIterator.hasNext.mockReturnValue(false)
     mocks.folderIterator.next.mockReturnValue(mocks.folder)
@@ -135,18 +152,6 @@ export class MockFactory {
     mocks.spreadsheetApp.openById.mockReturnValue(mocks.logSpreadsheet)
     mocks.gdriveApp.getFileById.mockReturnValue(mocks.logSpreadsheetFile)
     mocks.logSpreadsheetFile.moveTo.mockReturnValue(mocks.logSpreadsheetFile)
-    const envContext: EnvContext = {
-      env: {
-        gmailApp: mocks.gmailApp,
-        gdriveApp: mocks.gdriveApp,
-        spreadsheetApp: mocks.spreadsheetApp,
-        cacheService: mocks.cacheService,
-        utilities: mocks.utilities,
-        runMode,
-      },
-      log: new Logger(),
-    }
-    return envContext
   }
 
   public static newDefaultSettingsConfigJson(): PartialDeep<SettingsConfig> {
@@ -406,11 +411,6 @@ export class MockFactory {
         },
       ],
     }
-  }
-
-  public static newDefaultV1Config(): V1Config {
-    const v1config = this.newDefaultV1ConfigJson()
-    return jsonToV1Config(v1config)
   }
 
   public static newDefaultConfig(): RequiredConfig {

@@ -9,11 +9,11 @@ export class SpreadsheetAdapter extends BaseAdapter {
   private logSheetId: string | null = null
   private logSpreadsheet: GoogleAppsScript.Spreadsheet.Spreadsheet | null = null
   private logSheet: GoogleAppsScript.Spreadsheet.Sheet | null = null
-  constructor(public envContext: EnvContext) {
-    super(envContext)
-    this.spreadsheetApp = envContext.env.spreadsheetApp
-    this.driveApp = envContext.env.gdriveApp
-    this.cacheService = envContext.env.cacheService
+  constructor(public ctx: EnvContext) {
+    super(ctx)
+    this.spreadsheetApp = ctx.env.spreadsheetApp
+    this.driveApp = ctx.env.gdriveApp
+    this.cacheService = ctx.env.cacheService
     this.logSheetId = this.cacheService.getScriptCache().get("logSheetId")
   }
 
