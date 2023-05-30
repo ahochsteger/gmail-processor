@@ -107,114 +107,98 @@ export class PatternUtil {
     return m
   }
 
-  public static mapAdd(m: SubstMap, key: string, value: unknown): SubstMap {
-    if (value !== undefined) {
-      m.set(key, value)
-    }
-    return m
-  }
-
   public static getSubstitutionMapFromThread(
     thread: GoogleAppsScript.Gmail.GmailThread,
+    m: SubstMap = new SubstMap(),
   ): SubstMap {
-    let m = new SubstMap()
-    m = this.mapAdd(
-      m,
-      "thread.firstMessageSubject",
-      thread.getFirstMessageSubject(),
-    )
-    m = this.mapAdd(m, "thread.hasStarredMessages", thread.hasStarredMessages())
-    m = this.mapAdd(m, "thread.id", thread.getId())
-    m = this.mapAdd(m, "thread.isImportant", thread.isImportant())
-    m = this.mapAdd(m, "thread.isInChats", thread.isInChats())
-    m = this.mapAdd(m, "thread.isInInbox", thread.isInInbox())
-    m = this.mapAdd(m, "thread.isInPriorityInbox", thread.isInPriorityInbox())
-    m = this.mapAdd(m, "thread.isInSpam", thread.isInSpam())
-    m = this.mapAdd(m, "thread.isInTrash", thread.isInTrash())
-    m = this.mapAdd(m, "thread.isUnread", thread.isUnread())
+    m.set("thread.firstMessageSubject", thread.getFirstMessageSubject())
+    m.set("thread.hasStarredMessages", thread.hasStarredMessages())
+    m.set("thread.id", thread.getId())
+    m.set("thread.isImportant", thread.isImportant())
+    m.set("thread.isInChats", thread.isInChats())
+    m.set("thread.isInInbox", thread.isInInbox())
+    m.set("thread.isInPriorityInbox", thread.isInPriorityInbox())
+    m.set("thread.isInSpam", thread.isInSpam())
+    m.set("thread.isInTrash", thread.isInTrash())
+    m.set("thread.isUnread", thread.isUnread())
     const labels: GoogleAppsScript.Gmail.GmailLabel[] = thread.getLabels()
       ? thread.getLabels()
       : []
     const labelNames: string[] = []
     labels.forEach((l) => labelNames.push(l.getName()))
-    m = this.mapAdd(m, "thread.labels", labelNames.join(","))
-    m = this.mapAdd(m, "thread.lastMessageDate", thread.getLastMessageDate())
-    m = this.mapAdd(m, "thread.messageCount", thread.getMessageCount())
-    m = this.mapAdd(m, "thread.permalink", thread.getPermalink())
+    m.set("thread.labels", labelNames.join(","))
+    m.set("thread.lastMessageDate", thread.getLastMessageDate())
+    m.set("thread.messageCount", thread.getMessageCount())
+    m.set("thread.permalink", thread.getPermalink())
     return m
   }
 
   public static getSubstitutionMapFromMessage(
     message: GoogleAppsScript.Gmail.GmailMessage,
+    m: SubstMap = new SubstMap(),
   ): SubstMap {
-    let m = new SubstMap()
-    m = this.mapAdd(m, "message.bcc", message.getBcc())
-    m = this.mapAdd(m, "message.cc", message.getCc())
-    m = this.mapAdd(m, "message.date", message.getDate())
-    m = this.mapAdd(m, "message.from", message.getFrom())
-    m = this.mapAdd(m, "message.from.domain", message.getFrom().split("@")[1])
-    m = this.mapAdd(m, "message.id", message.getId())
-    m = this.mapAdd(m, "message.isDraft", message.isDraft())
-    m = this.mapAdd(m, "message.isInChats", message.isInChats())
-    m = this.mapAdd(m, "message.isInInbox", message.isInInbox())
-    m = this.mapAdd(m, "message.isInPriorityInbox", message.isInPriorityInbox())
-    m = this.mapAdd(m, "message.isInTrash", message.isInTrash())
-    m = this.mapAdd(m, "message.isStarred", message.isStarred())
-    m = this.mapAdd(m, "message.isUnread", message.isUnread())
-    m = this.mapAdd(m, "message.replyTo", message.getReplyTo())
-    m = this.mapAdd(m, "message.subject", message.getSubject())
-    m = this.mapAdd(m, "message.to", message.getTo())
+    m.set("message.bcc", message.getBcc())
+    m.set("message.cc", message.getCc())
+    m.set("message.date", message.getDate())
+    m.set("message.from", message.getFrom())
+    m.set("message.from.domain", message.getFrom().split("@")[1])
+    m.set("message.id", message.getId())
+    m.set("message.isDraft", message.isDraft())
+    m.set("message.isInChats", message.isInChats())
+    m.set("message.isInInbox", message.isInInbox())
+    m.set("message.isInPriorityInbox", message.isInPriorityInbox())
+    m.set("message.isInTrash", message.isInTrash())
+    m.set("message.isStarred", message.isStarred())
+    m.set("message.isUnread", message.isUnread())
+    m.set("message.replyTo", message.getReplyTo())
+    m.set("message.subject", message.getSubject())
+    m.set("message.to", message.getTo())
     return m
   }
 
   public static getSubstitutionMapFromAttachment(
     attachment: GoogleAppsScript.Gmail.GmailAttachment,
+    m: SubstMap = new SubstMap(),
   ): SubstMap {
-    let m = new SubstMap()
-    m = this.mapAdd(m, "attachment.contentType", attachment.getContentType())
-    m = this.mapAdd(m, "attachment.hash", attachment.getHash())
-    m = this.mapAdd(m, "attachment.isGoogleType", attachment.isGoogleType())
-    m = this.mapAdd(m, "attachment.name", attachment.getName())
-    m = this.mapAdd(m, "attachment.size", attachment.getSize())
+    m.set("attachment.contentType", attachment.getContentType())
+    m.set("attachment.hash", attachment.getHash())
+    m.set("attachment.isGoogleType", attachment.isGoogleType())
+    m.set("attachment.name", attachment.getName())
+    m.set("attachment.size", attachment.getSize())
     return m
   }
 
   public static buildSubstitutionMapFromProcessingContext(
     ctx: ProcessingContext,
-    substMap = new SubstMap(),
+    m = new SubstMap(),
   ) {
-    substMap.set("env.runMode", ctx.env.runMode)
-    substMap.set("env.timezone", ctx.env.timezone)
-    substMap.set("timer.now", new Date())
-    substMap.set("timer.runTime", ctx.proc.timer.getRunTime())
-    substMap.set("timer.startTime", ctx.proc.timer.getStartTime())
-    return substMap
+    m.set("env.runMode", ctx.env.runMode)
+    m.set("env.timezone", ctx.env.timezone)
+    m.set("timer.now", new Date())
+    m.set("timer.runTime", ctx.proc.timer.getRunTime())
+    m.set("timer.startTime", ctx.proc.timer.getStartTime())
+    return m
   }
 
   public static buildSubstitutionMapFromThreadContext(
     ctx: ThreadContext,
-    substMap = new SubstMap(),
+    m = new SubstMap(),
   ) {
-    substMap = PatternUtil.mergeMaps(
-      substMap,
-      this.getSubstitutionMapFromThread(ctx.thread.object),
-    )
-    substMap.set("thread.index", ctx.thread.index)
-    substMap.set("threadConfig.index", ctx.thread.configIndex)
-    return substMap
+    m = this.buildSubstitutionMapFromProcessingContext(ctx, m)
+    ;(m = this.getSubstitutionMapFromThread(ctx.thread.object, m)),
+      m.set("thread.index", ctx.thread.index)
+    m.set("threadConfig.index", ctx.thread.configIndex)
+    return m
   }
 
   public static buildSubstitutionMapFromMessageContext(
     ctx: MessageContext,
-    substMap = new SubstMap(),
+    m = new SubstMap(),
   ) {
-    const threadContext: ThreadContext = {
-      ...ctx,
-    }
-    let m = this.buildSubstitutionMapFromThreadContext(threadContext, substMap)
+    m = this.buildSubstitutionMapFromThreadContext(ctx, m)
     // Message data
     const message = ctx.message.object
-    m = PatternUtil.mergeMaps(m, this.getSubstitutionMapFromMessage(message))
+    m = this.getSubstitutionMapFromMessage(message, m)
     m.set("message.index", ctx.message.index)
     m.set("messageConfig.index", ctx.message.configIndex)
     const messageConfig = ctx.message.config
@@ -244,13 +228,7 @@ export class PatternUtil {
     ctx: AttachmentContext,
     substMap = new SubstMap(),
   ): SubstMap {
-    const messageContext: MessageContext = {
-      ...ctx,
-    }
-    let m = this.buildSubstitutionMapFromMessageContext(
-      messageContext,
-      substMap,
-    )
+    let m = this.buildSubstitutionMapFromMessageContext(ctx, substMap)
     // Attachment data
     // Substitute values for a specific attachment, if provided
     const attachment = ctx.attachment.object
@@ -308,28 +286,21 @@ export class PatternUtil {
   public static substitute(
     ctx: ProcessingContext | ThreadContext | MessageContext | AttachmentContext,
     pattern: string,
-    substMap = new SubstMap(),
+    m = new SubstMap(),
   ) {
-    let m: SubstMap
     if ((ctx as AttachmentContext).attachment) {
       m = this.buildSubstitutionMapFromAttachmentContext(
         ctx as AttachmentContext,
-        substMap,
+        m,
       )
     } else if ((ctx as MessageContext).message) {
-      m = this.buildSubstitutionMapFromMessageContext(
-        ctx as MessageContext,
-        substMap,
-      )
+      m = this.buildSubstitutionMapFromMessageContext(ctx as MessageContext, m)
     } else if ((ctx as ThreadContext).thread) {
-      m = this.buildSubstitutionMapFromThreadContext(
-        ctx as ThreadContext,
-        substMap,
-      )
+      m = this.buildSubstitutionMapFromThreadContext(ctx as ThreadContext, m)
     } else {
       m = this.buildSubstitutionMapFromProcessingContext(
         ctx as ProcessingContext,
-        substMap,
+        m,
       )
     }
     return this.substitutePatternFromMap(pattern, m)

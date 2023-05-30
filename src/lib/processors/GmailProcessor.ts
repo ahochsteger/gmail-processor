@@ -1,5 +1,10 @@
 import { PartialDeep } from "type-fest"
-import { EnvContext, ProcessingContext, ProcessingResult } from "../Context"
+import {
+  EnvContext,
+  ProcessingContext,
+  ProcessingResult,
+  newProcessingResult,
+} from "../Context"
 import { ActionProvider, ActionRegistry } from "../actions/ActionRegistry"
 import { AttachmentActions } from "../actions/AttachmentActions"
 import { MessageActions } from "../actions/MessageActions"
@@ -42,6 +47,7 @@ export class GmailProcessor {
     const result = ThreadProcessor.processConfigs(
       processingContext,
       config.threads,
+      newProcessingResult(),
     )
     ctx.log.info("Processing of GMail2GDrive config finished.")
     return result

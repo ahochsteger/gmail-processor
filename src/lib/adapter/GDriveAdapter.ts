@@ -64,7 +64,7 @@ export class GDriveAdapter extends BaseAdapter {
     const folderpath = this.getFolderPathFromLocation(location)
     const filename = this.getFilenameFromLocation(location)
     const folder = this.getOrCreateFolderFromPath(folderpath)
-    const existingFiles = this.getFilesFromPath(location)
+    const existingFiles = folder.getFilesByName(filename)
 
     // Handle conflicts with existing files:
     if (
@@ -155,14 +155,6 @@ export class GDriveAdapter extends BaseAdapter {
       )
     }
     return folder
-  }
-
-  private getFilesFromPath(location: string) {
-    const folderPath = this.getFolderPathFromLocation(location)
-    const filename = this.getFilenameFromLocation(location)
-    const folder = this.getFolderFromPath(folderPath)
-    const fileIterator = folder.getFilesByName(filename)
-    return fileIterator
   }
 
   /**

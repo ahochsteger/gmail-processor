@@ -1,12 +1,14 @@
-import { MockFactory } from "../../test/mocks/MockFactory"
+import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
 import { RunMode } from "../Context"
 import { newConfig } from "../config/Config"
 import { jsonToMessageConfig } from "../config/MessageConfig"
 import { PatternUtil } from "./PatternUtil"
 
-function getMocks(runMode = RunMode.DANGEROUS, config = newConfig()) {
-  return MockFactory.newMocks(config, runMode)
-}
+let mocks: Mocks
+
+beforeEach(() => {
+  mocks = MockFactory.newMocks(newConfig(), RunMode.DANGEROUS)
+})
 
 describe("Pattern Substitution", () => {
   it("should handle a thread", () => {
@@ -226,8 +228,7 @@ describe("Substitutions", () => {
 })
 describe("Handle single messages", () => {
   it("should handle a thread with one message and no attachments", () => {
-    const { threadContext } = getMocks()
-    expect(PatternUtil.substitute(threadContext, "")).toBe("")
+    expect(PatternUtil.substitute(mocks.threadContext, "")).toBe("")
   })
   it("should handle a thread with one message and one attachment", () => {
     expect(

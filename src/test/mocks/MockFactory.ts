@@ -37,6 +37,7 @@ import { Timer } from "../../lib/utils/Timer"
 import { RequiredDeep } from "../../lib/utils/UtilityTypes"
 
 export class Mocks {
+  // TODO split folder, file, iterator, ... into different purpose objects
   public attachmentContext = mock<AttachmentContext>()
   public attachment = mock<GoogleAppsScript.Gmail.GmailAttachment>()
   public blob = mock<GoogleAppsScript.Base.Blob>()
@@ -103,6 +104,8 @@ export class MockFactory {
     mocks.folderIterator.hasNext.mockReturnValue(false)
     mocks.folderIterator.next.mockReturnValue(mocks.folder)
     mocks.fileIterator.hasNext.mockReturnValue(false)
+    mocks.fileIterator.hasNext.mockReturnValueOnce(true)
+    mocks.fileIterator.next.mockReturnValue(mocks.file)
     mocks.folder.getFilesByName.mockReturnValue(mocks.fileIterator)
     mocks.folder.getFolders.mockReturnValue(mocks.folderIterator)
     mocks.folder.getFoldersByName.mockReturnValue(mocks.folderIterator)
@@ -111,6 +114,7 @@ export class MockFactory {
     mocks.rootFolder.getFolders.mockReturnValue(mocks.folderIterator)
     mocks.rootFolder.getFoldersByName.mockReturnValue(mocks.folderIterator)
     mocks.rootFolder.createFile.mockReturnValue(mocks.file)
+    mocks.file.getId.mockReturnValue("some-id")
     mocks.gdriveApp.getRootFolder.mockReturnValue(mocks.rootFolder)
     mocks.gdriveApp.getFolderById.mockReturnValue(mocks.rootFolder)
     mocks.gdriveApp.getFoldersByName.mockReturnValue(mocks.folderIterator)
