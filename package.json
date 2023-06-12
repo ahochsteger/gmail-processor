@@ -29,7 +29,7 @@
     "pre-commit": "npm run clean && npm run update && npm run build && npm run lint:fix && npm run lint && npm run test",
     "test": "jest --reporters=summary --silent",
     "test:verbose": "jest --detectOpenHandles --reporters='default' --runInBand --verbose",
-    "update": "npm run update:schema",
+    "update": "concurrently 'npm run update:examples' 'npm run update:schema'",
     "update:examples": "scripts/update-examples.sh",
     "update:schema": "scripts/update-schema.sh"
   },

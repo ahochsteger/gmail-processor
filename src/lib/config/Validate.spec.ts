@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { MockFactory } from "../../test/mocks/MockFactory"
+import { ConfigMocks } from "../../test/mocks/ConfigMocks"
 import { validateConfig } from "./Validate"
 
 // TODO: Add partial schema validation
@@ -15,21 +15,21 @@ describe("validate()", () => {
   it("should validate all MockFactory config JSON without errors", () => {
     validateConfig({
       global: {
-        thread: { actions: [MockFactory.newDefaultThreadActionConfigJson()] },
+        thread: { actions: [ConfigMocks.newDefaultThreadActionConfigJson()] },
       },
     })
     expect(validateConfig.errors).toBeNull()
     validateConfig({
-      attachments: [MockFactory.newDefaultAttachmentConfigJson()],
+      attachments: [ConfigMocks.newDefaultAttachmentConfigJson()],
     })
     expect(validateConfig.errors).toBeNull()
-    validateConfig(MockFactory.newDefaultConfigJson())
+    validateConfig(ConfigMocks.newDefaultConfigJson())
     expect(validateConfig.errors).toBeNull()
-    validateConfig({ messages: [MockFactory.newDefaultMessageConfigJson()] })
+    validateConfig({ messages: [ConfigMocks.newDefaultMessageConfigJson()] })
     expect(validateConfig.errors).toBeNull()
-    validateConfig({ settings: MockFactory.newDefaultSettingsConfigJson() })
+    validateConfig({ settings: ConfigMocks.newDefaultSettingsConfigJson() })
     expect(validateConfig.errors).toBeNull()
-    validateConfig({ threads: [MockFactory.newDefaultThreadConfigJson()] })
+    validateConfig({ threads: [ConfigMocks.newDefaultThreadConfigJson()] })
     expect(validateConfig.errors).toBeNull()
   })
   it("should report additional properties", () => {

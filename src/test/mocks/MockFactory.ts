@@ -1,5 +1,4 @@
-import { MockProxy, mock } from "jest-mock-extended"
-import { PartialDeep } from "type-fest"
+import { MockProxy, anyString, matches, mock } from "jest-mock-extended"
 import {
   AttachmentContext,
   EnvContext,
@@ -8,713 +7,104 @@ import {
   RunMode,
   ThreadContext,
 } from "../../lib/Context"
-import { ActionRegistry } from "../../lib/actions/ActionRegistry"
-import { GDriveAdapter } from "../../lib/adapter/GDriveAdapter"
-import { GmailAdapter } from "../../lib/adapter/GmailAdapter"
-import { SpreadsheetAdapter } from "../../lib/adapter/SpreadsheetAdapter"
-import {
-  AttachmentActionConfig,
-  MessageActionConfig,
-  ThreadActionConfig,
-} from "../../lib/config/ActionConfig"
-import {
-  AttachmentConfig,
-  newAttachmentConfig,
-} from "../../lib/config/AttachmentConfig"
-import {
-  Config,
-  RequiredConfig,
-  jsonToConfig,
-  newConfig,
-} from "../../lib/config/Config"
-import { MessageConfig, newMessageConfig } from "../../lib/config/MessageConfig"
-import { MessageFlag } from "../../lib/config/MessageFlag"
-import { SettingsConfig } from "../../lib/config/SettingsConfig"
-import { ThreadConfig, jsonToThreadConfig } from "../../lib/config/ThreadConfig"
-import { V1Config } from "../../lib/config/v1/V1Config"
-import { Logger } from "../../lib/utils/Logger"
-import { Timer } from "../../lib/utils/Timer"
-import { RequiredDeep } from "../../lib/utils/UtilityTypes"
+import { SCRIPT_CACHE_LOGSHEET_ID_KEY } from "../../lib/adapter/SpreadsheetAdapter"
+import { RequiredConfig, newConfig } from "../../lib/config/Config"
+import { ContextMocks } from "./ContextMocks"
+import { GDriveMocks, LOGSHEET_FILE_ID } from "./GDriveMocks"
+import { GMailMocks } from "./GMailMocks"
+import { SpreadsheetMocks } from "./SpreadsheetMocks"
 
-export class Mocks {
-  // TODO: split folder, file, iterator, ... into different purpose objects
+export class EnvMocks {
   // TODO: split large mock factory into different classes
-  public attachmentContext = mock<AttachmentContext>()
-  public attachment = mock<GoogleAppsScript.Gmail.GmailAttachment>()
-  public blob = mock<GoogleAppsScript.Base.Blob>()
-  public cache = mock<GoogleAppsScript.Cache.Cache>()
-  public cacheService = mock<GoogleAppsScript.Cache.CacheService>()
-  public envContext = mock<EnvContext>()
-  public fileIterator = mock<GoogleAppsScript.Drive.FileIterator>()
-  public file = mock<GoogleAppsScript.Drive.File>()
-  public folderIterator = mock<GoogleAppsScript.Drive.FolderIterator>()
-  public folder = mock<GoogleAppsScript.Drive.Folder>()
-  public rootFolder = mock<GoogleAppsScript.Drive.Folder>()
-  public gdriveApp = mock<GoogleAppsScript.Drive.DriveApp>()
-  public gmailApp = mock<GoogleAppsScript.Gmail.GmailApp>()
-  public messageContext = mock<MessageContext>()
-  public message = mock<GoogleAppsScript.Gmail.GmailMessage>()
-  public processingContext = mock<ProcessingContext>()
-  public spreadsheetApp = mock<GoogleAppsScript.Spreadsheet.SpreadsheetApp>()
-  public logSheetRange = mock<GoogleAppsScript.Spreadsheet.Range>()
-  public logSheet = mock<GoogleAppsScript.Spreadsheet.Sheet>()
-  public logSpreadsheet = mock<GoogleAppsScript.Spreadsheet.Spreadsheet>()
-  public logSpreadsheetFile = mock<GoogleAppsScript.Drive.File>()
-  public threadContext = mock<ThreadContext>()
-  public thread = mock<GoogleAppsScript.Gmail.GmailThread>()
-  public utilities = mock<GoogleAppsScript.Utilities.Utilities>()
+  // TODO: Decide if own classes should really be mocked too
+  public attachment: MockProxy<GoogleAppsScript.Gmail.GmailAttachment> =
+    mock<GoogleAppsScript.Gmail.GmailAttachment>()
+  public blob: MockProxy<GoogleAppsScript.Base.Blob> =
+    mock<GoogleAppsScript.Base.Blob>()
+  public cache: MockProxy<GoogleAppsScript.Cache.Cache> =
+    mock<GoogleAppsScript.Cache.Cache>()
+  public cacheService: MockProxy<GoogleAppsScript.Cache.CacheService> =
+    mock<GoogleAppsScript.Cache.CacheService>()
+  public existingFile: MockProxy<GoogleAppsScript.Drive.File> =
+    mock<GoogleAppsScript.Drive.File>()
+  public newFile: MockProxy<GoogleAppsScript.Drive.File> =
+    mock<GoogleAppsScript.Drive.File>()
+  public existingFolder: MockProxy<GoogleAppsScript.Drive.Folder> =
+    mock<GoogleAppsScript.Drive.Folder>()
+  public newFolder: MockProxy<GoogleAppsScript.Drive.Folder> =
+    mock<GoogleAppsScript.Drive.Folder>()
+  public rootFolder: MockProxy<GoogleAppsScript.Drive.Folder> =
+    mock<GoogleAppsScript.Drive.Folder>()
+  public gdriveApp: MockProxy<GoogleAppsScript.Drive.DriveApp> =
+    mock<GoogleAppsScript.Drive.DriveApp>()
+  public gmailApp: MockProxy<GoogleAppsScript.Gmail.GmailApp> =
+    mock<GoogleAppsScript.Gmail.GmailApp>()
+  public message: MockProxy<GoogleAppsScript.Gmail.GmailMessage> =
+    mock<GoogleAppsScript.Gmail.GmailMessage>()
+  public spreadsheetApp: MockProxy<GoogleAppsScript.Spreadsheet.SpreadsheetApp> =
+    mock<GoogleAppsScript.Spreadsheet.SpreadsheetApp>()
+  public logSheetRange: MockProxy<GoogleAppsScript.Spreadsheet.Range> =
+    mock<GoogleAppsScript.Spreadsheet.Range>()
+  public logSheet: MockProxy<GoogleAppsScript.Spreadsheet.Sheet> =
+    mock<GoogleAppsScript.Spreadsheet.Sheet>()
+  public logSpreadsheet: MockProxy<GoogleAppsScript.Spreadsheet.Spreadsheet> =
+    mock<GoogleAppsScript.Spreadsheet.Spreadsheet>()
+  public logSpreadsheetFile: MockProxy<GoogleAppsScript.Drive.File> =
+    mock<GoogleAppsScript.Drive.File>()
+  public thread: MockProxy<GoogleAppsScript.Gmail.GmailThread> =
+    mock<GoogleAppsScript.Gmail.GmailThread>()
+  public utilities: MockProxy<GoogleAppsScript.Utilities.Utilities> =
+    mock<GoogleAppsScript.Utilities.Utilities>()
+}
+export class Mocks extends EnvMocks {
+  public envContext: EnvContext
+  public processingContext: ProcessingContext
+  public threadContext: ThreadContext
+  public messageContext: MessageContext
+  public attachmentContext: AttachmentContext
+  constructor(config: RequiredConfig, runMode: RunMode = RunMode.DANGEROUS) {
+    super()
+    // TODO: Move to a better location
+    this.cache.get.calledWith(anyString()).mockReturnValue(null)
+    this.cache.get
+      .calledWith(matches((v) => v === SCRIPT_CACHE_LOGSHEET_ID_KEY))
+      .mockReturnValue(LOGSHEET_FILE_ID)
+    this.cacheService.getScriptCache.mockReturnValue(this.cache)
+    this.blob.getAs.mockReturnValue(this.blob)
+    this.blob.getDataAsString.mockReturnValue("PDF-Contents")
+    this.utilities.newBlob.mockReturnValue(this.blob)
+
+    GDriveMocks.setupAllMocks(this)
+    GMailMocks.setupAllMocks(this)
+    SpreadsheetMocks.setupAllMocks(this)
+
+    // ContextMocks.setupAllMocks(mocks, runMode, config)
+    this.envContext = ContextMocks.newEnvContextMock(this, runMode)
+    this.processingContext = ContextMocks.newProcessingContextMock(
+      this.envContext,
+      config,
+    )
+    this.threadContext = ContextMocks.newThreadContextMock(
+      this.processingContext,
+      this.thread,
+    )
+    this.messageContext = ContextMocks.newMessageContextMock(
+      this.threadContext,
+      this.message,
+    )
+    this.attachmentContext = ContextMocks.newAttachmentContextMock(
+      this.messageContext,
+      this.attachment,
+    )
+  }
 }
 
 export class MockFactory {
   public static newMocks(
     config = newConfig(),
     runMode = RunMode.DANGEROUS,
+    mocks = new Mocks(config, runMode),
   ): Mocks {
-    const mocks = new Mocks()
-    mocks.thread = MockFactory.newThreadMock()
-    mocks.message = MockFactory.newMessageMock()
-    mocks.attachment = MockFactory.newAttachmentMock()
-
-    mocks.envContext = MockFactory.newEnvContextMock(runMode, mocks)
-    mocks.processingContext = MockFactory.newProcessingContextMock(
-      mocks.envContext,
-      config,
-    )
-    mocks.threadContext = MockFactory.newThreadContextMock(
-      mocks.processingContext,
-      mocks.thread,
-    )
-    mocks.messageContext = MockFactory.newMessageContextMock(
-      mocks.threadContext,
-      mocks.message,
-    )
-    mocks.attachmentContext = MockFactory.newAttachmentContextMock(
-      mocks.messageContext,
-      mocks.attachment,
-    )
-
     return mocks
   }
-
-  public static newEnvContextMock(
-    runMode = RunMode.DANGEROUS,
-    mocks = this.newMocks(),
-  ) {
-    // Setup mock behavior:
-    MockFactory.setupMocks(mocks)
-    const envContext: EnvContext = {
-      env: {
-        gmailApp: mocks.gmailApp,
-        gdriveApp: mocks.gdriveApp,
-        spreadsheetApp: mocks.spreadsheetApp,
-        cacheService: mocks.cacheService,
-        utilities: mocks.utilities,
-        runMode,
-      },
-      log: new Logger(),
-    }
-    return envContext
-  }
-
-  public static setupMocks(mocks: Mocks) {
-    mocks.folderIterator.hasNext.mockReturnValueOnce(true)
-    mocks.folderIterator.hasNext.mockReturnValue(false)
-    mocks.folderIterator.next.mockReturnValue(mocks.folder)
-    mocks.fileIterator.hasNext.mockReturnValue(false)
-    mocks.fileIterator.hasNext.mockReturnValueOnce(true)
-    mocks.fileIterator.next.mockReturnValue(mocks.file)
-    mocks.folder.getFilesByName.mockReturnValue(mocks.fileIterator)
-    mocks.folder.getFolders.mockReturnValue(mocks.folderIterator)
-    mocks.folder.getFoldersByName.mockReturnValue(mocks.folderIterator)
-    mocks.folder.createFile.mockReturnValue(mocks.file)
-    mocks.rootFolder.getFilesByName.mockReturnValue(mocks.fileIterator)
-    mocks.rootFolder.getFolders.mockReturnValue(mocks.folderIterator)
-    mocks.rootFolder.getFoldersByName.mockReturnValue(mocks.folderIterator)
-    mocks.rootFolder.createFile.mockReturnValue(mocks.file)
-    mocks.file.getId.mockReturnValue("some-id")
-    mocks.gdriveApp.getRootFolder.mockReturnValue(mocks.rootFolder)
-    mocks.gdriveApp.getFolderById.mockReturnValue(mocks.rootFolder)
-    mocks.gdriveApp.getFoldersByName.mockReturnValue(mocks.folderIterator)
-    mocks.cache.get.mockReturnValue("some-id")
-    mocks.cacheService.getScriptCache.mockReturnValue(mocks.cache)
-    mocks.blob.getAs.mockReturnValue(mocks.blob)
-    mocks.blob.getDataAsString.mockReturnValue("PDF-Contents")
-    mocks.utilities.newBlob.mockReturnValue(mocks.blob)
-    mocks.gmailApp.search.mockReturnValue([mocks.thread])
-
-    // SpreadsheetAdapter Mocks:
-    mocks.logSheet.getLastRow.mockReturnValue(3)
-    mocks.logSheet.getRange.mockReturnValue(mocks.logSheetRange)
-    mocks.logSheetRange.setValues.mockReturnValue(mocks.logSheetRange)
-    mocks.logSpreadsheet.getId.mockReturnValue("some-spreadsheet-id")
-    mocks.logSpreadsheet.getSheets.mockReturnValue([mocks.logSheet])
-    mocks.spreadsheetApp.create.mockReturnValue(mocks.logSpreadsheet)
-    mocks.spreadsheetApp.openById.mockReturnValue(mocks.logSpreadsheet)
-    mocks.gdriveApp.getFileById.mockReturnValue(mocks.logSpreadsheetFile)
-    mocks.logSpreadsheetFile.moveTo.mockReturnValue(mocks.logSpreadsheetFile)
-  }
-
-  public static newDefaultSettingsConfigJson(): PartialDeep<SettingsConfig> {
-    return {
-      maxBatchSize: 100,
-      maxRuntime: 280,
-      markProcessedLabel: "to-gdrive/processed",
-      sleepTimeThreads: 100,
-      sleepTimeMessages: 10,
-      sleepTimeAttachments: 1,
-      timezone: "UTC",
-    }
-  }
-
-  public static newDefaultThreadActionConfigJson(): PartialDeep<ThreadActionConfig> {
-    return {
-      args: {
-        folderType: "path",
-        folder: "Folder2/Subfolder2/${message.subject.match.1}",
-        filename: "${message.subject} - ${match.file.1}.jpg",
-        onExists: "replace",
-      },
-      name: "thread.storeAsPdfToGDrive",
-      description: "Default action config",
-    }
-  }
-
-  public static newDefaultMessageActionConfigJson(): PartialDeep<MessageActionConfig> {
-    return {
-      args: {
-        folderType: "path",
-        folder: "Folder2/Subfolder2/${message.subject.match.1}",
-        filename: "${message.subject} - ${match.file.1}.jpg",
-        onExists: "replace",
-      },
-      name: "message.storeAsPdfToGDrive",
-      description: "Default action config",
-    }
-  }
-
-  public static newDefaultAttachmentActionConfigJson(): PartialDeep<AttachmentActionConfig> {
-    return {
-      args: {
-        folderType: "path",
-        folder: "Folder2/Subfolder2/${message.subject.match.1}",
-        filename: "${message.subject} - ${match.file.1}.jpg",
-        onExists: "replace",
-      },
-      name: "attachment.storeToGDrive",
-      description: "Default action config",
-    }
-  }
-
-  public static newDefaultAttachmentConfigJson(
-    includeCommands = false,
-  ): PartialDeep<AttachmentConfig> {
-    return {
-      name: "default-attachment-config",
-      description: "Default attachment config",
-      actions: includeCommands
-        ? [
-            this.newDefaultAttachmentActionConfigJson() as AttachmentActionConfig,
-          ]
-        : [],
-      match: {
-        name: "Image-([0-9]+)\\.jpg",
-        contentTypeRegex: "image/.+",
-        includeAttachments: true,
-        includeInlineImages: true,
-        largerThan: -1,
-        smallerThan: -1,
-      },
-    }
-  }
-
-  public static newDefaultMessageConfigJson(
-    includeCommands = false,
-    includeAttachmentConfigs = false,
-  ): PartialDeep<MessageConfig> {
-    return {
-      name: "default-message-config",
-      description: "Default message config",
-      match: {
-        from: "(.+)@example.com",
-        subject: "Prefix - (.*) - Suffix(.*)",
-        to: "my\\.address\\+(.+)@gmail.com",
-        is: [MessageFlag.UNREAD],
-        newerThan: "",
-        olderThan: "",
-      },
-      actions: includeCommands
-        ? [this.newDefaultMessageActionConfigJson() as MessageActionConfig]
-        : [],
-      attachments: includeAttachmentConfigs
-        ? [this.newDefaultAttachmentConfigJson()]
-        : [],
-    }
-  }
-
-  public static newDefaultThreadConfigJson(
-    includeCommands = false,
-    includeMessages = false,
-  ): PartialDeep<ThreadConfig> {
-    return {
-      name: "default-thread-config",
-      description: "A sample thread config",
-      actions: includeCommands
-        ? [this.newDefaultThreadActionConfigJson() as ThreadActionConfig]
-        : [],
-      messages: includeMessages ? [this.newDefaultMessageConfigJson()] : [],
-      match: {
-        query: "has:attachment from:example@example.com",
-        maxMessageCount: -1,
-        minMessageCount: -1,
-        newerThan: "",
-      },
-      attachments: [],
-    }
-  }
-
-  public static newComplexThreadConfigList(): PartialDeep<ThreadConfig>[] {
-    return [
-      {
-        actions: [
-          {
-            name: "thread.storeAsPdfToGDrive",
-            args: {
-              location: "Folder1/Subfolder1/${thread.firstMessageSubject}",
-            },
-          },
-        ],
-        description:
-          "Example that stores all attachments of all found threads to a certain GDrive folder",
-        match: {
-          query: "has:attachment from:example@example.com",
-        },
-      },
-      {
-        description:
-          "Example that stores all attachments of matching messages to a certain GDrive folder",
-        match: {
-          query: "has:attachment from:example@example.com",
-        },
-        messages: [
-          {
-            actions: [
-              {
-                name: "message.storeAsPdfToGDrive",
-                args: { location: "Folder1/Subfolder1/${message.subject}.pdf" },
-              },
-            ],
-            match: {
-              from: "(.+)@example.com",
-              subject: "Prefix - (.*) - Suffix(.*)",
-              to: "my\\.address\\+(.+)@gmail.com",
-            },
-          },
-        ],
-      },
-      {
-        match: {
-          query: "has:attachment from:example4@example.com",
-        },
-        messages: [
-          {
-            match: {
-              from: "(.+)@example.com",
-              subject: "Prefix - (.*) - Suffix(.*)",
-              to: "my\\.address\\+(.+)@gmail.com",
-              is: [MessageFlag.READ],
-              // TODO: Find out how to match only read/unread or starred/unstarred messages?
-            },
-            actions: [
-              // TODO: Decide if only actions of a certain type (thread, message, attachment) are allowed?
-              // Pro: More flexible (e.g. forward message, if a certain attachment rule matches)
-              { name: "message.markRead" },
-            ],
-            attachments: [
-              {
-                match: { name: "Image-([0-9]+)\\.jpg" },
-                actions: [
-                  {
-                    name: "attachment.storeToGDrive",
-                    args: {
-                      location:
-                        "Folder2/Subfolder2/${message.subject.match.1}/${email.subject} - ${match.att.1}.jpg",
-                      conflictStrategy: "replace",
-                    },
-                  },
-                ],
-              },
-              {
-                match: { name: ".+\\..+" },
-                actions: [
-                  {
-                    name: "attachment.storeToGDrive",
-                    args: {
-                      location:
-                        "Folder3/Subfolder3/${att.basename}-${date:yyyy-MM-dd}.${att.ext}",
-                      conflictStrategy: "skip",
-                    },
-                  },
-                ],
-              },
-            ],
-          },
-        ],
-      },
-    ]
-  }
-
-  public static newDefaultConfigJson(): PartialDeep<Config> {
-    return {
-      settings: this.newDefaultSettingsConfigJson(),
-      threads: this.newComplexThreadConfigList(),
-    }
-  }
-
-  public static newDefaultV1ConfigJson(): PartialDeep<V1Config> {
-    return {
-      globalFilter: "has:attachment -in:trash -in:drafts -in:spam",
-      processedLabel: "gmail2gdrive/client-test",
-      sleepTime: 100,
-      maxRuntime: 280,
-      newerThan: "1d",
-      timezone: "UTC",
-      rules: [
-        {
-          filter: "to:my.name+scans@gmail.com",
-          folder: "'Scans'-yyyy-MM-dd",
-        },
-        {
-          filter: "from:example1@example.com",
-          folder: "'Examples/example1'",
-        },
-        {
-          filter: "from:example2@example.com",
-          folder: "'Examples/example2'",
-          filenameFromRegexp: ".*.pdf$",
-        },
-        {
-          filter: "(from:example3a@example.com OR from:example3b@example.com)",
-          folder: "'Examples/example3ab'",
-          filenameTo: "'file-'yyyy-MM-dd-'%s.txt'",
-          archive: true,
-        },
-        {
-          filter: "label:PDF",
-          saveThreadPDF: true,
-          folder: "PDF Emails",
-        },
-        {
-          filter: "from:example4@example.com",
-          folder: "'Examples/example4'",
-          filenameFrom: "file.txt",
-          filenameTo: "'file-'yyyy-MM-dd-'%s.txt'",
-        },
-      ],
-    }
-  }
-
-  public static newDefaultConfig(): RequiredConfig {
-    return jsonToConfig({
-      threads: this.newComplexThreadConfigList(),
-    })
-  }
-
-  public static newProcessingContextMock(
-    envContext = this.newEnvContextMock(),
-    config = newConfig() as RequiredConfig,
-  ): ProcessingContext {
-    return {
-      ...envContext,
-      proc: {
-        gdriveAdapter: new GDriveAdapter(envContext),
-        gmailAdapter: new GmailAdapter(envContext),
-        spreadsheetAdapter: new SpreadsheetAdapter(envContext),
-        config,
-        actionRegistry: new ActionRegistry(),
-        timer: new Timer(config.settings.maxRuntime),
-      },
-    }
-  }
-
-  public static newThreadContextMock(
-    processingContext = this.newProcessingContextMock(),
-    thread = this.newThreadMock(),
-  ): ThreadContext {
-    return {
-      ...processingContext,
-      thread: {
-        config: jsonToThreadConfig(this.newDefaultThreadConfigJson()),
-        object: thread,
-        configIndex: 0,
-        index: 0,
-      },
-    }
-  }
-
-  public static newMessageContextMock(
-    threadContext = this.newThreadContextMock(),
-    message = this.newMessageMock(),
-  ): MessageContext {
-    return {
-      ...threadContext,
-      message: {
-        config: newMessageConfig(),
-        object: message,
-        configIndex: 0,
-        index: 0,
-      },
-    }
-  }
-
-  public static newAttachmentContextMock(
-    messageContext = this.newMessageContextMock(),
-    attachment = this.newAttachmentMock(),
-  ): AttachmentContext {
-    return {
-      ...messageContext,
-      attachment: {
-        config: newAttachmentConfig(),
-        object: attachment,
-        configIndex: 0,
-        index: 0,
-      },
-    }
-  }
-
-  public static newThreadMock(
-    data: ThreadData = {},
-  ): MockProxy<GoogleAppsScript.Gmail.GmailThread> {
-    const threadData = MockFactory.getThreadSampleData(data)
-    threadData.messages =
-      threadData.messages !== undefined ? threadData.messages : []
-    const mockedGmailThread = mock<GoogleAppsScript.Gmail.GmailThread>()
-    mockedGmailThread.getFirstMessageSubject.mockReturnValue(
-      threadData.firstMessageSubject as string,
-    )
-    mockedGmailThread.hasStarredMessages.mockReturnValue(
-      threadData.hasStarredMessages as boolean,
-    )
-    const dataLabels: string[] =
-      threadData.labels !== undefined ? (threadData.labels as string[]) : []
-    const mockedLabels: GoogleAppsScript.Gmail.GmailLabel[] = []
-    dataLabels.forEach((l: string) => {
-      const mockedLabel = mock<GoogleAppsScript.Gmail.GmailLabel>()
-      mockedLabel.getName.mockReturnValue(l)
-      mockedLabels.push(mockedLabel)
-    })
-    mockedGmailThread.getId.mockReturnValue(threadData.id as string)
-    mockedGmailThread.isImportant.mockReturnValue(
-      threadData.isImportant as boolean,
-    )
-    mockedGmailThread.isInPriorityInbox.mockReturnValue(
-      threadData.isInPriorityInbox as boolean,
-    )
-    mockedGmailThread.getLabels.mockReturnValue(mockedLabels)
-    mockedGmailThread.getLastMessageDate.mockReturnValue(
-      threadData.lastMessageDate as Date,
-    )
-    mockedGmailThread.getMessageCount.mockReturnValue(
-      threadData.messageCount as number,
-    )
-    mockedGmailThread.getPermalink.mockReturnValue(
-      threadData.permalink as string,
-    )
-    mockedGmailThread.getMessages.mockReturnValue(
-      MockFactory.getMessages(threadData),
-    )
-    mockedGmailThread.markImportant.mockReturnValue(mockedGmailThread)
-    return mockedGmailThread
-  }
-
-  public static newMessageMock(
-    data1: MessageData = {},
-  ): MockProxy<GoogleAppsScript.Gmail.GmailMessage> {
-    const msgData = MockFactory.getMessageSampleData(data1)
-    msgData.attachments = msgData.attachments ? msgData.attachments : [] // Make sure attachments is defined
-    const mockedGmailMessage = mock<GoogleAppsScript.Gmail.GmailMessage>()
-    mockedGmailMessage.forward.mockReturnValue(mockedGmailMessage)
-    mockedGmailMessage.getAttachments.mockReturnValue(
-      MockFactory.getAttachments(msgData),
-    )
-    mockedGmailMessage.getBcc.mockReturnValue(msgData.bcc)
-    mockedGmailMessage.getCc.mockReturnValue(msgData.cc)
-    mockedGmailMessage.getDate.mockReturnValue(msgData.date)
-    mockedGmailMessage.getFrom.mockReturnValue(msgData.from)
-    mockedGmailMessage.getId.mockReturnValue(msgData.id)
-    mockedGmailMessage.getReplyTo.mockReturnValue(msgData.replyTo)
-    mockedGmailMessage.getSubject.mockReturnValue(msgData.subject)
-    mockedGmailMessage.getTo.mockReturnValue(msgData.to)
-    mockedGmailMessage.isStarred.mockReturnValue(msgData.isStarred)
-    mockedGmailMessage.isUnread.mockReturnValue(msgData.isUnread)
-    return mockedGmailMessage
-  }
-
-  public static newAttachmentMock(
-    data: AttachmentData = {},
-  ): MockProxy<GoogleAppsScript.Gmail.GmailAttachment> {
-    const attData = MockFactory.getAttachmentSampleData(data)
-    const mockedGmailAttachment = mock<GoogleAppsScript.Gmail.GmailAttachment>()
-    mockedGmailAttachment.getContentType.mockReturnValue(attData.contentType)
-    mockedGmailAttachment.getHash.mockReturnValue(attData.hash)
-    mockedGmailAttachment.getName.mockReturnValue(attData.name)
-    mockedGmailAttachment.getSize.mockReturnValue(attData.size)
-    mockedGmailAttachment.isGoogleType.mockReturnValue(
-      attData.isGoogleType as boolean,
-    )
-    mockedGmailAttachment.getDataAsString.mockReturnValue(
-      attData.content as string,
-    )
-    return mockedGmailAttachment
-  }
-
-  private static getMessages(data: {
-    messages: MessageData[]
-  }): GoogleAppsScript.Gmail.GmailMessage[] {
-    const dataMessages = data.messages !== undefined ? data.messages : []
-    const a: GoogleAppsScript.Gmail.GmailMessage[] = []
-    dataMessages.forEach((dm) => a.push(MockFactory.newMessageMock(dm)))
-    return a
-  }
-
-  private static getAttachments(data: {
-    attachments: AttachmentData[]
-  }): GoogleAppsScript.Gmail.GmailAttachment[] {
-    const a: GoogleAppsScript.Gmail.GmailAttachment[] = []
-    const dataAttachments =
-      data.attachments !== undefined ? data.attachments : []
-    dataAttachments.forEach((da) => a.push(MockFactory.newAttachmentMock(da)))
-    return a
-  }
-
-  private static lengthInUtf8Bytes(str: string) {
-    // See https://stackoverflow.com/questions/5515869/string-length-in-bytes-in-javascript/5515960#5515960
-    // Matches only the 10.. bytes that are non-initial characters in a multi-byte sequence.
-    const m = encodeURIComponent(str).match(/%[89ABab]/g)
-    return (str === undefined ? "" : str).length + (m ? m.length : 0)
-  }
-
-  private static getThreadSampleData(
-    data: ThreadData = {},
-  ): RequiredDeep<ThreadData> {
-    const dataMessages = data.messages
-    const sampleMessages = [
-      MockFactory.getMessageSampleData(
-        dataMessages && dataMessages.length > 0 ? dataMessages[0] : {},
-      ),
-      MockFactory.getMessageSampleData(
-        dataMessages && dataMessages.length > 1 ? dataMessages[1] : {},
-      ),
-    ]
-    const sampleData: RequiredDeep<ThreadData> = {
-      firstMessageSubject: sampleMessages[0].subject,
-      hasStarredMessages: false,
-      id: "threadId123",
-      isImportant: false,
-      isInPriorityInbox: false,
-      labels: [],
-      lastMessageDate: sampleMessages[sampleMessages.length - 1].date,
-      messageCount: sampleMessages.length,
-      permalink: "some-permalink-url",
-      messages: sampleMessages,
-    }
-    Object.assign(sampleData, data)
-    return sampleData
-  }
-
-  private static getMessageSampleData(
-    data: MessageData = {},
-  ): RequiredDeep<MessageData> {
-    const sampleAttachments: RequiredDeep<AttachmentData>[] = [
-      this.getAttachmentSampleData({
-        name: "attachment1.pdf",
-        contentType: "application/pdf",
-        content: "Sample PDF Content",
-      }),
-      this.getAttachmentSampleData({
-        name: "attachment2.txt",
-        contentType: "text/plain",
-        content: "Sample Text Content",
-      }),
-      this.getAttachmentSampleData({
-        name: "attachment3.jpg",
-        contentType: "image/jpeg",
-        content: "Sample JPEG Content",
-      }),
-    ]
-    const sampleData: RequiredDeep<MessageData> = {
-      bcc: "message-bcc@example.com",
-      cc: "message-cc@example.com",
-      date: new Date("2019-05-02T07:15:28Z"),
-      from: "message-from@example.com",
-      id: "message-id",
-      subject: "message subject",
-      to: "message-to@example.com",
-      replyTo: "message-reply-to@example.com",
-      attachments: sampleAttachments,
-      isStarred: false,
-      isUnread: true,
-    }
-    Object.assign(sampleData, data)
-    return sampleData
-  }
-
-  private static getAttachmentSampleData(
-    data: AttachmentData = {},
-  ): RequiredDeep<AttachmentData> {
-    const sampleContent = data.content
-      ? (data.content as string)
-      : "Sample text content"
-    const sampleData: RequiredDeep<AttachmentData> = {
-      contentType: "text/plain",
-      hash:
-        typeof Utilities === "undefined" // NOTE: this fallback is done to run tests
-          ? "some-hash-value" // locally without Google Apps Script
-          : String(
-              Utilities.computeDigest(
-                Utilities.DigestAlgorithm.SHA_1,
-                sampleContent,
-              ),
-            ),
-      name: "attachment.txt",
-      size: MockFactory.lengthInUtf8Bytes(sampleContent),
-      isGoogleType: false,
-      content: sampleContent,
-    }
-    Object.assign(sampleData, data)
-    return sampleData
-  }
-}
-
-export type ThreadData = {
-  firstMessageSubject?: string
-  hasStarredMessages?: boolean
-  id?: string
-  isImportant?: boolean
-  isInPriorityInbox?: boolean
-  labels?: string[]
-  lastMessageDate?: Date
-  messageCount?: number
-  permalink?: string
-  messages?: MessageData[]
-}
-export type MessageData = {
-  bcc?: string
-  cc?: string
-  date?: Date
-  from?: string
-  id?: string
-  subject?: string
-  to?: string
-  replyTo?: string
-  attachments?: AttachmentData[]
-  isStarred?: boolean
-  isUnread?: boolean
-}
-export type AttachmentData = {
-  contentType?: string
-  hash?: string
-  name?: string
-  size?: number
-  isGoogleType?: boolean
-  content?: string
 }

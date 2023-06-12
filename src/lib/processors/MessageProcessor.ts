@@ -12,6 +12,7 @@ import {
   RequiredMessageMatchConfig,
   newMessageMatchConfig,
 } from "../config/MessageMatchConfig"
+import { MarkProcessedMethod } from "../config/SettingsConfig"
 import { AttachmentProcessor } from "../processors/AttachmentProcessor"
 import { BaseProcessor } from "./BaseProcessor"
 
@@ -74,6 +75,12 @@ export class MessageProcessor extends BaseProcessor {
         config.match,
       )
       for (let index = 0; index < messages.length; index++) {
+        if (
+          ctx.proc.config.settings.markProcessedMethod ===
+          MarkProcessedMethod.MARK_MESSAGE_READ
+        ) {
+          ctx.proc.timer.checkMaxRuntimeReached()
+        }
         const message = messages[index]
         if (!this.matches(matchConfig, message)) {
           continue

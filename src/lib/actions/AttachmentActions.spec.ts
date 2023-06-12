@@ -1,3 +1,4 @@
+import { CREATED_FILE_NAME } from "../../test/mocks/GDriveMocks"
 import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
 import { AttachmentContext, ProcessingContext, RunMode } from "../Context"
 import { ConflictStrategy } from "../adapter/GDriveAdapter"
@@ -33,11 +34,12 @@ it("should provide attachment.storeToGDrive in the action registry", () => {
 })
 
 it("should create a file", () => {
-  AttachmentActions.storeToGDrive(mocks.attachmentContext, {
-    location: "test-file.txt",
+  const result = AttachmentActions.storeToGDrive(mocks.attachmentContext, {
+    location: CREATED_FILE_NAME,
     conflictStrategy: ConflictStrategy.REPLACE,
     description: "automated test",
   })
+  expect(result.gdriveFile).toBe(mocks.newFile)
   expect(mocks.rootFolder.createFile).toBeCalled()
 })
 
@@ -48,7 +50,7 @@ it("should not create a file on dry-run", () => {
     conflictStrategy: ConflictStrategy.REPLACE,
     description: "automated test",
   })
-  expect(mocks.folder.createFile).not.toBeCalled()
+  expect(mocks.existingFolder.createFile).not.toBeCalled()
 })
 
 it("should execute all actions using the action registry", () => {

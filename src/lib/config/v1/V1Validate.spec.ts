@@ -1,4 +1,4 @@
-import { MockFactory } from "../../../test/mocks/MockFactory"
+import { ConfigMocks } from "../../../test/mocks/ConfigMocks"
 import { validateV1Config } from "./V1Validate"
 
 describe("validate()", () => {
@@ -50,7 +50,7 @@ describe("validate()", () => {
     expect(validateV1Config.errors?.length).toEqual(6)
   })
   it("should validate all MockFactory v1 config JSON without errors", () => {
-    validateV1Config(MockFactory.newDefaultV1ConfigJson())
+    validateV1Config(ConfigMocks.newDefaultV1ConfigJson())
     expect(validateV1Config.errors).toBeNull()
   })
   test.todo(

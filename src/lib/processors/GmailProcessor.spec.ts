@@ -1,4 +1,5 @@
 import { PartialDeep } from "type-fest"
+import { ConfigMocks } from "../../test/mocks/ConfigMocks"
 import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
 import { RunMode } from "../Context"
 import { Config, RequiredConfig } from "../config/Config"
@@ -10,7 +11,7 @@ let mocks: Mocks
 let gmailProcessor: GmailProcessor
 
 beforeEach(() => {
-  config = MockFactory.newDefaultConfig()
+  config = ConfigMocks.newDefaultConfig()
   mocks = MockFactory.newMocks(config as RequiredConfig, RunMode.DANGEROUS)
   gmailProcessor = new GmailProcessor()
 })
@@ -48,8 +49,8 @@ describe("getEffectiveConfig", () => {
       },
       threads: [],
       settings: {
-        logSheetFile: "Gmail2GDrive/Gmail2GDrive-logs",
-        logSheetFolderId: "",
+        logSheetLocation:
+          "Gmail2GDrive/Gmail2GDrive-logs/logsheet-{timer.now:dateformat:YYYY-MM-DD_HH-mm-ss}",
         maxBatchSize: 10,
         maxRuntime: 280,
         markProcessedLabel: "",

@@ -1,9 +1,9 @@
-import { MockFactory } from "../../test/mocks/MockFactory"
+import { ConfigMocks } from "../../test/mocks/ConfigMocks"
 import { jsonToAttachmentConfig } from "./AttachmentConfig"
 
 it("should expect a JSON config", () => {
   const attachmentConfig = jsonToAttachmentConfig(
-    MockFactory.newDefaultAttachmentConfigJson(),
+    ConfigMocks.newDefaultAttachmentConfigJson(),
   )
   expect(attachmentConfig.match).toBeDefined()
   expect(attachmentConfig.match.name).toBe("Image-([0-9]+)\\.jpg")

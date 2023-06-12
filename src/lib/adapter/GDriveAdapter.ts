@@ -8,11 +8,196 @@ export enum ConflictStrategy {
   ERROR = "error",
 }
 
+export type LocationInfo = {
+  filename: string
+  folderId: string | null
+  folderPath: string
+  fullPath: string // TODO: Rename to filePath
+  location: string
+  pathSegments: string[]
+}
+
+export type FileData = {
+  content: string
+  mimeType: string
+  description: string
+}
+
+export class DriveUtils {
+  public static createFile(
+    ctx: EnvContext,
+    location: string,
+    fileData: FileData,
+    conflictStrategy: ConflictStrategy,
+  ): GoogleAppsScript.Drive.File {
+    const locationInfo = this.extractLocationInfo(location)
+
+    const { filename } = locationInfo
+    const parentFolder = this.getParentFolder(ctx.env.gdriveApp, locationInfo)
+
+    if (!parentFolder) {
+      const errorMessage = `Invalid parent folder: ${location}`
+      ctx.log.error(errorMessage)
+      throw new Error(errorMessage)
+    }
+
+    const existingFiles = parentFolder.getFilesByName(filename)
+
+    if (existingFiles.hasNext()) {
+      const existingFile = existingFiles.next()
+
+      switch (conflictStrategy) {
+        case ConflictStrategy.KEEP:
+          return this.createDuplicateFile(ctx, existingFile, fileData)
+        case ConflictStrategy.SKIP:
+          ctx.log.warn(
+            `A file with the same name already exists at location: ${location}. Skipping file creation.`,
+          )
+          return existingFile
+        case ConflictStrategy.REPLACE:
+          if (ctx.env.runMode === RunMode.DANGEROUS) {
+            ctx.log.warn(
+              `A file with the same name already exists at location: ${location}. Replacing ...`,
+            )
+            this.deleteFile(ctx, existingFile)
+            return this.createFileInParent(
+              ctx,
+              parentFolder,
+              filename,
+              fileData,
+            )
+          } else {
+            ctx.log.warn(
+              `A file with the same name already exists at location: ${location}. Skipping replacing due to runmode ...`,
+            )
+            return existingFile
+          }
+        case ConflictStrategy.ERROR: {
+          const errorMessage = `Conflict: A file with the same name already exists at location: ${location}`
+          ctx.log.error(errorMessage)
+          throw new Error(errorMessage)
+        }
+      }
+    }
+
+    return this.createFileInParent(ctx, parentFolder, filename, fileData)
+  }
+
+  public static ensureFolderExists(ctx: EnvContext, location: string) {
+    const locationInfo = this.extractLocationInfo(location)
+
+    const parentFolder = this.getParentFolder(ctx.env.gdriveApp, locationInfo)
+    return parentFolder
+  }
+
+  public static extractLocationInfo(location: string): LocationInfo {
+    const folderIdRegex = /^{id:([^}]*)}/
+    const matches = location.match(folderIdRegex)
+
+    let folderId: string | null = null
+    let path: string
+
+    if (matches) {
+      folderId = matches[1]
+      path = location.replace(folderIdRegex, "")
+    } else if (location.startsWith("/")) {
+      path = location.slice(1)
+    } else {
+      path = location
+    }
+
+    const pathSegments = path.split("/").filter((segment) => segment !== "")
+
+    if (pathSegments.length === 0) {
+      throw new Error(`Invalid location format: ${location}`)
+    }
+
+    const filename = pathSegments.pop()?.toString() ?? ""
+    const folderPath = pathSegments.join("/")
+
+    return {
+      location,
+      folderId,
+      pathSegments,
+      filename,
+      folderPath,
+      fullPath: `${folderPath}/${filename}`,
+    }
+  }
+
+  private static getParentFolder(
+    gdriveApp: GoogleAppsScript.Drive.DriveApp,
+    locationInfo: LocationInfo,
+  ): GoogleAppsScript.Drive.Folder {
+    let parentFolder: GoogleAppsScript.Drive.Folder
+
+    const { folderId, pathSegments } = locationInfo
+    if (folderId) {
+      parentFolder = gdriveApp.getFolderById(folderId)
+      if (!parentFolder) {
+        throw new Error(`Invalid parent folder ID: ${folderId}`)
+      }
+    } else {
+      parentFolder = gdriveApp.getRootFolder()
+    }
+
+    for (const segment of pathSegments) {
+      const folders = parentFolder.getFoldersByName(segment)
+
+      if (folders.hasNext()) {
+        parentFolder = folders.next()
+      } else {
+        parentFolder = parentFolder.createFolder(segment)
+      }
+    }
+
+    return parentFolder
+  }
+
+  private static createDuplicateFile(
+    ctx: EnvContext,
+    existingFile: GoogleAppsScript.Drive.File,
+    fileData: FileData,
+  ): GoogleAppsScript.Drive.File {
+    const filename = existingFile.getName()
+    const nameParts = filename.split(".")
+    const baseName = nameParts.slice(0, -1).join(".")
+    const extension = nameParts[nameParts.length - 1]
+    const newFilename = `${baseName} (Copy).${extension}`
+
+    return this.createFileInParent(
+      ctx,
+      existingFile.getParents().next(),
+      newFilename,
+      fileData,
+    )
+  }
+
+  private static createFileInParent(
+    _ctx: EnvContext,
+    parentFolder: GoogleAppsScript.Drive.Folder,
+    filename: string,
+    fileData: FileData,
+  ): GoogleAppsScript.Drive.File {
+    return parentFolder
+      .createFile(filename, fileData.content, fileData.mimeType)
+      .setDescription(fileData.description)
+  }
+
+  private static deleteFile(
+    ctx: EnvContext,
+    file: GoogleAppsScript.Drive.File,
+  ): void {
+    ctx.log.info(`Deleting existing file: ${file.getName()}`)
+    file.setTrashed(true)
+  }
+}
+
 export class GDriveAdapter extends BaseAdapter {
-  private gdriveApp: GoogleAppsScript.Drive.DriveApp
+  //private gdriveApp: GoogleAppsScript.Drive.DriveApp
   constructor(public ctx: EnvContext) {
     super(ctx)
-    this.gdriveApp = ctx.env.gdriveApp
+    //this.gdriveApp = ctx.env.gdriveApp
   }
 
   // TODO: Continue here!!!
@@ -23,7 +208,8 @@ export class GDriveAdapter extends BaseAdapter {
   /**
    * Returns the GDrive folder with the given path.
    */
-  public getFolderFromPath(path: string): GoogleAppsScript.Drive.Folder {
+  /*
+  private getFolderFromPath(path: string): GoogleAppsScript.Drive.Folder {
     const parts = path.split("/")
 
     if (parts[0] === "") {
@@ -43,6 +229,7 @@ export class GDriveAdapter extends BaseAdapter {
     }
     return folder
   }
+  */
 
   // =================== PUBLIC METHODS ======================
 
@@ -54,6 +241,14 @@ export class GDriveAdapter extends BaseAdapter {
    * @param description The description of the file
    * @param conflictStrategy The conflict strategy in case a file already exists at the file location (skip, replace)
    */
+  public createFile(
+    location: string,
+    fileData: FileData,
+    conflictStrategy: ConflictStrategy,
+  ): GoogleAppsScript.Drive.File {
+    return DriveUtils.createFile(this.ctx, location, fileData, conflictStrategy)
+  }
+  /*
   public createFile(
     location: string,
     content: string,
@@ -70,9 +265,7 @@ export class GDriveAdapter extends BaseAdapter {
     // Handle conflicts with existing files:
     if (fileExists && conflictStrategy === ConflictStrategy.SKIP) {
       console.warn(
-        "   Skipping existing file '" +
-          location +
-          "' (using conflict strategy 'SKIP')!",
+        `Skipping existing file '${location}' (using conflict strategy 'SKIP')!`,
       )
       return existingFiles.next()
     } else if (fileExists && conflictStrategy === ConflictStrategy.REPLACE) {
@@ -109,22 +302,26 @@ export class GDriveAdapter extends BaseAdapter {
     )
     file.setDescription(description)
     return file
-  }
+  }*/
 
   public storeAttachment(
     attachment: GoogleAppsScript.Gmail.GmailAttachment,
     location: string,
     conflictStrategy: ConflictStrategy,
     description: string,
-  ) {
+  ): GoogleAppsScript.Drive.File {
     console.info(
       `Storing attachment '${attachment.getName()}' to '${location}' ...`,
     )
-    const file = this.createFile(
-      location,
-      attachment.getDataAsString(),
-      attachment.getContentType(),
+    const fileData: FileData = {
+      content: attachment.getDataAsString(),
+      mimeType: attachment.getContentType(),
       description,
+    }
+    const file = DriveUtils.createFile(
+      this.ctx,
+      location,
+      fileData,
       conflictStrategy,
     )
     return file
@@ -133,6 +330,7 @@ export class GDriveAdapter extends BaseAdapter {
   /**
    * Returns the GDrive folder with the given name or creates it if not existing.
    */
+  /*
   private getOrCreateFolderFromPath(
     path: string,
   ): GoogleAppsScript.Drive.Folder {
@@ -148,10 +346,12 @@ export class GDriveAdapter extends BaseAdapter {
     }
     return folder
   }
+  */
 
   /**
    * Recursive function to create and return a complete folder path.
    */
+  /*
   private getOrCreateSubFolder(
     baseFolder: GoogleAppsScript.Drive.Folder,
     folderArray: string[],
@@ -187,4 +387,5 @@ export class GDriveAdapter extends BaseAdapter {
   private getFilenameFromLocation(location: string) {
     return location.substring(location.lastIndexOf("/") + 1)
   }
+  */
 }

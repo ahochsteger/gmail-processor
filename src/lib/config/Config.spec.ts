@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { PartialDeep } from "type-fest"
-import { MockFactory } from "../../test/mocks/MockFactory"
+import { ConfigMocks } from "../../test/mocks/ConfigMocks"
 import {
   ProcessingConfig,
   RequiredConfig,
@@ -24,7 +24,7 @@ it("New instance should contain defaults", () => {
 })
 
 it("Schema-generated Config Types Test", () => {
-  const cfg = MockFactory.newDefaultConfig()
+  const cfg = ConfigMocks.newDefaultConfig()
   expect(cfg.settings?.maxRuntime).toBe(DEFAULT_SETTING_MAX_RUNTIME)
 })
 
@@ -50,7 +50,7 @@ describe("normalizeConfig", () => {
 
 describe("jsonToConfig", () => {
   it("should set defaults for missing properties from JSON", () => {
-    const expected: Record<string, any> = MockFactory.newDefaultConfig()
+    const expected: Record<string, any> = ConfigMocks.newDefaultConfig()
     const actual = jsonToConfig(expected)
     expect(actual).toMatchObject(expected)
   })

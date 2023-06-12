@@ -1,8 +1,8 @@
 import { Config } from "../../lib/config/Config"
 import { PartialDeep } from "type-fest"
 import { ProcessingConfig } from "../../lib/config/Config"
+import { ContextMocks } from "../mocks/ContextMocks"
 import { GMail2GDrive } from "../mocks/Examples"
-import { MockFactory } from "../mocks/MockFactory"
 
 const example02ConfigV2 = {
   description: "An example V2 configuration",
@@ -72,7 +72,7 @@ it("should process a v2 config example", () => {
   const result = GMail2GDrive.Lib.run(
     example02ConfigV2 as PartialDeep<Config>,
     "dry-run",
-    MockFactory.newEnvContextMock(),
+    ContextMocks.newEnvContextMock(),
   )
   expect(result.status).toEqual("ok")
 })

@@ -81,29 +81,29 @@ export class PatternUtil {
    * @param regexMap Map with attribute names and regex to do matches on (e.g. {"subject": "Message ([0-9]+)"})
    */
   public static buildRegExpSubustitutionMap(
-    dataMap: SubstMap,
+    m: SubstMap,
     keyPrefix: string,
     regexMap: Map<string, string>,
-  ): Map<string, string> {
-    const m: Map<string, string> = new Map<string, string>()
-
+  ): SubstMap {
+    let matchesAll = true
     regexMap.forEach((value, k) => {
       const regex = new RegExp(value, "g")
       let result
-      const keyName = keyPrefix + "." + k
+      const keyName = `${keyPrefix}.${k}`
       let hasAtLeastOneMatch = false
-      const data: string = dataMap.get(keyName) as string
+      const data: string = m.get(keyName) as string
       if ((result = regex.exec(data)) !== null) {
         hasAtLeastOneMatch = true
         console.log("Matches: " + result.length)
         for (let i = 1; i < result.length; i++) {
-          m.set(keyName + ".match." + i, result[i])
+          m.set(`${keyName}.match.${i}`, result[i])
         }
       }
       if (!hasAtLeastOneMatch) {
-        return null
+        matchesAll = false
       }
     })
+    m.set(`${keyPrefix}.matched`, matchesAll)
     return m
   }
 
@@ -174,7 +174,7 @@ export class PatternUtil {
   ) {
     m.set("env.runMode", ctx.env.runMode)
     m.set("env.timezone", ctx.env.timezone)
-    m.set("timer.now", new Date())
+    m.set("timer.now", ctx.proc.timer.now())
     m.set("timer.runTime", ctx.proc.timer.getRunTime())
     m.set("timer.startTime", ctx.proc.timer.getStartTime())
     return m
@@ -204,57 +204,46 @@ export class PatternUtil {
     const messageConfig = ctx.message.config
     if (messageConfig.match) {
       // Test for message rules
-      const messgageMatch = this.buildRegExpSubustitutionMap(
+      m = this.buildRegExpSubustitutionMap(
         m,
         "message",
         this.getRegexMapFromMessageMatchConfig(messageConfig.match),
       )
-      if (messgageMatch == null) {
-        m.set("message.matched", false)
+      if (!m.get("messgage.matched")) {
         ctx.log.info(
           "  Skipped message with id " +
             message.getId() +
             " because it did not match the regex rules ...",
         )
       }
-      // If not yet defined: true, false otherwise:
-      m.set("message.matched", m.get("message.matched") === undefined)
-      m = PatternUtil.mergeMaps(m, messgageMatch)
     }
     return m
   }
 
   public static buildSubstitutionMapFromAttachmentContext(
     ctx: AttachmentContext,
-    substMap = new SubstMap(),
+    m = new SubstMap(),
   ): SubstMap {
-    let m = this.buildSubstitutionMapFromMessageContext(ctx, substMap)
+    m = this.buildSubstitutionMapFromMessageContext(ctx, m)
     // Attachment data
     // Substitute values for a specific attachment, if provided
     const attachment = ctx.attachment.object
-    m = PatternUtil.mergeMaps(
-      m,
-      this.getSubstitutionMapFromAttachment(attachment),
-    )
-    m.set("attachment.index", ctx.attachment.index)
+    ;(m = this.getSubstitutionMapFromAttachment(attachment, m)),
+      m.set("attachment.index", ctx.attachment.index)
     m.set("attachmentConfig.index", ctx.attachment.configIndex)
     const attachmentConfig = ctx.attachment.config
-    const attachmentMatch = this.buildRegExpSubustitutionMap(
+    m = this.buildRegExpSubustitutionMap(
       m,
       "attachment",
       this.getRegexMapFromAttachmentMatchConfig(attachmentConfig.match),
     )
-    if (attachmentMatch == null) {
-      m.set("attachment.matched", false)
+    if (!m.get("attachment.matched")) {
       ctx.log.info(
         "  Skipped attachment with name '" +
           attachment.getName() +
           "' because it did not match the regex rules ...",
       )
     }
-    // If not yet defined: true, false otherwise
-    m.set("attachment.matched", m.get("attachment.matched") === undefined)
-    m = PatternUtil.mergeMaps(m, attachmentMatch)
     return m
   }
 
@@ -334,12 +323,5 @@ export class PatternUtil {
       .replace(/#SUBJECT#/g, "${message.subject}") // Alternative syntax (from PR #22)
       .replace(/#FILE#/g, "${attachment.name}") // Alternative syntax (from PR #22)
       .replace(/%d/g, "${threadConfig.index}") // Original subject syntax
-  }
-
-  private static mergeMaps(map1: SubstMap, map2: SubstMap): SubstMap {
-    return new Map([
-      ...Array.from(map1.entries()),
-      ...Array.from(map2.entries()),
-    ])
   }
 }

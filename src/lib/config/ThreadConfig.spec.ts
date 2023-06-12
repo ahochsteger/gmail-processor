@@ -1,9 +1,9 @@
-import { MockFactory } from "../../test/mocks/MockFactory"
+import { ConfigMocks } from "../../test/mocks/ConfigMocks"
 import { jsonToThreadConfig } from "./ThreadConfig"
 
 it("should expect a JSON config", () => {
   const threadConfig = jsonToThreadConfig(
-    MockFactory.newDefaultThreadConfigJson(),
+    ConfigMocks.newDefaultThreadConfigJson(),
   )
   expect(threadConfig.match).toBeDefined()
   expect(threadConfig.match.query).toBe(

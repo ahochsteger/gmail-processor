@@ -1,3 +1,4 @@
+import { GMailMocks } from "../../test/mocks/GMailMocks"
 import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
 import { ProcessingStatus, RunMode } from "../Context"
 import { newAttachmentConfig } from "../config/AttachmentConfig"
@@ -93,7 +94,7 @@ it("should match messages with matching parameters", () => {
         matched: ["attachment-2.pdf"],
       },
     ]
-  const mockedMessage = MockFactory.newMessageMock({
+  const mockedMessage = GMailMocks.newMessageMock({
     attachments: [
       {
         content: "some-content-1",

@@ -84,12 +84,14 @@ export class MessageActions implements ActionProvider<MessageContext> {
     return {
       file: context.proc.gdriveAdapter.createFile(
         PatternUtil.substitute(context, a.location),
-        context.proc.gmailAdapter.messageAsPdf(
-          context.message.object,
-          a.skipHeader as boolean,
-        ),
-        "application/pdf",
-        PatternUtil.substitute(context, a.description || ""),
+        {
+          content: context.proc.gmailAdapter.messageAsPdf(
+            context.message.object,
+            a.skipHeader as boolean,
+          ),
+          mimeType: "application/pdf",
+          description: PatternUtil.substitute(context, a.description || ""),
+        },
         a.conflictStrategy as ConflictStrategy,
       ),
     }

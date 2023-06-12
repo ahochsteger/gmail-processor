@@ -1,7 +1,10 @@
+import { ContextMocks } from "../../test/mocks/ContextMocks"
+import { GMailMocks } from "../../test/mocks/GMailMocks"
 import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
 import { RunMode } from "../Context"
 import { newConfig } from "../config/Config"
 import { jsonToMessageConfig } from "../config/MessageConfig"
+import { newThreadConfig } from "../config/ThreadConfig"
 import { PatternUtil } from "./PatternUtil"
 
 let mocks: Mocks
@@ -13,7 +16,7 @@ beforeEach(() => {
 describe("Pattern Substitution", () => {
   it("should handle a thread", () => {
     const s1 = PatternUtil.substitute(
-      MockFactory.newAttachmentContextMock(),
+      ContextMocks.newAttachmentContextMock(),
       "${message.from}/${message.to}/${attachment.contentType}/${message.subject}-${message.id}-" +
         "${attachment.index}-${attachment.name}-${message.date:dateformat:YYYY-MM-DD}",
     )
@@ -22,7 +25,7 @@ describe("Pattern Substitution", () => {
     )
   })
   it("should handle a thread with a message rule", () => {
-    const thread2 = MockFactory.newThreadMock({
+    const thread2 = GMailMocks.newThreadMock({
       messages: [
         {
           subject: "Message 01: Some more text",
@@ -70,14 +73,14 @@ describe("Pattern Substitution", () => {
         },
       ],
     })
-    const attachmentContext = MockFactory.newAttachmentContextMock()
+    const attachmentContext = ContextMocks.newAttachmentContextMock()
     attachmentContext.thread.object = thread2
     attachmentContext.message.object = thread2.getMessages()[0]
     attachmentContext.message.config = messageConfig
     const s2 = PatternUtil.substitute(attachmentContext, pattern)
     expect(s2).toBe(expRslt)
   })
-  const sharedThread = MockFactory.newThreadMock({
+  const sharedThread = GMailMocks.newThreadMock({
     messages: [
       {
         date: new Date("2018-05-27T12:34:56Z"),
@@ -101,7 +104,7 @@ describe("Pattern Substitution", () => {
 
   it("should handle a thread with one message", () => {
     const s = PatternUtil.substitute(
-      MockFactory.newMessageContextMock(),
+      ContextMocks.newMessageContextMock(),
       "${message.from},${message.to},${message.subject}," +
         "${message.id},${message.date:dateformat:YYYY-MM-DD}",
     )
@@ -110,9 +113,61 @@ describe("Pattern Substitution", () => {
     )
   })
 
+  it("should handle a thread with a non-matching message", () => {
+    const thread = GMailMocks.newThreadMock({
+      messages: [
+        {
+          subject: "Message 01: Some more text",
+          from: "some.email@example.com",
+          to: "my.email+emailsuffix@example.com",
+          date: new Date("2019-05-01T18:48:31Z"),
+          attachments: [
+            {
+              name: "attachment123.jpg",
+            },
+          ],
+        },
+      ],
+    })
+    const threadConfig = newThreadConfig({
+      messages: [
+        {
+          match: {
+            from: "(.+)@example.com",
+            subject: "Message ([0-9]+): (.*)",
+            to: "my\\.email\\+(.+)@example.com",
+          },
+          attachments: [
+            {
+              match: { name: "non-matching-attachment([0-9]+)\\.jpg" },
+            },
+          ],
+        },
+      ],
+    })
+    const attachmentContext = ContextMocks.newAttachmentContextMock()
+    attachmentContext.thread.config = threadConfig
+    attachmentContext.thread.object = thread
+    attachmentContext.message.object = thread.getMessages()[0]
+    attachmentContext.message.config = threadConfig.messages[0]
+    attachmentContext.attachment.config =
+      threadConfig.messages[0].attachments[0]
+    attachmentContext.attachment.object = thread
+      .getMessages()[0]
+      .getAttachments()[0]
+    const actual = JSON.parse(
+      PatternUtil.substitute(
+        attachmentContext,
+        '{"attachmentMatched":${attachment.matched},"messageMatched":${message.matched}}',
+      ),
+    )
+    expect(actual.messageMatched).toEqual(true)
+    expect(actual.attachmentMatched).toEqual(false)
+  })
+
   it("should substitute all thread attributes", () => {
     const s = PatternUtil.substitute(
-      MockFactory.newMessageContextMock(),
+      ContextMocks.newMessageContextMock(),
       "${thread.firstMessageSubject}," +
         "${thread.hasStarredMessages},${thread.id},${thread.isImportant},${thread.isInPriorityInbox}," +
         "${thread.labels},${thread.lastMessageDate:dateformat:YYYY-MM-DD},${thread.messageCount}," +
@@ -124,7 +179,7 @@ describe("Pattern Substitution", () => {
   })
 
   it("should handle a thread with one message and attachment 1 of 2", () => {
-    const ctx = MockFactory.newAttachmentContextMock()
+    const ctx = ContextMocks.newAttachmentContextMock()
     const msg = sharedThread.getMessages()[0]
     ctx.thread.object = sharedThread
     ctx.message.object = msg
@@ -141,7 +196,7 @@ describe("Pattern Substitution", () => {
   })
 
   it("should substitute advanced message + attachment pattern", () => {
-    const ctx = MockFactory.newAttachmentContextMock()
+    const ctx = ContextMocks.newAttachmentContextMock()
     const msg = sharedThread.getMessages()[0]
     ctx.thread.object = sharedThread
     ctx.message.object = msg
@@ -160,7 +215,7 @@ describe("Pattern Substitution", () => {
 
   it("should substitute mixed message + attachment pattern", () => {
     const s = PatternUtil.substitute(
-      MockFactory.newAttachmentContextMock(),
+      ContextMocks.newAttachmentContextMock(),
       "${message.from}/${message.to}/${attachment.contentType}/" +
         "${message.subject}-${message.id}-${attachment.index}-${attachment.name}-" +
         "${message.date:dateformat:YYYY-MM-DD}",
@@ -174,7 +229,7 @@ describe("Substitutions", () => {
   it("should substitute all thread attributes", () => {
     expect(
       PatternUtil.substitute(
-        MockFactory.newThreadContextMock(),
+        ContextMocks.newThreadContextMock(),
         "${thread.firstMessageSubject},${thread.hasStarredMessages}," +
           "${thread.id},${thread.isImportant},${thread.isInPriorityInbox},${thread.labels}," +
           "${thread.lastMessageDate:dateformat:YYYY-MM-DD HH:mm:ss},${thread.messageCount},${thread.permalink}",
@@ -186,7 +241,7 @@ describe("Substitutions", () => {
   it("should substitute all message attributes", () => {
     expect(
       PatternUtil.substitute(
-        MockFactory.newMessageContextMock(),
+        ContextMocks.newMessageContextMock(),
         "${message.bcc},${message.cc},${message.date:dateformat:YYYY-MM-DD HH:mm:ss},${message.from}," +
           "${message.id},${message.replyTo},${message.subject},${message.to}",
       ),
@@ -195,7 +250,7 @@ describe("Substitutions", () => {
     )
   })
   it("should substitute all attachment attributes", () => {
-    const thread = MockFactory.newThreadMock({
+    const thread = GMailMocks.newThreadMock({
       messages: [
         {
           attachments: [
@@ -210,7 +265,7 @@ describe("Substitutions", () => {
         },
       ],
     })
-    const ctx = MockFactory.newAttachmentContextMock()
+    const ctx = ContextMocks.newAttachmentContextMock()
     const msg = thread.getMessages()[0]
     ctx.thread.object = thread
     ctx.message.object = msg
@@ -225,6 +280,24 @@ describe("Substitutions", () => {
       ),
     ).toBe("act,ah,true,aname,12345")
   })
+  it("should substitute with processing context", () => {
+    const fakedSystemTime = "2023-05-30 08:31:14"
+    jest.useFakeTimers({ now: new Date(fakedSystemTime + "Z") })
+    mocks.processingContext.proc.timer.start()
+    const actual = JSON.parse(
+      PatternUtil.substitute(
+        mocks.processingContext,
+        '{"envRunMode":"${env.runMode}","envTimeZone":"${env.timezone}","timerNow":"${timer.now:dateformat:YYYY-MM-DD HH:mm:ss}","timerRunTime":${timer.runTime},"timerStartTime":"${timer.startTime:dateformat:YYYY-MM-DD HH:mm:ss}"}',
+      ),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ) as any
+    expect(actual.envRunMode).toEqual("dangerous")
+    expect(actual.envTimeZone).toEqual("UTC")
+    expect(actual.timerNow).toEqual(fakedSystemTime)
+    expect(actual.timerRunTime).toEqual(0.0)
+    expect(actual.timerStartTime).toEqual(fakedSystemTime)
+    jest.useRealTimers()
+  })
 })
 describe("Handle single messages", () => {
   it("should handle a thread with one message and no attachments", () => {
@@ -233,7 +306,7 @@ describe("Handle single messages", () => {
   it("should handle a thread with one message and one attachment", () => {
     expect(
       PatternUtil.substitute(
-        MockFactory.newAttachmentContextMock(),
+        ContextMocks.newAttachmentContextMock(),
         "${thread.firstMessageSubject},${thread.hasStarredMessages},${thread.id},${thread.isImportant}," +
           "${thread.isInPriorityInbox},${thread.labels},${thread.lastMessageDate:dateformat:YYYY-MM-DD " +
           "HH:mm:ss},${thread.messageCount},${thread.permalink}," +
@@ -251,7 +324,7 @@ describe("Handle single messages", () => {
   })
 })
 describe("Handle multiple attachments", () => {
-  const thread = MockFactory.newThreadMock({
+  const thread = GMailMocks.newThreadMock({
     messages: [
       {
         attachments: [
@@ -276,14 +349,14 @@ describe("Handle multiple attachments", () => {
   it("should handle a thread with one message and attachment 1 of 2", () => {
     expect(
       PatternUtil.substitute(
-        MockFactory.newAttachmentContextMock(),
+        ContextMocks.newAttachmentContextMock(),
         "${attachment.contentType},${attachment.hash},${attachment.isGoogleType},${attachment.name}," +
           "${attachment.size}",
       ),
     ).toBe("text/plain,some-hash-value,false,attachment.txt,19")
   })
   it("should handle a thread with one message and attachment 2 of 2", () => {
-    const ctx = MockFactory.newAttachmentContextMock()
+    const ctx = ContextMocks.newAttachmentContextMock()
     const msg = thread.getMessages()[0]
     ctx.thread.object = thread
     ctx.message.object = msg
@@ -299,7 +372,7 @@ describe("Handle multiple attachments", () => {
   })
 })
 describe("Handle multiple messages", () => {
-  const thread = MockFactory.newThreadMock({
+  const thread = GMailMocks.newThreadMock({
     firstMessageSubject: "tfms",
     hasStarredMessages: true,
     id: "tid",
@@ -353,7 +426,7 @@ describe("Handle multiple messages", () => {
   it("should handle a thread with message 1 of 2 and one attachment", () => {
     expect(
       PatternUtil.substitute(
-        MockFactory.newAttachmentContextMock(),
+        ContextMocks.newAttachmentContextMock(),
         "${thread.firstMessageSubject},${thread.hasStarredMessages},${thread.id},${thread.isImportant}," +
           "${thread.isInPriorityInbox},${thread.labels},${thread.lastMessageDate:dateformat:YYYY-MM-DD " +
           "HH:mm:ss},${thread.messageCount},${thread.permalink}," +
@@ -370,7 +443,7 @@ describe("Handle multiple messages", () => {
     )
   })
   it("should handle a thread with message 2 of 2 and one attachment", () => {
-    const ctx = MockFactory.newAttachmentContextMock()
+    const ctx = ContextMocks.newAttachmentContextMock()
     const msg = thread.getMessages()[1]
     ctx.thread.object = thread
     ctx.message.object = msg

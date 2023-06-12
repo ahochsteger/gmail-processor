@@ -1,10 +1,10 @@
-import { MockFactory } from "../../test/mocks/MockFactory"
+import { ConfigMocks } from "../../test/mocks/ConfigMocks"
 import { jsonToMessageConfig } from "./MessageConfig"
 import { MessageFlag } from "./MessageFlag"
 
 it("should expect a JSON config", () => {
   const messageConfig = jsonToMessageConfig(
-    MockFactory.newDefaultMessageConfigJson(),
+    ConfigMocks.newDefaultMessageConfigJson(),
   )
   expect(messageConfig.match).toBeDefined()
   expect(messageConfig.match.from).toBe("(.+)@example.com")

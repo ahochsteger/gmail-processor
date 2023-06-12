@@ -1,8 +1,8 @@
 import { V1Config } from "../../lib/config/v1/V1Config"
 import { PartialDeep } from "type-fest"
 import { ProcessingConfig } from "../../lib/config/Config"
+import { ContextMocks } from "../mocks/ContextMocks"
 import { GMail2GDrive } from "../mocks/Examples"
-import { MockFactory } from "../mocks/MockFactory"
 
 const example01ConfigV1 = {
   globalFilter: "has:attachment -in:trash -in:drafts -in:spam",
@@ -56,7 +56,7 @@ it("should process a v1 config example", () => {
   const result = GMail2GDrive.Lib.runWithV1Config(
     example01ConfigV1 as PartialDeep<V1Config>,
     "dry-run",
-    MockFactory.newEnvContextMock(),
+    ContextMocks.newEnvContextMock(),
   )
   expect(result.status).toEqual("ok")
 })

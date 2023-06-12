@@ -1,3 +1,4 @@
+import { ContextMocks } from "../../test/mocks/ContextMocks"
 import { MockFactory } from "../../test/mocks/MockFactory"
 import { RunMode } from "../Context"
 import { jsonToConfig } from "../config/Config"
@@ -26,8 +27,8 @@ it("should construct a GMail search query with globals (query, newerThan) and pr
       newerThan: "2m",
     },
   })
-  const ctx = MockFactory.newProcessingContextMock(
-    MockFactory.newEnvContextMock(),
+  const ctx = ContextMocks.newProcessingContextMock(
+    ContextMocks.newEnvContextMock(),
     config,
   )
   const matchConfig = ThreadProcessor.buildMatchConfig(

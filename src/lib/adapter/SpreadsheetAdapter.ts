@@ -1,7 +1,10 @@
 import { EnvContext } from "../Context"
-import { PatternUtil } from "../utils/PatternUtil"
 import { BaseAdapter } from "./BaseAdapter"
+import { DriveUtils } from "./GDriveAdapter"
 
+export const SCRIPT_CACHE_LOGSHEET_ID_KEY = "logSheetId"
+
+// TODO: Re-use substitution maps for logsheet data
 export class SpreadsheetAdapter extends BaseAdapter {
   private spreadsheetApp: GoogleAppsScript.Spreadsheet.SpreadsheetApp
   private driveApp: GoogleAppsScript.Drive.DriveApp
@@ -14,21 +17,21 @@ export class SpreadsheetAdapter extends BaseAdapter {
     this.spreadsheetApp = ctx.env.spreadsheetApp
     this.driveApp = ctx.env.gdriveApp
     this.cacheService = ctx.env.cacheService
-    this.logSheetId = this.cacheService.getScriptCache().get("logSheetId")
+    this.logSheetId = this.cacheService
+      .getScriptCache()
+      .get(SCRIPT_CACHE_LOGSHEET_ID_KEY)
   }
 
   private createLogSheet(
-    folderPath: string,
-    parentFolderId: string,
+    location: string,
   ): GoogleAppsScript.Spreadsheet.Sheet | null {
-    const folder = this.getOrCreateFolder(folderPath, parentFolderId)
-    const logSheetFileName = `logsheet-${PatternUtil.formatDate(
-      new Date(),
-      "YYYY-MM-DD_HH-mm-ss",
-      "UTC",
-    )}`
-    this.logSpreadsheet = this.spreadsheetApp.create(logSheetFileName)
+    const locInfo = DriveUtils.extractLocationInfo(location)
+    const folder = DriveUtils.ensureFolderExists(this.ctx, location)
+    this.logSpreadsheet = this.spreadsheetApp.create(locInfo.filename)
     this.logSheetId = this.logSpreadsheet.getId()
+    this.cacheService
+      .getScriptCache()
+      .put(SCRIPT_CACHE_LOGSHEET_ID_KEY, this.logSheetId)
     const logSheetFile = this.driveApp.getFileById(this.logSheetId)
     logSheetFile.moveTo(folder)
     console.info(`Created new logSheet at: ${logSheetFile.getUrl()}`)
@@ -55,33 +58,33 @@ export class SpreadsheetAdapter extends BaseAdapter {
     logSheet.getRange(lastRow, args.length, 1, args.length).setValues(values)
   }
 
-  // TODO: Consolidate with folder logic from GDriveAdapter
-  private getOrCreateFolder(
-    path: string,
-    parentFolderId = "",
-  ): GoogleAppsScript.Drive.Folder {
-    const parts = path.split("/")
-    if (parts[0] === "") {
-      parts.shift()
-    }
+  // // TODO: Consolidate with folder logic from GDriveAdapter
+  // private getOrCreateFolder(
+  //   path: string,
+  //   parentFolderId = "",
+  // ): GoogleAppsScript.Drive.Folder {
+  //   const parts = path.split("/")
+  //   if (parts[0] === "") {
+  //     parts.shift()
+  //   }
 
-    let folder = parentFolderId
-      ? this.driveApp.getFolderById(parentFolderId)
-      : this.driveApp.getRootFolder()
-    for (const subfolder of parts) {
-      let nextFolder = null
-      const folders = folder.getFolders()
-      while (folders.hasNext()) {
-        const f = folders.next()
-        if (f.getName() === subfolder) {
-          nextFolder = f
-          break
-        }
-      }
-      folder = nextFolder || folder.createFolder(subfolder)
-    }
-    return folder
-  }
+  //   let folder = parentFolderId
+  //     ? this.driveApp.getFolderById(parentFolderId)
+  //     : this.driveApp.getRootFolder()
+  //   for (const subfolder of parts) {
+  //     let nextFolder = null
+  //     const folders = folder.getFolders()
+  //     while (folders.hasNext()) {
+  //       const f = folders.next()
+  //       if (f.getName() === subfolder) {
+  //         nextFolder = f
+  //         break
+  //       }
+  //     }
+  //     folder = nextFolder || folder.createFolder(subfolder)
+  //   }
+  //   return folder
+  // }
 
   private getLogSheet(): GoogleAppsScript.Spreadsheet.Sheet | null {
     if (this.logSheet) return this.logSheet
@@ -93,12 +96,8 @@ export class SpreadsheetAdapter extends BaseAdapter {
     return null
   }
 
-  public initLogSheet(
-    folderPath: string,
-    parentFolderId: string,
-    ...args: unknown[]
-  ) {
-    this.createLogSheet(folderPath, parentFolderId)
+  public initLogSheet(location: string, ...args: unknown[]) {
+    this.createLogSheet(location)
     this.appendToLogSheet(...args)
   }
 
@@ -115,7 +114,7 @@ export class SpreadsheetAdapter extends BaseAdapter {
       message.getSubject(),
       message.getDate(),
       message.getId(),
-      "https://mail.google.com/mail/u/0/#inbox/" + message.getId(),
+      `https://mail.google.com/mail/u/0/#inbox/${message.getId()}`,
       "Attachment",
       file.getName(),
       file.getUrl(),
@@ -135,7 +134,7 @@ export class SpreadsheetAdapter extends BaseAdapter {
       message.getSubject(),
       message.getDate(),
       message.getId(),
-      "https://mail.google.com/mail/u/0/#inbox/" + message.getId(),
+      `https://mail.google.com/mail/u/0/#inbox/${message.getId()}`,
       "Attachment",
       attachment.getName(),
       logMessage,
@@ -159,7 +158,7 @@ export class SpreadsheetAdapter extends BaseAdapter {
       message.getSubject(),
       message.getDate(),
       message.getId(),
-      "https://mail.google.com/mail/u/0/#inbox/" + message.getId(),
+      `https://mail.google.com/mail/u/0/#inbox/${message.getId()}`,
       "Thread",
       pdf.getName(),
       pdf.getUrl(),
@@ -178,7 +177,7 @@ export class SpreadsheetAdapter extends BaseAdapter {
       thread.getFirstMessageSubject(),
       thread.getLastMessageDate(),
       thread.getId(),
-      "https://mail.google.com/mail/u/0/#inbox/" + thread.getId(),
+      `https://mail.google.com/mail/u/0/#inbox/${thread.getId()}`,
       "Thread",
       pdf.getName(),
       pdf.getUrl(),

@@ -16,6 +16,9 @@ export class Timer {
   public getRunTime() {
     return this.getSecondsUntil(new Date())
   }
+  public now() {
+    return new Date()
+  }
   public start() {
     this.startTime = new Date()
     return this.startTime

@@ -502,11 +502,10 @@ Represents a settings config that affect the way GMail2GDrive works.
 
 **`SettingsConfig` Properties**
 
-|                         | Type     | Description                                                                                                                      | Required                                        |
-| ----------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
-| **logSheetFile**        | `string` | Path of the spreadsheet log file                                                                                                 | No, default: `"Gmail2GDrive/Gmail2GDrive-logs"` |
-| **logSheetFolderId**    | `string` | Folder ID of the spreadsheet log file in case of a shared drive (instead of logSheetFile)                                        | No, default:                                    |
-| **markProcessedLabel**  | `string` | The label to be added to processed GMail threads (only for markProcessedMode="label", deprecated - only for compatibility to v1) | No, default:                                    |
+|                         | Type     | Description                                                                                                                      | Required                                                                                            |
+| ----------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| **logSheetLocation**    | `string` | Path of the spreadsheet log file                                                                                                 | No, default: `"Gmail2GDrive/Gmail2GDrive-logs/logsheet-{timer.now:dateformat:YYYY-MM-DD_HH-mm-ss}"` |
+| **markProcessedLabel**  | `string` | The label to be added to processed GMail threads (only for markProcessedMode="label", deprecated - only for compatibility to v1) | No, default:                                                                                        |
 | **markProcessedMethod** | `string` | The method to mark processed threads/messages.                                                                                   |
 
 - `add-thread-label`: Add the label from `markProcessedLabel` to the thread. This is just for compatibility to v1 and is limited to one message per thread.
@@ -520,19 +519,12 @@ Represents a settings config that affect the way GMail2GDrive works.
 
 Additional properties are not allowed.
 
-### SettingsConfig.logSheetFile
+### SettingsConfig.logSheetLocation
 
 Path of the spreadsheet log file
 
 - **Type**: `string`
-- **Required**: No, default: `"Gmail2GDrive/Gmail2GDrive-logs"`
-
-### SettingsConfig.logSheetFolderId
-
-Folder ID of the spreadsheet log file in case of a shared drive (instead of logSheetFile)
-
-- **Type**: `string`
-- **Required**: No, default:
+- **Required**: No, default: `"Gmail2GDrive/Gmail2GDrive-logs/logsheet-{timer.now:dateformat:YYYY-MM-DD_HH-mm-ss}"`
 
 ### SettingsConfig.markProcessedLabel
 

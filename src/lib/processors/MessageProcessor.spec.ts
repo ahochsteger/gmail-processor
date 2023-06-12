@@ -1,3 +1,4 @@
+import { GMailMocks } from "../../test/mocks/GMailMocks"
 import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
 import { RunMode } from "../Context"
 import { newConfig } from "../config/Config"
@@ -75,7 +76,7 @@ describe("match()", () => {
         matched: ["message-2"],
       },
     ]
-    const mockedThread = MockFactory.newThreadMock({
+    const mockedThread = GMailMocks.newThreadMock({
       messages: [
         {
           from: "from1@example.com",

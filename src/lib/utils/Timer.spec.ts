@@ -1,14 +1,15 @@
-import { MockFactory } from "../../test/mocks/MockFactory"
+import { ConfigMocks } from "../../test/mocks/ConfigMocks"
+import { ContextMocks } from "../../test/mocks/ContextMocks"
 import { ProcessingContext } from "../Context"
 import { DEFAULT_SETTING_MAX_RUNTIME } from "../config/SettingsConfig"
 
 function getProcessingContextWithRuntime(
   maxRuntime: number,
 ): ProcessingContext {
-  const config = MockFactory.newDefaultConfig()
+  const config = ConfigMocks.newDefaultConfig()
   config.settings.maxRuntime = maxRuntime
-  const ctx = MockFactory.newProcessingContextMock(
-    MockFactory.newEnvContextMock(),
+  const ctx = ContextMocks.newProcessingContextMock(
+    ContextMocks.newEnvContextMock(),
     config,
   )
   return ctx

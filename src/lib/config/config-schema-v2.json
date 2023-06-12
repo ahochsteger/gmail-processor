@@ -362,16 +362,10 @@
       "additionalProperties": false,
       "description": "Represents a settings config that affect the way GMail2GDrive works.",
       "properties": {
-        "logSheetFile": {
-          "default": "Gmail2GDrive/Gmail2GDrive-logs",
+        "logSheetLocation": {
+          "default": "Gmail2GDrive/Gmail2GDrive-logs/logsheet-{timer.now:dateformat:YYYY-MM-DD_HH-mm-ss}",
           "description": "Path of the spreadsheet log file",
-          "title": "logSheetFile",
-          "type": "string"
-        },
-        "logSheetFolderId": {
-          "default": "",
-          "description": "Folder ID of the spreadsheet log file in case of a shared drive (instead of logSheetFile)",
-          "title": "logSheetFolderId",
+          "title": "logSheetLocation",
           "type": "string"
         },
         "markProcessedLabel": {

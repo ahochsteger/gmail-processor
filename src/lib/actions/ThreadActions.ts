@@ -124,12 +124,14 @@ export class ThreadActions implements ActionProvider<ThreadContext> {
       ok: true,
       file: context.proc.gdriveAdapter.createFile(
         PatternUtil.substitute(context, a.location),
-        context.proc.gmailAdapter.threadAsPdf(
-          context.thread.object,
-          a.skipHeader,
-        ),
-        "application/pdf",
-        PatternUtil.substitute(context, a.description || ""),
+        {
+          content: context.proc.gmailAdapter.threadAsPdf(
+            context.thread.object,
+            a.skipHeader,
+          ),
+          mimeType: "application/pdf",
+          description: PatternUtil.substitute(context, a.description || ""),
+        },
         a.conflictStrategy,
       ),
     }

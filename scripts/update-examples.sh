@@ -62,8 +62,9 @@ function generateTestExample() {
 ${cfgMap[cfgImport]}
 import { PartialDeep } from "type-fest"
 import { ProcessingConfig } from "../../lib/config/Config"
+import { ContextMocks } from "../mocks/ContextMocks"
 import { GMail2GDrive } from "../mocks/Examples"
-import { MockFactory } from "../mocks/MockFactory"
+
 
 const ${cfgMap[cfgName]} = $(cat "${cfgMap[cfgFile]}")
 
@@ -73,7 +74,7 @@ it("should provide the effective config of v${version} example ${cfgMap[fnName]}
 })
 
 it("should process a v${cfgMap[version]} config example", () => {
-  const result = GMail2GDrive.Lib.${cfgMap[runFn]}(${cfgMap[cfgName]} as PartialDeep<${cfgMap[cfgType]}>, "dry-run", MockFactory.newEnvContextMock())
+  const result = GMail2GDrive.Lib.${cfgMap[runFn]}(${cfgMap[cfgName]} as PartialDeep<${cfgMap[cfgType]}>, "dry-run", ContextMocks.newEnvContextMock())
   expect(result.status).toEqual("ok")
 })
 EOF

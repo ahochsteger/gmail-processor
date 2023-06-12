@@ -9,6 +9,8 @@ export const DEFAULT_SETTING_MAX_BATCH_SIZE = 10
 export const DEFAULT_SETTING_MAX_RUNTIME = 280
 export const DEFAULT_SETTING_SLEEP_TIME_THREADS = 100
 
+export type LocationType = string
+
 /**
  * The method to mark processed threads/messages.
  * * `add-thread-label`: Add the label from `markProcessedLabel` to the thread. This is just for compatibility to v1 and is limited to one message per thread.
@@ -27,12 +29,8 @@ export class SettingsConfig {
    * Path of the spreadsheet log file
    */
   @Expose()
-  logSheetFile? = "Gmail2GDrive/Gmail2GDrive-logs"
-  /**
-   * Folder ID of the spreadsheet log file in case of a shared drive (instead of logSheetFile)
-   */
-  @Expose()
-  logSheetFolderId? = ""
+  logSheetLocation?: LocationType =
+    "Gmail2GDrive/Gmail2GDrive-logs/logsheet-{timer.now:dateformat:YYYY-MM-DD_HH-mm-ss}"
   /**
    * The maximum batch size of threads to process in a single run to respect Google processing limits
    */
