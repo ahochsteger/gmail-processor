@@ -69,12 +69,15 @@ export class FolderData extends EntryData<GoogleAppsScript.Drive.Folder> {
     scope: EntryScope = EntryScope.EXISTING,
   ): T[] {
     let entries: T[] = []
-    for (const e of folder.entries.filter(
-      (e) =>
-        (entryType === undefined || e.entryType === entryType) &&
-        e.scope === scope,
-    )) {
-      entries.push(e as T)
+    if (entryType === undefined || entryType === EntryType.FOLDER) {
+      entries.push(folder as T)
+    }
+    if (entryType === undefined || entryType === EntryType.FILE) {
+      for (const e of folder.entries.filter(
+        (e) => e.entryType === EntryType.FILE && e.scope === scope,
+      )) {
+        entries.push(e as T)
+      }
     }
     for (const childFolder of folder.getFolders(scope)) {
       entries = entries.concat(

@@ -29,6 +29,8 @@ export class EnvMocks {
     mock<GoogleAppsScript.Drive.File>()
   public newFile: MockProxy<GoogleAppsScript.Drive.File> =
     mock<GoogleAppsScript.Drive.File>()
+  public newNestedFile: MockProxy<GoogleAppsScript.Drive.File> =
+    mock<GoogleAppsScript.Drive.File>()
   public existingFolder: MockProxy<GoogleAppsScript.Drive.Folder> =
     mock<GoogleAppsScript.Drive.Folder>()
   public newFolder: MockProxy<GoogleAppsScript.Drive.Folder> =

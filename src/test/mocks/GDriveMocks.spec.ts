@@ -22,6 +22,8 @@ import {
   NO_FILE_NAME,
   NO_FOLDER_ID,
   NO_FOLDER_NAME,
+  ROOT_FOLDER_ID,
+  ROOT_FOLDER_NAME,
 } from "./GDriveMocks"
 import { MockFactory, Mocks } from "./MockFactory"
 
@@ -32,8 +34,8 @@ beforeAll(() => {
   mocks = MockFactory.newMocks()
   driveSpec = new GDriveData(
     mocks.rootFolder,
-    "root-folder-id",
-    "root-folder",
+    ROOT_FOLDER_ID,
+    ROOT_FOLDER_NAME,
     EntryScope.EXISTING,
     [
       new FileData(mocks.existingFile, EXISTING_FILE_ID, EXISTING_FILE_NAME),
@@ -86,6 +88,7 @@ describe("setupFile()", () => {
   it("should setup a default file", () => {
     const file = GDriveMocks.setupFileMocks(
       new FileData(mocks.existingFile, EXISTING_FILE_ID, EXISTING_FILE_NAME),
+      mocks.existingFile,
     )
     expect(file.setContent("test")).toBe(file)
     expect(file.setDescription("test")).toBe(file)

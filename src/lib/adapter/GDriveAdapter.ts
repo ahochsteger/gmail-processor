@@ -2,10 +2,12 @@ import { EnvContext, RunMode } from "../Context"
 import { BaseAdapter } from "./BaseAdapter"
 
 export enum ConflictStrategy {
-  KEEP = "keep",
-  SKIP = "skip",
-  REPLACE = "replace",
   ERROR = "error",
+  BACKUP = "backup",
+  KEEP = "keep",
+  REPLACE = "replace",
+  SKIP = "skip",
+  UPDATE = "update",
 }
 
 export type LocationInfo = {
@@ -47,8 +49,15 @@ export class DriveUtils {
       const existingFile = existingFiles.next()
 
       switch (conflictStrategy) {
+        case ConflictStrategy.BACKUP:
+          return this.createWithBackup(
+            ctx,
+            parentFolder,
+            existingFile,
+            fileData,
+          )
         case ConflictStrategy.KEEP:
-          return this.createDuplicateFile(ctx, existingFile, fileData)
+          return this.createFileInParent(ctx, parentFolder, filename, fileData)
         case ConflictStrategy.SKIP:
           ctx.log.warn(
             `A file with the same name already exists at location: ${location}. Skipping file creation.`,
@@ -72,15 +81,27 @@ export class DriveUtils {
             )
             return existingFile
           }
+        case ConflictStrategy.UPDATE:
+          if (ctx.env.runMode === RunMode.DANGEROUS) {
+            ctx.log.warn(
+              `A file with the same name already exists at location: ${location}. Updating the file contents.`,
+            )
+            return this.updateExistingFile(ctx, existingFile, fileData)
+          } else {
+            ctx.log.warn(
+              `A file with the same name already exists at location: ${location}. Skipping update due to runmode ...`,
+            )
+            return existingFile
+          }
         case ConflictStrategy.ERROR: {
           const errorMessage = `Conflict: A file with the same name already exists at location: ${location}`
           ctx.log.error(errorMessage)
           throw new Error(errorMessage)
         }
       }
+    } else {
+      return this.createFileInParent(ctx, parentFolder, filename, fileData)
     }
-
-    return this.createFileInParent(ctx, parentFolder, filename, fileData)
   }
 
   public static ensureFolderExists(ctx: EnvContext, location: string) {
@@ -154,8 +175,9 @@ export class DriveUtils {
     return parentFolder
   }
 
-  private static createDuplicateFile(
+  private static createWithBackup(
     ctx: EnvContext,
+    folder: GoogleAppsScript.Drive.Folder,
     existingFile: GoogleAppsScript.Drive.File,
     fileData: FileData,
   ): GoogleAppsScript.Drive.File {
@@ -163,14 +185,9 @@ export class DriveUtils {
     const nameParts = filename.split(".")
     const baseName = nameParts.slice(0, -1).join(".")
     const extension = nameParts[nameParts.length - 1]
-    const newFilename = `${baseName} (Copy).${extension}`
-
-    return this.createFileInParent(
-      ctx,
-      existingFile.getParents().next(),
-      newFilename,
-      fileData,
-    )
+    const backupFilename = `${baseName} (Backup).${extension}`
+    existingFile.setName(backupFilename)
+    return this.createFileInParent(ctx, folder, filename, fileData)
   }
 
   private static createFileInParent(
@@ -190,6 +207,16 @@ export class DriveUtils {
   ): void {
     ctx.log.info(`Deleting existing file: ${file.getName()}`)
     file.setTrashed(true)
+  }
+
+  private static updateExistingFile(
+    _ctx: EnvContext,
+    file: GoogleAppsScript.Drive.File,
+    fileData: FileData,
+  ): GoogleAppsScript.Drive.File {
+    return file
+      .setContent(fileData.content)
+      .setDescription(fileData.description)
   }
 }
 

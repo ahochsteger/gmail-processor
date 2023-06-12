@@ -1,7 +1,10 @@
 import {
   CREATED_FILE_ID,
   CREATED_FILE_NAME,
+  CREATED_FOLDER_NAME,
+  CREATED_NESTED_FILE_NAME,
   EXISTING_FILE_NAME,
+  ROOT_FOLDER_ID,
 } from "../../test/mocks/GDriveMocks"
 import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
 import { RunMode } from "../Context"
@@ -40,8 +43,9 @@ beforeEach(() => {
 })
 */
 
-describe("createFile()", () => {
+describe("createFile() strategy:ERROR", () => {
   it("should create a non-existing file in the root folder", () => {
+    gdriveAdapter.ctx.env.runMode = RunMode.DANGEROUS
     const file = gdriveAdapter.createFile(
       `/${CREATED_FILE_NAME}`,
       PLAIN_TEXT_CONTENT,
@@ -50,13 +54,10 @@ describe("createFile()", () => {
     expect(file.getId()).toEqual(CREATED_FILE_ID)
     expect(mocks.rootFolder.createFile).toBeCalled()
   })
-  it("should create a file if existing and replace mode", () => {
-    const it = mocks.rootFolder.getFilesByName(EXISTING_FILE_NAME)
-    expect(it.hasNext).not.toBeCalled()
-    expect(it.hasNext()).toBeTruthy()
-    expect(it.hasNext).toBeCalledTimes(1)
-    jest.clearAllMocks()
-    expect(it.hasNext).not.toBeCalled()
+})
+describe("createFile() strategy:REPLACE", () => {
+  it("should replace an existing file in replace mode", () => {
+    gdriveAdapter.ctx.env.runMode = RunMode.DANGEROUS
     const file = gdriveAdapter.createFile(
       `/${EXISTING_FILE_NAME}`,
       PLAIN_TEXT_CONTENT,
@@ -65,7 +66,7 @@ describe("createFile()", () => {
     expect(file).toBeDefined()
     expect(mocks.rootFolder.createFile).toBeCalled()
   })
-  it("should not create a file if file exists and replace mode but running in dry-run mode", () => {
+  it("should not replace an existing file if in replace mode but running in dry-run mode", () => {
     gdriveAdapter.ctx.env.runMode = RunMode.DRY_RUN
     gdriveAdapter.createFile(
       `/${EXISTING_FILE_NAME}`,
@@ -74,7 +75,7 @@ describe("createFile()", () => {
     )
     expect(mocks.rootFolder.createFile).not.toBeCalled()
   })
-  it("should throw an error if file exists and replace mode but running in safe mode", () => {
+  it("should not replace an existing file if in replace mode but running in safe mode", () => {
     gdriveAdapter.ctx.env.runMode = RunMode.SAFE_MODE
     gdriveAdapter.createFile(
       `/${EXISTING_FILE_NAME}`,
@@ -83,7 +84,71 @@ describe("createFile()", () => {
     )
     expect(mocks.rootFolder.createFile).not.toBeCalled()
   })
+})
+describe("createFile() strategy:UPDATE", () => {
+  it("should update an existing file in replace mode", () => {
+    gdriveAdapter.ctx.env.runMode = RunMode.DANGEROUS
+    const file = gdriveAdapter.createFile(
+      `/${EXISTING_FILE_NAME}`,
+      PLAIN_TEXT_CONTENT,
+      ConflictStrategy.UPDATE,
+    )
+    expect(file).toBe(mocks.existingFile)
+    expect(mocks.rootFolder.createFile).not.toBeCalled()
+    expect(mocks.existingFile.setContent).toBeCalled()
+    expect(mocks.existingFile.setDescription).toBeCalled()
+  })
+  it("should not update an existing file if in replace mode but running in dry-run mode", () => {
+    gdriveAdapter.ctx.env.runMode = RunMode.DRY_RUN
+    gdriveAdapter.createFile(
+      `/${EXISTING_FILE_NAME}`,
+      PLAIN_TEXT_CONTENT,
+      ConflictStrategy.UPDATE,
+    )
+    expect(mocks.rootFolder.createFile).not.toBeCalled()
+    expect(mocks.existingFile.setContent).not.toBeCalled()
+    expect(mocks.existingFile.setDescription).not.toBeCalled()
+  })
+  it("should not update an existing file if in replace mode but running in safe mode", () => {
+    gdriveAdapter.ctx.env.runMode = RunMode.SAFE_MODE
+    gdriveAdapter.createFile(
+      `/${EXISTING_FILE_NAME}`,
+      PLAIN_TEXT_CONTENT,
+      ConflictStrategy.UPDATE,
+    )
+    expect(mocks.rootFolder.createFile).not.toBeCalled()
+    expect(mocks.existingFile.setContent).not.toBeCalled()
+    expect(mocks.existingFile.setDescription).not.toBeCalled()
+  })
+})
+describe("createFile() strategy:BACKUP", () => {
+  it("should backup an existing file", () => {
+    gdriveAdapter.ctx.env.runMode = RunMode.DANGEROUS
+    const createdFile = gdriveAdapter.createFile(
+      `/${EXISTING_FILE_NAME}`,
+      PLAIN_TEXT_CONTENT,
+      ConflictStrategy.BACKUP,
+    )
+    expect(createdFile).not.toBe(mocks.existingFile)
+    expect(mocks.rootFolder.createFile).toBeCalled()
+    expect(mocks.existingFile.setName).toBeCalled()
+  })
+})
+describe("createFile() strategy:KEEP", () => {
+  it("should create a duplicate new file", () => {
+    gdriveAdapter.ctx.env.runMode = RunMode.SAFE_MODE
+    const createdFile = gdriveAdapter.createFile(
+      `/${EXISTING_FILE_NAME}`,
+      PLAIN_TEXT_CONTENT,
+      ConflictStrategy.KEEP,
+    )
+    expect(createdFile).not.toBe(mocks.existingFile)
+    expect(mocks.rootFolder.createFile).toBeCalled()
+  })
+})
+describe("createFile() strategy:SKIP", () => {
   it("should not create a file if existing and skip mode", () => {
+    gdriveAdapter.ctx.env.runMode = RunMode.DANGEROUS
     gdriveAdapter.createFile(
       `/${EXISTING_FILE_NAME}`,
       PLAIN_TEXT_CONTENT,
@@ -91,7 +156,10 @@ describe("createFile()", () => {
     )
     expect(mocks.rootFolder.createFile).not.toBeCalled()
   })
+})
+describe("createFile() strategy:ERROR", () => {
   it("should throw an error if file exists and error mode", () => {
+    gdriveAdapter.ctx.env.runMode = RunMode.DANGEROUS
     expect(() => {
       gdriveAdapter.createFile(
         `/${EXISTING_FILE_NAME}`,
@@ -99,6 +167,18 @@ describe("createFile()", () => {
         ConflictStrategy.ERROR,
       )
     }).toThrowError(/Conflict/)
+  })
+})
+describe("createFile() with folderId", () => {
+  it("should create a file using a folderId", () => {
+    gdriveAdapter.ctx.env.runMode = RunMode.DANGEROUS
+    gdriveAdapter.createFile(
+      `{id:${ROOT_FOLDER_ID}}/${CREATED_FOLDER_NAME}/${CREATED_NESTED_FILE_NAME}`,
+      PLAIN_TEXT_CONTENT,
+      ConflictStrategy.KEEP,
+    )
+    expect(mocks.rootFolder.createFolder).toBeCalled()
+    expect(mocks.newFolder.createFile).toBeCalled()
   })
 })
 

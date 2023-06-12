@@ -6,6 +6,8 @@ export const CREATED_FILE_ID = "created-file-id"
 export const CREATED_FILE_NAME = "created-file.txt"
 export const CREATED_FOLDER_ID = "created-folder-id"
 export const CREATED_FOLDER_NAME = "created-folder"
+export const CREATED_NESTED_FILE_ID = "created-nested-file-id"
+export const CREATED_NESTED_FILE_NAME = "created-nested-file.txt"
 export const EXISTING_FILE_ID = "some-existing-file-id"
 export const EXISTING_FILE_NAME = "some-existing-file.txt"
 export const EXISTING_FOLDER_ID = "some-existing-folder-id"
@@ -14,13 +16,16 @@ export const NO_FILE_ID = "no-file-id"
 export const NO_FILE_NAME = "no-file.txt"
 export const NO_FOLDER_ID = "no-folder-id"
 export const NO_FOLDER_NAME = "no-folder"
+export const ROOT_FOLDER_ID = "root-folder-id"
+export const ROOT_FOLDER_NAME = "root-folder"
 export const LOGSHEET_FILE_ID = "logsheet-file-id"
 export const LOGSHEET_FILE_NAME = "logsheet-file-name"
 
 export class GDriveMocks {
   public static setupFileMocks(
     fileData: FileData,
-    file: MockProxy<GoogleAppsScript.Drive.File> = mock<GoogleAppsScript.Drive.File>(),
+    file: MockProxy<GoogleAppsScript.Drive.File>,
+    parentFolder: MockProxy<GoogleAppsScript.Drive.Folder> = mock<GoogleAppsScript.Drive.Folder>(),
   ): MockProxy<GoogleAppsScript.Drive.File> {
     file.getId.mockReturnValue(fileData.id)
     file.getName.mockReturnValue(fileData.name)
@@ -29,7 +34,11 @@ export class GDriveMocks {
     file.setName.mockReturnValue(file)
     file.moveTo.mockReturnValue(file)
     file.setTrashed.mockReturnValue(file)
-    // TODO: Maybe add more methods that return the same file instance
+    file.getParents.mockReturnValue(
+      this.setupFolderIterator([
+        new FolderData(parentFolder, ROOT_FOLDER_ID, ROOT_FOLDER_NAME),
+      ]),
+    )
     return file
   }
 
@@ -55,6 +64,10 @@ export class GDriveMocks {
       folder.getFoldersByName
         .calledWith(matches((name) => name === spec.name))
         .mockReturnValue(this.setupFolderIterator([spec]))
+      this.setupFolderMocks(
+        spec,
+        spec.entry as MockProxy<GoogleAppsScript.Drive.Folder>,
+      )
     }
 
     // Default behavior for createFile/createFolder:
@@ -81,6 +94,10 @@ export class GDriveMocks {
       folder.createFolder
         .calledWith(matches((name) => name === spec.name))
         .mockReturnValue(spec.entry)
+      this.setupFolderMocks(
+        spec,
+        spec.entry as MockProxy<GoogleAppsScript.Drive.Folder>,
+      )
     }
 
     return folder
@@ -174,15 +191,20 @@ export class GDriveMocks {
       CREATED_FILE_NAME,
       EntryScope.CREATED,
     )
-    mocks.newFile = GDriveMocks.setupFileMocks(newFileData, mocks.newFile)
+    mocks.newFile = GDriveMocks.setupFileMocks(
+      newFileData,
+      mocks.newFile,
+      mocks.rootFolder,
+    )
     mocks.existingFile = GDriveMocks.setupFileMocks(
       existingFileData,
       mocks.existingFile,
+      mocks.rootFolder,
     )
     const driveSpec = new GDriveData(
       mocks.rootFolder,
-      "root-folder-id",
-      "root-folder",
+      ROOT_FOLDER_ID,
+      ROOT_FOLDER_NAME,
       EntryScope.EXISTING,
       [
         existingFileData,
@@ -207,6 +229,14 @@ export class GDriveMocks {
           CREATED_FOLDER_ID,
           CREATED_FOLDER_NAME,
           EntryScope.CREATED,
+          [
+            new FileData(
+              mocks.newNestedFile,
+              CREATED_NESTED_FILE_ID,
+              CREATED_NESTED_FILE_NAME,
+              EntryScope.CREATED,
+            ),
+          ],
         ),
       ],
     )

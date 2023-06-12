@@ -1,5 +1,6 @@
 import { mock } from "jest-mock-extended"
 import { EntryScope, FileData, FolderData, GDriveData } from "./GDriveData"
+import { ROOT_FOLDER_ID, ROOT_FOLDER_NAME } from "./GDriveMocks"
 
 let driveData: GDriveData
 
@@ -20,8 +21,8 @@ const existingNestedFolder2 = mock<GoogleAppsScript.Drive.Folder>()
 beforeAll(() => {
   driveData = new GDriveData(
     rootFolder,
-    "root-folder-id",
-    "root-folder",
+    ROOT_FOLDER_ID,
+    ROOT_FOLDER_NAME,
     EntryScope.EXISTING,
     [
       new FileData(
@@ -133,16 +134,24 @@ describe("getFolders()", () => {
 })
 describe("getNestedEntries()", () => {
   it("should return all nested entries", () => {
-    expect(driveData.getNestedEntries().map((f) => f.id)).toEqual([
-      "existing-file-1",
-      "existing-file-2",
-      "existing-folder-1",
-      "existing-folder-2",
-      "existing-nested-file-1",
-      "existing-nested-file-2",
-      "existing-nested-folder-1",
-      "existing-nested-folder-2",
-    ])
+    expect(
+      driveData
+        .getNestedEntries()
+        .map((f) => f.id)
+        .sort(),
+    ).toEqual(
+      [
+        ROOT_FOLDER_ID,
+        "existing-file-1",
+        "existing-file-2",
+        "existing-folder-1",
+        "existing-folder-2",
+        "existing-nested-file-1",
+        "existing-nested-file-2",
+        "existing-nested-folder-1",
+        "existing-nested-folder-2",
+      ].sort(),
+    )
   })
 })
 describe("getNestedFiles()", () => {
@@ -157,12 +166,20 @@ describe("getNestedFiles()", () => {
 })
 describe("getNestedFolders()", () => {
   it("should return all nested folders", () => {
-    expect(driveData.getNestedFolders().map((f) => f.id)).toEqual([
-      "existing-folder-1",
-      "existing-folder-2",
-      "existing-nested-folder-1",
-      "existing-nested-folder-2",
-    ])
+    expect(
+      driveData
+        .getNestedFolders()
+        .map((f) => f.id)
+        .sort(),
+    ).toEqual(
+      [
+        ROOT_FOLDER_ID,
+        "existing-folder-1",
+        "existing-folder-2",
+        "existing-nested-folder-1",
+        "existing-nested-folder-2",
+      ].sort(),
+    )
   })
 })
 describe("getFileById()", () => {
