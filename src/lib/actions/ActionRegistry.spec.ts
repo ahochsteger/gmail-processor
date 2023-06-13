@@ -57,6 +57,13 @@ class TestThreadActionProvider implements ActionProvider {
     )
     return { ok: true }
   }
+  public errorThrowingMethod(
+    _ctx: ProcessingContext,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _args: ActionArgsType = {},
+  ) {
+    throw new Error("Error from staticErrorThrowingMethod")
+  }
 }
 
 class TestMessageActionProvider implements ActionProvider {
@@ -130,6 +137,7 @@ describe("ActionRegistry.registerActionProvider()", () => {
       (v) => v.startsWith("testThread."),
     )
     expect(actionNames).toEqual([
+      "testThread.errorThrowingMethod",
       "testThread.instanceThreadMethodWithArgs",
       "testThread.staticThreadMethodWithArgs",
     ])
@@ -157,6 +165,7 @@ describe("ActionRegistry.getActions()", () => {
       "testAttachment.instanceAttachmentMethodWithArgs",
       "testMessage.staticMessageMethodWithArgs",
       "testProcessing.staticProcessingMethodNoArgs",
+      "testThread.errorThrowingMethod",
       "testThread.instanceThreadMethodWithArgs",
       "testThread.staticThreadMethodWithArgs",
     ])
@@ -231,6 +240,17 @@ describe("ActionRegistry.invokeAction()", () => {
       { threadBoolArg: true, threadStringArg: "my string" },
     )
     expect(actual).toBeTruthy()
+  })
+  it("should handle an action that throws an error", () => {
+    const actual = actionRegistry.executeAction(
+      mocks.threadContext,
+      "testThread.errorThrowingMethod",
+      {},
+    )
+    expect(actual.ok).toBeFalsy()
+    expect(actual.error?.message).toEqual(
+      "Error from staticErrorThrowingMethod",
+    )
   })
 })
 

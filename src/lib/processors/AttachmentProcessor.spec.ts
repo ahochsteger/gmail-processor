@@ -93,6 +93,12 @@ it("should match messages with matching parameters", () => {
         },
         matched: ["attachment-2.pdf"],
       },
+      {
+        config: {
+          name: "non-matching-attachment",
+        },
+        matched: [],
+      },
     ]
   const mockedMessage = GMailMocks.newMessageMock({
     attachments: [
@@ -128,6 +134,17 @@ it("should process attachment configs", () => {
     mocks.messageContext,
     mocks.messageContext.message.config.attachments,
   )
+  expect(result.status).toEqual(ProcessingStatus.OK)
+})
+
+it("should process a non-matching attachment config", () => {
+  const result = AttachmentProcessor.processConfigs(mocks.messageContext, [
+    newAttachmentConfig({
+      match: {
+        name: "non-matching-attachment",
+      },
+    }),
+  ])
   expect(result.status).toEqual(ProcessingStatus.OK)
 })
 

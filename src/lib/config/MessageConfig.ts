@@ -19,6 +19,7 @@ export class MessageConfig {
    * The list actions to be executed for their respective handler scopes
    */
   @Expose()
+  @Type(() => MessageActionConfig)
   actions?: MessageActionConfig[] = []
   /**
    * The description of the message handler config

@@ -1,9 +1,5 @@
 import { PartialDeep } from "type-fest"
-import {
-  AttachmentActionConfig,
-  MessageActionConfig,
-  ThreadActionConfig,
-} from "../../lib/config/ActionConfig"
+import { ThreadActionConfig } from "../../lib/config/ActionConfig"
 import { AttachmentConfig } from "../../lib/config/AttachmentConfig"
 import { Config, RequiredConfig, jsonToConfig } from "../../lib/config/Config"
 import { MessageConfig } from "../../lib/config/MessageConfig"
@@ -11,14 +7,8 @@ import { MessageFlag } from "../../lib/config/MessageFlag"
 import { SettingsConfig } from "../../lib/config/SettingsConfig"
 import { ThreadConfig } from "../../lib/config/ThreadConfig"
 import { V1Config } from "../../lib/config/v1/V1Config"
-import { Mocks } from "./MockFactory"
 
 export class ConfigMocks {
-  public static setupAllMocks(mocks: Mocks): Mocks {
-    // TODO: Setup all mocks here
-    return mocks
-  }
-
   public static newDefaultSettingsConfigJson(): PartialDeep<SettingsConfig> {
     return {
       maxBatchSize: 100,
@@ -44,43 +34,10 @@ export class ConfigMocks {
     }
   }
 
-  public static newDefaultMessageActionConfigJson(): PartialDeep<MessageActionConfig> {
-    return {
-      args: {
-        folderType: "path",
-        folder: "Folder2/Subfolder2/${message.subject.match.1}",
-        filename: "${message.subject} - ${match.file.1}.jpg",
-        onExists: "replace",
-      },
-      name: "message.storeAsPdfToGDrive",
-      description: "Default action config",
-    }
-  }
-
-  public static newDefaultAttachmentActionConfigJson(): PartialDeep<AttachmentActionConfig> {
-    return {
-      args: {
-        folderType: "path",
-        folder: "Folder2/Subfolder2/${message.subject.match.1}",
-        filename: "${message.subject} - ${match.file.1}.jpg",
-        onExists: "replace",
-      },
-      name: "attachment.storeToGDrive",
-      description: "Default action config",
-    }
-  }
-
-  public static newDefaultAttachmentConfigJson(
-    includeCommands = false,
-  ): PartialDeep<AttachmentConfig> {
+  public static newDefaultAttachmentConfigJson(): PartialDeep<AttachmentConfig> {
     return {
       name: "default-attachment-config",
       description: "Default attachment config",
-      actions: includeCommands
-        ? [
-            this.newDefaultAttachmentActionConfigJson() as AttachmentActionConfig,
-          ]
-        : [],
       match: {
         name: "Image-([0-9]+)\\.jpg",
         contentTypeRegex: "image/.+",
@@ -92,10 +49,7 @@ export class ConfigMocks {
     }
   }
 
-  public static newDefaultMessageConfigJson(
-    includeCommands = false,
-    includeAttachmentConfigs = false,
-  ): PartialDeep<MessageConfig> {
+  public static newDefaultMessageConfigJson(): PartialDeep<MessageConfig> {
     return {
       name: "default-message-config",
       description: "Default message config",
@@ -107,12 +61,6 @@ export class ConfigMocks {
         newerThan: "",
         olderThan: "",
       },
-      actions: includeCommands
-        ? [this.newDefaultMessageActionConfigJson() as MessageActionConfig]
-        : [],
-      attachments: includeAttachmentConfigs
-        ? [this.newDefaultAttachmentConfigJson()]
-        : [],
     }
   }
 

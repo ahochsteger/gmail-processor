@@ -7,7 +7,7 @@ import {
 import "reflect-metadata"
 import { PartialDeep } from "type-fest"
 import { RequiredDeep } from "../utils/UtilityTypes"
-import { ActionConfig, AttachmentActionConfig } from "./ActionConfig"
+import { AttachmentActionConfig } from "./ActionConfig"
 import { AttachmentMatchConfig } from "./AttachmentMatchConfig"
 
 /**
@@ -18,7 +18,7 @@ export class AttachmentConfig {
    * The list actions to be executed for their respective handler scopes
    */
   @Expose()
-  @Type(() => ActionConfig)
+  @Type(() => AttachmentActionConfig)
   actions?: AttachmentActionConfig[] = []
   /**
    * The description of the attachment handler config

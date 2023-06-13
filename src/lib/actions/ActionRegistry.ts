@@ -8,7 +8,7 @@ export type JsonValue = JsonObject | JsonArray | JsonPrimitive
 export type ActionArgsType = Record<string, JsonValue>
 export type ActionReturnType = {
   ok?: boolean
-  error?: unknown
+  error?: Error
   [k: string]: unknown
 }
 
@@ -108,7 +108,7 @@ export class ActionRegistry {
       result = {
         ...fn(context, args),
       } as ActionReturnType
-    } catch (e) {
+    } catch (e: any) {
       result = {
         ok: false,
         error: e,

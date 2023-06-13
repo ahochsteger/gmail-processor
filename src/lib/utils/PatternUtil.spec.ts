@@ -319,7 +319,7 @@ describe("Handle single messages", () => {
       "message subject,false,threadId123,false,false,,2019-05-02 07:15:28,2,some-permalink-url," +
         "message-bcc@example.com,message-cc@example.com,2019-05-02 07:15:28,message-from@example.com," +
         "message-id,message-reply-to@example.com,message subject,message-to@example.com,text/plain," +
-        "some-hash-value,false,attachment.txt,19",
+        "a53be3c62f10eb7174efaab688b655a066a7f9f5,false,attachment.txt,19",
     )
   })
 })
@@ -353,7 +353,9 @@ describe("Handle multiple attachments", () => {
         "${attachment.contentType},${attachment.hash},${attachment.isGoogleType},${attachment.name}," +
           "${attachment.size}",
       ),
-    ).toBe("text/plain,some-hash-value,false,attachment.txt,19")
+    ).toBe(
+      "text/plain,a53be3c62f10eb7174efaab688b655a066a7f9f5,false,attachment.txt,19",
+    )
   })
   it("should handle a thread with one message and attachment 2 of 2", () => {
     const ctx = ContextMocks.newAttachmentContextMock()
@@ -439,7 +441,7 @@ describe("Handle multiple messages", () => {
       "message subject,false,threadId123,false,false,,2019-05-02 07:15:28,2,some-permalink-url," +
         "message-bcc@example.com,message-cc@example.com,2019-05-02 07:15:28,message-from@example.com," +
         "message-id,message-reply-to@example.com,message subject,message-to@example.com,text/plain," +
-        "some-hash-value,false,attachment.txt,19",
+        "a53be3c62f10eb7174efaab688b655a066a7f9f5,false,attachment.txt,19",
     )
   })
   it("should handle a thread with message 2 of 2 and one attachment", () => {

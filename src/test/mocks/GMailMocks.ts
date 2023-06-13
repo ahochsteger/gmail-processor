@@ -1,3 +1,4 @@
+import { createHash } from "crypto"
 import { MockProxy, mock } from "jest-mock-extended"
 import { RequiredDeep } from "../../lib/utils/UtilityTypes"
 import { Mocks } from "./MockFactory"
@@ -220,15 +221,7 @@ export class GMailMocks {
       : "Sample text content"
     const sampleData: RequiredDeep<AttachmentData> = {
       contentType: "text/plain",
-      hash:
-        typeof Utilities === "undefined" // NOTE: this fallback is done to run tests
-          ? "some-hash-value" // locally without Google Apps Script
-          : String(
-              Utilities.computeDigest(
-                Utilities.DigestAlgorithm.SHA_1,
-                sampleContent,
-              ),
-            ),
+      hash: createHash("sha1").update(sampleContent).digest("hex"),
       name: "attachment.txt",
       size: this.lengthInUtf8Bytes(sampleContent),
       isGoogleType: false,

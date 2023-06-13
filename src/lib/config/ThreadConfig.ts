@@ -20,6 +20,7 @@ export class ThreadConfig {
    * The list actions to be executed for their respective handler scopes
    */
   @Expose()
+  @Type(() => ThreadActionConfig)
   actions?: ThreadActionConfig[] = []
   /**
    * The description of the thread handler config
