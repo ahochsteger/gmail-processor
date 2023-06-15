@@ -1,7 +1,7 @@
 import { PartialDeep } from "type-fest"
 import { ThreadActionConfig } from "../../lib/config/ActionConfig"
 import { AttachmentConfig } from "../../lib/config/AttachmentConfig"
-import { Config, RequiredConfig, jsonToConfig } from "../../lib/config/Config"
+import { Config, RequiredConfig, newConfig } from "../../lib/config/Config"
 import { MessageConfig } from "../../lib/config/MessageConfig"
 import { MessageFlag } from "../../lib/config/MessageFlag"
 import { SettingsConfig } from "../../lib/config/SettingsConfig"
@@ -227,7 +227,7 @@ export class ConfigMocks {
   }
 
   public static newDefaultConfig(): RequiredConfig {
-    return jsonToConfig({
+    return newConfig({
       threads: this.newComplexThreadConfigList(),
     })
   }

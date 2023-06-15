@@ -1,7 +1,7 @@
 import { PartialDeep } from "type-fest"
 import { EnvContext, ProcessingResult, RunMode } from "./Context"
 import { Config, RequiredConfig, configToJson } from "./config/Config"
-import { V1Config, jsonToV1Config } from "./config/v1/V1Config"
+import { V1Config, newV1Config } from "./config/v1/V1Config"
 import { V1ToV2Converter } from "./config/v1/V1ToV2Converter"
 import { GmailProcessor } from "./processors/GmailProcessor"
 import { Logger } from "./utils/Logger"
@@ -48,7 +48,7 @@ export function runWithV1Config(
 ): ProcessingResult {
   ctx.log.info("Processing v1 legacy config: ", v1configJson)
   ctx.env.runMode = runMode as RunMode
-  const v1config = jsonToV1Config(v1configJson)
+  const v1config = newV1Config(v1configJson)
   const config = V1ToV2Converter.v1ConfigToV2Config(v1config)
   ctx.log.warn(
     "Using deprecated v1 config format - switching to the new v2 config format is strongly recommended:\n",
@@ -76,6 +76,6 @@ export function getEffectiveConfig(
 export function getEffectiveConfigV1(
   v1configJson: PartialDeep<V1Config>,
 ): RequiredConfig {
-  const v1config = jsonToV1Config(v1configJson)
+  const v1config = newV1Config(v1configJson)
   return V1ToV2Converter.v1ConfigToV2Config(v1config)
 }

@@ -1,4 +1,4 @@
-export class MaxRuntimeReachedError extends Error {}
+class MaxRuntimeReachedError extends Error {}
 
 export class Timer {
   private startTime: Date

@@ -3,7 +3,7 @@ import { MockProxy, mock } from "jest-mock-extended"
 import { RequiredDeep } from "../../lib/utils/UtilityTypes"
 import { Mocks } from "./MockFactory"
 
-export type ThreadData = {
+type ThreadData = {
   firstMessageSubject?: string
   hasStarredMessages?: boolean
   id?: string
@@ -15,7 +15,7 @@ export type ThreadData = {
   permalink?: string
   messages?: MessageData[]
 }
-export type MessageData = {
+type MessageData = {
   bcc?: string
   cc?: string
   date?: Date
@@ -28,7 +28,7 @@ export type MessageData = {
   isStarred?: boolean
   isUnread?: boolean
 }
-export type AttachmentData = {
+type AttachmentData = {
   contentType?: string
   hash?: string
   name?: string

@@ -52,7 +52,7 @@ The name of the action to be executed
 - ## **Allowed values**:
   - `"attachment.storeToGDrive"`
   - `"global.log"`
-  - `"global.logsheetLog"`
+  - `"global.sheetLog"`
   - `"message.forward"`
   - `"message.markRead"`
   - `"message.markUnread"`
@@ -336,7 +336,7 @@ The name of the action to be executed
 - **Required**: &#10003; Yes
 - ## **Allowed values**:
   - `"global.log"`
-  - `"global.logsheetLog"`
+  - `"global.sheetLog"`
   - `"message.forward"`
   - `"message.markRead"`
   - `"message.markUnread"`
@@ -631,7 +631,7 @@ The name of the action to be executed
 - **Required**: &#10003; Yes
 - ## **Allowed values**:
   - `"global.log"`
-  - `"global.logsheetLog"`
+  - `"global.sheetLog"`
   - `"thread.addLabel"`
   - `"thread.markImportant"`
   - `"thread.markRead"`

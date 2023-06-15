@@ -1,10 +1,8 @@
 import { ConfigMocks } from "../../test/mocks/ConfigMocks"
-import { jsonToThreadConfig } from "./ThreadConfig"
+import { newThreadConfig } from "./ThreadConfig"
 
 it("should expect a JSON config", () => {
-  const threadConfig = jsonToThreadConfig(
-    ConfigMocks.newDefaultThreadConfigJson(),
-  )
+  const threadConfig = newThreadConfig(ConfigMocks.newDefaultThreadConfigJson())
   expect(threadConfig.match).toBeDefined()
   expect(threadConfig.match.query).toBe(
     "has:attachment from:example@example.com",
@@ -12,7 +10,7 @@ it("should expect a JSON config", () => {
 })
 
 it("should ensure nested object defaults", () => {
-  const threadConfig = jsonToThreadConfig({
+  const threadConfig = newThreadConfig({
     match: {
       query: "test",
     },

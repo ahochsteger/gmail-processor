@@ -1,4 +1,4 @@
-import { Expose, instanceToPlain, plainToInstance } from "class-transformer"
+import { Expose, plainToInstance } from "class-transformer"
 import "reflect-metadata"
 import { PartialDeep } from "type-fest"
 import { RequiredDeep } from "../utils/UtilityTypes"
@@ -9,7 +9,7 @@ export const DEFAULT_SETTING_MAX_BATCH_SIZE = 10
 export const DEFAULT_SETTING_MAX_RUNTIME = 280
 export const DEFAULT_SETTING_SLEEP_TIME_THREADS = 100
 
-export type LocationType = string
+type LocationType = string
 
 /**
  * The method to mark processed threads/messages.
@@ -76,28 +76,11 @@ export class SettingsConfig {
   timezone?: string
 }
 
-export type RequiredSettingsConfig = RequiredDeep<SettingsConfig>
-
-export function jsonToSettingsConfig(
-  json: PartialDeep<SettingsConfig>,
-): RequiredSettingsConfig {
+export function newSettingsConfig(
+  json: PartialDeep<SettingsConfig> = {},
+): RequiredDeep<SettingsConfig> {
   return plainToInstance(SettingsConfig, json, {
     exposeDefaultValues: true,
     exposeUnsetFields: false,
-  }) as RequiredSettingsConfig
-}
-
-export function settingsConfigToJson<T = SettingsConfig>(
-  config: T,
-  withDefaults = false,
-): PartialDeep<SettingsConfig> {
-  return instanceToPlain(config, {
-    exposeDefaultValues: withDefaults,
-  })
-}
-
-export function newSettingsConfig(
-  json: PartialDeep<SettingsConfig> = {},
-): RequiredSettingsConfig {
-  return jsonToSettingsConfig(json)
+  }) as RequiredDeep<SettingsConfig>
 }

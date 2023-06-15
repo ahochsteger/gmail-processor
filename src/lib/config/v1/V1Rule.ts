@@ -1,4 +1,4 @@
-import { instanceToPlain, plainToInstance } from "class-transformer"
+import { plainToInstance } from "class-transformer"
 import "reflect-metadata"
 import { PartialDeep } from "type-fest"
 import { RequiredDeep } from "../../utils/UtilityTypes"
@@ -29,26 +29,14 @@ export class V1Rule {
   /** Skip header for PDF */
   skipPDFHeader? = false
 }
-export type RequiredV1Rule = RequiredDeep<V1Rule>
 
-export function jsonToV1Rule(json: PartialDeep<V1Rule>): RequiredV1Rule {
+export function newV1Rule(
+  json: PartialDeep<V1Rule> = {},
+): RequiredDeep<V1Rule> {
   return plainToInstance(V1Rule, json, {
     exposeDefaultValues: true,
     exposeUnsetFields: false,
-  }) as RequiredV1Rule
-}
-
-export function v1RuleToJson<T = V1Rule>(
-  config: T,
-  withDefaults = false,
-): PartialDeep<V1Rule> {
-  return instanceToPlain(config, {
-    exposeDefaultValues: withDefaults,
-  })
-}
-
-export function newV1Rule(json: PartialDeep<V1Rule> = {}): RequiredV1Rule {
-  return jsonToV1Rule(json)
+  }) as RequiredDeep<V1Rule>
 }
 
 /*

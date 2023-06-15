@@ -1,4 +1,4 @@
-import { instanceToPlain, plainToInstance } from "class-transformer"
+import { plainToInstance } from "class-transformer"
 import { PartialDeep } from "type-fest"
 import { RequiredDeep } from "../utils/UtilityTypes"
 import { MessageFlag } from "./MessageFlag"
@@ -32,26 +32,11 @@ export class MessageMatchConfig {
 
 export type RequiredMessageMatchConfig = RequiredDeep<MessageMatchConfig>
 
-export function jsonToMessageMatchConfig(
-  json: PartialDeep<MessageMatchConfig>,
+export function newMessageMatchConfig(
+  json: PartialDeep<MessageMatchConfig> = {},
 ): RequiredMessageMatchConfig {
   return plainToInstance(MessageMatchConfig, json, {
     exposeDefaultValues: true,
     exposeUnsetFields: false,
   }) as RequiredMessageMatchConfig
-}
-
-export function messageMatchConfigToJson<T = MessageMatchConfig>(
-  config: T,
-  withDefaults = false,
-): PartialDeep<MessageMatchConfig> {
-  return instanceToPlain(config, {
-    exposeDefaultValues: withDefaults,
-  })
-}
-
-export function newMessageMatchConfig(
-  json: PartialDeep<MessageMatchConfig> = {},
-): RequiredMessageMatchConfig {
-  return jsonToMessageMatchConfig(json)
 }

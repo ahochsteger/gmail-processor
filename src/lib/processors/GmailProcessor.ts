@@ -12,7 +12,7 @@ import { ThreadActions } from "../actions/ThreadActions"
 import { GDriveAdapter } from "../adapter/GDriveAdapter"
 import { GmailAdapter } from "../adapter/GmailAdapter"
 import { SpreadsheetAdapter } from "../adapter/SpreadsheetAdapter"
-import { Config, RequiredConfig, jsonToConfig } from "../config/Config"
+import { Config, RequiredConfig, newConfig } from "../config/Config"
 import { Timer } from "../utils/Timer"
 import { ThreadProcessor } from "./ThreadProcessor"
 
@@ -62,6 +62,6 @@ export class GmailProcessor {
   }
 
   public getEffectiveConfig(configJson: PartialDeep<Config>): RequiredConfig {
-    return jsonToConfig(configJson)
+    return newConfig(configJson)
   }
 }

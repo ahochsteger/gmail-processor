@@ -13,7 +13,7 @@ import { SpreadsheetAdapter } from "../../lib/adapter/SpreadsheetAdapter"
 import { newAttachmentConfig } from "../../lib/config/AttachmentConfig"
 import { RequiredConfig, newConfig } from "../../lib/config/Config"
 import { newMessageConfig } from "../../lib/config/MessageConfig"
-import { jsonToThreadConfig } from "../../lib/config/ThreadConfig"
+import { newThreadConfig } from "../../lib/config/ThreadConfig"
 import { Logger } from "../../lib/utils/Logger"
 import { Timer } from "../../lib/utils/Timer"
 import { ConfigMocks } from "./ConfigMocks"
@@ -89,7 +89,7 @@ export class ContextMocks {
     return {
       ...processingContext,
       thread: {
-        config: jsonToThreadConfig(ConfigMocks.newDefaultThreadConfigJson()),
+        config: newThreadConfig(ConfigMocks.newDefaultThreadConfigJson()),
         object: thread,
         configIndex: 0,
         index: 0,

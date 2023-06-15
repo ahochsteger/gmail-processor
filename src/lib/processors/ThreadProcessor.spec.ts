@@ -1,13 +1,13 @@
 import { ContextMocks } from "../../test/mocks/ContextMocks"
 import { MockFactory } from "../../test/mocks/MockFactory"
 import { RunMode } from "../Context"
-import { jsonToConfig } from "../config/Config"
+import { newConfig } from "../config/Config"
 import { MarkProcessedMethod } from "../config/SettingsConfig"
-import { jsonToThreadConfig } from "../config/ThreadConfig"
+import { newThreadConfig } from "../config/ThreadConfig"
 import { ThreadProcessor } from "./ThreadProcessor"
 
 it("should construct a GMail search query with globals (query, newerThan) and processedLabel", () => {
-  const config = jsonToConfig({
+  const config = newConfig({
     global: {
       thread: {
         match: {
@@ -21,7 +21,7 @@ it("should construct a GMail search query with globals (query, newerThan) and pr
       markProcessedLabel: "some-label",
     },
   })
-  const threadConfig = jsonToThreadConfig({
+  const threadConfig = newThreadConfig({
     match: {
       query: "some-thread-specific-query",
       newerThan: "2m",
@@ -42,13 +42,13 @@ it("should construct a GMail search query with globals (query, newerThan) and pr
 })
 
 it("should construct a GMail search query without globals and no processedLabel", () => {
-  const config = jsonToConfig({
+  const config = newConfig({
     settings: {
       markProcessedLabel: "",
       markProcessedMethod: MarkProcessedMethod.MARK_MESSAGE_READ,
     },
   })
-  const threadConfig = jsonToThreadConfig({
+  const threadConfig = newThreadConfig({
     match: {
       query: "some-thread-specific-query",
     },

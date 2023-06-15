@@ -40,8 +40,8 @@ export class AttachmentConfig {
 
 export type RequiredAttachmentConfig = RequiredDeep<AttachmentConfig>
 
-export function jsonToAttachmentConfig(
-  json: PartialDeep<AttachmentConfig>,
+export function newAttachmentConfig(
+  json: PartialDeep<AttachmentConfig> = {},
 ): RequiredAttachmentConfig {
   return plainToInstance(AttachmentConfig, json, {
     exposeDefaultValues: true,
@@ -56,10 +56,4 @@ export function attachmentConfigToJson<T = AttachmentConfig>(
   return instanceToPlain(config, {
     exposeDefaultValues: withDefaults,
   })
-}
-
-export function newAttachmentConfig(
-  json: PartialDeep<AttachmentConfig> = {},
-): RequiredAttachmentConfig {
-  return jsonToAttachmentConfig(json)
 }

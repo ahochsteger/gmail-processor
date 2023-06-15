@@ -1,4 +1,4 @@
-import { Expose, instanceToPlain, plainToInstance } from "class-transformer"
+import { Expose, plainToInstance } from "class-transformer"
 import "reflect-metadata"
 import { PartialDeep } from "type-fest"
 import { RequiredDeep } from "../utils/UtilityTypes"
@@ -31,26 +31,11 @@ export class ThreadMatchConfig {
 
 export type RequiredThreadMatchConfig = RequiredDeep<ThreadMatchConfig>
 
-export function jsonToThreadMatchConfig(
-  json: PartialDeep<ThreadMatchConfig>,
+export function newThreadMatchConfig(
+  json: PartialDeep<ThreadMatchConfig> = {},
 ): RequiredThreadMatchConfig {
   return plainToInstance(ThreadMatchConfig, json, {
     exposeDefaultValues: true,
     exposeUnsetFields: false,
   }) as RequiredThreadMatchConfig
-}
-
-export function threadMatchConfigToJson<T = ThreadMatchConfig>(
-  config: T,
-  withDefaults = false,
-): PartialDeep<ThreadMatchConfig> {
-  return instanceToPlain(config, {
-    exposeDefaultValues: withDefaults,
-  })
-}
-
-export function newThreadMatchConfig(
-  json: PartialDeep<ThreadMatchConfig> = {},
-): RequiredThreadMatchConfig {
-  return jsonToThreadMatchConfig(json)
 }

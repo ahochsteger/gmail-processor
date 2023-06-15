@@ -1,9 +1,4 @@
-import {
-  Expose,
-  Type,
-  instanceToPlain,
-  plainToInstance,
-} from "class-transformer"
+import { Expose, Type, plainToInstance } from "class-transformer"
 import "reflect-metadata"
 import { PartialDeep } from "type-fest"
 import { RequiredDeep } from "../utils/UtilityTypes"
@@ -35,28 +30,11 @@ export class GlobalConfig {
   thread?: Exclude<ThreadConfig, "messages"> = new ThreadConfig()
 }
 
-export type RequiredGlobalConfig = RequiredDeep<GlobalConfig>
-
-export function jsonToGlobalConfig(
-  json: PartialDeep<GlobalConfig>,
-): RequiredGlobalConfig {
+export function newGlobalConfig(
+  json: PartialDeep<GlobalConfig> = {},
+): RequiredDeep<GlobalConfig> {
   return plainToInstance(GlobalConfig, json, {
     exposeDefaultValues: true,
     exposeUnsetFields: false,
-  }) as RequiredGlobalConfig
-}
-
-export function globalConfigToJson<T = GlobalConfig>(
-  config: T,
-  withDefaults = false,
-): PartialDeep<GlobalConfig> {
-  return instanceToPlain(config, {
-    exposeDefaultValues: withDefaults,
-  })
-}
-
-export function newGlobalConfig(
-  json: PartialDeep<GlobalConfig> = {},
-): RequiredGlobalConfig {
-  return jsonToGlobalConfig(json)
+  }) as RequiredDeep<GlobalConfig>
 }

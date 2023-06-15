@@ -134,7 +134,7 @@ export class ThreadActions implements ActionProvider<ThreadContext> {
 }
 
 type MethodNames<T> = keyof T
-export type ThreadActionMethodNames = Exclude<
+type ThreadActionMethodNames = Exclude<
   MethodNames<typeof ThreadActions>,
   "prototype"
 >

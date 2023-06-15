@@ -1,9 +1,9 @@
 import { ConfigMocks } from "../../test/mocks/ConfigMocks"
-import { jsonToMessageConfig } from "./MessageConfig"
+import { newMessageConfig } from "./MessageConfig"
 import { MessageFlag } from "./MessageFlag"
 
 it("should expect a JSON config", () => {
-  const messageConfig = jsonToMessageConfig(
+  const messageConfig = newMessageConfig(
     ConfigMocks.newDefaultMessageConfigJson(),
   )
   expect(messageConfig.match).toBeDefined()
@@ -14,7 +14,7 @@ it("should expect a JSON config", () => {
 })
 
 it("should ensure nested object defaults", () => {
-  const messageConfig = jsonToMessageConfig({
+  const messageConfig = newMessageConfig({
     match: {
       from: "test",
     },

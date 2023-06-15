@@ -19,7 +19,7 @@ export enum RunMode {
   DANGEROUS = "dangerous",
 }
 
-export type EnvInfo = {
+type EnvInfo = {
   gmailApp: GoogleAppsScript.Gmail.GmailApp
   gdriveApp: GoogleAppsScript.Drive.DriveApp
   utilities: GoogleAppsScript.Utilities.Utilities
@@ -29,7 +29,7 @@ export type EnvInfo = {
   timezone?: string
 }
 
-export type ProcessingInfo = {
+type ProcessingInfo = {
   actionRegistry: ActionRegistry
   config: RequiredConfig
   gdriveAdapter: GDriveAdapter
@@ -38,21 +38,21 @@ export type ProcessingInfo = {
   timer: Timer
 }
 
-export type ThreadInfo = {
+type ThreadInfo = {
   object: GoogleAppsScript.Gmail.GmailThread
   config: RequiredThreadConfig
   configIndex: number
   index: number
 }
 
-export type MessageInfo = {
+type MessageInfo = {
   object: GoogleAppsScript.Gmail.GmailMessage
   config: RequiredMessageConfig
   configIndex: number
   index: number
 }
 
-export type AttachmentInfo = {
+type AttachmentInfo = {
   object: GoogleAppsScript.Gmail.GmailAttachment
   config: RequiredAttachmentConfig
   configIndex: number

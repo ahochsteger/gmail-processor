@@ -3,7 +3,7 @@ import { GMailMocks } from "../../test/mocks/GMailMocks"
 import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
 import { RunMode } from "../Context"
 import { newConfig } from "../config/Config"
-import { jsonToMessageConfig } from "../config/MessageConfig"
+import { newMessageConfig } from "../config/MessageConfig"
 import { newThreadConfig } from "../config/ThreadConfig"
 import { PatternUtil } from "./PatternUtil"
 
@@ -50,7 +50,7 @@ describe("Pattern Substitution", () => {
       "message.from: some.email@example.com, message.to: my.email+emailsuffix@example.com, " +
       "message.date: 2019-05-01_18-48-31, message.subject.match.1: 01, " +
       "message.subject.match.2: Some more text"
-    const messageConfig = jsonToMessageConfig({
+    const messageConfig = newMessageConfig({
       match: {
         from: "(.+)@example.com",
         subject: "Message ([0-9]+): (.*)",

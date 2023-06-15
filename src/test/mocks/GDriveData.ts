@@ -3,12 +3,12 @@ export enum EntryScope {
   EXISTING = "existing",
 }
 
-export enum EntryType {
+enum EntryType {
   FILE = "file",
   FOLDER = "folder",
 }
 
-export class EntryData<
+class EntryData<
   T extends GoogleAppsScript.Drive.File | GoogleAppsScript.Drive.Folder =
     | GoogleAppsScript.Drive.File
     | GoogleAppsScript.Drive.Folder,

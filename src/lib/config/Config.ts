@@ -15,12 +15,11 @@ import {
 import {
   AttachmentConfig,
   attachmentConfigToJson,
-  jsonToAttachmentConfig,
+  newAttachmentConfig,
 } from "./AttachmentConfig"
 import { GlobalConfig } from "./GlobalConfig"
 import {
   MessageConfig,
-  jsonToMessageConfig,
   messageConfigToJson,
   newMessageConfig,
 } from "./MessageConfig"
@@ -76,14 +75,6 @@ export class Config extends ProcessingConfig {
 
 export type RequiredConfig = RequiredDeep<ProcessingConfig>
 
-export function jsonToConfig(json: PartialDeep<Config> = {}): RequiredConfig {
-  return plainToInstance(ProcessingConfig, normalizeConfig(json), {
-    excludeExtraneousValues: true,
-    exposeDefaultValues: true,
-    exposeUnsetFields: false,
-  }) as RequiredConfig
-}
-
 export function configToJson<T = ProcessingConfig>(
   config: T,
   withDefaults = false,
@@ -94,7 +85,11 @@ export function configToJson<T = ProcessingConfig>(
 }
 
 export function newConfig(json: PartialDeep<Config> = {}): RequiredConfig {
-  return jsonToConfig(json)
+  return plainToInstance(ProcessingConfig, normalizeConfig(json), {
+    excludeExtraneousValues: true,
+    exposeDefaultValues: true,
+    exposeUnsetFields: false,
+  }) as RequiredConfig
 }
 
 export function normalizeConfig(cfg: PartialDeep<Config>): PartialDeep<Config> {
@@ -105,7 +100,7 @@ export function normalizeConfig(cfg: PartialDeep<Config>): PartialDeep<Config> {
     const mcfg = cfg.messages.shift()
     if (!mcfg) break
     const tcfg = newThreadConfig()
-    tcfg.messages.push(jsonToMessageConfig(messageConfigToJson(mcfg)))
+    tcfg.messages.push(newMessageConfig(messageConfigToJson(mcfg)))
     addThreads.push(tcfg)
   }
   delete cfg.messages
@@ -115,7 +110,7 @@ export function normalizeConfig(cfg: PartialDeep<Config>): PartialDeep<Config> {
     const acfg = cfg.attachments.shift()
     if (!acfg) break
     const mcfg = newMessageConfig()
-    mcfg.attachments.push(jsonToAttachmentConfig(attachmentConfigToJson(acfg)))
+    mcfg.attachments.push(newAttachmentConfig(attachmentConfigToJson(acfg)))
     const tcfg = newThreadConfig()
     tcfg.messages.push(mcfg)
     addThreads.push(tcfg)

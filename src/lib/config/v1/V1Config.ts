@@ -1,4 +1,4 @@
-import { Type, instanceToPlain, plainToInstance } from "class-transformer"
+import { Type, plainToInstance } from "class-transformer"
 import "reflect-metadata"
 import { PartialDeep } from "type-fest"
 import { RequiredDeep } from "../../utils/UtilityTypes"
@@ -22,28 +22,13 @@ export class V1Config {
   rules: V1Rule[] = []
 }
 
-export type RequiredV1Config = RequiredDeep<V1Config>
-
-export function jsonToV1Config(json: PartialDeep<V1Config>): RequiredV1Config {
+export function newV1Config(
+  json: PartialDeep<V1Config> = {},
+): RequiredDeep<V1Config> {
   return plainToInstance(V1Config, json, {
     exposeDefaultValues: true,
     exposeUnsetFields: false,
-  }) as RequiredV1Config
-}
-
-export function v1ConfigToJson<T = V1Config>(
-  config: T,
-  withDefaults = false,
-): PartialDeep<V1Config> {
-  return instanceToPlain(config, {
-    exposeDefaultValues: withDefaults,
-  })
-}
-
-export function newV1Config(
-  json: PartialDeep<V1Config> = {},
-): RequiredV1Config {
-  return jsonToV1Config(json)
+  }) as RequiredDeep<V1Config>
 }
 
 /*

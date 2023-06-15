@@ -10,7 +10,7 @@ export enum ConflictStrategy {
   UPDATE = "update",
 }
 
-export type LocationInfo = {
+type LocationInfo = {
   filename: string
   folderId: string | null
   folderPath: string

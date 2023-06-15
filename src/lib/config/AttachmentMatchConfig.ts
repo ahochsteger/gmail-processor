@@ -1,4 +1,4 @@
-import { instanceToPlain, plainToInstance } from "class-transformer"
+import { plainToInstance } from "class-transformer"
 import "reflect-metadata"
 import { PartialDeep } from "type-fest"
 import { RequiredDeep } from "../utils/UtilityTypes"
@@ -35,26 +35,11 @@ export class AttachmentMatchConfig {
 
 export type RequiredAttachmentMatchConfig = RequiredDeep<AttachmentMatchConfig>
 
-export function jsonToAttachmentMatchConfig(
-  json: PartialDeep<AttachmentMatchConfig>,
+export function newAttachmentMatchConfig(
+  json: PartialDeep<AttachmentMatchConfig> = {},
 ): RequiredAttachmentMatchConfig {
   return plainToInstance(AttachmentMatchConfig, json, {
     exposeDefaultValues: true,
     exposeUnsetFields: false,
   }) as RequiredAttachmentMatchConfig
-}
-
-export function attachmentMatchConfigToJson<T = AttachmentMatchConfig>(
-  config: T,
-  withDefaults = false,
-): PartialDeep<AttachmentMatchConfig> {
-  return instanceToPlain(config, {
-    exposeDefaultValues: withDefaults,
-  })
-}
-
-export function newAttachmentMatchConfig(
-  json: PartialDeep<AttachmentMatchConfig> = {},
-): RequiredAttachmentMatchConfig {
-  return jsonToAttachmentMatchConfig(json)
 }

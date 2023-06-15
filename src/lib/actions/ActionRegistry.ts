@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ProcessingContext } from "../Context"
 
-export type JsonPrimitive = number | string | boolean | null
-export type JsonObject = { [key in string]?: JsonValue }
-export type JsonArray = Array<JsonValue>
-export type JsonValue = JsonObject | JsonArray | JsonPrimitive
+type JsonPrimitive = number | string | boolean | null
+type JsonObject = { [key in string]?: JsonValue }
+type JsonArray = Array<JsonValue>
+type JsonValue = JsonObject | JsonArray | JsonPrimitive
 export type ActionArgsType = Record<string, JsonValue>
 export type ActionReturnType = {
   ok?: boolean

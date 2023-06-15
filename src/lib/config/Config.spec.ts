@@ -5,7 +5,6 @@ import {
   ProcessingConfig,
   RequiredConfig,
   configToJson,
-  jsonToConfig,
   newConfig,
   normalizeConfig,
 } from "./Config"
@@ -48,10 +47,10 @@ describe("normalizeConfig", () => {
   })
 })
 
-describe("jsonToConfig", () => {
+describe("newConfig", () => {
   it("should set defaults for missing properties from JSON", () => {
     const expected: Record<string, any> = ConfigMocks.newDefaultConfig()
-    const actual = jsonToConfig(expected)
+    const actual = newConfig(expected)
     expect(actual).toMatchObject(expected)
   })
 
@@ -69,7 +68,7 @@ describe("jsonToConfig", () => {
       },
     }
     const cfgJson = { ...expected, additionalProperty: "additional" }
-    const actual = jsonToConfig(cfgJson)
+    const actual = newConfig(cfgJson)
     expect((actual as any).additionalProperty).toBeUndefined()
     expect(actual).toMatchObject(expected)
   })
@@ -96,7 +95,7 @@ describe("jsonToConfig", () => {
         },
       ],
     }
-    const actual = jsonToConfig(expected)
+    const actual = newConfig(expected)
     expect(actual).toMatchObject(expected)
   })
 })

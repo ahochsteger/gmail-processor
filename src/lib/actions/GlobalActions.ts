@@ -36,7 +36,7 @@ export class GlobalActions implements ActionProvider<ProcessingContext> {
 }
 
 type MethodNames<T> = keyof T
-export type GlobalActionMethodNames = Exclude<
+type GlobalActionMethodNames = Exclude<
   MethodNames<typeof GlobalActions>,
   "prototype"
 >

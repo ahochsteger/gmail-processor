@@ -1,8 +1,8 @@
 import { ConfigMocks } from "../../test/mocks/ConfigMocks"
-import { jsonToAttachmentConfig } from "./AttachmentConfig"
+import { newAttachmentConfig } from "./AttachmentConfig"
 
 it("should expect a JSON config", () => {
-  const attachmentConfig = jsonToAttachmentConfig(
+  const attachmentConfig = newAttachmentConfig(
     ConfigMocks.newDefaultAttachmentConfigJson(),
   )
   expect(attachmentConfig.match).toBeDefined()
@@ -11,7 +11,7 @@ it("should expect a JSON config", () => {
 })
 
 it("should ensure nested object defaults", () => {
-  const attachmentConfig = jsonToAttachmentConfig({
+  const attachmentConfig = newAttachmentConfig({
     match: {
       name: "test",
     },

@@ -4,7 +4,7 @@ import { ConfigMocks } from "../test/mocks/ConfigMocks"
 import { ContextMocks } from "../test/mocks/ContextMocks"
 import { MockFactory, Mocks } from "../test/mocks/MockFactory"
 import { RunMode } from "./Context"
-import { Config, jsonToConfig } from "./config/Config"
+import { Config, newConfig } from "./config/Config"
 import { GmailProcessor } from "./processors/GmailProcessor"
 
 let configJson: PartialDeep<Config>
@@ -13,7 +13,7 @@ let gmailProcessor: GmailProcessor
 
 beforeEach(() => {
   configJson = ConfigMocks.newDefaultConfigJson()
-  const config = jsonToConfig(configJson)
+  const config = newConfig(configJson)
   mocks = MockFactory.newMocks(config, RunMode.DANGEROUS)
   gmailProcessor = new GmailProcessor()
 })

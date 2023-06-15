@@ -8,7 +8,7 @@ import {
 import { AttachmentMatchConfig } from "../config/AttachmentMatchConfig"
 import { MessageMatchConfig } from "../config/MessageMatchConfig"
 
-export class SubstMap extends Map<string, unknown> {}
+class SubstMap extends Map<string, unknown> {}
 
 export class PatternUtil {
   public static escapeRegExp(s: string) {

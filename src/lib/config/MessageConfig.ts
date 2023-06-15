@@ -47,15 +47,6 @@ export class MessageConfig {
 
 export type RequiredMessageConfig = RequiredDeep<MessageConfig>
 
-export function jsonToMessageConfig(
-  json: PartialDeep<MessageConfig>,
-): RequiredMessageConfig {
-  return plainToInstance(MessageConfig, json, {
-    exposeDefaultValues: true,
-    exposeUnsetFields: false,
-  }) as RequiredMessageConfig
-}
-
 export function messageConfigToJson<T = MessageConfig>(
   config: T,
   withDefaults = false,
@@ -68,5 +59,8 @@ export function messageConfigToJson<T = MessageConfig>(
 export function newMessageConfig(
   json: PartialDeep<MessageConfig> = {},
 ): RequiredMessageConfig {
-  return jsonToMessageConfig(json)
+  return plainToInstance(MessageConfig, json, {
+    exposeDefaultValues: true,
+    exposeUnsetFields: false,
+  }) as RequiredMessageConfig
 }

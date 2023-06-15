@@ -95,7 +95,7 @@ export class MessageActions implements ActionProvider<MessageContext> {
 }
 
 type MethodNames<T> = keyof T
-export type MessageActionMethodNames = Exclude<
+type MessageActionMethodNames = Exclude<
   MethodNames<typeof MessageActions>,
   "prototype"
 >

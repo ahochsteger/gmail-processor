@@ -25,7 +25,7 @@
             "",
             "attachment.storeToGDrive",
             "global.log",
-            "global.logsheetLog",
+            "global.sheetLog",
             "message.forward",
             "message.markRead",
             "message.markUnread",
@@ -232,7 +232,7 @@
           "enum": [
             "",
             "global.log",
-            "global.logsheetLog",
+            "global.sheetLog",
             "message.forward",
             "message.markRead",
             "message.markUnread",
@@ -443,7 +443,7 @@
           "enum": [
             "",
             "global.log",
-            "global.logsheetLog",
+            "global.sheetLog",
             "thread.addLabel",
             "thread.markImportant",
             "thread.markRead",

@@ -14,7 +14,7 @@ import { GDriveMocks, LOGSHEET_FILE_ID } from "./GDriveMocks"
 import { GMailMocks } from "./GMailMocks"
 import { SpreadsheetMocks } from "./SpreadsheetMocks"
 
-export class EnvMocks {
+class EnvMocks {
   // TODO: split large mock factory into different classes
   // TODO: Decide if own classes should really be mocked too
   public attachment: MockProxy<GoogleAppsScript.Gmail.GmailAttachment> =

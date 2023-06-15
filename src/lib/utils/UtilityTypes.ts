@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-types */
-export type NotNill<T> = T extends null | undefined ? never : T
-export type Primitive = undefined | null | boolean | string | number | Function
+type NotNill<T> = T extends null | undefined ? never : T
+type Primitive = undefined | null | boolean | string | number | Function
 export type RequiredDeep<T> = T extends Primitive
   ? NotNill<T>
   : {

@@ -1,4 +1,4 @@
-import { Expose, instanceToPlain, plainToInstance } from "class-transformer"
+import { Expose, plainToInstance } from "class-transformer"
 import "reflect-metadata"
 import { PartialDeep } from "type-fest"
 import { AttachmentActionNames } from "../actions/AttachmentActions"
@@ -48,13 +48,6 @@ export abstract class ActionConfig {
 /**
  * Represents a config to perform a actions for a GMail thread.
  */
-export class GlobalActionConfig extends ActionConfig {
-  name: GlobalActionNames = ""
-}
-
-/**
- * Represents a config to perform a actions for a GMail thread.
- */
 export class ThreadActionConfig extends ActionConfig {
   name: GlobalActionNames | ThreadActionNames = ""
 }
@@ -75,15 +68,6 @@ export class AttachmentActionConfig extends ActionConfig {
     | ThreadActionNames
     | MessageActionNames
     | AttachmentActionNames = ""
-}
-
-export function actionConfigToJson<T = ActionConfig>(
-  config: T,
-  withDefaults = false,
-): PartialDeep<ActionConfig> {
-  return instanceToPlain(config, {
-    exposeDefaultValues: withDefaults,
-  })
 }
 
 export function newThreadActionConfig(

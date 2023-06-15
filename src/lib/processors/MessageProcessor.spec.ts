@@ -2,7 +2,7 @@ import { GMailMocks } from "../../test/mocks/GMailMocks"
 import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
 import { RunMode } from "../Context"
 import { newConfig } from "../config/Config"
-import { jsonToMessageConfig } from "../config/MessageConfig"
+import { newMessageConfig } from "../config/MessageConfig"
 import { MessageFlag } from "../config/MessageFlag"
 import { MessageProcessor } from "./MessageProcessor"
 
@@ -96,7 +96,7 @@ describe("match()", () => {
     })
     for (let i = 0; i < matchExamples.length; i++) {
       const e = matchExamples[i]
-      const messageConfig = jsonToMessageConfig({
+      const messageConfig = newMessageConfig({
         match: e.config,
       })
       const res = []
