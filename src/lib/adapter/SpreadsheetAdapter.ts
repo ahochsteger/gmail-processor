@@ -1,4 +1,5 @@
 import { EnvContext } from "../Context"
+import { LogLevel } from "../utils/Logger"
 import { BaseAdapter } from "./BaseAdapter"
 import { DriveUtils } from "./GDriveAdapter"
 
@@ -34,7 +35,7 @@ export class SpreadsheetAdapter extends BaseAdapter {
       .put(SCRIPT_CACHE_LOGSHEET_ID_KEY, this.logSheetId)
     const logSheetFile = this.driveApp.getFileById(this.logSheetId)
     logSheetFile.moveTo(folder)
-    console.info(`Created new logSheet at: ${logSheetFile.getUrl()}`)
+    this.ctx.log.info(`Created new logSheet at: ${logSheetFile.getUrl()}`)
     this.appendToLogSheet(
       "Mail title",
       "Mail date",
@@ -51,7 +52,7 @@ export class SpreadsheetAdapter extends BaseAdapter {
     const values = [args]
     const logSheet = this.getLogSheet()
     if (!logSheet) {
-      console.error(`Could not open logSheet! Could not log: ${args}`)
+      this.ctx.log.error(`Could not open logSheet! Could not log: ${args}`)
       return
     }
     const lastRow = logSheet.getLastRow() + 1
@@ -107,7 +108,7 @@ export class SpreadsheetAdapter extends BaseAdapter {
     location: string,
     file: GoogleAppsScript.Drive.File,
   ) {
-    console.info(
+    this.ctx.log.info(
       `Creating spreadsheet log entry for attachment '${attachment.getName()}' of message '${message.getSubject()}' stored to ${location} (${file.getName()}) ...`,
     )
     this.appendToLogSheet(
@@ -127,7 +128,7 @@ export class SpreadsheetAdapter extends BaseAdapter {
     location: string,
     logMessage: string,
   ) {
-    console.info(
+    this.ctx.log.info(
       `Creating spreadsheet log entry for attachment '${attachment.getName()}' of message '${message.getSubject()}' stored to ${location} ...`,
     )
     this.appendToLogSheet(
@@ -141,9 +142,11 @@ export class SpreadsheetAdapter extends BaseAdapter {
     )
   }
 
-  public log(logMessage: string) {
-    console.info(`Creating spreadsheet log entry: '${logMessage}' ...`)
-    this.appendToLogSheet("", "", "", "", "", "", logMessage)
+  public log(message: string, level: LogLevel = LogLevel.INFO) {
+    this.ctx.log.info(
+      `${LogLevel[level]}: Creating spreadsheet log entry: '${message}' ...`,
+    )
+    this.appendToLogSheet("", "", "", "", "", "", message)
   }
 
   public logMessagePdf(
@@ -151,7 +154,7 @@ export class SpreadsheetAdapter extends BaseAdapter {
     location: string,
     pdf: GoogleAppsScript.Drive.File,
   ) {
-    console.info(
+    this.ctx.log.info(
       `Creating spreadsheet log entry for PDF export of message '${message.getSubject()}' stored to ${location} ...`,
     )
     this.appendToLogSheet(
@@ -170,7 +173,7 @@ export class SpreadsheetAdapter extends BaseAdapter {
     location: string,
     pdf: GoogleAppsScript.Drive.File,
   ) {
-    console.info(
+    this.ctx.log.info(
       `Creating spreadsheet log entry for PDF export of thread '${thread.getFirstMessageSubject()}' stored to ${location} ...`,
     )
     this.appendToLogSheet(

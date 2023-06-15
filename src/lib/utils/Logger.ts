@@ -6,34 +6,55 @@ import {
   ThreadContext,
 } from "../Context"
 
+export enum LogLevel {
+  DEBUG,
+  INFO,
+  WARN,
+  ERROR,
+}
+
 export class Logger {
+  log(
+    message?: unknown,
+    level: LogLevel = LogLevel.INFO,
+    ...optionalParams: unknown[]
+  ) {
+    performance.now()
+    console.log(
+      `[${new Date().toISOString()}] ${LogLevel[level]}: ${message}`,
+      ...optionalParams,
+    )
+  }
   debug(message?: unknown, ...optionalParams: unknown[]) {
-    console.debug(`DEBUG: ${message}`, ...optionalParams)
+    this.log(message, LogLevel.DEBUG, ...optionalParams)
   }
   info(message?: unknown, ...optionalParams: unknown[]) {
-    console.info(`INFO: ${message}`, ...optionalParams)
+    this.log(message, LogLevel.INFO, ...optionalParams)
   }
   warn(message?: unknown, ...optionalParams: unknown[]) {
-    console.warn(`WARNING: ${message}`, ...optionalParams)
+    this.log(message, LogLevel.WARN, ...optionalParams)
   }
   error(message?: unknown, ...optionalParams: unknown[]) {
-    console.error(`ERROR: ${message}`, ...optionalParams)
+    this.log(message, LogLevel.ERROR, ...optionalParams)
   }
-  logEnvContext(ctx: EnvContext) {
+  logEnvContext(ctx: EnvContext, level: LogLevel = LogLevel.INFO) {
     const logObj = {
       runMode: ctx.env.runMode,
       timezone: ctx.env.timezone,
     }
-    this.info(`EnvContext: ${JSON.stringify(logObj, null, 2)}`)
+    this.log(`EnvContext: ${JSON.stringify(logObj, null, 2)}`, level)
   }
-  logProcessingContext(ctx: ProcessingContext) {
+  logProcessingContext(
+    ctx: ProcessingContext,
+    level: LogLevel = LogLevel.INFO,
+  ) {
     const logObj = {
       config: ctx.proc.config,
     }
-    this.logEnvContext(ctx)
-    this.info(`ProcessingContext: ${JSON.stringify(logObj, null, 2)}`)
+    this.logEnvContext(ctx, level)
+    this.log(`ProcessingContext: ${JSON.stringify(logObj, null, 2)}`, level)
   }
-  logThreadContext(ctx: ThreadContext) {
+  logThreadContext(ctx: ThreadContext, level: LogLevel = LogLevel.INFO) {
     const logObj = {
       config: ctx.thread.config,
       object: {
@@ -41,10 +62,10 @@ export class Logger {
         firstMessageSubject: ctx.thread.object.getFirstMessageSubject(),
       },
     }
-    this.logProcessingContext(ctx)
-    this.info(`ThreadContext: ${JSON.stringify(logObj, null, 2)}`)
+    this.logProcessingContext(ctx, level)
+    this.log(`ThreadContext: ${JSON.stringify(logObj, null, 2)}`, level)
   }
-  logMessageContext(ctx: MessageContext) {
+  logMessageContext(ctx: MessageContext, level: LogLevel = LogLevel.INFO) {
     const logObj = {
       config: ctx.message.config,
       object: {
@@ -54,10 +75,13 @@ export class Logger {
         to: ctx.message.object.getTo(),
       },
     }
-    this.logThreadContext(ctx)
-    this.info(`MessageContext: ${JSON.stringify(logObj, null, 2)}`)
+    this.logThreadContext(ctx, level)
+    this.log(`MessageContext: ${JSON.stringify(logObj, null, 2)}`, level)
   }
-  logAttachmentContext(ctx: AttachmentContext) {
+  logAttachmentContext(
+    ctx: AttachmentContext,
+    level: LogLevel = LogLevel.INFO,
+  ) {
     const logObj = {
       config: ctx.attachment.config,
       object: {
@@ -66,7 +90,7 @@ export class Logger {
         size: ctx.attachment.object.getSize(),
       },
     }
-    this.logMessageContext(ctx)
-    this.info(`AttachmentContext: ${JSON.stringify(logObj, null, 2)}`)
+    this.logMessageContext(ctx, level)
+    this.log(`AttachmentContext: ${JSON.stringify(logObj, null, 2)}`, level)
   }
 }

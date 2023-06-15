@@ -1,23 +1,33 @@
 import { ProcessingContext } from "../Context"
+import { LogLevel } from "../utils/Logger"
 import { PatternUtil } from "../utils/PatternUtil"
 import {
-  ActionArgsType,
   ActionFunction,
   ActionProvider,
   ActionReturnType,
-  typedArgs,
 } from "./ActionRegistry"
 
 export class GlobalActions implements ActionProvider<ProcessingContext> {
   [key: string]: ActionFunction<ProcessingContext>
-  public static logsheetLog<
-    T extends {
-      logMessage: string
+  public static log<
+    TArgs extends {
+      message: string
+      level?: LogLevel
     },
-  >(context: ProcessingContext, args: ActionArgsType): ActionReturnType {
-    const a = typedArgs<T>(args)
+  >(context: ProcessingContext, args: TArgs): ActionReturnType {
+    context.log.log(PatternUtil.substitute(context, args.message), args.level)
+    return {
+      ok: true,
+    }
+  }
+  public static sheetLog<
+    TArgs extends {
+      message: string
+      level: LogLevel
+    },
+  >(context: ProcessingContext, args: TArgs): ActionReturnType {
     context.proc.spreadsheetAdapter.log(
-      PatternUtil.substitute(context, a.logMessage),
+      PatternUtil.substitute(context, args.message),
     )
     return {
       ok: true,

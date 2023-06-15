@@ -46,32 +46,38 @@ Subject: ${message.getSubject()}<br />
     message: GoogleAppsScript.Gmail.GmailMessage,
     to: string,
   ) {
-    console.info(`Forwarding message '${message.getSubject()}' to '${to}' ...`)
+    this.ctx.log.info(
+      `Forwarding message '${message.getSubject()}' to '${to}' ...`,
+    )
     return message.forward(to)
   }
 
   public messageMarkRead(message: GoogleAppsScript.Gmail.GmailMessage) {
-    console.info(`Marking message '${message.getSubject()}' as read ...`)
+    this.ctx.log.info(`Marking message '${message.getSubject()}' as read ...`)
     return message.markRead()
   }
 
   public messageMarkUnread(message: GoogleAppsScript.Gmail.GmailMessage) {
-    console.info(`Marking message '${message.getSubject()}' as unread ...`)
+    this.ctx.log.info(`Marking message '${message.getSubject()}' as unread ...`)
     return message.markUnread()
   }
 
   public messageMoveToTrash(message: GoogleAppsScript.Gmail.GmailMessage) {
-    console.info(`Moving message '${message.getSubject()}' to trash ...`)
+    this.ctx.log.info(`Moving message '${message.getSubject()}' to trash ...`)
     return message.moveToTrash()
   }
 
   public messageStar(message: GoogleAppsScript.Gmail.GmailMessage) {
-    console.info(`Marking message '${message.getSubject()}' as starred ...`)
+    this.ctx.log.info(
+      `Marking message '${message.getSubject()}' as starred ...`,
+    )
     return message.star()
   }
 
   public messageUnstar(message: GoogleAppsScript.Gmail.GmailMessage) {
-    console.info(`Marking message '${message.getSubject()}' as unstarred ...`)
+    this.ctx.log.info(
+      `Marking message '${message.getSubject()}' as unstarred ...`,
+    )
     return message.unstar()
   }
 
@@ -81,7 +87,7 @@ Subject: ${message.getSubject()}<br />
   ) {
     if (labelName !== "") {
       const label = this.ctx.env.gmailApp.getUserLabelByName(labelName)
-      console.info(
+      this.ctx.log.info(
         `Adding label '${labelName}' to thread '${thread.getFirstMessageSubject()}' ...`,
       )
       return thread.addLabel(label)
@@ -94,7 +100,7 @@ Subject: ${message.getSubject()}<br />
   ) {
     if (labelName !== "") {
       const label = this.ctx.env.gmailApp.getUserLabelByName(labelName)
-      console.info(
+      this.ctx.log.info(
         `Removing label '${labelName}' from thread '${thread.getFirstMessageSubject()}' ...`,
       )
       return thread.removeLabel(label)
@@ -108,10 +114,8 @@ Subject: ${message.getSubject()}<br />
     thread: GoogleAppsScript.Gmail.GmailThread,
     skipHeader = false,
   ) {
-    console.info(
-      "  Generating HTML code of thread '" +
-        thread.getFirstMessageSubject() +
-        "'",
+    this.ctx.log.info(
+      `Generating HTML code of thread '${thread.getFirstMessageSubject()}'`,
     )
     const messages = thread.getMessages()
     let html = ""
@@ -129,56 +133,56 @@ Subject: ${message.getSubject()}<br />
   }
 
   public threadMarkImportant(thread: GoogleAppsScript.Gmail.GmailThread) {
-    console.info(
+    this.ctx.log.info(
       `Marking thread '${thread.getFirstMessageSubject()}' as important ...`,
     )
     return thread.markImportant()
   }
 
   public threadMarkRead(thread: GoogleAppsScript.Gmail.GmailThread) {
-    console.info(
+    this.ctx.log.info(
       `Marking thread '${thread.getFirstMessageSubject()}' as read ...`,
     )
     return thread.markRead()
   }
 
   public threadMarkUnimportant(thread: GoogleAppsScript.Gmail.GmailThread) {
-    console.info(
+    this.ctx.log.info(
       `Marking thread '${thread.getFirstMessageSubject()}' as unimportant ...`,
     )
     return thread.markUnimportant()
   }
 
   public threadMarkUnread(thread: GoogleAppsScript.Gmail.GmailThread) {
-    console.info(
+    this.ctx.log.info(
       `Marking thread '${thread.getFirstMessageSubject()}' as unread ...`,
     )
     return thread.markUnread()
   }
 
   public threadMoveToArchive(thread: GoogleAppsScript.Gmail.GmailThread) {
-    console.info(
+    this.ctx.log.info(
       `Moving thread '${thread.getFirstMessageSubject()}' to archive ...`,
     )
     return thread.moveToArchive()
   }
 
   public threadMoveToInbox(thread: GoogleAppsScript.Gmail.GmailThread) {
-    console.info(
+    this.ctx.log.info(
       `Moving thread '${thread.getFirstMessageSubject()}' to inbox ...`,
     )
     return thread.moveToInbox()
   }
 
   public threadMoveToSpam(thread: GoogleAppsScript.Gmail.GmailThread) {
-    console.info(
+    this.ctx.log.info(
       `Moving thread '${thread.getFirstMessageSubject()}' to spam ...`,
     )
     return thread.moveToSpam()
   }
 
   public threadMoveToTrash(thread: GoogleAppsScript.Gmail.GmailThread) {
-    console.info(
+    this.ctx.log.info(
       `Moving thread '${thread.getFirstMessageSubject()}' to trash ...`,
     )
     return thread.moveToTrash()

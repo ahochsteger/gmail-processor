@@ -16,6 +16,7 @@ function runModeAwareAction<T extends ProcessingContext>(
   const originalMethod = descriptor.value
   descriptor.value = function (this: ActionProvider<T>, ...args: unknown[]) {
     let runMode: RunMode | undefined
+    const ctx = args[0] as ProcessingContext
     if (args.length >= 1 && (args[0] as ProcessingContext)) {
       runMode = (args[0] as ProcessingContext).env.runMode
     } else {
@@ -26,10 +27,10 @@ function runModeAwareAction<T extends ProcessingContext>(
       false,
     )
     if (doCall) {
-      console.log(`Calling method '${propertyKey}' ...`)
+      ctx.log.debug(`Calling method '${propertyKey}' ...`)
       return originalMethod.apply(this, args)
     } else {
-      console.log(
+      ctx.log.log(
         `Skipped calling method '${propertyKey}' (runMode:${runMode})`,
       )
       return

@@ -51,6 +51,7 @@ The name of the action to be executed
 - **Required**: &#10003; Yes
 - ## **Allowed values**:
   - `"attachment.storeToGDrive"`
+  - `"global.log"`
   - `"global.logsheetLog"`
   - `"message.forward"`
   - `"message.markRead"`
@@ -334,6 +335,7 @@ The name of the action to be executed
 - **Type**: `string`
 - **Required**: &#10003; Yes
 - ## **Allowed values**:
+  - `"global.log"`
   - `"global.logsheetLog"`
   - `"message.forward"`
   - `"message.markRead"`
@@ -628,6 +630,7 @@ The name of the action to be executed
 - **Type**: `string`
 - **Required**: &#10003; Yes
 - ## **Allowed values**:
+  - `"global.log"`
   - `"global.logsheetLog"`
   - `"thread.addLabel"`
   - `"thread.markImportant"`
