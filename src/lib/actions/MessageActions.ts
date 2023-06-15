@@ -3,26 +3,23 @@ import { MessageContext } from "../Context"
 import { destructiveAction, writingAction } from "../utils/Decorators"
 import { PatternUtil } from "../utils/PatternUtil"
 import {
-  ActionArgsType,
   ActionFunction,
   ActionProvider,
   ActionReturnType,
-  typedArgs,
 } from "./ActionRegistry"
 
 export class MessageActions implements ActionProvider<MessageContext> {
   [key: string]: ActionFunction<MessageContext>
 
   @writingAction()
-  public static forward<T extends { to: string }>(
+  public static forward<TArgs extends { to: string }>(
     context: MessageContext,
-    args: ActionArgsType,
+    args: TArgs,
   ): ActionReturnType {
-    const a = typedArgs<T>(args)
     return {
       message: context.proc.gmailAdapter.messageForward(
         context.message.object,
-        a.to as string,
+        args.to as string,
       ),
     }
   }
@@ -73,26 +70,25 @@ export class MessageActions implements ActionProvider<MessageContext> {
    */
   @writingAction()
   public static storeAsPdfToGDrive<
-    T extends {
+    TArgs extends {
       location: string
       conflictStrategy: ConflictStrategy
       description?: string
       skipHeader: boolean
     },
-  >(context: MessageContext, args: ActionArgsType) {
-    const a = typedArgs<T>(args)
+  >(context: MessageContext, args: TArgs) {
     return {
       file: context.proc.gdriveAdapter.createFile(
-        PatternUtil.substitute(context, a.location),
+        PatternUtil.substitute(context, args.location),
         {
           content: context.proc.gmailAdapter.messageAsPdf(
             context.message.object,
-            a.skipHeader as boolean,
+            args.skipHeader as boolean,
           ),
           mimeType: "application/pdf",
-          description: PatternUtil.substitute(context, a.description || ""),
+          description: PatternUtil.substitute(context, args.description || ""),
         },
-        a.conflictStrategy as ConflictStrategy,
+        args.conflictStrategy as ConflictStrategy,
       ),
     }
   }

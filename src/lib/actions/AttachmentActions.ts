@@ -3,32 +3,29 @@ import { AttachmentContext } from "../Context"
 import { writingAction } from "../utils/Decorators"
 import { PatternUtil } from "../utils/PatternUtil"
 import {
-  ActionArgsType,
   ActionFunction,
   ActionProvider,
   ActionReturnType,
-  typedArgs,
 } from "./ActionRegistry"
 
 export class AttachmentActions implements ActionProvider<AttachmentContext> {
   [key: string]: ActionFunction<AttachmentContext>
   @writingAction<AttachmentContext>()
   public static storeToGDrive<
-    T extends {
+    TArgs extends {
       location: string
       conflictStrategy: ConflictStrategy
       description?: string
     },
   >(
     context: AttachmentContext,
-    args: ActionArgsType,
+    args: TArgs,
   ): ActionReturnType & { gdriveFile: GoogleAppsScript.Drive.File } {
-    const a = typedArgs<T>(args)
     const gdriveFile = context.proc.gdriveAdapter.storeAttachment(
       context.attachment.object,
-      PatternUtil.substitute(context, a.location),
-      a.conflictStrategy as ConflictStrategy,
-      PatternUtil.substitute(context, a.description || ""),
+      PatternUtil.substitute(context, args.location),
+      args.conflictStrategy,
+      PatternUtil.substitute(context, args.description || ""),
     )
     return {
       ok: true,

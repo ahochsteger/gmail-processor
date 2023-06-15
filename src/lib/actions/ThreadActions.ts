@@ -3,11 +3,9 @@ import { ThreadContext } from "../Context"
 import { destructiveAction, writingAction } from "../utils/Decorators"
 import { PatternUtil } from "../utils/PatternUtil"
 import {
-  ActionArgsType,
   ActionFunction,
   ActionProvider,
   ActionReturnType,
-  typedArgs,
 } from "./ActionRegistry"
 
 export class ThreadActions implements ActionProvider<ThreadContext> {
@@ -80,29 +78,27 @@ export class ThreadActions implements ActionProvider<ThreadContext> {
   }
 
   @writingAction()
-  public static addLabel<T extends { name: string }>(
+  public static addLabel<TArgs extends { name: string }>(
     context: ThreadContext,
-    args: ActionArgsType,
+    args: TArgs,
   ) {
-    const a = typedArgs<T>(args)
     return {
       thread: context.proc.gmailAdapter.threadAddLabel(
         context.thread.object,
-        a.name,
+        args.name,
       ),
     }
   }
 
   @writingAction()
-  public static removeLabel<T extends { name: string }>(
+  public static removeLabel<TArgs extends { name: string }>(
     context: ThreadContext,
-    args: ActionArgsType,
+    args: TArgs,
   ) {
-    const a = typedArgs<T>(args)
     return {
       thread: context.proc.gmailAdapter.threadRemoveLabel(
         context.thread.object,
-        a.name,
+        args.name,
       ),
     }
   }
@@ -112,27 +108,26 @@ export class ThreadActions implements ActionProvider<ThreadContext> {
    */
   @writingAction()
   public static storeAsPdfToGDrive<
-    T extends {
+    TArgs extends {
       location: string
       conflictStrategy: ConflictStrategy
       description?: string
       skipHeader?: boolean
     },
-  >(context: ThreadContext, args: ActionArgsType) {
-    const a = typedArgs<T>(args)
+  >(context: ThreadContext, args: TArgs) {
     return {
       ok: true,
       file: context.proc.gdriveAdapter.createFile(
-        PatternUtil.substitute(context, a.location),
+        PatternUtil.substitute(context, args.location),
         {
           content: context.proc.gmailAdapter.threadAsPdf(
             context.thread.object,
-            a.skipHeader,
+            args.skipHeader,
           ),
           mimeType: "application/pdf",
-          description: PatternUtil.substitute(context, a.description || ""),
+          description: PatternUtil.substitute(context, args.description || ""),
         },
-        a.conflictStrategy,
+        args.conflictStrategy,
       ),
     }
   }

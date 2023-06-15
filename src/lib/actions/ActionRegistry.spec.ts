@@ -30,10 +30,13 @@ class TestProcessingActionProvider implements ActionProvider {
 class TestThreadActionProvider implements ActionProvider {
   [key: string]: ActionFunction
   public instanceThreadMethodWithArgs<
-    T extends { threadBoolArg: boolean; threadStringArg: string },
+    TArgs extends {
+      threadBoolArg: boolean
+      threadStringArg: string
+    },
   >(ctx: ProcessingContext, args: ActionArgsType) {
-    // const myNum = this.myPrivateFunction()
-    const a = typedArgs<T>(args)
+    // NOTE: Instance methods currently require ActionArgsType + typedArgs to work!
+    const a = typedArgs<TArgs>(args)
     ctx.log.info(
       `Subject:${(
         ctx as ThreadContext
@@ -43,24 +46,19 @@ class TestThreadActionProvider implements ActionProvider {
     )
     return { ok: true }
   }
-  // private myPrivateFunction() {
-  //   return 42
-  // }
   public static staticThreadMethodWithArgs<
-    T extends { num: number; str: string },
-  >(ctx: ProcessingContext, args: ActionArgsType) {
-    const a = typedArgs<T>(args)
+    TArgs extends { num: number; str: string },
+  >(ctx: ProcessingContext, args: TArgs) {
     ctx.log.info(
       `Subject:${(ctx as MessageContext).message.object.getSubject()}, num:${
-        a.num
-      }, str:${a.str}`,
+        args.num
+      }, str:${args.str}`,
     )
     return { ok: true }
   }
   public errorThrowingMethod(
-    _ctx: ProcessingContext,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    _args: ActionArgsType = {},
+    _ctx: ProcessingContext,
   ) {
     throw new Error("Error from staticErrorThrowingMethod")
   }
@@ -69,13 +67,12 @@ class TestThreadActionProvider implements ActionProvider {
 class TestMessageActionProvider implements ActionProvider {
   [key: string]: ActionFunction
   public static staticMessageMethodWithArgs<
-    T extends { num: number; str: string },
-  >(ctx: ProcessingContext, args: ActionArgsType) {
-    const a = typedArgs<T>(args)
+    TArgs extends { num: number; str: string },
+  >(ctx: ProcessingContext, args: TArgs) {
     ctx.log.info(
       `Name:${(ctx as AttachmentContext).attachment.object.getName()}, num:${
-        a.num
-      }, str:${a.str}`,
+        args.num
+      }, str:${args.str}`,
     )
     return { ok: true }
   }
@@ -84,9 +81,10 @@ class TestMessageActionProvider implements ActionProvider {
 class TestAttachmentActionProvider implements ActionProvider {
   [key: string]: ActionFunction
   public instanceAttachmentMethodWithArgs<
-    T extends { num: number; str: string },
+    TArgs extends { num: number; str: string },
   >(ctx: ProcessingContext, args: ActionArgsType) {
-    const a = typedArgs<T>(args)
+    // NOTE: Instance methods currently require ActionArgsType + typedArgs to work!
+    const a = typedArgs<TArgs>(args)
     ctx.log.info(
       `Subject:${(ctx as AttachmentContext).message.object.getSubject}, num:${
         a.num
