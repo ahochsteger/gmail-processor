@@ -70,7 +70,10 @@ it("should execute all actions using the action registry", () => {
   nonArgActions.forEach((actionName) => {
     actionRegistry.executeAction(ctx, actionName, {})
   })
-  // Execute all actions with special arguments:
+  // Execute all actions with arguments:
+  actionRegistry.executeAction(ctx, "message.forward", {
+    to: "some.email@example.com",
+  })
   actionRegistry.executeAction(ctx, "message.storeAsPdfToGDrive", {
     location: "my-location",
     conflictStrategy: ConflictStrategy.REPLACE,

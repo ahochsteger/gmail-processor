@@ -59,34 +59,6 @@ export class SpreadsheetAdapter extends BaseAdapter {
     logSheet.getRange(lastRow, args.length, 1, args.length).setValues(values)
   }
 
-  // // TODO: Consolidate with folder logic from GDriveAdapter
-  // private getOrCreateFolder(
-  //   path: string,
-  //   parentFolderId = "",
-  // ): GoogleAppsScript.Drive.Folder {
-  //   const parts = path.split("/")
-  //   if (parts[0] === "") {
-  //     parts.shift()
-  //   }
-
-  //   let folder = parentFolderId
-  //     ? this.driveApp.getFolderById(parentFolderId)
-  //     : this.driveApp.getRootFolder()
-  //   for (const subfolder of parts) {
-  //     let nextFolder = null
-  //     const folders = folder.getFolders()
-  //     while (folders.hasNext()) {
-  //       const f = folders.next()
-  //       if (f.getName() === subfolder) {
-  //         nextFolder = f
-  //         break
-  //       }
-  //     }
-  //     folder = nextFolder || folder.createFolder(subfolder)
-  //   }
-  //   return folder
-  // }
-
   private getLogSheet(): GoogleAppsScript.Spreadsheet.Sheet | null {
     if (this.logSheet) return this.logSheet
     if (this.logSheetId) {
@@ -143,9 +115,7 @@ export class SpreadsheetAdapter extends BaseAdapter {
   }
 
   public log(message: string, level: LogLevel = LogLevel.INFO) {
-    this.ctx.log.info(
-      `${LogLevel[level]}: Creating spreadsheet log entry: '${message}' ...`,
-    )
+    this.ctx.log.log(`Logsheet: ${message}`, level)
     this.appendToLogSheet("", "", "", "", "", "", message)
   }
 

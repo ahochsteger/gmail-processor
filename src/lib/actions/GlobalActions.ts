@@ -23,11 +23,12 @@ export class GlobalActions implements ActionProvider<ProcessingContext> {
   public static sheetLog<
     TArgs extends {
       message: string
-      level: LogLevel
+      level?: LogLevel
     },
   >(context: ProcessingContext, args: TArgs): ActionReturnType {
     context.proc.spreadsheetAdapter.log(
       PatternUtil.substitute(context, args.message),
+      args.level,
     )
     return {
       ok: true,
