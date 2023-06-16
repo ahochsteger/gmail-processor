@@ -2,9 +2,9 @@ import { Expose, Type, plainToInstance } from "class-transformer"
 import "reflect-metadata"
 import { PartialDeep } from "type-fest"
 import { RequiredDeep } from "../utils/UtilityTypes"
-import { AttachmentConfig } from "./AttachmentConfig"
-import { MessageConfig } from "./MessageConfig"
-import { ThreadConfig } from "./ThreadConfig"
+import { AttachmentConfig, normalizeAttachmentConfig } from "./AttachmentConfig"
+import { MessageConfig, normalizeMessageConfig } from "./MessageConfig"
+import { ThreadConfig, normalizeThreadConfig } from "./ThreadConfig"
 
 /**
  * The global configuration that defines matching for all threads as well as actions for all threads, messages or attachments.
@@ -33,8 +33,26 @@ export class GlobalConfig {
 export function newGlobalConfig(
   json: PartialDeep<GlobalConfig> = {},
 ): RequiredDeep<GlobalConfig> {
-  return plainToInstance(GlobalConfig, json, {
+  return plainToInstance(GlobalConfig, normalizeGlobalConfig(json), {
     exposeDefaultValues: true,
     exposeUnsetFields: false,
   }) as RequiredDeep<GlobalConfig>
+}
+
+function normalizeGlobalConfig(
+  config: PartialDeep<GlobalConfig>,
+): PartialDeep<GlobalConfig> {
+  config.thread = normalizeThreadConfig(
+    (config.thread ?? {}) as PartialDeep<ThreadConfig>,
+    "global-",
+  )
+  config.message = normalizeMessageConfig(
+    (config.message ?? {}) as PartialDeep<MessageConfig>,
+    "global-",
+  )
+  config.attachment = normalizeAttachmentConfig(
+    (config.attachment ?? {}) as PartialDeep<AttachmentConfig>,
+    "global-",
+  )
+  return config
 }

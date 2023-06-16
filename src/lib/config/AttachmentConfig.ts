@@ -42,11 +42,16 @@ export type RequiredAttachmentConfig = RequiredDeep<AttachmentConfig>
 
 export function newAttachmentConfig(
   json: PartialDeep<AttachmentConfig> = {},
+  namePrefix = "",
 ): RequiredAttachmentConfig {
-  return plainToInstance(AttachmentConfig, json, {
-    exposeDefaultValues: true,
-    exposeUnsetFields: false,
-  }) as RequiredAttachmentConfig
+  return plainToInstance(
+    AttachmentConfig,
+    normalizeAttachmentConfig(json, namePrefix),
+    {
+      exposeDefaultValues: true,
+      exposeUnsetFields: false,
+    },
+  ) as RequiredAttachmentConfig
 }
 
 export function attachmentConfigToJson<T = AttachmentConfig>(
@@ -58,18 +63,22 @@ export function attachmentConfigToJson<T = AttachmentConfig>(
   })
 }
 
-function normalizeAttachmentConfig(
-  config: RequiredAttachmentConfig,
-  configIndex: number,
-): RequiredAttachmentConfig {
-  config.name = config.name ? config.name : `attachment-cfg-${configIndex}`
+export function normalizeAttachmentConfig(
+  config: PartialDeep<AttachmentConfig>,
+  namePrefix = "",
+  index?: number,
+): PartialDeep<AttachmentConfig> {
+  config.name = config.name
+    ? config.name
+    : `${namePrefix}attachment-cfg-${index ? "-" + index : ""}`
   return config
 }
 export function normalizeAttachmentConfigs(
-  configs: RequiredAttachmentConfig[],
-): RequiredAttachmentConfig[] {
-  for (let configIndex = 0; configIndex < configs.length; configIndex++) {
-    normalizeAttachmentConfig(configs[configIndex], configIndex)
+  configs: PartialDeep<AttachmentConfig>[],
+  namePrefix = "",
+): PartialDeep<AttachmentConfig>[] {
+  for (let index = 0; index < configs.length; index++) {
+    normalizeAttachmentConfig(configs[index], namePrefix, index)
   }
   return configs
 }

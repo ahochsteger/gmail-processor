@@ -51,29 +51,38 @@ export type RequiredThreadConfig = RequiredDeep<ThreadConfig>
 
 export function newThreadConfig(
   json: PartialDeep<ThreadConfig> = {},
+  namePrefix = "",
 ): RequiredThreadConfig {
-  return plainToInstance(ThreadConfig, json, {
-    exposeDefaultValues: true,
-    exposeUnsetFields: false,
-  }) as RequiredThreadConfig
+  return plainToInstance(
+    ThreadConfig,
+    normalizeThreadConfig(json, namePrefix),
+    {
+      exposeDefaultValues: true,
+      exposeUnsetFields: false,
+    },
+  ) as RequiredThreadConfig
 }
 
-function normalizeThreadConfig(
-  config: RequiredThreadConfig,
-  index: number,
-): RequiredThreadConfig {
-  config.name = config.name ? config.name : `thread-cfg-${index}`
+export function normalizeThreadConfig(
+  config: PartialDeep<ThreadConfig>,
+  namePrefix = "",
+  index?: number,
+): PartialDeep<ThreadConfig> {
+  config.name = config.name
+    ? config.name
+    : `${namePrefix}thread-cfg${index ? "-" + index : ""}`
   if (!config.messages) {
     config.messages = []
   }
-  normalizeMessageConfigs(config.messages)
+  normalizeMessageConfigs(config.messages, namePrefix)
   return config
 }
 export function normalizeThreadConfigs(
-  configs: RequiredThreadConfig[],
-): RequiredThreadConfig[] {
+  configs: PartialDeep<ThreadConfig>[],
+  namePrefix = "",
+): PartialDeep<ThreadConfig>[] {
   for (let index = 0; index < configs.length; index++) {
-    normalizeThreadConfig(configs[index], index)
+    normalizeThreadConfig(configs[index], namePrefix, index)
   }
   return configs
 }

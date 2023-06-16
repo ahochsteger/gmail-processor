@@ -6,8 +6,8 @@ import { newThreadConfig } from "./ThreadConfig"
 it("should expect a JSON config", () => {
   const actual = newGlobalConfig({})
   expect(actual).toMatchObject({
-    attachment: newAttachmentConfig({}),
-    message: newMessageConfig({}),
-    thread: newThreadConfig({}),
+    attachment: newAttachmentConfig({}, "global-"),
+    message: newMessageConfig({}, "global-"),
+    thread: newThreadConfig({}, "global-"),
   } as GlobalConfig)
 })

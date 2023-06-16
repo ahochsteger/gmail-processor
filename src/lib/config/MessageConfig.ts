@@ -61,29 +61,38 @@ export function messageConfigToJson<T = MessageConfig>(
 
 export function newMessageConfig(
   json: PartialDeep<MessageConfig> = {},
+  namePrefix = "",
 ): RequiredMessageConfig {
-  return plainToInstance(MessageConfig, json, {
-    exposeDefaultValues: true,
-    exposeUnsetFields: false,
-  }) as RequiredMessageConfig
+  return plainToInstance(
+    MessageConfig,
+    normalizeMessageConfig(json, namePrefix),
+    {
+      exposeDefaultValues: true,
+      exposeUnsetFields: false,
+    },
+  ) as RequiredMessageConfig
 }
 
-function normalizeMessageConfig(
-  config: RequiredMessageConfig,
-  index: number,
-): RequiredMessageConfig {
-  config.name = config.name ? config.name : `message-cfg-${index}`
+export function normalizeMessageConfig(
+  config: PartialDeep<MessageConfig>,
+  namePrefix = "",
+  index?: number,
+): PartialDeep<MessageConfig> {
+  config.name = config.name
+    ? config.name
+    : `${namePrefix}message-cfg-${index ? "-" + index : ""}`
   if (!config.attachments) {
     config.attachments = []
   }
-  normalizeAttachmentConfigs(config.attachments)
+  normalizeAttachmentConfigs(config.attachments, namePrefix)
   return config
 }
 export function normalizeMessageConfigs(
-  configs: RequiredMessageConfig[],
-): RequiredMessageConfig[] {
+  configs: PartialDeep<MessageConfig>[],
+  namePrefix = "",
+): PartialDeep<MessageConfig>[] {
   for (let index = 0; index < configs.length; index++) {
-    normalizeMessageConfig(configs[index], index)
+    normalizeMessageConfig(configs[index], namePrefix, index)
   }
   return configs
 }
