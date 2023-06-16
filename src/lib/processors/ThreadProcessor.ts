@@ -64,8 +64,6 @@ export class ThreadProcessor extends BaseProcessor {
   ): ProcessingResult {
     for (let configIndex = 0; configIndex < configs.length; configIndex++) {
       const config = configs[configIndex]
-      config.name =
-        config.name !== "" ? config.name : `thread-cfg-${configIndex}`
       ctx.log.info(`Processing of thread config '${config.name}' started ...`)
       const matchConfig = this.buildMatchConfig(
         ctx.proc.config.global.thread.match,

@@ -92,6 +92,7 @@ describe("newConfig", () => {
           match: {
             query: "thread-query",
           },
+          name: "", // FIXME: Should not be here!
         },
       ],
     }
@@ -107,7 +108,12 @@ describe("configToJson", () => {
       settings: {
         markProcessedLabel: "some label",
       },
-      threads: [{ description: "thread description" }],
+      threads: [
+        {
+          description: "thread description",
+          name: "", // FIXME: Should not be here!
+        },
+      ],
     }
     const expected: PartialDeep<ProcessingConfig> = {
       ...configJson,

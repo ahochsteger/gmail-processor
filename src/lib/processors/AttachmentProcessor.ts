@@ -51,8 +51,6 @@ export class AttachmentProcessor extends BaseProcessor {
   ): ProcessingResult {
     for (let configIndex = 0; configIndex < configs.length; configIndex++) {
       const config = configs[configIndex]
-      config.name =
-        config.name !== "" ? config.name : `attachment-cfg-${configIndex}`
       ctx.log.info(
         `Processing of attachment config '${config.name}' started ...`,
       )

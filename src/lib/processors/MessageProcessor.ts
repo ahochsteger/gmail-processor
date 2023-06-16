@@ -66,8 +66,6 @@ export class MessageProcessor extends BaseProcessor {
   ): ProcessingResult {
     for (let configIndex = 0; configIndex < configs.length; configIndex++) {
       const config = configs[configIndex]
-      config.name =
-        config.name !== "" ? config.name : `message-cfg-${configIndex}`
       ctx.log.info(`Processing of message config '${config.name}' started ...`)
       const messages = ctx.thread.object.getMessages()
       const matchConfig = this.buildMatchConfig(

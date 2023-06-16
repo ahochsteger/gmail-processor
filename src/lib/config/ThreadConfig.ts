@@ -4,7 +4,7 @@ import { PartialDeep } from "type-fest"
 import { RequiredDeep } from "../utils/UtilityTypes"
 import { ThreadActionConfig } from "./ActionConfig"
 import { AttachmentConfig } from "./AttachmentConfig"
-import { MessageConfig } from "./MessageConfig"
+import { MessageConfig, normalizeMessageConfigs } from "./MessageConfig"
 import { ThreadMatchConfig } from "./ThreadMatchConfig"
 
 /**
@@ -56,4 +56,24 @@ export function newThreadConfig(
     exposeDefaultValues: true,
     exposeUnsetFields: false,
   }) as RequiredThreadConfig
+}
+
+function normalizeThreadConfig(
+  config: RequiredThreadConfig,
+  index: number,
+): RequiredThreadConfig {
+  config.name = config.name ? config.name : `thread-cfg-${index}`
+  if (!config.messages) {
+    config.messages = []
+  }
+  normalizeMessageConfigs(config.messages)
+  return config
+}
+export function normalizeThreadConfigs(
+  configs: RequiredThreadConfig[],
+): RequiredThreadConfig[] {
+  for (let index = 0; index < configs.length; index++) {
+    normalizeThreadConfig(configs[index], index)
+  }
+  return configs
 }

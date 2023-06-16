@@ -8,7 +8,10 @@ import "reflect-metadata"
 import { PartialDeep } from "type-fest"
 import { RequiredDeep } from "../utils/UtilityTypes"
 import { MessageActionConfig } from "./ActionConfig"
-import { AttachmentConfig } from "./AttachmentConfig"
+import {
+  AttachmentConfig,
+  normalizeAttachmentConfigs,
+} from "./AttachmentConfig"
 import { MessageMatchConfig } from "./MessageMatchConfig"
 
 /**
@@ -63,4 +66,24 @@ export function newMessageConfig(
     exposeDefaultValues: true,
     exposeUnsetFields: false,
   }) as RequiredMessageConfig
+}
+
+function normalizeMessageConfig(
+  config: RequiredMessageConfig,
+  index: number,
+): RequiredMessageConfig {
+  config.name = config.name ? config.name : `message-cfg-${index}`
+  if (!config.attachments) {
+    config.attachments = []
+  }
+  normalizeAttachmentConfigs(config.attachments)
+  return config
+}
+export function normalizeMessageConfigs(
+  configs: RequiredMessageConfig[],
+): RequiredMessageConfig[] {
+  for (let index = 0; index < configs.length; index++) {
+    normalizeMessageConfig(configs[index], index)
+  }
+  return configs
 }

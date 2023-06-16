@@ -24,7 +24,12 @@ import {
   newMessageConfig,
 } from "./MessageConfig"
 import { MarkProcessedMethod, SettingsConfig } from "./SettingsConfig"
-import { ThreadConfig, newThreadConfig } from "./ThreadConfig"
+import {
+  RequiredThreadConfig,
+  ThreadConfig,
+  newThreadConfig,
+  normalizeThreadConfigs,
+} from "./ThreadConfig"
 
 /**
  * Represents a configuration for GMail2GDrive in normalized form
@@ -147,6 +152,11 @@ export function normalizeConfig(cfg: PartialDeep<Config>): PartialDeep<Config> {
       }),
     )
   }
+
+  if (!cfg.threads) {
+    cfg.threads = []
+  }
+  normalizeThreadConfigs(cfg.threads as RequiredThreadConfig[])
 
   return cfg
 }

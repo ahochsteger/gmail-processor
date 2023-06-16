@@ -57,3 +57,19 @@ export function attachmentConfigToJson<T = AttachmentConfig>(
     exposeDefaultValues: withDefaults,
   })
 }
+
+function normalizeAttachmentConfig(
+  config: RequiredAttachmentConfig,
+  configIndex: number,
+): RequiredAttachmentConfig {
+  config.name = config.name ? config.name : `attachment-cfg-${configIndex}`
+  return config
+}
+export function normalizeAttachmentConfigs(
+  configs: RequiredAttachmentConfig[],
+): RequiredAttachmentConfig[] {
+  for (let configIndex = 0; configIndex < configs.length; configIndex++) {
+    normalizeAttachmentConfig(configs[configIndex], configIndex)
+  }
+  return configs
+}
