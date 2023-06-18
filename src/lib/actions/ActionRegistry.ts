@@ -105,6 +105,9 @@ export class ActionRegistry {
     if (!fn) throw this.unknownActionError(name)
     let result: ActionReturnType = { ok: true }
     try {
+      context.log.info(
+        `Executing action '${name}' with args: ${JSON.stringify(args)}`,
+      )
       result = {
         ...fn(context, args),
       } as ActionReturnType
@@ -114,6 +117,7 @@ export class ActionRegistry {
         error: e,
       }
     }
+    context.log.info(`Action result: ${JSON.stringify(result)}`)
     return result
   }
 }
