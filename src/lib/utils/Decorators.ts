@@ -1,12 +1,6 @@
 import { ProcessingContext, RunMode } from "../Context"
 import { ActionProvider } from "../actions/ActionRegistry"
 
-export function deprecated(message: string) {
-  return function (_target: unknown, propertyKey: string) {
-    console.warn(`${propertyKey} is deprecated: ${message}`)
-  }
-}
-
 function runModeAwareAction<T extends ProcessingContext>(
   _target: ActionProvider<T>,
   propertyKey: string,
