@@ -1,6 +1,8 @@
 import { GMailMocks } from "../../test/mocks/GMailMocks"
 import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
-import { RunMode } from "../Context"
+import { ProcessingContext, RunMode } from "../Context"
+import { ActionProvider } from "../actions/ActionRegistry"
+import { MessageActions } from "../actions/MessageActions"
 import { newConfig } from "../config/Config"
 import { newMessageConfig } from "../config/MessageConfig"
 import { MessageFlag } from "../config/MessageFlag"
@@ -113,6 +115,10 @@ describe("match()", () => {
 describe("processEntity()", () => {
   it("should process a message config", () => {
     const ctx = mocks.messageContext
+    ctx.proc.actionRegistry.registerActionProvider(
+      "message",
+      new MessageActions() as ActionProvider<ProcessingContext>,
+    )
     MessageProcessor.processEntity(ctx)
   })
 })

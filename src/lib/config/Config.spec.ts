@@ -41,7 +41,7 @@ describe("normalizeConfig", () => {
     }) as any
     expect(cfg.threads[0].description).toEqual("Thread config 1")
     expect(cfg.threads[1]?.messages[0]?.description).toEqual("Message config 1")
-    expect(cfg.threads[2].messages[0].attachments[0].description).toEqual(
+    expect(cfg.threads[1]?.messages[1]?.attachments[0]?.description).toEqual(
       "Attachment config 1",
     )
   })
@@ -54,24 +54,25 @@ describe("newConfig", () => {
     expect(actual).toMatchObject(expected)
   })
 
-  it("should remove additional properties from JSON", () => {
-    const expected: PartialDeep<ProcessingConfig> = {
-      global: {
-        thread: {
-          match: {
-            query: "global-query",
-          },
-        },
-      },
-      settings: {
-        markProcessedLabel: "processed-label",
-      },
-    }
-    const cfgJson = { ...expected, additionalProperty: "additional" }
-    const actual = newConfig(cfgJson)
-    expect((actual as any).additionalProperty).toBeUndefined()
-    expect(actual).toMatchObject(expected)
-  })
+  // TODO: Disabled option 'excludeExtraneousValues: true' since it causes nested data to get lost
+  // it("should remove additional properties from JSON", () => {
+  //   const expected: PartialDeep<ProcessingConfig> = {
+  //     global: {
+  //       thread: {
+  //         match: {
+  //           query: "global-query",
+  //         },
+  //       },
+  //     },
+  //     settings: {
+  //       markProcessedLabel: "processed-label",
+  //     },
+  //   }
+  //   const cfgJson = { ...expected, additionalProperty: "additional" }
+  //   const actual = newConfig(cfgJson)
+  //   expect((actual as any).additionalProperty).toBeUndefined()
+  //   expect(actual).toMatchObject(expected)
+  // })
 
   it("should create a nested config object from JSON", () => {
     const expected: PartialDeep<ProcessingConfig> = {
@@ -88,11 +89,35 @@ describe("newConfig", () => {
       },
       threads: [
         {
-          description: "Thread Handler 1",
+          description: "Thread config 1",
           match: {
             query: "thread-query",
           },
           name: "", // FIXME: Should not be here!
+          messages: [
+            {
+              description: "Message config 1",
+              match: {
+                subject: "subject-match",
+              },
+              attachments: [
+                {
+                  description: "Attachment config 1",
+                  match: {
+                    name: "attachment-match",
+                  },
+                  actions: [
+                    {
+                      name: "global.log",
+                      args: {
+                        message: "Log attachment",
+                      },
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
         },
       ],
     }

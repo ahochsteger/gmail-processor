@@ -1,5 +1,8 @@
 import { PartialDeep } from "type-fest"
+import { RequiredDeep } from "../../utils/UtilityTypes"
+import { AttachmentActionConfig, ThreadActionConfig } from "../ActionConfig"
 import { Config } from "../Config"
+import { ThreadConfig } from "../ThreadConfig"
 import { V1Config, newV1Config } from "./V1Config"
 import { V1ToV2Converter } from "./V1ToV2Converter"
 
@@ -68,29 +71,17 @@ it("should convert rule with filter and folder", () => {
       },
     ],
   }
-  const expected: PartialDeep<Config> = {
-    threads: [
-      {
-        match: {
-          query: "from:example1@example.com",
-        },
-        attachments: [
-          {
-            actions: [
-              {
-                args: {
-                  location: "Examples/example1/${attachment.name}",
-                },
-                name: "attachment.storeToGDrive",
-              },
-            ],
-          },
-        ],
-      },
-    ],
-  }
   const actual = V1ToV2Converter.v1ConfigToV2Config(v1config)
-  expect(actual).toMatchObject(expected)
+  const actualThread = actual.threads[0]
+  expect(actualThread.match).toMatchObject({
+    query: "from:example1@example.com",
+  })
+  expect(actualThread.messages[0].attachments[0].actions[0]).toMatchObject({
+    args: {
+      location: "Examples/example1/${attachment.name}",
+    },
+    name: "attachment.storeToGDrive",
+  })
 })
 
 it("should convert rule with filter and folder containing a date format", () => {
@@ -102,34 +93,22 @@ it("should convert rule with filter and folder containing a date format", () => 
       },
     ],
   }
-  const expected: PartialDeep<Config> = {
-    threads: [
-      {
-        match: {
-          query: "to:my.name+scans@gmail.com",
-        },
-        attachments: [
-          {
-            actions: [
-              {
-                args: {
-                  location:
-                    "Scans-${message.date:dateformat:YYYY-MM-DD}/${attachment.name}",
-                },
-                name: "attachment.storeToGDrive",
-              },
-            ],
-          },
-        ],
-      },
-    ],
-  }
   const actual = V1ToV2Converter.v1ConfigToV2Config(v1config)
-  expect(actual).toMatchObject(expected)
+  const actualThread = actual.threads[0]
+  expect(actualThread.match).toMatchObject({
+    query: "to:my.name+scans@gmail.com",
+  })
+  expect(actualThread.messages[0].attachments[0].actions[0]).toMatchObject({
+    args: {
+      location:
+        "Scans-${message.date:dateformat:YYYY-MM-DD}/${attachment.name}",
+    },
+    name: "attachment.storeToGDrive",
+  })
 })
 
 it("should convert rule with filter, folder and filenameFromRegexp", () => {
-  const v1config: PartialDeep<V1Config> = newV1Config({
+  const v1config: RequiredDeep<V1Config> = newV1Config({
     rules: [
       {
         filter: "from:example2@example.com",
@@ -138,32 +117,30 @@ it("should convert rule with filter, folder and filenameFromRegexp", () => {
       },
     ],
   })
-  const expected: PartialDeep<Config> = {
-    threads: [
-      {
-        match: {
-          query: "from:example2@example.com",
-        },
-        attachments: [
-          {
-            actions: [
-              {
-                args: {
-                  location: "Examples/example2/${attachment.name.match.1}",
-                },
-                name: "attachment.storeToGDrive",
-              },
-            ],
-            match: {
-              name: "(.*\\.pdf)$",
-            },
-          },
-        ],
-      },
-    ],
+  const expectedThreadConfig: PartialDeep<ThreadConfig> = {
+    match: {
+      query: "from:example2@example.com",
+    },
+  }
+  const expectedAttachmentActionConfig = {
+    args: {
+      location: "Examples/example2/${attachment.name.match.1}",
+    },
+    name: "attachment.storeToGDrive",
+  }
+  const expectedAttachmentConfig = {
+    match: {
+      name: "(.*\\.pdf)$",
+    },
   }
   const actual = V1ToV2Converter.v1ConfigToV2Config(v1config)
-  expect(actual).toMatchObject(expected)
+  expect(actual.threads[0]).toMatchObject(expectedThreadConfig)
+  expect(actual.threads[0].messages[0].attachments[0]).toMatchObject(
+    expectedAttachmentConfig,
+  )
+  expect(actual.threads[0].messages[0].attachments[0].actions[0]).toMatchObject(
+    expectedAttachmentActionConfig,
+  )
 })
 
 it("should convert rule with filter, folder, filenameTo and archive", () => {
@@ -177,35 +154,28 @@ it("should convert rule with filter, folder, filenameTo and archive", () => {
       },
     ],
   })
-  const expected: PartialDeep<Config> = {
-    threads: [
-      {
-        match: {
-          query: "(from:example3a@example.com OR from:example3b@example.com)",
-        },
-        attachments: [
-          {
-            actions: [
-              {
-                args: {
-                  location:
-                    "Examples/example3ab/file-${message.date:dateformat:YYYY-MM-DD-}${message.subject}.txt",
-                },
-                name: "attachment.storeToGDrive",
-              },
-            ],
-          },
-        ],
-        actions: [
-          {
-            name: "thread.moveToArchive",
-          },
-        ],
-      },
-    ],
+
+  const expectedAttachmentActionConfig: AttachmentActionConfig = {
+    args: {
+      location:
+        "Examples/example3ab/file-${message.date:dateformat:YYYY-MM-DD-}${message.subject}.txt",
+    },
+    name: "attachment.storeToGDrive",
+  }
+  const expectedThreadActionConfig: ThreadActionConfig = {
+    name: "thread.moveToArchive",
+  }
+  const expectedThreadConfig: PartialDeep<ThreadConfig> = {
+    match: {
+      query: "(from:example3a@example.com OR from:example3b@example.com)",
+    },
   }
   const actual = V1ToV2Converter.v1ConfigToV2Config(v1config)
-  expect(actual).toMatchObject(expected)
+  expect(actual.threads[0]).toMatchObject(expectedThreadConfig)
+  expect(actual.threads[0].actions[0]).toMatchObject(expectedThreadActionConfig)
+  expect(actual.threads[0].messages[0].attachments[0].actions[0]).toMatchObject(
+    expectedAttachmentActionConfig,
+  )
 })
 
 it("should convert rule with filter, folder and parentFolderId", () => {
@@ -219,30 +189,17 @@ it("should convert rule with filter, folder and parentFolderId", () => {
       },
     ],
   }
-  const expected: PartialDeep<Config> = {
-    threads: [
-      {
-        match: {
-          query: "from:example1@example.com",
-        },
-        attachments: [
-          {
-            actions: [
-              {
-                args: {
-                  location:
-                    "${folderId:FOLDER_ID_FOR_Examples_FOLDER}/example1/${attachment.name}",
-                },
-                name: "attachment.storeToGDrive",
-              },
-            ],
-          },
-        ],
-      },
-    ],
-  }
   const actual = V1ToV2Converter.v1ConfigToV2Config(v1config)
-  expect(actual).toMatchObject(expected)
+  expect(actual.threads[0].match.query).toEqual("from:example1@example.com")
+  expect(actual.threads[0].messages[0].attachments[0].actions[0]).toMatchObject(
+    {
+      args: {
+        location:
+          "${id:FOLDER_ID_FOR_Examples_FOLDER}/example1/${attachment.name}",
+      },
+      name: "attachment.storeToGDrive",
+    },
+  )
 })
 
 it("should convert rule with filter, folder, filenameTo and archive", () => {
@@ -263,31 +220,19 @@ it("should convert rule with filter, folder, filenameTo and archive", () => {
       },
     ],
   }
-  const expected: PartialDeep<Config> = {
-    threads: [
-      {
-        match: {
-          query:
-            "has:attachment (from:example3a@example.com OR from:example3b@example.com)",
-        },
-        attachments: [
-          {
-            actions: [
-              {
-                args: {
-                  location:
-                    "Examples/example3ab/file-${message.date:dateformat:YYYY-MM-DD-}${message.subject}.txt",
-                },
-                name: "attachment.storeToGDrive",
-              },
-            ],
-          },
-        ],
-      },
-    ],
-  }
   const actual = V1ToV2Converter.v1ConfigToV2Config(v1config)
-  expect(actual).toMatchObject(expected)
+  expect(actual.threads[0].match.query).toEqual(
+    "has:attachment (from:example3a@example.com OR from:example3b@example.com)",
+  )
+  expect(actual.threads[0].messages[0].attachments[0].actions[0]).toMatchObject(
+    {
+      args: {
+        location:
+          "Examples/example3ab/file-${message.date:dateformat:YYYY-MM-DD-}${message.subject}.txt",
+      },
+      name: "attachment.storeToGDrive",
+    },
+  )
 })
 
 it("should convert rule with filter, saveThreadPDF and folder", () => {
@@ -301,37 +246,22 @@ it("should convert rule with filter, saveThreadPDF and folder", () => {
       },
     ],
   }
-  const expected: PartialDeep<Config> = {
-    threads: [
-      {
-        match: {
-          query: "label:PDF",
-        },
-        actions: [
-          {
-            args: {
-              location: "PDF Emails/${thread.firstMessageSubject}.pdf",
-            },
-            name: "thread.storeAsPdfToGDrive",
-          },
-        ],
-        attachments: [
-          {
-            actions: [
-              {
-                args: {
-                  location: "PDF Emails/${attachment.name}",
-                },
-                name: "attachment.storeToGDrive",
-              },
-            ],
-          },
-        ],
-      },
-    ],
-  }
   const actual = V1ToV2Converter.v1ConfigToV2Config(v1config)
-  expect(actual).toMatchObject(expected)
+  expect(actual.threads[0].match.query).toEqual("label:PDF")
+  expect(actual.threads[0].actions[0]).toMatchObject({
+    args: {
+      location: "PDF Emails/${thread.firstMessageSubject}.pdf",
+    },
+    name: "thread.storeAsPdfToGDrive",
+  })
+  expect(actual.threads[0].messages[0].attachments[0].actions[0]).toMatchObject(
+    {
+      args: {
+        location: "PDF Emails/${attachment.name}",
+      },
+      name: "attachment.storeToGDrive",
+    },
+  )
 })
 
 it("should convert rule with filter, saveMessagePDF, skipPDFHeader and folder", () => {
@@ -346,30 +276,17 @@ it("should convert rule with filter, saveMessagePDF, skipPDFHeader and folder", 
       },
     ],
   }
-  const expected: PartialDeep<Config> = {
-    threads: [
-      {
-        match: {
-          query: "from:no_reply@email-invoice.example.com",
-        },
-        messages: [
-          {
-            actions: [
-              {
-                args: {
-                  location: "PDF Emails/${message.subject}.pdf",
-                  skipHeader: true,
-                },
-                name: "message.storeAsPdfToGDrive",
-              },
-            ],
-          },
-        ],
-      },
-    ],
-  }
   const actual = V1ToV2Converter.v1ConfigToV2Config(v1config)
-  expect(actual).toMatchObject(expected)
+  expect(actual.threads[0].match.query).toEqual(
+    "from:no_reply@email-invoice.example.com",
+  )
+  expect(actual.threads[0].messages[0].actions[0]).toMatchObject({
+    args: {
+      location: "PDF Emails/${message.subject}.pdf",
+      skipHeader: true,
+    },
+    name: "message.storeAsPdfToGDrive",
+  })
 })
 
 it("should convert rule with filter, saveMessagePDF, skipPDFHeader and folder", () => {
@@ -384,30 +301,17 @@ it("should convert rule with filter, saveMessagePDF, skipPDFHeader and folder", 
       },
     ],
   }
-  const expected: PartialDeep<Config> = {
-    threads: [
-      {
-        match: {
-          query: "from:no_reply@email-invoice.example.com",
-        },
-        messages: [
-          {
-            actions: [
-              {
-                args: {
-                  location: "PDF Emails/${message.subject}.pdf",
-                  skipHeader: true,
-                },
-                name: "message.storeAsPdfToGDrive",
-              },
-            ],
-          },
-        ],
-      },
-    ],
-  }
   const actual = V1ToV2Converter.v1ConfigToV2Config(v1config)
-  expect(actual).toMatchObject(expected)
+  expect(actual.threads[0].match.query).toEqual(
+    "from:no_reply@email-invoice.example.com",
+  )
+  expect(actual.threads[0].messages[0].actions[0]).toMatchObject({
+    args: {
+      location: "PDF Emails/${message.subject}.pdf",
+      skipHeader: true,
+    },
+    name: "message.storeAsPdfToGDrive",
+  })
 })
 
 it("should convert rule with filter, saveThreadPDF, folder and filenameTo", () => {
@@ -466,33 +370,24 @@ it("should convert rule with filter, folder filenameFrom and filenameTo", () => 
       },
     ],
   }
-  const expected: PartialDeep<Config> = {
-    threads: [
-      {
-        match: {
-          query: "has:attachment from:example4@example.com",
-        },
-        attachments: [
-          {
-            match: {
-              name: "file\\.txt",
-            },
-            actions: [
-              {
-                args: {
-                  location:
-                    "Examples/example4/file-${message.date:dateformat:YYYY-MM-DD-}${message.subject}.txt",
-                },
-                name: "attachment.storeToGDrive",
-              },
-            ],
-          },
-        ],
-      },
-    ],
-  }
   const actual = V1ToV2Converter.v1ConfigToV2Config(v1config)
-  expect(actual).toMatchObject(expected)
+  expect(actual.threads[0].match.query).toEqual(
+    "has:attachment from:example4@example.com",
+  )
+  expect(actual.threads[0].messages[0].attachments[0]).toMatchObject({
+    match: {
+      name: "file\\.txt",
+    },
+  })
+  expect(actual.threads[0].messages[0].attachments[0].actions[0]).toMatchObject(
+    {
+      args: {
+        location:
+          "Examples/example4/file-${message.date:dateformat:YYYY-MM-DD-}${message.subject}.txt",
+      },
+      name: "attachment.storeToGDrive",
+    },
+  )
 })
 
 it("should convert rule with filter, folder filenameFrom and filenameTo", () => {
@@ -508,32 +403,21 @@ it("should convert rule with filter, folder filenameFrom and filenameTo", () => 
       },
     ],
   }
-  const expected: PartialDeep<Config> = {
-    threads: [
-      {
-        match: {
-          query: "receipt from:billing@zoom.us",
-        },
-        attachments: [
-          {
-            match: {
-              name: "zoom\\.pdf",
-            },
-            actions: [
-              {
-                args: {
-                  location: "Examples/example5/zoom-${threadConfig.index}.pdf",
-                },
-                name: "attachment.storeToGDrive",
-              },
-            ],
-          },
-        ],
-      },
-    ],
-  }
   const actual = V1ToV2Converter.v1ConfigToV2Config(v1config)
-  expect(actual).toMatchObject(expected)
+  expect(actual.threads[0].match.query).toEqual("receipt from:billing@zoom.us")
+  expect(actual.threads[0].messages[0].attachments[0]).toMatchObject({
+    match: {
+      name: "zoom\\.pdf",
+    },
+  })
+  expect(actual.threads[0].messages[0].attachments[0].actions[0]).toMatchObject(
+    {
+      args: {
+        location: "Examples/example5/zoom-${threadConfig.index}.pdf",
+      },
+      name: "attachment.storeToGDrive",
+    },
+  )
 })
 
 it("should convert rule with filter, saveThreadPDF, ruleLabel and folder", () => {

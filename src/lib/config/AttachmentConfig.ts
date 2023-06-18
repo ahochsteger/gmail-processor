@@ -1,9 +1,4 @@
-import {
-  Expose,
-  Type,
-  instanceToPlain,
-  plainToInstance,
-} from "class-transformer"
+import { Expose, Type, plainToInstance } from "class-transformer"
 import "reflect-metadata"
 import { PartialDeep } from "type-fest"
 import { RequiredDeep } from "../utils/UtilityTypes"
@@ -54,15 +49,6 @@ export function newAttachmentConfig(
   ) as RequiredAttachmentConfig
 }
 
-export function attachmentConfigToJson<T = AttachmentConfig>(
-  config: T,
-  withDefaults = false,
-): PartialDeep<AttachmentConfig> {
-  return instanceToPlain(config, {
-    exposeDefaultValues: withDefaults,
-  })
-}
-
 export function normalizeAttachmentConfig(
   config: PartialDeep<AttachmentConfig>,
   namePrefix = "",
@@ -70,15 +56,16 @@ export function normalizeAttachmentConfig(
 ): PartialDeep<AttachmentConfig> {
   config.name = config.name
     ? config.name
-    : `${namePrefix}attachment-cfg-${index ? "-" + index : ""}`
+    : `${namePrefix}attachment-cfg${index ? "-" + index : ""}`
   return config
 }
+
 export function normalizeAttachmentConfigs(
   configs: PartialDeep<AttachmentConfig>[],
   namePrefix = "",
 ): PartialDeep<AttachmentConfig>[] {
   for (let index = 0; index < configs.length; index++) {
-    normalizeAttachmentConfig(configs[index], namePrefix, index)
+    normalizeAttachmentConfig(configs[index], namePrefix, index + 1)
   }
   return configs
 }

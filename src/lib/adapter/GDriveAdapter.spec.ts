@@ -1,19 +1,23 @@
 import {
-  CREATED_FILE_ID,
-  CREATED_FILE_NAME,
-  CREATED_FOLDER_NAME,
-  CREATED_NESTED_FILE_NAME,
+  EXISTING_FILE_ID,
   EXISTING_FILE_NAME,
+  NEW_EXISTING_FILE_ID,
+  NEW_EXISTING_FILE_NAME,
+  NEW_FILE_ID,
+  NEW_FILE_NAME,
+  NEW_FOLDER_NAME,
+  NEW_NESTED_FILE_ID,
+  NEW_NESTED_FILE_NAME,
   ROOT_FOLDER_ID,
 } from "../../test/mocks/GDriveMocks"
 import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
 import { RunMode } from "../Context"
 import { newConfig } from "../config/Config"
-import { ConflictStrategy, FileData, GDriveAdapter } from "./GDriveAdapter"
+import { ConflictStrategy, FileContent, GDriveAdapter } from "./GDriveAdapter"
 
 let mocks: Mocks
 let gdriveAdapter: GDriveAdapter
-const PLAIN_TEXT_CONTENT: FileData = {
+const PLAIN_TEXT_CONTENT: FileContent = {
   content: "some content",
   mimeType: "text/plain",
   description: "some description",
@@ -47,11 +51,11 @@ describe("createFile() strategy:ERROR", () => {
   it("should create a non-existing file in the root folder", () => {
     gdriveAdapter.ctx.env.runMode = RunMode.DANGEROUS
     const file = gdriveAdapter.createFile(
-      `/${CREATED_FILE_NAME}`,
+      `/${NEW_FILE_NAME}`,
       PLAIN_TEXT_CONTENT,
       ConflictStrategy.ERROR,
     )
-    expect(file.getId()).toEqual(CREATED_FILE_ID)
+    expect(file.getId()).toEqual(NEW_FILE_ID)
     expect(mocks.rootFolder.createFile).toBeCalled()
   })
 })
@@ -121,15 +125,17 @@ describe("createFile() strategy:UPDATE", () => {
     expect(mocks.existingFile.setDescription).not.toBeCalled()
   })
 })
-describe("createFile() strategy:BACKUP", () => {
-  it("should backup an existing file", () => {
-    gdriveAdapter.ctx.env.runMode = RunMode.DANGEROUS
+describe("createFile() strategy:BACKUP, safe-mode", () => {
+  it("should backup an existing file in safe mode", () => {
+    gdriveAdapter.ctx.env.runMode = RunMode.SAFE_MODE
+
     const createdFile = gdriveAdapter.createFile(
-      `/${EXISTING_FILE_NAME}`,
+      `/${NEW_EXISTING_FILE_NAME}`,
       PLAIN_TEXT_CONTENT,
       ConflictStrategy.BACKUP,
     )
-    expect(createdFile).not.toBe(mocks.existingFile)
+    expect(createdFile.getId()).not.toEqual(EXISTING_FILE_ID)
+    expect(createdFile.getId()).toEqual(NEW_EXISTING_FILE_ID)
     expect(mocks.rootFolder.createFile).toBeCalled()
     expect(mocks.existingFile.setName).toBeCalled()
   })
@@ -138,7 +144,7 @@ describe("createFile() strategy:KEEP", () => {
   it("should create a duplicate new file", () => {
     gdriveAdapter.ctx.env.runMode = RunMode.SAFE_MODE
     const createdFile = gdriveAdapter.createFile(
-      `/${EXISTING_FILE_NAME}`,
+      `/${NEW_EXISTING_FILE_NAME}`,
       PLAIN_TEXT_CONTENT,
       ConflictStrategy.KEEP,
     )
@@ -172,13 +178,15 @@ describe("createFile() strategy:ERROR", () => {
 describe("createFile() with folderId", () => {
   it("should create a file using a folderId", () => {
     gdriveAdapter.ctx.env.runMode = RunMode.DANGEROUS
-    gdriveAdapter.createFile(
-      `{id:${ROOT_FOLDER_ID}}/${CREATED_FOLDER_NAME}/${CREATED_NESTED_FILE_NAME}`,
+    const file = gdriveAdapter.createFile(
+      `{id:${ROOT_FOLDER_ID}}/${NEW_FOLDER_NAME}/${NEW_NESTED_FILE_NAME}`,
       PLAIN_TEXT_CONTENT,
       ConflictStrategy.KEEP,
     )
     expect(mocks.rootFolder.createFolder).toBeCalled()
     expect(mocks.newFolder.createFile).toBeCalled()
+    expect(file).toBe(mocks.newNestedFile)
+    expect(file.getId()).toEqual(NEW_NESTED_FILE_ID)
   })
 })
 

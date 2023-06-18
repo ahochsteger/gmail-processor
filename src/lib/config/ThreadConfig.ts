@@ -71,18 +71,24 @@ export function normalizeThreadConfig(
   config.name = config.name
     ? config.name
     : `${namePrefix}thread-cfg${index ? "-" + index : ""}`
-  if (!config.messages) {
-    config.messages = []
+  config.messages = config.messages ?? []
+
+  // Normalize top-level attachments config:
+  if (config.attachments !== undefined) {
+    config.messages.push({ attachments: config.attachments })
+    delete config.attachments
   }
-  normalizeMessageConfigs(config.messages, namePrefix)
+
+  config.messages = normalizeMessageConfigs(config.messages, namePrefix)
   return config
 }
+
 export function normalizeThreadConfigs(
   configs: PartialDeep<ThreadConfig>[],
   namePrefix = "",
 ): PartialDeep<ThreadConfig>[] {
   for (let index = 0; index < configs.length; index++) {
-    normalizeThreadConfig(configs[index], namePrefix, index)
+    normalizeThreadConfig(configs[index], namePrefix, index + 1)
   }
   return configs
 }

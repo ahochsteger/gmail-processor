@@ -19,7 +19,7 @@ type LocationInfo = {
   pathSegments: string[]
 }
 
-export type FileData = {
+export type FileContent = {
   content: string
   mimeType: string
   description: string
@@ -29,7 +29,7 @@ export class DriveUtils {
   public static createFile(
     ctx: EnvContext,
     location: string,
-    fileData: FileData,
+    fileData: FileContent,
     conflictStrategy: ConflictStrategy,
   ): GoogleAppsScript.Drive.File {
     const locationInfo = this.extractLocationInfo(location)
@@ -45,31 +45,35 @@ export class DriveUtils {
 
     const existingFiles = parentFolder.getFilesByName(filename)
 
+    let file: GoogleAppsScript.Drive.File
     if (existingFiles.hasNext()) {
       const existingFile = existingFiles.next()
 
       switch (conflictStrategy) {
         case ConflictStrategy.BACKUP:
-          return this.createWithBackup(
+          file = this.createWithBackup(
             ctx,
             parentFolder,
             existingFile,
             fileData,
           )
+          break
         case ConflictStrategy.KEEP:
-          return this.createFileInParent(ctx, parentFolder, filename, fileData)
+          file = this.createFileInParent(ctx, parentFolder, filename, fileData)
+          break
         case ConflictStrategy.SKIP:
           ctx.log.warn(
             `A file with the same name already exists at location: ${location}. Skipping file creation.`,
           )
-          return existingFile
+          file = existingFile
+          break
         case ConflictStrategy.REPLACE:
           if (ctx.env.runMode === RunMode.DANGEROUS) {
             ctx.log.warn(
               `A file with the same name already exists at location: ${location}. Replacing ...`,
             )
             this.deleteFile(ctx, existingFile)
-            return this.createFileInParent(
+            file = this.createFileInParent(
               ctx,
               parentFolder,
               filename,
@@ -79,20 +83,22 @@ export class DriveUtils {
             ctx.log.warn(
               `A file with the same name already exists at location: ${location}. Skipping replacing due to runmode ...`,
             )
-            return existingFile
+            file = existingFile
           }
+          break
         case ConflictStrategy.UPDATE:
           if (ctx.env.runMode === RunMode.DANGEROUS) {
             ctx.log.warn(
               `A file with the same name already exists at location: ${location}. Updating the file contents.`,
             )
-            return this.updateExistingFile(ctx, existingFile, fileData)
+            file = this.updateExistingFile(ctx, existingFile, fileData)
           } else {
             ctx.log.warn(
               `A file with the same name already exists at location: ${location}. Skipping update due to runmode ...`,
             )
-            return existingFile
+            file = existingFile
           }
+          break
         case ConflictStrategy.ERROR: {
           const errorMessage = `Conflict: A file with the same name already exists at location: ${location}`
           ctx.log.error(errorMessage)
@@ -100,8 +106,9 @@ export class DriveUtils {
         }
       }
     } else {
-      return this.createFileInParent(ctx, parentFolder, filename, fileData)
+      file = this.createFileInParent(ctx, parentFolder, filename, fileData)
     }
+    return file
   }
 
   public static ensureFolderExists(ctx: EnvContext, location: string) {
@@ -179,7 +186,7 @@ export class DriveUtils {
     ctx: EnvContext,
     folder: GoogleAppsScript.Drive.Folder,
     existingFile: GoogleAppsScript.Drive.File,
-    fileData: FileData,
+    fileData: FileContent,
   ): GoogleAppsScript.Drive.File {
     const filename = existingFile.getName()
     const nameParts = filename.split(".")
@@ -187,18 +194,23 @@ export class DriveUtils {
     const extension = nameParts[nameParts.length - 1]
     const backupFilename = `${baseName} (Backup).${extension}`
     existingFile.setName(backupFilename)
-    return this.createFileInParent(ctx, folder, filename, fileData)
+    const file = this.createFileInParent(ctx, folder, filename, fileData)
+    return file
   }
 
   private static createFileInParent(
     _ctx: EnvContext,
     parentFolder: GoogleAppsScript.Drive.Folder,
     filename: string,
-    fileData: FileData,
+    fileData: FileContent,
   ): GoogleAppsScript.Drive.File {
-    return parentFolder
-      .createFile(filename, fileData.content, fileData.mimeType)
-      .setDescription(fileData.description)
+    const file = parentFolder.createFile(
+      filename,
+      fileData.content,
+      fileData.mimeType,
+    )
+    file.setDescription(fileData.description)
+    return file
   }
 
   private static deleteFile(
@@ -212,11 +224,12 @@ export class DriveUtils {
   private static updateExistingFile(
     _ctx: EnvContext,
     file: GoogleAppsScript.Drive.File,
-    fileData: FileData,
+    fileData: FileContent,
   ): GoogleAppsScript.Drive.File {
-    return file
+    file = file
       .setContent(fileData.content)
       .setDescription(fileData.description)
+    return file
   }
 }
 
@@ -235,10 +248,16 @@ export class GDriveAdapter extends BaseAdapter {
    */
   public createFile(
     location: string,
-    fileData: FileData,
+    fileData: FileContent,
     conflictStrategy: ConflictStrategy,
   ): GoogleAppsScript.Drive.File {
-    return DriveUtils.createFile(this.ctx, location, fileData, conflictStrategy)
+    const file = DriveUtils.createFile(
+      this.ctx,
+      location,
+      fileData,
+      conflictStrategy,
+    )
+    return file
   }
 
   public storeAttachment(
@@ -250,7 +269,7 @@ export class GDriveAdapter extends BaseAdapter {
     this.ctx.log.info(
       `Storing attachment '${attachment.getName()}' to '${location}' ...`,
     )
-    const fileData: FileData = {
+    const fileData: FileContent = {
       content: attachment.getDataAsString(),
       mimeType: attachment.getContentType(),
       description,

@@ -2,6 +2,7 @@ import { PartialDeep } from "type-fest"
 import { ConfigMocks } from "../../test/mocks/ConfigMocks"
 import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
 import { RunMode } from "../Context"
+import { ProcessingStage } from "../config/ActionConfig"
 import { Config, RequiredConfig } from "../config/Config"
 import { MarkProcessedMethod } from "../config/SettingsConfig"
 import { GmailProcessor } from "./GmailProcessor"
@@ -44,7 +45,16 @@ describe("getEffectiveConfig", () => {
           },
           actions: [],
         },
-        message: { actions: [] },
+        message: {
+          actions: [
+            {
+              args: {},
+              description: "",
+              name: "message.markRead",
+              processingStage: ProcessingStage.POST_MAIN,
+            },
+          ],
+        },
         attachment: { actions: [] },
       },
       threads: [],

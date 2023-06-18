@@ -1,9 +1,4 @@
-import {
-  Expose,
-  Type,
-  instanceToPlain,
-  plainToInstance,
-} from "class-transformer"
+import { Expose, Type, plainToInstance } from "class-transformer"
 import "reflect-metadata"
 import { PartialDeep } from "type-fest"
 import { RequiredDeep } from "../utils/UtilityTypes"
@@ -50,15 +45,6 @@ export class MessageConfig {
 
 export type RequiredMessageConfig = RequiredDeep<MessageConfig>
 
-export function messageConfigToJson<T = MessageConfig>(
-  config: T,
-  withDefaults = false,
-): PartialDeep<MessageConfig> {
-  return instanceToPlain(config, {
-    exposeDefaultValues: withDefaults,
-  })
-}
-
 export function newMessageConfig(
   json: PartialDeep<MessageConfig> = {},
   namePrefix = "",
@@ -80,19 +66,20 @@ export function normalizeMessageConfig(
 ): PartialDeep<MessageConfig> {
   config.name = config.name
     ? config.name
-    : `${namePrefix}message-cfg-${index ? "-" + index : ""}`
-  if (!config.attachments) {
-    config.attachments = []
-  }
-  normalizeAttachmentConfigs(config.attachments, namePrefix)
+    : `${namePrefix}message-cfg${index ? "-" + index : ""}`
+  config.attachments = normalizeAttachmentConfigs(
+    config.attachments ?? [],
+    namePrefix,
+  )
   return config
 }
+
 export function normalizeMessageConfigs(
   configs: PartialDeep<MessageConfig>[],
   namePrefix = "",
 ): PartialDeep<MessageConfig>[] {
   for (let index = 0; index < configs.length; index++) {
-    normalizeMessageConfig(configs[index], namePrefix, index)
+    normalizeMessageConfig(configs[index], namePrefix, index + 1)
   }
   return configs
 }

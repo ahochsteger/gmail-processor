@@ -5,25 +5,24 @@ import {
   mock,
   mockDeep,
 } from "jest-mock-extended"
-import { EntryScope, FileData, FolderData, GDriveData } from "./GDriveData"
+import { FileData, FolderData, GDriveData } from "./GDriveData"
 import {
-  CREATED_FILE_ID,
-  CREATED_FILE_NAME,
-  CREATED_FOLDER_ID,
-  CREATED_FOLDER_NAME,
   EXISTING_FILE_ID,
   EXISTING_FILE_NAME,
   EXISTING_FOLDER_ID,
   EXISTING_FOLDER_NAME,
   GDriveMocks,
-  LOGSHEET_FILE_ID,
-  LOGSHEET_FILE_NAME,
+  NEW_FILE_ID,
+  NEW_FILE_NAME,
+  NEW_FOLDER_ID,
+  NEW_FOLDER_NAME,
+  NEW_NESTED_FILE_ID,
+  NEW_NESTED_FILE_NAME,
   NO_FILE_ID,
   NO_FILE_NAME,
   NO_FOLDER_ID,
   NO_FOLDER_NAME,
   ROOT_FOLDER_ID,
-  ROOT_FOLDER_NAME,
 } from "./GDriveMocks"
 import { MockFactory, Mocks } from "./MockFactory"
 
@@ -32,41 +31,11 @@ let mocks: Mocks
 
 beforeAll(() => {
   mocks = MockFactory.newMocks()
-  driveSpec = new GDriveData(
-    mocks.rootFolder,
-    ROOT_FOLDER_ID,
-    ROOT_FOLDER_NAME,
-    EntryScope.EXISTING,
-    [
-      new FileData(mocks.existingFile, EXISTING_FILE_ID, EXISTING_FILE_NAME),
-      new FileData(
-        mocks.logSpreadsheetFile,
-        LOGSHEET_FILE_ID,
-        LOGSHEET_FILE_NAME,
-      ),
-      new FolderData(
-        mocks.existingFolder,
-        EXISTING_FOLDER_ID,
-        EXISTING_FOLDER_NAME,
-      ),
-      new FileData(
-        mocks.newFile,
-        CREATED_FILE_ID,
-        CREATED_FILE_NAME,
-        EntryScope.CREATED,
-      ),
-      new FolderData(
-        mocks.newFolder,
-        CREATED_FOLDER_ID,
-        CREATED_FOLDER_NAME,
-        EntryScope.CREATED,
-      ),
-    ],
-  )
+  driveSpec = GDriveMocks.getSampleDriveData(mocks)
 })
 
 describe("mock behavior", () => {
-  it("should use calledWith correctly", () => {
+  it("should use calledWith without default mock implementation", () => {
     const folder: MockProxy<GoogleAppsScript.Drive.Folder> =
       mock<GoogleAppsScript.Drive.Folder>()
     const noFileIterator: MockProxy<GoogleAppsScript.Drive.FileIterator> =
@@ -88,7 +57,7 @@ describe("setupFile()", () => {
   it("should setup a default file", () => {
     const file = GDriveMocks.setupFileMocks(
       new FileData(mocks.existingFile, EXISTING_FILE_ID, EXISTING_FILE_NAME),
-      mocks.existingFile,
+      driveSpec,
     )
     expect(file.setContent("test")).toBe(file)
     expect(file.setDescription("test")).toBe(file)
@@ -100,7 +69,7 @@ describe("setupFile()", () => {
     const originalFile = mock<GoogleAppsScript.Drive.File>()
     const file = GDriveMocks.setupFileMocks(
       new FileData(originalFile, EXISTING_FILE_ID, EXISTING_FILE_NAME),
-      originalFile,
+      driveSpec,
     )
     expect(file).toBe(originalFile)
     expect(file.setContent("test")).toBe(file)
@@ -131,14 +100,14 @@ describe("setupFolder()", () => {
       folder.getFoldersByName(NO_FOLDER_NAME).next()
     }).toThrowError()
     expect(
-      folder.createFile(CREATED_FILE_NAME, "content", "plain/text"),
+      folder.createFile(NEW_FILE_NAME, "content", "plain/text"),
     ).toBeDefined()
-    expect(folder.createFolder(CREATED_FOLDER_NAME)).toBeDefined()
+    expect(folder.createFolder(NEW_FOLDER_NAME)).toBeDefined()
   })
   it("should setup a folder with drive data", () => {
-    const originalFolder = mock<GoogleAppsScript.Drive.Folder>()
-    const folder = GDriveMocks.setupFolderMocks(driveSpec, originalFolder)
-    expect(folder).toBe(originalFolder)
+    const folder = GDriveMocks.setupFolderMocks(driveSpec, driveSpec)
+    expect(folder.getId()).toEqual(ROOT_FOLDER_ID)
+    expect(folder).toBe(mocks.rootFolder)
 
     // Test existing files/folders
     let fileIterator = folder.getFilesByName(EXISTING_FILE_NAME)
@@ -160,15 +129,15 @@ describe("setupFolder()", () => {
       folderIterator.next()
     }).toThrowError()
     expect(
-      folder.createFile(CREATED_FILE_NAME, "content", "plain/text"),
+      folder.createFile(NEW_FILE_NAME, "content", "plain/text"),
     ).toBeDefined()
-    expect(folder.createFolder(CREATED_FOLDER_NAME)).toBeDefined()
+    expect(folder.createFolder(NEW_FOLDER_NAME)).toBeDefined()
 
     // Test file/folder creation:
-    expect(
-      folder.createFile(CREATED_FILE_NAME, "new-content", "plain/text"),
-    ).toBe(mocks.newFile)
-    expect(folder.createFolder(CREATED_FOLDER_NAME)).toBe(mocks.newFolder)
+    expect(folder.createFile(NEW_FILE_NAME, "new-content", "plain/text")).toBe(
+      mocks.newFile,
+    )
+    expect(folder.createFolder(NEW_FOLDER_NAME)).toBe(mocks.newFolder)
   })
 })
 
@@ -224,34 +193,33 @@ describe("setupFolderIterator()", () => {
   })
 })
 
-describe("setupGDriveApp", () => {
-  it("should provide a default drive app", () => {
-    const app = GDriveMocks.setupGDriveAppMocks(driveSpec)
-    expect(app.getRootFolder()).toBeDefined()
-    // TODO: Add more expectations!
+describe("setupGDriveAppMocks", () => {
+  let app: MockProxy<GoogleAppsScript.Drive.DriveApp>
+  beforeEach(() => {
+    app = GDriveMocks.setupGDriveAppMocks(driveSpec, mocks.gdriveApp)
   })
-  it("should provide a drive app with defined files and folders", () => {
+  it("should setup a default drive app", () => {
+    expect(app.getRootFolder()).toBeDefined()
+    expect(app.getRootFolder().getId()).toEqual(ROOT_FOLDER_ID)
+  })
+  it("should setup a given gdrive app", () => {
     const initialApp = mockDeep<GoogleAppsScript.Drive.DriveApp>({
       // TODO: Use fallbackMockImplementation by default for all mocks to spot missing mocked functions!
       fallbackMockImplementation: () => {
         throw new Error("No mock implementation available!")
       },
     })
-
     const app = GDriveMocks.setupGDriveAppMocks(driveSpec, initialApp)
-
-    // Test get file/folder by ID:
+    expect(app).toBe(initialApp)
+  })
+  it("should setup a drive app with existing files", () => {
+    // Test get file by ID:
     expect(app.getFileById(EXISTING_FILE_ID)).toBe(mocks.existingFile)
-    expect(app.getFolderById(EXISTING_FOLDER_ID)).toBe(mocks.existingFolder)
     expect(() => {
       app.getFileById(NO_FILE_ID)
     }).toThrowError()
-    expect(() => {
-      app.getFolderById(NO_FOLDER_ID)
-    }).toThrowError()
 
-    // Test file/folder iterators:
-    // jest.clearAllMocks()
+    // Test file iterators:
     const rootFolder = app.getRootFolder()
     expect(rootFolder).toBeDefined()
     const fileIterator = rootFolder.getFilesByName(EXISTING_FILE_NAME)
@@ -261,6 +229,14 @@ describe("setupGDriveApp", () => {
     expect(() => {
       fileIterator.next()
     }).toThrowError()
+  })
+  it("should setup a drive app with existing folders", () => {
+    // Test get folder by ID:
+    expect(app.getFolderById(EXISTING_FOLDER_ID)).toBe(mocks.existingFolder)
+
+    // Test folder iterators:
+    const rootFolder = app.getRootFolder()
+    expect(rootFolder).toBeDefined()
     const folderIterator = rootFolder.getFoldersByName(EXISTING_FOLDER_NAME)
     expect(folderIterator.hasNext()).toBeTruthy()
     expect(folderIterator.next()).toBe(mocks.existingFolder)
@@ -268,11 +244,43 @@ describe("setupGDriveApp", () => {
     expect(() => {
       folderIterator.next()
     }).toThrowError()
-
-    // Test file/folder creation:
-    expect(
-      rootFolder.createFile(CREATED_FILE_NAME, "new-content", "plain/text"),
-    ).toBe(mocks.newFile)
-    expect(rootFolder.createFolder(CREATED_FOLDER_NAME)).toBe(mocks.newFolder)
+  })
+  it("should setup a drive app for root file creation", () => {
+    const rootFolder = app.getRootFolder()
+    const newRootFile = rootFolder.createFile(
+      NEW_FILE_NAME,
+      "new-content",
+      "plain/text",
+    )
+    expect(newRootFile.getId()).toEqual(NEW_FILE_ID)
+    expect(newRootFile).toBe(mocks.newFile)
+  })
+  it("should setup a drive app for root folder creation", () => {
+    const rootFolder = app.getRootFolder()
+    const newFolder = rootFolder.createFolder(NEW_FOLDER_NAME)
+    expect(newFolder.getId()).toEqual(NEW_FOLDER_ID)
+    expect(newFolder).toBe(mocks.newFolder)
+  })
+  it("should setup a drive app for nested file creation", () => {
+    const rootFolder = app.getRootFolder()
+    const newFolder = rootFolder.createFolder(NEW_FOLDER_NAME)
+    const newNestedFile = newFolder.createFile(
+      NEW_NESTED_FILE_NAME,
+      "new-content",
+      "plain/text",
+    )
+    expect(newNestedFile.getId()).toEqual(NEW_NESTED_FILE_ID)
+    expect(newNestedFile).toBe(mocks.newNestedFile)
+  })
+  test.todo("should setup a drive app for nested folder creation")
+  it("should throw an error for non-existing file ids", () => {
+    expect(() => {
+      app.getFileById(NO_FILE_ID)
+    }).toThrowError()
+  })
+  it("should throw an error for non-existing folder ids", () => {
+    expect(() => {
+      app.getFolderById(NO_FOLDER_ID)
+    }).toThrowError()
   })
 })

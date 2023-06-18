@@ -4,19 +4,19 @@ import { ROOT_FOLDER_ID, ROOT_FOLDER_NAME } from "./GDriveMocks"
 
 let driveData: GDriveData
 
-const rootFolder = mock<GoogleAppsScript.Drive.Folder>()
 const existingFile1 = mock<GoogleAppsScript.Drive.File>()
 const existingFile2 = mock<GoogleAppsScript.Drive.File>()
-const newFile1 = mock<GoogleAppsScript.Drive.File>()
-const newFile2 = mock<GoogleAppsScript.Drive.File>()
 const existingFolder1 = mock<GoogleAppsScript.Drive.Folder>()
 const existingFolder2 = mock<GoogleAppsScript.Drive.Folder>()
-const newFolder1 = mock<GoogleAppsScript.Drive.Folder>()
-const newFolder2 = mock<GoogleAppsScript.Drive.Folder>()
 const existingNestedFile1 = mock<GoogleAppsScript.Drive.File>()
 const existingNestedFile2 = mock<GoogleAppsScript.Drive.File>()
 const existingNestedFolder1 = mock<GoogleAppsScript.Drive.Folder>()
 const existingNestedFolder2 = mock<GoogleAppsScript.Drive.Folder>()
+const newFile1 = mock<GoogleAppsScript.Drive.File>()
+const newFile2 = mock<GoogleAppsScript.Drive.File>()
+const newFolder1 = mock<GoogleAppsScript.Drive.Folder>()
+const newFolder2 = mock<GoogleAppsScript.Drive.Folder>()
+const rootFolder = mock<GoogleAppsScript.Drive.Folder>()
 
 beforeAll(() => {
   driveData = new GDriveData(
@@ -111,8 +111,12 @@ describe("getEntries()", () => {
     expect(driveData.getEntries().map((f) => f.id)).toEqual([
       "existing-file-1",
       "existing-file-2",
+      "new-file-1",
+      "new-file-2",
       "existing-folder-1",
       "existing-folder-2",
+      "new-folder-1",
+      "new-folder-2",
     ])
   })
 })
@@ -121,6 +125,8 @@ describe("getFiles()", () => {
     expect(driveData.getFiles().map((f) => f.id)).toEqual([
       "existing-file-1",
       "existing-file-2",
+      "new-file-1",
+      "new-file-2",
     ])
   })
 })
@@ -129,6 +135,8 @@ describe("getFolders()", () => {
     expect(driveData.getFolders().map((f) => f.id)).toEqual([
       "existing-folder-1",
       "existing-folder-2",
+      "new-folder-1",
+      "new-folder-2",
     ])
   })
 })
@@ -150,18 +158,48 @@ describe("getNestedEntries()", () => {
         "existing-nested-file-2",
         "existing-nested-folder-1",
         "existing-nested-folder-2",
+        "new-file-1",
+        "new-file-2",
+        "new-folder-1",
+        "new-folder-2",
       ].sort(),
     )
   })
 })
 describe("getNestedFiles()", () => {
   it("should return all nested files", () => {
-    expect(driveData.getNestedFiles().map((f) => f.id)).toEqual([
-      "existing-file-1",
-      "existing-file-2",
-      "existing-nested-file-1",
-      "existing-nested-file-2",
-    ])
+    expect(
+      driveData
+        .getNestedFiles()
+        .map((f) => f.id)
+        .sort(),
+    ).toEqual(
+      [
+        "existing-file-1",
+        "existing-file-2",
+        "new-file-1",
+        "new-file-2",
+        "existing-nested-file-1",
+        "existing-nested-file-2",
+      ].sort(),
+    )
+  })
+})
+describe("getNestedFiles(EXISTING)", () => {
+  it("should return all nested files", () => {
+    expect(
+      driveData
+        .getNestedFiles(EntryScope.EXISTING)
+        .map((f) => f.id)
+        .sort(),
+    ).toEqual(
+      [
+        "existing-file-1",
+        "existing-file-2",
+        "existing-nested-file-1",
+        "existing-nested-file-2",
+      ].sort(),
+    )
   })
 })
 describe("getNestedFolders()", () => {
@@ -169,6 +207,26 @@ describe("getNestedFolders()", () => {
     expect(
       driveData
         .getNestedFolders()
+        .map((f) => f.id)
+        .sort(),
+    ).toEqual(
+      [
+        ROOT_FOLDER_ID,
+        "existing-folder-1",
+        "existing-folder-2",
+        "existing-nested-folder-1",
+        "existing-nested-folder-2",
+        "new-folder-1",
+        "new-folder-2",
+      ].sort(),
+    )
+  })
+})
+describe("getNestedFolders(EXISTING)", () => {
+  it("should return all existing nested folders", () => {
+    expect(
+      driveData
+        .getNestedFolders(EntryScope.EXISTING)
         .map((f) => f.id)
         .sort(),
     ).toEqual(

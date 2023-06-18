@@ -79,9 +79,9 @@ The processing stage in which the action should run (pre or post processing)
 - **Type**: `string`
 - **Required**: No
 - **Allowed values**:
-  - `"after-main"`
-  - `"before-main"`
   - `"main"`
+  - `"post-main"`
+  - `"pre-main"`
 
 ---
 
@@ -363,9 +363,9 @@ The processing stage in which the action should run (pre or post processing)
 - **Type**: `string`
 - **Required**: No
 - **Allowed values**:
-  - `"after-main"`
-  - `"before-main"`
   - `"main"`
+  - `"post-main"`
+  - `"pre-main"`
 
 ---
 
@@ -651,9 +651,9 @@ The processing stage in which the action should run (pre or post processing)
 - **Type**: `string`
 - **Required**: No
 - **Allowed values**:
-  - `"after-main"`
-  - `"before-main"`
   - `"main"`
+  - `"post-main"`
+  - `"pre-main"`
 
 ---
 

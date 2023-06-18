@@ -7,32 +7,15 @@ import {
 import "reflect-metadata"
 import { PartialDeep } from "type-fest"
 import { RequiredDeep } from "../utils/UtilityTypes"
-import {
-  ProcessingStage,
-  newMessageActionConfig,
-  newThreadActionConfig,
-} from "./ActionConfig"
-import {
-  AttachmentConfig,
-  attachmentConfigToJson,
-  newAttachmentConfig,
-} from "./AttachmentConfig"
+import { ProcessingStage } from "./ActionConfig"
+import { AttachmentConfig } from "./AttachmentConfig"
 import { GlobalConfig } from "./GlobalConfig"
-import {
-  MessageConfig,
-  messageConfigToJson,
-  newMessageConfig,
-} from "./MessageConfig"
+import { MessageConfig } from "./MessageConfig"
 import { MarkProcessedMethod, SettingsConfig } from "./SettingsConfig"
-import {
-  RequiredThreadConfig,
-  ThreadConfig,
-  newThreadConfig,
-  normalizeThreadConfigs,
-} from "./ThreadConfig"
+import { ThreadConfig, normalizeThreadConfigs } from "./ThreadConfig"
 
 /**
- * Represents a configuration for GMail2GDrive in normalized form
+ * Represents a configuration for GMail2GDrive in normalized form for processing
  */
 export class ProcessingConfig {
   /**
@@ -91,72 +74,54 @@ export function configToJson<T = ProcessingConfig>(
 
 export function newConfig(json: PartialDeep<Config> = {}): RequiredConfig {
   return plainToInstance(ProcessingConfig, normalizeConfig(json), {
-    excludeExtraneousValues: true,
     exposeDefaultValues: true,
     exposeUnsetFields: false,
   }) as RequiredConfig
 }
 
-export function normalizeConfig(cfg: PartialDeep<Config>): PartialDeep<Config> {
-  const addThreads = []
-
-  // Normalize top-level messages config:
-  while (Array.isArray(cfg.messages) && cfg.messages.length) {
-    const mcfg = cfg.messages.shift()
-    if (!mcfg) break
-    const tcfg = newThreadConfig()
-    tcfg.messages.push(newMessageConfig(messageConfigToJson(mcfg)))
-    addThreads.push(tcfg)
-  }
-  delete cfg.messages
+export function normalizeConfig(
+  config: PartialDeep<Config>,
+): PartialDeep<Config> {
+  config.threads = config.threads ?? []
 
   // Normalize top-level attachments config:
-  while (Array.isArray(cfg.attachments) && cfg.attachments.length) {
-    const acfg = cfg.attachments.shift()
-    if (!acfg) break
-    const mcfg = newMessageConfig()
-    mcfg.attachments.push(newAttachmentConfig(attachmentConfigToJson(acfg)))
-    const tcfg = newThreadConfig()
-    tcfg.messages.push(mcfg)
-    addThreads.push(tcfg)
+  if (config.attachments !== undefined) {
+    config.messages = config.messages ?? []
+    config.messages.push({ attachments: config.attachments })
+    delete config.attachments
   }
-  delete cfg.attachments
 
-  // Add additional thread config:
-  cfg.threads = (Array.isArray(cfg.threads) ? cfg.threads : []).concat(
-    addThreads,
-  )
+  // Normalize top-level messages config:
+  if (config.messages !== undefined) {
+    config.threads.push({ messages: config.messages })
+    delete config.messages
+  }
 
-  const addGlobalThreadActions = []
-  const addGlobalMessageActions = []
-  cfg.settings = cfg.settings ? cfg.settings : new SettingsConfig()
+  // Inject mark processed actions
+  config.settings = config.settings ?? {}
+  config.global = config.global ?? {}
+  config.global.thread = config.global.thread ?? {}
+  config.global.thread.actions = config.global.thread.actions ?? []
+  config.global.message = config.global.message ?? {}
+  config.global.message.actions = config.global.message.actions ?? []
   if (
-    cfg.settings.markProcessedMethod == MarkProcessedMethod.ADD_THREAD_LABEL
+    config.settings.markProcessedMethod == MarkProcessedMethod.ADD_THREAD_LABEL
   ) {
-    addGlobalThreadActions.push(
-      newThreadActionConfig({
-        name: "thread.addLabel",
-        args: {
-          label: cfg.settings.markProcessedLabel,
-        },
-        processingStage: ProcessingStage.POST_MAIN,
-      }),
-    )
-  } else if (
-    cfg.settings.markProcessedMethod == MarkProcessedMethod.MARK_MESSAGE_READ
-  ) {
-    addGlobalMessageActions.push(
-      newMessageActionConfig({
-        name: "message.markRead",
-        processingStage: ProcessingStage.POST_MAIN,
-      }),
-    )
+    config.global.thread.actions.push({
+      name: "thread.addLabel",
+      args: {
+        label: config.settings.markProcessedLabel,
+      },
+      processingStage: ProcessingStage.POST_MAIN,
+    })
+  } else {
+    config.global.message.actions.push({
+      name: "message.markRead",
+      processingStage: ProcessingStage.POST_MAIN,
+    })
   }
 
-  if (!cfg.threads) {
-    cfg.threads = []
-  }
-  normalizeThreadConfigs(cfg.threads as RequiredThreadConfig[])
+  config.threads = normalizeThreadConfigs(config.threads)
 
-  return cfg
+  return config
 }

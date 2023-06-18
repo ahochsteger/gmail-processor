@@ -1,3 +1,4 @@
+import { NEW_FILE_NAME } from "../../test/mocks/GDriveMocks"
 import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
 import { ProcessingContext, RunMode } from "../Context"
 import { ConflictStrategy } from "../adapter/GDriveAdapter"
@@ -49,7 +50,7 @@ it("should not mark a thread as important (dryRun)", () => {
 
 it("should store a thread as PDF", () => {
   const result = ThreadActions.storeAsPdfToGDrive(mocks.threadContext, {
-    location: "thread.pdf",
+    location: `/${NEW_FILE_NAME}`,
     conflictStrategy: ConflictStrategy.REPLACE,
     skipHeader: false,
   })

@@ -12,11 +12,11 @@ import { RequiredDeep } from "../utils/UtilityTypes"
  */
 export enum ProcessingStage {
   /** The stage before processing the main object (thread, message, attachment) */
-  PRE_MAIN = "before-main",
+  PRE_MAIN = "pre-main",
   /** The stage during processing the main object (thread, message, attachment) */
   MAIN = "main",
   /** The stage after processing the main object (thread, message, attachment) */
-  POST_MAIN = "after-main",
+  POST_MAIN = "post-main",
 }
 
 export abstract class ActionConfig {

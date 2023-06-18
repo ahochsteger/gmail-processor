@@ -27,6 +27,8 @@ class EnvMocks {
     mock<GoogleAppsScript.Cache.CacheService>()
   public existingFile: MockProxy<GoogleAppsScript.Drive.File> =
     mock<GoogleAppsScript.Drive.File>()
+  public newExistingFile: MockProxy<GoogleAppsScript.Drive.File> =
+    mock<GoogleAppsScript.Drive.File>()
   public newFile: MockProxy<GoogleAppsScript.Drive.File> =
     mock<GoogleAppsScript.Drive.File>()
   public newNestedFile: MockProxy<GoogleAppsScript.Drive.File> =

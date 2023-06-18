@@ -50,7 +50,7 @@
         },
         "processingStage": {
           "description": "The processing stage in which the action should run (pre or post processing)",
-          "enum": ["after-main", "before-main", "main"],
+          "enum": ["main", "post-main", "pre-main"],
           "title": "processingStage",
           "type": "string"
         }
@@ -257,7 +257,7 @@
         },
         "processingStage": {
           "description": "The processing stage in which the action should run (pre or post processing)",
-          "enum": ["after-main", "before-main", "main"],
+          "enum": ["main", "post-main", "pre-main"],
           "title": "processingStage",
           "type": "string"
         }
@@ -461,7 +461,7 @@
         },
         "processingStage": {
           "description": "The processing stage in which the action should run (pre or post processing)",
-          "enum": ["after-main", "before-main", "main"],
+          "enum": ["main", "post-main", "pre-main"],
           "title": "processingStage",
           "type": "string"
         }

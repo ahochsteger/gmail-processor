@@ -1,4 +1,4 @@
-import { CREATED_FILE_NAME } from "../../test/mocks/GDriveMocks"
+import { NEW_FILE_NAME } from "../../test/mocks/GDriveMocks"
 import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
 import { AttachmentContext, ProcessingContext, RunMode } from "../Context"
 import { ConflictStrategy } from "../adapter/GDriveAdapter"
@@ -35,8 +35,8 @@ it("should provide attachment.storeToGDrive in the action registry", () => {
 
 it("should create a file", () => {
   const result = AttachmentActions.storeToGDrive(mocks.attachmentContext, {
-    location: CREATED_FILE_NAME,
-    conflictStrategy: ConflictStrategy.REPLACE,
+    location: NEW_FILE_NAME,
+    conflictStrategy: ConflictStrategy.KEEP,
     description: "automated test",
   })
   expect(result.gdriveFile).toBe(mocks.newFile)

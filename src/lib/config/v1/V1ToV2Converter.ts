@@ -6,10 +6,14 @@ import {
   newMessageActionConfig,
   newThreadActionConfig,
 } from "../ActionConfig"
-import { newAttachmentConfig } from "../AttachmentConfig"
+import { AttachmentConfig } from "../AttachmentConfig"
 import { RequiredConfig, newConfig } from "../Config"
-import { newMessageConfig } from "../MessageConfig"
-import { RequiredThreadConfig, newThreadConfig } from "../ThreadConfig"
+import { MessageConfig } from "../MessageConfig"
+import {
+  RequiredThreadConfig,
+  ThreadConfig,
+  newThreadConfig,
+} from "../ThreadConfig"
 import { V1Config, newV1Config } from "./V1Config"
 import { V1Rule } from "./V1Rule"
 
@@ -25,18 +29,23 @@ export class V1ToV2Converter {
     }
     let folder = ""
     if (rule.parentFolderId) {
-      folder = `\${folderId:${rule.parentFolderId}}/`
+      folder = `\${id:${rule.parentFolderId}}/`
     }
     folder += PatternUtil.convertFromV1Pattern(rule.folder)
     return `${folder}/${filename}`
   }
 
   static v1RuleToV2ThreadConfig(rule: V1Rule): RequiredThreadConfig {
-    const threadConfig = newThreadConfig()
+    const threadConfig: PartialDeep<ThreadConfig> = {}
+    threadConfig.actions = []
     threadConfig.attachments = []
     threadConfig.messages = []
-    const attachmentConfig = newAttachmentConfig()
-    const messageConfig = newMessageConfig()
+    threadConfig.match = {}
+    const attachmentConfig: PartialDeep<AttachmentConfig> = {}
+    const messageConfig: PartialDeep<MessageConfig> = {}
+    messageConfig.actions = []
+    attachmentConfig.match = {}
+    attachmentConfig.actions = []
 
     // Old processing logic:
     // var gSearchExp  = config.globalFilter + " " + rule.filter + " -label:" + config.processedLabel;
@@ -167,30 +176,54 @@ export class V1ToV2Converter {
         }),
       )
     }
-    return threadConfig
+    const resultingThreadConfig = newThreadConfig(threadConfig)
+    return resultingThreadConfig
   }
 
   static v1ConfigToV2Config(
     partialV1Config: PartialDeep<V1Config>,
   ): RequiredConfig {
     const v1Config = newV1Config(partialV1Config)
-    const config = newConfig()
-    // Old processing logic:
-    // if (config.globalFilter===undefined) {
-    //   config.globalFilter = "has:attachment -in:trash -in:drafts -in:spam";
-    // }
-    config.global.thread.match.query =
-      v1Config.globalFilter || "has:attachment -in:trash -in:drafts -in:spam"
-    // Old processing logic:
-    // var gSearchExp  = config.globalFilter + " " + rule.filter + " -label:" + config.processedLabel;
-    config.settings.markProcessedLabel = v1Config.processedLabel
-    config.settings.sleepTimeThreads = v1Config.sleepTime
-    config.settings.maxRuntime = v1Config.maxRuntime
-    config.global.thread.match.newerThan = v1Config.newerThan
-    config.settings.timezone = v1Config.timezone
-    v1Config.rules.forEach((rule) => {
-      config.threads.push(this.v1RuleToV2ThreadConfig(rule))
-    })
+    // const config = newConfig()
+    // // Old processing logic:
+    // // if (config.globalFilter===undefined) {
+    // //   config.globalFilter = "has:attachment -in:trash -in:drafts -in:spam";
+    // // }
+    // config.global.thread.match.query =
+    //   v1Config.globalFilter || "has:attachment -in:trash -in:drafts -in:spam"
+    // // Old processing logic:
+    // // var gSearchExp  = config.globalFilter + " " + rule.filter + " -label:" + config.processedLabel;
+    // config.settings.markProcessedLabel = v1Config.processedLabel
+    // config.settings.sleepTimeThreads = v1Config.sleepTime
+    // config.settings.maxRuntime = v1Config.maxRuntime
+    // config.global.thread.match.newerThan = v1Config.newerThan
+    // config.settings.timezone = v1Config.timezone
+    // v1Config.rules.forEach((rule) => {
+    //   config.threads.push(this.v1RuleToV2ThreadConfig(rule))
+    // })
+    const threadConfigs = v1Config.rules.map((rule) =>
+      this.v1RuleToV2ThreadConfig(rule),
+    )
+    const configJson = {
+      global: {
+        thread: {
+          match: {
+            newerThan: v1Config.newerThan,
+            query:
+              v1Config.globalFilter ||
+              "has:attachment -in:trash -in:drafts -in:spam",
+          },
+        },
+      },
+      settings: {
+        markProcessedLabel: v1Config.processedLabel,
+        sleepTimeThreads: v1Config.sleepTime,
+        maxRuntime: v1Config.maxRuntime,
+        timezone: v1Config.timezone,
+      },
+      threads: threadConfigs,
+    }
+    const config = newConfig(configJson)
     return config
   }
 }

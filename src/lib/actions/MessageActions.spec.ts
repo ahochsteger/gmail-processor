@@ -1,3 +1,4 @@
+import { NEW_FILE_NAME } from "../../test/mocks/GDriveMocks"
 import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
 import { ProcessingContext, RunMode } from "../Context"
 import { ConflictStrategy } from "../adapter/GDriveAdapter"
@@ -47,8 +48,8 @@ it("should not forward a message (dry-run)", () => {
 
 it("should store a message as PDF", () => {
   const result = MessageActions.storeAsPdfToGDrive(mocks.messageContext, {
-    location: "message",
-    conflictStrategy: ConflictStrategy.REPLACE,
+    location: `/${NEW_FILE_NAME}`,
+    conflictStrategy: ConflictStrategy.KEEP,
     skipHeader: false,
   })
   expect(mocks.blob.getAs).toBeCalledWith("application/pdf")
