@@ -19,7 +19,6 @@ export class Logger {
     level: LogLevel = LogLevel.INFO,
     ...optionalParams: unknown[]
   ) {
-    performance.now()
     console.log(
       `[${new Date().toISOString()}] ${LogLevel[level]}: ${message}`,
       ...optionalParams,
