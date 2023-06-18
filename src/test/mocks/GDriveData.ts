@@ -10,7 +10,7 @@ export enum EntryType {
   FOLDER = "folder",
 }
 
-export class EntryData<
+class EntryData<
   T extends GoogleAppsScript.Drive.File | GoogleAppsScript.Drive.Folder =
     | GoogleAppsScript.Drive.File
     | GoogleAppsScript.Drive.Folder,
