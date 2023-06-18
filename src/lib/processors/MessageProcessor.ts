@@ -110,7 +110,7 @@ export class MessageProcessor extends BaseProcessor {
     const config = ctx.message.config
     const message = ctx.message.object
     ctx.log.info(
-      `        Processing of message '${message.getSubject()}' (id:${message.getId()}) started ...`,
+      `Processing of message '${message.getSubject()}' (id:${message.getId()}) started ...`,
     )
     // Execute pre-main actions:
     result = this.executeActions(
@@ -140,7 +140,7 @@ export class MessageProcessor extends BaseProcessor {
       ctx.proc.config.global.message.actions,
     )
     ctx.log.info(
-      `        Processing of message '${message.getSubject()}' (id:${message.getId()}) finished.`,
+      `Processing of message '${message.getSubject()}' (id:${message.getId()}) finished.`,
     )
     return result
   }
