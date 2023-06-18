@@ -69,7 +69,7 @@ export class MessageActions implements ActionProvider<MessageContext> {
    * Generate a PDF document from the message and store it to GDrive.
    */
   @writingAction()
-  public static storeAsPdfToGDrive<
+  public static storePDF<
     TArgs extends {
       location: string
       conflictStrategy: ConflictStrategy

@@ -11,7 +11,7 @@ import {
 export class AttachmentActions implements ActionProvider<AttachmentContext> {
   [key: string]: ActionFunction<AttachmentContext>
   @writingAction<AttachmentContext>()
-  public static storeToGDrive<
+  public static store<
     TArgs extends {
       location: string
       conflictStrategy: ConflictStrategy
@@ -24,7 +24,7 @@ export class AttachmentActions implements ActionProvider<AttachmentContext> {
     const gdriveFile = context.proc.gdriveAdapter.storeAttachment(
       context.attachment.object,
       PatternUtil.substitute(context, args.location),
-      args.conflictStrategy,
+      args.conflictStrategy || ConflictStrategy.KEEP,
       PatternUtil.substitute(context, args.description || ""),
     )
     return {

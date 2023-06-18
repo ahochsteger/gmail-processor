@@ -33,7 +33,7 @@ it("should provide actions in the action registry", () => {
     "thread.moveToSpam",
     "thread.moveToTrash",
     "thread.removeLabel",
-    "thread.storeAsPdfToGDrive",
+    "thread.storePDF",
   ])
 })
 
@@ -49,7 +49,7 @@ it("should not mark a thread as important (dryRun)", () => {
 })
 
 it("should store a thread as PDF", () => {
-  const result = ThreadActions.storeAsPdfToGDrive(mocks.threadContext, {
+  const result = ThreadActions.storePDF(mocks.threadContext, {
     location: `/${NEW_FILE_NAME}`,
     conflictStrategy: ConflictStrategy.REPLACE,
     skipHeader: false,
@@ -83,7 +83,7 @@ it("should execute all actions using the action registry", () => {
   })
 
   // Execute all actions with special arguments:
-  actionRegistry.executeAction(ctx, "thread.storeAsPdfToGDrive", {
+  actionRegistry.executeAction(ctx, "thread.storePDF", {
     location: "my-location",
     conflictStrategy: ConflictStrategy.REPLACE,
     description: "my description",

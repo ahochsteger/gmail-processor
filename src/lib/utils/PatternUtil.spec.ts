@@ -61,7 +61,7 @@ describe("Pattern Substitution", () => {
           match: { name: "attachment([0-9]+)\\.jpg" },
           actions: [
             {
-              name: "attachment.storeToGDrive",
+              name: "attachment.store",
               args: {
                 location:
                   "Folder2/Subfolder2/${message.subject.match.1}/${message.subject} - " +

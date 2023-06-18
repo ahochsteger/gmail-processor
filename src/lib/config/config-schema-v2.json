@@ -23,7 +23,7 @@
           "description": "The name of the action to be executed",
           "enum": [
             "",
-            "attachment.storeToGDrive",
+            "attachment.store",
             "global.log",
             "global.sheetLog",
             "message.forward",
@@ -31,7 +31,7 @@
             "message.markUnread",
             "message.moveToTrash",
             "message.star",
-            "message.storeAsPdfToGDrive",
+            "message.storePDF",
             "message.unstar",
             "thread.addLabel",
             "thread.markImportant",
@@ -43,7 +43,7 @@
             "thread.moveToSpam",
             "thread.moveToTrash",
             "thread.removeLabel",
-            "thread.storeAsPdfToGDrive"
+            "thread.storePDF"
           ],
           "title": "name",
           "type": "string"
@@ -238,7 +238,7 @@
             "message.markUnread",
             "message.moveToTrash",
             "message.star",
-            "message.storeAsPdfToGDrive",
+            "message.storePDF",
             "message.unstar",
             "thread.addLabel",
             "thread.markImportant",
@@ -250,7 +250,7 @@
             "thread.moveToSpam",
             "thread.moveToTrash",
             "thread.removeLabel",
-            "thread.storeAsPdfToGDrive"
+            "thread.storePDF"
           ],
           "title": "name",
           "type": "string"
@@ -454,7 +454,7 @@
             "thread.moveToSpam",
             "thread.moveToTrash",
             "thread.removeLabel",
-            "thread.storeAsPdfToGDrive"
+            "thread.storePDF"
           ],
           "title": "name",
           "type": "string"

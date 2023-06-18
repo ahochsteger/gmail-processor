@@ -80,7 +80,7 @@ it("should convert rule with filter and folder", () => {
     args: {
       location: "Examples/example1/${attachment.name}",
     },
-    name: "attachment.storeToGDrive",
+    name: "attachment.store",
   })
 })
 
@@ -103,7 +103,7 @@ it("should convert rule with filter and folder containing a date format", () => 
       location:
         "Scans-${message.date:dateformat:YYYY-MM-DD}/${attachment.name}",
     },
-    name: "attachment.storeToGDrive",
+    name: "attachment.store",
   })
 })
 
@@ -126,7 +126,7 @@ it("should convert rule with filter, folder and filenameFromRegexp", () => {
     args: {
       location: "Examples/example2/${attachment.name.match.1}",
     },
-    name: "attachment.storeToGDrive",
+    name: "attachment.store",
   }
   const expectedAttachmentConfig = {
     match: {
@@ -160,7 +160,7 @@ it("should convert rule with filter, folder, filenameTo and archive", () => {
       location:
         "Examples/example3ab/file-${message.date:dateformat:YYYY-MM-DD-}${message.subject}.txt",
     },
-    name: "attachment.storeToGDrive",
+    name: "attachment.store",
   }
   const expectedThreadActionConfig: ThreadActionConfig = {
     name: "thread.moveToArchive",
@@ -197,7 +197,7 @@ it("should convert rule with filter, folder and parentFolderId", () => {
         location:
           "${id:FOLDER_ID_FOR_Examples_FOLDER}/example1/${attachment.name}",
       },
-      name: "attachment.storeToGDrive",
+      name: "attachment.store",
     },
   )
 })
@@ -230,7 +230,7 @@ it("should convert rule with filter, folder, filenameTo and archive", () => {
         location:
           "Examples/example3ab/file-${message.date:dateformat:YYYY-MM-DD-}${message.subject}.txt",
       },
-      name: "attachment.storeToGDrive",
+      name: "attachment.store",
     },
   )
 })
@@ -252,14 +252,14 @@ it("should convert rule with filter, saveThreadPDF and folder", () => {
     args: {
       location: "PDF Emails/${thread.firstMessageSubject}.pdf",
     },
-    name: "thread.storeAsPdfToGDrive",
+    name: "thread.storePDF",
   })
   expect(actual.threads[0].messages[0].attachments[0].actions[0]).toMatchObject(
     {
       args: {
         location: "PDF Emails/${attachment.name}",
       },
-      name: "attachment.storeToGDrive",
+      name: "attachment.store",
     },
   )
 })
@@ -285,7 +285,7 @@ it("should convert rule with filter, saveMessagePDF, skipPDFHeader and folder", 
       location: "PDF Emails/${message.subject}.pdf",
       skipHeader: true,
     },
-    name: "message.storeAsPdfToGDrive",
+    name: "message.storePDF",
   })
 })
 
@@ -310,7 +310,7 @@ it("should convert rule with filter, saveMessagePDF, skipPDFHeader and folder", 
       location: "PDF Emails/${message.subject}.pdf",
       skipHeader: true,
     },
-    name: "message.storeAsPdfToGDrive",
+    name: "message.storePDF",
   })
 })
 
@@ -342,7 +342,7 @@ it("should convert rule with filter, saveThreadPDF, folder and filenameTo", () =
               location:
                 "PDF Emails/file-${message.date:dateformat:YYYY-MM-DD-}${message.subject}",
             },
-            name: "thread.storeAsPdfToGDrive",
+            name: "thread.storePDF",
           },
         ],
       },
@@ -385,7 +385,7 @@ it("should convert rule with filter, folder filenameFrom and filenameTo", () => 
         location:
           "Examples/example4/file-${message.date:dateformat:YYYY-MM-DD-}${message.subject}.txt",
       },
-      name: "attachment.storeToGDrive",
+      name: "attachment.store",
     },
   )
 })
@@ -415,7 +415,7 @@ it("should convert rule with filter, folder filenameFrom and filenameTo", () => 
       args: {
         location: "Examples/example5/zoom-${threadConfig.index}.pdf",
       },
-      name: "attachment.storeToGDrive",
+      name: "attachment.store",
     },
   )
 })
@@ -443,7 +443,7 @@ it("should convert rule with filter, saveThreadPDF, ruleLabel and folder", () =>
             args: {
               location: "PDF Emails/${thread.firstMessageSubject}.pdf",
             },
-            name: "thread.storeAsPdfToGDrive",
+            name: "thread.storePDF",
           },
           {
             args: {

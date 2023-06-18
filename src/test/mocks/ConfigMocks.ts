@@ -29,7 +29,7 @@ export class ConfigMocks {
         filename: "${message.subject} - ${match.file.1}.jpg",
         onExists: "replace",
       },
-      name: "thread.storeAsPdfToGDrive",
+      name: "thread.storePDF",
       description: "Default action config",
     }
   }
@@ -90,7 +90,7 @@ export class ConfigMocks {
       {
         actions: [
           {
-            name: "thread.storeAsPdfToGDrive",
+            name: "thread.storePDF",
             args: {
               location: "Folder1/Subfolder1/${thread.firstMessageSubject}",
             },
@@ -112,7 +112,7 @@ export class ConfigMocks {
           {
             actions: [
               {
-                name: "message.storeAsPdfToGDrive",
+                name: "message.storePDF",
                 args: { location: "Folder1/Subfolder1/${message.subject}.pdf" },
               },
             ],
@@ -142,7 +142,7 @@ export class ConfigMocks {
                 match: { name: "Image-([0-9]+)\\.jpg" },
                 actions: [
                   {
-                    name: "attachment.storeToGDrive",
+                    name: "attachment.store",
                     args: {
                       location:
                         "Folder2/Subfolder2/${message.subject.match.1}/${email.subject} - ${match.att.1}.jpg",
@@ -155,7 +155,7 @@ export class ConfigMocks {
                 match: { name: ".+\\..+" },
                 actions: [
                   {
-                    name: "attachment.storeToGDrive",
+                    name: "attachment.store",
                     args: {
                       location:
                         "Folder3/Subfolder3/${att.basename}-${date:yyyy-MM-dd}.${att.ext}",

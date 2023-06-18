@@ -30,7 +30,7 @@ it("should provide actions in the action registry", () => {
     "message.markUnread",
     "message.moveToTrash",
     "message.star",
-    "message.storeAsPdfToGDrive",
+    "message.storePDF",
     "message.unstar",
   ])
 })
@@ -47,7 +47,7 @@ it("should not forward a message (dry-run)", () => {
 })
 
 it("should store a message as PDF", () => {
-  const result = MessageActions.storeAsPdfToGDrive(mocks.messageContext, {
+  const result = MessageActions.storePDF(mocks.messageContext, {
     location: `/${NEW_FILE_NAME}`,
     conflictStrategy: ConflictStrategy.KEEP,
     skipHeader: false,
@@ -75,7 +75,7 @@ it("should execute all actions using the action registry", () => {
   actionRegistry.executeAction(ctx, "message.forward", {
     to: "some.email@example.com",
   })
-  actionRegistry.executeAction(ctx, "message.storeAsPdfToGDrive", {
+  actionRegistry.executeAction(ctx, "message.storePDF", {
     location: "my-location",
     conflictStrategy: ConflictStrategy.REPLACE,
     description: "my description",

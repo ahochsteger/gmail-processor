@@ -31,7 +31,7 @@ var example01ConfigV2 = {
       },
       actions: [
         {
-          name: "thread.storeAsPdfToGDrive",
+          name: "thread.storePDF",
           args: {
             folder: "Scans-${message.date:dateformat:yyyy-MM-dd}",
           },

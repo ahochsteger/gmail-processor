@@ -50,7 +50,7 @@ The name of the action to be executed
 - **Type**: `string`
 - **Required**: &#10003; Yes
 - ## **Allowed values**:
-  - `"attachment.storeToGDrive"`
+  - `"attachment.store"`
   - `"global.log"`
   - `"global.sheetLog"`
   - `"message.forward"`
@@ -58,7 +58,7 @@ The name of the action to be executed
   - `"message.markUnread"`
   - `"message.moveToTrash"`
   - `"message.star"`
-  - `"message.storeAsPdfToGDrive"`
+  - `"message.storePDF"`
   - `"message.unstar"`
   - `"thread.addLabel"`
   - `"thread.markImportant"`
@@ -70,7 +70,7 @@ The name of the action to be executed
   - `"thread.moveToSpam"`
   - `"thread.moveToTrash"`
   - `"thread.removeLabel"`
-  - `"thread.storeAsPdfToGDrive"`
+  - `"thread.storePDF"`
 
 ### AttachmentActionConfig.processingStage
 
@@ -342,7 +342,7 @@ The name of the action to be executed
   - `"message.markUnread"`
   - `"message.moveToTrash"`
   - `"message.star"`
-  - `"message.storeAsPdfToGDrive"`
+  - `"message.storePDF"`
   - `"message.unstar"`
   - `"thread.addLabel"`
   - `"thread.markImportant"`
@@ -354,7 +354,7 @@ The name of the action to be executed
   - `"thread.moveToSpam"`
   - `"thread.moveToTrash"`
   - `"thread.removeLabel"`
-  - `"thread.storeAsPdfToGDrive"`
+  - `"thread.storePDF"`
 
 ### MessageActionConfig.processingStage
 
@@ -642,7 +642,7 @@ The name of the action to be executed
   - `"thread.moveToSpam"`
   - `"thread.moveToTrash"`
   - `"thread.removeLabel"`
-  - `"thread.storeAsPdfToGDrive"`
+  - `"thread.storePDF"`
 
 ### ThreadActionConfig.processingStage
 

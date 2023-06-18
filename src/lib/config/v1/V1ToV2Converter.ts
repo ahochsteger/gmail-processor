@@ -66,7 +66,7 @@ export class V1ToV2Converter {
     if (rule.saveMessagePDF) {
       messageConfig.actions.push(
         newMessageActionConfig({
-          name: "message.storeAsPdfToGDrive",
+          name: "message.storePDF",
           args: {
             location: this.getLocationFromRule(rule, "${message.subject}.pdf"),
             skipHeader: rule.skipPDFHeader === true,
@@ -120,7 +120,7 @@ export class V1ToV2Converter {
       //     file.setDescription("Mail title: " + message.getSubject() + "\nMail date: " + message.getDate() + "\nMail link: https://mail.google.com/mail/u/0/#inbox/" + message.getId());
       attachmentConfig.actions.push(
         newAttachmentActionConfig({
-          name: "attachment.storeToGDrive",
+          name: "attachment.store",
           args: {
             conflictStrategy: ConflictStrategy.KEEP,
             description:
@@ -139,7 +139,7 @@ export class V1ToV2Converter {
     if (rule.saveThreadPDF) {
       threadConfig.actions.push(
         newThreadActionConfig({
-          name: "thread.storeAsPdfToGDrive",
+          name: "thread.storePDF",
           args: {
             location: this.getLocationFromRule(
               rule,

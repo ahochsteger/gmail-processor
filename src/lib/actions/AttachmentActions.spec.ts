@@ -24,17 +24,17 @@ it("should provide actions in the action registry", () => {
   const actionNames = Array.from(actionRegistry.getActions().keys())
     .filter((v) => v.startsWith("attachment."))
     .sort()
-  expect(actionNames).toEqual(["attachment.storeToGDrive"])
+  expect(actionNames).toEqual(["attachment.store"])
 })
 
-it("should provide attachment.storeToGDrive in the action registry", () => {
-  const actual = actionRegistry.getAction("attachment.storeToGDrive")
-  const expected = AttachmentActions.storeToGDrive
+it("should provide attachment.store in the action registry", () => {
+  const actual = actionRegistry.getAction("attachment.store")
+  const expected = AttachmentActions.store
   expect(actual).toEqual(expected)
 })
 
 it("should create a file", () => {
-  const result = AttachmentActions.storeToGDrive(mocks.attachmentContext, {
+  const result = AttachmentActions.store(mocks.attachmentContext, {
     location: NEW_FILE_NAME,
     conflictStrategy: ConflictStrategy.KEEP,
     description: "automated test",
@@ -45,7 +45,7 @@ it("should create a file", () => {
 
 it("should not create a file on dry-run", () => {
   const dryRunMocks = MockFactory.newMocks(newConfig(), RunMode.DRY_RUN)
-  AttachmentActions.storeToGDrive(dryRunMocks.attachmentContext, {
+  AttachmentActions.store(dryRunMocks.attachmentContext, {
     location: "test-location",
     conflictStrategy: ConflictStrategy.REPLACE,
     description: "automated test",
@@ -55,7 +55,7 @@ it("should not create a file on dry-run", () => {
 
 it("should execute all actions using the action registry", () => {
   const ctx = mocks.attachmentContext
-  actionRegistry.executeAction(ctx, "attachment.storeToGDrive", {
+  actionRegistry.executeAction(ctx, "attachment.store", {
     location: "my-location",
     conflictStrategy: ConflictStrategy.REPLACE,
     description: "my description",

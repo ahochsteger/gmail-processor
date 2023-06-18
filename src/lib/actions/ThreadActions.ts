@@ -107,7 +107,7 @@ export class ThreadActions implements ActionProvider<ThreadContext> {
    * Generate a PDF document for the whole thread and store it to GDrive.
    */
   @writingAction()
-  public static storeAsPdfToGDrive<
+  public static storePDF<
     TArgs extends {
       location: string
       conflictStrategy: ConflictStrategy
