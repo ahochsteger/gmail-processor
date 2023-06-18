@@ -135,13 +135,8 @@ export class ConfigMocks {
               subject: "Prefix - (.*) - Suffix(.*)",
               to: "my\\.address\\+(.+)@gmail.com",
               is: [MessageFlag.READ],
-              // TODO: Find out how to match only read/unread or starred/unstarred messages?
             },
-            actions: [
-              // TODO: Decide if only actions of a certain type (thread, message, attachment) are allowed?
-              // Pro: More flexible (e.g. forward message, if a certain attachment rule matches)
-              { name: "message.markRead" },
-            ],
+            actions: [{ name: "message.markRead" }],
             attachments: [
               {
                 match: { name: "Image-([0-9]+)\\.jpg" },

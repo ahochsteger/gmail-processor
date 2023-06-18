@@ -24,7 +24,6 @@ export class MessageProcessor extends BaseProcessor {
     if (!message.getFrom().match(matchConfig.from)) return false
     if (!message.getTo().match(matchConfig.to)) return false
     if (!message.getSubject().match(matchConfig.subject)) return false
-    // TODO: Simplify using map/reduce:
     for (let i = 0; i < matchConfig.is.length; i++) {
       const flag = matchConfig.is[i]
       switch (flag) {

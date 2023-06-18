@@ -93,7 +93,6 @@ describe("newConfig", () => {
           match: {
             query: "thread-query",
           },
-          name: "", // FIXME: Should not be here!
           messages: [
             {
               description: "Message config 1",
@@ -136,7 +135,6 @@ describe("configToJson", () => {
       threads: [
         {
           description: "thread description",
-          name: "", // FIXME: Should not be here!
         },
       ],
     }

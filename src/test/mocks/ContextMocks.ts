@@ -18,34 +18,9 @@ import { Logger } from "../../lib/utils/Logger"
 import { Timer } from "../../lib/utils/Timer"
 import { ConfigMocks } from "./ConfigMocks"
 import { GMailMocks } from "./GMailMocks"
-import { MockFactory, Mocks } from "./MockFactory"
+import { MockFactory } from "./MockFactory"
 
 export class ContextMocks {
-  public static setupAllMocks(
-    mocks: Mocks,
-    runMode = RunMode.DANGEROUS,
-    config: RequiredConfig,
-  ): Mocks {
-    mocks.envContext = this.newEnvContextMock(mocks, runMode)
-    mocks.processingContext = ContextMocks.newProcessingContextMock(
-      mocks.envContext,
-      config,
-    )
-    mocks.threadContext = ContextMocks.newThreadContextMock(
-      mocks.processingContext,
-      mocks.thread,
-    )
-    mocks.messageContext = ContextMocks.newMessageContextMock(
-      mocks.threadContext,
-      mocks.message,
-    )
-    mocks.attachmentContext = ContextMocks.newAttachmentContextMock(
-      mocks.messageContext,
-      mocks.attachment,
-    )
-    return mocks
-  }
-
   public static newEnvContextMock(
     mocks = MockFactory.newMocks(),
     runMode = RunMode.DANGEROUS,

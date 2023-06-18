@@ -204,7 +204,6 @@ describe("setupGDriveAppMocks", () => {
   })
   it("should setup a given gdrive app", () => {
     const initialApp = mockDeep<GoogleAppsScript.Drive.DriveApp>({
-      // TODO: Use fallbackMockImplementation by default for all mocks to spot missing mocked functions!
       fallbackMockImplementation: () => {
         throw new Error("No mock implementation available!")
       },

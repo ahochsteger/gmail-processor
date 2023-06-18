@@ -15,8 +15,6 @@ import { GMailMocks } from "./GMailMocks"
 import { SpreadsheetMocks } from "./SpreadsheetMocks"
 
 class EnvMocks {
-  // TODO: split large mock factory into different classes
-  // TODO: Decide if own classes should really be mocked too
   public attachment: MockProxy<GoogleAppsScript.Gmail.GmailAttachment> =
     mock<GoogleAppsScript.Gmail.GmailAttachment>()
   public blob: MockProxy<GoogleAppsScript.Base.Blob> =
@@ -82,7 +80,6 @@ export class Mocks extends EnvMocks {
     GMailMocks.setupAllMocks(this)
     SpreadsheetMocks.setupAllMocks(this)
 
-    // ContextMocks.setupAllMocks(mocks, runMode, config)
     this.envContext = ContextMocks.newEnvContextMock(this, runMode)
     this.processingContext = ContextMocks.newProcessingContextMock(
       this.envContext,

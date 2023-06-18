@@ -14,7 +14,7 @@ type LocationInfo = {
   filename: string
   folderId: string | null
   folderPath: string
-  fullPath: string // TODO: Rename to filePath
+  fullPath: string
   location: string
   pathSegments: string[]
 }
