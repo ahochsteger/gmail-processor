@@ -64,9 +64,8 @@ export function normalizeMessageConfig(
   namePrefix = "",
   index?: number,
 ): PartialDeep<MessageConfig> {
-  config.name = config.name
-    ? config.name
-    : `${namePrefix}message-cfg${index ? "-" + index : ""}`
+  config.name =
+    config.name || `${namePrefix}message-cfg${index ? "-" + index : ""}`
   config.attachments = normalizeAttachmentConfigs(
     config.attachments ?? [],
     namePrefix,

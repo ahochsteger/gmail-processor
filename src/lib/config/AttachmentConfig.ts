@@ -54,9 +54,8 @@ export function normalizeAttachmentConfig(
   namePrefix = "",
   index?: number,
 ): PartialDeep<AttachmentConfig> {
-  config.name = config.name
-    ? config.name
-    : `${namePrefix}attachment-cfg${index ? "-" + index : ""}`
+  config.name =
+    config.name || `${namePrefix}attachment-cfg${index ? "-" + index : ""}`
   return config
 }
 

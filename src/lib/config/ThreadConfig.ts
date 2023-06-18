@@ -68,9 +68,8 @@ export function normalizeThreadConfig(
   namePrefix = "",
   index?: number,
 ): PartialDeep<ThreadConfig> {
-  config.name = config.name
-    ? config.name
-    : `${namePrefix}thread-cfg${index ? "-" + index : ""}`
+  config.name =
+    config.name || `${namePrefix}thread-cfg${index ? "-" + index : ""}`
   config.messages = config.messages ?? []
 
   // Normalize top-level attachments config:
