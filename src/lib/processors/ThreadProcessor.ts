@@ -101,7 +101,7 @@ export class ThreadProcessor extends BaseProcessor {
     const thread: GoogleAppsScript.Gmail.GmailThread = ctx.thread.object
     const config: RequiredThreadConfig = ctx.thread.config
     ctx.log.info(
-      `Processing of thread '${thread.getFirstMessageSubject()}' started ...`,
+      `Processing of thread id ${thread.getId()} (subject:'${thread.getFirstMessageSubject()}') started ...`,
     )
     // Execute pre-main actions:
     result = this.executeActions(
@@ -125,9 +125,7 @@ export class ThreadProcessor extends BaseProcessor {
       ctx.thread.config.actions,
       ctx.proc.config.global.thread.actions,
     )
-    ctx.log.info(
-      `Processing of thread '${thread.getFirstMessageSubject()}' finished.`,
-    )
+    ctx.log.info(`Processing of thread id ${thread.getId()} finished.`)
     return result
   }
 }

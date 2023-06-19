@@ -80,6 +80,11 @@ export class MessageProcessor extends BaseProcessor {
         }
         const message = messages[index]
         if (!this.matches(matchConfig, message)) {
+          ctx.log.debug(
+            `Skipping non-matching message id ${message.getId()} (date:'${message
+              .getDate()
+              .toISOString()}',  subject:'${message.getSubject()}', from:${message.getFrom()}).`,
+          )
           continue
         }
         const messageContext: MessageContext = {
@@ -110,7 +115,9 @@ export class MessageProcessor extends BaseProcessor {
     const config = ctx.message.config
     const message = ctx.message.object
     ctx.log.info(
-      `Processing of message '${message.getSubject()}' (id:${message.getId()}) started ...`,
+      `Processing of message id ${message.getId()} (date:'${message
+        .getDate()
+        .toISOString()}',  subject:'${message.getSubject()}', from:${message.getFrom()}) started ...`,
     )
     // Execute pre-main actions:
     result = this.executeActions(
@@ -139,9 +146,7 @@ export class MessageProcessor extends BaseProcessor {
       ctx.message.config.actions,
       ctx.proc.config.global.message.actions,
     )
-    ctx.log.info(
-      `Processing of message '${message.getSubject()}' (id:${message.getId()}) finished.`,
-    )
+    ctx.log.info(`Processing of message id ${message.getId()} finished.`)
     return result
   }
 }

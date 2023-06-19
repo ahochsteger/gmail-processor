@@ -66,8 +66,8 @@ export class AttachmentProcessor extends BaseProcessor {
       for (let index = 0; index < attachments.length; index++) {
         const attachment = attachments[index]
         if (!this.matches(matchConfig, attachment)) {
-          ctx.log.info(
-            `Skipping non-matching attachment '${attachment.getName()}'.`,
+          ctx.log.debug(
+            `Skipping non-matching attachment hash '${attachment.getHash()}' (name:'${attachment.getName()}', type:${attachment.getContentType()}, size:${attachment.getSize()}) started ...`,
           )
           continue
         }
@@ -93,7 +93,7 @@ export class AttachmentProcessor extends BaseProcessor {
   ): ProcessingResult {
     const attachment = ctx.attachment.object
     ctx.log.info(
-      `Processing of attachment '${attachment.getName()}' started ...`,
+      `Processing of attachment hash '${attachment.getHash()}' (name:'${attachment.getName()}', type:${attachment.getContentType()}, size:${attachment.getSize()}) started ...`,
     )
     // Execute pre-main actions:
     result = this.executeActions(
@@ -121,7 +121,9 @@ export class AttachmentProcessor extends BaseProcessor {
       ctx.attachment.config.actions,
       ctx.proc.config.global.attachment.actions,
     )
-    ctx.log.info(`Processing of attachment '${attachment.getName()}' finished.`)
+    ctx.log.info(
+      `Processing of attachment hash '${attachment.getHash()}' finished.`,
+    )
     return result
   }
 }
