@@ -311,9 +311,11 @@ describe("Substitutions", () => {
     expect(
       PatternUtil.substitute(
         mocks.processingContext,
-        "var1:${variables.custom.var1},var2:${variables.custom.var2},email:${user.email}",
+        "var1:${variables.custom.var1},var2:${variables.custom.var2},from:${user.email},to:${user.email}",
       ),
-    ).toBe("var1:value1,var2:value2,email:my.email@gmail.com")
+    ).toBe(
+      "var1:value1,var2:value2,from:my.email@gmail.com,to:my.email@gmail.com",
+    )
   })
 })
 describe("Handle single messages", () => {

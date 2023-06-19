@@ -20,7 +20,7 @@ export class PatternUtil {
   public static substituteStrings(pattern: string, data: SubstMap) {
     let s = pattern
     data.forEach((value: unknown, key: string) => {
-      const rex = new RegExp("\\$\\{" + this.escapeRegExp(key) + "\\}")
+      const rex = new RegExp("\\$\\{" + this.escapeRegExp(key) + "\\}", "g")
       s = s.replace(rex, value as string)
     })
     return s
@@ -39,7 +39,10 @@ export class PatternUtil {
     formatType = "dateformat",
   ) {
     let s = pattern
-    const regex = new RegExp("\\$\\{([^:{]+):" + formatType + ":([^}]+)\\}")
+    const regex = new RegExp(
+      "\\$\\{([^:{]+):" + formatType + ":([^}]+)\\}",
+      "g",
+    )
     let result
     while ((result = regex.exec(s)) !== null) {
       const date = data.get(result[1]) as Date
@@ -48,7 +51,7 @@ export class PatternUtil {
           ? PatternUtil.convertDateFormat(result[2])
           : result[2]
       const v = this.formatDate(date, format, timezone)
-      s = s.replace(new RegExp(this.escapeRegExp(result[0])), v)
+      s = s.replace(new RegExp(this.escapeRegExp(result[0]), "g"), v)
     }
     return s
   }
