@@ -26,6 +26,7 @@ it("should build a match config with default globals", () => {
     name: "some-name",
   }
   const actual = AttachmentProcessor.buildMatchConfig(
+    mocks.messageContext,
     newAttachmentMatchConfig({}),
     newAttachmentMatchConfig(expected),
   )
@@ -42,6 +43,7 @@ it("should build a match config with default globals", () => {
     name: "some-name",
   }
   const actual = AttachmentProcessor.buildMatchConfig(
+    mocks.messageContext,
     newAttachmentMatchConfig(expected),
     newAttachmentMatchConfig({}),
   )
@@ -58,6 +60,7 @@ it("should build a match config with special globals", () => {
     name: "global-name|local-name",
   }
   const actual = AttachmentProcessor.buildMatchConfig(
+    mocks.messageContext,
     newAttachmentMatchConfig({
       contentTypeRegex: "global-content-type",
       includeAttachments: true,
