@@ -7,6 +7,13 @@ import { MessageConfig, normalizeMessageConfig } from "./MessageConfig"
 import { ThreadConfig, normalizeThreadConfig } from "./ThreadConfig"
 
 /**
+ * A variable entry available for substitution (using ${variables.<key>})
+ */
+export class VariableEntry {
+  constructor(public key: string, public value: string) {}
+}
+
+/**
  * The global configuration that defines matching for all threads as well as actions for all threads, messages or attachments.
  */
 export class GlobalConfig {
@@ -28,6 +35,12 @@ export class GlobalConfig {
   @Expose()
   @Type(() => ThreadConfig)
   thread?: Exclude<ThreadConfig, "messages"> = new ThreadConfig()
+  /**
+   * A list of variable entries to be used in substitutions to simplify configurations.
+   */
+  @Expose()
+  @Type(() => VariableEntry)
+  variables?: VariableEntry[] = []
 }
 
 export function newGlobalConfig(

@@ -287,7 +287,7 @@ describe("Substitutions", () => {
     const actual = JSON.parse(
       PatternUtil.substitute(
         mocks.processingContext,
-        '{"envRunMode":"${env.runMode}","envTimeZone":"${env.timezone}","timerNow":"${timer.now:dateformat:YYYY-MM-DD HH:mm:ss}","timerRunTime":${timer.runTime},"timerStartTime":"${timer.startTime:dateformat:YYYY-MM-DD HH:mm:ss}"}',
+        '{"envRunMode":"${env.runMode}","envTimeZone":"${env.timezone}","timerNow":"${date.now:dateformat:YYYY-MM-DD HH:mm:ss}","timerRunTime":${timer.runTime},"timerStartTime":"${timer.startTime:dateformat:YYYY-MM-DD HH:mm:ss}"}',
       ),
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ) as any
@@ -297,6 +297,23 @@ describe("Substitutions", () => {
     expect(actual.timerRunTime).toEqual(0.0)
     expect(actual.timerStartTime).toEqual(fakedSystemTime)
     jest.useRealTimers()
+  })
+  it("should substitute global variables", () => {
+    const config = newConfig({
+      global: {
+        variables: [
+          { key: "custom.var1", value: "value1" },
+          { key: "custom.var2", value: "value2" },
+        ],
+      },
+    })
+    mocks.processingContext.proc.config = config
+    expect(
+      PatternUtil.substitute(
+        mocks.processingContext,
+        "var1:${variables.custom.var1},var2:${variables.custom.var2},email:${user.email}",
+      ),
+    ).toBe("var1:value1,var2:value2,email:my.email@gmail.com")
   })
 })
 describe("Handle single messages", () => {

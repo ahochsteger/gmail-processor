@@ -172,11 +172,15 @@ export class PatternUtil {
     ctx: ProcessingContext,
     m = new SubstMap(),
   ) {
+    m.set("date.now", new Date())
     m.set("env.runMode", ctx.env.runMode)
     m.set("env.timezone", ctx.env.timezone)
-    m.set("timer.now", ctx.proc.timer.now())
     m.set("timer.runTime", ctx.proc.timer.getRunTime())
     m.set("timer.startTime", ctx.proc.timer.getStartTime())
+    m.set("user.email", ctx.env.session.getActiveUser().getEmail())
+    ctx.proc.config.global.variables.forEach((entry) =>
+      m.set(`variables.${entry.key}`, entry.value),
+    )
     return m
   }
 

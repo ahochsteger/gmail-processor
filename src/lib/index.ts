@@ -18,6 +18,7 @@ function defaultContext(runMode = RunMode.SAFE_MODE) {
       spreadsheetApp: SpreadsheetApp,
       utilities: Utilities,
       runMode: runMode,
+      session: Session,
       timezone: Session?.getScriptTimeZone() || "UTC",
     },
     log: logger,

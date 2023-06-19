@@ -33,6 +33,7 @@ export class ContextMocks {
         cacheService: mocks.cacheService,
         utilities: mocks.utilities,
         runMode,
+        session: mocks.session,
         timezone: "UTC",
       },
       log: new Logger(),

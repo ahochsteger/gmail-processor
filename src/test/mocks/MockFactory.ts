@@ -53,8 +53,12 @@ class EnvMocks {
     mock<GoogleAppsScript.Spreadsheet.Spreadsheet>()
   public logSpreadsheetFile: MockProxy<GoogleAppsScript.Drive.File> =
     mock<GoogleAppsScript.Drive.File>()
+  public session: MockProxy<GoogleAppsScript.Base.Session> =
+    mock<GoogleAppsScript.Base.Session>()
   public thread: MockProxy<GoogleAppsScript.Gmail.GmailThread> =
     mock<GoogleAppsScript.Gmail.GmailThread>()
+  public user: MockProxy<GoogleAppsScript.Base.User> =
+    mock<GoogleAppsScript.Base.User>()
   public utilities: MockProxy<GoogleAppsScript.Utilities.Utilities> =
     mock<GoogleAppsScript.Utilities.Utilities>()
 }
@@ -74,7 +78,11 @@ export class Mocks extends EnvMocks {
     this.cacheService.getScriptCache.mockReturnValue(this.cache)
     this.blob.getAs.mockReturnValue(this.blob)
     this.blob.getDataAsString.mockReturnValue("PDF-Contents")
+    this.user.getEmail.mockReturnValue("my.email@gmail.com")
     this.utilities.newBlob.mockReturnValue(this.blob)
+    this.session.getScriptTimeZone.mockReturnValue("UTC")
+    this.session.getActiveUser.mockReturnValue(this.user)
+    this.session.getEffectiveUser.mockReturnValue(this.user)
 
     GDriveMocks.setupAllMocks(this)
     GMailMocks.setupAllMocks(this)

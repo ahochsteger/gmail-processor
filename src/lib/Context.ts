@@ -26,6 +26,7 @@ type EnvInfo = {
   spreadsheetApp: GoogleAppsScript.Spreadsheet.SpreadsheetApp
   cacheService: GoogleAppsScript.Cache.CacheService
   runMode: RunMode
+  session: GoogleAppsScript.Base.Session
   timezone?: string
 }
 

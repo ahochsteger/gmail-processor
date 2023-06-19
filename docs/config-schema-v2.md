@@ -266,11 +266,12 @@ The global configuration that defines matching for all threads as well as action
 
 **`GlobalConfig` Properties**
 
-|                | Type               | Description                                              | Required |
-| -------------- | ------------------ | -------------------------------------------------------- | -------- |
-| **attachment** | `AttachmentConfig` | Represents a config to handle a certain GMail attachment | No       |
-| **message**    | `MessageConfig`    | Represents a config to handle a certain GMail message    | No       |
-| **thread**     | `ThreadConfig`     | Represents a config handle a certain GMail thread        | No       |
+|                | Type                 | Description                                                                        | Required          |
+| -------------- | -------------------- | ---------------------------------------------------------------------------------- | ----------------- |
+| **attachment** | `AttachmentConfig`   | Represents a config to handle a certain GMail attachment                           | No                |
+| **message**    | `MessageConfig`      | Represents a config to handle a certain GMail message                              | No                |
+| **thread**     | `ThreadConfig`       | Represents a config handle a certain GMail thread                                  | No                |
+| **variables**  | `VariableEntry` `[]` | A list of variable entries to be used in substitutions to simplify configurations. | No, default: `[]` |
 
 Additional properties are not allowed.
 
@@ -294,6 +295,13 @@ Represents a config handle a certain GMail thread
 
 - **Type**: `ThreadConfig`
 - **Required**: No
+
+### GlobalConfig.variables
+
+A list of variable entries to be used in substitutions to simplify configurations.
+
+- **Type**: `VariableEntry` `[]`
+- **Required**: No, default: `[]`
 
 ---
 
@@ -504,10 +512,10 @@ Represents a settings config that affect the way GMail2GDrive works.
 
 **`SettingsConfig` Properties**
 
-|                         | Type     | Description                                                                                                                      | Required                                                                                            |
-| ----------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
-| **logSheetLocation**    | `string` | Path of the spreadsheet log file                                                                                                 | No, default: `"Gmail2GDrive/Gmail2GDrive-logs/logsheet-{timer.now:dateformat:YYYY-MM-DD_HH-mm-ss}"` |
-| **markProcessedLabel**  | `string` | The label to be added to processed GMail threads (only for markProcessedMode="label", deprecated - only for compatibility to v1) | No, default:                                                                                        |
+|                         | Type     | Description                                                                                                                      | Required                                                                                           |
+| ----------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| **logSheetLocation**    | `string` | Path of the spreadsheet log file                                                                                                 | No, default: `"Gmail2GDrive/Gmail2GDrive-logs/logsheet-{date.now:dateformat:YYYY-MM-DD_HH-mm-ss}"` |
+| **markProcessedLabel**  | `string` | The label to be added to processed GMail threads (only for markProcessedMode="label", deprecated - only for compatibility to v1) | No, default:                                                                                       |
 | **markProcessedMethod** | `string` | The method to mark processed threads/messages.                                                                                   |
 
 - `add-thread-label`: Add the label from `markProcessedLabel` to the thread. This is just for compatibility to v1 and is limited to one message per thread.
@@ -526,7 +534,7 @@ Additional properties are not allowed.
 Path of the spreadsheet log file
 
 - **Type**: `string`
-- **Required**: No, default: `"Gmail2GDrive/Gmail2GDrive-logs/logsheet-{timer.now:dateformat:YYYY-MM-DD_HH-mm-ss}"`
+- **Required**: No, default: `"Gmail2GDrive/Gmail2GDrive-logs/logsheet-{date.now:dateformat:YYYY-MM-DD_HH-mm-ss}"`
 
 ### SettingsConfig.markProcessedLabel
 
@@ -770,3 +778,30 @@ The GMail search query to find threads to be processed (see http://support.googl
 <a name="reference-"></a>
 
 ##
+
+---
+
+<a name="reference-variableentry"></a>
+
+## VariableEntry
+
+A variable entry available for substitution (using ${variables.<key>})
+
+**`VariableEntry` Properties**
+
+|           | Type     | Description | Required     |
+| --------- | -------- | ----------- | ------------ |
+| **key**   | `string` |             | &#10003; Yes |
+| **value** | `string` |             | &#10003; Yes |
+
+Additional properties are not allowed.
+
+### VariableEntry.key
+
+- **Type**: `string`
+- **Required**: &#10003; Yes
+
+### VariableEntry.value
+
+- **Type**: `string`
+- **Required**: &#10003; Yes
