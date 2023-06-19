@@ -12,6 +12,7 @@ import {
   ThreadMatchConfig,
   newThreadMatchConfig,
 } from "../config/ThreadMatchConfig"
+import { PatternUtil } from "../utils/PatternUtil"
 import { BaseProcessor } from "./BaseProcessor"
 import { MessageProcessor } from "./MessageProcessor"
 
@@ -69,10 +70,14 @@ export class ThreadProcessor extends BaseProcessor {
         ctx.proc.config.global.thread.match,
         config.match,
       )
-      const gSearchExp = this.buildQuery(ctx, matchConfig)
+      const query = PatternUtil.substitute(
+        ctx,
+        this.buildQuery(ctx, matchConfig),
+      )
+      ctx.log.info(`GMail search query: ${query}`)
       // Process all threads matching the search expression:
       const threads = ctx.proc.gmailAdapter.search(
-        gSearchExp,
+        query,
         ctx.proc.config.settings.maxBatchSize,
       )
       for (let threadIndex = 0; threadIndex < threads.length; threadIndex++) {

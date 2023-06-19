@@ -10,6 +10,7 @@ import {
   newProcessingResult,
   ProcessingResult,
 } from "../Context"
+import { PatternUtil } from "../utils/PatternUtil"
 import { BaseProcessor } from "./BaseProcessor"
 
 export class AttachmentProcessor extends BaseProcessor {
@@ -26,20 +27,28 @@ export class AttachmentProcessor extends BaseProcessor {
   }
 
   public static buildMatchConfig(
+    ctx: MessageContext,
     global: RequiredAttachmentMatchConfig,
     local: RequiredAttachmentMatchConfig,
   ): RequiredAttachmentMatchConfig {
     return newAttachmentMatchConfig({
-      contentTypeRegex: `${global.contentTypeRegex}|${local.contentTypeRegex}`
-        .replace(".*|", "")
-        .replace("|.*", ""),
+      contentTypeRegex: PatternUtil.substitute(
+        ctx,
+        `${global.contentTypeRegex}|${local.contentTypeRegex}`.replace(
+          ".*|",
+          "",
+        ),
+      ).replace("|.*", ""),
       includeAttachments: global.includeAttachments && local.includeAttachments,
       includeInlineImages:
         global.includeInlineImages && local.includeInlineImages,
       largerThan: Math.max(global.largerThan, local.largerThan),
-      name: `${global.name}|${local.name}`
-        .replace("(.*)|", "")
-        .replace("|(.*)", ""),
+      name: PatternUtil.substitute(
+        ctx,
+        `${global.name}|${local.name}`
+          .replace("(.*)|", "")
+          .replace("|(.*)", ""),
+      ),
       smallerThan: Math.min(global.smallerThan, local.smallerThan),
     })
   }
@@ -60,6 +69,7 @@ export class AttachmentProcessor extends BaseProcessor {
       }
       const attachments = ctx.message.object.getAttachments(opts)
       const matchConfig = this.buildMatchConfig(
+        ctx,
         ctx.proc.config.global.attachment.match,
         config.match,
       )

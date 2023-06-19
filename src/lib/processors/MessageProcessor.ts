@@ -14,6 +14,7 @@ import {
 } from "../config/MessageMatchConfig"
 import { MarkProcessedMethod } from "../config/SettingsConfig"
 import { AttachmentProcessor } from "../processors/AttachmentProcessor"
+import { PatternUtil } from "../utils/PatternUtil"
 import { BaseProcessor } from "./BaseProcessor"
 
 export class MessageProcessor extends BaseProcessor {
@@ -45,16 +46,26 @@ export class MessageProcessor extends BaseProcessor {
   }
 
   public static buildMatchConfig(
+    ctx: ThreadContext,
     global: MessageMatchConfig,
     local: RequiredMessageMatchConfig,
   ): RequiredMessageMatchConfig {
     return newMessageMatchConfig({
-      from: this.effectiveValue(global.from, local.from, ""),
+      from: PatternUtil.substitute(
+        ctx,
+        this.effectiveValue(global.from, local.from, ""),
+      ),
       is: (global.is || []).concat(local.is),
       newerThan: this.effectiveValue(global.newerThan, local.newerThan, ""),
       olderThan: this.effectiveValue(global.olderThan, local.olderThan, ""),
-      subject: this.effectiveValue(global.subject, local.subject, ""),
-      to: this.effectiveValue(global.to, local.to, ""),
+      subject: PatternUtil.substitute(
+        ctx,
+        this.effectiveValue(global.subject, local.subject, ""),
+      ),
+      to: PatternUtil.substitute(
+        ctx,
+        this.effectiveValue(global.to, local.to, ""),
+      ),
     })
   }
 
@@ -68,6 +79,7 @@ export class MessageProcessor extends BaseProcessor {
       ctx.log.info(`Processing of message config '${config.name}' started ...`)
       const messages = ctx.thread.object.getMessages()
       const matchConfig = this.buildMatchConfig(
+        ctx,
         ctx.proc.config.global.message.match,
         config.match,
       )
