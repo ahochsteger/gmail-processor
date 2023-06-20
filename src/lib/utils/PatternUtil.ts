@@ -84,28 +84,34 @@ export class PatternUtil {
    * @param regexMap Map with attribute names and regex to do matches on (e.g. {"subject": "Message ([0-9]+)"})
    */
   public static buildRegExpSubustitutionMap(
+    ctx: ProcessingContext,
     m: SubstMap,
     keyPrefix: string,
     regexMap: Map<string, string>,
   ): SubstMap {
+    ctx.log.debug(`Testing regex matches for key prefix ${keyPrefix} ...`)
     let matchesAll = true
     regexMap.forEach((value, k) => {
+      ctx.log.debug(`Testing regex match for ${k} ...`)
       const regex = new RegExp(value, "g")
       let result
       const keyName = `${keyPrefix}.${k}`
       let hasAtLeastOneMatch = false
       const data: string = m.get(keyName) as string
       if ((result = regex.exec(data)) !== null) {
+        ctx.log.debug(`... matches`)
         hasAtLeastOneMatch = true
-        console.log("Matches: " + result.length)
         for (let i = 1; i < result.length; i++) {
           m.set(`${keyName}.match.${i}`, result[i])
         }
+      } else {
+        ctx.log.debug(`... no match.`)
       }
       if (!hasAtLeastOneMatch) {
         matchesAll = false
       }
     })
+    ctx.log.debug(`... result for key prefix ${keyPrefix}: ${matchesAll}`)
     m.set(`${keyPrefix}.matched`, matchesAll)
     return m
   }
@@ -212,15 +218,14 @@ export class PatternUtil {
     if (messageConfig.match) {
       // Test for message rules
       m = this.buildRegExpSubustitutionMap(
+        ctx,
         m,
         "message",
         this.getRegexMapFromMessageMatchConfig(messageConfig.match),
       )
       if (!m.get("messgage.matched")) {
         ctx.log.info(
-          "  Skipped message with id " +
-            message.getId() +
-            " because it did not match the regex rules ...",
+          `Skipped message with id ${message.getId()} because it did not match the regex rules ...`,
         )
       }
     }
@@ -240,15 +245,14 @@ export class PatternUtil {
     m.set("attachmentConfig.index", ctx.attachment.configIndex)
     const attachmentConfig = ctx.attachment.config
     m = this.buildRegExpSubustitutionMap(
+      ctx,
       m,
       "attachment",
       this.getRegexMapFromAttachmentMatchConfig(attachmentConfig.match),
     )
     if (!m.get("attachment.matched")) {
       ctx.log.info(
-        "  Skipped attachment with name '" +
-          attachment.getName() +
-          "' because it did not match the regex rules ...",
+        `Skipped attachment with name '${attachment.getName()}' because it did not match the regex rules ...`,
       )
     }
     return m
