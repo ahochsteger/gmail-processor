@@ -9,7 +9,7 @@ const example01ConfigV2 = {
   settings: {
     maxBatchSize: 10,
     maxRuntime: 280,
-    markProcessedMethod: "mark-message-read",
+    markProcessedMethod: "mark-read",
     sleepTimeThreads: 100,
     sleepTimeMessages: 0,
     sleepTimeAttachments: 0,

@@ -13,12 +13,12 @@ type LocationType = string
 
 /**
  * The method to mark processed threads/messages.
- * * `add-thread-label`: Add the label from `markProcessedLabel` to the thread. This is just for compatibility to v1 and is limited to one message per thread.
- * * `mark-message-read`: Mark the message as read. This is the new default since it provides more flexibility esp. when threads contain multiple messages.
+ * * `add-label` (deprecated): Adds the label set using `markProcessedLabel` to the thread. ATTENTION: This method is just for compatibility with v1 configs and does not support multiple messages per thread!
+ * * `mark-read`: Mark the message as read. This is the new default since it provides more flexibility esp. when threads contain multiple messages.
  */
 export enum MarkProcessedMethod {
-  ADD_THREAD_LABEL = "add-thread-label",
-  MARK_MESSAGE_READ = "mark-message-read",
+  ADD_THREAD_LABEL = "add-label",
+  MARK_MESSAGE_READ = "mark-read",
 }
 
 /**
@@ -48,7 +48,7 @@ export class SettingsConfig {
   markProcessedLabel? = ""
   /**
    * The method to mark processed threads/messages.
-   * * `add-thread-label`: Add the label from `markProcessedLabel` to the thread. This is just for compatibility to v1 and is limited to one message per thread.
+   * * `add-label`: Add the label from `markProcessedLabel` to the thread. This is just for compatibility to v1 and is limited to one message per thread.
    * * `mark-message-read`: Mark the message as read. This is the new default since it provides more flexibility esp. when threads contain multiple messages.
    */
   @Expose()

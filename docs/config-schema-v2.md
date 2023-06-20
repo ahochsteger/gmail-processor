@@ -518,7 +518,7 @@ Represents a settings config that affect the way GMail2GDrive works.
 | **markProcessedLabel**  | `string` | The label to be added to processed GMail threads (only for markProcessedMode="label", deprecated - only for compatibility to v1) | No, default:                                                                                       |
 | **markProcessedMethod** | `string` | The method to mark processed threads/messages.                                                                                   |
 
-- `add-thread-label`: Add the label from `markProcessedLabel` to the thread. This is just for compatibility to v1 and is limited to one message per thread.
+- `add-label`: Add the label from `markProcessedLabel` to the thread. This is just for compatibility to v1 and is limited to one message per thread.
 - `mark-message-read`: Mark the message as read. This is the new default since it provides more flexibility esp. when threads contain multiple messages.|No|
   |**maxBatchSize**|`number`|The maximum batch size of threads to process in a single run to respect Google processing limits|No, default: `10`|
   |**maxRuntime**|`number`|The maximum runtime in seconds for a single run to respect Google processing limits|No, default: `280`|
@@ -547,14 +547,14 @@ The label to be added to processed GMail threads (only for markProcessedMode="la
 
 The method to mark processed threads/messages.
 
-- `add-thread-label`: Add the label from `markProcessedLabel` to the thread. This is just for compatibility to v1 and is limited to one message per thread.
+- `add-label`: Add the label from `markProcessedLabel` to the thread. This is just for compatibility to v1 and is limited to one message per thread.
 - `mark-message-read`: Mark the message as read. This is the new default since it provides more flexibility esp. when threads contain multiple messages.
 
 - **Type**: `string`
 - **Required**: No
 - **Allowed values**:
-  - `"add-thread-label"`
-  - `"mark-message-read"`
+  - `"add-label"`
+  - `"mark-read"`
 
 ### SettingsConfig.maxBatchSize
 
