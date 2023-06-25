@@ -30,7 +30,7 @@ export class SettingsConfig {
    */
   @Expose()
   logSheetLocation?: LocationType =
-    "Gmail2GDrive/Gmail2GDrive-logs/logsheet-{date.now:dateformat:YYYY-MM-DD_HH-mm-ss}"
+    "Gmail2GDrive/Gmail2GDrive-logs/logsheet-${date.now:format:YYYY-MM-DD_HH-mm-ss}"
   /**
    * The maximum batch size of threads to process in a single run to respect Google processing limits
    */

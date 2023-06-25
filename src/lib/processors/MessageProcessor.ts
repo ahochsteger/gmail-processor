@@ -1,5 +1,7 @@
 import {
   MessageContext,
+  MessageInfo,
+  MetaInfo,
   ProcessingResult,
   ThreadContext,
   newProcessingResult,
@@ -18,6 +20,24 @@ import { PatternUtil } from "../utils/PatternUtil"
 import { BaseProcessor } from "./BaseProcessor"
 
 export class MessageProcessor extends BaseProcessor {
+  public static buildContext(
+    ctx: ThreadContext,
+    info: MessageInfo,
+  ): MessageContext {
+    const metaInfo = new MetaInfo()
+    const messageContext: MessageContext = {
+      ...ctx,
+      message: info,
+      messageMeta: metaInfo,
+    }
+    messageContext.messageMeta = this.buildMetaInfo(messageContext, metaInfo)
+    messageContext.meta = new MetaInfo([
+      ...messageContext.procMeta,
+      ...messageContext.threadMeta,
+      ...messageContext.messageMeta,
+    ])
+    return messageContext
+  }
   public static matches(
     matchConfig: RequiredMessageMatchConfig,
     message: GoogleAppsScript.Gmail.GmailMessage,
@@ -69,6 +89,60 @@ export class MessageProcessor extends BaseProcessor {
     })
   }
 
+  public static getRegexMapFromMessageMatchConfig(
+    mmc: MessageMatchConfig | undefined,
+  ): Map<string, string> {
+    const m = new Map<string, string>()
+    if (mmc === undefined) {
+      return m
+    }
+    if (mmc.from) m.set("from", mmc.from)
+    if (mmc.subject) m.set("subject", mmc.subject)
+    if (mmc.to) m.set("to", mmc.to)
+    return m
+  }
+
+  public static buildMetaInfo(
+    ctx: MessageContext,
+    m: MetaInfo = new MetaInfo(),
+  ): MetaInfo {
+    const message = ctx.message.object
+    m.set("message.bcc", message.getBcc())
+    m.set("message.cc", message.getCc())
+    m.set("message.date", message.getDate())
+    m.set("message.from", message.getFrom())
+    m.set("message.from.domain", message.getFrom().split("@")[1])
+    m.set("message.id", message.getId())
+    m.set("message.isDraft", message.isDraft())
+    m.set("message.isInChats", message.isInChats())
+    m.set("message.isInInbox", message.isInInbox())
+    m.set("message.isInPriorityInbox", message.isInPriorityInbox())
+    m.set("message.isInTrash", message.isInTrash())
+    m.set("message.isStarred", message.isStarred())
+    m.set("message.isUnread", message.isUnread())
+    m.set("message.replyTo", message.getReplyTo())
+    m.set("message.subject", message.getSubject())
+    m.set("message.to", message.getTo())
+    m.set("message.index", ctx.message.index)
+    m.set("messageConfig.index", ctx.message.configIndex)
+    const messageConfig = ctx.message.config
+    if (messageConfig.match) {
+      // Test for message rules
+      m = this.buildRegExpSubustitutionMap(
+        ctx,
+        m,
+        "message",
+        this.getRegexMapFromMessageMatchConfig(messageConfig.match),
+      )
+      if (!m.get("messgage.matched")) {
+        ctx.log.info(
+          `Skipped message with id ${message.getId()} because it did not match the regex rules ...`,
+        )
+      }
+    }
+    return m
+  }
+
   public static processConfigs(
     ctx: ThreadContext,
     configs: RequiredMessageConfig[],
@@ -99,15 +173,12 @@ export class MessageProcessor extends BaseProcessor {
           )
           continue
         }
-        const messageContext: MessageContext = {
-          ...ctx,
-          message: {
-            object: message,
-            config: config,
-            configIndex: configIndex,
-            index: index,
-          },
-        }
+        const messageContext = this.buildContext(ctx, {
+          object: message,
+          config: config,
+          configIndex: configIndex,
+          index: index,
+        })
         result = this.processEntity(messageContext, result)
       }
       ctx.log.info(`Processing of message config '${config.name}' finished.`)

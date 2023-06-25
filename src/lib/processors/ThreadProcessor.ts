@@ -1,7 +1,9 @@
 import {
+  MetaInfo,
   ProcessingContext,
   ProcessingResult,
   ThreadContext,
+  ThreadInfo,
   newProcessingResult,
 } from "../Context"
 import { ProcessingStage } from "../config/ActionConfig"
@@ -17,6 +19,23 @@ import { BaseProcessor } from "./BaseProcessor"
 import { MessageProcessor } from "./MessageProcessor"
 
 export class ThreadProcessor extends BaseProcessor {
+  public static buildContext(
+    ctx: ProcessingContext,
+    info: ThreadInfo,
+  ): ThreadContext {
+    const metaInfo = new MetaInfo()
+    const threadContext: ThreadContext = {
+      ...ctx,
+      thread: info,
+      threadMeta: metaInfo,
+    }
+    threadContext.threadMeta = this.buildMetaInfo(threadContext, metaInfo)
+    threadContext.meta = new MetaInfo([
+      ...threadContext.procMeta,
+      ...threadContext.threadMeta,
+    ])
+    return threadContext
+  }
   private static buildFilter(prefix: string, value: string): string {
     return this.isSet(value, "") ? ` ${prefix}${value}` : ""
   }
@@ -58,6 +77,35 @@ export class ThreadProcessor extends BaseProcessor {
     })
   }
 
+  public static buildMetaInfo(
+    ctx: ThreadContext,
+    m: MetaInfo = new MetaInfo(),
+  ): MetaInfo {
+    const thread = ctx.thread.object
+    m.set("thread.firstMessageSubject", thread.getFirstMessageSubject())
+    m.set("thread.hasStarredMessages", thread.hasStarredMessages())
+    m.set("thread.id", thread.getId())
+    m.set("thread.isImportant", thread.isImportant())
+    m.set("thread.isInChats", thread.isInChats())
+    m.set("thread.isInInbox", thread.isInInbox())
+    m.set("thread.isInPriorityInbox", thread.isInPriorityInbox())
+    m.set("thread.isInSpam", thread.isInSpam())
+    m.set("thread.isInTrash", thread.isInTrash())
+    m.set("thread.isUnread", thread.isUnread())
+    const labels: GoogleAppsScript.Gmail.GmailLabel[] = thread.getLabels()
+      ? thread.getLabels()
+      : []
+    const labelNames: string[] = []
+    labels.forEach((l) => labelNames.push(l.getName()))
+    m.set("thread.labels", labelNames.join(","))
+    m.set("thread.lastMessageDate", thread.getLastMessageDate())
+    m.set("thread.messageCount", thread.getMessageCount())
+    m.set("thread.permalink", thread.getPermalink())
+    m.set("thread.index", ctx.thread.index)
+    m.set("threadConfig.index", ctx.thread.configIndex)
+    return m
+  }
+
   public static processConfigs(
     ctx: ProcessingContext,
     configs: RequiredThreadConfig[],
@@ -83,15 +131,12 @@ export class ThreadProcessor extends BaseProcessor {
       for (let threadIndex = 0; threadIndex < threads.length; threadIndex++) {
         const thread = threads[threadIndex]
         ctx.proc.timer.checkMaxRuntimeReached()
-        const threadContext: ThreadContext = {
-          ...ctx,
-          thread: {
-            object: thread,
-            config: config,
-            configIndex: configIndex,
-            index: threadIndex,
-          },
-        }
+        const threadContext = this.buildContext(ctx, {
+          object: thread,
+          config: config,
+          configIndex: configIndex,
+          index: threadIndex,
+        })
         result = this.processEntity(threadContext, result)
       }
       ctx.log.info(`Processing of thread config '${config.name}' finished.`)

@@ -374,7 +374,7 @@
       "description": "Represents a settings config that affect the way GMail2GDrive works.",
       "properties": {
         "logSheetLocation": {
-          "default": "Gmail2GDrive/Gmail2GDrive-logs/logsheet-{date.now:dateformat:YYYY-MM-DD_HH-mm-ss}",
+          "default": "Gmail2GDrive/Gmail2GDrive-logs/logsheet-${date.now:format:YYYY-MM-DD_HH-mm-ss}",
           "description": "Path of the spreadsheet log file",
           "title": "logSheetLocation",
           "type": "string"

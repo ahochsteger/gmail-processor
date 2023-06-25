@@ -1,7 +1,9 @@
+import { MockProxy } from "jest-mock-extended"
 import {
   AttachmentContext,
   EnvContext,
   MessageContext,
+  MetaInfo,
   ProcessingContext,
   RunMode,
   ThreadContext,
@@ -11,13 +13,15 @@ import { GDriveAdapter } from "../../lib/adapter/GDriveAdapter"
 import { GmailAdapter } from "../../lib/adapter/GmailAdapter"
 import { SpreadsheetAdapter } from "../../lib/adapter/SpreadsheetAdapter"
 import { newAttachmentConfig } from "../../lib/config/AttachmentConfig"
-import { RequiredConfig, newConfig } from "../../lib/config/Config"
 import { newMessageConfig } from "../../lib/config/MessageConfig"
-import { newThreadConfig } from "../../lib/config/ThreadConfig"
+import { AttachmentProcessor } from "../../lib/processors/AttachmentProcessor"
+import { GmailProcessor } from "../../lib/processors/GmailProcessor"
+import { MessageProcessor } from "../../lib/processors/MessageProcessor"
+import { ThreadProcessor } from "../../lib/processors/ThreadProcessor"
 import { Logger } from "../../lib/utils/Logger"
 import { Timer } from "../../lib/utils/Timer"
 import { ConfigMocks } from "./ConfigMocks"
-import { GMailMocks } from "./GMailMocks"
+import { GMailMocks, ThreadData } from "./GMailMocks"
 import { MockFactory } from "./MockFactory"
 
 export class ContextMocks {
@@ -37,69 +41,127 @@ export class ContextMocks {
         timezone: "UTC",
       },
       log: new Logger(),
+      meta: new MetaInfo(),
     }
     return envContext
   }
 
   public static newProcessingContextMock(
     envContext = this.newEnvContextMock(),
-    config = newConfig() as RequiredConfig,
+    config = ConfigMocks.newDefaultConfig(),
   ): ProcessingContext {
-    return {
-      ...envContext,
-      proc: {
-        gdriveAdapter: new GDriveAdapter(envContext),
-        gmailAdapter: new GmailAdapter(envContext),
-        spreadsheetAdapter: new SpreadsheetAdapter(envContext),
-        config,
-        actionRegistry: new ActionRegistry(),
-        timer: new Timer(config.settings.maxRuntime),
-      },
-    }
+    return GmailProcessor.buildContext(envContext, {
+      gdriveAdapter: new GDriveAdapter(envContext),
+      gmailAdapter: new GmailAdapter(envContext),
+      spreadsheetAdapter: new SpreadsheetAdapter(envContext),
+      config,
+      actionRegistry: new ActionRegistry(),
+      timer: new Timer(config.settings.maxRuntime),
+    })
   }
 
   public static newThreadContextMock(
     processingContext = this.newProcessingContextMock(),
     thread = GMailMocks.newThreadMock(),
+    index = 0,
+    configIndex = 0,
   ): ThreadContext {
-    return {
-      ...processingContext,
-      thread: {
-        config: newThreadConfig(ConfigMocks.newDefaultThreadConfigJson()),
-        object: thread,
-        configIndex: 0,
-        index: 0,
-      },
-    }
+    return ThreadProcessor.buildContext(processingContext, {
+      config: processingContext.proc.config.threads[configIndex],
+      object: thread,
+      configIndex,
+      index,
+    })
   }
 
   public static newMessageContextMock(
     threadContext = this.newThreadContextMock(),
     message = GMailMocks.newMessageMock(),
+    index = 0,
+    configIndex = 0,
   ): MessageContext {
-    return {
-      ...threadContext,
-      message: {
-        config: newMessageConfig(),
-        object: message,
-        configIndex: 0,
-        index: 0,
-      },
-    }
+    const config =
+      threadContext.thread.config?.messages[configIndex] ?? newMessageConfig()
+    return MessageProcessor.buildContext(threadContext, {
+      config,
+      object: message,
+      configIndex,
+      index,
+    })
   }
 
   public static newAttachmentContextMock(
     messageContext = this.newMessageContextMock(),
     attachment = GMailMocks.newAttachmentMock(),
+    index = 0,
+    configIndex = 0,
   ): AttachmentContext {
-    return {
-      ...messageContext,
-      attachment: {
-        config: newAttachmentConfig(),
-        object: attachment,
-        configIndex: 0,
-        index: 0,
-      },
-    }
+    const config =
+      messageContext.message.config.attachments[configIndex] ??
+      newAttachmentConfig()
+    return AttachmentProcessor.buildContext(messageContext, {
+      config,
+      object: attachment,
+      configIndex,
+      index,
+    })
+  }
+
+  public static newThreadContextMockFromThreadData(
+    data: ThreadData = {},
+    ctx: ProcessingContext = ContextMocks.newProcessingContextMock(),
+  ): ThreadContext {
+    const thread = GMailMocks.newThreadMock(data)
+    const threadContext = ContextMocks.newThreadContextMock(ctx, thread)
+    return threadContext
+  }
+
+  public static newMessageContextMockFromThreadData(
+    data: ThreadData = {},
+    messageIndex = 0,
+    ctx: ProcessingContext = ContextMocks.newProcessingContextMock(),
+  ): MessageContext {
+    const thread = GMailMocks.newThreadMock(data)
+    const msg = thread.getMessages()[
+      messageIndex
+    ] as MockProxy<GoogleAppsScript.Gmail.GmailMessage>
+
+    const threadContext = ContextMocks.newThreadContextMockFromThreadData(
+      data,
+      ctx,
+    )
+    const messageContext = ContextMocks.newMessageContextMock(
+      threadContext,
+      msg,
+      messageIndex,
+    )
+    return messageContext
+  }
+
+  public static newAttachmentContextMockFromThreadData(
+    data: ThreadData = {},
+    messageIndex = 0,
+    attachmentIndex = 0,
+    ctx: ProcessingContext = ContextMocks.newProcessingContextMock(),
+  ): AttachmentContext {
+    const thread = GMailMocks.newThreadMock(data)
+    const msg = thread.getMessages()[
+      messageIndex
+    ] as MockProxy<GoogleAppsScript.Gmail.GmailMessage>
+    const attachment = msg.getAttachments()[
+      attachmentIndex
+    ] as MockProxy<GoogleAppsScript.Gmail.GmailAttachment>
+
+    const messageContext = ContextMocks.newMessageContextMockFromThreadData(
+      data,
+      messageIndex,
+      ctx,
+    )
+    const attachmentContext = ContextMocks.newAttachmentContextMock(
+      messageContext,
+      attachment,
+      attachmentIndex,
+    )
+    return attachmentContext
   }
 }

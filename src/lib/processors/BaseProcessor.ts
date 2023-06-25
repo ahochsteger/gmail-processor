@@ -1,4 +1,5 @@
 import {
+  MetaInfo,
   ProcessingContext,
   ProcessingError,
   ProcessingResult,
@@ -8,6 +9,47 @@ import { ActionArgsType } from "../actions/ActionRegistry"
 import { ActionConfig, ProcessingStage } from "../config/ActionConfig"
 
 export abstract class BaseProcessor {
+  /**
+   * Extends the given dataMap with additional data resulting from specified regex matches to perform.
+   * @param ctx Processing context
+   * @param m Map with meta infos as key/value pairs
+   * @param keyPrefix Key name prefix for the new map data (e.g. "message")
+   * @param regexMap Map with attribute names and regex to do matches on (e.g. {"subject": "Message ([0-9]+)"})
+   */
+  public static buildRegExpSubustitutionMap(
+    ctx: ProcessingContext,
+    m: MetaInfo,
+    keyPrefix: string,
+    regexMap: Map<string, string>,
+  ): MetaInfo {
+    ctx.log.debug(`Testing regex matches for key prefix ${keyPrefix} ...`)
+    let matchesAll = true
+    regexMap.forEach((value, k) => {
+      ctx.log.debug(`Testing regex match for ${k} ...`)
+      const regex = new RegExp(value, "g")
+      let result
+      const keyName = `${keyPrefix}.${k}`
+      let hasAtLeastOneMatch = false
+      const data: string = m.get(keyName) as string
+      if ((result = regex.exec(data)) !== null) {
+        // TODO: Add support for named capture groups and add entries with key `${keyName}.match.${groupName}`
+        ctx.log.debug(`... matches`)
+        hasAtLeastOneMatch = true
+        for (let i = 1; i < result.length; i++) {
+          m.set(`${keyName}.match.${i}`, result[i])
+        }
+      } else {
+        ctx.log.debug(`... no match.`)
+      }
+      if (!hasAtLeastOneMatch) {
+        matchesAll = false
+      }
+    })
+    ctx.log.debug(`... result for key prefix ${keyPrefix}: ${matchesAll}`)
+    m.set(`${keyPrefix}.matched`, matchesAll)
+    return m
+  }
+
   protected static executeActions(
     ctx: ProcessingContext,
     processingStage: ProcessingStage,

@@ -19,7 +19,14 @@ export enum RunMode {
   DANGEROUS = "dangerous",
 }
 
-type EnvInfo = {
+export type MetaInfoEntry = {
+  description: string
+  regex: boolean
+  value: unknown | (() => unknown)
+}
+export class MetaInfo extends Map<string, unknown> {}
+
+export type EnvInfo = {
   gmailApp: GoogleAppsScript.Gmail.GmailApp
   gdriveApp: GoogleAppsScript.Drive.DriveApp
   utilities: GoogleAppsScript.Utilities.Utilities
@@ -30,7 +37,7 @@ type EnvInfo = {
   timezone?: string
 }
 
-type ProcessingInfo = {
+export type ProcessingInfo = {
   actionRegistry: ActionRegistry
   config: RequiredConfig
   gdriveAdapter: GDriveAdapter
@@ -39,32 +46,48 @@ type ProcessingInfo = {
   timer: Timer
 }
 
-type ThreadInfo = {
+export type ThreadInfo = {
   object: GoogleAppsScript.Gmail.GmailThread
   config: RequiredThreadConfig
   configIndex: number
   index: number
 }
 
-type MessageInfo = {
+export type MessageInfo = {
   object: GoogleAppsScript.Gmail.GmailMessage
   config: RequiredMessageConfig
   configIndex: number
   index: number
 }
 
-type AttachmentInfo = {
+export type AttachmentInfo = {
   object: GoogleAppsScript.Gmail.GmailAttachment
   config: RequiredAttachmentConfig
   configIndex: number
   index: number
 }
 
-export type EnvContext = { env: EnvInfo; log: Logger }
-export type ProcessingContext = EnvContext & { proc: ProcessingInfo }
-export type ThreadContext = ProcessingContext & { thread: ThreadInfo }
-export type MessageContext = ThreadContext & { message: MessageInfo }
-export type AttachmentContext = MessageContext & { attachment: AttachmentInfo }
+export type EnvContext = {
+  env: EnvInfo
+  log: Logger
+  meta: MetaInfo
+}
+export type ProcessingContext = EnvContext & {
+  proc: ProcessingInfo
+  procMeta: MetaInfo
+}
+export type ThreadContext = ProcessingContext & {
+  thread: ThreadInfo
+  threadMeta: MetaInfo
+}
+export type MessageContext = ThreadContext & {
+  message: MessageInfo
+  messageMeta: MetaInfo
+}
+export type AttachmentContext = MessageContext & {
+  attachment: AttachmentInfo
+  attachmentMeta: MetaInfo
+}
 
 export enum ProcessingStatus {
   ERROR = "error",

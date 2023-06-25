@@ -1,7 +1,9 @@
 import { PartialDeep } from "type-fest"
 import {
   EnvContext,
+  MetaInfo,
   ProcessingContext,
+  ProcessingInfo,
   ProcessingResult,
   newProcessingResult,
 } from "../Context"
@@ -17,6 +19,35 @@ import { Timer } from "../utils/Timer"
 import { ThreadProcessor } from "./ThreadProcessor"
 
 export class GmailProcessor {
+  public static buildContext(
+    ctx: EnvContext,
+    info: ProcessingInfo,
+  ): ProcessingContext {
+    const processingContext: ProcessingContext = {
+      ...ctx,
+      proc: info,
+      procMeta: new MetaInfo(),
+    }
+    processingContext.procMeta = this.buildMetaInfo(
+      processingContext,
+      processingContext.procMeta,
+    )
+    processingContext.meta = new MetaInfo([...processingContext.procMeta])
+    return processingContext
+  }
+
+  public static buildMetaInfo(ctx: ProcessingContext, m = new MetaInfo()) {
+    m.set("date.now", new Date())
+    m.set("env.runMode", ctx.env.runMode)
+    m.set("env.timezone", ctx.env.timezone)
+    m.set("timer.startTime", ctx.proc.timer.getStartTime())
+    m.set("user.email", ctx.env.session.getActiveUser().getEmail())
+    ctx.proc.config.global.variables.forEach((entry) =>
+      m.set(`variables.${entry.key}`, entry.value),
+    )
+    return m
+  }
+
   public run(config: RequiredConfig, ctx: EnvContext) {
     ctx.log.info("Processing of GMail2GDrive config started ...")
     const actionRegistry = new ActionRegistry()
@@ -32,17 +63,14 @@ export class GmailProcessor {
       "attachment",
       new AttachmentActions() as unknown as ActionProvider<ProcessingContext>,
     )
-    const processingContext: ProcessingContext = {
-      ...ctx,
-      proc: {
-        actionRegistry: actionRegistry,
-        gdriveAdapter: new GDriveAdapter(ctx),
-        gmailAdapter: new GmailAdapter(ctx),
-        spreadsheetAdapter: new SpreadsheetAdapter(ctx),
-        config: config,
-        timer: new Timer(config.settings.maxRuntime),
-      },
-    }
+    const processingContext = GmailProcessor.buildContext(ctx, {
+      actionRegistry: actionRegistry,
+      config: config,
+      gdriveAdapter: new GDriveAdapter(ctx),
+      gmailAdapter: new GmailAdapter(ctx),
+      spreadsheetAdapter: new SpreadsheetAdapter(ctx),
+      timer: new Timer(config.settings.maxRuntime),
+    })
     ctx.log.logProcessingContext(processingContext)
     const result = ThreadProcessor.processConfigs(
       processingContext,

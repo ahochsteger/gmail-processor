@@ -1,12 +1,15 @@
 import { ProcessingStage } from "../config/ActionConfig"
 import { RequiredAttachmentConfig } from "../config/AttachmentConfig"
 import {
+  AttachmentMatchConfig,
   newAttachmentMatchConfig,
   RequiredAttachmentMatchConfig,
 } from "../config/AttachmentMatchConfig"
 import {
   AttachmentContext,
+  AttachmentInfo,
   MessageContext,
+  MetaInfo,
   newProcessingResult,
   ProcessingResult,
 } from "../Context"
@@ -14,6 +17,28 @@ import { PatternUtil } from "../utils/PatternUtil"
 import { BaseProcessor } from "./BaseProcessor"
 
 export class AttachmentProcessor extends BaseProcessor {
+  public static buildContext(
+    ctx: MessageContext,
+    info: AttachmentInfo,
+  ): AttachmentContext {
+    const metaInfo = new MetaInfo()
+    const attachmentContext: AttachmentContext = {
+      ...ctx,
+      attachment: info,
+      attachmentMeta: metaInfo,
+    }
+    attachmentContext.attachmentMeta = this.buildMetaInfo(
+      attachmentContext,
+      metaInfo,
+    )
+    attachmentContext.meta = new MetaInfo([
+      ...attachmentContext.procMeta,
+      ...attachmentContext.threadMeta,
+      ...attachmentContext.messageMeta,
+      ...attachmentContext.attachmentMeta,
+    ])
+    return attachmentContext
+  }
   public static matches(
     matchConfig: RequiredAttachmentMatchConfig,
     attachment: GoogleAppsScript.Gmail.GmailAttachment,
@@ -53,6 +78,45 @@ export class AttachmentProcessor extends BaseProcessor {
     })
   }
 
+  public static getRegexMapFromAttachmentMatchConfig(
+    amc: AttachmentMatchConfig | undefined,
+  ): Map<string, string> {
+    const m = new Map<string, string>()
+    if (amc === undefined) {
+      return m
+    }
+    if (amc.name) m.set("name", amc.name)
+    if (amc.contentTypeRegex) m.set("contentTypeRegex", amc.contentTypeRegex)
+    return m
+  }
+
+  public static buildMetaInfo(
+    ctx: AttachmentContext,
+    m: MetaInfo = new MetaInfo(),
+  ): MetaInfo {
+    const attachment = ctx.attachment.object
+    m.set("attachment.contentType", attachment.getContentType())
+    m.set("attachment.hash", attachment.getHash())
+    m.set("attachment.isGoogleType", attachment.isGoogleType())
+    m.set("attachment.name", attachment.getName())
+    m.set("attachment.size", attachment.getSize())
+    m.set("attachment.index", ctx.attachment.index)
+    m.set("attachmentConfig.index", ctx.attachment.configIndex)
+    const attachmentConfig = ctx.attachment.config
+    m = this.buildRegExpSubustitutionMap(
+      ctx,
+      m,
+      "attachment",
+      this.getRegexMapFromAttachmentMatchConfig(attachmentConfig.match),
+    )
+    if (!m.get("attachment.matched")) {
+      ctx.log.info(
+        `Skipped attachment with name '${attachment.getName()}' because it did not match the regex rules ...`,
+      )
+    }
+    return m
+  }
+
   public static processConfigs(
     ctx: MessageContext,
     configs: RequiredAttachmentConfig[],
@@ -81,15 +145,12 @@ export class AttachmentProcessor extends BaseProcessor {
           )
           continue
         }
-        const attachmentContext: AttachmentContext = {
-          ...ctx,
-          attachment: {
-            config: config,
-            object: attachment,
-            configIndex: configIndex,
-            index: index,
-          },
-        }
+        const attachmentContext = this.buildContext(ctx, {
+          config: config,
+          configIndex: configIndex,
+          index: index,
+          object: attachment,
+        })
         result = this.processEntity(attachmentContext, result)
       }
       ctx.log.info(`Processing of attachment config '${config.name}' finished.`)

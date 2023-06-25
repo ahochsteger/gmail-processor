@@ -1,6 +1,5 @@
 import { PartialDeep } from "type-fest"
 import { ConflictStrategy } from "../../adapter/GDriveAdapter"
-import { PatternUtil } from "../../utils/PatternUtil"
 import {
   newAttachmentActionConfig,
   newMessageActionConfig,
@@ -18,12 +17,50 @@ import { V1Config, newV1Config } from "./V1Config"
 import { V1Rule } from "./V1Rule"
 
 export class V1ToV2Converter {
+  public static convertDateFormat(format: string): string {
+    // old format (from Utilities): yyyy-MM-dd_HH-mm-ss
+    // See https://docs.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html
+    // new format (from moment): YYYY-MM-DD_HH-mm-ss
+    // See https://momentjs.com/docs/#/displaying/
+    const convertedFormat = format.replace(/d/g, "D").replace(/y/g, "Y")
+    return convertedFormat
+  }
+
+  public static convertFromV1Pattern(s: string, dateKey = "message.date") {
+    const containsSingleQuotedStringRegex = /'([^'\n]+)'/g
+    const legacyDateFormatRegex = /('([^']+)')?([^']+)('([^']+)')?/g
+    if (s.replace(containsSingleQuotedStringRegex, "") !== "") {
+      // Support original date format
+      s = s.replace(
+        legacyDateFormatRegex,
+        `$2\${${dateKey}:olddateformat:$3}$5`,
+      )
+      const regexp = /:olddateformat:([^}]+)}/g
+      const matches = s.matchAll(regexp)
+      for (const match of matches) {
+        if (match.length > 1) {
+          const convertedFormat = this.convertDateFormat(match[1])
+          s = s.replace(/:olddateformat:[^}]+}/g, `:format:${convertedFormat}}`)
+        }
+      }
+    } else {
+      s = s.replace(/'/g, "") // Eliminate all single quotes
+    }
+    return s
+      .replace(/%s/g, "${message.subject}") // Original subject syntax
+      .replace(/%o/g, "${attachment.name}") // Alternative syntax (from PR #61)
+      .replace(/%filename/g, "${attachment.name}") // Alternative syntax from issue #50
+      .replace(/#SUBJECT#/g, "${message.subject}") // Alternative syntax (from PR #22)
+      .replace(/#FILE#/g, "${attachment.name}") // Alternative syntax (from PR #22)
+      .replace(/%d/g, "${threadConfig.index}") // Original subject syntax
+  }
+
   static getLocationFromRule(rule: V1Rule, defaultFilename: string): string {
     let filename
     if (rule.filenameFromRegexp) {
       filename = "${attachment.name.match.1}"
     } else if (rule.filenameTo) {
-      filename = PatternUtil.convertFromV1Pattern(rule.filenameTo)
+      filename = this.convertFromV1Pattern(rule.filenameTo)
     } else {
       filename = defaultFilename
     }
@@ -31,7 +68,7 @@ export class V1ToV2Converter {
     if (rule.parentFolderId) {
       folder = `\${id:${rule.parentFolderId}}/`
     }
-    folder += PatternUtil.convertFromV1Pattern(rule.folder)
+    folder += this.convertFromV1Pattern(rule.folder)
     return `${folder}/${filename}`
   }
 

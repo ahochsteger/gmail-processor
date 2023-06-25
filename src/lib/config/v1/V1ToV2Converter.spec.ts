@@ -100,8 +100,7 @@ it("should convert rule with filter and folder containing a date format", () => 
   })
   expect(actualThread.messages[0].attachments[0].actions[0]).toMatchObject({
     args: {
-      location:
-        "Scans-${message.date:dateformat:YYYY-MM-DD}/${attachment.name}",
+      location: "Scans-${message.date:format:YYYY-MM-DD}/${attachment.name}",
     },
     name: "attachment.store",
   })
@@ -158,7 +157,7 @@ it("should convert rule with filter, folder, filenameTo and archive", () => {
   const expectedAttachmentActionConfig: AttachmentActionConfig = {
     args: {
       location:
-        "Examples/example3ab/file-${message.date:dateformat:YYYY-MM-DD-}${message.subject}.txt",
+        "Examples/example3ab/file-${message.date:format:YYYY-MM-DD-}${message.subject}.txt",
     },
     name: "attachment.store",
   }
@@ -228,7 +227,7 @@ it("should convert rule with filter, folder, filenameTo and archive", () => {
     {
       args: {
         location:
-          "Examples/example3ab/file-${message.date:dateformat:YYYY-MM-DD-}${message.subject}.txt",
+          "Examples/example3ab/file-${message.date:format:YYYY-MM-DD-}${message.subject}.txt",
       },
       name: "attachment.store",
     },
@@ -340,7 +339,7 @@ it("should convert rule with filter, saveThreadPDF, folder and filenameTo", () =
           {
             args: {
               location:
-                "PDF Emails/file-${message.date:dateformat:YYYY-MM-DD-}${message.subject}",
+                "PDF Emails/file-${message.date:format:YYYY-MM-DD-}${message.subject}",
             },
             name: "thread.storePDF",
           },
@@ -383,7 +382,7 @@ it("should convert rule with filter, folder filenameFrom and filenameTo", () => 
     {
       args: {
         location:
-          "Examples/example4/file-${message.date:dateformat:YYYY-MM-DD-}${message.subject}.txt",
+          "Examples/example4/file-${message.date:format:YYYY-MM-DD-}${message.subject}.txt",
       },
       name: "attachment.store",
     },
@@ -457,4 +456,52 @@ it("should convert rule with filter, saveThreadPDF, ruleLabel and folder", () =>
   }
   const actual = V1ToV2Converter.v1ConfigToV2Config(v1config)
   expect(actual).toMatchObject(expected)
+})
+describe("V1 Format Conversion", () => {
+  it("should support old date format", () => {
+    expect(V1ToV2Converter.convertDateFormat("yyyy-MM-dd HH-mm-ss")).toBe(
+      "YYYY-MM-DD HH-mm-ss",
+    )
+  })
+  it("should support old filename pattern (type: 'string'format'string')", () => {
+    expect(
+      V1ToV2Converter.convertFromV1Pattern(
+        "'file-'yyyy-MM-dd-'%s.txt'",
+        "message.date",
+      ),
+    ).toBe("file-${message.date:format:YYYY-MM-DD-}${message.subject}.txt")
+  })
+  it("should support old filename pattern (type: 'string'format)", () => {
+    expect(
+      V1ToV2Converter.convertFromV1Pattern("'file-'yyyy-MM-dd", "message.date"),
+    ).toBe("file-${message.date:format:YYYY-MM-DD}")
+  })
+  it("should support old filename pattern (type: format'string')", () => {
+    expect(
+      V1ToV2Converter.convertFromV1Pattern(
+        "yyyy-MM-dd'-%s.txt'",
+        "message.date",
+      ),
+    ).toBe("${message.date:format:YYYY-MM-DD}-${message.subject}.txt")
+  })
+  it("should support old filename pattern (type: format)", () => {
+    expect(
+      V1ToV2Converter.convertFromV1Pattern("yyyy-MM-dd", "message.date"),
+    ).toBe("${message.date:format:YYYY-MM-DD}")
+  })
+  it("should support old filename pattern (type: 'string')", () => {
+    expect(
+      V1ToV2Converter.convertFromV1Pattern("'%s.txt'", "message.date"),
+    ).toBe("${message.subject}.txt")
+  })
+  it("should support all old filename substitution parameters (type: '%s','%o','%filename','#SUBJECT#','#FILE#',yyyy-mm-dd)", () => {
+    expect(
+      V1ToV2Converter.convertFromV1Pattern(
+        "'%s,%o,%filename,#SUBJECT#,#FILE#,'yyyy-MM-dd",
+        "message.date",
+      ),
+    ).toBe(
+      "${message.subject},${attachment.name},${attachment.name},${message.subject},${attachment.name},${message.date:format:YYYY-MM-DD}",
+    )
+  })
 })
