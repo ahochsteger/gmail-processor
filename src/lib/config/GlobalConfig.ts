@@ -9,7 +9,7 @@ import { ThreadConfig, normalizeThreadConfig } from "./ThreadConfig"
 /**
  * A variable entry available for substitution (using ${variables.<key>})
  */
-export class VariableEntry {
+class VariableEntry {
   constructor(public key: string, public value: string) {}
 }
 

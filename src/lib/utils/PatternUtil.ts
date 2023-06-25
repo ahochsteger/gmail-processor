@@ -6,12 +6,12 @@ import {
   ThreadContext,
 } from "../Context"
 
-export enum PlaceholderModifierType {
+enum PlaceholderModifierType {
   FORMAT = "format",
   DEFAULT = "",
 }
 
-export type Placeholder = {
+type Placeholder = {
   name: string
   modifier: string
   arg: string

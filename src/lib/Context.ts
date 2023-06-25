@@ -26,7 +26,7 @@ export type MetaInfoEntry = {
 }
 export class MetaInfo extends Map<string, unknown> {}
 
-export type EnvInfo = {
+type EnvInfo = {
   gmailApp: GoogleAppsScript.Gmail.GmailApp
   gdriveApp: GoogleAppsScript.Drive.DriveApp
   utilities: GoogleAppsScript.Utilities.Utilities

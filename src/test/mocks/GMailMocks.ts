@@ -21,8 +21,8 @@ export type ThreadData = {
   messages?: MessageData[]
   permalink?: string
 }
-export type RequiredThreadData = RequiredDeep<ThreadData>
-export type MessageData = {
+type RequiredThreadData = RequiredDeep<ThreadData>
+type MessageData = {
   // NOTE: Keep MessageData, newMessageMock and getMessageSampleData in sync
   attachments?: AttachmentData[]
   bcc?: string
@@ -41,8 +41,8 @@ export type MessageData = {
   subject?: string
   to?: string
 }
-export type RequiredMessageData = RequiredDeep<MessageData>
-export type AttachmentData = {
+type RequiredMessageData = RequiredDeep<MessageData>
+type AttachmentData = {
   // NOTE: Keep AttachmentData, newAttachmentMock and getAttachmentSampleData in sync
   contentType?: string
   hash?: string
@@ -51,7 +51,7 @@ export type AttachmentData = {
   isGoogleType?: boolean
   content?: string
 }
-export type RequiredAttachmentData = RequiredDeep<AttachmentData>
+type RequiredAttachmentData = RequiredDeep<AttachmentData>
 
 export class GMailMocks {
   public static setupAllMocks(mocks: Mocks) {
