@@ -3,3 +3,4 @@ build/
 coverage/
 dist/
 node_modules/
+**/config-schema-*.*

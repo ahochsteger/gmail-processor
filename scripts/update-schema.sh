@@ -28,9 +28,6 @@ function genSchema() {
   npx wetzel -w \
     "${schemaPath}/config-schema-${schemaName}.json" \
     >"docs/config-schema-${schemaName}.md"
-  npx prettier -w \
-    "${schemaPath}/config-schema-${schemaName}.json" \
-    "docs/config-schema-${schemaName}.md"
 }
 
 genSchema V1Config v1 "Config (v1)"

@@ -103,3 +103,7 @@ done < <(
   | sed -re 's#.*/config-v([0-9])-([^\.]+)\.json$#\1\t\2#g' \
   || true
 )
+
+npx prettier -w \
+  "${outdir_gas}" \
+  "${outdir_tests}"
