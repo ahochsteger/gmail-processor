@@ -19,6 +19,7 @@ export enum RunMode {
   DANGEROUS = "dangerous",
 }
 
+// TODO: Use MetaInfoEntry instead of just unknown for MetaInfo to describe entries and allow value functions
 export type MetaInfoEntry = {
   description: string
   regex: boolean

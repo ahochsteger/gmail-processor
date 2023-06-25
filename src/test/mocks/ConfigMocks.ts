@@ -175,6 +175,7 @@ export class ConfigMocks {
     return {
       settings: this.newDefaultSettingsConfigJson(),
       threads: this.newComplexThreadConfigList(),
+      // TODO: Add globals
     }
   }
 
