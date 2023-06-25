@@ -1,16 +1,11 @@
-import { ConfigMocks } from "../../test/mocks/ConfigMocks"
 import { LOGSHEET_FILE_NAME } from "../../test/mocks/GDriveMocks"
 import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
-import { RunMode } from "../Context"
 import { SpreadsheetAdapter } from "./SpreadsheetAdapter"
 
 let spreadsheetAdapter: SpreadsheetAdapter
 let mocks: Mocks
 beforeEach(() => {
-  mocks = MockFactory.newMocks(
-    ConfigMocks.newDefaultConfig(),
-    RunMode.DANGEROUS,
-  )
+  mocks = MockFactory.newMocks()
   spreadsheetAdapter = new SpreadsheetAdapter(mocks.envContext)
 })
 

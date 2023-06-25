@@ -8,7 +8,8 @@ import {
   ThreadContext,
 } from "../../lib/Context"
 import { SCRIPT_CACHE_LOGSHEET_ID_KEY } from "../../lib/adapter/SpreadsheetAdapter"
-import { RequiredConfig, newConfig } from "../../lib/config/Config"
+import { RequiredConfig } from "../../lib/config/Config"
+import { ConfigMocks } from "./ConfigMocks"
 import { ContextMocks } from "./ContextMocks"
 import { GDriveMocks, LOGSHEET_FILE_ID } from "./GDriveMocks"
 import { GMailMocks } from "./GMailMocks"
@@ -110,7 +111,7 @@ export class Mocks extends EnvMocks {
 
 export class MockFactory {
   public static newMocks(
-    config = newConfig(),
+    config = ConfigMocks.newDefaultConfig(),
     runMode = RunMode.DANGEROUS,
     mocks = new Mocks(config, runMode),
   ): Mocks {
