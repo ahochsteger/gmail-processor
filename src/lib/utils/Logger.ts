@@ -36,7 +36,7 @@ export class Logger {
   error(message?: unknown, ...optionalParams: unknown[]) {
     this.log(message, LogLevel.ERROR, ...optionalParams)
   }
-  logEnvContext(ctx: EnvContext, level: LogLevel = LogLevel.INFO) {
+  logEnvContext(ctx: EnvContext, level: LogLevel = LogLevel.DEBUG) {
     const logObj = {
       runMode: ctx.env.runMode,
       timezone: ctx.env.timezone,
@@ -45,15 +45,14 @@ export class Logger {
   }
   logProcessingContext(
     ctx: ProcessingContext,
-    level: LogLevel = LogLevel.INFO,
+    level: LogLevel = LogLevel.DEBUG,
   ) {
     const logObj = {
       config: ctx.proc.config,
     }
-    this.logEnvContext(ctx, level)
     this.log(`ProcessingContext: ${JSON.stringify(logObj, null, 2)}`, level)
   }
-  logThreadContext(ctx: ThreadContext, level: LogLevel = LogLevel.INFO) {
+  logThreadContext(ctx: ThreadContext, level: LogLevel = LogLevel.DEBUG) {
     const logObj = {
       config: ctx.thread.config,
       object: {
@@ -61,10 +60,9 @@ export class Logger {
         firstMessageSubject: ctx.thread.object.getFirstMessageSubject(),
       },
     }
-    this.logProcessingContext(ctx, level)
     this.log(`ThreadContext: ${JSON.stringify(logObj, null, 2)}`, level)
   }
-  logMessageContext(ctx: MessageContext, level: LogLevel = LogLevel.INFO) {
+  logMessageContext(ctx: MessageContext, level: LogLevel = LogLevel.DEBUG) {
     const logObj = {
       config: ctx.message.config,
       object: {
@@ -74,12 +72,11 @@ export class Logger {
         to: ctx.message.object.getTo(),
       },
     }
-    this.logThreadContext(ctx, level)
     this.log(`MessageContext: ${JSON.stringify(logObj, null, 2)}`, level)
   }
   logAttachmentContext(
     ctx: AttachmentContext,
-    level: LogLevel = LogLevel.INFO,
+    level: LogLevel = LogLevel.DEBUG,
   ) {
     const logObj = {
       config: ctx.attachment.config,
@@ -89,7 +86,6 @@ export class Logger {
         size: ctx.attachment.object.getSize(),
       },
     }
-    this.logMessageContext(ctx, level)
     this.log(`AttachmentContext: ${JSON.stringify(logObj, null, 2)}`, level)
   }
 }
