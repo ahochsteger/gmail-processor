@@ -7,7 +7,7 @@ it("should expect a JSON config", () => {
   )
   expect(attachmentConfig.match).toBeDefined()
   expect(attachmentConfig.match.name).toBe("Image-([0-9]+)\\.jpg")
-  expect(attachmentConfig.match.contentTypeRegex).toBe("image/.+")
+  expect(attachmentConfig.match.contentType).toBe("image/.+")
 })
 
 it("should ensure nested object defaults", () => {
@@ -19,7 +19,7 @@ it("should ensure nested object defaults", () => {
   expect(attachmentConfig.actions).toEqual([])
   expect(attachmentConfig.match).toBeDefined()
   expect(attachmentConfig.match.name).toBe("test")
-  expect(attachmentConfig.match.contentTypeRegex).toBe(".*")
+  expect(attachmentConfig.match.contentType).toBe(".*")
   expect(attachmentConfig.match.includeAttachments).toBe(true)
   expect(attachmentConfig.match.includeInlineImages).toBe(true)
   expect(attachmentConfig.match.largerThan).toBe(-1)

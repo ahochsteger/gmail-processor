@@ -40,7 +40,7 @@ export class ConfigMocks {
       description: "Default attachment config",
       match: {
         name: "Image-([0-9]+)\\.jpg",
-        contentTypeRegex: "image/.+",
+        contentType: "image/.+",
         includeAttachments: true,
         includeInlineImages: true,
         largerThan: -1,

@@ -103,10 +103,10 @@
             "additionalProperties": false,
             "description": "Represents a config to match a certain GMail attachment",
             "properties": {
-                "contentTypeRegex": {
+                "contentType": {
                     "default": ".*",
                     "description": "A RegEx matching the content type of the attachment",
-                    "title": "contentTypeRegex",
+                    "title": "contentType",
                     "type": "string"
                 },
                 "includeAttachments": {

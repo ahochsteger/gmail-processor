@@ -18,7 +18,7 @@ beforeEach(() => {
 
 it("should build a match config with default globals", () => {
   const expected: RequiredAttachmentMatchConfig = {
-    contentTypeRegex: "some-content-type",
+    contentType: "some-content-type",
     includeAttachments: true,
     includeInlineImages: false,
     largerThan: 10,
@@ -35,7 +35,7 @@ it("should build a match config with default globals", () => {
 
 it("should build a match config with default globals", () => {
   const expected: RequiredAttachmentMatchConfig = {
-    contentTypeRegex: "some-content-type",
+    contentType: "some-content-type",
     includeAttachments: true,
     includeInlineImages: false,
     largerThan: 10,
@@ -52,7 +52,7 @@ it("should build a match config with default globals", () => {
 
 it("should build a match config with special globals", () => {
   const expected: RequiredAttachmentMatchConfig = {
-    contentTypeRegex: "global-content-type|local-content-type",
+    contentType: "global-content-type|local-content-type",
     includeAttachments: true,
     includeInlineImages: false,
     largerThan: 20,
@@ -62,7 +62,7 @@ it("should build a match config with special globals", () => {
   const actual = AttachmentProcessor.buildMatchConfig(
     mocks.messageContext,
     newAttachmentMatchConfig({
-      contentTypeRegex: "global-content-type",
+      contentType: "global-content-type",
       includeAttachments: true,
       includeInlineImages: false,
       largerThan: 10,
@@ -70,7 +70,7 @@ it("should build a match config with special globals", () => {
       name: "global-name",
     }),
     newAttachmentMatchConfig({
-      contentTypeRegex: "local-content-type",
+      contentType: "local-content-type",
       includeAttachments: true,
       includeInlineImages: false,
       largerThan: 20,
@@ -86,13 +86,13 @@ it("should match messages with matching parameters", () => {
     [
       {
         config: {
-          contentTypeRegex: "text/plain",
+          contentType: "text/plain",
         },
         matched: ["attachment-1.txt"],
       },
       {
         config: {
-          contentTypeRegex: "application/pdf",
+          contentType: "application/pdf",
         },
         matched: ["attachment-2.pdf"],
       },

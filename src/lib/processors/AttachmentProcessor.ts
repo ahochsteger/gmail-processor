@@ -43,7 +43,7 @@ export class AttachmentProcessor extends BaseProcessor {
     matchConfig: RequiredAttachmentMatchConfig,
     attachment: GoogleAppsScript.Gmail.GmailAttachment,
   ) {
-    if (!attachment.getContentType().match(matchConfig.contentTypeRegex))
+    if (!attachment.getContentType().match(matchConfig.contentType))
       return false
     if (!attachment.getName().match(matchConfig.name)) return false
     if (attachment.getSize() <= matchConfig.largerThan) return false
@@ -57,12 +57,9 @@ export class AttachmentProcessor extends BaseProcessor {
     local: RequiredAttachmentMatchConfig,
   ): RequiredAttachmentMatchConfig {
     return newAttachmentMatchConfig({
-      contentTypeRegex: PatternUtil.substitute(
+      contentType: PatternUtil.substitute(
         ctx,
-        `${global.contentTypeRegex}|${local.contentTypeRegex}`.replace(
-          ".*|",
-          "",
-        ),
+        `${global.contentType}|${local.contentType}`.replace(".*|", ""),
       ).replace("|.*", ""),
       includeAttachments: global.includeAttachments && local.includeAttachments,
       includeInlineImages:
@@ -86,7 +83,7 @@ export class AttachmentProcessor extends BaseProcessor {
       return m
     }
     if (amc.name) m.set("name", amc.name)
-    if (amc.contentTypeRegex) m.set("contentTypeRegex", amc.contentTypeRegex)
+    if (amc.contentType) m.set("contentType", amc.contentType)
     return m
   }
 
