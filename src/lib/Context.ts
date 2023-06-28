@@ -18,14 +18,34 @@ export enum RunMode {
   /** Execute all actions including deletes. I know exactly what I'm doing and won't complain if something goes wrong! */
   DANGEROUS = "dangerous",
 }
-
-// TODO: Use MetaInfoEntry instead of just unknown for MetaInfo to describe entries and allow value functions
-export type MetaInfoEntry = {
-  description: string
-  regex: boolean
-  value: unknown | (() => unknown)
+export enum MetaInfoType {
+  BOOLEAN = "boolean",
+  DATE = "date",
+  NUMBER = "number",
+  STRING = "string",
+  VARIABLE = "variable",
 }
-export class MetaInfo extends Map<string, unknown> {}
+type MetaInfoValueType = unknown | (() => unknown)
+type MetaInfoEntry = {
+  description: string
+  type: MetaInfoType
+  value: MetaInfoValueType
+}
+export function newMetaInfo(
+  type: MetaInfoType,
+  value: MetaInfoValueType,
+  description: string,
+) {
+  return {
+    description,
+    type,
+    value,
+  }
+}
+// export class MetaInfo extends Map<string, MetaInfoEntry> {}
+export type MetaInfo = {
+  [k: string]: MetaInfoEntry
+}
 
 type EnvInfo = {
   gmailApp: GoogleAppsScript.Gmail.GmailApp

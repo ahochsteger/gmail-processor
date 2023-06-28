@@ -1,4 +1,5 @@
 import { MockProxy, anyString, matches, mock } from "jest-mock-extended"
+import { PartialDeep } from "type-fest"
 import {
   AttachmentContext,
   EnvContext,
@@ -8,12 +9,15 @@ import {
   ThreadContext,
 } from "../../lib/Context"
 import { SCRIPT_CACHE_LOGSHEET_ID_KEY } from "../../lib/adapter/SpreadsheetAdapter"
-import { RequiredConfig } from "../../lib/config/Config"
+import { Config, newConfig } from "../../lib/config/Config"
 import { ConfigMocks } from "./ConfigMocks"
 import { ContextMocks } from "./ContextMocks"
 import { GDriveMocks, LOGSHEET_FILE_ID } from "./GDriveMocks"
-import { GMailMocks } from "./GMailMocks"
+import { GMailData, GMailMocks, IndexType } from "./GMailMocks"
 import { SpreadsheetMocks } from "./SpreadsheetMocks"
+
+export const fakedSystemTime = "2023-06-26 09:00:00"
+jest.useFakeTimers({ now: new Date(fakedSystemTime + "Z") })
 
 class EnvMocks {
   public attachment: MockProxy<GoogleAppsScript.Gmail.GmailAttachment> =
@@ -69,7 +73,14 @@ export class Mocks extends EnvMocks {
   public threadContext: ThreadContext
   public messageContext: MessageContext
   public attachmentContext: AttachmentContext
-  constructor(config: RequiredConfig, runMode: RunMode = RunMode.DANGEROUS) {
+  constructor(
+    configJson: PartialDeep<Config> = ConfigMocks.newDefaultConfigJson(),
+    gmailData: GMailData = GMailMocks.getGmailSampleData(),
+    dataIndex: IndexType = [0, 0, 0],
+    configIndex: IndexType = [0, 0, 0],
+    runMode: RunMode = RunMode.DANGEROUS,
+  ) {
+    const config = newConfig(configJson)
     super()
     // TODO: Move to a better location
     this.cache.get.calledWith(anyString()).mockReturnValue(null)
@@ -86,7 +97,7 @@ export class Mocks extends EnvMocks {
     this.session.getEffectiveUser.mockReturnValue(this.user)
 
     GDriveMocks.setupAllMocks(this)
-    GMailMocks.setupAllMocks(this)
+    GMailMocks.setupAllMocks(this, gmailData, dataIndex)
     SpreadsheetMocks.setupAllMocks(this)
 
     this.envContext = ContextMocks.newEnvContextMock(this, runMode)
@@ -94,26 +105,53 @@ export class Mocks extends EnvMocks {
       this.envContext,
       config,
     )
+
+    const [threadIndex, messageIndex, attachmentIndex] = dataIndex
+    const [threadConfigIndex, messageConfigIndex, attachmentConfigIndex] =
+      configIndex
+
     this.threadContext = ContextMocks.newThreadContextMock(
       this.processingContext,
       this.thread,
+      threadIndex,
+      threadConfigIndex,
     )
     this.messageContext = ContextMocks.newMessageContextMock(
       this.threadContext,
       this.message,
+      messageIndex,
+      messageConfigIndex,
     )
     this.attachmentContext = ContextMocks.newAttachmentContextMock(
       this.messageContext,
       this.attachment,
+      attachmentIndex,
+      attachmentConfigIndex,
     )
   }
 }
 
 export class MockFactory {
   public static newMocks(
-    config = ConfigMocks.newDefaultConfig(),
+    config: PartialDeep<Config> = ConfigMocks.newDefaultConfig(),
     runMode = RunMode.DANGEROUS,
-    mocks = new Mocks(config, runMode),
+    mocks = new Mocks(
+      config,
+      GMailMocks.getGmailSampleData(),
+      [0, 0, 0],
+      [0, 0, 0],
+      runMode,
+    ),
+  ): Mocks {
+    return mocks
+  }
+  public static newCustomMocks(
+    config: PartialDeep<Config> = ConfigMocks.newDefaultConfig(),
+    gmailData: GMailData = GMailMocks.getGmailSampleData(),
+    dataIndex: IndexType = [0, 0, 0],
+    configIndex: IndexType = [0, 0, 0],
+    runMode = RunMode.DANGEROUS,
+    mocks = new Mocks(config, gmailData, dataIndex, configIndex, runMode),
   ): Mocks {
     return mocks
   }

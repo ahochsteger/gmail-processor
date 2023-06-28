@@ -1,9 +1,11 @@
 import {
+  MetaInfoType as MIT,
   MetaInfo,
   ProcessingContext,
   ProcessingError,
   ProcessingResult,
   ProcessingStatus,
+  newMetaInfo as mi,
 } from "../Context"
 import { ActionArgsType } from "../actions/ActionRegistry"
 import { ActionConfig, ProcessingStage } from "../config/ActionConfig"
@@ -30,13 +32,29 @@ export abstract class BaseProcessor {
       let result
       const keyName = `${keyPrefix}.${k}`
       let hasAtLeastOneMatch = false
-      const data: string = m.get(keyName) as string
+      const data: string = m[`${keyName}`].value as string
       if ((result = regex.exec(data)) !== null) {
-        // TODO: Add support for named capture groups and add entries with key `${keyName}.match.${groupName}`
         ctx.log.debug(`... matches`)
         hasAtLeastOneMatch = true
         for (let i = 1; i < result.length; i++) {
-          m.set(`${keyName}.match.${i}`, result[i])
+          m[`${keyName}.match.${i}`] = mi(
+            MIT.STRING,
+            result[i],
+            'The matching regex group number as defined in the match config (e.g.: `"' +
+              value +
+              '"`).',
+          )
+        }
+        if (result.groups) {
+          Object.entries(result.groups).forEach(([group, groupValue]) => {
+            m[`${keyName}.match.${group}`] = mi(
+              MIT.STRING,
+              groupValue,
+              'The matching named regex group name as defined in the match config (e.g.: `"' +
+                value +
+                '"`).',
+            )
+          })
         }
       } else {
         ctx.log.debug(`... no match.`)
@@ -46,7 +64,11 @@ export abstract class BaseProcessor {
       }
     })
     ctx.log.debug(`... result for key prefix ${keyPrefix}: ${matchesAll}`)
-    m.set(`${keyPrefix}.matched`, matchesAll)
+    m[`${keyPrefix}.matched`] = mi(
+      MIT.BOOLEAN,
+      matchesAll,
+      "The overall matching result for all conditions in the match config.",
+    )
     return m
   }
 
@@ -56,8 +78,8 @@ export abstract class BaseProcessor {
     result: ProcessingResult,
     ...actionSets: ActionConfig[][]
   ): ProcessingResult {
-    actionSets.forEach((actions) => {
-      actions
+    ;(actionSets || []).forEach((actions) => {
+      ;(actions || [])
         .filter((action) => action.processingStage === processingStage)
         .forEach((action) => {
           try {
@@ -115,5 +137,14 @@ export abstract class BaseProcessor {
     unsetValue: number,
   ): typeof unsetValue {
     return this.effectiveValue(global, local, unsetValue) as number
+  }
+
+  protected static getRefDocs(
+    type: "attachment" | "message" | "thread",
+    method: string,
+  ) {
+    const typeTitle = type[0].toUpperCase() + type.substring(1)
+    const title = `Gmail${typeTitle}.${method}()`
+    return `See [${title}](https://developers.google.com/apps-script/reference/gmail/gmail-${type}#${method}\\(\\)) reference docs.`
   }
 }

@@ -806,7 +806,7 @@ The GMail search query to find threads to be processed (see http://support.googl
 <a name="reference-variableentry"></a>
 ## VariableEntry
 
-A variable entry available for substitution (using ${variables.<key>})
+A variable entry available for substitution (using ${variables.<varName>})
 
 **`VariableEntry` Properties**
 

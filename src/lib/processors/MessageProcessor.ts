@@ -1,9 +1,11 @@
 import {
+  MetaInfoType as MIT,
   MessageContext,
   MessageInfo,
   MetaInfo,
   ProcessingResult,
   ThreadContext,
+  newMetaInfo as mi,
   newProcessingResult,
 } from "../Context"
 import { ProcessingStage } from "../config/ActionConfig"
@@ -24,18 +26,17 @@ export class MessageProcessor extends BaseProcessor {
     ctx: ThreadContext,
     info: MessageInfo,
   ): MessageContext {
-    const metaInfo = new MetaInfo()
     const messageContext: MessageContext = {
       ...ctx,
       message: info,
-      messageMeta: metaInfo,
+      messageMeta: {},
     }
-    messageContext.messageMeta = this.buildMetaInfo(messageContext, metaInfo)
-    messageContext.meta = new MetaInfo([
+    messageContext.messageMeta = this.buildMetaInfo(messageContext)
+    messageContext.meta = {
       ...messageContext.procMeta,
       ...messageContext.threadMeta,
       ...messageContext.messageMeta,
-    ])
+    }
     return messageContext
   }
   public static matches(
@@ -102,29 +103,100 @@ export class MessageProcessor extends BaseProcessor {
     return m
   }
 
-  public static buildMetaInfo(
-    ctx: MessageContext,
-    m: MetaInfo = new MetaInfo(),
-  ): MetaInfo {
+  public static buildMetaInfo(ctx: MessageContext): MetaInfo {
     const message = ctx.message.object
-    m.set("message.bcc", message.getBcc())
-    m.set("message.cc", message.getCc())
-    m.set("message.date", message.getDate())
-    m.set("message.from", message.getFrom())
-    m.set("message.from.domain", message.getFrom().split("@")[1])
-    m.set("message.id", message.getId())
-    m.set("message.isDraft", message.isDraft())
-    m.set("message.isInChats", message.isInChats())
-    m.set("message.isInInbox", message.isInInbox())
-    m.set("message.isInPriorityInbox", message.isInPriorityInbox())
-    m.set("message.isInTrash", message.isInTrash())
-    m.set("message.isStarred", message.isStarred())
-    m.set("message.isUnread", message.isUnread())
-    m.set("message.replyTo", message.getReplyTo())
-    m.set("message.subject", message.getSubject())
-    m.set("message.to", message.getTo())
-    m.set("message.index", ctx.message.index)
-    m.set("messageConfig.index", ctx.message.configIndex)
+    let m: MetaInfo = {
+      "message.bcc": mi(
+        MIT.STRING,
+        message.getBcc(),
+        this.getRefDocs("message", "getBcc"),
+      ),
+      "message.cc": mi(
+        MIT.STRING,
+        message.getCc(),
+        this.getRefDocs("message", "getCc"),
+      ),
+      "message.date": mi(
+        MIT.DATE,
+        message.getDate(),
+        this.getRefDocs("message", "getDate"),
+      ),
+      "message.from": mi(
+        MIT.STRING,
+        message.getFrom(),
+        this.getRefDocs("message", "getFrom"),
+      ),
+      "message.from.domain": mi(
+        MIT.STRING,
+        message.getFrom().split("@")[1],
+        this.getRefDocs("message", "getFrom"),
+      ),
+      "message.id": mi(
+        MIT.STRING,
+        message.getId(),
+        this.getRefDocs("message", "getId"),
+      ),
+      "message.isDraft": mi(
+        MIT.BOOLEAN,
+        message.isDraft(),
+        this.getRefDocs("message", "isDraft"),
+      ),
+      "message.isInChats": mi(
+        MIT.BOOLEAN,
+        message.isInChats(),
+        this.getRefDocs("message", "isInChats"),
+      ),
+      "message.isInInbox": mi(
+        MIT.BOOLEAN,
+        message.isInInbox(),
+        this.getRefDocs("message", "isInInbox"),
+      ),
+      "message.isInPriorityInbox": mi(
+        MIT.BOOLEAN,
+        message.isInPriorityInbox(),
+        this.getRefDocs("message", "isInPriorityInbox"),
+      ),
+      "message.isInTrash": mi(
+        MIT.BOOLEAN,
+        message.isInTrash(),
+        this.getRefDocs("message", "isInTrash"),
+      ),
+      "message.isStarred": mi(
+        MIT.BOOLEAN,
+        message.isStarred(),
+        this.getRefDocs("message", "isStarred"),
+      ),
+      "message.isUnread": mi(
+        MIT.BOOLEAN,
+        message.isUnread(),
+        this.getRefDocs("message", "isUnread"),
+      ),
+      "message.replyTo": mi(
+        MIT.STRING,
+        message.getReplyTo(),
+        this.getRefDocs("message", "getReplyTo"),
+      ),
+      "message.subject": mi(
+        MIT.STRING,
+        message.getSubject(),
+        this.getRefDocs("message", "getSubject"),
+      ),
+      "message.to": mi(
+        MIT.STRING,
+        message.getTo(),
+        this.getRefDocs("message", "getTo"),
+      ),
+      "message.index": mi(
+        MIT.NUMBER,
+        ctx.message.index,
+        "The index number (0-based) of the processed message.",
+      ),
+      "messageConfig.index": mi(
+        MIT.NUMBER,
+        ctx.message.configIndex,
+        "The index number (0-based) of the processed message config.",
+      ),
+    }
     const messageConfig = ctx.message.config
     if (messageConfig.match) {
       // Test for message rules
@@ -134,7 +206,7 @@ export class MessageProcessor extends BaseProcessor {
         "message",
         this.getRegexMapFromMessageMatchConfig(messageConfig.match),
       )
-      if (!m.get("messgage.matched")) {
+      if (!m["messgage.matched"]) {
         ctx.log.info(
           `Skipped message with id ${message.getId()} because it did not match the regex rules ...`,
         )

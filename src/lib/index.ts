@@ -1,5 +1,5 @@
 import { PartialDeep } from "type-fest"
-import { EnvContext, MetaInfo, ProcessingResult, RunMode } from "./Context"
+import { EnvContext, ProcessingResult, RunMode } from "./Context"
 import { Config, RequiredConfig, configToJson } from "./config/Config"
 import { V1Config, newV1Config } from "./config/v1/V1Config"
 import { V1ToV2Converter } from "./config/v1/V1ToV2Converter"
@@ -22,7 +22,7 @@ function defaultContext(runMode = RunMode.SAFE_MODE) {
       timezone: Session?.getScriptTimeZone() || "UTC",
     },
     log: logger,
-    meta: new MetaInfo(),
+    meta: {},
   }
   return ctx
 }

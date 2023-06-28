@@ -2,6 +2,7 @@ import { PartialDeep } from "type-fest"
 import { ThreadActionConfig } from "../../lib/config/ActionConfig"
 import { AttachmentConfig } from "../../lib/config/AttachmentConfig"
 import { Config, RequiredConfig, newConfig } from "../../lib/config/Config"
+import { GlobalConfig } from "../../lib/config/GlobalConfig"
 import { MessageConfig } from "../../lib/config/MessageConfig"
 import { MessageFlag } from "../../lib/config/MessageFlag"
 import { SettingsConfig } from "../../lib/config/SettingsConfig"
@@ -85,22 +86,65 @@ export class ConfigMocks {
     }
   }
 
+  public static newDefaultGlobalConfigJson(): PartialDeep<GlobalConfig> {
+    return {
+      variables: [
+        {
+          key: "customVar",
+          value: "Custom value",
+        },
+      ],
+    }
+  }
+
   public static newComplexThreadConfigList(): PartialDeep<ThreadConfig>[] {
     return [
       {
-        actions: [
+        match: {
+          query: "has:attachment from:example4@example.com",
+        },
+        messages: [
           {
-            name: "thread.storePDF",
-            args: {
-              location: "Folder1/Subfolder1/${thread.firstMessageSubject}",
+            match: {
+              from: "(.+)@example.com",
+              subject: "Message (?<myMatchGroup>.*)",
+              to: "my\\.address\\+(.+)@gmail.com",
+              is: [MessageFlag.READ],
             },
+            actions: [{ name: "message.markRead" }],
+            attachments: [
+              {
+                match: {
+                  contentType: "application/(?<appType>.*)",
+                  name: "attachment(?<attNr>[0-9]+)\\.pdf",
+                },
+                actions: [
+                  {
+                    name: "attachment.store",
+                    args: {
+                      location:
+                        "Folder2/Subfolder2/${message.subject.match.1}/${email.subject} - ${match.att.1}.jpg",
+                      conflictStrategy: "replace",
+                    },
+                  },
+                ],
+              },
+              {
+                match: { name: "Image-([0-9]+)\\.jpg" },
+                actions: [
+                  {
+                    name: "attachment.store",
+                    args: {
+                      location:
+                        "Folder3/Subfolder3/${att.basename}-${date:yyyy-MM-dd}.${att.ext}",
+                      conflictStrategy: "skip",
+                    },
+                  },
+                ],
+              },
+            ],
           },
         ],
-        description:
-          "Example that stores all attachments of all found threads to a certain GDrive folder",
-        match: {
-          query: "has:attachment from:example@example.com",
-        },
       },
       {
         description:
@@ -118,55 +162,26 @@ export class ConfigMocks {
             ],
             match: {
               from: "(.+)@example.com",
-              subject: "Prefix - (.*) - Suffix(.*)",
+              subject: "Prefix - (?<prefix>.*) - Suffix(?<suffix>.*)",
               to: "my\\.address\\+(.+)@gmail.com",
             },
           },
         ],
       },
       {
-        match: {
-          query: "has:attachment from:example4@example.com",
-        },
-        messages: [
+        actions: [
           {
-            match: {
-              from: "(.+)@example.com",
-              subject: "Prefix - (.*) - Suffix(.*)",
-              to: "my\\.address\\+(.+)@gmail.com",
-              is: [MessageFlag.READ],
+            name: "thread.storePDF",
+            args: {
+              location: "Folder1/Subfolder1/${thread.firstMessageSubject}",
             },
-            actions: [{ name: "message.markRead" }],
-            attachments: [
-              {
-                match: { name: "Image-([0-9]+)\\.jpg" },
-                actions: [
-                  {
-                    name: "attachment.store",
-                    args: {
-                      location:
-                        "Folder2/Subfolder2/${message.subject.match.1}/${email.subject} - ${match.att.1}.jpg",
-                      conflictStrategy: "replace",
-                    },
-                  },
-                ],
-              },
-              {
-                match: { name: ".+\\..+" },
-                actions: [
-                  {
-                    name: "attachment.store",
-                    args: {
-                      location:
-                        "Folder3/Subfolder3/${att.basename}-${date:yyyy-MM-dd}.${att.ext}",
-                      conflictStrategy: "skip",
-                    },
-                  },
-                ],
-              },
-            ],
           },
         ],
+        description:
+          "Example that stores all attachments of all found threads to a certain GDrive folder",
+        match: {
+          query: "has:attachment from:example@example.com",
+        },
       },
     ]
   }
@@ -175,7 +190,7 @@ export class ConfigMocks {
     return {
       settings: this.newDefaultSettingsConfigJson(),
       threads: this.newComplexThreadConfigList(),
-      // TODO: Add globals
+      global: this.newDefaultGlobalConfigJson(),
     }
   }
 
@@ -222,9 +237,9 @@ export class ConfigMocks {
     }
   }
 
-  public static newDefaultConfig(): RequiredConfig {
-    return newConfig({
-      threads: this.newComplexThreadConfigList(),
-    })
+  public static newDefaultConfig(
+    configJson: PartialDeep<Config> = this.newDefaultConfigJson(),
+  ): RequiredConfig {
+    return newConfig(configJson)
   }
 }

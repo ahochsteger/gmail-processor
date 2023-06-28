@@ -46,6 +46,8 @@ This way the attachments of periodic emails can be automatically organized in fo
 The documentation of the configuration schema can be found in [docs/config-schema-v2.md](docs/config-schema-v2.md).
 To support the migration from the v1 configuration format the documentation can be found in [docs/config-schema-v1.md](docs/config-schema-v1.md).
 
+Various configuration values (e.g. a GDrive location) can contain [meta info placeholder](docs/meta-infos.md) that get replaced with dynamic values.
+
 ## Global Configuration (TODO: Remove when all is in generated docs)
 
 - globalFilter: Global filter expression (see [https://support.google.com/mail/answer/7190?hl=en](https://support.google.com/mail/answer/7190?hl=en) for avialable search operators)

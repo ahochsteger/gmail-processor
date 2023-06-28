@@ -3,7 +3,6 @@ import {
   AttachmentContext,
   EnvContext,
   MessageContext,
-  MetaInfo,
   ProcessingContext,
   RunMode,
   ThreadContext,
@@ -41,7 +40,7 @@ export class ContextMocks {
         timezone: "UTC",
       },
       log: new Logger(),
-      meta: new MetaInfo(),
+      meta: {},
     }
     return envContext
   }

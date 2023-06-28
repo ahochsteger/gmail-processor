@@ -21,6 +21,7 @@ type Placeholder = {
 
 const placeholderRegex =
   /\$\{(?<name>[^:}]+)(:(?<modifier>[^:}]+)(:(?<arg>[^}]+))?)?\}/g
+export const defaultDateFormat = "YYYY-MM-DD HH:mm:ss"
 
 export class PatternUtil {
   public static formatDate(date: Date, format: string, timezone = "UTC") {
@@ -42,46 +43,69 @@ export class PatternUtil {
     }
   }
 
+  public static valueToString(
+    ctx: ProcessingContext | ThreadContext | MessageContext | AttachmentContext,
+    p: Placeholder,
+    value: unknown,
+  ): string {
+    let stringValue = ""
+    if (typeof value === "function") {
+      value = value.apply(this)
+    }
+    switch (typeof value) {
+      case "object":
+        switch (value?.constructor?.name) {
+          case "Array":
+            if (Array.isArray(value)) {
+              stringValue = value.join(",")
+            } else {
+              ctx.log.warn(
+                `Placeholder '${
+                  p.name
+                }' array cannot be converted to string (value: ${JSON.stringify(
+                  value,
+                )})!`,
+              )
+            }
+            break
+          case "Date": {
+            const format =
+              p.modifier === PlaceholderModifierType.FORMAT
+                ? p.arg
+                : defaultDateFormat
+            stringValue = this.formatDate(
+              value as Date,
+              format,
+              ctx.env.timezone,
+            )
+            break
+          }
+          default:
+            stringValue = JSON.stringify(value)
+            break
+        }
+        break
+      case "string":
+        stringValue = value
+        break
+      case "undefined":
+        ctx.log.warn(`Placeholder '${p.name}' value is undefined!`)
+        break
+      default:
+        stringValue = String(value)
+        break
+    }
+    return stringValue
+  }
+
   public static substitute(
     ctx: ProcessingContext | ThreadContext | MessageContext | AttachmentContext,
     s: string,
   ) {
     let p
     while ((p = PatternUtil.nextPlaceholder(s))) {
-      const value = ctx.meta.get(p.name)
-      let stringValue: string
-      switch (typeof value) {
-        case "object":
-          switch (value?.constructor?.name) {
-            case "Date":
-              switch (p.modifier) {
-                case PlaceholderModifierType.FORMAT:
-                  stringValue = this.formatDate(
-                    value as Date,
-                    p.arg,
-                    ctx.env.timezone,
-                  )
-                  break
-                default:
-                  stringValue = String(value)
-                  break
-              }
-              break
-            default:
-              stringValue = JSON.stringify(value)
-              break
-          }
-          break
-        case "string":
-          stringValue = value
-          break
-        case "undefined":
-          stringValue = "undefined"
-          break
-        default:
-          stringValue = String(value)
-          break
-      }
+      const value = ctx.meta[p.name].value
+      const stringValue = this.valueToString(ctx, p, value)
       s = `${s.slice(0, p.index)}${stringValue}${s.slice(p.index + p.length)}`
     }
     return s

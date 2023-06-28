@@ -1,10 +1,12 @@
 import { PartialDeep } from "type-fest"
 import {
   EnvContext,
+  MetaInfoType as MIT,
   MetaInfo,
   ProcessingContext,
   ProcessingInfo,
   ProcessingResult,
+  newMetaInfo as mi,
   newProcessingResult,
 } from "../Context"
 import { ActionProvider, ActionRegistry } from "../actions/ActionRegistry"
@@ -26,24 +28,44 @@ export class GmailProcessor {
     const processingContext: ProcessingContext = {
       ...ctx,
       proc: info,
-      procMeta: new MetaInfo(),
+      procMeta: {},
     }
-    processingContext.procMeta = this.buildMetaInfo(
-      processingContext,
-      processingContext.procMeta,
-    )
-    processingContext.meta = new MetaInfo([...processingContext.procMeta])
+    processingContext.procMeta = this.buildMetaInfo(processingContext)
+    processingContext.meta = { ...processingContext.procMeta }
     return processingContext
   }
 
-  public static buildMetaInfo(ctx: ProcessingContext, m = new MetaInfo()) {
-    m.set("date.now", new Date())
-    m.set("env.runMode", ctx.env.runMode)
-    m.set("env.timezone", ctx.env.timezone)
-    m.set("timer.startTime", ctx.proc.timer.getStartTime())
-    m.set("user.email", ctx.env.session.getActiveUser().getEmail())
-    ctx.proc.config.global.variables.forEach((entry) =>
-      m.set(`variables.${entry.key}`, entry.value),
+  public static buildMetaInfo(ctx: ProcessingContext) {
+    const m: MetaInfo = {
+      "date.now": mi(MIT.DATE, () => new Date(), "The current timestamp."),
+      "env.runMode": mi(
+        MIT.STRING,
+        ctx.env.runMode,
+        "The runmode used for processing.",
+      ),
+      "env.timezone": mi(
+        MIT.STRING,
+        ctx.env.timezone,
+        "The timezone used for processing.",
+      ),
+      "timer.startTime": mi(
+        MIT.DATE,
+        ctx.proc.timer.getStartTime(),
+        "The start timestamp of the processing script.",
+      ),
+      "user.email": mi(
+        MIT.STRING,
+        ctx.env.session.getActiveUser().getEmail(),
+        "The email address of the active user.",
+      ),
+    }
+    ctx.proc.config.global.variables.forEach(
+      (entry) =>
+        (m[`variables.${entry.key}`] = mi(
+          MIT.VARIABLE,
+          entry.value,
+          "A custom defined variable.",
+        )),
     )
     return m
   }

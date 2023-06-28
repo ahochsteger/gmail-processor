@@ -10,6 +10,8 @@ import {
   AttachmentInfo,
   MessageContext,
   MetaInfo,
+  newMetaInfo as mi,
+  MetaInfoType as MIT,
   newProcessingResult,
   ProcessingResult,
 } from "../Context"
@@ -21,22 +23,18 @@ export class AttachmentProcessor extends BaseProcessor {
     ctx: MessageContext,
     info: AttachmentInfo,
   ): AttachmentContext {
-    const metaInfo = new MetaInfo()
     const attachmentContext: AttachmentContext = {
       ...ctx,
       attachment: info,
-      attachmentMeta: metaInfo,
+      attachmentMeta: {},
     }
-    attachmentContext.attachmentMeta = this.buildMetaInfo(
-      attachmentContext,
-      metaInfo,
-    )
-    attachmentContext.meta = new MetaInfo([
+    attachmentContext.attachmentMeta = this.buildMetaInfo(attachmentContext)
+    attachmentContext.meta = {
       ...attachmentContext.procMeta,
       ...attachmentContext.threadMeta,
       ...attachmentContext.messageMeta,
       ...attachmentContext.attachmentMeta,
-    ])
+    }
     return attachmentContext
   }
   public static matches(
@@ -87,18 +85,45 @@ export class AttachmentProcessor extends BaseProcessor {
     return m
   }
 
-  public static buildMetaInfo(
-    ctx: AttachmentContext,
-    m: MetaInfo = new MetaInfo(),
-  ): MetaInfo {
+  public static buildMetaInfo(ctx: AttachmentContext): MetaInfo {
     const attachment = ctx.attachment.object
-    m.set("attachment.contentType", attachment.getContentType())
-    m.set("attachment.hash", attachment.getHash())
-    m.set("attachment.isGoogleType", attachment.isGoogleType())
-    m.set("attachment.name", attachment.getName())
-    m.set("attachment.size", attachment.getSize())
-    m.set("attachment.index", ctx.attachment.index)
-    m.set("attachmentConfig.index", ctx.attachment.configIndex)
+    let m: MetaInfo = {
+      "attachment.contentType": mi(
+        MIT.STRING,
+        attachment.getContentType(),
+        this.getRefDocs("attachment", "getContentType"),
+      ),
+      "attachment.hash": mi(
+        MIT.STRING,
+        attachment.getHash(),
+        this.getRefDocs("attachment", "getHash"),
+      ),
+      "attachment.isGoogleType": mi(
+        MIT.STRING,
+        attachment.isGoogleType(),
+        this.getRefDocs("attachment", "isGoogleType"),
+      ),
+      "attachment.name": mi(
+        MIT.STRING,
+        attachment.getName(),
+        this.getRefDocs("attachment", "getName"),
+      ),
+      "attachment.size": mi(
+        MIT.STRING,
+        attachment.getSize(),
+        this.getRefDocs("attachment", "getSize"),
+      ),
+      "attachment.index": mi(
+        MIT.STRING,
+        ctx.attachment.index,
+        "The index number (0-based) of the processed attachment.",
+      ),
+      "attachmentConfig.index": mi(
+        MIT.STRING,
+        ctx.attachment.configIndex,
+        "The index number (0-based) of the processed attachment config.",
+      ),
+    }
     const attachmentConfig = ctx.attachment.config
     m = this.buildRegExpSubustitutionMap(
       ctx,
@@ -106,7 +131,7 @@ export class AttachmentProcessor extends BaseProcessor {
       "attachment",
       this.getRegexMapFromAttachmentMatchConfig(attachmentConfig.match),
     )
-    if (!m.get("attachment.matched")) {
+    if (!m["attachment.matched"]) {
       ctx.log.info(
         `Skipped attachment with name '${attachment.getName()}' because it did not match the regex rules ...`,
       )

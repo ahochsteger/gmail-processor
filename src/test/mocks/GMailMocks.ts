@@ -3,6 +3,13 @@ import { MockProxy, mock } from "jest-mock-extended"
 import { RequiredDeep } from "../../lib/utils/UtilityTypes"
 import { Mocks } from "./MockFactory"
 
+export type IndexType = [thread: number, message: number, attachment: number]
+
+export type GMailData = {
+  threads?: ThreadData[]
+}
+type RequiredGMailData = RequiredDeep<GMailData>
+
 export type ThreadData = {
   // NOTE: Keep ThreadData, newThreadMock and getThreadSampleData in sync
   firstMessageSubject?: string
@@ -54,10 +61,29 @@ type AttachmentData = {
 type RequiredAttachmentData = RequiredDeep<AttachmentData>
 
 export class GMailMocks {
-  public static setupAllMocks(mocks: Mocks) {
-    mocks.thread = this.newThreadMock()
-    mocks.message = this.newMessageMock()
-    mocks.attachment = this.newAttachmentMock()
+  public static setupAllMocks(
+    mocks: Mocks,
+    gmailData: GMailData = {},
+    dataIndex: IndexType = [0, 0, 0],
+  ) {
+    const [threadIndex, messageIndex, attachmentIndex] = dataIndex
+
+    const threadData =
+      gmailData.threads && gmailData.threads.length > 0
+        ? gmailData.threads[threadIndex]
+        : {}
+    const messageData =
+      threadData.messages && threadData.messages.length > 0
+        ? threadData.messages[messageIndex]
+        : {}
+    const attachmentData =
+      messageData.attachments && messageData.attachments.length > 0
+        ? messageData.attachments[attachmentIndex]
+        : {}
+
+    mocks.thread = this.newThreadMock(threadData)
+    mocks.message = this.newMessageMock(messageData)
+    mocks.attachment = this.newAttachmentMock(attachmentData)
     mocks.gmailApp.search.mockReturnValue([mocks.thread])
   }
 
@@ -169,12 +195,20 @@ export class GMailMocks {
     return a
   }
 
+  public static getGmailSampleData(data: GMailData = {}): RequiredGMailData {
+    const threads = (data.threads ?? [this.getThreadSampleData()]).map(
+      (thread) => this.getThreadSampleData(thread),
+    )
+    const newData: RequiredGMailData = { threads }
+    return newData
+  }
+
   public static getThreadSampleData(data: ThreadData = {}): RequiredThreadData {
     // NOTE: Keep ThreadData, newThreadMock and getThreadSampleData in sync
     const messages = (
       data.messages ?? [
-        this.getMessageSampleData({ subject: "Message 1" }),
-        this.getMessageSampleData({ subject: "Message 2" }),
+        this.getMessageSampleData({ subject: "Message Subject 1" }),
+        this.getMessageSampleData({ subject: "Message Subject 2" }),
       ]
     ).map((msg) => this.getMessageSampleData(msg))
     const newData: RequiredThreadData = {
@@ -241,7 +275,7 @@ export class GMailMocks {
       isStarred: data.isStarred ?? false,
       isUnread: data.isUnread ?? true,
       replyTo: data.replyTo ?? "message-reply-to@example.com",
-      subject: data.subject ?? "message subject",
+      subject: data.subject ?? "Message Subject",
       to: data.to ?? "message-to@example.com",
     }
     return sampleData

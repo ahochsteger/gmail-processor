@@ -1,9 +1,11 @@
 import {
+  MetaInfoType as MIT,
   MetaInfo,
   ProcessingContext,
   ProcessingResult,
   ThreadContext,
   ThreadInfo,
+  newMetaInfo as mi,
   newProcessingResult,
 } from "../Context"
 import { ProcessingStage } from "../config/ActionConfig"
@@ -23,17 +25,16 @@ export class ThreadProcessor extends BaseProcessor {
     ctx: ProcessingContext,
     info: ThreadInfo,
   ): ThreadContext {
-    const metaInfo = new MetaInfo()
     const threadContext: ThreadContext = {
       ...ctx,
       thread: info,
-      threadMeta: metaInfo,
+      threadMeta: {},
     }
-    threadContext.threadMeta = this.buildMetaInfo(threadContext, metaInfo)
-    threadContext.meta = new MetaInfo([
+    threadContext.threadMeta = this.buildMetaInfo(threadContext)
+    threadContext.meta = {
       ...threadContext.procMeta,
       ...threadContext.threadMeta,
-    ])
+    }
     return threadContext
   }
   private static buildFilter(prefix: string, value: string): string {
@@ -77,32 +78,90 @@ export class ThreadProcessor extends BaseProcessor {
     })
   }
 
-  public static buildMetaInfo(
-    ctx: ThreadContext,
-    m: MetaInfo = new MetaInfo(),
-  ): MetaInfo {
+  public static buildMetaInfo(ctx: ThreadContext): MetaInfo {
     const thread = ctx.thread.object
-    m.set("thread.firstMessageSubject", thread.getFirstMessageSubject())
-    m.set("thread.hasStarredMessages", thread.hasStarredMessages())
-    m.set("thread.id", thread.getId())
-    m.set("thread.isImportant", thread.isImportant())
-    m.set("thread.isInChats", thread.isInChats())
-    m.set("thread.isInInbox", thread.isInInbox())
-    m.set("thread.isInPriorityInbox", thread.isInPriorityInbox())
-    m.set("thread.isInSpam", thread.isInSpam())
-    m.set("thread.isInTrash", thread.isInTrash())
-    m.set("thread.isUnread", thread.isUnread())
-    const labels: GoogleAppsScript.Gmail.GmailLabel[] = thread.getLabels()
-      ? thread.getLabels()
-      : []
-    const labelNames: string[] = []
-    labels.forEach((l) => labelNames.push(l.getName()))
-    m.set("thread.labels", labelNames.join(","))
-    m.set("thread.lastMessageDate", thread.getLastMessageDate())
-    m.set("thread.messageCount", thread.getMessageCount())
-    m.set("thread.permalink", thread.getPermalink())
-    m.set("thread.index", ctx.thread.index)
-    m.set("threadConfig.index", ctx.thread.configIndex)
+    const m = {
+      "thread.firstMessageSubject": mi(
+        MIT.STRING,
+        thread.getFirstMessageSubject(),
+        this.getRefDocs("thread", "getFirstMessageSubject"),
+      ),
+      "thread.hasStarredMessages": mi(
+        MIT.BOOLEAN,
+        thread.hasStarredMessages(),
+        this.getRefDocs("thread", "hasStarredMessages"),
+      ),
+      "thread.id": mi(
+        MIT.STRING,
+        thread.getId(),
+        this.getRefDocs("thread", "getId"),
+      ),
+      "thread.isImportant": mi(
+        MIT.STRING,
+        thread.isImportant(),
+        this.getRefDocs("thread", "isImportant"),
+      ),
+      "thread.isInChats": mi(
+        MIT.STRING,
+        thread.isInChats(),
+        this.getRefDocs("thread", "isInChats"),
+      ),
+      "thread.isInInbox": mi(
+        MIT.STRING,
+        thread.isInInbox(),
+        this.getRefDocs("thread", "isInInbox"),
+      ),
+      "thread.isInPriorityInbox": mi(
+        MIT.STRING,
+        thread.isInPriorityInbox(),
+        this.getRefDocs("thread", "isInPriorityInbox"),
+      ),
+      "thread.isInSpam": mi(
+        MIT.STRING,
+        thread.isInSpam(),
+        this.getRefDocs("thread", "isInSpam"),
+      ),
+      "thread.isInTrash": mi(
+        MIT.STRING,
+        thread.isInTrash(),
+        this.getRefDocs("thread", "isInTrash"),
+      ),
+      "thread.isUnread": mi(
+        MIT.STRING,
+        thread.isUnread(),
+        this.getRefDocs("thread", "isUnread"),
+      ),
+      "thread.labels": mi(
+        MIT.STRING,
+        thread.getLabels().map((l) => l.getName()),
+        this.getRefDocs("thread", "getLabels"),
+      ),
+      "thread.lastMessageDate": mi(
+        MIT.DATE,
+        thread.getLastMessageDate(),
+        this.getRefDocs("thread", "getLastMessageDate"),
+      ),
+      "thread.messageCount": mi(
+        MIT.NUMBER,
+        thread.getMessageCount(),
+        this.getRefDocs("thread", "getMessageCount"),
+      ),
+      "thread.permalink": mi(
+        MIT.STRING,
+        thread.getPermalink(),
+        this.getRefDocs("thread", "getPermalink"),
+      ),
+      "thread.index": mi(
+        MIT.NUMBER,
+        ctx.thread.index,
+        "The index number (0-based) of the processed thread.",
+      ),
+      "threadConfig.index": mi(
+        MIT.NUMBER,
+        ctx.thread.configIndex,
+        "The index number (0-based) of the processed thead config.",
+      ),
+    }
     return m
   }
 

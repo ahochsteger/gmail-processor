@@ -7,7 +7,7 @@ import {
   AttachmentConfig,
   normalizeAttachmentConfigs,
 } from "./AttachmentConfig"
-import { MessageMatchConfig } from "./MessageMatchConfig"
+import { MessageMatchConfig, newMessageMatchConfig } from "./MessageMatchConfig"
 
 /**
  * Represents a config to handle a certain GMail message
@@ -70,6 +70,7 @@ export function normalizeMessageConfig(
     config.attachments ?? [],
     namePrefix,
   )
+  config.match = config.match || newMessageMatchConfig()
   return config
 }
 

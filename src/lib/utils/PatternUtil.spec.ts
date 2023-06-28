@@ -1,6 +1,10 @@
 import { ContextMocks } from "../../test/mocks/ContextMocks"
 import { GMailMocks, ThreadData } from "../../test/mocks/GMailMocks"
-import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
+import {
+  MockFactory,
+  Mocks,
+  fakedSystemTime,
+} from "../../test/mocks/MockFactory"
 import { RunMode } from "../Context"
 import { newConfig } from "../config/Config"
 import { PatternUtil } from "./PatternUtil"
@@ -19,7 +23,7 @@ describe("Pattern Substitution", () => {
         "${attachment.index}-${attachment.name}-${message.date:format:YYYY-MM-DD}",
     )
     expect(s1).toBe(
-      "message-from@example.com/message-to@example.com/text/plain/message subject-message-id-0-attachment.txt-2019-05-02",
+      "message-from@example.com/message-to@example.com/text/plain/Message Subject-message-id-0-attachment.txt-2019-05-02",
     )
   })
   it("should handle a thread with a message rule", () => {
@@ -122,7 +126,7 @@ describe("Pattern Substitution", () => {
         "${message.id},${message.date:format:YYYY-MM-DD}",
     )
     expect(s).toBe(
-      "message-from@example.com,message-to@example.com,message subject,message-id,2019-05-02",
+      "message-from@example.com,message-to@example.com,Message Subject,message-id,2019-05-02",
     )
   })
 
@@ -193,7 +197,7 @@ describe("Pattern Substitution", () => {
         "${thread.permalink}",
     )
     expect(s).toEqual(
-      "Message 1,false,threadId123,false,false,,2019-05-02,2,some-permalink-url",
+      "Message Subject 1,false,threadId123,false,false,,2019-05-02,2,some-permalink-url",
     )
   })
 
@@ -239,7 +243,7 @@ describe("Pattern Substitution", () => {
         "${message.date:format:YYYY-MM-DD}",
     )
     expect(s).toBe(
-      "message-from@example.com/message-to@example.com/text/plain/message subject-message-id-0-attachment.txt-2019-05-02",
+      "message-from@example.com/message-to@example.com/text/plain/Message Subject-message-id-0-attachment.txt-2019-05-02",
     )
   })
 })
@@ -253,7 +257,7 @@ describe("Substitutions", () => {
           "${thread.lastMessageDate:format:YYYY-MM-DD HH:mm:ss},${thread.messageCount},${thread.permalink}",
       ),
     ).toBe(
-      "Message 1,false,threadId123,false,false,,2019-05-02 07:15:28,2,some-permalink-url",
+      "Message Subject 1,false,threadId123,false,false,,2019-05-02 07:15:28,2,some-permalink-url",
     )
   })
   it("should substitute all message attributes", () => {
@@ -264,7 +268,7 @@ describe("Substitutions", () => {
           "${message.id},${message.replyTo},${message.subject},${message.to}",
       ),
     ).toBe(
-      "message-bcc@example.com,message-cc@example.com,2019-05-02 07:15:28,message-from@example.com,message-id,message-reply-to@example.com,message subject,message-to@example.com",
+      "message-bcc@example.com,message-cc@example.com,2019-05-02 07:15:28,message-from@example.com,message-id,message-reply-to@example.com,Message Subject,message-to@example.com",
     )
   })
   it("should substitute all attachment attributes", () => {
@@ -291,13 +295,9 @@ describe("Substitutions", () => {
     ).toEqual("act,a53be3c62f10eb7174efaab688b655a066a7f9f5,true,aname,19")
   })
   it("should substitute with processing context", () => {
-    const fakedSystemTime = "2023-05-30 08:31:14"
-    jest.useFakeTimers({ now: new Date(fakedSystemTime + "Z") })
-    const specialMocks = MockFactory.newMocks(newConfig(), RunMode.DANGEROUS)
-    specialMocks.processingContext.proc.timer.start()
     const actual = JSON.parse(
       PatternUtil.substitute(
-        specialMocks.processingContext,
+        mocks.processingContext,
         '{"envRunMode":"${env.runMode}","envTimeZone":"${env.timezone}","dateNow":"${date.now:format:YYYY-MM-DD HH:mm:ss}","timerStartTime":"${timer.startTime:format:YYYY-MM-DD HH:mm:ss}"}',
       ),
     )
@@ -307,7 +307,6 @@ describe("Substitutions", () => {
       dateNow: fakedSystemTime,
       timerStartTime: fakedSystemTime,
     })
-    jest.useRealTimers()
   })
   it("should substitute global variables", () => {
     const config = newConfig({
@@ -349,9 +348,9 @@ describe("Handle single messages", () => {
           "${attachment.size}",
       ),
     ).toBe(
-      "Message 1,false,threadId123,false,false,,2019-05-02 07:15:28,2,some-permalink-url," +
+      "Message Subject 1,false,threadId123,false,false,,2019-05-02 07:15:28,2,some-permalink-url," +
         "message-bcc@example.com,message-cc@example.com,2019-05-02 07:15:28,message-from@example.com," +
-        "message-id,message-reply-to@example.com,message subject,message-to@example.com,text/plain," +
+        "message-id,message-reply-to@example.com,Message Subject,message-to@example.com,text/plain," +
         "a53be3c62f10eb7174efaab688b655a066a7f9f5,false,attachment.txt,19",
     )
   })
@@ -486,7 +485,7 @@ describe("Handle multiple messages", () => {
       }`,
       // "msj1,true,tid,true,true,l1,l2,2019-05-06 12:34:56,2,tpl," +
       //   "message-bcc@example.com,message-cc@example.com,2019-05-02 07:15:28,message-from@example.com," +
-      //   "message-id,message-reply-to@example.com,message subject,message-to@example.com,text/plain," +
+      //   "message-id,message-reply-to@example.com,Message Subject,message-to@example.com,text/plain," +
       //   "a53be3c62f10eb7174efaab688b655a066a7f9f5,false,attachment.txt,19",
     )
   })
@@ -572,17 +571,13 @@ describe("Timezone Handling", () => {
   })
 })
 describe("Placeholder Handling", () => {
-  it("should find placeholder", () => {
-    const fakedSystemTime = "2023-05-30 08:31:14"
-    jest.useFakeTimers({ now: new Date(fakedSystemTime + "Z") })
-    const specialMocks = MockFactory.newMocks(newConfig(), RunMode.DANGEROUS)
-    specialMocks.processingContext.proc.timer.start()
+  it("should find multiple occurance of placeholder", () => {
     const s =
       "${message.bcc},${message.cc},${date.now:format:YYYY-MM-DD HH:mm:ss},${message.from}," +
       "${message.id},${message.replyTo},${message.subject},${message.to},${date.now:format:YYYY-MM-DD HH:mm:ss}"
-    const actual = PatternUtil.substitute(specialMocks.attachmentContext, s)
+    const actual = PatternUtil.substitute(mocks.attachmentContext, s)
     expect(actual).toEqual(
-      "message-bcc@example.com,message-cc@example.com,2023-05-30 08:31:14,message-from@example.com,message-id,message-reply-to@example.com,message subject,message-to@example.com,2023-05-30 08:31:14",
+      `message-bcc@example.com,message-cc@example.com,${fakedSystemTime},message-from@example.com,message-id,message-reply-to@example.com,Message Subject 1,message-to@example.com,${fakedSystemTime}`,
     )
   })
 })
