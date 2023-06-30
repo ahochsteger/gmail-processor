@@ -32,6 +32,7 @@
     "test": "jest --reporters=summary --silent",
     "test:verbose": "jest --detectOpenHandles --reporters='default' --runInBand --verbose",
     "update": "concurrently 'npm:update:*'",
+    "update:docs": "scripts/update-docs.sh",
     "update:examples": "scripts/update-examples.sh",
     "update:schema": "scripts/update-schema.sh"
   },

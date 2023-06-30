@@ -114,92 +114,148 @@ export class MessageProcessor extends BaseProcessor {
       "message.bcc": mi(
         MIT.STRING,
         (msg: Message) => msg.getBcc(),
-        this.getRefDocs("message", "getBcc"),
+        this.getRefDocs(
+          "message",
+          "getBcc",
+          "The comma-separated recipients bcc'd on the message.",
+        ),
       ),
       "message.cc": mi(
         MIT.STRING,
         (msg: Message) => msg.getCc(),
-        this.getRefDocs("message", "getCc"),
+        this.getRefDocs(
+          "message",
+          "getCc",
+          "The comma-separated recipients cc'd on the message.",
+        ),
       ),
       "message.date": mi(
         MIT.DATE,
         (msg: Message) => msg.getDate(),
-        this.getRefDocs("message", "getDate"),
+        this.getRefDocs(
+          "message",
+          "getDate",
+          "The date and time of the message.",
+        ),
       ),
       "message.from": mi(
         MIT.STRING,
         (msg: Message) => msg.getFrom(),
-        this.getRefDocs("message", "getFrom"),
+        this.getRefDocs("message", "getFrom", "The sender of the message."),
       ),
       "message.from.domain": mi(
         MIT.STRING,
         (msg: Message) => msg.getFrom().split("@")[1],
-        this.getRefDocs("message", "getFrom"),
+        this.getRefDocs(
+          "message",
+          "getFrom",
+          "The sender domain of the message.",
+        ),
       ),
       "message.id": mi(
         MIT.STRING,
         (msg: Message) => msg.getId(),
-        this.getRefDocs("message", "getId"),
+        this.getRefDocs("message", "getId", "The ID of the message."),
       ),
       "message.isDraft": mi(
         MIT.BOOLEAN,
         (msg: Message) => msg.isDraft(),
-        this.getRefDocs("message", "isDraft"),
+        this.getRefDocs(
+          "message",
+          "isDraft",
+          "`true` if the message is a draft.",
+        ),
       ),
       "message.isInChats": mi(
         MIT.BOOLEAN,
         (msg: Message) => msg.isInChats(),
-        this.getRefDocs("message", "isInChats"),
+        this.getRefDocs(
+          "message",
+          "isInChats",
+          "`true` if the message is a chat.",
+        ),
       ),
       "message.isInInbox": mi(
         MIT.BOOLEAN,
         (msg: Message) => msg.isInInbox(),
-        this.getRefDocs("message", "isInInbox"),
+        this.getRefDocs(
+          "message",
+          "isInInbox",
+          "`true` if the message is in the inbox.",
+        ),
       ),
       "message.isInPriorityInbox": mi(
         MIT.BOOLEAN,
         (msg: Message) => msg.isInPriorityInbox(),
-        this.getRefDocs("message", "isInPriorityInbox"),
+        this.getRefDocs(
+          "message",
+          "isInPriorityInbox",
+          "`true` if if the message is in the priority inbox.",
+        ),
       ),
       "message.isInTrash": mi(
         MIT.BOOLEAN,
         (msg: Message) => msg.isInTrash(),
-        this.getRefDocs("message", "isInTrash"),
+        this.getRefDocs(
+          "message",
+          "isInTrash",
+          "`true` if the message is in the trash.",
+        ),
       ),
       "message.isStarred": mi(
         MIT.BOOLEAN,
         (msg: Message) => msg.isStarred(),
-        this.getRefDocs("message", "isStarred"),
+        this.getRefDocs(
+          "message",
+          "isStarred",
+          "`true` if the message is starred.",
+        ),
       ),
       "message.isUnread": mi(
         MIT.BOOLEAN,
         (msg: Message) => msg.isUnread(),
-        this.getRefDocs("message", "isUnread"),
+        this.getRefDocs(
+          "message",
+          "isUnread",
+          "`true` if the message is unread.",
+        ),
       ),
       "message.replyTo": mi(
         MIT.STRING,
         (msg: Message) => msg.getReplyTo(),
-        this.getRefDocs("message", "getReplyTo"),
+        this.getRefDocs(
+          "message",
+          "getReplyTo",
+          "The reply-to address of the message (usually the sender).",
+        ),
       ),
       "message.subject": mi(
         MIT.STRING,
         (msg: Message) => msg.getSubject(),
-        this.getRefDocs("message", "getSubject"),
+        this.getRefDocs(
+          "message",
+          "getSubject",
+          "The subject of the message.",
+        ),
       ),
       "message.to": mi(
         MIT.STRING,
         (msg: Message) => msg.getTo(),
-        this.getRefDocs("message", "getTo"),
+        this.getRefDocs(
+          "message",
+          "getTo",
+          "The comma-separated recipients of the message.",
+        ),
       ),
       "message.index": mi(
         MIT.NUMBER,
         ctx.message.index,
-        "The index number (0-based) of the processed message.",
+        "The index number (0-based) of the message.",
       ),
       "messageConfig.index": mi(
         MIT.NUMBER,
         ctx.message.configIndex,
-        "The index number (0-based) of the processed message config.",
+        "The index number (0-based) of the message config.",
       ),
     }
     const messageConfig = ctx.message.config

@@ -143,9 +143,11 @@ export abstract class BaseProcessor {
   protected static getRefDocs(
     type: "attachment" | "message" | "thread",
     method: string,
+    description = "",
   ) {
     const typeTitle = type[0].toUpperCase() + type.substring(1)
+    description += description !== "" ? " " : ""
     const title = `Gmail${typeTitle}.${method}()`
-    return `See [${title}](https://developers.google.com/apps-script/reference/gmail/gmail-${type}#${method}\\(\\)) reference docs.`
+    return `${description}See [${title}](https://developers.google.com/apps-script/reference/gmail/gmail-${type}#${method}\\(\\)) reference docs.`
   }
 }

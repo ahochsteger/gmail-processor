@@ -94,37 +94,49 @@ export class AttachmentProcessor extends BaseProcessor {
       "attachment.contentType": mi(
         MIT.STRING,
         (att: Attachment) => att.getContentType(),
-        this.getRefDocs("attachment", "getContentType"),
+        this.getRefDocs(
+          "attachment",
+          "getContentType",
+          "The content type of the attachment.",
+        ),
       ),
       "attachment.hash": mi(
         MIT.STRING,
         (att: Attachment) => att.getHash(),
-        this.getRefDocs("attachment", "getHash"),
+        this.getRefDocs(
+          "attachment",
+          "getHash",
+          "The SHA1 content hash for the attachment.",
+        ),
       ),
       "attachment.isGoogleType": mi(
         MIT.STRING,
         (att: Attachment) => att.isGoogleType(),
-        this.getRefDocs("attachment", "isGoogleType"),
+        this.getRefDocs(
+          "attachment",
+          "isGoogleType",
+          "`true` if this attachment is a Google Workspace file (Sheets, Docs, etc.).",
+        ),
       ),
       "attachment.name": mi(
         MIT.STRING,
         (att: Attachment) => att.getName(),
-        this.getRefDocs("attachment", "getName"),
+        this.getRefDocs("attachment", "getName", "The name of the attachment."),
       ),
       "attachment.size": mi(
         MIT.STRING,
         (att: Attachment) => att.getSize(),
-        this.getRefDocs("attachment", "getSize"),
+        this.getRefDocs("attachment", "getSize", "The size of the attachment."),
       ),
       "attachment.index": mi(
         MIT.STRING,
         ctx.attachment.index,
-        "The index number (0-based) of the processed attachment.",
+        "The index number (0-based) of the attachment.",
       ),
       "attachmentConfig.index": mi(
         MIT.STRING,
         ctx.attachment.configIndex,
-        "The index number (0-based) of the processed attachment config.",
+        "The index number (0-based) of the attachment config.",
       ),
     }
     const attachmentConfig = ctx.attachment.config
