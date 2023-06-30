@@ -1,5 +1,5 @@
 import { PartialDeep } from "type-fest"
-import { EnvContext, ProcessingResult, RunMode } from "./Context"
+import { ContextType, EnvContext, ProcessingResult, RunMode } from "./Context"
 import { Config, RequiredConfig, configToJson } from "./config/Config"
 import { V1Config, newV1Config } from "./config/v1/V1Config"
 import { V1ToV2Converter } from "./config/v1/V1ToV2Converter"
@@ -11,6 +11,7 @@ const gmailProcessor = new GmailProcessor()
 function defaultContext(runMode = RunMode.SAFE_MODE) {
   const logger = new Logger()
   const ctx: EnvContext = {
+    type: ContextType.ENV,
     env: {
       cacheService: CacheService,
       gdriveApp: DriveApp,

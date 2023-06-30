@@ -1,6 +1,7 @@
 import { MockProxy } from "jest-mock-extended"
 import {
   AttachmentContext,
+  ContextType,
   EnvContext,
   MessageContext,
   ProcessingContext,
@@ -29,6 +30,7 @@ export class ContextMocks {
     runMode = RunMode.DANGEROUS,
   ) {
     const envContext: EnvContext = {
+      type: ContextType.ENV,
       env: {
         gmailApp: mocks.gmailApp,
         gdriveApp: mocks.gdriveApp,

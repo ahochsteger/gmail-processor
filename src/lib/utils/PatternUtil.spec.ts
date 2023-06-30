@@ -1,12 +1,12 @@
 import { ContextMocks } from "../../test/mocks/ContextMocks"
-import { GMailMocks, ThreadData } from "../../test/mocks/GMailMocks"
+import { GMailData, GMailMocks, ThreadData } from "../../test/mocks/GMailMocks"
 import {
   MockFactory,
   Mocks,
   fakedSystemTime,
 } from "../../test/mocks/MockFactory"
 import { RunMode } from "../Context"
-import { newConfig } from "../config/Config"
+import { Config, newConfig } from "../config/Config"
 import { PatternUtil } from "./PatternUtil"
 
 let mocks: Mocks
@@ -27,17 +27,21 @@ describe("Pattern Substitution", () => {
     )
   })
   it("should handle a thread with a message rule", () => {
-    const threadData: ThreadData = {
-      messages: [
+    const gmailData: GMailData = {
+      threads: [
         {
-          subject: "Message 01: Some more text",
-          from: "some.email@example.com",
-          to: "my.email+emailsuffix@example.com",
-          date: new Date("2019-05-01T18:48:31Z"),
-          attachments: [
+          messages: [
             {
-              name: "attachment123.jpg",
-              contentType: "image/jpeg",
+              subject: "Message 01: Some more text",
+              from: "some.email@example.com",
+              to: "my.email+emailsuffix@example.com",
+              date: new Date("2019-05-01T18:48:31Z"),
+              attachments: [
+                {
+                  name: "attachment123.jpg",
+                  contentType: "image/jpeg",
+                },
+              ],
             },
           ],
         },
@@ -53,7 +57,7 @@ describe("Pattern Substitution", () => {
       "message.from: some.email@example.com, message.to: my.email+emailsuffix@example.com, " +
       "message.date: 2019-05-01_18-48-31, message.subject.match.1: 01, " +
       "message.subject.match.2: Some more text"
-    const config = newConfig({
+    const config: Config = {
       threads: [
         {
           messages: [
@@ -83,18 +87,9 @@ describe("Pattern Substitution", () => {
           ],
         },
       ],
-    })
-    const attachmentContext =
-      ContextMocks.newAttachmentContextMockFromThreadData(
-        threadData,
-        0,
-        0,
-        ContextMocks.newProcessingContextMock(
-          ContextMocks.newEnvContextMock(),
-          config,
-        ),
-      )
-    const s2 = PatternUtil.substitute(attachmentContext, pattern)
+    }
+    const customMocks = MockFactory.newCustomMocks(config, gmailData)
+    const s2 = PatternUtil.substitute(customMocks.attachmentContext, pattern)
     expect(s2).toEqual(expRslt)
   })
   const sharedThreadData = {
@@ -131,22 +126,26 @@ describe("Pattern Substitution", () => {
   })
 
   it("should handle a thread with a non-matching message", () => {
-    const threadData = {
-      messages: [
+    const gmailData: GMailData = {
+      threads: [
         {
-          subject: "Message 01: Some more text",
-          from: "some.email@example.com",
-          to: "my.email+emailsuffix@example.com",
-          date: new Date("2019-05-01T18:48:31Z"),
-          attachments: [
+          messages: [
             {
-              name: "attachment123.jpg",
+              subject: "Message 01: Some more text",
+              from: "some.email@example.com",
+              to: "my.email+emailsuffix@example.com",
+              date: new Date("2019-05-01T18:48:31Z"),
+              attachments: [
+                {
+                  name: "attachment123.jpg",
+                },
+              ],
             },
           ],
         },
       ],
     }
-    const config = newConfig({
+    const config: Config = {
       threads: [
         {
           messages: [
@@ -165,20 +164,11 @@ describe("Pattern Substitution", () => {
           ],
         },
       ],
-    })
-    const attachmentContext =
-      ContextMocks.newAttachmentContextMockFromThreadData(
-        threadData,
-        0,
-        0,
-        ContextMocks.newProcessingContextMock(
-          ContextMocks.newEnvContextMock(),
-          config,
-        ),
-      )
+    }
+    const customMocks = MockFactory.newCustomMocks(config, gmailData)
     const actual = JSON.parse(
       PatternUtil.substitute(
-        attachmentContext,
+        customMocks.attachmentContext,
         '{"attachmentMatched":${attachment.matched},"messageMatched":${message.matched}}',
       ),
     )

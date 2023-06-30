@@ -6,8 +6,10 @@ import {
   RequiredAttachmentMatchConfig,
 } from "../config/AttachmentMatchConfig"
 import {
+  Attachment,
   AttachmentContext,
   AttachmentInfo,
+  ContextType,
   MessageContext,
   MetaInfo,
   newMetaInfo as mi,
@@ -25,6 +27,7 @@ export class AttachmentProcessor extends BaseProcessor {
   ): AttachmentContext {
     const attachmentContext: AttachmentContext = {
       ...ctx,
+      type: ContextType.ATTACHMENT,
       attachment: info,
       attachmentMeta: {},
     }
@@ -90,27 +93,27 @@ export class AttachmentProcessor extends BaseProcessor {
     let m: MetaInfo = {
       "attachment.contentType": mi(
         MIT.STRING,
-        attachment.getContentType(),
+        (att: Attachment) => att.getContentType(),
         this.getRefDocs("attachment", "getContentType"),
       ),
       "attachment.hash": mi(
         MIT.STRING,
-        attachment.getHash(),
+        (att: Attachment) => att.getHash(),
         this.getRefDocs("attachment", "getHash"),
       ),
       "attachment.isGoogleType": mi(
         MIT.STRING,
-        attachment.isGoogleType(),
+        (att: Attachment) => att.isGoogleType(),
         this.getRefDocs("attachment", "isGoogleType"),
       ),
       "attachment.name": mi(
         MIT.STRING,
-        attachment.getName(),
+        (att: Attachment) => att.getName(),
         this.getRefDocs("attachment", "getName"),
       ),
       "attachment.size": mi(
         MIT.STRING,
-        attachment.getSize(),
+        (att: Attachment) => att.getSize(),
         this.getRefDocs("attachment", "getSize"),
       ),
       "attachment.index": mi(

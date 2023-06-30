@@ -1,5 +1,6 @@
 import { PartialDeep } from "type-fest"
 import {
+  ContextType,
   EnvContext,
   MetaInfoType as MIT,
   MetaInfo,
@@ -27,6 +28,7 @@ export class GmailProcessor {
   ): ProcessingContext {
     const processingContext: ProcessingContext = {
       ...ctx,
+      type: ContextType.PROCESSING,
       proc: info,
       procMeta: {},
     }

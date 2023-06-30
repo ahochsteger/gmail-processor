@@ -30,15 +30,11 @@ function genMetaInfoDocs(m: MetaInfo, title: string, description: string) {
   Object.keys(m)
     .sort()
     .forEach((k) => {
-      const value = PatternUtil.valueToString(
-        ctx,
-        { name: k, arg: "", index: 0, length: 0, modifier: "" },
-        m[k].value,
-      )
+      const stringValue = PatternUtil.stringValue(ctx, ctx.meta, k)
       let desc = m[k].description
       if (m[k].type === MetaInfoType.DATE) desc += ` ${dateInfo}`
       if (m[k].type === MetaInfoType.VARIABLE) desc += ` ${variableInfo}`
-      write(`| \`${k}\` | \`${m[k].type}\` | \`${value}\` | ${desc} |`)
+      write(`| \`${k}\` | \`${m[k].type}\` | \`${stringValue}\` | ${desc} |`)
     })
 }
 

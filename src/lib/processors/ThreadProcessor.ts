@@ -1,4 +1,5 @@
 import {
+  ContextType,
   MetaInfoType as MIT,
   MetaInfo,
   ProcessingContext,
@@ -27,6 +28,7 @@ export class ThreadProcessor extends BaseProcessor {
   ): ThreadContext {
     const threadContext: ThreadContext = {
       ...ctx,
+      type: ContextType.THREAD,
       thread: info,
       threadMeta: {},
     }

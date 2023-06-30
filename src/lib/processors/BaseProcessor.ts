@@ -9,6 +9,7 @@ import {
 } from "../Context"
 import { ActionArgsType } from "../actions/ActionRegistry"
 import { ActionConfig, ProcessingStage } from "../config/ActionConfig"
+import { PatternUtil } from "../utils/PatternUtil"
 
 export abstract class BaseProcessor {
   /**
@@ -32,8 +33,8 @@ export abstract class BaseProcessor {
       let result
       const keyName = `${keyPrefix}.${k}`
       let hasAtLeastOneMatch = false
-      const data: string = m[`${keyName}`].value as string
-      if ((result = regex.exec(data)) !== null) {
+      const stringValue = PatternUtil.stringValue(ctx, m, keyName)
+      if ((result = regex.exec(stringValue)) !== null) {
         ctx.log.debug(`... matches`)
         hasAtLeastOneMatch = true
         for (let i = 1; i < result.length; i++) {

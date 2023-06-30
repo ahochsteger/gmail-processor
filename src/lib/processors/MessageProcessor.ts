@@ -1,5 +1,7 @@
 import {
+  ContextType,
   MetaInfoType as MIT,
+  Message,
   MessageContext,
   MessageInfo,
   MetaInfo,
@@ -28,6 +30,7 @@ export class MessageProcessor extends BaseProcessor {
   ): MessageContext {
     const messageContext: MessageContext = {
       ...ctx,
+      type: ContextType.MESSAGE,
       message: info,
       messageMeta: {},
     }
@@ -39,6 +42,7 @@ export class MessageProcessor extends BaseProcessor {
     }
     return messageContext
   }
+
   public static matches(
     matchConfig: RequiredMessageMatchConfig,
     message: GoogleAppsScript.Gmail.GmailMessage,
@@ -105,85 +109,86 @@ export class MessageProcessor extends BaseProcessor {
 
   public static buildMetaInfo(ctx: MessageContext): MetaInfo {
     const message = ctx.message.object
+    ctx.meta
     let m: MetaInfo = {
       "message.bcc": mi(
         MIT.STRING,
-        message.getBcc(),
+        (msg: Message) => msg.getBcc(),
         this.getRefDocs("message", "getBcc"),
       ),
       "message.cc": mi(
         MIT.STRING,
-        message.getCc(),
+        (msg: Message) => msg.getCc(),
         this.getRefDocs("message", "getCc"),
       ),
       "message.date": mi(
         MIT.DATE,
-        message.getDate(),
+        (msg: Message) => msg.getDate(),
         this.getRefDocs("message", "getDate"),
       ),
       "message.from": mi(
         MIT.STRING,
-        message.getFrom(),
+        (msg: Message) => msg.getFrom(),
         this.getRefDocs("message", "getFrom"),
       ),
       "message.from.domain": mi(
         MIT.STRING,
-        message.getFrom().split("@")[1],
+        (msg: Message) => msg.getFrom().split("@")[1],
         this.getRefDocs("message", "getFrom"),
       ),
       "message.id": mi(
         MIT.STRING,
-        message.getId(),
+        (msg: Message) => msg.getId(),
         this.getRefDocs("message", "getId"),
       ),
       "message.isDraft": mi(
         MIT.BOOLEAN,
-        message.isDraft(),
+        (msg: Message) => msg.isDraft(),
         this.getRefDocs("message", "isDraft"),
       ),
       "message.isInChats": mi(
         MIT.BOOLEAN,
-        message.isInChats(),
+        (msg: Message) => msg.isInChats(),
         this.getRefDocs("message", "isInChats"),
       ),
       "message.isInInbox": mi(
         MIT.BOOLEAN,
-        message.isInInbox(),
+        (msg: Message) => msg.isInInbox(),
         this.getRefDocs("message", "isInInbox"),
       ),
       "message.isInPriorityInbox": mi(
         MIT.BOOLEAN,
-        message.isInPriorityInbox(),
+        (msg: Message) => msg.isInPriorityInbox(),
         this.getRefDocs("message", "isInPriorityInbox"),
       ),
       "message.isInTrash": mi(
         MIT.BOOLEAN,
-        message.isInTrash(),
+        (msg: Message) => msg.isInTrash(),
         this.getRefDocs("message", "isInTrash"),
       ),
       "message.isStarred": mi(
         MIT.BOOLEAN,
-        message.isStarred(),
+        (msg: Message) => msg.isStarred(),
         this.getRefDocs("message", "isStarred"),
       ),
       "message.isUnread": mi(
         MIT.BOOLEAN,
-        message.isUnread(),
+        (msg: Message) => msg.isUnread(),
         this.getRefDocs("message", "isUnread"),
       ),
       "message.replyTo": mi(
         MIT.STRING,
-        message.getReplyTo(),
+        (msg: Message) => msg.getReplyTo(),
         this.getRefDocs("message", "getReplyTo"),
       ),
       "message.subject": mi(
         MIT.STRING,
-        message.getSubject(),
+        (msg: Message) => msg.getSubject(),
         this.getRefDocs("message", "getSubject"),
       ),
       "message.to": mi(
         MIT.STRING,
-        message.getTo(),
+        (msg: Message) => msg.getTo(),
         this.getRefDocs("message", "getTo"),
       ),
       "message.index": mi(

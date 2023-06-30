@@ -4,11 +4,17 @@ import { GmailAdapter } from "./adapter/GmailAdapter"
 import { SpreadsheetAdapter } from "./adapter/SpreadsheetAdapter"
 import { ActionConfig } from "./config/ActionConfig"
 import { RequiredAttachmentConfig } from "./config/AttachmentConfig"
+import { AttachmentMatchConfig } from "./config/AttachmentMatchConfig"
 import { RequiredConfig } from "./config/Config"
 import { RequiredMessageConfig } from "./config/MessageConfig"
+import { MessageMatchConfig } from "./config/MessageMatchConfig"
 import { RequiredThreadConfig } from "./config/ThreadConfig"
 import { Logger } from "./utils/Logger"
 import { Timer } from "./utils/Timer"
+
+export type Attachment = GoogleAppsScript.Gmail.GmailAttachment
+export type Message = GoogleAppsScript.Gmail.GmailMessage
+export type Thread = GoogleAppsScript.Gmail.GmailThread
 
 export enum RunMode {
   /** Don't execute writing actions */
@@ -25,7 +31,12 @@ export enum MetaInfoType {
   STRING = "string",
   VARIABLE = "variable",
 }
-type MetaInfoValueType = unknown | (() => unknown)
+type MetaInfoValueType =
+  | unknown
+  | ((
+      obj: Message | Attachment,
+      cfg: MessageMatchConfig | AttachmentMatchConfig,
+    ) => unknown)
 type MetaInfoEntry = {
   description: string
   type: MetaInfoType
@@ -88,7 +99,16 @@ export type AttachmentInfo = {
   index: number
 }
 
+export enum ContextType {
+  ENV,
+  PROCESSING,
+  THREAD,
+  MESSAGE,
+  ATTACHMENT,
+}
+
 export type EnvContext = {
+  type: ContextType
   env: EnvInfo
   log: Logger
   meta: MetaInfo
