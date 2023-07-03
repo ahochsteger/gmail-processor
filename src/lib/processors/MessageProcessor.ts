@@ -232,11 +232,7 @@ export class MessageProcessor extends BaseProcessor {
       "message.subject": mi(
         MIT.STRING,
         (msg: Message) => msg.getSubject(),
-        this.getRefDocs(
-          "message",
-          "getSubject",
-          "The subject of the message.",
-        ),
+        this.getRefDocs("message", "getSubject", "The subject of the message."),
       ),
       "message.to": mi(
         MIT.STRING,

@@ -13,9 +13,13 @@ enum PlaceholderModifierType {
   JOIN = "join",
 }
 
+/** The type of a placeholder. */
 export enum PlaceholderType {
+  /** An attachment placeholder type. */
   ATTACHMENT = "attachment",
+  /** A message placeholder type. */
   MESSAGE = "message",
+  /** A thread placeholder type. */
   THREAD = "thread",
 }
 
@@ -65,7 +69,7 @@ export class PatternUtil {
     let stringValue = defaultValue
     let p: Placeholder | undefined
     if (typeof ref === "string") {
-      // Turn meta key name into placeholder type
+      // Turn placeholder name into placeholder type
       p = PatternUtil.nextPlaceholder(`\${${ref}}`)
     } else {
       // Already got a placeholder type

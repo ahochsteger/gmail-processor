@@ -38,38 +38,33 @@ function genMetaInfoDocs(m: MetaInfo, title: string, description: string) {
     })
 }
 
-describe("Generate MetaInfo Docs", () => {
-  write(`# Meta Infos`)
-  write(``)
-  write(
-    `The following meta infos are available for substitution in strings, depending on the context.`,
-  )
-  it("should generate processing meta info docs", () => {
+describe("Generate Context Substitution Docs", () => {
+  it("should generate processing context substitution docs", () => {
     genMetaInfoDocs(
       ctx.procMeta,
-      "Processing Meta Infos",
-      "These meta info placeholder are globally available.",
+      "Processing Placeholder",
+      "These context substitution placeholder are globally available.",
     )
   })
-  it("should generate thread meta info docs", () => {
+  it("should generate thread context substitution docs", () => {
     genMetaInfoDocs(
       ctx.threadMeta,
-      "Thread Meta Infos",
-      "These meta info placeholder are defined for the currently GMail thread.",
+      "Thread Placeholder",
+      "These context substitution placeholder are defined for the currently GMail thread.",
     )
   })
-  it("should generate message meta info docs", () => {
+  it("should generate message context substitution docs", () => {
     genMetaInfoDocs(
       ctx.messageMeta,
-      "Message Meta Infos",
-      "These meta info placeholder are defined for the currently processed GMail message.",
+      "Message Placeholder",
+      "These context substitution placeholder are defined for the currently processed GMail message.",
     )
   })
-  it("should generate attachment meta info docs", () => {
+  it("should generate attachment context substitution docs", () => {
     genMetaInfoDocs(
       ctx.attachmentMeta,
-      "Attachment Meta Infos",
-      "These meta info placeholder are defined for the currently processed GMail attachment.",
+      "Attachment Placeholder",
+      "These context substitution placeholder are defined for the currently processed GMail attachment.",
     )
   })
 })

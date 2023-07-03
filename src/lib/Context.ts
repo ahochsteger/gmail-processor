@@ -16,19 +16,30 @@ export type Attachment = GoogleAppsScript.Gmail.GmailAttachment
 export type Message = GoogleAppsScript.Gmail.GmailMessage
 export type Thread = GoogleAppsScript.Gmail.GmailThread
 
+/** The runtime mode in which processing takes place. */
 export enum RunMode {
   /** Don't execute writing actions */
   DRY_RUN = "dry-run",
   /** Don't execute deleting actions */
   SAFE_MODE = "safe-mode",
-  /** Execute all actions including deletes. I know exactly what I'm doing and won't complain if something goes wrong! */
+  /**
+   * Execute all actions including deletes.
+   * ATTENTION: I know exactly what I'm doing when using this mode and won't complain if something goes wrong!
+   */
   DANGEROUS = "dangerous",
 }
+
+/** The type of meta information used for context substitution placerholders. */
 export enum MetaInfoType {
+  /** Boolean type substituted to `true` or `false`. */
   BOOLEAN = "boolean",
+  /** Date/time type. For substitution a format string can be given using `${<placeholder>:format:<formatstring>}`. */
   DATE = "date",
+  /** A numeric data type. */
   NUMBER = "number",
+  /** A string data type. */
   STRING = "string",
+  /** A custom configuration variable. */
   VARIABLE = "variable",
 }
 type MetaInfoValueType =
@@ -99,11 +110,17 @@ export type AttachmentInfo = {
   index: number
 }
 
+/** A type of context. */
 export enum ContextType {
+  /** A context holding all environment information and references to environment objects. */
   ENV,
+  /** A context holding all processing information like the configuration, integration adapters, action registry and timer. */
   PROCESSING,
+  /** A context holding the thread configuration and information about the currently processed thread. */
   THREAD,
+  /** A context holding the message configuration and information about the currently processed message. */
   MESSAGE,
+  /** A context holding the attachment configuration and information about the currently processed attachment. */
   ATTACHMENT,
 }
 
@@ -130,8 +147,11 @@ export type AttachmentContext = MessageContext & {
   attachmentMeta: MetaInfo
 }
 
+/** The result status of processing a config or an action. */
 export enum ProcessingStatus {
+  /** An error has occured. */
   ERROR = "error",
+  /** The processing was successful. */
   OK = "ok",
 }
 

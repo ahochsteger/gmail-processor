@@ -449,6 +449,8 @@ The unique name of the message config (will be generated if not set)
 <a name="reference-messageflag"></a>
 ## MessageFlag
 
+A flag to match messages with certain properties.
+
 
 
 ---------------------------------------

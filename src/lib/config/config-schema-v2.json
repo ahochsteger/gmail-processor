@@ -331,6 +331,7 @@
             "type": "object"
         },
         "MessageFlag": {
+            "description": "A flag to match messages with certain properties.",
             "enum": [
                 "read",
                 "starred",

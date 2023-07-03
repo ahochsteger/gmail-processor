@@ -41,6 +41,10 @@ This way the attachments of periodic emails can be automatically organized in fo
 7. Test the script by manually executing the function 'Gmail2GDrive'.
 8. Create a time based trigger which periodically executes 'Gmail2GDrive' (e.g. once per day) to automatically organize your Gmail attachments within Google Drive.
 
+## Reference Documentation
+
+See the [GMail Processor Reference Documentation](docs/reference-docs.md) for a full up-to-date reference documentation.
+
 ## Configuration
 
 The documentation of the configuration schema can be found in [docs/config-schema-v2.md](docs/config-schema-v2.md).

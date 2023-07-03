@@ -1,12 +1,19 @@
 import { EnvContext, RunMode } from "../Context"
 import { BaseAdapter } from "./BaseAdapter"
 
+/** Strategy that defines how to deal in case of conflicts with already existing files at the desired location in Google Drive. */
 export enum ConflictStrategy {
-  ERROR = "error",
+  /** Create a backup of the existing file by renaming it. */
   BACKUP = "backup",
+  /** Terminate processing with an error. */
+  ERROR = "error",
+  /** Keep the existing file and create the new one with the same name. */
   KEEP = "keep",
+  /** Replace the existing file with the new one. */
   REPLACE = "replace",
+  /** Skip creating the new file and keep the existing one. */
   SKIP = "skip",
+  /** Update the existing file with the contents of the new one (keep it's file ID). */
   UPDATE = "update",
 }
 

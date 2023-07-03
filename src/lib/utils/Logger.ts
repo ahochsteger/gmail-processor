@@ -6,10 +6,15 @@ import {
   ThreadContext,
 } from "../Context"
 
+/** Levels of log messages used for marking and filtering. */
 export enum LogLevel {
+  /** Log level for debugging messages. */
   DEBUG,
+  /** Log level for info messages. */
   INFO,
+  /** Log level for warning messages. */
   WARN,
+  /** Log level for error messages. */
   ERROR,
 }
 

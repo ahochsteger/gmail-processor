@@ -13,11 +13,16 @@ type LocationType = string
 
 /**
  * The method to mark processed threads/messages.
- * * `add-label` (deprecated): Adds the label set using `markProcessedLabel` to the thread. ATTENTION: This method is just for compatibility with v1 configs and does not support multiple messages per thread!
- * * `mark-read`: Mark the message as read. This is the new default since it provides more flexibility esp. when threads contain multiple messages.
  */
 export enum MarkProcessedMethod {
+  /** (deprecated): Adds the label set using `markProcessedLabel` to the thread.
+   * ATTENTION: This method is just for compatibility with v1 configs and does not support multiple messages per thread!
+   */
   ADD_THREAD_LABEL = "add-label",
+  /**
+   * Mark the message as read.
+   * This is the new default since it provides more flexibility esp. when threads contain multiple messages.
+   */
   MARK_MESSAGE_READ = "mark-read",
 }
 

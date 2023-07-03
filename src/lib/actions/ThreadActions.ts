@@ -11,6 +11,7 @@ import {
 export class ThreadActions implements ActionProvider<ThreadContext> {
   [key: string]: ActionFunction<ThreadContext>
 
+  /** Mark the thread as important. */
   @writingAction()
   public static markImportant(context: ThreadContext): ActionReturnType {
     return {
@@ -20,6 +21,7 @@ export class ThreadActions implements ActionProvider<ThreadContext> {
     }
   }
 
+  /** Mark the thread as read. */
   @writingAction()
   public static markRead(context: ThreadContext): ActionReturnType {
     return {
@@ -27,6 +29,7 @@ export class ThreadActions implements ActionProvider<ThreadContext> {
     }
   }
 
+  /** Mark the thread as unimportant. */
   @writingAction()
   public static markUnimportant(context: ThreadContext): ActionReturnType {
     return {
@@ -36,6 +39,7 @@ export class ThreadActions implements ActionProvider<ThreadContext> {
     }
   }
 
+  /** Mark the thread as unread. */
   @writingAction()
   public static markUnread(context: ThreadContext): ActionReturnType {
     return {
@@ -43,6 +47,7 @@ export class ThreadActions implements ActionProvider<ThreadContext> {
     }
   }
 
+  /** Move the thread to the archive. */
   @writingAction()
   public static moveToArchive(context: ThreadContext): ActionReturnType {
     return {
@@ -52,6 +57,7 @@ export class ThreadActions implements ActionProvider<ThreadContext> {
     }
   }
 
+  /** Move the thread to the inbox. */
   @writingAction()
   public static moveToInbox(context: ThreadContext): ActionReturnType {
     return {
@@ -61,6 +67,7 @@ export class ThreadActions implements ActionProvider<ThreadContext> {
     }
   }
 
+  /** Move the thread to spam. */
   @writingAction()
   public static moveToSpam(context: ThreadContext): ActionReturnType {
     return {
@@ -68,6 +75,7 @@ export class ThreadActions implements ActionProvider<ThreadContext> {
     }
   }
 
+  /** Move the thread to trash. */
   @destructiveAction()
   public static moveToTrash(context: ThreadContext): ActionReturnType {
     return {
@@ -77,11 +85,14 @@ export class ThreadActions implements ActionProvider<ThreadContext> {
     }
   }
 
+  /** Add a label to the thread. */
   @writingAction()
-  public static addLabel<TArgs extends { name: string }>(
-    context: ThreadContext,
-    args: TArgs,
-  ) {
+  public static addLabel<
+    TArgs extends {
+      /** The name of the label. */
+      name: string
+    },
+  >(context: ThreadContext, args: TArgs) {
     return {
       thread: context.proc.gmailAdapter.threadAddLabel(
         context.thread.object,
@@ -90,11 +101,14 @@ export class ThreadActions implements ActionProvider<ThreadContext> {
     }
   }
 
+  /** Remove a label from the thread. */
   @writingAction()
-  public static removeLabel<TArgs extends { name: string }>(
-    context: ThreadContext,
-    args: TArgs,
-  ) {
+  public static removeLabel<
+    TArgs extends {
+      /** The name of the label. */
+      name: string
+    },
+  >(context: ThreadContext, args: TArgs) {
     return {
       thread: context.proc.gmailAdapter.threadRemoveLabel(
         context.thread.object,
@@ -103,15 +117,25 @@ export class ThreadActions implements ActionProvider<ThreadContext> {
     }
   }
 
-  /**
-   * Generate a PDF document for the whole thread and store it to GDrive.
-   */
+  /** Generate a PDF document for the whole thread and store it to GDrive. */
   @writingAction()
   public static storePDF<
     TArgs extends {
+      /** The location (path + filename) of the Google Drive file.
+       * For shared folders or Team Drives prepend the location with `{id:<folderId>}`.
+       * Supports context substitution placeholder.
+       */
       location: string
+      /**
+       * The strategy to be used in case a file already exists at the desired location.
+       */
       conflictStrategy: ConflictStrategy
+      /**
+       * The description to be attached to the Google Drive file.
+       * Supports context substitution placeholder.
+       */
       description?: string
+      /** Skip the header if `true`. */
       skipHeader?: boolean
     },
   >(context: ThreadContext, args: TArgs) {
