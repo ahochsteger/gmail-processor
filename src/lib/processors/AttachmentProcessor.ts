@@ -90,45 +90,46 @@ export class AttachmentProcessor extends BaseProcessor {
 
   public static buildMetaInfo(ctx: AttachmentContext): MetaInfo {
     const attachment = ctx.attachment.object
+    const keyPrefix = "attachment"
     let m: MetaInfo = {
-      "attachment.contentType": mi(
+      [`${keyPrefix}.contentType`]: mi(
         MIT.STRING,
         (att: Attachment) => att.getContentType(),
         this.getRefDocs(
-          "attachment",
+          keyPrefix,
           "getContentType",
           "The content type of the attachment.",
         ),
       ),
-      "attachment.hash": mi(
+      [`${keyPrefix}.hash`]: mi(
         MIT.STRING,
         (att: Attachment) => att.getHash(),
         this.getRefDocs(
-          "attachment",
+          keyPrefix,
           "getHash",
           "The SHA1 content hash for the attachment.",
         ),
       ),
-      "attachment.isGoogleType": mi(
+      [`${keyPrefix}.isGoogleType`]: mi(
         MIT.STRING,
         (att: Attachment) => att.isGoogleType(),
         this.getRefDocs(
-          "attachment",
+          keyPrefix,
           "isGoogleType",
           "`true` if this attachment is a Google Workspace file (Sheets, Docs, etc.).",
         ),
       ),
-      "attachment.name": mi(
+      [`${keyPrefix}.name`]: mi(
         MIT.STRING,
         (att: Attachment) => att.getName(),
-        this.getRefDocs("attachment", "getName", "The name of the attachment."),
+        this.getRefDocs(keyPrefix, "getName", "The name of the attachment."),
       ),
-      "attachment.size": mi(
+      [`${keyPrefix}.size`]: mi(
         MIT.STRING,
         (att: Attachment) => att.getSize(),
-        this.getRefDocs("attachment", "getSize", "The size of the attachment."),
+        this.getRefDocs(keyPrefix, "getSize", "The size of the attachment."),
       ),
-      "attachment.index": mi(
+      [`${keyPrefix}.index`]: mi(
         MIT.STRING,
         ctx.attachment.index,
         "The index number (0-based) of the attachment.",
@@ -143,10 +144,10 @@ export class AttachmentProcessor extends BaseProcessor {
     m = this.buildRegExpSubustitutionMap(
       ctx,
       m,
-      "attachment",
+      keyPrefix,
       this.getRegexMapFromAttachmentMatchConfig(attachmentConfig.match),
     )
-    if (!m["attachment.matched"]) {
+    if (!m[`${keyPrefix}.matched`]) {
       ctx.log.info(
         `Skipped attachment with name '${attachment.getName()}' because it did not match the regex rules ...`,
       )

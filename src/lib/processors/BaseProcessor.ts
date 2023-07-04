@@ -64,8 +64,9 @@ export abstract class BaseProcessor {
         matchesAll = false
       }
     })
-    ctx.log.debug(`... result for key prefix ${keyPrefix}: ${matchesAll}`)
-    m[`${keyPrefix}.matched`] = mi(
+    const matchedKey = `${keyPrefix}.matched`
+    ctx.log.debug(`... result for ${matchedKey}: ${matchesAll}`)
+    m[matchedKey] = mi(
       MIT.BOOLEAN,
       matchesAll,
       "The overall matching result for all conditions in the match config.",

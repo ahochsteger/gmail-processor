@@ -109,141 +109,142 @@ export class MessageProcessor extends BaseProcessor {
 
   public static buildMetaInfo(ctx: MessageContext): MetaInfo {
     const message = ctx.message.object
+    const keyPrefix = "message"
     ctx.meta
     let m: MetaInfo = {
-      "message.bcc": mi(
+      [`${keyPrefix}.bcc`]: mi(
         MIT.STRING,
         (msg: Message) => msg.getBcc(),
         this.getRefDocs(
-          "message",
+          keyPrefix,
           "getBcc",
           "The comma-separated recipients bcc'd on the message.",
         ),
       ),
-      "message.cc": mi(
+      [`${keyPrefix}.cc`]: mi(
         MIT.STRING,
         (msg: Message) => msg.getCc(),
         this.getRefDocs(
-          "message",
+          keyPrefix,
           "getCc",
           "The comma-separated recipients cc'd on the message.",
         ),
       ),
-      "message.date": mi(
+      [`${keyPrefix}.date`]: mi(
         MIT.DATE,
         (msg: Message) => msg.getDate(),
         this.getRefDocs(
-          "message",
+          keyPrefix,
           "getDate",
           "The date and time of the message.",
         ),
       ),
-      "message.from": mi(
+      [`${keyPrefix}.from`]: mi(
         MIT.STRING,
         (msg: Message) => msg.getFrom(),
-        this.getRefDocs("message", "getFrom", "The sender of the message."),
+        this.getRefDocs(keyPrefix, "getFrom", "The sender of the message."),
       ),
       "message.from.domain": mi(
         MIT.STRING,
         (msg: Message) => msg.getFrom().split("@")[1],
         this.getRefDocs(
-          "message",
+          keyPrefix,
           "getFrom",
           "The sender domain of the message.",
         ),
       ),
-      "message.id": mi(
+      [`${keyPrefix}.id`]: mi(
         MIT.STRING,
         (msg: Message) => msg.getId(),
-        this.getRefDocs("message", "getId", "The ID of the message."),
+        this.getRefDocs(keyPrefix, "getId", "The ID of the message."),
       ),
-      "message.isDraft": mi(
+      [`${keyPrefix}.isDraft`]: mi(
         MIT.BOOLEAN,
         (msg: Message) => msg.isDraft(),
         this.getRefDocs(
-          "message",
+          keyPrefix,
           "isDraft",
           "`true` if the message is a draft.",
         ),
       ),
-      "message.isInChats": mi(
+      [`${keyPrefix}.isInChats`]: mi(
         MIT.BOOLEAN,
         (msg: Message) => msg.isInChats(),
         this.getRefDocs(
-          "message",
+          keyPrefix,
           "isInChats",
           "`true` if the message is a chat.",
         ),
       ),
-      "message.isInInbox": mi(
+      [`${keyPrefix}.isInInbox`]: mi(
         MIT.BOOLEAN,
         (msg: Message) => msg.isInInbox(),
         this.getRefDocs(
-          "message",
+          keyPrefix,
           "isInInbox",
           "`true` if the message is in the inbox.",
         ),
       ),
-      "message.isInPriorityInbox": mi(
+      [`${keyPrefix}.isInPriorityInbox`]: mi(
         MIT.BOOLEAN,
         (msg: Message) => msg.isInPriorityInbox(),
         this.getRefDocs(
-          "message",
+          keyPrefix,
           "isInPriorityInbox",
           "`true` if if the message is in the priority inbox.",
         ),
       ),
-      "message.isInTrash": mi(
+      [`${keyPrefix}.isInTrash`]: mi(
         MIT.BOOLEAN,
         (msg: Message) => msg.isInTrash(),
         this.getRefDocs(
-          "message",
+          keyPrefix,
           "isInTrash",
           "`true` if the message is in the trash.",
         ),
       ),
-      "message.isStarred": mi(
+      [`${keyPrefix}.isStarred`]: mi(
         MIT.BOOLEAN,
         (msg: Message) => msg.isStarred(),
         this.getRefDocs(
-          "message",
+          keyPrefix,
           "isStarred",
           "`true` if the message is starred.",
         ),
       ),
-      "message.isUnread": mi(
+      [`${keyPrefix}.isUnread`]: mi(
         MIT.BOOLEAN,
         (msg: Message) => msg.isUnread(),
         this.getRefDocs(
-          "message",
+          keyPrefix,
           "isUnread",
           "`true` if the message is unread.",
         ),
       ),
-      "message.replyTo": mi(
+      [`${keyPrefix}.replyTo`]: mi(
         MIT.STRING,
         (msg: Message) => msg.getReplyTo(),
         this.getRefDocs(
-          "message",
+          keyPrefix,
           "getReplyTo",
           "The reply-to address of the message (usually the sender).",
         ),
       ),
-      "message.subject": mi(
+      [`${keyPrefix}.subject`]: mi(
         MIT.STRING,
         (msg: Message) => msg.getSubject(),
-        this.getRefDocs("message", "getSubject", "The subject of the message."),
+        this.getRefDocs(keyPrefix, "getSubject", "The subject of the message."),
       ),
-      "message.to": mi(
+      [`${keyPrefix}.to`]: mi(
         MIT.STRING,
         (msg: Message) => msg.getTo(),
         this.getRefDocs(
-          "message",
+          keyPrefix,
           "getTo",
           "The comma-separated recipients of the message.",
         ),
       ),
-      "message.index": mi(
+      [`${keyPrefix}.index`]: mi(
         MIT.NUMBER,
         ctx.message.index,
         "The index number (0-based) of the message.",
@@ -260,10 +261,10 @@ export class MessageProcessor extends BaseProcessor {
       m = this.buildRegExpSubustitutionMap(
         ctx,
         m,
-        "message",
+        keyPrefix,
         this.getRegexMapFromMessageMatchConfig(messageConfig.match),
       )
-      if (!m["messgage.matched"]) {
+      if (!m[`${keyPrefix}.matched`]) {
         ctx.log.info(
           `Skipped message with id ${message.getId()} because it did not match the regex rules ...`,
         )
