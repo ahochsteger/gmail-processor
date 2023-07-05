@@ -1,8 +1,8 @@
+import { ConfigMocks } from "../../test/mocks/ConfigMocks"
 import { NEW_FILE_NAME } from "../../test/mocks/GDriveMocks"
 import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
 import { AttachmentContext, ProcessingContext, RunMode } from "../Context"
 import { ConflictStrategy } from "../adapter/GDriveAdapter"
-import { newConfig } from "../config/Config"
 import { ActionProvider, ActionRegistry } from "./ActionRegistry"
 import { AttachmentActions } from "./AttachmentActions"
 
@@ -11,7 +11,7 @@ let actionRegistry: ActionRegistry
 let actionProvider: ActionProvider<AttachmentContext>
 
 beforeEach(() => {
-  mocks = MockFactory.newMocks(newConfig(), RunMode.DANGEROUS)
+  mocks = MockFactory.newMocks()
   actionRegistry = new ActionRegistry()
   actionProvider = new AttachmentActions()
   actionRegistry.registerActionProvider(
@@ -44,7 +44,10 @@ it("should create a file", () => {
 })
 
 it("should not create a file on dry-run", () => {
-  const dryRunMocks = MockFactory.newMocks(newConfig(), RunMode.DRY_RUN)
+  const dryRunMocks = MockFactory.newMocks(
+    ConfigMocks.newDefaultConfig(),
+    RunMode.DRY_RUN,
+  )
   AttachmentActions.store(dryRunMocks.attachmentContext, {
     location: "test-location",
     conflictStrategy: ConflictStrategy.REPLACE,

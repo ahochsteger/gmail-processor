@@ -1,19 +1,18 @@
 import { GMailMocks } from "../../test/mocks/GMailMocks"
 import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
-import { ProcessingStatus, RunMode } from "../Context"
+import { ProcessingStatus } from "../Context"
 import { newAttachmentConfig } from "../config/AttachmentConfig"
 import {
   AttachmentMatchConfig,
   RequiredAttachmentMatchConfig,
   newAttachmentMatchConfig,
 } from "../config/AttachmentMatchConfig"
-import { newConfig } from "../config/Config"
 import { AttachmentProcessor } from "./AttachmentProcessor"
 
 let mocks: Mocks
 
 beforeEach(() => {
-  mocks = MockFactory.newMocks(newConfig(), RunMode.DANGEROUS)
+  mocks = MockFactory.newMocks()
 })
 
 it("should build a match config with default globals", () => {

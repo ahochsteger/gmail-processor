@@ -13,8 +13,7 @@ let gmailProcessor: GmailProcessor
 
 beforeEach(() => {
   configJson = ConfigMocks.newDefaultConfigJson()
-  const config = newConfig(configJson)
-  mocks = MockFactory.newMocks(config, RunMode.DANGEROUS)
+  mocks = MockFactory.newMocks(newConfig(configJson), RunMode.DANGEROUS)
   gmailProcessor = new GmailProcessor()
 })
 

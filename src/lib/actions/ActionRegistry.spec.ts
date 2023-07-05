@@ -3,10 +3,8 @@ import {
   AttachmentContext,
   MessageContext,
   ProcessingContext,
-  RunMode,
   ThreadContext,
 } from "../Context"
-import { newConfig } from "../config/Config"
 import {
   ActionArgsType,
   ActionFunction,
@@ -99,7 +97,7 @@ let myThreadActionProvider: TestThreadActionProvider
 let actionRegistry: ActionRegistry
 
 beforeEach(() => {
-  mocks = MockFactory.newMocks(newConfig(), RunMode.DANGEROUS)
+  mocks = MockFactory.newMocks()
   actionRegistry = new ActionRegistry()
   myThreadActionProvider = new TestThreadActionProvider()
   actionRegistry.registerActionProvider(

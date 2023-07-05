@@ -72,9 +72,11 @@ export class GmailProcessor {
     return m
   }
 
-  public run(config: RequiredConfig, ctx: EnvContext) {
-    ctx.log.info("Processing of GMail2GDrive config started ...")
-    const actionRegistry = new ActionRegistry()
+  public static setupActionRegistry(
+    ctx: EnvContext,
+    actionRegistry: ActionRegistry = new ActionRegistry(),
+  ): ActionRegistry {
+    ctx.log.info("Setting up action registry ...")
     actionRegistry.registerActionProvider(
       "thread",
       new ThreadActions() as ActionProvider<ProcessingContext>,
@@ -87,6 +89,12 @@ export class GmailProcessor {
       "attachment",
       new AttachmentActions() as unknown as ActionProvider<ProcessingContext>,
     )
+    return actionRegistry
+  }
+
+  public run(config: RequiredConfig, ctx: EnvContext) {
+    ctx.log.info("Processing of GMail2GDrive config started ...")
+    const actionRegistry = GmailProcessor.setupActionRegistry(ctx)
     const processingContext = GmailProcessor.buildContext(ctx, {
       actionRegistry: actionRegistry,
       config: config,

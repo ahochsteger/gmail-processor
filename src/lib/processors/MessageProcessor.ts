@@ -108,7 +108,6 @@ export class MessageProcessor extends BaseProcessor {
   }
 
   public static buildMetaInfo(ctx: MessageContext): MetaInfo {
-    const message = ctx.message.object
     const keyPrefix = "message"
     ctx.meta
     let m: MetaInfo = {
@@ -265,8 +264,9 @@ export class MessageProcessor extends BaseProcessor {
         this.getRegexMapFromMessageMatchConfig(messageConfig.match),
       )
       if (!m[`${keyPrefix}.matched`]) {
+        const message = ctx.message.object
         ctx.log.info(
-          `Skipped message with id ${message.getId()} because it did not match the regex rules ...`,
+          `Skipped message with id ${message.getId()} because it did not match the regex rules.`,
         )
       }
     }

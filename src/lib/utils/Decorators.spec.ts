@@ -1,3 +1,4 @@
+import { ConfigMocks } from "../../test/mocks/ConfigMocks"
 import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
 import { MessageContext, ProcessingContext, RunMode } from "../Context"
 import {
@@ -6,7 +7,6 @@ import {
   ActionProvider,
   ActionReturnType,
 } from "../actions/ActionRegistry"
-import { newConfig } from "../config/Config"
 import { destructiveAction, readingAction, writingAction } from "./Decorators"
 
 let dangerousMocks: Mocks
@@ -15,9 +15,15 @@ let dryRunMocks: Mocks
 let spy: jest.SpyInstance
 
 beforeEach(() => {
-  dangerousMocks = MockFactory.newMocks(newConfig(), RunMode.DANGEROUS)
-  safeModeMocks = MockFactory.newMocks(newConfig(), RunMode.SAFE_MODE)
-  dryRunMocks = MockFactory.newMocks(newConfig(), RunMode.DRY_RUN)
+  dangerousMocks = MockFactory.newMocks()
+  safeModeMocks = MockFactory.newMocks(
+    ConfigMocks.newDefaultConfig(),
+    RunMode.SAFE_MODE,
+  )
+  dryRunMocks = MockFactory.newMocks(
+    ConfigMocks.newDefaultConfig(),
+    RunMode.DRY_RUN,
+  )
   spy = jest.spyOn(MyMessageActions, "testFunc")
 })
 

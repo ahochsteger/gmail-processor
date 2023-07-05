@@ -2,7 +2,6 @@ import { MockFactory } from "../../test/mocks/MockFactory"
 import {
   ProcessingContext,
   ProcessingResult,
-  RunMode,
   newProcessingResult,
 } from "../Context"
 import {
@@ -12,7 +11,6 @@ import {
   ActionRegistry,
 } from "../actions/ActionRegistry"
 import { ActionConfig, ProcessingStage } from "../config/ActionConfig"
-import { newConfig } from "../config/Config"
 import { BaseProcessor } from "./BaseProcessor"
 
 class TestProcessor extends BaseProcessor {
@@ -38,7 +36,7 @@ class TestActionProvider implements ActionProvider {
 }
 
 it("should handle error throwing actions", () => {
-  const mocks = MockFactory.newMocks(newConfig(), RunMode.DANGEROUS)
+  const mocks = MockFactory.newMocks()
   const actionRegistry = new ActionRegistry()
   actionRegistry.registerActionProvider("test", new TestActionProvider())
   let result = newProcessingResult()

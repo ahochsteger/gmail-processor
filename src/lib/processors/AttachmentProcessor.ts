@@ -89,7 +89,6 @@ export class AttachmentProcessor extends BaseProcessor {
   }
 
   public static buildMetaInfo(ctx: AttachmentContext): MetaInfo {
-    const attachment = ctx.attachment.object
     const keyPrefix = "attachment"
     let m: MetaInfo = {
       [`${keyPrefix}.contentType`]: mi(
@@ -148,8 +147,9 @@ export class AttachmentProcessor extends BaseProcessor {
       this.getRegexMapFromAttachmentMatchConfig(attachmentConfig.match),
     )
     if (!m[`${keyPrefix}.matched`]) {
+      const attachment = ctx.attachment.object
       ctx.log.info(
-        `Skipped attachment with name '${attachment.getName()}' because it did not match the regex rules ...`,
+        `Skipped attachment with name '${attachment.getName()}' because it did not match the regex rules.`,
       )
     }
     return m

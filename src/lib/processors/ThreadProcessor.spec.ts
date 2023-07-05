@@ -47,16 +47,21 @@ it("should construct a GMail search query without globals and no processedLabel"
       markProcessedLabel: "",
       markProcessedMethod: MarkProcessedMethod.MARK_MESSAGE_READ,
     },
-  })
-  const threadConfig = newThreadConfig({
-    match: {
-      query: "some-thread-specific-query",
-    },
+    threads: [
+      {
+        match: {
+          query: "some-thread-specific-query",
+        },
+      },
+    ],
   })
   const mocks = MockFactory.newMocks(config, RunMode.DANGEROUS)
   const actualQuery = ThreadProcessor.buildQuery(
     mocks.processingContext,
-    threadConfig.match,
+    config.threads[0].match,
   )
   expect(actualQuery).toEqual("some-thread-specific-query")
 })
+
+test.todo("regex match for firstMessageSubject")
+test.todo("regex match for labels") // Check sorted/non-sorted!

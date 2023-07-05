@@ -1,8 +1,8 @@
+import { ConfigMocks } from "../../test/mocks/ConfigMocks"
 import { NEW_FILE_NAME } from "../../test/mocks/GDriveMocks"
 import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
 import { ProcessingContext, RunMode } from "../Context"
 import { ConflictStrategy } from "../adapter/GDriveAdapter"
-import { newConfig } from "../config/Config"
 import { ActionProvider, ActionRegistry } from "./ActionRegistry"
 import { MessageActions } from "./MessageActions"
 
@@ -10,7 +10,7 @@ let mocks: Mocks
 let actionRegistry: ActionRegistry
 
 beforeEach(() => {
-  mocks = MockFactory.newMocks(newConfig(), RunMode.DANGEROUS)
+  mocks = MockFactory.newMocks()
   actionRegistry = new ActionRegistry()
   actionRegistry.registerActionProvider(
     "message",
@@ -41,7 +41,10 @@ it("should forward a message", () => {
 })
 
 it("should not forward a message (dry-run)", () => {
-  const dryRunMocks = MockFactory.newMocks(newConfig(), RunMode.DRY_RUN)
+  const dryRunMocks = MockFactory.newMocks(
+    ConfigMocks.newDefaultConfig(),
+    RunMode.DRY_RUN,
+  )
   MessageActions.forward(dryRunMocks.messageContext, { to: "test" })
   expect(dryRunMocks.message.forward).not.toBeCalled()
 })

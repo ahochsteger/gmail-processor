@@ -8,7 +8,6 @@ import {
   RunMode,
   ThreadContext,
 } from "../../lib/Context"
-import { ActionRegistry } from "../../lib/actions/ActionRegistry"
 import { GDriveAdapter } from "../../lib/adapter/GDriveAdapter"
 import { GmailAdapter } from "../../lib/adapter/GmailAdapter"
 import { SpreadsheetAdapter } from "../../lib/adapter/SpreadsheetAdapter"
@@ -51,12 +50,13 @@ export class ContextMocks {
     envContext = this.newEnvContextMock(),
     config = ConfigMocks.newDefaultConfig(),
   ): ProcessingContext {
+    const actionRegistry = GmailProcessor.setupActionRegistry(envContext)
     return GmailProcessor.buildContext(envContext, {
       gdriveAdapter: new GDriveAdapter(envContext),
       gmailAdapter: new GmailAdapter(envContext),
       spreadsheetAdapter: new SpreadsheetAdapter(envContext),
       config,
-      actionRegistry: new ActionRegistry(),
+      actionRegistry: actionRegistry,
       timer: new Timer(config.settings.maxRuntime),
     })
   }

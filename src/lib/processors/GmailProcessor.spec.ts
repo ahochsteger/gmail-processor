@@ -1,7 +1,5 @@
 import { PartialDeep } from "type-fest"
-import { ConfigMocks } from "../../test/mocks/ConfigMocks"
 import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
-import { RunMode } from "../Context"
 import { ProcessingStage } from "../config/ActionConfig"
 import { Config, RequiredConfig } from "../config/Config"
 import { MarkProcessedMethod } from "../config/SettingsConfig"
@@ -12,8 +10,8 @@ let mocks: Mocks
 let gmailProcessor: GmailProcessor
 
 beforeEach(() => {
-  config = ConfigMocks.newDefaultConfig()
-  mocks = MockFactory.newMocks(config as RequiredConfig, RunMode.DANGEROUS)
+  mocks = MockFactory.newMocks()
+  config = mocks.processingContext.proc.config
   gmailProcessor = new GmailProcessor()
 })
 

@@ -1,13 +1,11 @@
 import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
-import { RunMode } from "../Context"
-import { newConfig } from "../config/Config"
 import { GmailAdapter } from "./GmailAdapter"
 
 let mocks: Mocks
 let gmailAdapter: GmailAdapter
 
 beforeEach(() => {
-  mocks = MockFactory.newMocks(newConfig(), RunMode.DANGEROUS)
+  mocks = MockFactory.newMocks()
   gmailAdapter = new GmailAdapter(mocks.envContext)
 })
 

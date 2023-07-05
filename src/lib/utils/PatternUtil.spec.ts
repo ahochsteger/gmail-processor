@@ -1,3 +1,4 @@
+import { ConfigMocks } from "../../test/mocks/ConfigMocks"
 import { ContextMocks } from "../../test/mocks/ContextMocks"
 import { GMailData, GMailMocks, ThreadData } from "../../test/mocks/GMailMocks"
 import {
@@ -12,7 +13,10 @@ import { PatternUtil } from "./PatternUtil"
 let mocks: Mocks
 
 beforeEach(() => {
-  mocks = MockFactory.newMocks(newConfig(), RunMode.DANGEROUS)
+  mocks = MockFactory.newMocks(
+    ConfigMocks.newDefaultConfig(),
+    RunMode.DANGEROUS,
+  )
 })
 
 describe("Pattern Substitution", () => {

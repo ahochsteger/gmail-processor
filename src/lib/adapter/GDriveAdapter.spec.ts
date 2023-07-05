@@ -12,7 +12,6 @@ import {
 } from "../../test/mocks/GDriveMocks"
 import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
 import { RunMode } from "../Context"
-import { newConfig } from "../config/Config"
 import { ConflictStrategy, FileContent, GDriveAdapter } from "./GDriveAdapter"
 
 let mocks: Mocks
@@ -24,7 +23,7 @@ const PLAIN_TEXT_CONTENT: FileContent = {
 }
 
 beforeEach(() => {
-  mocks = MockFactory.newMocks(newConfig(), RunMode.DANGEROUS)
+  mocks = MockFactory.newMocks()
   gdriveAdapter = new GDriveAdapter(mocks.envContext)
 })
 
