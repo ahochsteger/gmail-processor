@@ -562,6 +562,18 @@
             "additionalProperties": false,
             "description": "Represents a config to match a certain GMail thread",
             "properties": {
+                "firstMessageSubject": {
+                    "default": ".*",
+                    "description": "The regex to match `firstMessageSubject`",
+                    "title": "firstMessageSubject",
+                    "type": "string"
+                },
+                "labels": {
+                    "default": ".*",
+                    "description": "The regex to match at least one label",
+                    "title": "labels",
+                    "type": "string"
+                },
                 "maxMessageCount": {
                     "default": -1,
                     "description": "The maximum number of messages a matching thread is allowed to have",

@@ -7,11 +7,12 @@ import { RequiredDeep } from "../utils/UtilityTypes"
  * Represents a config to match a certain GMail thread
  */
 export class ThreadMatchConfig {
-  /**
-   * The GMail search query to find threads to be processed (see http://support.google.com/mail/bin/answer.py?hl=en&answer=7190 for details)
-   */
+  /** The regex to match `firstMessageSubject` */
   @Expose()
-  query? = ""
+  firstMessageSubject? = ".*"
+  /** The regex to match at least one label */
+  @Expose()
+  labels? = ".*"
   /**
    * The maximum number of messages a matching thread is allowed to have
    */
@@ -27,6 +28,11 @@ export class ThreadMatchConfig {
    */
   @Expose()
   newerThan? = ""
+  /**
+   * The GMail search query to find threads to be processed (see http://support.google.com/mail/bin/answer.py?hl=en&answer=7190 for details)
+   */
+  @Expose()
+  query? = ""
 }
 
 export type RequiredThreadMatchConfig = RequiredDeep<ThreadMatchConfig>

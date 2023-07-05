@@ -5,7 +5,7 @@ import { RequiredDeep } from "../utils/UtilityTypes"
 import { ThreadActionConfig } from "./ActionConfig"
 import { AttachmentConfig } from "./AttachmentConfig"
 import { MessageConfig, normalizeMessageConfigs } from "./MessageConfig"
-import { ThreadMatchConfig } from "./ThreadMatchConfig"
+import { ThreadMatchConfig, newThreadMatchConfig } from "./ThreadMatchConfig"
 
 /**
  * Represents a config handle a certain GMail thread
@@ -79,6 +79,7 @@ export function normalizeThreadConfig(
   }
 
   config.messages = normalizeMessageConfigs(config.messages, namePrefix)
+  config.match = config.match || newThreadMatchConfig()
   return config
 }
 

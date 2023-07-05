@@ -758,12 +758,28 @@ Represents a config to match a certain GMail thread
 
 |   |Type|Description|Required|
 |---|---|---|---|
+|**firstMessageSubject**|`string`|The regex to match `firstMessageSubject`|No, default: `".*"`|
+|**labels**|`string`|The regex to match at least one label|No, default: `".*"`|
 |**maxMessageCount**|`number`|The maximum number of messages a matching thread is allowed to have|No, default: `-1`|
 |**minMessageCount**|`number`|The minimum number of messages a matching thread must have|No, default: `1`|
 |**newerThan**|`string`|Only process threads with message newer than (leave empty for no restriction; use d, m and y for day, month and year)|No, default: |
 |**query**|`string`|The GMail search query to find threads to be processed (see http://support.google.com/mail/bin/answer.py?hl=en&answer=7190 for details)|No, default: |
 
 Additional properties are not allowed.
+
+### ThreadMatchConfig.firstMessageSubject
+
+The regex to match `firstMessageSubject`
+
+* **Type**: `string`
+* **Required**: No, default: `".*"`
+
+### ThreadMatchConfig.labels
+
+The regex to match at least one label
+
+* **Type**: `string`
+* **Required**: No, default: `".*"`
 
 ### ThreadMatchConfig.maxMessageCount
 

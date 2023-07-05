@@ -81,9 +81,22 @@ export class ThreadProcessor extends BaseProcessor {
     })
   }
 
+  public static getRegexMapFromThreadMatchConfig(
+    cfg: ThreadMatchConfig | undefined,
+  ): Map<string, string> {
+    const m = new Map<string, string>()
+    if (cfg === undefined) {
+      return m
+    }
+    if (cfg.firstMessageSubject)
+      m.set("firstMessageSubject", cfg.firstMessageSubject)
+    if (cfg.labels) m.set("labels", cfg.labels)
+    return m
+  }
+
   public static buildMetaInfo(ctx: ThreadContext): MetaInfo {
     const keyPrefix = "thread"
-    const m = {
+    let m: MetaInfo = {
       [`${keyPrefix}.firstMessageSubject`]: mi(
         MIT.STRING,
         (t: Thread) => t.getFirstMessageSubject(),
@@ -216,6 +229,22 @@ export class ThreadProcessor extends BaseProcessor {
         ctx.thread.configIndex,
         "The index number (0-based) of the thead config.",
       ),
+    }
+    const threadConfig = ctx.thread.config
+    if (threadConfig.match) {
+      // Test for message rules
+      m = this.buildRegExpSubustitutionMap(
+        ctx,
+        m,
+        keyPrefix,
+        this.getRegexMapFromThreadMatchConfig(threadConfig.match),
+      )
+      if (!m[`${keyPrefix}.matched`]) {
+        const thread = ctx.thread.object
+        ctx.log.info(
+          `Skipped thread with id ${thread.getId()} because it did not match the regex rules.`,
+        )
+      }
     }
     return m
   }
