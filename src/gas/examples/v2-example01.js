@@ -14,10 +14,9 @@ var example01ConfigV2 = {
   global: {
     thread: {
       match: {
-        query: "has:attachment -in:trash -in:drafts -in:spam",
+        query: "has:attachment -in:trash -in:drafts -in:spam newer_than:1d",
         maxMessageCount: -1,
         minMessageCount: 1,
-        newerThan: "1d",
       },
       actions: [],
     },
