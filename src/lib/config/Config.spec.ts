@@ -79,8 +79,7 @@ describe("newConfig", () => {
       global: {
         thread: {
           match: {
-            query: "global-query",
-            newerThan: "3m",
+            query: "global-query newer_than:3m",
           },
         },
       },

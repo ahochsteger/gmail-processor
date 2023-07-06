@@ -1,18 +1,23 @@
 import { ContextMocks } from "../../test/mocks/ContextMocks"
-import { MockFactory } from "../../test/mocks/MockFactory"
-import { RunMode } from "../Context"
+import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
+import { ProcessingStatus, RunMode } from "../Context"
 import { newConfig } from "../config/Config"
 import { MarkProcessedMethod } from "../config/SettingsConfig"
 import { newThreadConfig } from "../config/ThreadConfig"
 import { ThreadProcessor } from "./ThreadProcessor"
+
+let mocks: Mocks
+
+beforeEach(() => {
+  mocks = MockFactory.newMocks()
+})
 
 it("should construct a GMail search query with globals (query, newerThan) and processedLabel", () => {
   const config = newConfig({
     global: {
       thread: {
         match: {
-          query: "some-global-query",
-          newerThan: "3m",
+          query: "some-global-query newer_than:3m",
         },
       },
     },
@@ -23,8 +28,7 @@ it("should construct a GMail search query with globals (query, newerThan) and pr
   })
   const threadConfig = newThreadConfig({
     match: {
-      query: "some-thread-specific-query",
-      newerThan: "2m",
+      query: "some-thread-specific-query newer_than:2m",
     },
   })
   const ctx = ContextMocks.newProcessingContextMock(
@@ -37,14 +41,13 @@ it("should construct a GMail search query with globals (query, newerThan) and pr
   )
   const actualQuery = ThreadProcessor.buildQuery(ctx, matchConfig)
   expect(actualQuery).toEqual(
-    "some-global-query some-thread-specific-query -label:some-label newer_than:2m",
+    "some-global-query newer_than:3m some-thread-specific-query newer_than:2m -label:some-label",
   )
 })
 
 it("should construct a GMail search query without globals and no processedLabel", () => {
   const config = newConfig({
     settings: {
-      markProcessedLabel: "",
       markProcessedMethod: MarkProcessedMethod.MARK_MESSAGE_READ,
     },
     threads: [
@@ -55,13 +58,47 @@ it("should construct a GMail search query without globals and no processedLabel"
       },
     ],
   })
-  const mocks = MockFactory.newMocks(config, RunMode.DANGEROUS)
+  const customMocks = MockFactory.newMocks(config, RunMode.DANGEROUS)
   const actualQuery = ThreadProcessor.buildQuery(
-    mocks.processingContext,
+    customMocks.processingContext,
     config.threads[0].match,
   )
   expect(actualQuery).toEqual("some-thread-specific-query")
 })
 
-test.todo("regex match for firstMessageSubject")
-test.todo("regex match for labels") // Check sorted/non-sorted!
+it("should process thread configs", () => {
+  const result = ThreadProcessor.processConfigs(
+    mocks.processingContext,
+    mocks.processingContext.proc.config.threads,
+  )
+  expect(result.status).toEqual(ProcessingStatus.OK)
+})
+
+it("should process a matching thread config", () => {
+  const result = ThreadProcessor.processConfigs(mocks.processingContext, [
+    newThreadConfig({
+      match: {
+        firstMessageSubject: ".*",
+        labels: ".*", // TODO: Check sorted/non-sorted match!
+      },
+    }),
+  ])
+  expect(result.status).toEqual(ProcessingStatus.OK)
+})
+
+it("should process a non-matching thread config", () => {
+  const result = ThreadProcessor.processConfigs(mocks.processingContext, [
+    newThreadConfig({
+      match: {
+        firstMessageSubject: "non-matching-thread",
+        labels: "non-matching-labels",
+      },
+    }),
+  ])
+  expect(result.status).toEqual(ProcessingStatus.OK) // TODO: Consider a separate status here (e.g. NO_MATCH)
+})
+
+it("should process an thread entity", () => {
+  const result = ThreadProcessor.processEntity(mocks.threadContext)
+  expect(result.status).toEqual(ProcessingStatus.OK)
+})

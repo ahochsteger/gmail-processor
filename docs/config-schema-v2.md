@@ -762,8 +762,8 @@ Represents a config to match a certain GMail thread
 |**labels**|`string`|The regex to match at least one label|No, default: `".*"`|
 |**maxMessageCount**|`number`|The maximum number of messages a matching thread is allowed to have|No, default: `-1`|
 |**minMessageCount**|`number`|The minimum number of messages a matching thread must have|No, default: `1`|
-|**newerThan**|`string`|Only process threads with message newer than (leave empty for no restriction; use d, m and y for day, month and year)|No, default: |
-|**query**|`string`|The GMail search query to find threads to be processed (see http://support.google.com/mail/bin/answer.py?hl=en&answer=7190 for details)|No, default: |
+|**query**|`string`|The GMail search query additional to the global query to find threads to be processed.
+See [Search operators you can use with Gmail](https://support.google.com/mail/answer/7190?hl=en) for more information.|No, default: |
 
 Additional properties are not allowed.
 
@@ -795,16 +795,10 @@ The minimum number of messages a matching thread must have
 * **Type**: `number`
 * **Required**: No, default: `1`
 
-### ThreadMatchConfig.newerThan
-
-Only process threads with message newer than (leave empty for no restriction; use d, m and y for day, month and year)
-
-* **Type**: `string`
-* **Required**: No, default: 
-
 ### ThreadMatchConfig.query
 
-The GMail search query to find threads to be processed (see http://support.google.com/mail/bin/answer.py?hl=en&answer=7190 for details)
+The GMail search query additional to the global query to find threads to be processed.
+See [Search operators you can use with Gmail](https://support.google.com/mail/answer/7190?hl=en) for more information.
 
 * **Type**: `string`
 * **Required**: No, default: 

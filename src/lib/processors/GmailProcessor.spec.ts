@@ -2,6 +2,7 @@ import { PartialDeep } from "type-fest"
 import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
 import { ProcessingStage } from "../config/ActionConfig"
 import { Config, RequiredConfig } from "../config/Config"
+import { DEFAULT_GLOBAL_QUERY } from "../config/GlobalConfig"
 import { MarkProcessedMethod } from "../config/SettingsConfig"
 import { GmailProcessor } from "./GmailProcessor"
 
@@ -36,10 +37,9 @@ describe("getEffectiveConfig", () => {
       global: {
         thread: {
           match: {
-            query: "",
+            query: DEFAULT_GLOBAL_QUERY,
             maxMessageCount: -1,
             minMessageCount: 1,
-            newerThan: "",
           },
           actions: [],
         },

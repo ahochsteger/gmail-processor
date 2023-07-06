@@ -40,8 +40,12 @@ export class ThreadProcessor extends BaseProcessor {
     }
     return threadContext
   }
-  private static buildFilter(prefix: string, value: string): string {
-    return this.isSet(value, "") ? ` ${prefix}${value}` : ""
+  private static buildFilter(
+    prefix: string,
+    value: string,
+    unsetValue?: string,
+  ): string {
+    return this.isSet(value, unsetValue) ? ` ${prefix}${value}` : ""
   }
   public static buildQuery(
     ctx: ProcessingContext,
@@ -49,13 +53,13 @@ export class ThreadProcessor extends BaseProcessor {
   ) {
     let gSearchExp = this.getStr(threadMatchConfig.query)
     gSearchExp += this.buildFilter(
-      " -label:",
+      "-label:",
       ctx.proc.config.settings?.markProcessedMethod ===
         MarkProcessedMethod.ADD_THREAD_LABEL
         ? ctx.proc.config.settings?.markProcessedLabel
         : "",
+      "",
     )
-    gSearchExp += this.buildFilter(" newer_than:", threadMatchConfig.newerThan)
     return gSearchExp.trim().replace(/[ ]+/g, " ")
   }
 
@@ -75,9 +79,6 @@ export class ThreadProcessor extends BaseProcessor {
         local.minMessageCount,
         -1,
       ),
-      newerThan: this.isSet(local.newerThan)
-        ? local.newerThan
-        : global.newerThan,
     })
   }
 

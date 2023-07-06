@@ -6,6 +6,11 @@ import { AttachmentConfig, normalizeAttachmentConfig } from "./AttachmentConfig"
 import { MessageConfig, normalizeMessageConfig } from "./MessageConfig"
 import { ThreadConfig, normalizeThreadConfig } from "./ThreadConfig"
 
+export const DEFAULT_GLOBAL_QUERY_PREFIX =
+  "has:attachment -in:trash -in:drafts -in:spam"
+export const DEFAULT_GLOBAL_QUERY_NEWER_THAN = "1d"
+export const DEFAULT_GLOBAL_QUERY = `${DEFAULT_GLOBAL_QUERY_PREFIX} newer_than:${DEFAULT_GLOBAL_QUERY_NEWER_THAN}`
+
 /**
  * A variable entry available for substitution (using ${variables.<varName>})
  */
@@ -18,23 +23,26 @@ class VariableEntry {
  */
 export class GlobalConfig {
   /**
-   * The global attachment config affecting each attachment
+   * The global attachment config affecting each attachment.
    */
   @Expose()
   @Type(() => AttachmentConfig)
   attachment?: AttachmentConfig = new AttachmentConfig()
+
   /**
-   * The global message config affecting each message
+   * The global message config affecting each message.
    */
   @Expose()
   @Type(() => MessageConfig)
   message?: Exclude<MessageConfig, "attachments"> = new MessageConfig()
+
   /**
-   * The list of global thread affecting each thread
+   * The list of global thread affecting each thread.
    */
   @Expose()
   @Type(() => ThreadConfig)
   thread?: Exclude<ThreadConfig, "messages"> = new ThreadConfig()
+
   /**
    * A list of variable entries to be used in substitutions to simplify configurations.
    */
@@ -52,7 +60,7 @@ export function newGlobalConfig(
   }) as RequiredDeep<GlobalConfig>
 }
 
-function normalizeGlobalConfig(
+export function normalizeGlobalConfig(
   config: PartialDeep<GlobalConfig>,
 ): PartialDeep<GlobalConfig> {
   config.thread = normalizeThreadConfig(

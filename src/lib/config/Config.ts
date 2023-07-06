@@ -9,7 +9,7 @@ import { PartialDeep } from "type-fest"
 import { RequiredDeep } from "../utils/UtilityTypes"
 import { ProcessingStage } from "./ActionConfig"
 import { AttachmentConfig } from "./AttachmentConfig"
-import { GlobalConfig } from "./GlobalConfig"
+import { GlobalConfig, normalizeGlobalConfig } from "./GlobalConfig"
 import { MessageConfig } from "./MessageConfig"
 import { MarkProcessedMethod, SettingsConfig } from "./SettingsConfig"
 import { ThreadConfig, normalizeThreadConfigs } from "./ThreadConfig"
@@ -99,7 +99,7 @@ export function normalizeConfig(
 
   // Inject mark processed actions
   config.settings = config.settings ?? {}
-  config.global = config.global ?? {}
+  config.global = normalizeGlobalConfig(config.global || {})
   config.global.thread = config.global.thread ?? {}
   config.global.thread.actions = config.global.thread.actions ?? []
   config.global.message = config.global.message ?? {}

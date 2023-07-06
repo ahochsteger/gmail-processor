@@ -31,8 +31,7 @@ it("should create default gobal config", () => {
     global: {
       thread: {
         match: {
-          query: "has:attachment -in:trash -in:drafts -in:spam",
-          newerThan: "2m",
+          query: "has:attachment -in:trash -in:drafts -in:spam newer_than:2m",
         },
       },
     },
@@ -52,8 +51,7 @@ it("should convert global config", () => {
       thread: {
         match: {
           query:
-            "has:attachment -in:trash -in:drafts -in:spam -label:some-label",
-          newerThan: "3d",
+            "has:attachment -in:trash -in:drafts -in:spam -label:some-label newer_than:3d",
         },
       },
     },

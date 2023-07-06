@@ -6,7 +6,11 @@ import {
   newThreadActionConfig,
 } from "../ActionConfig"
 import { AttachmentConfig } from "../AttachmentConfig"
-import { RequiredConfig, newConfig } from "../Config"
+import { Config, RequiredConfig, newConfig } from "../Config"
+import {
+  DEFAULT_GLOBAL_QUERY_NEWER_THAN,
+  DEFAULT_GLOBAL_QUERY_PREFIX,
+} from "../GlobalConfig"
 import { MessageConfig } from "../MessageConfig"
 import {
   RequiredThreadConfig,
@@ -94,7 +98,8 @@ export class V1ToV2Converter {
     //   gSearchExp += " newer_than:" + config.newerThan;
     // }
     if (rule.newerThan && rule.newerThan != "") {
-      threadConfig.match.newerThan = rule.newerThan
+      threadConfig.match.query =
+        (threadConfig.match.query ?? "") + ` newer_than:${rule.newerThan}`
     }
     // Old processing logic:
     // iterate threads:
@@ -241,14 +246,13 @@ export class V1ToV2Converter {
     const threadConfigs = v1Config.rules.map((rule) =>
       this.v1RuleToV2ThreadConfig(rule),
     )
-    const configJson = {
+    const globalFilter = v1Config.globalFilter || DEFAULT_GLOBAL_QUERY_PREFIX
+    const newerThan = v1Config.newerThan || DEFAULT_GLOBAL_QUERY_NEWER_THAN
+    const configJson: PartialDeep<Config> = {
       global: {
         thread: {
           match: {
-            newerThan: v1Config.newerThan,
-            query:
-              v1Config.globalFilter ||
-              "has:attachment -in:trash -in:drafts -in:spam",
+            query: `${globalFilter} newer_than:${newerThan}`,
           },
         },
       },

@@ -80,7 +80,6 @@ export class ConfigMocks {
         query: "has:attachment from:example@example.com",
         maxMessageCount: -1,
         minMessageCount: -1,
-        newerThan: "",
       },
       attachments: [],
     }

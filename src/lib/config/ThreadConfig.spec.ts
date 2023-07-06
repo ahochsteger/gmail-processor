@@ -19,7 +19,6 @@ it("should ensure nested object defaults", () => {
   expect(threadConfig.messages).toEqual([])
   expect(threadConfig.match).toBeDefined()
   expect(threadConfig.match.query).toBe("test")
-  expect(threadConfig.match.newerThan).toBe("")
   expect(threadConfig.match.minMessageCount).toBe(1)
   expect(threadConfig.match.maxMessageCount).toBe(-1)
 })
