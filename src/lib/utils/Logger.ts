@@ -9,13 +9,13 @@ import {
 /** Levels of log messages used for marking and filtering. */
 export enum LogLevel {
   /** Log level for debugging messages. */
-  DEBUG,
+  DEBUG = "debug",
   /** Log level for info messages. */
-  INFO,
+  INFO = "info",
   /** Log level for warning messages. */
-  WARN,
+  WARN = "warn",
   /** Log level for error messages. */
-  ERROR,
+  ERROR = "error",
 }
 
 export class Logger {
@@ -25,7 +25,7 @@ export class Logger {
     ...optionalParams: unknown[]
   ) {
     console.log(
-      `[${new Date().toISOString()}] ${LogLevel[level]}: ${message}`,
+      `[${new Date().toISOString()}] ${level.toUpperCase()}: ${message}`,
       ...optionalParams,
     )
   }

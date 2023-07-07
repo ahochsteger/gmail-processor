@@ -113,15 +113,15 @@ export type AttachmentInfo = {
 /** A type of context. */
 export enum ContextType {
   /** A context holding all environment information and references to environment objects. */
-  ENV,
+  ENV = "env",
   /** A context holding all processing information like the configuration, integration adapters, action registry and timer. */
-  PROCESSING,
+  PROCESSING = "proc",
   /** A context holding the thread configuration and information about the currently processed thread. */
-  THREAD,
+  THREAD = "thread",
   /** A context holding the message configuration and information about the currently processed message. */
-  MESSAGE,
+  MESSAGE = "message",
   /** A context holding the attachment configuration and information about the currently processed attachment. */
-  ATTACHMENT,
+  ATTACHMENT = "attachment",
 }
 
 export type EnvContext = {

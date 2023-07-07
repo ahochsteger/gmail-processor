@@ -26,7 +26,7 @@ function extractAllEnums() {
         [
           .children[]
           | {
-            "value": .name,
+            "value": .type.value,
             "description": ([.comment.summary[].text]|join(""))
           }
         ]
@@ -148,7 +148,7 @@ function generateEnumDocs() {
       .description,
       "<ul>" + ([
         .values[]
-        | "<li>`" + .value + "`: " + .description + "</li>"
+        | "<li>`" + (.value | tostring) + "`: " + .description + "</li>"
       ] | join("")) + "</ul>"
     ]
     | join(" | ")
