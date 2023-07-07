@@ -8,7 +8,7 @@ export class GmailAdapter implements Adapter {
     query: string,
     max: number,
   ): GoogleAppsScript.Gmail.GmailThread[] {
-    return this.ctx.env.gmailApp.search(query, 1, max)
+    return this.ctx.env.gmailApp.search(query, 0, max)
   }
 
   public convertHtmlToPdf(html: string): string {

@@ -272,6 +272,7 @@ export class ThreadProcessor extends BaseProcessor {
         query,
         ctx.proc.config.settings.maxBatchSize,
       )
+      ctx.log.info(`-> got ${threads.length} threads`)
       for (let threadIndex = 0; threadIndex < threads.length; threadIndex++) {
         const thread = threads[threadIndex]
         ctx.proc.timer.checkMaxRuntimeReached()
