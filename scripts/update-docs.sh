@@ -1,4 +1,5 @@
 #!/bin/bash
+# shellcheck disable=SC2016
 
 set -euo pipefail
 
@@ -7,6 +8,7 @@ outfile="docs/reference-docs.md"
 allDataFile="build/typedoc/all.json"
 actionDataFile="build/typedoc/actions.json"
 enumDataFile="build/typedoc/enums.json"
+placeholderDataFile="build/typedoc/placeholder.json"
 
 function extractAllDocs() {
   local jsonfile="${1}"
@@ -20,7 +22,7 @@ function extractAllEnums() {
     .children?[]?.children?[]?
     | select(.kind==8)
     | {
-      "enum": .name,
+      "name": .name,
       "description": ([.comment.summary[].text]|join("")),
       "values": (
         [
@@ -34,8 +36,7 @@ function extractAllEnums() {
       )
     }
   ]
-  | sort_by(.enum)
-  .[]'
+  | sort_by(.name)'
 }
 
 function extractAllActions() {
@@ -77,6 +78,15 @@ function extractAllActions() {
     ]'
 }
 
+function extractAllPlaceholder() {
+  npx jest \
+    --silent --useStderr --no-coverage \
+    --reporters default --watchAll=false \
+    --testPathPattern 'docs/update-docs\.spec\.ts' \
+    2>/dev/null \
+  | gojq .
+}
+
 function generateActionDocs() {
   echo ""
   echo "## Actions"
@@ -91,26 +101,29 @@ function generateActionDocs() {
   echo "| Action Name | Description | Arguments |"
   echo "|-------------|-------------|-----------|"
   gojq -r \
-  --slurpfile enums "${enumDataFile}" \
-  <"${actionDataFile}" \
-  '.[]
+  --slurpfile enumList "${enumDataFile}" \
+  <"${actionDataFile}" '
+  $enumList[0] as $enums
+  | .[]
+  | ("action-" + .actionName) as $actionAnchor
   | [
-      "`" + .actionName + "`",
+      "<a id=\"" + $actionAnchor + "\">`" + .actionName + "`</a>",
       .description,
       ( if .args then
           (
           "<ul>" + (
             .args[]
+            | ($actionAnchor + "-" + .name) as $actionArgAnchor
             | .type as $type
             | [
-              "<li>`",
+              "<li><a id=\"" + $actionArgAnchor + "\">`",
               .name,
-              " (",
+              "`</a> (`",
               .type,
-              ")`: ",
+              "`): ",
               .description,
               (
-                if ($enums[]|select(.enum==$type)) then
+                if ($enums[]|select(.name==$type)) then
                   " For valid values see enum docs for type " + .type + "."
                 else "" end
               ),
@@ -127,11 +140,39 @@ function generateActionDocs() {
   '
 }
 
-function generatePlaceholderDocs() {
+function generatePlaceholderDocs {
   echo "## Context Substitution"
   echo ""
   echo "The following context data is available for substitution in strings, depending on the context."
-  npx jest --silent --useStderr --no-coverage --reporters default --watchAll=false --testPathPattern 'docs/update-docs\.spec\.ts'
+  gojq -r <"${placeholderDataFile}" '
+    .[]
+    | ("placeholder-" + .contextType) as $placeholderTypeAnchor
+    | [
+      "",
+      ("## " + .title),
+      "",
+      .description,
+      "",
+      "| Key | Type | Example | Description |",
+      "|-----|------|---------|-------------|",
+      (
+        .placeholder
+        | sort_by(.key)
+        | .[]
+        | ($placeholderTypeAnchor + "-" + .key) as $placeholderAnchor
+        | [
+          "<a id=\"" + $placeholderAnchor + "\">`" + .key + "`</a>",
+          "`" + .type + "`",
+          "`" + .example + "`",
+          .description
+        ]
+        | join(" | ")
+        | gsub("\n";"<br>")
+        | "| " + . + " |"
+      )
+    ]
+    | join("\n")
+  '
 }
 
 function generateEnumDocs() {
@@ -141,14 +182,16 @@ function generateEnumDocs() {
   echo ""
   echo "| Enum Type | Description | Values |"
   echo "|-----------|-------------|--------|"
-  gojq -r -s <"${enumDataFile}" '
+  gojq -r <"${enumDataFile}" '
     .[]
+    | ("enum-" + .name) as $enumAnchor
     | [
-      "`" + .enum + "`",
+      "<a id=\"" + $enumAnchor + "\">`" + .name + "`</a>",
       .description,
       "<ul>" + ([
         .values[]
-        | "<li>`" + (.value | tostring) + "`: " + .description + "</li>"
+        | ($enumAnchor + "-" + .value) as $enumValueAnchor
+        | "<li><a id=\"" + $enumValueAnchor + "\">`" + (.value | tostring) + "`</a>: " + .description + "</li>"
       ] | join("")) + "</ul>"
     ]
     | join(" | ")
@@ -164,6 +207,7 @@ function generateExampleDocs() {
 extractAllDocs "${allDataFile}"
 extractAllActions "${allDataFile}" >"${actionDataFile}"
 extractAllEnums <"${allDataFile}" >"${enumDataFile}"
+extractAllPlaceholder >"${placeholderDataFile}"
 
 {
   echo "# GMail Processor Reference Documentation"

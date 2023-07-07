@@ -1,4 +1,4 @@
-import { MetaInfo, MetaInfoType, RunMode } from "../../lib/Context"
+import { ContextType, MetaInfo, MetaInfoType, RunMode } from "../../lib/Context"
 import { PatternUtil, defaultDateFormat } from "../../lib/utils/PatternUtil"
 import { ConfigMocks } from "../mocks/ConfigMocks"
 import { GMailMocks } from "../mocks/GMailMocks"
@@ -19,52 +19,69 @@ function write(s: string) {
   process.stdout.write(`${s}\n`)
 }
 
-function genMetaInfoDocs(m: MetaInfo, title: string, description: string) {
-  write(``)
-  write(`## ${title}`)
-  write(``)
-  write(`${description}`)
-  write(``)
-  write(`| Key | Type | Example | Description |`)
-  write(`|-----|------|---------|-------------|`)
+function genMetaInfoDocs(contextType: ContextType, m: MetaInfo, title: string, description: string, position: string) {
+  if (position === "first") {
+    write("[")
+  }
+  write(`{"contextType":"${contextType}","title":"${title}","description":"${description}","placeholder":[`)
   Object.keys(m)
     .sort()
-    .forEach((k) => {
+    .forEach((k, idx, arr) => {
       const stringValue = PatternUtil.stringValue(ctx, ctx.meta, k)
       let desc = m[k].description
       if (m[k].type === MetaInfoType.DATE) desc += ` ${dateInfo}`
       if (m[k].type === MetaInfoType.VARIABLE) desc += ` ${variableInfo}`
-      write(`| \`${k}\` | \`${m[k].type}\` | \`${stringValue}\` | ${desc} |`)
+      let condComma = ""
+      if (idx < arr.length - 1) {
+        condComma = ","
+      }
+      write(`  {"key":"${k}", "type": "${m[k].type}", "example": "${stringValue}", "description": ${JSON.stringify(desc)}}${condComma}`)
     })
-}
+    let suffix = ","
+    if (position === "last") {
+      suffix=""
+    }
+    write(`]}${suffix}`)
+    if (position === "last") {
+      write("]")
+    }
+  }
 
 describe("Generate Context Substitution Docs", () => {
   it("should generate processing context substitution docs", () => {
     genMetaInfoDocs(
+      ContextType.PROCESSING,
       ctx.procMeta,
       "Processing Placeholder",
       "These context substitution placeholder are globally available.",
+      "first",
     )
   })
   it("should generate thread context substitution docs", () => {
     genMetaInfoDocs(
+      ContextType.THREAD,
       ctx.threadMeta,
       "Thread Placeholder",
       "These context substitution placeholder are defined for the currently GMail thread.",
+      "standard",
     )
   })
   it("should generate message context substitution docs", () => {
     genMetaInfoDocs(
+      ContextType.MESSAGE,
       ctx.messageMeta,
       "Message Placeholder",
       "These context substitution placeholder are defined for the currently processed GMail message.",
+      "standard",
     )
   })
   it("should generate attachment context substitution docs", () => {
     genMetaInfoDocs(
+      ContextType.ATTACHMENT,
       ctx.attachmentMeta,
       "Attachment Placeholder",
       "These context substitution placeholder are defined for the currently processed GMail attachment.",
+      "last",
     )
   })
 })
