@@ -26,10 +26,11 @@ type LocationInfo = {
   pathSegments: string[]
 }
 
-export type FileContent = {
-  content: string
-  mimeType: string
-  description: string
+export class FileContent {
+  constructor(
+    public blob: GoogleAppsScript.Base.BlobSource,
+    public description = "",
+  ) {}
 }
 
 export class DriveUtils {
@@ -211,11 +212,8 @@ export class DriveUtils {
     filename: string,
     fileData: FileContent,
   ): GoogleAppsScript.Drive.File {
-    const file = parentFolder.createFile(
-      filename,
-      fileData.content,
-      fileData.mimeType,
-    )
+    const file = parentFolder.createFile(fileData.blob)
+    file.setName(filename)
     file.setDescription(fileData.description)
     return file
   }
@@ -234,7 +232,7 @@ export class DriveUtils {
     fileData: FileContent,
   ): GoogleAppsScript.Drive.File {
     file = file
-      .setContent(fileData.content)
+      .setContent(fileData.blob.getBlob().getDataAsString()) // TODO: Test if binary content does not get corrupted here!
       .setDescription(fileData.description)
     return file
   }
@@ -276,11 +274,7 @@ export class GDriveAdapter extends BaseAdapter {
     this.ctx.log.info(
       `Storing attachment '${attachment.getName()}' to '${location}' ...`,
     )
-    const fileData: FileContent = {
-      content: attachment.getDataAsString(),
-      mimeType: attachment.getContentType(),
-      description,
-    }
+    const fileData = new FileContent(attachment.copyBlob(), description)
     const file = DriveUtils.createFile(
       this.ctx,
       location,

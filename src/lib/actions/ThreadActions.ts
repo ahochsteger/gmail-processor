@@ -1,4 +1,4 @@
-import { ConflictStrategy } from "../adapter/GDriveAdapter"
+import { ConflictStrategy, FileContent } from "../adapter/GDriveAdapter"
 import { ThreadContext } from "../Context"
 import { destructiveAction, writingAction } from "../utils/Decorators"
 import { PatternUtil } from "../utils/PatternUtil"
@@ -143,14 +143,13 @@ export class ThreadActions implements ActionProvider<ThreadContext> {
       ok: true,
       file: context.proc.gdriveAdapter.createFile(
         PatternUtil.substitute(context, args.location),
-        {
-          content: context.proc.gmailAdapter.threadAsPdf(
+        new FileContent(
+          context.proc.gmailAdapter.threadAsPdf(
             context.thread.object,
             args.skipHeader,
           ),
-          mimeType: "application/pdf",
-          description: PatternUtil.substitute(context, args.description || ""),
-        },
+          PatternUtil.substitute(context, args.description || ""),
+        ),
         args.conflictStrategy,
       ),
     }

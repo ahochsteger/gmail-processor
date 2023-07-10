@@ -1,5 +1,5 @@
 import { ConfigMocks } from "../../test/mocks/ConfigMocks"
-import { NEW_FILE_NAME } from "../../test/mocks/GDriveMocks"
+import { NEW_PDF_FILE_NAME } from "../../test/mocks/GDriveMocks"
 import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
 import { ProcessingContext, RunMode } from "../Context"
 import { ConflictStrategy } from "../adapter/GDriveAdapter"
@@ -51,12 +51,12 @@ it("should not forward a message (dry-run)", () => {
 
 it("should store a message as PDF", () => {
   const result = MessageActions.storePDF(mocks.messageContext, {
-    location: `/${NEW_FILE_NAME}`,
+    location: `/${NEW_PDF_FILE_NAME}`,
     conflictStrategy: ConflictStrategy.KEEP,
     skipHeader: false,
   })
-  expect(mocks.blob.getAs).toBeCalledWith("application/pdf")
-  expect(mocks.blob.getDataAsString()).toEqual("PDF-Contents")
+  expect(mocks.newPdfBlob.getAs).toBeCalledWith("application/pdf")
+  expect(mocks.newPdfBlob.getDataAsString()).toEqual("PDF Content")
   expect(result.file).toBeDefined()
 })
 

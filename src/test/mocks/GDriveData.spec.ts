@@ -4,14 +4,20 @@ import { ROOT_FOLDER_ID, ROOT_FOLDER_NAME } from "./GDriveMocks"
 
 let driveData: GDriveData
 
+const existingBlob1 = mock<GoogleAppsScript.Base.Blob>()
+const existingBlob2 = mock<GoogleAppsScript.Base.Blob>()
 const existingFile1 = mock<GoogleAppsScript.Drive.File>()
 const existingFile2 = mock<GoogleAppsScript.Drive.File>()
 const existingFolder1 = mock<GoogleAppsScript.Drive.Folder>()
 const existingFolder2 = mock<GoogleAppsScript.Drive.Folder>()
+const existingNestedBlob1 = mock<GoogleAppsScript.Base.Blob>()
+const existingNestedBlob2 = mock<GoogleAppsScript.Base.Blob>()
 const existingNestedFile1 = mock<GoogleAppsScript.Drive.File>()
 const existingNestedFile2 = mock<GoogleAppsScript.Drive.File>()
 const existingNestedFolder1 = mock<GoogleAppsScript.Drive.Folder>()
 const existingNestedFolder2 = mock<GoogleAppsScript.Drive.Folder>()
+const newBlob1 = mock<GoogleAppsScript.Base.Blob>()
+const newBlob2 = mock<GoogleAppsScript.Base.Blob>()
 const newFile1 = mock<GoogleAppsScript.Drive.File>()
 const newFile2 = mock<GoogleAppsScript.Drive.File>()
 const newFolder1 = mock<GoogleAppsScript.Drive.Folder>()
@@ -29,24 +35,28 @@ beforeAll(() => {
         existingFile1,
         "existing-file-1",
         "existing-file-1.txt",
+        existingBlob1,
         EntryScope.EXISTING,
       ),
       new FileData(
         existingFile2,
         "existing-file-2",
         "existing-file-2.txt",
+        existingBlob2,
         EntryScope.EXISTING,
       ),
       new FileData(
         newFile1,
         "new-file-1",
         "new-file-1.txt",
+        newBlob1,
         EntryScope.CREATED,
       ),
       new FileData(
         newFile2,
         "new-file-2",
         "new-file-2.txt",
+        newBlob2,
         EntryScope.CREATED,
       ),
       new FolderData(
@@ -59,12 +69,14 @@ beforeAll(() => {
             existingNestedFile1,
             "existing-nested-file-1",
             "existing-nested-file-1.txt",
+            existingNestedBlob1,
             EntryScope.EXISTING,
           ),
           new FileData(
             existingNestedFile2,
             "existing-nested-file-2",
             "existing-nested-file-2.txt",
+            existingNestedBlob2,
             EntryScope.EXISTING,
           ),
           new FolderData(

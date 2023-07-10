@@ -11,9 +11,9 @@ export class GmailAdapter implements Adapter {
     return this.ctx.env.gmailApp.search(query, 0, max)
   }
 
-  public convertHtmlToPdf(html: string): string {
+  public convertHtmlToPdf(html: string): GoogleAppsScript.Base.Blob {
     const htmlBlob = this.ctx.env.utilities.newBlob(html, "text/html")
-    return htmlBlob.getAs("application/pdf").getDataAsString()
+    return htmlBlob.getAs("application/pdf")
   }
 
   public messageAsHtml(
@@ -38,7 +38,7 @@ Subject: ${message.getSubject()}<br />
   public messageAsPdf(
     message: GoogleAppsScript.Gmail.GmailMessage,
     skipHeader = false,
-  ) {
+  ): GoogleAppsScript.Base.Blob {
     return this.convertHtmlToPdf(this.messageAsHtml(message, skipHeader))
   }
 
@@ -113,7 +113,7 @@ Subject: ${message.getSubject()}<br />
   public threadAsHtml(
     thread: GoogleAppsScript.Gmail.GmailThread,
     skipHeader = false,
-  ) {
+  ): string {
     this.ctx.log.info(
       `Generating HTML code of thread '${thread.getFirstMessageSubject()}'`,
     )
@@ -128,7 +128,7 @@ Subject: ${message.getSubject()}<br />
   public threadAsPdf(
     thread: GoogleAppsScript.Gmail.GmailThread,
     skipHeader = false,
-  ) {
+  ): GoogleAppsScript.Base.Blob {
     return this.convertHtmlToPdf(this.threadAsHtml(thread, skipHeader))
   }
 

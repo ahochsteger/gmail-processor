@@ -22,19 +22,29 @@ jest.useFakeTimers({ now: new Date(fakedSystemTime + "Z") })
 class EnvMocks {
   public attachment: MockProxy<GoogleAppsScript.Gmail.GmailAttachment> =
     mock<GoogleAppsScript.Gmail.GmailAttachment>()
-  public blob: MockProxy<GoogleAppsScript.Base.Blob> =
-    mock<GoogleAppsScript.Base.Blob>()
   public cache: MockProxy<GoogleAppsScript.Cache.Cache> =
     mock<GoogleAppsScript.Cache.Cache>()
   public cacheService: MockProxy<GoogleAppsScript.Cache.CacheService> =
     mock<GoogleAppsScript.Cache.CacheService>()
+  public existingBlob: MockProxy<GoogleAppsScript.Base.Blob> =
+    mock<GoogleAppsScript.Base.Blob>()
   public existingFile: MockProxy<GoogleAppsScript.Drive.File> =
     mock<GoogleAppsScript.Drive.File>()
+  public newExistingBlob: MockProxy<GoogleAppsScript.Base.Blob> =
+    mock<GoogleAppsScript.Base.Blob>()
   public newExistingFile: MockProxy<GoogleAppsScript.Drive.File> =
     mock<GoogleAppsScript.Drive.File>()
+  public newBlob: MockProxy<GoogleAppsScript.Base.Blob> =
+    mock<GoogleAppsScript.Base.Blob>()
   public newFile: MockProxy<GoogleAppsScript.Drive.File> =
     mock<GoogleAppsScript.Drive.File>()
+  public newNestedBlob: MockProxy<GoogleAppsScript.Base.Blob> =
+    mock<GoogleAppsScript.Base.Blob>()
   public newNestedFile: MockProxy<GoogleAppsScript.Drive.File> =
+    mock<GoogleAppsScript.Drive.File>()
+  public newPdfBlob: MockProxy<GoogleAppsScript.Base.Blob> =
+    mock<GoogleAppsScript.Base.Blob>()
+  public newPdfFile: MockProxy<GoogleAppsScript.Drive.File> =
     mock<GoogleAppsScript.Drive.File>()
   public existingFolder: MockProxy<GoogleAppsScript.Drive.Folder> =
     mock<GoogleAppsScript.Drive.Folder>()
@@ -56,6 +66,8 @@ class EnvMocks {
     mock<GoogleAppsScript.Spreadsheet.Sheet>()
   public logSpreadsheet: MockProxy<GoogleAppsScript.Spreadsheet.Spreadsheet> =
     mock<GoogleAppsScript.Spreadsheet.Spreadsheet>()
+  public logSpreadsheetBlob: MockProxy<GoogleAppsScript.Base.Blob> =
+    mock<GoogleAppsScript.Base.Blob>()
   public logSpreadsheetFile: MockProxy<GoogleAppsScript.Drive.File> =
     mock<GoogleAppsScript.Drive.File>()
   public session: MockProxy<GoogleAppsScript.Base.Session> =
@@ -66,6 +78,19 @@ class EnvMocks {
     mock<GoogleAppsScript.Base.User>()
   public utilities: MockProxy<GoogleAppsScript.Utilities.Utilities> =
     mock<GoogleAppsScript.Utilities.Utilities>()
+
+  constructor() {
+    this.cache.get.calledWith(anyString()).mockReturnValue(null)
+    this.cache.get
+      .calledWith(matches((v) => v === SCRIPT_CACHE_LOGSHEET_ID_KEY))
+      .mockReturnValue(LOGSHEET_FILE_ID)
+    this.cacheService.getScriptCache.mockReturnValue(this.cache)
+    this.user.getEmail.mockReturnValue("my.email@gmail.com")
+    this.utilities.newBlob.mockReturnValue(this.newPdfBlob)
+    this.session.getScriptTimeZone.mockReturnValue("UTC")
+    this.session.getActiveUser.mockReturnValue(this.user)
+    this.session.getEffectiveUser.mockReturnValue(this.user)
+  }
 }
 export class Mocks extends EnvMocks {
   public envContext: EnvContext
@@ -80,27 +105,17 @@ export class Mocks extends EnvMocks {
     configIndex: IndexType = [0, 0, 0],
     runMode: RunMode = RunMode.DANGEROUS,
   ) {
-    const config = newConfig(configJson)
     super()
-    // TODO: Move to a better location
-    this.cache.get.calledWith(anyString()).mockReturnValue(null)
-    this.cache.get
-      .calledWith(matches((v) => v === SCRIPT_CACHE_LOGSHEET_ID_KEY))
-      .mockReturnValue(LOGSHEET_FILE_ID)
-    this.cacheService.getScriptCache.mockReturnValue(this.cache)
-    this.blob.getAs.mockReturnValue(this.blob)
-    this.blob.getDataAsString.mockReturnValue("PDF-Contents")
-    this.user.getEmail.mockReturnValue("my.email@gmail.com")
-    this.utilities.newBlob.mockReturnValue(this.blob)
-    this.session.getScriptTimeZone.mockReturnValue("UTC")
-    this.session.getActiveUser.mockReturnValue(this.user)
-    this.session.getEffectiveUser.mockReturnValue(this.user)
 
     GDriveMocks.setupAllMocks(this)
     GMailMocks.setupAllMocks(this, gmailData, dataIndex)
+    // Setup special mocks:
+    this.attachment.copyBlob.mockReturnValue(this.newBlob)
+
     SpreadsheetMocks.setupAllMocks(this)
 
     this.envContext = ContextMocks.newEnvContextMock(this, runMode)
+    const config = newConfig(configJson)
     this.processingContext = ContextMocks.newProcessingContextMock(
       this.envContext,
       config,

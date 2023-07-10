@@ -16,11 +16,6 @@ import { ConflictStrategy, FileContent, GDriveAdapter } from "./GDriveAdapter"
 
 let mocks: Mocks
 let gdriveAdapter: GDriveAdapter
-const PLAIN_TEXT_CONTENT: FileContent = {
-  content: "some content",
-  mimeType: "text/plain",
-  description: "some description",
-}
 
 beforeEach(() => {
   mocks = MockFactory.newMocks()
@@ -51,7 +46,7 @@ describe("createFile() strategy:ERROR", () => {
     gdriveAdapter.ctx.env.runMode = RunMode.DANGEROUS
     const file = gdriveAdapter.createFile(
       `/${NEW_FILE_NAME}`,
-      PLAIN_TEXT_CONTENT,
+      new FileContent(mocks.newBlob),
       ConflictStrategy.ERROR,
     )
     expect(file.getId()).toEqual(NEW_FILE_ID)
@@ -63,7 +58,7 @@ describe("createFile() strategy:REPLACE", () => {
     gdriveAdapter.ctx.env.runMode = RunMode.DANGEROUS
     const file = gdriveAdapter.createFile(
       `/${EXISTING_FILE_NAME}`,
-      PLAIN_TEXT_CONTENT,
+      new FileContent(mocks.existingBlob),
       ConflictStrategy.REPLACE,
     )
     expect(file).toBeDefined()
@@ -73,7 +68,7 @@ describe("createFile() strategy:REPLACE", () => {
     gdriveAdapter.ctx.env.runMode = RunMode.DRY_RUN
     gdriveAdapter.createFile(
       `/${EXISTING_FILE_NAME}`,
-      PLAIN_TEXT_CONTENT,
+      new FileContent(mocks.existingBlob),
       ConflictStrategy.REPLACE,
     )
     expect(mocks.rootFolder.createFile).not.toBeCalled()
@@ -82,7 +77,7 @@ describe("createFile() strategy:REPLACE", () => {
     gdriveAdapter.ctx.env.runMode = RunMode.SAFE_MODE
     gdriveAdapter.createFile(
       `/${EXISTING_FILE_NAME}`,
-      PLAIN_TEXT_CONTENT,
+      new FileContent(mocks.existingBlob),
       ConflictStrategy.REPLACE,
     )
     expect(mocks.rootFolder.createFile).not.toBeCalled()
@@ -93,7 +88,7 @@ describe("createFile() strategy:UPDATE", () => {
     gdriveAdapter.ctx.env.runMode = RunMode.DANGEROUS
     const file = gdriveAdapter.createFile(
       `/${EXISTING_FILE_NAME}`,
-      PLAIN_TEXT_CONTENT,
+      new FileContent(mocks.existingBlob),
       ConflictStrategy.UPDATE,
     )
     expect(file).toBe(mocks.existingFile)
@@ -105,7 +100,7 @@ describe("createFile() strategy:UPDATE", () => {
     gdriveAdapter.ctx.env.runMode = RunMode.DRY_RUN
     gdriveAdapter.createFile(
       `/${EXISTING_FILE_NAME}`,
-      PLAIN_TEXT_CONTENT,
+      new FileContent(mocks.existingBlob),
       ConflictStrategy.UPDATE,
     )
     expect(mocks.rootFolder.createFile).not.toBeCalled()
@@ -116,7 +111,7 @@ describe("createFile() strategy:UPDATE", () => {
     gdriveAdapter.ctx.env.runMode = RunMode.SAFE_MODE
     gdriveAdapter.createFile(
       `/${EXISTING_FILE_NAME}`,
-      PLAIN_TEXT_CONTENT,
+      new FileContent(mocks.existingBlob),
       ConflictStrategy.UPDATE,
     )
     expect(mocks.rootFolder.createFile).not.toBeCalled()
@@ -130,7 +125,7 @@ describe("createFile() strategy:BACKUP, safe-mode", () => {
 
     const createdFile = gdriveAdapter.createFile(
       `/${NEW_EXISTING_FILE_NAME}`,
-      PLAIN_TEXT_CONTENT,
+      new FileContent(mocks.newExistingBlob),
       ConflictStrategy.BACKUP,
     )
     expect(createdFile.getId()).not.toEqual(EXISTING_FILE_ID)
@@ -144,7 +139,7 @@ describe("createFile() strategy:KEEP", () => {
     gdriveAdapter.ctx.env.runMode = RunMode.SAFE_MODE
     const createdFile = gdriveAdapter.createFile(
       `/${NEW_EXISTING_FILE_NAME}`,
-      PLAIN_TEXT_CONTENT,
+      new FileContent(mocks.newExistingBlob),
       ConflictStrategy.KEEP,
     )
     expect(createdFile).not.toBe(mocks.existingFile)
@@ -156,7 +151,7 @@ describe("createFile() strategy:SKIP", () => {
     gdriveAdapter.ctx.env.runMode = RunMode.DANGEROUS
     gdriveAdapter.createFile(
       `/${EXISTING_FILE_NAME}`,
-      PLAIN_TEXT_CONTENT,
+      new FileContent(mocks.existingBlob),
       ConflictStrategy.SKIP,
     )
     expect(mocks.rootFolder.createFile).not.toBeCalled()
@@ -168,7 +163,7 @@ describe("createFile() strategy:ERROR", () => {
     expect(() => {
       gdriveAdapter.createFile(
         `/${EXISTING_FILE_NAME}`,
-        PLAIN_TEXT_CONTENT,
+        new FileContent(mocks.existingBlob),
         ConflictStrategy.ERROR,
       )
     }).toThrowError(/Conflict/)
@@ -179,7 +174,7 @@ describe("createFile() with folderId", () => {
     gdriveAdapter.ctx.env.runMode = RunMode.DANGEROUS
     const file = gdriveAdapter.createFile(
       `{id:${ROOT_FOLDER_ID}}/${NEW_FOLDER_NAME}/${NEW_NESTED_FILE_NAME}`,
-      PLAIN_TEXT_CONTENT,
+      new FileContent(mocks.newNestedBlob),
       ConflictStrategy.KEEP,
     )
     expect(mocks.rootFolder.createFolder).toBeCalled()

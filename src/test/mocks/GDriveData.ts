@@ -1,4 +1,4 @@
-import { MockProxy } from "jest-mock-extended"
+import { MockProxy, mock } from "jest-mock-extended"
 
 export enum EntryScope {
   CREATED = "created",
@@ -29,7 +29,9 @@ export class FileData extends EntryData<GoogleAppsScript.Drive.File> {
     public entry: MockProxy<GoogleAppsScript.Drive.File>,
     public id: string,
     public name: string,
+    public blob: GoogleAppsScript.Base.Blob = mock<GoogleAppsScript.Base.Blob>(),
     public scope: EntryScope = EntryScope.EXISTING,
+    public content = `Contents of blob ${name}`,
   ) {
     super(entry, id, name, scope, EntryType.FILE)
   }
