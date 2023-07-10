@@ -95,12 +95,6 @@ export class GDriveMocks {
     type CreateFileWithBlob = (
       blobSource: GoogleAppsScript.Base.BlobSource,
     ) => GoogleAppsScript.Drive.File
-    // folder.createFile
-    //   .calledWith(anyString(), anyString(), anyString())
-    //   .mockImplementation((name: string) => {
-    //     throw Error(`Cannot create file ${name} - no mock data available!`)
-    //   })
-    //   .mockName("createFile-error")
     ;(folder.createFile as MockProxy<CreateFileWithBlob>) = jest
       .fn((blobSource: GoogleAppsScript.Base.BlobSource) => {
         let file: GoogleAppsScript.Drive.File | null = null
@@ -114,30 +108,7 @@ export class GDriveMocks {
           .forEach((spec) => {
             file = this.setupFileMocks(spec, folderData)
           })
-        for (const spec of folderData.getFiles()) {
-          if (spec.scope === EntryScope.EXISTING) {
-            folder.getFilesByName
-              .calledWith(matches((name) => name === spec.name))
-              .mockReturnValue(this.setupFileIterator([spec]))
-              .mockName("getFilesByName-existing")
-          }
-          // if (spec.scope === EntryScope.CREATED) {
-          //   folder.createFile
-          //     .calledWith(
-          //       matches((name) => name === spec.name),
-          //       anyString(),
-          //       anyString(),
-          //     )
-          //     .mockReturnValue(spec.entry)
-          //     .mockName("createFile-ok")
-          // }
-          this.setupFileMocks(spec, folderData)
-        }
-        if (file !== null) {
-          return file
-        } else {
-          return mock<GoogleAppsScript.Drive.File>()
-        }
+        return file !== null ? file : mock<GoogleAppsScript.Drive.File>()
       })
       .mockName("createFile-error")
     folder.createFolder
@@ -155,16 +126,6 @@ export class GDriveMocks {
           .mockReturnValue(this.setupFileIterator([spec]))
           .mockName("getFilesByName-existing")
       }
-      // if (spec.scope === EntryScope.CREATED) {
-      //   folder.createFile
-      //     .calledWith(
-      //       matches((name) => name === spec.name),
-      //       anyString(),
-      //       anyString(),
-      //     )
-      //     .mockReturnValue(spec.entry)
-      //     .mockName("createFile-ok")
-      // }
       this.setupFileMocks(spec, folderData)
     }
 
