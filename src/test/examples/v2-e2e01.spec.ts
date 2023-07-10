@@ -18,7 +18,7 @@ const e2e01ConfigV2 = {
   global: {
     thread: {
       match: {
-        query: "has:attachment -in:trash -in:drafts -in:spam newer_than:1d",
+        query: "has:attachment -in:trash -in:drafts -in:spam after:2023-06-19",
         maxMessageCount: -1,
         minMessageCount: 1,
       },
@@ -34,14 +34,14 @@ const e2e01ConfigV2 = {
       attachments: [
         {
           match: {
-            name: "^(.+).png$",
+            name: "^(?<basename>.+).png$",
           },
           actions: [
             {
               name: "attachment.store",
               args: {
                 location:
-                  "/GMail2GDrive-Tests/v2/e2e01/${attachment.name.match.1}-stored.png",
+                  "/GMail2GDrive-Tests/v2/e2e01/${attachment.name.match.basename}-stored.png",
               },
             },
           ],
