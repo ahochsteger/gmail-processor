@@ -9,8 +9,20 @@ outdir="${3:-build/gas/${subdir}}"
 rm -rf "${outdir}"
 mkdir -p "${outdir}"
 
-npx tsc
-npx webpack
+case "${subdir}" in
+  examples)
+    cp -pr package.json "${outdir}/"
+  ;;
+  lib)
+    npx tsc
+    npx webpack
+  ;;
+  *)
+    echo "ERROR: Unsupported subdir ${subdir}!"
+    exit 1
+  ;;
+esac
+
 cp \
   "${srcdir}"/* \
   "${outdir}/"
