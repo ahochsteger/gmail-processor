@@ -78,7 +78,7 @@ export class DriveUtils {
         case ConflictStrategy.REPLACE:
           if (ctx.env.runMode === RunMode.DANGEROUS) {
             ctx.log.warn(
-              `A file with the same name already exists at location: ${locationInfo.fullPath}. Replacing ...`,
+              `A file with the same name already exists at location: ${location}. Replacing ...`,
             )
             this.deleteFile(ctx, existingFile)
             file = this.createFileInParent(
@@ -186,17 +186,21 @@ export class DriveUtils {
     const baseName = nameParts.slice(0, -1).join(".")
     const extension = nameParts[nameParts.length - 1]
     const backupFilename = `${baseName} (Backup).${extension}`
+    ctx.log.info(`Backing up existing file to '${backupFilename}' ...`)
     existingFile.setName(backupFilename)
     const file = this.createFileInParent(ctx, folder, filename, fileData)
     return file
   }
 
   private static createFileInParent(
-    _ctx: EnvContext,
+    ctx: EnvContext,
     parentFolder: GoogleAppsScript.Drive.Folder,
     filename: string,
     fileData: FileContent,
   ): GoogleAppsScript.Drive.File {
+    ctx.log.info(
+      `Creating file '${filename}' in folder '${parentFolder.getName()}' ...`,
+    )
     const file = parentFolder.createFile(fileData.blob)
     file.setName(filename)
     file.setDescription(fileData.description)
@@ -207,7 +211,7 @@ export class DriveUtils {
     ctx: EnvContext,
     file: GoogleAppsScript.Drive.File,
   ): void {
-    ctx.log.info(`Deleting existing file: ${file.getName()}`)
+    ctx.log.info(`Deleting existing file '${file.getName()}' ...`)
     file.setTrashed(true)
   }
 
@@ -216,6 +220,7 @@ export class DriveUtils {
     file: GoogleAppsScript.Drive.File,
     fileData: FileContent,
   ): GoogleAppsScript.Drive.File {
+    ctx.log.info(`Updating existing file '${file.getName()}' ...`)
     file = file
       .setContent(fileData.blob.getBlob().getDataAsString()) // TODO: Test if binary content does not get corrupted here!
       .setDescription(fileData.description)
