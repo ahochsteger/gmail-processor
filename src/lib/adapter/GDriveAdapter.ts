@@ -216,7 +216,7 @@ export class DriveUtils {
   }
 
   private static updateExistingFile(
-    _ctx: EnvContext,
+    ctx: EnvContext,
     file: GoogleAppsScript.Drive.File,
     fileData: FileContent,
   ): GoogleAppsScript.Drive.File {
