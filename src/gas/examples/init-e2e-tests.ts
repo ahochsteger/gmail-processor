@@ -22,7 +22,7 @@ type FileConfig = {
 
 type E2EConfig = {
   globals: {
-    fileSourceBaseUrl: string
+    repoBaseUrl: string
     subjectPrefix: string
     to: string
   }
@@ -41,7 +41,7 @@ type E2EConfig = {
 
 const e2eConfig: E2EConfig = {
   globals: {
-    fileSourceBaseUrl:
+    repoBaseUrl:
       "https://raw.githubusercontent.com/ahochsteger/gmail2gdrive/v2/src/e2e-test/files",
     subjectPrefix: "[GmailProcessor-Test] ",
     to: Session.getActiveUser().getEmail(),
@@ -54,7 +54,7 @@ const e2eConfig: E2EConfig = {
   ],
   files: [
     {
-      name: "gmailLogo",
+      name: "gmail-logo",
       type: "url",
       filename: "gmail-logo.png",
       ref: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Gmail_icon_%282020%29.svg/320px-Gmail_icon_%282020%29.svg.png",
@@ -64,7 +64,7 @@ const e2eConfig: E2EConfig = {
       name: "plaintext-repo",
       type: "repo",
       filename: "plain-text-attachment.txt",
-      ref: "",
+      ref: "plain-text-attachment.txt",
       destFolder: "e2e",
     },
     {
@@ -80,7 +80,7 @@ const e2eConfig: E2EConfig = {
       name: "01-multiple",
       subject: "Test Mail with attachments",
       htmlBody: "Test email with multiple attachments from different sources.",
-      files: ["gmailLogo", "plaintext"],
+      files: ["gmail-logo", "plaintext-drive", "plaintext-repo"],
     },
   ],
 }
@@ -94,7 +94,7 @@ function getBlobFromFileEntry(config: E2EConfig, file: FileConfig): GoogleAppsSc
   var blob
   switch (file.type) {
     case "repo":
-      const url = `${config.globals.fileSourceBaseUrl}/${file.filename}`
+      const url = `${config.globals.repoBaseUrl}/${file.ref}`
       console.log(`Fetching repo file from ${url} ...`)
       blob = UrlFetchApp.fetch(url).getBlob()
       break
