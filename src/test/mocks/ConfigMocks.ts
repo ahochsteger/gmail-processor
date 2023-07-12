@@ -156,7 +156,9 @@ export class ConfigMocks {
             actions: [
               {
                 name: "message.storePDF",
-                args: { location: "Folder1/Subfolder1/${message.subject}.pdf" },
+                args: {
+                  location: "/Folder1/Subfolder1/${message.subject}.pdf",
+                },
               },
             ],
             match: {
@@ -172,7 +174,7 @@ export class ConfigMocks {
           {
             name: "thread.storePDF",
             args: {
-              location: "Folder1/Subfolder1/${thread.firstMessageSubject}",
+              location: "/Folder1/Subfolder1/${thread.firstMessageSubject}",
             },
           },
         ],

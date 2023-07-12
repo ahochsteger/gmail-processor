@@ -78,7 +78,7 @@ export class DriveUtils {
         case ConflictStrategy.REPLACE:
           if (ctx.env.runMode === RunMode.DANGEROUS) {
             ctx.log.warn(
-              `A file with the same name already exists at location: ${location}. Replacing ...`,
+              `A file with the same name already exists at location: ${locationInfo.fullPath}. Replacing ...`,
             )
             this.deleteFile(ctx, existingFile)
             file = this.createFileInParent(
@@ -127,37 +127,22 @@ export class DriveUtils {
   }
 
   public static extractLocationInfo(location: string): LocationInfo {
-    const folderIdRegex = /^{id:([^}]*)}/
-    const matches = location.match(folderIdRegex)
-
-    let folderId: string | null = null
-    let path: string
-
-    if (matches) {
-      folderId = matches[1]
-      path = location.replace(folderIdRegex, "")
-    } else if (location.startsWith("/")) {
-      path = location.slice(1)
-    } else {
-      path = location
-    }
-
-    const pathSegments = path.split("/").filter((segment) => segment !== "")
-
-    if (pathSegments.length === 0) {
+    // See regex tests on regex101.com: https://regex101.com/r/rIxb5B/1
+    const locationRegex =
+      /^({id:(?<folderId>[^}]*)})?(?<fullpath>(?<folderPath>(\/([^/\n]+))*)\/(?<filename>[^/\n]+))$/
+    const matches = locationRegex.exec(location)
+    if (!matches || !matches.groups) {
       throw new Error(`Invalid location format: ${location}`)
     }
-
-    const filename = pathSegments.pop()?.toString() ?? ""
-    const folderPath = pathSegments.join("/")
-
     return {
       location,
-      folderId,
-      pathSegments,
-      filename,
-      folderPath,
-      fullPath: `${folderPath}/${filename}`,
+      folderId: matches.groups.folderId,
+      pathSegments: matches.groups.folderPath.startsWith("/")
+        ? matches.groups.folderPath.slice(1).split("/")
+        : [],
+      filename: matches.groups.filename,
+      folderPath: matches.groups.folderPath,
+      fullPath: matches.groups.fullPath,
     }
   }
 

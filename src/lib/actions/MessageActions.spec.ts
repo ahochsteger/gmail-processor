@@ -79,7 +79,7 @@ it("should execute all actions using the action registry", () => {
     to: "some.email@example.com",
   })
   actionRegistry.executeAction(ctx, "message.storePDF", {
-    location: "my-location",
+    location: "/my-location",
     conflictStrategy: ConflictStrategy.REPLACE,
     description: "my description",
     skipHeader: false,

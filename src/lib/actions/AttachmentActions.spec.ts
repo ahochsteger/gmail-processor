@@ -35,7 +35,7 @@ it("should provide attachment.store in the action registry", () => {
 
 it("should create a file", () => {
   const result = AttachmentActions.store(mocks.attachmentContext, {
-    location: NEW_FILE_NAME,
+    location: `/${NEW_FILE_NAME}`,
     conflictStrategy: ConflictStrategy.KEEP,
     description: "automated test",
   })
@@ -49,7 +49,7 @@ it("should not create a file on dry-run", () => {
     RunMode.DRY_RUN,
   )
   AttachmentActions.store(dryRunMocks.attachmentContext, {
-    location: "test-location",
+    location: "/test-location",
     conflictStrategy: ConflictStrategy.REPLACE,
     description: "automated test",
   })
@@ -59,7 +59,7 @@ it("should not create a file on dry-run", () => {
 it("should execute all actions using the action registry", () => {
   const ctx = mocks.attachmentContext
   actionRegistry.executeAction(ctx, "attachment.store", {
-    location: "my-location",
+    location: "/my-location",
     conflictStrategy: ConflictStrategy.REPLACE,
     description: "my description",
   })

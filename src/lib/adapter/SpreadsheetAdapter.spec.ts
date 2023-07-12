@@ -10,7 +10,7 @@ beforeEach(() => {
 })
 
 it("should initialize a new logsheet", () => {
-  spreadsheetAdapter.initLogSheet("some-folder-path", "")
+  spreadsheetAdapter.initLogSheet("/some-folder-path", "")
   expect(mocks.spreadsheetApp.create).toBeCalled()
   expect(mocks.logSheetRange.setValues).toBeCalled()
 })

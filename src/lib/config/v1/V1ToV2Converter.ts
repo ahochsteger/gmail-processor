@@ -30,7 +30,11 @@ export class V1ToV2Converter {
     return convertedFormat
   }
 
-  public static convertFromV1Pattern(s: string, dateKey = "message.date") {
+  public static convertFromV1Pattern(
+    s: string,
+    dateKey: string,
+    isPath: boolean,
+  ) {
     const containsSingleQuotedStringRegex = /'([^'\n]+)'/g
     const legacyDateFormatRegex = /('([^']+)')?([^']+)('([^']+)')?/g
     if (s.replace(containsSingleQuotedStringRegex, "") !== "") {
@@ -50,13 +54,22 @@ export class V1ToV2Converter {
     } else {
       s = s.replace(/'/g, "") // Eliminate all single quotes
     }
-    return s
+    s = s
       .replace(/%s/g, "${message.subject}") // Original subject syntax
       .replace(/%o/g, "${attachment.name}") // Alternative syntax (from PR #61)
       .replace(/%filename/g, "${attachment.name}") // Alternative syntax from issue #50
       .replace(/#SUBJECT#/g, "${message.subject}") // Alternative syntax (from PR #22)
       .replace(/#FILE#/g, "${attachment.name}") // Alternative syntax (from PR #22)
       .replace(/%d/g, "${threadConfig.index}") // Original subject syntax
+
+    // Normalize path to form `/path1/path2`
+    if (isPath && s !== "" && !s.startsWith("/")) {
+      s = `/${s}`
+    }
+    if (isPath && s.endsWith("/")) {
+      s = s.slice(0, -1)
+    }
+    return s
   }
 
   static getLocationFromRule(rule: V1Rule, defaultFilename: string): string {
@@ -64,15 +77,19 @@ export class V1ToV2Converter {
     if (rule.filenameFromRegexp) {
       filename = "${attachment.name.match.1}"
     } else if (rule.filenameTo) {
-      filename = this.convertFromV1Pattern(rule.filenameTo)
+      filename = this.convertFromV1Pattern(
+        rule.filenameTo,
+        "message.date",
+        false,
+      )
     } else {
       filename = defaultFilename
     }
     let folder = ""
     if (rule.parentFolderId) {
-      folder = `\${id:${rule.parentFolderId}}/`
+      folder = `\${id:${rule.parentFolderId}}`
     }
-    folder += this.convertFromV1Pattern(rule.folder)
+    folder += this.convertFromV1Pattern(rule.folder, "message.date", true)
     return `${folder}/${filename}`
   }
 

@@ -87,7 +87,7 @@ it("should execute all actions using the action registry", () => {
 
   // Execute all actions with special arguments:
   actionRegistry.executeAction(ctx, "thread.storePDF", {
-    location: "my-location",
+    location: "/my-location",
     conflictStrategy: ConflictStrategy.REPLACE,
     description: "my description",
     skipHeader: false,
