@@ -63,14 +63,14 @@ const e2eConfig: E2EConfig = {
     {
       name: "plaintext-repo",
       type: "repo",
-      filename: "plain-text-attachment.txt",
-      ref: "plain-text-attachment.txt",
+      filename: "plain-text-from-repo.txt",
+      ref: "plain-text-from-repo.txt",
       destFolder: "e2e",
     },
     {
       name: "plaintext-drive",
       type: "gdrive",
-      filename: "plain-text-attachment.txt",
+      filename: "plain-text-from-drive.txt",
       ref: "1Jspl_MHY7LXb71z5tzk0yvVPvOfM6nd9",
       destFolder: "e2e",
     },
