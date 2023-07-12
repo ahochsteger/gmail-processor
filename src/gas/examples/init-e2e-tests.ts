@@ -1,24 +1,78 @@
-/* global DriveApp, MailApp, Session, UrlFetchApp */
+/* global DriveApp, GMail2GDrive, MailApp, Session, UrlFetchApp */
 
-const e2eConfig = {
+declare class GMail2GDrive {
+  Lib: {
+    E2E: {
+      ConflictStrategy: any,
+      defaultContext: any,
+      DriveUtils: any,
+      FileContent: any,
+      RunMode: any,
+    }
+  }
+}
+
+type FileConfig = {
+  name: string
+  type: string
+  filename: string
+  ref: string
+  destFolder: string
+}
+
+type E2EConfig = {
   globals: {
+    fileSourceBaseUrl: string
+    subjectPrefix: string
+    to: string
+  }
+  folders: {
+    name: string
+    location: string
+  }[]
+  files: FileConfig[]
+  mails: {
+    name: string
+    subject: string
+    htmlBody: string
+    files: string[]
+  }[]
+}
+
+const e2eConfig: E2EConfig = {
+  globals: {
+    fileSourceBaseUrl:
+      "https://raw.githubusercontent.com/ahochsteger/gmail2gdrive/v2/src/e2e-test/files",
     subjectPrefix: "[GmailProcessor-Test] ",
     to: Session.getActiveUser().getEmail(),
   },
+  folders: [
+    {
+      name: "e2e",
+      location: "{id:1yVPXknT_gIdB6-jJdGF2u3mQR6en4dGy}/e2e",
+    },
+  ],
   files: [
     {
       name: "gmailLogo",
       type: "url",
       filename: "gmail-logo.png",
-      mimeType: "image/png",
       ref: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Gmail_icon_%282020%29.svg/320px-Gmail_icon_%282020%29.svg.png",
+      destFolder: "e2e",
     },
     {
-      name: "plaintext",
+      name: "plaintext-repo",
+      type: "repo",
+      filename: "plain-text-attachment.txt",
+      ref: "",
+      destFolder: "e2e",
+    },
+    {
+      name: "plaintext-drive",
       type: "gdrive",
       filename: "plain-text-attachment.txt",
-      mimeType: "text/plain",
       ref: "1Jspl_MHY7LXb71z5tzk0yvVPvOfM6nd9",
+      destFolder: "e2e",
     },
   ],
   mails: [
@@ -31,26 +85,64 @@ const e2eConfig = {
   ],
 }
 
-export function initE2eTests() {
-  e2eConfig.mails.forEach((mail) => {
+function E2EInit() {
+  initDrive(e2eConfig)
+  initMails(e2eConfig)
+}
+
+function getBlobFromFileEntry(config: E2EConfig, file: FileConfig): GoogleAppsScript.Base.Blob {
+  var blob
+  switch (file.type) {
+    case "repo":
+      const url = `${config.globals.fileSourceBaseUrl}/${file.filename}`
+      console.log(`Fetching repo file from ${url} ...`)
+      blob = UrlFetchApp.fetch(url).getBlob()
+      break
+    case "url":
+      console.log(`Fetching URL file from ${file.ref} ...`)
+      blob = UrlFetchApp.fetch(file.ref).getBlob()
+      break
+    case "gdrive":
+      console.log(`Fetching GDrive file from ${file.ref} ...`)
+      blob = DriveApp.getFileById(file.ref).getBlob()
+      break
+  }
+  return blob
+}
+
+function initMails(config: E2EConfig) {
+  config.mails.forEach((mail) => {
     const files: string[] = mail.files ?? []
     const attachments: GoogleAppsScript.Base.Blob[] = files.map((name) => {
-      const file = e2eConfig.files.reduce((prev, curr) =>
+      const file = config.files.reduce((prev, curr) =>
         name === curr.name ? curr : prev,
       )
-      if (file.type === "url") {
-        const resp = UrlFetchApp.fetch(file.ref)
-        return resp.getBlob()
-      } else if (file.type === "gdrive") {
-        const gdriveFile = DriveApp.getFileById(file.ref)
-        return gdriveFile.getBlob()
-      }
+      return getBlobFromFileEntry(e2eConfig, file)
     }) as GoogleAppsScript.Base.Blob[]
     MailApp.sendEmail({
-      to: e2eConfig.globals.to,
-      subject: `${e2eConfig.globals.subjectPrefix}${mail.subject}`,
+      to: config.globals.to,
+      subject: `${config.globals.subjectPrefix}${mail.subject}`,
       htmlBody: mail.htmlBody,
       attachments: attachments,
     })
   })
+}
+
+function initDrive(config: E2EConfig) {
+  config.files
+    .filter((file) => file.destFolder !== undefined)
+    .forEach((file) => {
+      const blob = getBlobFromFileEntry(e2eConfig, file)
+      const folderLocation = config.folders.reduce((prev, current) =>
+        current.name === file.destFolder ? current : prev,
+      )
+      GMail2GDrive.Lib.E2E.DriveUtils.createFile(
+        GMail2GDrive.Lib.E2E.defaultContext(
+          GMail2GDrive.Lib.E2E.RunMode.DANGEROUS,
+        ),
+        `${folderLocation.location}/${file.filename}`,
+        new GMail2GDrive.Lib.E2E.FileContent(blob),
+        GMail2GDrive.Lib.E2E.ConflictStrategy.REPLACE,
+      )
+    })
 }

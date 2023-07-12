@@ -1,5 +1,10 @@
 import { PartialDeep } from "type-fest"
 import { ContextType, EnvContext, ProcessingResult, RunMode } from "./Context"
+import {
+  ConflictStrategy,
+  DriveUtils,
+  FileContent,
+} from "./adapter/GDriveAdapter"
 import { Config, RequiredConfig, configToJson } from "./config/Config"
 import { V1Config, newV1Config } from "./config/v1/V1Config"
 import { V1ToV2Converter } from "./config/v1/V1ToV2Converter"
@@ -81,4 +86,13 @@ export function getEffectiveConfigV1(
 ): RequiredConfig {
   const v1config = newV1Config(v1configJson)
   return V1ToV2Converter.v1ConfigToV2Config(v1config)
+}
+
+// Exports for E2E Tests
+export const E2E = {
+  ConflictStrategy,
+  defaultContext,
+  DriveUtils,
+  FileContent,
+  RunMode,
 }
