@@ -1,4 +1,5 @@
 import { MockProxy } from "jest-mock-extended"
+import { buildMetaInfo } from "../../lib"
 import {
   AttachmentContext,
   ContextType,

@@ -27,7 +27,7 @@ function genMetaInfoDocs(contextType: ContextType, m: MetaInfo, title: string, d
   Object.keys(m)
     .sort()
     .forEach((k, idx, arr) => {
-      const stringValue = PatternUtil.stringValue(ctx, ctx.meta, k)
+      const stringValue = PatternUtil.stringValue(ctx, k)
       let desc = m[k].description
       if (m[k].type === MetaInfoType.DATE) desc += ` ${dateInfo}`
       if (m[k].type === MetaInfoType.VARIABLE) desc += ` ${variableInfo}`

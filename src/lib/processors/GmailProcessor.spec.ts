@@ -31,6 +31,7 @@ describe("getEffectiveConfig", () => {
       settings: {
         timezone: "Europe/Vienna",
       },
+      threads: [{}],
     }
     const expected: PartialDeep<Config> = {
       description: "",
@@ -57,8 +58,7 @@ describe("getEffectiveConfig", () => {
       },
       threads: [{}],
       settings: {
-        logSheetLocation:
-          "Gmail2GDrive/Gmail2GDrive-logs/logsheet-${date.now:format:YYYY-MM-DD_HH-mm-ss}",
+        logSheetLocation: "",
         maxBatchSize: 10,
         maxRuntime: 280,
         markProcessedLabel: "",
