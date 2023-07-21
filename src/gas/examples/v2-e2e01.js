@@ -1,11 +1,12 @@
 /* global GMail2GDrive */
 
 var e2e01ConfigV2 = {
-  description: "An example V2 configuration",
+  description: "End-to-end (E2E) test configuration",
   settings: {
+    logSheetLocation:
+      "/GmailProcessor-Tests/logsheet-${date.now:format:YYYY-MM}",
     maxBatchSize: 10,
     maxRuntime: 280,
-    markProcessedMethod: "mark-read",
     sleepTimeThreads: 100,
     sleepTimeMessages: 0,
     sleepTimeAttachments: 0,
@@ -23,6 +24,22 @@ var e2e01ConfigV2 = {
   },
   threads: [
     {
+      actions: [
+        {
+          name: "global.log",
+          args: {
+            message: "A log message for the matched thread.",
+            level: "info",
+          },
+        },
+        {
+          name: "global.sheetLog",
+          args: {
+            message: "A sheetLog message for the matched thread.",
+            level: "info",
+          },
+        },
+      ],
       match: {
         query:
           "from:${user.email} to:${user.email} subject:'GMail2GDrive-Test'",
@@ -38,6 +55,20 @@ var e2e01ConfigV2 = {
               args: {
                 location:
                   "/GMail2GDrive-Tests/v2/e2e01/${attachment.name.match.basename}-stored.png",
+              },
+            },
+            {
+              name: "global.log",
+              args: {
+                message: "A log message for the matched attachment.",
+                level: "info",
+              },
+            },
+            {
+              name: "global.sheetLog",
+              args: {
+                message: "A sheetLog message for the matched attachment.",
+                level: "info",
               },
             },
           ],

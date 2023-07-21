@@ -1,15 +1,14 @@
-import { Config } from "../../lib/config/Config"
 import { PartialDeep } from "type-fest"
-import { ProcessingConfig } from "../../lib/config/Config"
-import { ContextMocks } from "../mocks/ContextMocks"
+import { RunMode } from "../../lib/Context"
+import { Config, ProcessingConfig } from "../../lib/config/Config"
 import { GMail2GDrive } from "../mocks/Examples"
+import { MockFactory, Mocks } from "../mocks/MockFactory"
 
-const example02ConfigV2 = {
+const example02ConfigV2: PartialDeep<Config> = {
   description: "An example V2 configuration",
   settings: {
     maxBatchSize: 10,
     maxRuntime: 280,
-    markProcessedMethod: "mark-read",
     sleepTimeThreads: 100,
     sleepTimeMessages: 0,
     sleepTimeAttachments: 0,
@@ -60,18 +59,24 @@ const example02ConfigV2 = {
   ],
 }
 
-it("should provide the effective config of v2 example example02", () => {
-  const effectiveConfig = GMail2GDrive.Lib.getEffectiveConfig(
-    example02ConfigV2 as PartialDeep<Config>,
+let mocks: Mocks
+beforeEach(() => {
+  mocks = MockFactory.newMocks(
+    GMail2GDrive.Lib.getEffectiveConfig(example02ConfigV2),
+    RunMode.DANGEROUS,
   )
+})
+
+it("should provide the effective config of v2 example example02", () => {
+  const effectiveConfig = GMail2GDrive.Lib.getEffectiveConfig(example02ConfigV2)
   expect(effectiveConfig).toBeInstanceOf(ProcessingConfig)
 })
 
 it("should process a v2 config example", () => {
   const result = GMail2GDrive.Lib.run(
-    example02ConfigV2 as PartialDeep<Config>,
+    example02ConfigV2,
     "dry-run",
-    ContextMocks.newEnvContextMock(),
+    mocks.envContext,
   )
   expect(result.status).toEqual("ok")
 })

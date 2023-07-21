@@ -50,3 +50,8 @@ function example01EffectiveConfig() {
 function example01Run() {
   GMail2GDrive.Lib.runWithV1Config(example01ConfigV1, "dry-run")
 }
+
+function example01ConvertConfig() {
+  const config = GMail2GDrive.Lib.convertV1ConfigToV2Config(example01ConfigV1)
+  console.log(JSON.stringify(config, null, 2))
+}

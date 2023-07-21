@@ -23,3 +23,8 @@ function exampleMinEffectiveConfig() {
 function exampleMinRun() {
   GMail2GDrive.Lib.runWithV1Config(exampleMinConfigV1, "dry-run")
 }
+
+function exampleMinConvertConfig() {
+  const config = GMail2GDrive.Lib.convertV1ConfigToV2Config(exampleMinConfigV1)
+  console.log(JSON.stringify(config, null, 2))
+}

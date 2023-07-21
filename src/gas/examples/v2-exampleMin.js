@@ -1,6 +1,8 @@
 /* global GMail2GDrive */
 
-var exampleMinConfigV2 = {}
+var exampleMinConfigV2 = {
+  threads: [{}],
+}
 
 function exampleMinEffectiveConfig() {
   const effectiveConfig =

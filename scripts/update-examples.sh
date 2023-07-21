@@ -40,6 +40,29 @@ function buildCfgMap() {
 }
 
 function generateGasExample() {
+  case "${cfgMap[version]}" in
+    1)
+  cat <<EOF
+/* global GMail2GDrive */
+
+var ${cfgMap[cfgName]} = $(cat "${cfgMap[cfgFile]}")
+
+function ${cfgMap[fnName]}EffectiveConfig() {
+  const effectiveConfig = GMail2GDrive.Lib.${cfgMap[getCfgFn]}(${cfgMap[cfgName]})
+  console.log(JSON.stringify(effectiveConfig, null, 2))
+}
+
+function ${cfgMap[fnName]}Run() {
+  GMail2GDrive.Lib.${cfgMap[runFn]}(${cfgMap[cfgName]}, "dry-run")
+}
+
+function ${cfgMap[fnName]}ConvertConfig() {
+  const config = GMail2GDrive.Lib.convertV1ConfigToV2Config(${cfgMap[cfgName]})
+  console.log(JSON.stringify(config, null, 2))
+}
+EOF
+  ;;
+    2)
   cat <<EOF
 /* global GMail2GDrive */
 
@@ -54,30 +77,78 @@ function ${cfgMap[fnName]}Run() {
   GMail2GDrive.Lib.${cfgMap[runFn]}(${cfgMap[cfgName]}, "dry-run")
 }
 EOF
+    ;;
+    *)
+    ;;
+  esac
 }
 
 function generateTestExample() {
-
+  case "${cfgMap[version]}" in
+    1)
   cat <<EOF
-${cfgMap[cfgImport]}
+import { convertV1ConfigToV2Config } from "../../lib"
+import { V1Config } from "../../lib/config/v1/V1Config"
 import { PartialDeep } from "type-fest"
+import { RunMode } from "../../lib/Context"
 import { ProcessingConfig } from "../../lib/config/Config"
-import { ContextMocks } from "../mocks/ContextMocks"
 import { GMail2GDrive } from "../mocks/Examples"
+import { MockFactory, Mocks } from "../mocks/MockFactory"
 
+const ${cfgMap[cfgName]}: PartialDeep<${cfgMap[cfgType]}> = $(cat "${cfgMap[cfgFile]}")
 
-const ${cfgMap[cfgName]} = $(cat "${cfgMap[cfgFile]}")
+let mocks: Mocks
+beforeEach(() => {
+  mocks = MockFactory.newMocks(GMail2GDrive.Lib.${cfgMap[getCfgFn]}(${cfgMap[cfgName]}), RunMode.DANGEROUS)
+})
 
 it("should provide the effective config of v${version} example ${cfgMap[fnName]}", () => {
-  const effectiveConfig = GMail2GDrive.Lib.${cfgMap[getCfgFn]}(${cfgMap[cfgName]} as PartialDeep<${cfgMap[cfgType]}>)
+  const effectiveConfig = GMail2GDrive.Lib.${cfgMap[getCfgFn]}(${cfgMap[cfgName]})
     expect(effectiveConfig).toBeInstanceOf(ProcessingConfig)
 })
 
 it("should process a v${cfgMap[version]} config example", () => {
-  const result = GMail2GDrive.Lib.${cfgMap[runFn]}(${cfgMap[cfgName]} as PartialDeep<${cfgMap[cfgType]}>, "dry-run", ContextMocks.newEnvContextMock())
+  const result = GMail2GDrive.Lib.${cfgMap[runFn]}(${cfgMap[cfgName]}, "dry-run", mocks.envContext)
+  expect(result.status).toEqual("ok")
+})
+
+it("should convert a v1 config example", () => {
+  const config = convertV1ConfigToV2Config(${cfgMap[cfgName]})
+  console.log(JSON.stringify(config, null, 2))
+})
+EOF
+    ;;
+    2)
+  cat <<EOF
+import { PartialDeep } from "type-fest"
+import { RunMode } from "../../lib/Context"
+import { Config, ProcessingConfig } from "../../lib/config/Config"
+import { GMail2GDrive } from "../mocks/Examples"
+import { MockFactory, Mocks } from "../mocks/MockFactory"
+
+const ${cfgMap[cfgName]}: PartialDeep<${cfgMap[cfgType]}> = $(cat "${cfgMap[cfgFile]}")
+
+let mocks: Mocks
+beforeEach(() => {
+  mocks = MockFactory.newMocks(GMail2GDrive.Lib.${cfgMap[getCfgFn]}(${cfgMap[cfgName]}), RunMode.DANGEROUS)
+})
+
+it("should provide the effective config of v${version} example ${cfgMap[fnName]}", () => {
+  const effectiveConfig = GMail2GDrive.Lib.${cfgMap[getCfgFn]}(${cfgMap[cfgName]})
+    expect(effectiveConfig).toBeInstanceOf(ProcessingConfig)
+})
+
+it("should process a v${cfgMap[version]} config example", () => {
+  const result = GMail2GDrive.Lib.${cfgMap[runFn]}(${cfgMap[cfgName]}, "dry-run", mocks.envContext)
   expect(result.status).toEqual("ok")
 })
 EOF
+    ;;
+    *)
+      echo "ERROR: Unsupported version: ${cfgMap[version]}"
+      exit 1
+    ;;
+  esac
 }
 
 srcdir="${1:-src/config-examples}"
