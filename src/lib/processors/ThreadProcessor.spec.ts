@@ -1,3 +1,4 @@
+import { ConfigMocks } from "../../test/mocks/ConfigMocks"
 import { ContextMocks } from "../../test/mocks/ContextMocks"
 import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
 import { ProcessingStatus, RunMode } from "../Context"
@@ -14,6 +15,7 @@ beforeEach(() => {
 
 it("should construct a GMail search query with globals (query, newerThan) and processedLabel", () => {
   const config = newConfig({
+    ...ConfigMocks.newDefaultConfigJson(),
     global: {
       thread: {
         match: {

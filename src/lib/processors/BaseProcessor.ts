@@ -1,10 +1,13 @@
 import {
+  AttachmentContext,
   MetaInfoType as MIT,
+  MessageContext,
   MetaInfo,
   ProcessingContext,
   ProcessingError,
   ProcessingResult,
   ProcessingStatus,
+  ThreadContext,
   newMetaInfo as mi,
 } from "../Context"
 import { ActionArgsType } from "../actions/ActionRegistry"
@@ -33,7 +36,7 @@ export abstract class BaseProcessor {
       let result
       const keyName = `${keyPrefix}.${k}`
       let hasAtLeastOneMatch = false
-      const stringValue = PatternUtil.stringValue(ctx, m, keyName)
+      const stringValue = PatternUtil.stringValue(ctx, keyName, m)
       if ((result = regex.exec(stringValue)) !== null) {
         ctx.log.debug(`... matches`)
         hasAtLeastOneMatch = true
@@ -150,5 +153,34 @@ export abstract class BaseProcessor {
     description += description !== "" ? " " : ""
     const title = `Gmail${typeTitle}.${method}()`
     return `${description}See [${title}](https://developers.google.com/apps-script/reference/gmail/gmail-${type}#${method}\\(\\)) reference docs.`
+  }
+
+  protected static getConfigName(
+    // TODO: Remove, is obsolete now.
+    ctx: ThreadContext | MessageContext | AttachmentContext,
+    namePrefix = "",
+  ) {
+    let threadName = ""
+    let messageName = ""
+    let attachmentName = ""
+    if ((ctx as ThreadContext).thread) {
+      const threadCtx = ctx as ThreadContext
+      threadName =
+        threadCtx.thread.config.name ??
+        `${threadCtx.thread.config.name}-${threadCtx.thread.configIndex}`
+    }
+    if ((ctx as MessageContext).message) {
+      const messageCtx = ctx as MessageContext
+      messageName =
+        messageCtx.message.config.name ??
+        `-${messageCtx.message.config.name}-${messageCtx.message.configIndex}`
+    }
+    if ((ctx as AttachmentContext).message) {
+      const attachmentCtx = ctx as AttachmentContext
+      attachmentName =
+        attachmentCtx.attachment.config.name ??
+        `-${attachmentCtx.attachment.config.name}-${attachmentCtx.attachment.configIndex}`
+    }
+    return `${namePrefix}${threadName}${messageName}${attachmentName}`
   }
 }

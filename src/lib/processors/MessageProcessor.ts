@@ -36,6 +36,7 @@ export class MessageProcessor extends BaseProcessor {
     }
     messageContext.messageMeta = this.buildMetaInfo(messageContext)
     messageContext.meta = {
+      ...messageContext.envMeta,
       ...messageContext.procMeta,
       ...messageContext.threadMeta,
       ...messageContext.messageMeta,
@@ -109,7 +110,6 @@ export class MessageProcessor extends BaseProcessor {
 
   public static buildMetaInfo(ctx: MessageContext): MetaInfo {
     const keyPrefix = "message"
-    ctx.meta
     let m: MetaInfo = {
       [`${keyPrefix}.bcc`]: mi(
         MIT.STRING,
@@ -242,6 +242,12 @@ export class MessageProcessor extends BaseProcessor {
           "getTo",
           "The comma-separated recipients of the message.",
         ),
+      ),
+      [`${keyPrefix}.url`]: mi(
+        MIT.STRING,
+        (msg: Message) =>
+          `https://mail.google.com/mail/u/0/#inbox/${msg.getId()}`,
+        "The URL of the message.",
       ),
       [`${keyPrefix}.index`]: mi(
         MIT.NUMBER,

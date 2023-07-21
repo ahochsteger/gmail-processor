@@ -1,11 +1,20 @@
 import { Expose, Type, plainToInstance } from "class-transformer"
 import "reflect-metadata"
 import { PartialDeep } from "type-fest"
+import { essentialObject } from "../utils/ConfigUtils"
 import { RequiredDeep } from "../utils/UtilityTypes"
-import { ThreadActionConfig } from "./ActionConfig"
-import { AttachmentConfig } from "./AttachmentConfig"
-import { MessageConfig, normalizeMessageConfigs } from "./MessageConfig"
-import { ThreadMatchConfig, newThreadMatchConfig } from "./ThreadMatchConfig"
+import { ThreadActionConfig, essentialActionConfig } from "./ActionConfig"
+import { AttachmentConfig, essentialAttachmentConfig } from "./AttachmentConfig"
+import {
+  MessageConfig,
+  essentialMessageConfig,
+  normalizeMessageConfigs,
+} from "./MessageConfig"
+import {
+  ThreadMatchConfig,
+  essentialThreadMatchConfig,
+  newThreadMatchConfig,
+} from "./ThreadMatchConfig"
 
 /**
  * Represents a config handle a certain GMail thread
@@ -51,44 +60,47 @@ export type RequiredThreadConfig = RequiredDeep<ThreadConfig>
 
 export function newThreadConfig(
   json: PartialDeep<ThreadConfig> = {},
-  namePrefix = "",
 ): RequiredThreadConfig {
-  return plainToInstance(
-    ThreadConfig,
-    normalizeThreadConfig(json, namePrefix),
-    {
-      exposeDefaultValues: true,
-      exposeUnsetFields: false,
-    },
-  ) as RequiredThreadConfig
+  return plainToInstance(ThreadConfig, normalizeThreadConfig(json), {
+    exposeDefaultValues: true,
+    exposeUnsetFields: false,
+  }) as RequiredThreadConfig
 }
 
 export function normalizeThreadConfig(
   config: PartialDeep<ThreadConfig>,
-  namePrefix = "",
-  index?: number,
 ): PartialDeep<ThreadConfig> {
-  config.name =
-    config.name || `${namePrefix}thread-cfg${index ? "-" + index : ""}`
   config.messages = config.messages ?? []
 
   // Normalize top-level attachments config:
-  if (config.attachments !== undefined) {
+  if (config.attachments !== undefined && config.attachments?.length > 0) {
     config.messages.push({ attachments: config.attachments })
     delete config.attachments
   }
 
-  config.messages = normalizeMessageConfigs(config.messages, namePrefix)
+  config.messages = normalizeMessageConfigs(config.messages)
   config.match = config.match || newThreadMatchConfig()
   return config
 }
 
 export function normalizeThreadConfigs(
   configs: PartialDeep<ThreadConfig>[],
-  namePrefix = "",
 ): PartialDeep<ThreadConfig>[] {
   for (let index = 0; index < configs.length; index++) {
-    normalizeThreadConfig(configs[index], namePrefix, index + 1)
+    normalizeThreadConfig(configs[index])
   }
   return configs
+}
+
+export function essentialThreadConfig(
+  config: PartialDeep<ThreadConfig>,
+): PartialDeep<ThreadConfig> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  config = essentialObject(config as any, newThreadConfig() as any, {
+    actions: essentialActionConfig,
+    messages: essentialMessageConfig,
+    attachments: essentialAttachmentConfig,
+    match: essentialThreadMatchConfig,
+  })
+  return config
 }

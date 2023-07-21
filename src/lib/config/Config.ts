@@ -6,13 +6,26 @@ import {
 } from "class-transformer"
 import "reflect-metadata"
 import { PartialDeep } from "type-fest"
+import { essentialObject } from "../utils/ConfigUtils"
 import { RequiredDeep } from "../utils/UtilityTypes"
 import { ProcessingStage } from "./ActionConfig"
-import { AttachmentConfig } from "./AttachmentConfig"
-import { GlobalConfig, normalizeGlobalConfig } from "./GlobalConfig"
-import { MessageConfig } from "./MessageConfig"
-import { MarkProcessedMethod, SettingsConfig } from "./SettingsConfig"
-import { ThreadConfig, normalizeThreadConfigs } from "./ThreadConfig"
+import { AttachmentConfig, essentialAttachmentConfig } from "./AttachmentConfig"
+import {
+  GlobalConfig,
+  essentialGlobalConfig,
+  normalizeGlobalConfig,
+} from "./GlobalConfig"
+import { MessageConfig, essentialMessageConfig } from "./MessageConfig"
+import {
+  MarkProcessedMethod,
+  SettingsConfig,
+  essentialSettingsConfig,
+} from "./SettingsConfig"
+import {
+  ThreadConfig,
+  essentialThreadConfig,
+  normalizeThreadConfigs,
+} from "./ThreadConfig"
 
 /**
  * Represents a configuration for GMail2GDrive in normalized form for processing
@@ -72,11 +85,20 @@ export function configToJson<T = ProcessingConfig>(
   })
 }
 
-export function newConfig(json: PartialDeep<Config> = {}): RequiredConfig {
-  return plainToInstance(ProcessingConfig, normalizeConfig(json), {
+export function newConfig(json: PartialDeep<Config>): RequiredConfig {
+  const config = plainToInstance(ProcessingConfig, normalizeConfig(json), {
     exposeDefaultValues: true,
     exposeUnsetFields: false,
   }) as RequiredConfig
+
+  // Validate resulting config:
+  if (config.threads.length < 1) {
+    throw new Error(
+      "No thread configuration found - make sure there is at least one thread configuration present!",
+    )
+  }
+
+  return config
 }
 
 export function normalizeConfig(
@@ -85,14 +107,14 @@ export function normalizeConfig(
   config.threads = config.threads ?? []
 
   // Normalize top-level attachments config:
-  if (config.attachments !== undefined) {
+  if (config.attachments !== undefined && config.attachments?.length > 0) {
     config.messages = config.messages ?? []
     config.messages.push({ attachments: config.attachments })
     delete config.attachments
   }
 
   // Normalize top-level messages config:
-  if (config.messages !== undefined) {
+  if (config.messages !== undefined && config.messages?.length > 0) {
     config.threads.push({ messages: config.messages })
     delete config.messages
   }
@@ -123,5 +145,19 @@ export function normalizeConfig(
 
   config.threads = normalizeThreadConfigs(config.threads)
 
+  return config
+}
+
+export function essentialConfig(
+  config: PartialDeep<Config>,
+): PartialDeep<Config> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  config = essentialObject(config as any, newConfig({ threads: [{}] }) as any, {
+    attachments: essentialAttachmentConfig,
+    global: essentialGlobalConfig,
+    messages: essentialMessageConfig,
+    settings: essentialSettingsConfig,
+    threads: essentialThreadConfig,
+  })
   return config
 }

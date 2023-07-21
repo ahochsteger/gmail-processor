@@ -33,6 +33,7 @@ export class AttachmentProcessor extends BaseProcessor {
     }
     attachmentContext.attachmentMeta = this.buildMetaInfo(attachmentContext)
     attachmentContext.meta = {
+      ...attachmentContext.envMeta,
       ...attachmentContext.procMeta,
       ...attachmentContext.threadMeta,
       ...attachmentContext.messageMeta,

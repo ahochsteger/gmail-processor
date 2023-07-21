@@ -1,10 +1,23 @@
 import { Expose, Type, plainToInstance } from "class-transformer"
 import "reflect-metadata"
 import { PartialDeep } from "type-fest"
+import { essentialObject } from "../utils/ConfigUtils"
 import { RequiredDeep } from "../utils/UtilityTypes"
-import { AttachmentConfig, normalizeAttachmentConfig } from "./AttachmentConfig"
-import { MessageConfig, normalizeMessageConfig } from "./MessageConfig"
-import { ThreadConfig, normalizeThreadConfig } from "./ThreadConfig"
+import {
+  AttachmentConfig,
+  essentialAttachmentConfig,
+  normalizeAttachmentConfig,
+} from "./AttachmentConfig"
+import {
+  MessageConfig,
+  essentialMessageConfig,
+  normalizeMessageConfig,
+} from "./MessageConfig"
+import {
+  ThreadConfig,
+  essentialThreadConfig,
+  normalizeThreadConfig,
+} from "./ThreadConfig"
 
 export const DEFAULT_GLOBAL_QUERY_PREFIX =
   "has:attachment -in:trash -in:drafts -in:spam"
@@ -65,15 +78,24 @@ export function normalizeGlobalConfig(
 ): PartialDeep<GlobalConfig> {
   config.thread = normalizeThreadConfig(
     (config.thread ?? {}) as PartialDeep<ThreadConfig>,
-    "global-",
   )
   config.message = normalizeMessageConfig(
     (config.message ?? {}) as PartialDeep<MessageConfig>,
-    "global-",
   )
   config.attachment = normalizeAttachmentConfig(
     (config.attachment ?? {}) as PartialDeep<AttachmentConfig>,
-    "global-",
   )
+  return config
+}
+
+export function essentialGlobalConfig(
+  config: PartialDeep<GlobalConfig>,
+): PartialDeep<GlobalConfig> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  config = essentialObject(config as any, newGlobalConfig() as any, {
+    attachment: essentialAttachmentConfig,
+    message: essentialMessageConfig,
+    thread: essentialThreadConfig,
+  })
   return config
 }

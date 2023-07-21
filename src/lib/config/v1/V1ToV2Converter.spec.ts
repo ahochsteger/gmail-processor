@@ -12,6 +12,12 @@ it("should convert settings", () => {
     processedLabel: "gmail2gdrive/client-test",
     sleepTime: 123,
     timezone: "Europe/Vienna",
+    rules: [
+      {
+        filter: "",
+        folder: "",
+      },
+    ],
   }
   const expected: PartialDeep<Config> = {
     settings: {
@@ -20,13 +26,21 @@ it("should convert settings", () => {
       sleepTimeThreads: 123,
       timezone: "Europe/Vienna",
     },
+    threads: [{}],
   }
   const actual = V1ToV2Converter.v1ConfigToV2Config(v1config)
   expect(actual).toMatchObject(expected)
 })
 
 it("should create default gobal config", () => {
-  const v1config: PartialDeep<V1Config> = {}
+  const v1config: PartialDeep<V1Config> = {
+    rules: [
+      {
+        filter: "",
+        folder: "",
+      },
+    ],
+  }
   const expected: PartialDeep<Config> = {
     global: {
       thread: {
@@ -35,6 +49,7 @@ it("should create default gobal config", () => {
         },
       },
     },
+    threads: [{}],
   }
   const actual = V1ToV2Converter.v1ConfigToV2Config(v1config)
   expect(actual).toMatchObject(expected)
@@ -45,6 +60,12 @@ it("should convert global config", () => {
     globalFilter:
       "has:attachment -in:trash -in:drafts -in:spam -label:some-label",
     newerThan: "3d",
+    rules: [
+      {
+        filter: "",
+        folder: "",
+      },
+    ],
   }
   const expected: PartialDeep<Config> = {
     global: {
@@ -55,6 +76,7 @@ it("should convert global config", () => {
         },
       },
     },
+    threads: [{}],
   }
   const actual = V1ToV2Converter.v1ConfigToV2Config(v1config)
   expect(actual).toMatchObject(expected)

@@ -1,6 +1,7 @@
 import { Expose, plainToInstance } from "class-transformer"
 import "reflect-metadata"
 import { PartialDeep } from "type-fest"
+import { essentialObject } from "../utils/ConfigUtils"
 import { RequiredDeep } from "../utils/UtilityTypes"
 
 // TODO: Use these constants in SettingsConfig below, when typescript-json-schema bug is resolved.
@@ -88,4 +89,12 @@ export function newSettingsConfig(
     exposeDefaultValues: true,
     exposeUnsetFields: false,
   }) as RequiredDeep<SettingsConfig>
+}
+
+export function essentialSettingsConfig(
+  config: PartialDeep<SettingsConfig>,
+): PartialDeep<SettingsConfig> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  config = essentialObject(config as any, newSettingsConfig() as any)
+  return config
 }

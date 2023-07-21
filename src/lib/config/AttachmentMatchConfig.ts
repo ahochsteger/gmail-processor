@@ -1,6 +1,7 @@
 import { plainToInstance } from "class-transformer"
 import "reflect-metadata"
 import { PartialDeep } from "type-fest"
+import { essentialObject } from "../utils/ConfigUtils"
 import { RequiredDeep } from "../utils/UtilityTypes"
 
 /**
@@ -42,4 +43,12 @@ export function newAttachmentMatchConfig(
     exposeDefaultValues: true,
     exposeUnsetFields: false,
   }) as RequiredAttachmentMatchConfig
+}
+
+export function essentialAttachmentMatchConfig(
+  config: PartialDeep<AttachmentMatchConfig>,
+): PartialDeep<AttachmentMatchConfig> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  config = essentialObject(config as any, newAttachmentMatchConfig() as any)
+  return config
 }

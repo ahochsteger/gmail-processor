@@ -1,13 +1,19 @@
 import { Expose, Type, plainToInstance } from "class-transformer"
 import "reflect-metadata"
 import { PartialDeep } from "type-fest"
+import { essentialObject } from "../utils/ConfigUtils"
 import { RequiredDeep } from "../utils/UtilityTypes"
-import { MessageActionConfig } from "./ActionConfig"
+import { MessageActionConfig, essentialActionConfig } from "./ActionConfig"
 import {
   AttachmentConfig,
+  essentialAttachmentConfig,
   normalizeAttachmentConfigs,
 } from "./AttachmentConfig"
-import { MessageMatchConfig, newMessageMatchConfig } from "./MessageMatchConfig"
+import {
+  MessageMatchConfig,
+  essentialMessageMatchConfig,
+  newMessageMatchConfig,
+} from "./MessageMatchConfig"
 
 /**
  * Represents a config to handle a certain GMail message
@@ -47,39 +53,38 @@ export type RequiredMessageConfig = RequiredDeep<MessageConfig>
 
 export function newMessageConfig(
   json: PartialDeep<MessageConfig> = {},
-  namePrefix = "",
 ): RequiredMessageConfig {
-  return plainToInstance(
-    MessageConfig,
-    normalizeMessageConfig(json, namePrefix),
-    {
-      exposeDefaultValues: true,
-      exposeUnsetFields: false,
-    },
-  ) as RequiredMessageConfig
+  return plainToInstance(MessageConfig, normalizeMessageConfig(json), {
+    exposeDefaultValues: true,
+    exposeUnsetFields: false,
+  }) as RequiredMessageConfig
 }
 
 export function normalizeMessageConfig(
   config: PartialDeep<MessageConfig>,
-  namePrefix = "",
-  index?: number,
 ): PartialDeep<MessageConfig> {
-  config.name =
-    config.name || `${namePrefix}message-cfg${index ? "-" + index : ""}`
-  config.attachments = normalizeAttachmentConfigs(
-    config.attachments ?? [],
-    namePrefix,
-  )
+  config.attachments = normalizeAttachmentConfigs(config.attachments ?? [])
   config.match = config.match || newMessageMatchConfig()
   return config
 }
 
 export function normalizeMessageConfigs(
   configs: PartialDeep<MessageConfig>[],
-  namePrefix = "",
 ): PartialDeep<MessageConfig>[] {
   for (let index = 0; index < configs.length; index++) {
-    normalizeMessageConfig(configs[index], namePrefix, index + 1)
+    normalizeMessageConfig(configs[index])
   }
   return configs
+}
+
+export function essentialMessageConfig(
+  config: PartialDeep<MessageConfig>,
+): PartialDeep<MessageConfig> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  config = essentialObject(config as any, newMessageConfig() as any, {
+    actions: essentialActionConfig,
+    attachments: essentialAttachmentConfig,
+    match: essentialMessageMatchConfig,
+  })
+  return config
 }

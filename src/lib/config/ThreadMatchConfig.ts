@@ -1,6 +1,7 @@
 import { Expose, plainToInstance } from "class-transformer"
 import "reflect-metadata"
 import { PartialDeep } from "type-fest"
+import { essentialObject } from "../utils/ConfigUtils"
 import { RequiredDeep } from "../utils/UtilityTypes"
 import { DEFAULT_GLOBAL_QUERY } from "./GlobalConfig"
 
@@ -46,4 +47,12 @@ export function newThreadMatchConfig(
     exposeDefaultValues: true,
     exposeUnsetFields: false,
   }) as RequiredThreadMatchConfig
+}
+
+export function essentialThreadMatchConfig(
+  config: PartialDeep<ThreadMatchConfig>,
+): PartialDeep<ThreadMatchConfig> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  config = essentialObject(config as any, newThreadMatchConfig() as any)
+  return config
 }

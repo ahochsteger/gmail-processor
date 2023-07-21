@@ -25,10 +25,19 @@ export class V1Config {
 export function newV1Config(
   json: PartialDeep<V1Config> = {},
 ): RequiredDeep<V1Config> {
-  return plainToInstance(V1Config, json, {
+  const config = plainToInstance(V1Config, json, {
     exposeDefaultValues: true,
     exposeUnsetFields: false,
   }) as RequiredDeep<V1Config>
+
+  // Validate resulting config:
+  if (config.rules.length < 1) {
+    throw new Error(
+      "No rules found - make sure there is at least one rule present!",
+    )
+  }
+
+  return config
 }
 
 /*

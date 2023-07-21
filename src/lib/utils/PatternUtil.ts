@@ -1,6 +1,7 @@
 import moment from "moment-timezone"
 import {
   AttachmentContext,
+  EnvContext,
   MessageContext,
   MetaInfo,
   ProcessingContext,
@@ -61,9 +62,14 @@ export class PatternUtil {
   }
 
   public static valueToString(
-    ctx: ProcessingContext | ThreadContext | MessageContext | AttachmentContext,
-    value: unknown,
+    ctx:
+      | EnvContext
+      | ProcessingContext
+      | ThreadContext
+      | MessageContext
+      | AttachmentContext,
     ref: Placeholder | string,
+    m: MetaInfo = ctx.meta,
     defaultValue = "",
   ): string {
     let stringValue = defaultValue
@@ -75,7 +81,8 @@ export class PatternUtil {
       // Already got a placeholder type
       p = ref
     }
-    if (!p) return defaultValue
+    if (!p || !m[p.fullName]) return defaultValue
+    let value = m[p.fullName].value
     if (typeof value === "function") {
       switch (p.type) {
         case PlaceholderType.THREAD:
@@ -145,26 +152,33 @@ export class PatternUtil {
   }
 
   public static substitute(
-    ctx: ProcessingContext | ThreadContext | MessageContext | AttachmentContext,
+    ctx:
+      | EnvContext
+      | ProcessingContext
+      | ThreadContext
+      | MessageContext
+      | AttachmentContext,
     s: string,
   ) {
     let p
     while ((p = PatternUtil.nextPlaceholder(s))) {
-      const value = ctx.meta[p.fullName]?.value
-      const stringValue = this.valueToString(ctx, value, p)
+      const stringValue = this.valueToString(ctx, p)
       s = `${s.slice(0, p.index)}${stringValue}${s.slice(p.index + p.length)}`
     }
     return s
   }
 
   public static stringValue(
-    ctx: ProcessingContext | ThreadContext | MessageContext | AttachmentContext,
-    m: MetaInfo,
+    ctx:
+      | EnvContext
+      | ProcessingContext
+      | ThreadContext
+      | MessageContext
+      | AttachmentContext,
     key: string,
-    defaultValue = "",
+    m: MetaInfo = ctx.meta,
   ) {
-    const value = m[key]?.value
-    const stringValue = PatternUtil.valueToString(ctx, value, key, defaultValue)
+    const stringValue = PatternUtil.valueToString(ctx, key, m)
     return stringValue
   }
 }

@@ -55,7 +55,7 @@ describe("getEffectiveConfig", () => {
         },
         attachment: { actions: [] },
       },
-      threads: [],
+      threads: [{}],
       settings: {
         logSheetLocation:
           "Gmail2GDrive/Gmail2GDrive-logs/logsheet-${date.now:format:YYYY-MM-DD_HH-mm-ss}",

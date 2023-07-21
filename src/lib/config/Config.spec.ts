@@ -2,9 +2,11 @@
 import { PartialDeep } from "type-fest"
 import { ConfigMocks } from "../../test/mocks/ConfigMocks"
 import {
+  Config,
   ProcessingConfig,
   RequiredConfig,
   configToJson,
+  essentialConfig,
   newConfig,
   normalizeConfig,
 } from "./Config"
@@ -17,9 +19,9 @@ import {
 // import { defaults } from "json-schema-defaults"
 
 it("New instance should contain defaults", () => {
-  const cfg = newConfig() as RequiredConfig
+  const cfg = newConfig({ threads: [{}] }) as RequiredConfig
   expect(cfg.description).toEqual("")
-  expect(cfg.threads).toEqual([])
+  expect(cfg.threads).toMatchObject([{}])
 })
 
 it("Schema-generated Config Types Test", () => {
@@ -149,4 +151,113 @@ describe("configToJson", () => {
     const actual = configToJson(cfg, true)
     expect(actual).toMatchObject(expected)
   })
+})
+
+it("should provide essential JSON config with defaults removed", () => {
+  const config = newConfig(ConfigMocks.newDefaultConfigJson())
+  const actual = essentialConfig(config)
+  expect(actual).toMatchObject({
+    settings: {
+      markProcessedLabel: "to-gdrive/processed",
+      maxBatchSize: 100,
+      sleepTimeAttachments: 1,
+      sleepTimeMessages: 10,
+      timezone: "UTC",
+    },
+    threads: [
+      {
+        match: {
+          query: "has:attachment from:example4@example.com",
+        },
+        messages: [
+          {
+            actions: [
+              {
+                name: "message.markRead",
+              },
+            ],
+            attachments: [
+              {
+                actions: [
+                  {
+                    args: {
+                      conflictStrategy: "replace",
+                      location:
+                        "Folder2/Subfolder2/${message.subject.match.1}/${email.subject} - ${match.att.1}.jpg",
+                    },
+                    name: "attachment.store",
+                  },
+                ],
+                match: {
+                  contentType: "application/(?<appType>.*)",
+                  name: "attachment(?<attNr>[0-9]+)\\.pdf",
+                },
+              },
+              {
+                actions: [
+                  {
+                    args: {
+                      conflictStrategy: "skip",
+                      location:
+                        "Folder3/Subfolder3/${att.basename}-${date:yyyy-MM-dd}.${att.ext}",
+                    },
+                    name: "attachment.store",
+                  },
+                ],
+                match: {
+                  name: "Image-([0-9]+)\\.jpg",
+                },
+              },
+            ],
+            match: {
+              from: "(.+)@example.com",
+              is: ["read"],
+              subject: "Message (?<myMatchGroup>.*)",
+              to: "my\\.address\\+(.+)@gmail.com",
+            },
+          },
+        ],
+      },
+      {
+        description:
+          "Example that stores all attachments of matching messages to a certain GDrive folder",
+        match: {
+          query: "has:attachment from:example@example.com",
+        },
+        messages: [
+          {
+            actions: [
+              {
+                args: {
+                  location: "/Folder1/Subfolder1/${message.subject}.pdf",
+                },
+                name: "message.storePDF",
+              },
+            ],
+            match: {
+              from: "(.+)@example.com",
+              subject: "Prefix - (?<prefix>.*) - Suffix(?<suffix>.*)",
+              to: "my\\.address\\+(.+)@gmail.com",
+            },
+          },
+        ],
+      },
+      {
+        actions: [
+          {
+            args: {
+              location: "/Folder1/Subfolder1/${thread.firstMessageSubject}",
+            },
+            name: "thread.storePDF",
+          },
+        ],
+        description:
+          "Example that stores all attachments of all found threads to a certain GDrive folder",
+        match: {
+          query: "has:attachment from:example@example.com",
+        },
+      },
+    ],
+    global: {},
+  } as Config)
 })

@@ -35,6 +35,7 @@ export class ThreadProcessor extends BaseProcessor {
     }
     threadContext.threadMeta = this.buildMetaInfo(threadContext)
     threadContext.meta = {
+      ...threadContext.envMeta,
       ...threadContext.procMeta,
       ...threadContext.threadMeta,
     }
@@ -225,6 +226,11 @@ export class ThreadProcessor extends BaseProcessor {
         ctx.thread.index,
         "The index number (0-based) of the thread.",
       ),
+      [`${keyPrefix}.url`]: mi(
+        MIT.STRING,
+        (t: Thread) => `https://mail.google.com/mail/u/0/#inbox/${t.getId()}`,
+        "The URL of the thread.",
+      ),
       "threadConfig.index": mi(
         MIT.NUMBER,
         ctx.thread.configIndex,
@@ -257,7 +263,9 @@ export class ThreadProcessor extends BaseProcessor {
   ): ProcessingResult {
     for (let configIndex = 0; configIndex < configs.length; configIndex++) {
       const config = configs[configIndex]
-      ctx.log.info(`Processing of thread config '${config.name}' started ...`)
+      ctx.log.info(
+        `Processing of thread config index '${configIndex}' started ...`,
+      )
       const matchConfig = this.buildMatchConfig(
         ctx.proc.config.global.thread.match,
         config.match,
@@ -284,7 +292,9 @@ export class ThreadProcessor extends BaseProcessor {
         })
         result = this.processEntity(threadContext, result)
       }
-      ctx.log.info(`Processing of thread config '${config.name}' finished.`)
+      ctx.log.info(
+        `Processing of thread config index '${configIndex}' finished.`,
+      )
     }
     return result
   }

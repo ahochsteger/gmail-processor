@@ -1,9 +1,14 @@
 import { Expose, Type, plainToInstance } from "class-transformer"
 import "reflect-metadata"
 import { PartialDeep } from "type-fest"
+import { essentialObject } from "../utils/ConfigUtils"
 import { RequiredDeep } from "../utils/UtilityTypes"
-import { AttachmentActionConfig } from "./ActionConfig"
-import { AttachmentMatchConfig } from "./AttachmentMatchConfig"
+import { AttachmentActionConfig, essentialActionConfig } from "./ActionConfig"
+import {
+  AttachmentMatchConfig,
+  essentialAttachmentMatchConfig,
+  newAttachmentMatchConfig,
+} from "./AttachmentMatchConfig"
 
 /**
  * Represents a config to handle a certain GMail attachment
@@ -37,34 +42,36 @@ export type RequiredAttachmentConfig = RequiredDeep<AttachmentConfig>
 
 export function newAttachmentConfig(
   json: PartialDeep<AttachmentConfig> = {},
-  namePrefix = "",
 ): RequiredAttachmentConfig {
-  return plainToInstance(
-    AttachmentConfig,
-    normalizeAttachmentConfig(json, namePrefix),
-    {
-      exposeDefaultValues: true,
-      exposeUnsetFields: false,
-    },
-  ) as RequiredAttachmentConfig
+  return plainToInstance(AttachmentConfig, normalizeAttachmentConfig(json), {
+    exposeDefaultValues: true,
+    exposeUnsetFields: false,
+  }) as RequiredAttachmentConfig
 }
 
 export function normalizeAttachmentConfig(
   config: PartialDeep<AttachmentConfig>,
-  namePrefix = "",
-  index?: number,
 ): PartialDeep<AttachmentConfig> {
-  config.name =
-    config.name || `${namePrefix}attachment-cfg${index ? "-" + index : ""}`
+  config.match = config.match || newAttachmentMatchConfig()
   return config
 }
 
 export function normalizeAttachmentConfigs(
   configs: PartialDeep<AttachmentConfig>[],
-  namePrefix = "",
 ): PartialDeep<AttachmentConfig>[] {
   for (let index = 0; index < configs.length; index++) {
-    normalizeAttachmentConfig(configs[index], namePrefix, index + 1)
+    normalizeAttachmentConfig(configs[index])
   }
   return configs
+}
+
+export function essentialAttachmentConfig(
+  config: PartialDeep<AttachmentConfig>,
+): PartialDeep<AttachmentConfig> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  config = essentialObject(config as any, newAttachmentConfig() as any, {
+    actions: essentialActionConfig,
+    match: essentialAttachmentMatchConfig,
+  })
+  return config
 }

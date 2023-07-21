@@ -40,9 +40,12 @@ export class ContextMocks {
         session: mocks.session,
         timezone: "UTC",
       },
+      envMeta: {},
       log: new Logger(),
       meta: {},
     }
+    envContext.envMeta = buildMetaInfo(envContext)
+    envContext.meta = { ...envContext.envMeta }
     return envContext
   }
 

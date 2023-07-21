@@ -12,6 +12,7 @@ import {
   DEFAULT_GLOBAL_QUERY_PREFIX,
 } from "../GlobalConfig"
 import { MessageConfig } from "../MessageConfig"
+import { MarkProcessedMethod } from "../SettingsConfig"
 import {
   RequiredThreadConfig,
   ThreadConfig,
@@ -239,9 +240,9 @@ export class V1ToV2Converter {
     return resultingThreadConfig
   }
 
-  static v1ConfigToV2Config(
+  static v1ConfigToV2ConfigJson(
     partialV1Config: PartialDeep<V1Config>,
-  ): RequiredConfig {
+  ): PartialDeep<Config> {
     const v1Config = newV1Config(partialV1Config)
     // const config = newConfig()
     // // Old processing logic:
@@ -274,6 +275,7 @@ export class V1ToV2Converter {
         },
       },
       settings: {
+        markProcessedMethod: MarkProcessedMethod.ADD_THREAD_LABEL,
         markProcessedLabel: v1Config.processedLabel,
         sleepTimeThreads: v1Config.sleepTime,
         maxRuntime: v1Config.maxRuntime,
@@ -281,6 +283,13 @@ export class V1ToV2Converter {
       },
       threads: threadConfigs,
     }
+    return configJson
+  }
+
+  static v1ConfigToV2Config(
+    v1ConfigJson: PartialDeep<V1Config>,
+  ): RequiredConfig {
+    const configJson = this.v1ConfigToV2ConfigJson(v1ConfigJson)
     const config = newConfig(configJson)
     return config
   }

@@ -5,6 +5,7 @@ import { AttachmentActionNames } from "../actions/AttachmentActions"
 import { GlobalActionNames } from "../actions/GlobalActions"
 import { MessageActionNames } from "../actions/MessageActions"
 import { ThreadActionNames } from "../actions/ThreadActions"
+import { essentialObject } from "../utils/ConfigUtils"
 import { RequiredDeep } from "../utils/UtilityTypes"
 
 /**
@@ -95,4 +96,12 @@ export function newAttachmentActionConfig(
     exposeDefaultValues: true,
     exposeUnsetFields: false,
   }) as RequiredDeep<AttachmentActionConfig>
+}
+
+export function essentialActionConfig(
+  config: PartialDeep<ActionConfig>,
+): PartialDeep<ActionConfig> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  config = essentialObject(config as any, newThreadActionConfig() as any)
+  return config
 }

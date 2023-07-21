@@ -127,6 +127,7 @@ export enum ContextType {
 export type EnvContext = {
   type: ContextType
   env: EnvInfo
+  envMeta: MetaInfo
   log: Logger
   meta: MetaInfo
 }

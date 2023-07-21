@@ -5,13 +5,17 @@ import { Config, RequiredConfig, newConfig } from "../../lib/config/Config"
 import { GlobalConfig } from "../../lib/config/GlobalConfig"
 import { MessageConfig } from "../../lib/config/MessageConfig"
 import { MessageFlag } from "../../lib/config/MessageFlag"
-import { SettingsConfig } from "../../lib/config/SettingsConfig"
+import {
+  MarkProcessedMethod,
+  SettingsConfig,
+} from "../../lib/config/SettingsConfig"
 import { ThreadConfig } from "../../lib/config/ThreadConfig"
 import { V1Config } from "../../lib/config/v1/V1Config"
 
 export class ConfigMocks {
   public static newDefaultSettingsConfigJson(): PartialDeep<SettingsConfig> {
     return {
+      markProcessedMethod: MarkProcessedMethod.MARK_MESSAGE_READ,
       maxBatchSize: 100,
       maxRuntime: 280,
       markProcessedLabel: "to-gdrive/processed",

@@ -12,12 +12,18 @@ import {
 } from "../Context"
 import { ActionProvider, ActionRegistry } from "../actions/ActionRegistry"
 import { AttachmentActions } from "../actions/AttachmentActions"
+import { GlobalActions } from "../actions/GlobalActions"
 import { MessageActions } from "../actions/MessageActions"
 import { ThreadActions } from "../actions/ThreadActions"
 import { GDriveAdapter } from "../adapter/GDriveAdapter"
 import { GmailAdapter } from "../adapter/GmailAdapter"
 import { SpreadsheetAdapter } from "../adapter/SpreadsheetAdapter"
-import { Config, RequiredConfig, newConfig } from "../config/Config"
+import {
+  Config,
+  RequiredConfig,
+  essentialConfig,
+  newConfig,
+} from "../config/Config"
 import { Timer } from "../utils/Timer"
 import { ThreadProcessor } from "./ThreadProcessor"
 
@@ -33,32 +39,19 @@ export class GmailProcessor {
       procMeta: {},
     }
     processingContext.procMeta = this.buildMetaInfo(processingContext)
-    processingContext.meta = { ...processingContext.procMeta }
+    processingContext.meta = {
+      ...processingContext.envMeta,
+      ...processingContext.procMeta,
+    }
     return processingContext
   }
 
   public static buildMetaInfo(ctx: ProcessingContext) {
     const m: MetaInfo = {
-      "date.now": mi(MIT.DATE, () => new Date(), "The current timestamp."),
-      "env.runMode": mi(
-        MIT.STRING,
-        ctx.env.runMode,
-        "The runmode used for processing.",
-      ),
-      "env.timezone": mi(
-        MIT.STRING,
-        ctx.env.timezone,
-        "The timezone used for processing.",
-      ),
       "timer.startTime": mi(
         MIT.DATE,
         ctx.proc.timer.getStartTime(),
         "The start timestamp of the processing script.",
-      ),
-      "user.email": mi(
-        MIT.STRING,
-        ctx.env.session.getActiveUser().getEmail(),
-        "The email address of the active user.",
       ),
     }
     ctx.proc.config.global.variables.forEach(
@@ -78,6 +71,10 @@ export class GmailProcessor {
   ): ActionRegistry {
     ctx.log.info("Setting up action registry ...")
     actionRegistry.registerActionProvider(
+      "global",
+      new GlobalActions() as ActionProvider<ProcessingContext>,
+    )
+    actionRegistry.registerActionProvider(
       "thread",
       new ThreadActions() as ActionProvider<ProcessingContext>,
     )
@@ -94,13 +91,14 @@ export class GmailProcessor {
 
   public run(config: RequiredConfig, ctx: EnvContext) {
     ctx.log.info("Processing of GMail2GDrive config started ...")
+
     const actionRegistry = GmailProcessor.setupActionRegistry(ctx)
     const processingContext = GmailProcessor.buildContext(ctx, {
       actionRegistry: actionRegistry,
       config: config,
-      gdriveAdapter: new GDriveAdapter(ctx),
-      gmailAdapter: new GmailAdapter(ctx),
-      spreadsheetAdapter: new SpreadsheetAdapter(ctx),
+      gdriveAdapter: new GDriveAdapter(ctx, config.settings),
+      gmailAdapter: new GmailAdapter(ctx, config.settings),
+      spreadsheetAdapter: new SpreadsheetAdapter(ctx, config.settings),
       timer: new Timer(config.settings.maxRuntime),
     })
     ctx.log.logProcessingContext(processingContext)
@@ -123,5 +121,11 @@ export class GmailProcessor {
 
   public getEffectiveConfig(configJson: PartialDeep<Config>): RequiredConfig {
     return newConfig(configJson)
+  }
+
+  public getEssentialConfig(
+    configJson: PartialDeep<Config>,
+  ): PartialDeep<Config> {
+    return essentialConfig(configJson)
   }
 }
