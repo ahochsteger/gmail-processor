@@ -11,10 +11,12 @@ import {
 } from "../../lib/config/SettingsConfig"
 import { ThreadConfig } from "../../lib/config/ThreadConfig"
 import { V1Config } from "../../lib/config/v1/V1Config"
+import { LOGSHEET_FILE_PATH } from "./GDriveMocks"
 
 export class ConfigMocks {
   public static newDefaultSettingsConfigJson(): PartialDeep<SettingsConfig> {
     return {
+      logSheetLocation: LOGSHEET_FILE_PATH,
       markProcessedMethod: MarkProcessedMethod.MARK_MESSAGE_READ,
       maxBatchSize: 100,
       maxRuntime: 280,

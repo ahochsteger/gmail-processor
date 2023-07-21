@@ -32,11 +32,11 @@ export enum MarkProcessedMethod {
  */
 export class SettingsConfig {
   /**
-   * Path of the spreadsheet log file
+   * Path of the spreadsheet log file. Enables logging to a spreadsheet if not empty.
+   * Example: `GmailProcessor/logsheet-${date.now:format:YYYY-MM}`
    */
   @Expose()
-  logSheetLocation?: LocationType =
-    "Gmail2GDrive/Gmail2GDrive-logs/logsheet-${date.now:format:YYYY-MM-DD_HH-mm-ss}"
+  logSheetLocation?: LocationType = ""
   /**
    * The maximum batch size of threads to process in a single run to respect Google processing limits
    */

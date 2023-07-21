@@ -1,4 +1,5 @@
 import { EnvContext, RunMode } from "../Context"
+import { SettingsConfig } from "../config/SettingsConfig"
 import { BaseAdapter } from "./BaseAdapter"
 
 /** Strategy that defines how to deal in case of conflicts with already existing files at the desired location in Google Drive. */
@@ -34,12 +35,7 @@ export class FileContent {
 }
 
 export class DriveUtils {
-  public static createFile(
-    ctx: EnvContext,
-    location: string,
-    fileData: FileContent,
-    conflictStrategy: ConflictStrategy,
-  ): GoogleAppsScript.Drive.File {
+  public static findFilesByLocation(ctx: EnvContext, location: string) {
     const locationInfo = this.extractLocationInfo(location)
 
     const { filename } = locationInfo
@@ -52,7 +48,21 @@ export class DriveUtils {
     }
 
     const existingFiles = parentFolder.getFilesByName(filename)
+    return {
+      locationInfo,
+      parentFolder,
+      existingFiles,
+    }
+  }
 
+  public static createFile(
+    ctx: EnvContext,
+    location: string,
+    fileData: FileContent,
+    conflictStrategy: ConflictStrategy,
+  ): GoogleAppsScript.Drive.File {
+    const { locationInfo, parentFolder, existingFiles } =
+      this.findFilesByLocation(ctx, location)
     let file: GoogleAppsScript.Drive.File
     if (existingFiles.hasNext()) {
       const existingFile = existingFiles.next()
@@ -67,7 +77,12 @@ export class DriveUtils {
           )
           break
         case ConflictStrategy.KEEP:
-          file = this.createFileInParent(ctx, parentFolder, filename, fileData)
+          file = this.createFileInParent(
+            ctx,
+            parentFolder,
+            locationInfo.filename,
+            fileData,
+          )
           break
         case ConflictStrategy.SKIP:
           ctx.log.warn(
@@ -84,7 +99,7 @@ export class DriveUtils {
             file = this.createFileInParent(
               ctx,
               parentFolder,
-              filename,
+              locationInfo.filename,
               fileData,
             )
           } else {
@@ -114,7 +129,12 @@ export class DriveUtils {
         }
       }
     } else {
-      file = this.createFileInParent(ctx, parentFolder, filename, fileData)
+      file = this.createFileInParent(
+        ctx,
+        parentFolder,
+        locationInfo.filename,
+        fileData,
+      )
     }
     return file
   }
@@ -229,8 +249,8 @@ export class DriveUtils {
 }
 
 export class GDriveAdapter extends BaseAdapter {
-  constructor(public ctx: EnvContext) {
-    super(ctx)
+  constructor(public ctx: EnvContext, public settings: SettingsConfig) {
+    super(ctx, settings)
   }
 
   /**

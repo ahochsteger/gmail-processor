@@ -56,9 +56,9 @@ export class ContextMocks {
   ): ProcessingContext {
     const actionRegistry = GmailProcessor.setupActionRegistry(envContext)
     return GmailProcessor.buildContext(envContext, {
-      gdriveAdapter: new GDriveAdapter(envContext),
-      gmailAdapter: new GmailAdapter(envContext),
-      spreadsheetAdapter: new SpreadsheetAdapter(envContext),
+      gdriveAdapter: new GDriveAdapter(envContext, config.settings),
+      gmailAdapter: new GmailAdapter(envContext, config.settings),
+      spreadsheetAdapter: new SpreadsheetAdapter(envContext, config.settings),
       config,
       actionRegistry: actionRegistry,
       timer: new Timer(config.settings.maxRuntime),

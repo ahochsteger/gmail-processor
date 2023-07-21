@@ -1,58 +1,75 @@
-import { LOGSHEET_FILE_NAME } from "../../test/mocks/GDriveMocks"
+import { PartialDeep } from "type-fest"
+import { ConfigMocks } from "../../test/mocks/ConfigMocks"
+import { LOGSHEET_FILE_PATH } from "../../test/mocks/GDriveMocks"
 import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
+import { Config } from "../config/Config"
 import { SpreadsheetAdapter } from "./SpreadsheetAdapter"
 
 let spreadsheetAdapter: SpreadsheetAdapter
 let mocks: Mocks
+let config: PartialDeep<Config>
 beforeEach(() => {
-  mocks = MockFactory.newMocks()
-  spreadsheetAdapter = new SpreadsheetAdapter(mocks.envContext)
+  config = {
+    ...ConfigMocks.newDefaultConfigJson(),
+    settings: {
+      ...ConfigMocks.newDefaultSettingsConfigJson(),
+      logSheetLocation: LOGSHEET_FILE_PATH,
+    },
+  }
+  mocks = MockFactory.newMocks(config)
+  spreadsheetAdapter = mocks.processingContext.proc.spreadsheetAdapter
 })
 
 it("should initialize a new logsheet", () => {
-  spreadsheetAdapter.initLogSheet("/some-folder-path", "")
+  // NOTE: MockFactory.newMocks() calls constructor of SpreadsheetAdapter
   expect(mocks.spreadsheetApp.create).toBeCalled()
-  expect(mocks.logSheetRange.setValues).toBeCalled()
+  expect(mocks.logSheet.appendRow).toBeCalled()
 })
 
 it("should log attachment info to an existing logsheet", () => {
+  mocks.spreadsheetApp.create.mockReset()
+  mocks.logSheet.appendRow.mockReset()
   spreadsheetAdapter.logAttachmentInfo(
-    mocks.message,
-    mocks.attachment,
-    `/${LOGSHEET_FILE_NAME}`,
+    mocks.attachmentContext,
+    LOGSHEET_FILE_PATH,
     "some log message",
   )
   expect(mocks.spreadsheetApp.create).not.toBeCalled()
-  expect(mocks.logSheetRange.setValues).toBeCalled()
+  expect(mocks.logSheet.appendRow).toBeCalled()
 })
 
 it("should log attachment info to an existing logsheet", () => {
+  mocks.spreadsheetApp.create.mockReset()
+  mocks.logSheet.appendRow.mockReset()
   spreadsheetAdapter.logAttachmentStored(
-    mocks.message,
-    mocks.attachment,
+    mocks.attachmentContext,
     "some-location",
     mocks.existingFile,
   )
   expect(mocks.spreadsheetApp.create).not.toBeCalled()
-  expect(mocks.logSheetRange.setValues).toBeCalled()
+  expect(mocks.logSheet.appendRow).toBeCalled()
 })
 
 it("should log creation of a thread PDF to an existing logsheet", () => {
+  mocks.spreadsheetApp.create.mockReset()
+  mocks.logSheet.appendRow.mockReset()
   spreadsheetAdapter.logThreadPdf(
-    mocks.thread,
+    mocks.threadContext,
     "some-location",
     mocks.existingFile,
   )
   expect(mocks.spreadsheetApp.create).not.toBeCalled()
-  expect(mocks.logSheetRange.setValues).toBeCalled()
+  expect(mocks.logSheet.appendRow).toBeCalled()
 })
 
 it("should log creation of a message PDF to an existing logsheet", () => {
+  mocks.spreadsheetApp.create.mockReset()
+  mocks.logSheet.appendRow.mockReset()
   spreadsheetAdapter.logMessagePdf(
-    mocks.message,
+    mocks.messageContext,
     "some-location",
     mocks.existingFile,
   )
   expect(mocks.spreadsheetApp.create).not.toBeCalled()
-  expect(mocks.logSheetRange.setValues).toBeCalled()
+  expect(mocks.logSheet.appendRow).toBeCalled()
 })

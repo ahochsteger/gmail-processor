@@ -3,13 +3,30 @@ import { Mocks } from "./MockFactory"
 
 export class SpreadsheetMocks {
   public static setupAllMocks(mocks: Mocks) {
-    mocks.logSheet.getLastRow.mockReturnValue(3)
-    mocks.logSheet.getRange.mockReturnValue(mocks.logSheetRange)
-    mocks.logSheetRange.setValues.mockReturnValue(mocks.logSheetRange)
-    mocks.logSpreadsheet.getId.mockReturnValue(LOGSHEET_FILE_ID)
-    mocks.logSpreadsheet.getSheets.mockReturnValue([mocks.logSheet])
-    mocks.spreadsheetApp.create.mockReturnValue(mocks.logSpreadsheet)
-    mocks.spreadsheetApp.openById.mockReturnValue(mocks.logSpreadsheet)
-    mocks.logSpreadsheetFile.moveTo.mockReturnValue(mocks.logSpreadsheetFile)
+    mocks.logSheet.getLastRow.mockReturnValue(3).mockName("getLastRow")
+    mocks.logSheet.getRange
+      .mockReturnValue(mocks.logSheetRange)
+      .mockName("getRange")
+    mocks.logSheet.appendRow
+      .mockReturnValue(mocks.logSheet)
+      .mockName("appendRow")
+    mocks.logSheetRange.setValues
+      .mockReturnValue(mocks.logSheetRange)
+      .mockName("setValues")
+    mocks.logSpreadsheet.getId
+      .mockReturnValue(LOGSHEET_FILE_ID)
+      .mockName("getId")
+    mocks.logSpreadsheet.getSheets
+      .mockReturnValue([mocks.logSheet])
+      .mockName("getSheets")
+    mocks.spreadsheetApp.create
+      .mockReturnValue(mocks.logSpreadsheet)
+      .mockName("create")
+    mocks.spreadsheetApp.openById
+      .mockReturnValue(mocks.logSpreadsheet)
+      .mockName("openById")
+    mocks.logSpreadsheetFile.moveTo
+      .mockReturnValue(mocks.logSpreadsheetFile)
+      .mockName("moveTo")
   }
 }

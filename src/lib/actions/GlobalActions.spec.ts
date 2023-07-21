@@ -29,9 +29,8 @@ it("should log to console with a certain log level to console", () => {
 
 it("should log with default level to a logsheet", () => {
   GlobalActions.sheetLog(mocks.processingContext, { message: "Log message" })
-  expect(mocks.logSheetRange.setValues.mock.calls[0][0][0][6]).toEqual(
-    "Log message",
-  )
+  // TODO: Test should not depend on the action implementation
+  expect(mocks.logSheet.appendRow.mock.calls[0][0][7]).toEqual("Log message")
 })
 
 it("should log to console with a certain log level to a logsheet", () => {
@@ -39,7 +38,6 @@ it("should log to console with a certain log level to a logsheet", () => {
     level: LogLevel.WARN,
     message: "Log message",
   })
-  expect(mocks.logSheetRange.setValues.mock.calls[0][0][0][6]).toEqual(
-    "Log message",
-  )
+  // TODO: Test should not depend on the action implementation
+  expect(mocks.logSheet.appendRow.mock.calls[0][0][7]).toEqual("Log message")
 })

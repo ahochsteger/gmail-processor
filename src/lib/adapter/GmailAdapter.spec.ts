@@ -6,7 +6,10 @@ let gmailAdapter: GmailAdapter
 
 beforeEach(() => {
   mocks = MockFactory.newMocks()
-  gmailAdapter = new GmailAdapter(mocks.envContext)
+  gmailAdapter = new GmailAdapter(
+    mocks.envContext,
+    mocks.processingContext.proc.config.settings,
+  )
 })
 
 it("should generate a HTML message with header", () => {

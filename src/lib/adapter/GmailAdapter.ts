@@ -1,8 +1,11 @@
 import { EnvContext } from "../Context"
-import { Adapter } from "./BaseAdapter"
+import { SettingsConfig } from "../config/SettingsConfig"
+import { BaseAdapter } from "./BaseAdapter"
 
-export class GmailAdapter implements Adapter {
-  constructor(public ctx: EnvContext) {}
+export class GmailAdapter extends BaseAdapter {
+  constructor(public ctx: EnvContext, public settings: SettingsConfig) {
+    super(ctx, settings)
+  }
 
   public search(
     query: string,

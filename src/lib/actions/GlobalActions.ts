@@ -38,6 +38,7 @@ export class GlobalActions implements ActionProvider<ProcessingContext> {
     },
   >(context: ProcessingContext, args: TArgs): ActionReturnType {
     context.proc.spreadsheetAdapter.log(
+      context,
       PatternUtil.substitute(context, args.message),
       args.level,
     )

@@ -19,7 +19,10 @@ let gdriveAdapter: GDriveAdapter
 
 beforeEach(() => {
   mocks = MockFactory.newMocks()
-  gdriveAdapter = new GDriveAdapter(mocks.envContext)
+  gdriveAdapter = new GDriveAdapter(
+    mocks.envContext,
+    mocks.processingContext.proc.config.settings,
+  )
 })
 
 /*describe("getFolderFromPath()", () => {
