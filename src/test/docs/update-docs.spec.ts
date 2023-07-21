@@ -48,13 +48,22 @@ function genMetaInfoDocs(contextType: ContextType, m: MetaInfo, title: string, d
   }
 
 describe("Generate Context Substitution Docs", () => {
+  it("should generate environment context substitution docs", () => {
+    genMetaInfoDocs(
+      ContextType.ENV,
+      ctx.envMeta,
+      "Environment Placeholder",
+      "These context substitution placeholder are globally available and can also be used before processing starts (e.g. during adapter initialization).",
+      "first",
+    )
+  })
   it("should generate processing context substitution docs", () => {
     genMetaInfoDocs(
       ContextType.PROCESSING,
       ctx.procMeta,
       "Processing Placeholder",
-      "These context substitution placeholder are globally available.",
-      "first",
+      "These context substitution placeholder are globally available and can only be used during processing.",
+      "standard",
     )
   })
   it("should generate thread context substitution docs", () => {

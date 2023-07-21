@@ -52,17 +52,24 @@ The following table lists all enum types and their values referenced in the conf
 
 The following context data is available for substitution in strings, depending on the context.
 
-## Processing Placeholder
+## Environment Placeholder
 
-These context substitution placeholder are globally available.
+These context substitution placeholder are globally available and can also be used before processing starts (e.g. during adapter initialization).
 
 | Key | Type | Example | Description |
 |-----|------|---------|-------------|
-| <a id="placeholder-proc-date.now">`date.now`</a> | `date` | `2023-06-26 09:00:00` | The current timestamp. Use `"${<key>:format:<dateformat>}"` to format the date/time using a custom [Moment.js format strings](https://momentjs.com/docs/#/displaying/format/) (default: `"YYYY-MM-DD HH:mm:ss"`). |
-| <a id="placeholder-proc-env.runMode">`env.runMode`</a> | `string` | `safe-mode` | The runmode used for processing. |
-| <a id="placeholder-proc-env.timezone">`env.timezone`</a> | `string` | `UTC` | The timezone used for processing. |
+| <a id="placeholder-env-date.now">`date.now`</a> | `date` | `2023-06-26 09:00:00` | The current timestamp. Use `"${<key>:format:<dateformat>}"` to format the date/time using a custom [Moment.js format strings](https://momentjs.com/docs/#/displaying/format/) (default: `"YYYY-MM-DD HH:mm:ss"`). |
+| <a id="placeholder-env-env.runMode">`env.runMode`</a> | `string` | `safe-mode` | The runmode used for processing. |
+| <a id="placeholder-env-env.timezone">`env.timezone`</a> | `string` | `UTC` | The timezone used for processing. |
+| <a id="placeholder-env-user.email">`user.email`</a> | `string` | `my.email@gmail.com` | The email address of the active user. |
+
+## Processing Placeholder
+
+These context substitution placeholder are globally available and can only be used during processing.
+
+| Key | Type | Example | Description |
+|-----|------|---------|-------------|
 | <a id="placeholder-proc-timer.startTime">`timer.startTime`</a> | `date` | `2023-06-26 09:00:00` | The start timestamp of the processing script. Use `"${<key>:format:<dateformat>}"` to format the date/time using a custom [Moment.js format strings](https://momentjs.com/docs/#/displaying/format/) (default: `"YYYY-MM-DD HH:mm:ss"`). |
-| <a id="placeholder-proc-user.email">`user.email`</a> | `string` | `my.email@gmail.com` | The email address of the active user. |
 | <a id="placeholder-proc-variables.customVar">`variables.customVar`</a> | `variable` | `Custom value` | A custom defined variable. All custom variables configured at `global.variables` are available using `"${variables.<varName>}"`. |
 
 ## Thread Placeholder
@@ -87,6 +94,7 @@ These context substitution placeholder are defined for the currently GMail threa
 | <a id="placeholder-thread-thread.matched">`thread.matched`</a> | `boolean` | `true` | The overall matching result for all conditions in the match config. |
 | <a id="placeholder-thread-thread.messageCount">`thread.messageCount`</a> | `number` | `2` | The number of messages in the thread. See [GmailThread.getMessageCount()](https://developers.google.com/apps-script/reference/gmail/gmail-thread#getMessageCount\(\)) reference docs. |
 | <a id="placeholder-thread-thread.permalink">`thread.permalink`</a> | `string` | `some-permalink-url` | The permalink for the thread. See [GmailThread.getPermalink()](https://developers.google.com/apps-script/reference/gmail/gmail-thread#getPermalink\(\)) reference docs. |
+| <a id="placeholder-thread-thread.url">`thread.url`</a> | `string` | `https://mail.google.com/mail/u/0/#inbox/threadId123` | The URL of the thread. |
 | <a id="placeholder-thread-threadConfig.index">`threadConfig.index`</a> | `number` | `0` | The index number (0-based) of the thead config. |
 
 ## Message Placeholder
@@ -116,6 +124,7 @@ These context substitution placeholder are defined for the currently processed G
 | <a id="placeholder-message-message.subject.match.1">`message.subject.match.1`</a> | `string` | `Subject 1` | The matching regex group number as defined in the match config (e.g.: `"Message (?<myMatchGroup>.*)"`). |
 | <a id="placeholder-message-message.subject.match.myMatchGroup">`message.subject.match.myMatchGroup`</a> | `string` | `Subject 1` | The matching named regex group name as defined in the match config (e.g.: `"Message (?<myMatchGroup>.*)"`). |
 | <a id="placeholder-message-message.to">`message.to`</a> | `string` | `message-to@example.com` | The comma-separated recipients of the message. See [GmailMessage.getTo()](https://developers.google.com/apps-script/reference/gmail/gmail-message#getTo\(\)) reference docs. |
+| <a id="placeholder-message-message.url">`message.url`</a> | `string` | `https://mail.google.com/mail/u/0/#inbox/message-id` | The URL of the message. |
 | <a id="placeholder-message-messageConfig.index">`messageConfig.index`</a> | `number` | `0` | The index number (0-based) of the message config. |
 
 ## Attachment Placeholder
