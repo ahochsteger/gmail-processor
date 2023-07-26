@@ -166,16 +166,16 @@ export class AttachmentProcessor extends BaseProcessor {
       ctx.log.info(
         `Processing of attachment config '${config.name}' started ...`,
       )
-      const opts: GoogleAppsScript.Gmail.GmailAttachmentOptions = {
-        includeAttachments: config.match.includeAttachments,
-        includeInlineImages: config.match.includeInlineImages,
-      }
-      const attachments = ctx.message.object.getAttachments(opts)
       const matchConfig = this.buildMatchConfig(
         ctx,
         ctx.proc.config.global.attachment.match,
         config.match,
       )
+      const opts: GoogleAppsScript.Gmail.GmailAttachmentOptions = {
+        includeAttachments: matchConfig.includeAttachments,
+        includeInlineImages: matchConfig.includeInlineImages,
+      }
+      const attachments = ctx.message.object.getAttachments(opts)
       for (let index = 0; index < attachments.length; index++) {
         const attachment = attachments[index]
         if (!this.matches(matchConfig, attachment)) {
