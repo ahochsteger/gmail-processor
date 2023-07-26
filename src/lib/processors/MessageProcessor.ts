@@ -51,6 +51,10 @@ export class MessageProcessor extends BaseProcessor {
     if (!message.getFrom().match(matchConfig.from)) return false
     if (!message.getTo().match(matchConfig.to)) return false
     if (!message.getSubject().match(matchConfig.subject)) return false
+    if (!this.matchTimestamp(matchConfig.newerThan, message.getDate(), true))
+      return false
+    if (!this.matchTimestamp(matchConfig.olderThan, message.getDate(), false))
+      return false
     for (let i = 0; i < matchConfig.is.length; i++) {
       const flag = matchConfig.is[i]
       switch (flag) {

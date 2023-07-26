@@ -114,6 +114,19 @@ export abstract class BaseProcessor {
     return result
   }
 
+  protected static matchTimestamp(
+    matchTimestamp: string,
+    compareDate: GoogleAppsScript.Base.Date,
+    isNewer = true,
+  ) {
+    if (matchTimestamp) {
+      const matchTime = new Date(matchTimestamp).getTime()
+      const compareTime = compareDate.getTime()
+      return isNewer ? matchTime < compareTime : matchTime >= compareTime
+    }
+    return true
+  }
+
   protected static isSet(
     value: boolean | number | string | undefined,
     unsetValue?: unknown,
