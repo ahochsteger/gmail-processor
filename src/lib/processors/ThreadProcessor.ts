@@ -256,6 +256,25 @@ export class ThreadProcessor extends BaseProcessor {
     return m
   }
 
+  public static matches(
+    matchConfig: RequiredThreadMatchConfig,
+    thread: GoogleAppsScript.Gmail.GmailThread,
+  ): boolean {
+    if (!thread.getFirstMessageSubject().match(matchConfig.firstMessageSubject))
+      return false
+    if (thread.getMessageCount() < matchConfig.minMessageCount) return false
+    if (thread.getMessageCount() > matchConfig.maxMessageCount) return false
+    if (
+      !matchConfig.labels
+        .split(",")
+        .every((matchLabel) =>
+          thread.getLabels().map((l) => l.getName() == matchLabel),
+        )
+    )
+      return true
+    return true
+  }
+
   public static processConfigs(
     ctx: ProcessingContext,
     configs: RequiredThreadConfig[],
@@ -283,6 +302,14 @@ export class ThreadProcessor extends BaseProcessor {
       ctx.log.info(`-> got ${threads.length} threads`)
       for (let threadIndex = 0; threadIndex < threads.length; threadIndex++) {
         const thread = threads[threadIndex]
+        if (!this.matches(matchConfig, thread)) {
+          ctx.log.debug(
+            `Skipping non-matching thread id ${thread.getId()} (date:'${thread
+              .getLastMessageDate()
+              .toISOString()}',  subject:'${thread.getFirstMessageSubject()}').`,
+          )
+          continue
+        }
         ctx.proc.timer.checkMaxRuntimeReached()
         const threadContext = this.buildContext(ctx, {
           object: thread,
