@@ -40,7 +40,7 @@ export abstract class ActionConfig {
   name = ""
 
   /**
-   * The processing stage in which the action should run (pre or post processing)
+   * The processing stage in which the action should run (during main processing stage or pre-main/post-main)
    */
   @Expose()
   processingStage? = ProcessingStage.POST_MAIN

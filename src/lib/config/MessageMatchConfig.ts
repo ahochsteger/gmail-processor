@@ -8,13 +8,16 @@ import { MessageFlag } from "./MessageFlag"
  * Represents a config to match a certain GMail message
  */
 export class MessageMatchConfig {
+  /**
+   * A RegEx matching the sender email address of messages
+   */
   from? = ".*"
   /**
    * A list of properties matching messages should have
    */
   is?: MessageFlag[] = []
   /**
-   * A relative date/time according to https://github.com/cmaurer/relative.time.parser#readme or an RFC 3339 date/time format matching messages newer than the given date/time
+   * An RFC 3339 date/time format matching messages older than the given date/time
    */
   newerThan? = ""
   /**

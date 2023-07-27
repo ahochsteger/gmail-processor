@@ -25,14 +25,14 @@ export const DEFAULT_GLOBAL_QUERY_NEWER_THAN = "1d"
 export const DEFAULT_GLOBAL_QUERY = `${DEFAULT_GLOBAL_QUERY_PREFIX} newer_than:${DEFAULT_GLOBAL_QUERY_NEWER_THAN}`
 
 /**
- * A variable entry available for substitution (using ${variables.<varName>})
+ * A variable entry available for string substitution (using `${variables.<varName>}`)
  */
 class VariableEntry {
   constructor(public key: string, public value: string) {}
 }
 
 /**
- * The global configuration that defines matching for all threads as well as actions for all threads, messages or attachments.
+ * The global configuration defines matching and actions for all threads, messages or attachments.
  */
 export class GlobalConfig {
   /**

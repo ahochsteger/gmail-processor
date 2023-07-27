@@ -25,7 +25,7 @@ Represents a config to perform a actions for a GMail attachment.
 |**args**|`object`|The arguments for a certain action|No|
 |**description**|`string`|The description for the action|No, default: |
 |**name**|`string`|The name of the action to be executed| &#10003; Yes|
-|**processingStage**|`string`|The processing stage in which the action should run (pre or post processing)|No|
+|**processingStage**|`string`|The processing stage in which the action should run (during main processing stage or pre-main/post-main)|No|
 
 Additional properties are not allowed.
 
@@ -75,7 +75,7 @@ The name of the action to be executed
 
 ### AttachmentActionConfig.processingStage
 
-The processing stage in which the action should run (pre or post processing)
+The processing stage in which the action should run (during main processing stage or pre-main/post-main)
 
 * **Type**: `string`
 * **Required**: No
@@ -205,7 +205,7 @@ Only include attachments smaller than the given size in bytes
 <a name="reference-config"></a>
 ## Config
 
-Represents a configuration for GMail2GDrive
+Represents the configuration root for GMail2GDrive
 
 **`Config` Properties**
 
@@ -213,7 +213,7 @@ Represents a configuration for GMail2GDrive
 |---|---|---|---|
 |**attachments**|`AttachmentConfig` `[]`|The list of handler that define the way attachments are processed|No, default: `[]`|
 |**description**|`string`|The description of the GMail2GDrive config|No, default: |
-|**global**|`GlobalConfig`|The global configuration that defines matching for all threads as well as actions for all threads, messages or attachments.|No|
+|**global**|`GlobalConfig`|The global configuration defines matching and actions for all threads, messages or attachments.|No|
 |**messages**|`MessageConfig` `[]`|The list of handler that define the way nested messages or attachments are processed|No, default: `[]`|
 |**settings**|`SettingsConfig`|Represents a settings config that affect the way GMail2GDrive works.|No|
 |**threads**|`ThreadConfig` `[]`|The list of handler that define the way nested threads, messages or attachments are processed|No, default: `[]`|
@@ -236,7 +236,7 @@ The description of the GMail2GDrive config
 
 ### Config.global
 
-The global configuration that defines matching for all threads as well as actions for all threads, messages or attachments.
+The global configuration defines matching and actions for all threads, messages or attachments.
 
 * **Type**: `GlobalConfig`
 * **Required**: No
@@ -269,7 +269,7 @@ The list of handler that define the way nested threads, messages or attachments 
 <a name="reference-globalconfig"></a>
 ## GlobalConfig
 
-The global configuration that defines matching for all threads as well as actions for all threads, messages or attachments.
+The global configuration defines matching and actions for all threads, messages or attachments.
 
 **`GlobalConfig` Properties**
 
@@ -328,7 +328,7 @@ Represents a config to perform a actions for a GMail message.
 |**args**|`object`|The arguments for a certain action|No|
 |**description**|`string`|The description for the action|No, default: |
 |**name**|`string`|The name of the action to be executed| &#10003; Yes|
-|**processingStage**|`string`|The processing stage in which the action should run (pre or post processing)|No|
+|**processingStage**|`string`|The processing stage in which the action should run (during main processing stage or pre-main/post-main)|No|
 
 Additional properties are not allowed.
 
@@ -377,7 +377,7 @@ The name of the action to be executed
 
 ### MessageActionConfig.processingStage
 
-The processing stage in which the action should run (pre or post processing)
+The processing stage in which the action should run (during main processing stage or pre-main/post-main)
 
 * **Type**: `string`
 * **Required**: No
@@ -463,9 +463,9 @@ Represents a config to match a certain GMail message
 
 |   |Type|Description|Required|
 |---|---|---|---|
-|**from**|`string`||No, default: `".*"`|
+|**from**|`string`|A RegEx matching the sender email address of messages|No, default: `".*"`|
 |**is**|`string` `[]`|A list of properties matching messages should have|No, default: `[]`|
-|**newerThan**|`string`|A relative date/time according to https://github.com/cmaurer/relative.time.parser#readme or an RFC 3339 date/time format matching messages newer than the given date/time|No, default: |
+|**newerThan**|`string`|An RFC 3339 date/time format matching messages older than the given date/time|No, default: |
 |**olderThan**|`string`|An RFC 3339 date/time format matching messages older than the given date/time|No, default: |
 |**subject**|`string`|A RegEx matching the subject of messages|No, default: `".*"`|
 |**to**|`string`|A RegEx matching the recipient email address of messages|No, default: `".*"`|
@@ -473,6 +473,8 @@ Represents a config to match a certain GMail message
 Additional properties are not allowed.
 
 ### MessageMatchConfig.from
+
+A RegEx matching the sender email address of messages
 
 * **Type**: `string`
 * **Required**: No, default: `".*"`
@@ -491,7 +493,7 @@ A list of properties matching messages should have
 
 ### MessageMatchConfig.newerThan
 
-A relative date/time according to https://github.com/cmaurer/relative.time.parser#readme or an RFC 3339 date/time format matching messages newer than the given date/time
+An RFC 3339 date/time format matching messages older than the given date/time
 
 * **Type**: `string`
 * **Required**: No, default: 
@@ -533,7 +535,7 @@ Represents a settings config that affect the way GMail2GDrive works.
 |   |Type|Description|Required|
 |---|---|---|---|
 |**logSheetLocation**|`string`|Path of the spreadsheet log file. Enables logging to a spreadsheet if not empty.
-Example: `Gmail2GDrive/Gmail2GDrive-logs/logsheet-${date.now:format:YYYY-MM}`|No, default: |
+Example: `GmailProcessor/logsheet-${env.now:format:YYYY-MM}`|No, default: |
 |**markProcessedLabel**|`string`|The label to be added to processed GMail threads (only for markProcessedMode="label", deprecated - only for compatibility to v1)|No, default: |
 |**markProcessedMethod**|`string`|The method to mark processed threads/messages.
 * `add-label`: Add the label from `markProcessedLabel` to the thread. This is just for compatibility to v1 and is limited to one message per thread.
@@ -550,7 +552,7 @@ Additional properties are not allowed.
 ### SettingsConfig.logSheetLocation
 
 Path of the spreadsheet log file. Enables logging to a spreadsheet if not empty.
-Example: `Gmail2GDrive/Gmail2GDrive-logs/logsheet-${date.now:format:YYYY-MM}`
+Example: `GmailProcessor/logsheet-${env.now:format:YYYY-MM}`
 
 * **Type**: `string`
 * **Required**: No, default: 
@@ -632,7 +634,7 @@ Represents a config to perform a actions for a GMail thread.
 |**args**|`object`|The arguments for a certain action|No|
 |**description**|`string`|The description for the action|No, default: |
 |**name**|`string`|The name of the action to be executed| &#10003; Yes|
-|**processingStage**|`string`|The processing stage in which the action should run (pre or post processing)|No|
+|**processingStage**|`string`|The processing stage in which the action should run (during main processing stage or pre-main/post-main)|No|
 
 Additional properties are not allowed.
 
@@ -674,7 +676,7 @@ The name of the action to be executed
 
 ### ThreadActionConfig.processingStage
 
-The processing stage in which the action should run (pre or post processing)
+The processing stage in which the action should run (during main processing stage or pre-main/post-main)
 
 * **Type**: `string`
 * **Required**: No
@@ -820,7 +822,7 @@ See [Search operators you can use with Gmail](https://support.google.com/mail/an
 <a name="reference-variableentry"></a>
 ## VariableEntry
 
-A variable entry available for substitution (using ${variables.<varName>})
+A variable entry available for string substitution (using `${variables.<varName>}`)
 
 **`VariableEntry` Properties**
 

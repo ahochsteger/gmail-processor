@@ -70,7 +70,7 @@ These context substitution placeholder are globally available and can only be us
 | Key | Type | Example | Description |
 |-----|------|---------|-------------|
 | <a id="placeholder-proc-timer.startTime">`timer.startTime`</a> | `date` | `2023-06-26 09:00:00` | The start timestamp of the processing script. Use `"${<key>:format:<dateformat>}"` to format the date/time using a custom [Moment.js format strings](https://momentjs.com/docs/#/displaying/format/) (default: `"YYYY-MM-DD HH:mm:ss"`). |
-| <a id="placeholder-proc-variables.customVar">`variables.customVar`</a> | `variable` | `Custom value` | A custom defined variable. All custom variables configured at `global.variables` are available using `"${variables.<varName>}"`. |
+| <a id="placeholder-proc-variables.customVar">`variables.customVar`</a> | `variable` | `Custom value` | A custom defined variable. Custom variables defined at `global.variables` to better manage recurring substitution values. |
 
 ## Thread Placeholder
 

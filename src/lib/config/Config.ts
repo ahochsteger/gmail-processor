@@ -57,7 +57,7 @@ export class ProcessingConfig {
 }
 
 /**
- * Represents a configuration for GMail2GDrive
+ * Represents the configuration root for GMail2GDrive
  */
 export class Config extends ProcessingConfig {
   /**
