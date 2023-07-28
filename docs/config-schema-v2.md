@@ -535,7 +535,7 @@ Represents a settings config that affect the way GMail2GDrive works.
 |   |Type|Description|Required|
 |---|---|---|---|
 |**logSheetLocation**|`string`|Path of the spreadsheet log file. Enables logging to a spreadsheet if not empty.
-Example: `GmailProcessor/logsheet-${env.now:format:YYYY-MM}`|No, default: |
+Example: `GmailProcessor/logsheet-${date.now:format:YYYY-MM}`|No, default: |
 |**markProcessedLabel**|`string`|The label to be added to processed GMail threads (only for markProcessedMode="label", deprecated - only for compatibility to v1)|No, default: |
 |**markProcessedMethod**|`string`|The method to mark processed threads/messages.
 * `add-label`: Add the label from `markProcessedLabel` to the thread. This is just for compatibility to v1 and is limited to one message per thread.
@@ -552,7 +552,7 @@ Additional properties are not allowed.
 ### SettingsConfig.logSheetLocation
 
 Path of the spreadsheet log file. Enables logging to a spreadsheet if not empty.
-Example: `GmailProcessor/logsheet-${env.now:format:YYYY-MM}`
+Example: `GmailProcessor/logsheet-${date.now:format:YYYY-MM}`
 
 * **Type**: `string`
 * **Required**: No, default: 
