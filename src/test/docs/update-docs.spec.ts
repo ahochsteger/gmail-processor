@@ -19,11 +19,11 @@ function write(s: string) {
   process.stdout.write(`${s}\n`)
 }
 
-function genMetaInfoDocs(contextType: ContextType, m: MetaInfo, title: string, description: string, position: string) {
+function genMetaInfoDocs(contextType: ContextType, m: MetaInfo, position = "standard") {
   if (position === "first") {
     write("[")
   }
-  write(`{"contextType":"${contextType}","title":"${title}","description":"${description}","placeholder":[`)
+  write(`{"contextType":"${contextType}","placeholder":[`)
   Object.keys(m)
     .sort()
     .forEach((k, idx, arr) => {
@@ -35,7 +35,7 @@ function genMetaInfoDocs(contextType: ContextType, m: MetaInfo, title: string, d
       if (idx < arr.length - 1) {
         condComma = ","
       }
-      write(`  {"key":"${k}", "type": "${m[k].type}", "example": "${stringValue}", "description": ${JSON.stringify(desc)}}${condComma}`)
+      write(`  {"key":"${k}", "type": "${m[k].type}", "scope": "${contextType}", "example": "${stringValue}", "description": ${JSON.stringify(desc)}}${condComma}`)
     })
     let suffix = ","
     if (position === "last") {
@@ -52,8 +52,6 @@ describe("Generate Context Substitution Docs", () => {
     genMetaInfoDocs(
       ContextType.ENV,
       ctx.envMeta,
-      "Environment Placeholder",
-      "These context substitution placeholder are globally available and can also be used before processing starts (e.g. during adapter initialization).",
       "first",
     )
   })
@@ -61,35 +59,24 @@ describe("Generate Context Substitution Docs", () => {
     genMetaInfoDocs(
       ContextType.PROCESSING,
       ctx.procMeta,
-      "Processing Placeholder",
-      "These context substitution placeholder are globally available and can only be used during processing.",
-      "standard",
     )
   })
   it("should generate thread context substitution docs", () => {
     genMetaInfoDocs(
       ContextType.THREAD,
       ctx.threadMeta,
-      "Thread Placeholder",
-      "These context substitution placeholder are defined for the currently GMail thread.",
-      "standard",
     )
   })
   it("should generate message context substitution docs", () => {
     genMetaInfoDocs(
       ContextType.MESSAGE,
       ctx.messageMeta,
-      "Message Placeholder",
-      "These context substitution placeholder are defined for the currently processed GMail message.",
-      "standard",
     )
   })
   it("should generate attachment context substitution docs", () => {
     genMetaInfoDocs(
       ContextType.ATTACHMENT,
       ctx.attachmentMeta,
-      "Attachment Placeholder",
-      "These context substitution placeholder are defined for the currently processed GMail attachment.",
       "last",
     )
   })

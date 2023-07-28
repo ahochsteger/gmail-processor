@@ -4,6 +4,7 @@
 set -euo pipefail
 
 export LC_ALL=C
+scriptdir=$(dirname "$0")
 outfile="docs/reference-docs.md"
 allDataFile="build/typedoc/all.json"
 actionDataFile="build/typedoc/actions.json"
@@ -18,25 +19,7 @@ function extractAllDocs() {
 }
 
 function extractAllEnums() {
-  gojq '[
-    .children?[]?.children?[]?
-    | select(.kind==8)
-    | {
-      "name": .name,
-      "description": ([.comment.summary[].text]|join("")),
-      "values": (
-        [
-          .children[]
-          | {
-            "value": .type.value,
-            "description": ([.comment.summary[].text]|join(""))
-          }
-        ]
-        | sort_by(.name)
-      )
-    }
-  ]
-  | sort_by(.name)'
+  gojq -f "${scriptdir}/update-docs-extract-enums.jq"
 }
 
 function extractAllActions() {
@@ -50,32 +33,8 @@ function extractAllActions() {
 
   gojq -r \
     --argjson typeMap "${typeMap}" \
-    <"${inputFile}" '[
-      .children?[]?.children?[]?
-      | select($typeMap[.name])
-      | $typeMap[.name] as $prefix
-      | .children?[]?
-      | select(.flags.isStatic)
-      | .name as $shortName
-      | ($prefix+"."+$shortName) as $actionName
-      | .signatures[0]
-      | {
-        "actionName": $actionName,
-        "prefix": $prefix,
-        "shortName": .name,
-        "description": .comment.summary[0].text,
-        "args": [
-          .typeParameter?[0]?.type?.declaration?.children?[]?
-          | {
-            name,
-            description: ([
-              .comment?.summary?[]?.text
-            ] | join("")),
-            "type": .type?.name
-          }
-        ]
-      }
-    ]'
+    -f "${scriptdir}/update-docs-extract-actions.jq" \
+    <"${inputFile}"
 }
 
 function extractAllPlaceholder() {
@@ -88,7 +47,6 @@ function extractAllPlaceholder() {
 }
 
 function generateActionDocs() {
-  echo ""
   echo "## Actions"
   echo ""
   echo "The following actions can be triggered depending on the valid context which is prefixed in the action name:"
@@ -101,78 +59,27 @@ function generateActionDocs() {
   echo "| Action Name | Description | Arguments |"
   echo "|-------------|-------------|-----------|"
   gojq -r \
-  --slurpfile enumList "${enumDataFile}" \
-  <"${actionDataFile}" '
-  $enumList[0] as $enums
-  | .[]
-  | ("action-" + .actionName) as $actionAnchor
-  | [
-      "<a id=\"" + $actionAnchor + "\">`" + .actionName + "`</a>",
-      .description,
-      ( if .args then
-          (
-          "<ul>" + (
-            .args[]
-            | ($actionAnchor + "-" + .name) as $actionArgAnchor
-            | .type as $type
-            | [
-              "<li><a id=\"" + $actionArgAnchor + "\">`",
-              .name,
-              "`</a> (`",
-              .type,
-              "`): ",
-              .description,
-              (
-                if ($enums[]|select(.name==$type)) then
-                  " For valid values see enum docs for type " + .type + "."
-                else "" end
-              ),
-              "</li>"
-            ]
-            | join("")
-          ) + "</ul>")
-        else "" end
-      )
-    ]
-    | join(" | ")
-    | gsub("\n";"<br>")
-    | "| " + . + " |"
-  '
+    --slurpfile enumList "${enumDataFile}" \
+    -f "${scriptdir}/update-docs-generate-actions.jq" \
+    <"${actionDataFile}"
 }
 
 function generatePlaceholderDocs {
-  echo "## Context Substitution"
+  echo "## Substitution Placeholder"
   echo ""
-  echo "The following context data is available for substitution in strings, depending on the context."
-  gojq -r <"${placeholderDataFile}" '
-    .[]
-    | ("placeholder-" + .contextType) as $placeholderTypeAnchor
-    | [
-      "",
-      ("## " + .title),
-      "",
-      .description,
-      "",
-      "| Key | Type | Example | Description |",
-      "|-----|------|---------|-------------|",
-      (
-        .placeholder
-        | sort_by(.key)
-        | .[]
-        | ($placeholderTypeAnchor + "-" + .key) as $placeholderAnchor
-        | [
-          "<a id=\"" + $placeholderAnchor + "\">`" + .key + "`</a>",
-          "`" + .type + "`",
-          "`" + .example + "`",
-          .description
-        ]
-        | join(" | ")
-        | gsub("\n";"<br>")
-        | "| " + . + " |"
-      )
-    ]
-    | join("\n")
-  '
+  echo "The placeholder in the following table are available for substitution in strings, depending on the scope which are defined as follows:"
+  echo ""
+  echo "* \`env\`: This scope is valid globally and can also be used for internal purposes before processing starts (e.g. during adapter initialization)."
+  echo "* \`proc\`: This scope is valid globally during any processing phase."
+  echo "* \`thread\`: This scope is valid during processing a GMail thread and matching messages + attachments."
+  echo "* \`message\`: This scope is valid during processing a GMail message and matching attachments."
+  echo "* \`attachment\`: This scope is valid during processing a GMail attachment."
+  echo ""
+  echo "| Key | Type | Scope | Example | Description |"
+  echo "|-----|------|-------|---------|-------------|"
+  gojq -r \
+    -f "${scriptdir}/update-docs-generate-placeholder.jq" \
+    <"${placeholderDataFile}"
 }
 
 function generateEnumDocs() {
@@ -182,22 +89,9 @@ function generateEnumDocs() {
   echo ""
   echo "| Enum Type | Description | Values |"
   echo "|-----------|-------------|--------|"
-  gojq -r <"${enumDataFile}" '
-    .[]
-    | ("enum-" + .name) as $enumAnchor
-    | [
-      "<a id=\"" + $enumAnchor + "\">`" + .name + "`</a>",
-      .description,
-      "<ul>" + ([
-        .values[]
-        | ($enumAnchor + "-" + .value) as $enumValueAnchor
-        | "<li><a id=\"" + $enumValueAnchor + "\">`" + (.value | tostring) + "`</a>: " + .description + "</li>"
-      ] | join("")) + "</ul>"
-    ]
-    | join(" | ")
-    | gsub("\n";"<br>")
-    | "| " + . + " |"
-  '
+  gojq -r \
+    -f "${scriptdir}/update-docs-generate-enums.jq" \
+    <"${enumDataFile}"
 }
 
 function generateExampleDocs() {
@@ -211,8 +105,11 @@ extractAllPlaceholder >"${placeholderDataFile}"
 
 {
   echo "# GMail Processor Reference Documentation"
+  echo ""
   generateActionDocs
+  echo ""
   generateEnumDocs
+  echo ""
   generatePlaceholderDocs
 } >"${outfile}"
 #npx prettier -w "${outfile}"

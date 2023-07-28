@@ -24,7 +24,9 @@ function genSchema() {
     --titles \
     --topRef \
     --validationKeywords \
-  >"${schemaPath}/config-schema-${schemaName}.json"
+  | tee "${schemaPath}/config-schema-${schemaName}.json" \
+  | gojq -f scripts/update-schema.jq \
+  >"${schemaPath}/config-schema-${schemaName}-annotated.json"
   npx wetzel -w \
     "${schemaPath}/config-schema-${schemaName}.json" \
     >"docs/config-schema-${schemaName}.md"
