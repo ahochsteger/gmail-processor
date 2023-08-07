@@ -30,7 +30,7 @@ var example01ConfigV1 = {
     {
       filter: "label:PDF",
       saveThreadPDF: true,
-      folder: "PDF Emails",
+      folder: "'PDF Emails'",
     },
     {
       filter: "from:example4@example.com",

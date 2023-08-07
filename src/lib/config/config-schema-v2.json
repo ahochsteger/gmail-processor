@@ -394,7 +394,7 @@
             "properties": {
                 "logSheetLocation": {
                     "default": "",
-                    "description": "Path of the spreadsheet log file. Enables logging to a spreadsheet if not empty.\nExample: `GmailProcessor/logsheet-${date.now:format:YYYY-MM}`",
+                    "description": "Path of the spreadsheet log file. Enables logging to a spreadsheet if not empty.\nExample: `GmailProcessor/logsheet-${date.now:format:yyyy-MM}`",
                     "title": "logSheetLocation",
                     "type": "string"
                 },

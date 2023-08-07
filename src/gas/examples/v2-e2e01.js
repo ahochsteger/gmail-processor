@@ -4,7 +4,7 @@ var e2e01ConfigV2 = {
   description: "End-to-end (E2E) test configuration",
   settings: {
     logSheetLocation:
-      "/GmailProcessor-Tests/logsheet-${date.now:format:YYYY-MM}",
+      "/GmailProcessor-Tests/logsheet-${date.now:format:yyyy-MM}",
     maxBatchSize: 10,
     maxRuntime: 280,
     sleepTimeThreads: 100,

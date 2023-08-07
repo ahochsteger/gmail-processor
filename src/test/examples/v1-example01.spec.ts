@@ -36,7 +36,7 @@ const example01ConfigV1: PartialDeep<V1Config> = {
     {
       filter: "label:PDF",
       saveThreadPDF: true,
-      folder: "PDF Emails",
+      folder: "'PDF Emails'",
     },
     {
       filter: "from:example4@example.com",

@@ -1,4 +1,4 @@
-import moment from "moment-timezone"
+import { format as formatDateTime, utcToZonedTime } from "date-fns-tz"
 import {
   AttachmentContext,
   EnvContext,
@@ -36,13 +36,13 @@ type Placeholder = {
 
 const placeholderRegex =
   /\$\{(?<fullname>(?<type>[^\\.]+)\.(?<name>[^:}]+))(:(?<modifier>[^:}]+)(:(?<arg>[^}]+))?)?\}/g
-export const defaultDateFormat = "YYYY-MM-DD HH:mm:ss"
+export const defaultDateFormat = "yyyy-MM-dd HH:mm:ss"
 export const defaultJoinSeparator = ","
 
 export class PatternUtil {
   public static formatDate(date: Date, format: string, timezone = "UTC") {
     // See https://stackoverflow.com/questions/43525786/momentjs-convert-from-utc-to-desired-timezone-not-just-local
-    const v = moment(date).tz(timezone).format(format)
+    const v = formatDateTime(utcToZonedTime(date, timezone), format)
     return v
   }
 

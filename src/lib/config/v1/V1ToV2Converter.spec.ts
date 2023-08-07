@@ -120,7 +120,7 @@ it("should convert rule with filter and folder containing a date format", () => 
   })
   expect(actualThread.messages[0].attachments[0].actions[0]).toMatchObject({
     args: {
-      location: "/Scans-${message.date:format:YYYY-MM-DD}/${attachment.name}",
+      location: "/Scans-${message.date:format:yyyy-MM-dd}/${attachment.name}",
     },
     name: "attachment.store",
   })
@@ -177,7 +177,7 @@ it("should convert rule with filter, folder, filenameTo and archive", () => {
   const expectedAttachmentActionConfig: AttachmentActionConfig = {
     args: {
       location:
-        "/Examples/example3ab/file-${message.date:format:YYYY-MM-DD-}${message.subject}.txt",
+        "/Examples/example3ab/file-${message.date:format:yyyy-MM-dd-}${message.subject}.txt",
     },
     name: "attachment.store",
   }
@@ -247,7 +247,7 @@ it("should convert rule with filter, folder, filenameTo and archive", () => {
     {
       args: {
         location:
-          "/Examples/example3ab/file-${message.date:format:YYYY-MM-DD-}${message.subject}.txt",
+          "/Examples/example3ab/file-${message.date:format:yyyy-MM-dd-}${message.subject}.txt",
       },
       name: "attachment.store",
     },
@@ -359,7 +359,7 @@ it("should convert rule with filter, saveThreadPDF, folder and filenameTo", () =
           {
             args: {
               location:
-                "/PDF Emails/file-${message.date:format:YYYY-MM-DD-}${message.subject}",
+                "/PDF Emails/file-${message.date:format:yyyy-MM-dd-}${message.subject}",
             },
             name: "thread.storePDF",
           },
@@ -402,7 +402,7 @@ it("should convert rule with filter, folder filenameFrom and filenameTo", () => 
     {
       args: {
         location:
-          "/Examples/example4/file-${message.date:format:YYYY-MM-DD-}${message.subject}.txt",
+          "/Examples/example4/file-${message.date:format:yyyy-MM-dd-}${message.subject}.txt",
       },
       name: "attachment.store",
     },
@@ -480,8 +480,11 @@ it("should convert rule with filter, saveThreadPDF, ruleLabel and folder", () =>
 describe("V1 Format Conversion", () => {
   it("should support old date format", () => {
     expect(V1ToV2Converter.convertDateFormat("yyyy-MM-dd HH-mm-ss")).toBe(
-      "YYYY-MM-DD HH-mm-ss",
+      "yyyy-MM-dd HH-mm-ss",
     )
+  })
+  it("should fail on unsupported old date formats", () => {
+    expect(() => V1ToV2Converter.convertDateFormat("F a")).toThrowError()
   })
   it("should support old filename pattern (type: 'string'format'string')", () => {
     expect(
@@ -490,7 +493,7 @@ describe("V1 Format Conversion", () => {
         "message.date",
         false,
       ),
-    ).toBe("file-${message.date:format:YYYY-MM-DD-}${message.subject}.txt")
+    ).toBe("file-${message.date:format:yyyy-MM-dd-}${message.subject}.txt")
   })
   it("should support old filename pattern (type: 'string'format)", () => {
     expect(
@@ -499,7 +502,7 @@ describe("V1 Format Conversion", () => {
         "message.date",
         false,
       ),
-    ).toBe("file-${message.date:format:YYYY-MM-DD}")
+    ).toBe("file-${message.date:format:yyyy-MM-dd}")
   })
   it("should support old filename pattern (type: format'string')", () => {
     expect(
@@ -508,12 +511,12 @@ describe("V1 Format Conversion", () => {
         "message.date",
         false,
       ),
-    ).toBe("${message.date:format:YYYY-MM-DD}-${message.subject}.txt")
+    ).toBe("${message.date:format:yyyy-MM-dd}-${message.subject}.txt")
   })
   it("should support old filename pattern (type: format)", () => {
     expect(
       V1ToV2Converter.convertFromV1Pattern("yyyy-MM-dd", "message.date", false),
-    ).toBe("${message.date:format:YYYY-MM-DD}")
+    ).toBe("${message.date:format:yyyy-MM-dd}")
   })
   it("should support old filename pattern (type: 'string')", () => {
     expect(
@@ -528,7 +531,7 @@ describe("V1 Format Conversion", () => {
         true,
       ),
     ).toBe(
-      "/${message.subject},${attachment.name},${attachment.name},${message.subject},${attachment.name},${message.date:format:YYYY-MM-DD}",
+      "/${message.subject},${attachment.name},${attachment.name},${message.subject},${attachment.name},${message.date:format:yyyy-MM-dd}",
     )
   })
 })

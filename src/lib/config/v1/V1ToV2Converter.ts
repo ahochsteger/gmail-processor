@@ -23,11 +23,19 @@ import { V1Rule } from "./V1Rule"
 
 export class V1ToV2Converter {
   public static convertDateFormat(format: string): string {
-    // old format (from Utilities): yyyy-MM-dd_HH-mm-ss
+    // old format (from Google Apps Script Utilities): yyyy-MM-dd_HH-mm-ss
     // See https://docs.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html
-    // new format (from moment): YYYY-MM-DD_HH-mm-ss
-    // See https://momentjs.com/docs/#/displaying/
-    const convertedFormat = format.replace(/d/g, "D").replace(/y/g, "Y")
+    // new format (from date-fns): yyyy-MM-dd_HH-mm-ss
+    // See https://date-fns.org/v2.30.0/docs/format
+    const convertedFormat = format.replace(/u/g, "i")
+    const unsupportedFormatStrings = /[Fa]/
+    const matches = convertedFormat.match(unsupportedFormatStrings)
+    if (matches) {
+      throw new Error(
+        "Conversion of date format not possible - unsupported date format: " +
+          matches[0],
+      )
+    }
     return convertedFormat
   }
 

@@ -56,7 +56,7 @@ describe("v1 config compatibility", () => {
                       description:
                         "Mail title: ${message.subject}\nMail date: ${message.date}\nMail link: https://mail.google.com/mail/u/0/#inbox/${message.id}",
                       location:
-                        "/Scans${message.date:format:-YYYY-MM-DD}/${attachment.name}",
+                        "/Scans${message.date:format:-yyyy-MM-dd}/${attachment.name}",
                     },
                     name: "attachment.store",
                   },
@@ -137,7 +137,7 @@ describe("v1 config compatibility", () => {
                       description:
                         "Mail title: ${message.subject}\nMail date: ${message.date}\nMail link: https://mail.google.com/mail/u/0/#inbox/${message.id}",
                       location:
-                        "/Examples/example3ab/file-${message.date:format:YYYY-MM-DD-}${message.subject}.txt",
+                        "/Examples/example3ab/file-${message.date:format:yyyy-MM-dd-}${message.subject}.txt",
                     },
                     name: "attachment.store",
                   },
@@ -154,8 +154,7 @@ describe("v1 config compatibility", () => {
         actions: [
           {
             args: {
-              location:
-                "/${message.date:format:PDF Emails}/${thread.firstMessageSubject}.pdf",
+              location: "/PDF Emails/${thread.firstMessageSubject}.pdf",
             },
             name: "thread.storePDF",
           },
@@ -170,8 +169,7 @@ describe("v1 config compatibility", () => {
                       conflictStrategy: "keep",
                       description:
                         "Mail title: ${message.subject}\nMail date: ${message.date}\nMail link: https://mail.google.com/mail/u/0/#inbox/${message.id}",
-                      location:
-                        "/${message.date:format:PDF Emails}/${attachment.name}",
+                      location: "/PDF Emails/${attachment.name}",
                     },
                     name: "attachment.store",
                   },
@@ -196,7 +194,7 @@ describe("v1 config compatibility", () => {
                       description:
                         "Mail title: ${message.subject}\nMail date: ${message.date}\nMail link: https://mail.google.com/mail/u/0/#inbox/${message.id}",
                       location:
-                        "/Examples/example4/file-${message.date:format:YYYY-MM-DD-}${message.subject}.txt",
+                        "/Examples/example4/file-${message.date:format:yyyy-MM-dd-}${message.subject}.txt",
                     },
                     name: "attachment.store",
                   },
