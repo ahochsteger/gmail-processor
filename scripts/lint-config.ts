@@ -1,5 +1,6 @@
 import { ValidateFunction } from "ajv"
 import fs from "fs"
+import JSON5 from "json5"
 import { validateConfig } from "../src/lib/config/Validate"
 import { validateV1Config } from "../src/lib/config/v1/V1Validate"
 
@@ -19,7 +20,7 @@ if (configVersion == "v1") {
 }
 const dataFiles = process.argv.slice(3)
 dataFiles.forEach((f) => {
-  const data = JSON.parse(fs.readFileSync(f).toString())
+  const data = JSON5.parse(fs.readFileSync(f).toString())
   validate(data)
   if (validate.errors) {
     console.error(`There are validation errors in file ${f}:`)

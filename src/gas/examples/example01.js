@@ -1,6 +1,6 @@
 /* global GMail2GDrive */
 
-var example02ConfigV2 = {
+var example01ConfigV2 = {
   description: "An example V2 configuration",
   settings: {
     maxBatchSize: 10,
@@ -20,22 +20,6 @@ var example02ConfigV2 = {
       actions: [],
     },
   },
-  messages: [
-    {
-      description: "Message shorthand config",
-      match: {
-        subject: "My Subject",
-      },
-    },
-  ],
-  attachments: [
-    {
-      description: "Attachment shorthand config",
-      match: {
-        name: "my-file-.*",
-      },
-    },
-  ],
   threads: [
     {
       description:
@@ -47,7 +31,7 @@ var example02ConfigV2 = {
         {
           name: "thread.storePDF",
           args: {
-            folder: "Scans-${message.date:dateformat:yyyy-MM-dd}",
+            folder: "Scans-${message.date:format:yyyy-MM-dd}",
           },
         },
       ],
@@ -55,11 +39,11 @@ var example02ConfigV2 = {
   ],
 }
 
-function example02EffectiveConfig() {
-  const effectiveConfig = GMail2GDrive.Lib.getEffectiveConfig(example02ConfigV2)
+function example01EffectiveConfig() {
+  const effectiveConfig = GMail2GDrive.Lib.getEffectiveConfig(example01ConfigV2)
   console.log(JSON.stringify(effectiveConfig, null, 2))
 }
 
-function example02Run() {
-  GMail2GDrive.Lib.run(example02ConfigV2, "dry-run")
+function example01Run() {
+  GMail2GDrive.Lib.run(example01ConfigV2, "dry-run")
 }

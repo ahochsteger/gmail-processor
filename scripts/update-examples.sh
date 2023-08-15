@@ -1,7 +1,7 @@
 #!/bin/bash
 # shellcheck disable=2312
 
-set -eufo pipefail
+set -euo pipefail
 
 declare -A cfgMap
 export cfgMap
@@ -102,7 +102,7 @@ beforeEach(() => {
   mocks = MockFactory.newMocks(GMail2GDrive.Lib.${cfgMap[getCfgFn]}(${cfgMap[cfgName]}), RunMode.DANGEROUS)
 })
 
-it("should provide the effective config of v${version} example ${cfgMap[fnName]}", () => {
+it("should provide the effective config of v${cfgMap[version]} example ${cfgMap[fnName]}", () => {
   const effectiveConfig = GMail2GDrive.Lib.${cfgMap[getCfgFn]}(${cfgMap[cfgName]})
     expect(effectiveConfig).toBeInstanceOf(ProcessingConfig)
 })
@@ -133,7 +133,7 @@ beforeEach(() => {
   mocks = MockFactory.newMocks(GMail2GDrive.Lib.${cfgMap[getCfgFn]}(${cfgMap[cfgName]}), RunMode.DANGEROUS)
 })
 
-it("should provide the effective config of v${version} example ${cfgMap[fnName]}", () => {
+it("should provide the effective config of v${cfgMap[version]} example ${cfgMap[fnName]}", () => {
   const effectiveConfig = GMail2GDrive.Lib.${cfgMap[getCfgFn]}(${cfgMap[cfgName]})
     expect(effectiveConfig).toBeInstanceOf(ProcessingConfig)
 })
@@ -151,30 +151,34 @@ EOF
   esac
 }
 
-srcdir="${1:-src/config-examples}"
-outdir_gas="${2:-src/gas/examples}"
-outdir_tests="${3:-src/test/examples}"
+function generateExamplesFromConfig() {
+  local version="${1}"
+  local dirSuffix="${2}"
+  shift 2
+  local files="${*}"
 
-rm -f "${outdir_gas}"/v[12]-*.js "${outdir_tests}"/v[12]-*.spec.ts
+  for file in ${files}; do
+    local filename="${file##*/}"
+    local fnName="${filename%.*}"
 
-while read -r version fnName; do
-  buildCfgMap "${version}" "${fnName}" "${srcdir}/config-v${version}-${fnName}.json"
+    buildCfgMap "${version}" "${fnName}" "${file}"
 
-  # Generate GAS example:
-  mkdir -p "${outdir_gas}"
-  generateGasExample \
-  >"${outdir_gas}/v${version}-${fnName}.js"
-  
-  # Generate test example:
-  mkdir -p "${outdir_tests}"
-  generateTestExample \
-  >"${outdir_tests}/v${version}-${fnName}.spec.ts"
-done < <(
-  find "${srcdir}" -path "${srcdir}/config-v*-*.json" \
-  | sed -re 's#.*/config-v([0-9])-([^\.]+)\.json$#\1\t\2#g' \
-  || true
-)
+    # Generate GAS example:
+    mkdir -p "src/gas/examples${dirSuffix}"
+    generateGasExample \
+    >"src/gas/examples${dirSuffix}/${fnName}.js"
+    
+    # Generate test example:
+    mkdir -p "src/test/examples${dirSuffix}"
+    generateTestExample \
+    >"src/test/examples${dirSuffix}/${fnName}.spec.ts"
+  done
+}
+
+rm -f src/gas/examples*/*.js src/test/examples*/*.spec.ts
+generateExamplesFromConfig 1 "-v1" src/config-examples-v1/*.json
+generateExamplesFromConfig 2 "" src/config-examples/*.json*
 
 npx prettier -w \
-  "${outdir_gas}" \
-  "${outdir_tests}"
+  src/gas/examples* \
+  src/test/examples*

@@ -4,7 +4,7 @@ import { Config, ProcessingConfig } from "../../lib/config/Config"
 import { GMail2GDrive } from "../mocks/Examples"
 import { MockFactory, Mocks } from "../mocks/MockFactory"
 
-const example02ConfigV2: PartialDeep<Config> = {
+const example01ConfigV2: PartialDeep<Config> = {
   description: "An example V2 configuration",
   settings: {
     maxBatchSize: 10,
@@ -24,22 +24,6 @@ const example02ConfigV2: PartialDeep<Config> = {
       actions: [],
     },
   },
-  messages: [
-    {
-      description: "Message shorthand config",
-      match: {
-        subject: "My Subject",
-      },
-    },
-  ],
-  attachments: [
-    {
-      description: "Attachment shorthand config",
-      match: {
-        name: "my-file-.*",
-      },
-    },
-  ],
   threads: [
     {
       description:
@@ -51,7 +35,7 @@ const example02ConfigV2: PartialDeep<Config> = {
         {
           name: "thread.storePDF",
           args: {
-            folder: "Scans-${message.date:dateformat:yyyy-MM-dd}",
+            folder: "Scans-${message.date:format:yyyy-MM-dd}",
           },
         },
       ],
@@ -62,19 +46,19 @@ const example02ConfigV2: PartialDeep<Config> = {
 let mocks: Mocks
 beforeEach(() => {
   mocks = MockFactory.newMocks(
-    GMail2GDrive.Lib.getEffectiveConfig(example02ConfigV2),
+    GMail2GDrive.Lib.getEffectiveConfig(example01ConfigV2),
     RunMode.DANGEROUS,
   )
 })
 
-it("should provide the effective config of v2 example example02", () => {
-  const effectiveConfig = GMail2GDrive.Lib.getEffectiveConfig(example02ConfigV2)
+it("should provide the effective config of v2 example example01", () => {
+  const effectiveConfig = GMail2GDrive.Lib.getEffectiveConfig(example01ConfigV2)
   expect(effectiveConfig).toBeInstanceOf(ProcessingConfig)
 })
 
 it("should process a v2 config example", () => {
   const result = GMail2GDrive.Lib.run(
-    example02ConfigV2,
+    example01ConfigV2,
     "dry-run",
     mocks.envContext,
   )

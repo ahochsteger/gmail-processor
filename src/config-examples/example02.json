@@ -44,7 +44,7 @@
         {
           "name": "thread.storePDF",
           "args": {
-            "folder": "Scans-${message.date:dateformat:yyyy-MM-dd}"
+            "folder": "Scans-${message.date:format:yyyy-MM-dd}"
           }
         }
       ]
