@@ -1,0 +1,10 @@
+.vscode/
+bak/
+build/
+coverage/
+dist/
+dist-examples/
+node_modules/
+.clasp.json
+.env
+!.vscode/settings.json

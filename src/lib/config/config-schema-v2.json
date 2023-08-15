@@ -1,0 +1,622 @@
+{
+    "$ref": "#/definitions/Config",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "definitions": {
+        "AttachmentActionConfig": {
+            "additionalProperties": false,
+            "description": "Represents a config to perform a actions for a GMail attachment.",
+            "properties": {
+                "args": {
+                    "additionalProperties": {},
+                    "description": "The arguments for a certain action",
+                    "title": "args",
+                    "type": "object"
+                },
+                "description": {
+                    "default": "",
+                    "description": "The description for the action",
+                    "title": "description",
+                    "type": "string"
+                },
+                "name": {
+                    "default": "",
+                    "description": "The name of the action to be executed",
+                    "enum": [
+                        "",
+                        "attachment.store",
+                        "global.log",
+                        "global.sheetLog",
+                        "message.forward",
+                        "message.markRead",
+                        "message.markUnread",
+                        "message.moveToTrash",
+                        "message.star",
+                        "message.storePDF",
+                        "message.unstar",
+                        "thread.addLabel",
+                        "thread.markImportant",
+                        "thread.markRead",
+                        "thread.markUnimportant",
+                        "thread.markUnread",
+                        "thread.moveToArchive",
+                        "thread.moveToInbox",
+                        "thread.moveToSpam",
+                        "thread.moveToTrash",
+                        "thread.removeLabel",
+                        "thread.storePDF"
+                    ],
+                    "title": "name",
+                    "type": "string"
+                },
+                "processingStage": {
+                    "description": "The processing stage in which the action should run (during main processing stage or pre-main/post-main)",
+                    "enum": [
+                        "main",
+                        "post-main",
+                        "pre-main"
+                    ],
+                    "title": "processingStage",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "name"
+            ],
+            "title": "AttachmentActionConfig",
+            "type": "object"
+        },
+        "AttachmentConfig": {
+            "additionalProperties": false,
+            "description": "Represents a config to handle a certain GMail attachment",
+            "properties": {
+                "actions": {
+                    "default": [],
+                    "description": "The list actions to be executed for their respective handler scopes",
+                    "items": {
+                        "$ref": "#/definitions/AttachmentActionConfig"
+                    },
+                    "title": "actions",
+                    "type": "array"
+                },
+                "description": {
+                    "default": "",
+                    "description": "The description of the attachment handler config",
+                    "title": "description",
+                    "type": "string"
+                },
+                "match": {
+                    "$ref": "#/definitions/AttachmentMatchConfig",
+                    "description": "Specifies which attachments match for further processing",
+                    "title": "match"
+                },
+                "name": {
+                    "default": "",
+                    "description": "The unique name of the attachment config (will be generated if not set)",
+                    "title": "name",
+                    "type": "string"
+                }
+            },
+            "title": "AttachmentConfig",
+            "type": "object"
+        },
+        "AttachmentMatchConfig": {
+            "additionalProperties": false,
+            "description": "Represents a config to match a certain GMail attachment",
+            "properties": {
+                "contentType": {
+                    "default": ".*",
+                    "description": "A RegEx matching the content type of the attachment",
+                    "title": "contentType",
+                    "type": "string"
+                },
+                "includeAttachments": {
+                    "default": true,
+                    "description": "Should regular attachments be included in attachment processing (default: true)",
+                    "title": "includeAttachments",
+                    "type": "boolean"
+                },
+                "includeInlineImages": {
+                    "default": true,
+                    "description": "Should inline images be included in attachment processing (default: true)",
+                    "title": "includeInlineImages",
+                    "type": "boolean"
+                },
+                "largerThan": {
+                    "default": -1,
+                    "description": "Only include attachments larger than the given size in bytes",
+                    "title": "largerThan",
+                    "type": "number"
+                },
+                "name": {
+                    "default": "(.*)",
+                    "description": "A RegEx matching the name of the attachment",
+                    "title": "name",
+                    "type": "string"
+                },
+                "smallerThan": {
+                    "description": "Only include attachments smaller than the given size in bytes",
+                    "title": "smallerThan",
+                    "type": "number"
+                }
+            },
+            "title": "AttachmentMatchConfig",
+            "type": "object"
+        },
+        "Config": {
+            "additionalProperties": false,
+            "description": "Represents the configuration root for GmailProcessor",
+            "properties": {
+                "attachments": {
+                    "default": [],
+                    "description": "The list of handler that define the way attachments are processed",
+                    "items": {
+                        "$ref": "#/definitions/AttachmentConfig"
+                    },
+                    "title": "attachments",
+                    "type": "array"
+                },
+                "description": {
+                    "default": "",
+                    "description": "The description of the GmailProcessor config",
+                    "title": "description",
+                    "type": "string"
+                },
+                "global": {
+                    "$ref": "#/definitions/GlobalConfig",
+                    "description": "The global configuration that defines matching for all threads as well as actions for all threads, messages or attachments.",
+                    "title": "global"
+                },
+                "messages": {
+                    "default": [],
+                    "description": "The list of handler that define the way nested messages or attachments are processed",
+                    "items": {
+                        "$ref": "#/definitions/MessageConfig"
+                    },
+                    "title": "messages",
+                    "type": "array"
+                },
+                "settings": {
+                    "$ref": "#/definitions/SettingsConfig",
+                    "description": "Represents a settings config that affect the way GmailProcessor works.",
+                    "title": "settings"
+                },
+                "threads": {
+                    "default": [],
+                    "description": "The list of handler that define the way nested threads, messages or attachments are processed",
+                    "items": {
+                        "$ref": "#/definitions/ThreadConfig"
+                    },
+                    "title": "threads",
+                    "type": "array"
+                }
+            },
+            "title": "Config",
+            "type": "object"
+        },
+        "GlobalConfig": {
+            "additionalProperties": false,
+            "description": "The global configuration defines matching and actions for all threads, messages or attachments.",
+            "properties": {
+                "attachment": {
+                    "$ref": "#/definitions/AttachmentConfig",
+                    "description": "The global attachment config affecting each attachment.",
+                    "title": "attachment"
+                },
+                "message": {
+                    "$ref": "#/definitions/MessageConfig",
+                    "description": "The global message config affecting each message.",
+                    "title": "message"
+                },
+                "thread": {
+                    "$ref": "#/definitions/ThreadConfig",
+                    "description": "The list of global thread affecting each thread.",
+                    "title": "thread"
+                },
+                "variables": {
+                    "default": [],
+                    "description": "A list of variable entries to be used in substitutions to simplify configurations.",
+                    "items": {
+                        "$ref": "#/definitions/VariableEntry"
+                    },
+                    "title": "variables",
+                    "type": "array"
+                }
+            },
+            "title": "GlobalConfig",
+            "type": "object"
+        },
+        "MessageActionConfig": {
+            "additionalProperties": false,
+            "description": "Represents a config to perform a actions for a GMail message.",
+            "properties": {
+                "args": {
+                    "additionalProperties": {},
+                    "description": "The arguments for a certain action",
+                    "title": "args",
+                    "type": "object"
+                },
+                "description": {
+                    "default": "",
+                    "description": "The description for the action",
+                    "title": "description",
+                    "type": "string"
+                },
+                "name": {
+                    "default": "",
+                    "description": "The name of the action to be executed",
+                    "enum": [
+                        "",
+                        "global.log",
+                        "global.sheetLog",
+                        "message.forward",
+                        "message.markRead",
+                        "message.markUnread",
+                        "message.moveToTrash",
+                        "message.star",
+                        "message.storePDF",
+                        "message.unstar",
+                        "thread.addLabel",
+                        "thread.markImportant",
+                        "thread.markRead",
+                        "thread.markUnimportant",
+                        "thread.markUnread",
+                        "thread.moveToArchive",
+                        "thread.moveToInbox",
+                        "thread.moveToSpam",
+                        "thread.moveToTrash",
+                        "thread.removeLabel",
+                        "thread.storePDF"
+                    ],
+                    "title": "name",
+                    "type": "string"
+                },
+                "processingStage": {
+                    "description": "The processing stage in which the action should run (during main processing stage or pre-main/post-main)",
+                    "enum": [
+                        "main",
+                        "post-main",
+                        "pre-main"
+                    ],
+                    "title": "processingStage",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "name"
+            ],
+            "title": "MessageActionConfig",
+            "type": "object"
+        },
+        "MessageConfig": {
+            "additionalProperties": false,
+            "description": "Represents a config to handle a certain GMail message",
+            "properties": {
+                "actions": {
+                    "default": [],
+                    "description": "The list actions to be executed for their respective handler scopes",
+                    "items": {
+                        "$ref": "#/definitions/MessageActionConfig"
+                    },
+                    "title": "actions",
+                    "type": "array"
+                },
+                "attachments": {
+                    "default": [],
+                    "description": "The list of handler that define the way attachments are processed",
+                    "items": {
+                        "$ref": "#/definitions/AttachmentConfig"
+                    },
+                    "title": "attachments",
+                    "type": "array"
+                },
+                "description": {
+                    "default": "",
+                    "description": "The description of the message handler config",
+                    "title": "description",
+                    "type": "string"
+                },
+                "match": {
+                    "$ref": "#/definitions/MessageMatchConfig",
+                    "description": "Specifies which attachments match for further processing",
+                    "title": "match"
+                },
+                "name": {
+                    "default": "",
+                    "description": "The unique name of the message config (will be generated if not set)",
+                    "title": "name",
+                    "type": "string"
+                }
+            },
+            "title": "MessageConfig",
+            "type": "object"
+        },
+        "MessageFlag": {
+            "description": "A flag to match messages with certain properties.",
+            "enum": [
+                "read",
+                "starred",
+                "unread",
+                "unstarred"
+            ],
+            "title": "MessageFlag",
+            "type": "string"
+        },
+        "MessageMatchConfig": {
+            "additionalProperties": false,
+            "description": "Represents a config to match a certain GMail message",
+            "properties": {
+                "from": {
+                    "default": ".*",
+                    "description": "A RegEx matching the sender email address of messages",
+                    "title": "from",
+                    "type": "string"
+                },
+                "is": {
+                    "default": [],
+                    "description": "A list of properties matching messages should have",
+                    "items": {
+                        "$ref": "#/definitions/MessageFlag"
+                    },
+                    "title": "is",
+                    "type": "array"
+                },
+                "newerThan": {
+                    "default": "",
+                    "description": "An RFC 3339 date/time format matching messages older than the given date/time",
+                    "title": "newerThan",
+                    "type": "string"
+                },
+                "olderThan": {
+                    "default": "",
+                    "description": "An RFC 3339 date/time format matching messages older than the given date/time",
+                    "title": "olderThan",
+                    "type": "string"
+                },
+                "subject": {
+                    "default": ".*",
+                    "description": "A RegEx matching the subject of messages",
+                    "title": "subject",
+                    "type": "string"
+                },
+                "to": {
+                    "default": ".*",
+                    "description": "A RegEx matching the recipient email address of messages",
+                    "title": "to",
+                    "type": "string"
+                }
+            },
+            "title": "MessageMatchConfig",
+            "type": "object"
+        },
+        "SettingsConfig": {
+            "additionalProperties": false,
+            "description": "Represents a settings config that affect the way GmailProcessor works.",
+            "properties": {
+                "logSheetLocation": {
+                    "default": "",
+                    "description": "Path of the spreadsheet log file. Enables logging to a spreadsheet if not empty.\nExample: `GmailProcessor/logsheet-${date.now:format:yyyy-MM}`",
+                    "title": "logSheetLocation",
+                    "type": "string"
+                },
+                "markProcessedLabel": {
+                    "default": "",
+                    "description": "The label to be added to processed GMail threads (only for markProcessedMode=\"label\", deprecated - only for compatibility to v1)",
+                    "title": "markProcessedLabel",
+                    "type": "string"
+                },
+                "markProcessedMethod": {
+                    "description": "The method to mark processed threads/messages.\n* `add-label`: Add the label from `markProcessedLabel` to the thread. This is just for compatibility to v1 and is limited to one message per thread.\n* `mark-message-read`: Mark the message as read. This is the new default since it provides more flexibility esp. when threads contain multiple messages.",
+                    "enum": [
+                        "add-label",
+                        "mark-read"
+                    ],
+                    "title": "markProcessedMethod",
+                    "type": "string"
+                },
+                "maxBatchSize": {
+                    "default": 10,
+                    "description": "The maximum batch size of threads to process in a single run to respect Google processing limits",
+                    "title": "maxBatchSize",
+                    "type": "number"
+                },
+                "maxRuntime": {
+                    "default": 280,
+                    "description": "The maximum runtime in seconds for a single run to respect Google processing limits",
+                    "title": "maxRuntime",
+                    "type": "number"
+                },
+                "sleepTimeAttachments": {
+                    "default": 0,
+                    "description": "The sleep time in milliseconds between processing each attachment",
+                    "title": "sleepTimeAttachments",
+                    "type": "number"
+                },
+                "sleepTimeMessages": {
+                    "default": 0,
+                    "description": "The sleep time in milliseconds between processing each message",
+                    "title": "sleepTimeMessages",
+                    "type": "number"
+                },
+                "sleepTimeThreads": {
+                    "default": 100,
+                    "description": "The sleep time in milliseconds between processing each thread",
+                    "title": "sleepTimeThreads",
+                    "type": "number"
+                },
+                "timezone": {
+                    "description": "Overrides the <a href=\"https://developers.google.com/apps-script/reference/base/session#getscripttimezone\">script timezone</a>, which is used by default.",
+                    "title": "timezone",
+                    "type": "string"
+                }
+            },
+            "title": "SettingsConfig",
+            "type": "object"
+        },
+        "ThreadActionConfig": {
+            "additionalProperties": false,
+            "description": "Represents a config to perform a actions for a GMail thread.",
+            "properties": {
+                "args": {
+                    "additionalProperties": {},
+                    "description": "The arguments for a certain action",
+                    "title": "args",
+                    "type": "object"
+                },
+                "description": {
+                    "default": "",
+                    "description": "The description for the action",
+                    "title": "description",
+                    "type": "string"
+                },
+                "name": {
+                    "default": "",
+                    "description": "The name of the action to be executed",
+                    "enum": [
+                        "",
+                        "global.log",
+                        "global.sheetLog",
+                        "thread.addLabel",
+                        "thread.markImportant",
+                        "thread.markRead",
+                        "thread.markUnimportant",
+                        "thread.markUnread",
+                        "thread.moveToArchive",
+                        "thread.moveToInbox",
+                        "thread.moveToSpam",
+                        "thread.moveToTrash",
+                        "thread.removeLabel",
+                        "thread.storePDF"
+                    ],
+                    "title": "name",
+                    "type": "string"
+                },
+                "processingStage": {
+                    "description": "The processing stage in which the action should run (during main processing stage or pre-main/post-main)",
+                    "enum": [
+                        "main",
+                        "post-main",
+                        "pre-main"
+                    ],
+                    "title": "processingStage",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "name"
+            ],
+            "title": "ThreadActionConfig",
+            "type": "object"
+        },
+        "ThreadConfig": {
+            "additionalProperties": false,
+            "description": "Represents a config handle a certain GMail thread",
+            "properties": {
+                "actions": {
+                    "default": [],
+                    "description": "The list actions to be executed for their respective handler scopes",
+                    "items": {
+                        "$ref": "#/definitions/ThreadActionConfig"
+                    },
+                    "title": "actions",
+                    "type": "array"
+                },
+                "attachments": {
+                    "default": [],
+                    "description": "The list of handler that define the way attachments are processed",
+                    "items": {
+                        "$ref": "#/definitions/AttachmentConfig"
+                    },
+                    "title": "attachments",
+                    "type": "array"
+                },
+                "description": {
+                    "default": "",
+                    "description": "The description of the thread handler config",
+                    "title": "description",
+                    "type": "string"
+                },
+                "match": {
+                    "$ref": "#/definitions/ThreadMatchConfig",
+                    "description": "Specifies which threads match for further processing",
+                    "title": "match"
+                },
+                "messages": {
+                    "default": [],
+                    "description": "The list of handler that define the way nested messages or attachments are processed",
+                    "items": {
+                        "$ref": "#/definitions/MessageConfig"
+                    },
+                    "title": "messages",
+                    "type": "array"
+                },
+                "name": {
+                    "default": "",
+                    "description": "The unique name of the thread config (will be generated if not set)",
+                    "title": "name",
+                    "type": "string"
+                }
+            },
+            "title": "ThreadConfig",
+            "type": "object"
+        },
+        "ThreadMatchConfig": {
+            "additionalProperties": false,
+            "description": "Represents a config to match a certain GMail thread",
+            "properties": {
+                "firstMessageSubject": {
+                    "default": ".*",
+                    "description": "The regex to match `firstMessageSubject`",
+                    "title": "firstMessageSubject",
+                    "type": "string"
+                },
+                "labels": {
+                    "default": ".*",
+                    "description": "The regex to match at least one label",
+                    "title": "labels",
+                    "type": "string"
+                },
+                "maxMessageCount": {
+                    "default": -1,
+                    "description": "The maximum number of messages a matching thread is allowed to have",
+                    "title": "maxMessageCount",
+                    "type": "number"
+                },
+                "minMessageCount": {
+                    "default": 1,
+                    "description": "The minimum number of messages a matching thread must have",
+                    "title": "minMessageCount",
+                    "type": "number"
+                },
+                "query": {
+                    "default": "",
+                    "description": "The GMail search query additional to the global query to find threads to be processed.\nSee [Search operators you can use with Gmail](https://support.google.com/mail/answer/7190?hl=en) for more information.",
+                    "title": "query",
+                    "type": "string"
+                }
+            },
+            "title": "ThreadMatchConfig",
+            "type": "object"
+        },
+        "VariableEntry": {
+            "additionalProperties": false,
+            "description": "A variable entry available for string substitution (using `${variables.<varName>}`)",
+            "properties": {
+                "key": {
+                    "title": "key",
+                    "type": "string"
+                },
+                "value": {
+                    "title": "value",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "key",
+                "value"
+            ],
+            "title": "VariableEntry",
+            "type": "object"
+        }
+    }
+}
+

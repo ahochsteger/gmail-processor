@@ -1,0 +1,16 @@
+{
+  "format": ["typescript"],
+  "pattern": "**/*.ts",
+  "ignore": [
+    "**/node_modules/**",
+    "**/bak/**",
+    "**/build/**",
+    "**/.git/**",
+    "**/*.json",
+    "**/*.md",
+    "**/*.spec.ts"
+  ],
+  "output": "build/jscpd",
+  "reporters": ["console", "html"],
+  "threshold": 1
+}

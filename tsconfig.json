@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "baseUrl": "src/",
+    "emitDecoratorMetadata": true,
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "inlineSourceMap": true,
+    "lib": ["ES2019"],
+    "module": "commonjs",
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitReturns": false,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "outDir": "build",
+    "resolveJsonModule": true,
+    "strict": true,
+    // ES2019 for V8 support: https://github.com/google/clasp/blob/master/docs/typescript.md#v8-engine-support
+    "target": "ES2019",
+    "types": ["google-apps-script", "jest", "node"]
+  },
+  "include": ["src/*", "src/**/*"],
+  "exclude": ["src/gas/examples"]
+}

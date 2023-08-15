@@ -1,0 +1,156 @@
+import { GMailMocks } from "../../test/mocks/GMailMocks"
+import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
+import { ProcessingStatus } from "../Context"
+import { newAttachmentConfig } from "../config/AttachmentConfig"
+import {
+  AttachmentMatchConfig,
+  RequiredAttachmentMatchConfig,
+  newAttachmentMatchConfig,
+} from "../config/AttachmentMatchConfig"
+import { AttachmentProcessor } from "./AttachmentProcessor"
+
+let mocks: Mocks
+
+beforeEach(() => {
+  mocks = MockFactory.newMocks()
+})
+
+it("should build a match config with default globals", () => {
+  const expected: RequiredAttachmentMatchConfig = {
+    contentType: "some-content-type",
+    includeAttachments: true,
+    includeInlineImages: false,
+    largerThan: 10,
+    smallerThan: 100,
+    name: "some-name",
+  }
+  const actual = AttachmentProcessor.buildMatchConfig(
+    mocks.messageContext,
+    newAttachmentMatchConfig({}),
+    newAttachmentMatchConfig(expected),
+  )
+  expect(actual).toMatchObject(expected)
+})
+
+it("should build a match config with default globals", () => {
+  const expected: RequiredAttachmentMatchConfig = {
+    contentType: "some-content-type",
+    includeAttachments: true,
+    includeInlineImages: false,
+    largerThan: 10,
+    smallerThan: 100,
+    name: "some-name",
+  }
+  const actual = AttachmentProcessor.buildMatchConfig(
+    mocks.messageContext,
+    newAttachmentMatchConfig(expected),
+    newAttachmentMatchConfig({}),
+  )
+  expect(actual).toMatchObject(expected)
+})
+
+it("should build a match config with special globals", () => {
+  const expected: RequiredAttachmentMatchConfig = {
+    contentType: "global-content-type|local-content-type",
+    includeAttachments: true,
+    includeInlineImages: false,
+    largerThan: 20,
+    smallerThan: 100,
+    name: "global-name|local-name",
+  }
+  const actual = AttachmentProcessor.buildMatchConfig(
+    mocks.messageContext,
+    newAttachmentMatchConfig({
+      contentType: "global-content-type",
+      includeAttachments: true,
+      includeInlineImages: false,
+      largerThan: 10,
+      smallerThan: 100,
+      name: "global-name",
+    }),
+    newAttachmentMatchConfig({
+      contentType: "local-content-type",
+      includeAttachments: true,
+      includeInlineImages: false,
+      largerThan: 20,
+      smallerThan: 1000,
+      name: "local-name",
+    }),
+  )
+  expect(actual).toMatchObject(expected)
+})
+
+it("should match messages with matching parameters", () => {
+  const matchExamples: { config: AttachmentMatchConfig; matched: string[] }[] =
+    [
+      {
+        config: {
+          contentType: "text/plain",
+        },
+        matched: ["attachment-1.txt"],
+      },
+      {
+        config: {
+          contentType: "application/pdf",
+        },
+        matched: ["attachment-2.pdf"],
+      },
+      {
+        config: {
+          name: "non-matching-attachment",
+        },
+        matched: [],
+      },
+    ]
+  const mockedMessage = GMailMocks.newMessageMock({
+    attachments: [
+      {
+        content: "some-content-1",
+        contentType: "text/plain",
+        name: "attachment-1.txt",
+      },
+      {
+        content: "some-content-2",
+        contentType: "application/pdf",
+        name: "attachment-2.pdf",
+      },
+    ],
+  })
+  for (let i = 0; i < matchExamples.length; i++) {
+    const e = matchExamples[i]
+    const attachmentConfig = newAttachmentConfig({
+      match: e.config,
+    })
+    const res = []
+    for (const att of mockedMessage.getAttachments()) {
+      if (AttachmentProcessor.matches(attachmentConfig.match, att)) {
+        res.push(att.getName())
+      }
+    }
+    expect(`${i}: ${res}`).toEqual(`${i}: ${e.matched}`)
+  }
+})
+
+it("should process attachment configs", () => {
+  const result = AttachmentProcessor.processConfigs(
+    mocks.messageContext,
+    mocks.messageContext.message.config.attachments,
+  )
+  expect(result.status).toEqual(ProcessingStatus.OK)
+})
+
+it("should process a non-matching attachment config", () => {
+  const result = AttachmentProcessor.processConfigs(mocks.messageContext, [
+    newAttachmentConfig({
+      match: {
+        name: "non-matching-attachment",
+      },
+    }),
+  ])
+  expect(result.status).toEqual(ProcessingStatus.OK)
+})
+
+it("should process an attachment entity", () => {
+  const result = AttachmentProcessor.processEntity(mocks.attachmentContext)
+  expect(result.status).toEqual(ProcessingStatus.OK)
+})
