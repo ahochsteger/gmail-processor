@@ -4,7 +4,7 @@ import { ConfigMocks } from "../mocks/ConfigMocks"
 import { GMailMocks } from "../mocks/GMailMocks"
 import { MockFactory } from "../mocks/MockFactory"
 
-const dateInfo = `Use \`"\${<key>:format:<dateformat>}"\` to format the date/time using a custom [Moment.js format strings](https://momentjs.com/docs/#/displaying/format/) (default: \`"${defaultDateFormat}"\`).`
+const dateInfo = `Use \`"\${<key>:format:<format>}"\` to format the date/time using a custom [Moment.js format strings](https://momentjs.com/docs/#/displaying/format/) (default: \`"${defaultDateFormat}"\`).`
 const variableInfo = `Custom variables defined at \`global.variables\` to better manage recurring substitution values.`
 const mocks = MockFactory.newCustomMocks(
   ConfigMocks.newDefaultConfigJson(),
