@@ -1,4 +1,4 @@
-/* global GMail2GDrive */
+/* global GmailProcessor */
 
 var exampleMinConfigV1 = {
   processedLabel: "gmail2gdrive/client-test",
@@ -16,15 +16,16 @@ var exampleMinConfigV1 = {
 
 function exampleMinEffectiveConfig() {
   const effectiveConfig =
-    GMail2GDrive.Lib.getEffectiveConfigV1(exampleMinConfigV1)
+    GmailProcessor.Lib.getEffectiveConfigV1(exampleMinConfigV1)
   console.log(JSON.stringify(effectiveConfig, null, 2))
 }
 
 function exampleMinRun() {
-  GMail2GDrive.Lib.runWithV1Config(exampleMinConfigV1, "dry-run")
+  GmailProcessor.Lib.runWithV1Config(exampleMinConfigV1, "dry-run")
 }
 
 function exampleMinConvertConfig() {
-  const config = GMail2GDrive.Lib.convertV1ConfigToV2Config(exampleMinConfigV1)
+  const config =
+    GmailProcessor.Lib.convertV1ConfigToV2Config(exampleMinConfigV1)
   console.log(JSON.stringify(config, null, 2))
 }

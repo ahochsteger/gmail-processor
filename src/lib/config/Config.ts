@@ -28,11 +28,11 @@ import {
 } from "./ThreadConfig"
 
 /**
- * Represents a configuration for GMail2GDrive in normalized form for processing
+ * Represents a configuration for GmailProcessoror in normalized form for processing
  */
 export class ProcessingConfig {
   /**
-   * The description of the GMail2GDrive config
+   * The description of the GmailProcessor config
    */
   @Expose()
   description? = ""
@@ -49,7 +49,7 @@ export class ProcessingConfig {
   @Type(() => ThreadConfig)
   threads?: ThreadConfig[] = []
   /**
-   * Represents a settings config that affect the way GMail2GDrive works.
+   * Represents a settings config that affect the way GmailProcessor works.
    */
   @Expose()
   @Type(() => SettingsConfig)
@@ -57,7 +57,7 @@ export class ProcessingConfig {
 }
 
 /**
- * Represents the configuration root for GMail2GDrive
+ * Represents the configuration root for GmailProcessor
  */
 export class Config extends ProcessingConfig {
   /**

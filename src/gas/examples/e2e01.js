@@ -1,4 +1,4 @@
-/* global GMail2GDrive */
+/* global GmailProcessor */
 
 var e2e01ConfigV2 = {
   description: "End-to-end (E2E) test configuration",
@@ -42,7 +42,7 @@ var e2e01ConfigV2 = {
       ],
       match: {
         query:
-          "from:${user.email} to:${user.email} subject:'GMail2GDrive-Test'",
+          "from:${user.email} to:${user.email} subject:'GmailProcessor-Test'",
       },
       attachments: [
         {
@@ -54,7 +54,7 @@ var e2e01ConfigV2 = {
               name: "attachment.store",
               args: {
                 location:
-                  "/GMail2GDrive-Tests/v2/e2e01/${attachment.name.match.basename}-stored.png",
+                  "/GmailProcessor-Tests/v2/e2e01/${attachment.name.match.basename}-stored.png",
               },
             },
             {
@@ -79,10 +79,10 @@ var e2e01ConfigV2 = {
 }
 
 function e2e01EffectiveConfig() {
-  const effectiveConfig = GMail2GDrive.Lib.getEffectiveConfig(e2e01ConfigV2)
+  const effectiveConfig = GmailProcessor.Lib.getEffectiveConfig(e2e01ConfigV2)
   console.log(JSON.stringify(effectiveConfig, null, 2))
 }
 
 function e2e01Run() {
-  GMail2GDrive.Lib.run(e2e01ConfigV2, "dry-run")
+  GmailProcessor.Lib.run(e2e01ConfigV2, "dry-run")
 }

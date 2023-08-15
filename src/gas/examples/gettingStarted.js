@@ -1,4 +1,4 @@
-/* global GMail2GDrive */
+/* global GmailProcessor */
 
 var gettingStartedConfigV2 = {
   settings: {
@@ -34,12 +34,12 @@ var gettingStartedConfigV2 = {
 }
 
 function gettingStartedEffectiveConfig() {
-  const effectiveConfig = GMail2GDrive.Lib.getEffectiveConfig(
+  const effectiveConfig = GmailProcessor.Lib.getEffectiveConfig(
     gettingStartedConfigV2,
   )
   console.log(JSON.stringify(effectiveConfig, null, 2))
 }
 
 function gettingStartedRun() {
-  GMail2GDrive.Lib.run(gettingStartedConfigV2, "dry-run")
+  GmailProcessor.Lib.run(gettingStartedConfigV2, "dry-run")
 }

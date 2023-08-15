@@ -90,7 +90,7 @@ export class GmailProcessor {
   }
 
   public run(config: RequiredConfig, ctx: EnvContext) {
-    ctx.log.info("Processing of GMail2GDrive config started ...")
+    ctx.log.info("Processing of GmailProcessor config started ...")
 
     const actionRegistry = GmailProcessor.setupActionRegistry(ctx)
     const processingContext = GmailProcessor.buildContext(ctx, {
@@ -107,7 +107,7 @@ export class GmailProcessor {
       config.threads,
       newProcessingResult(),
     )
-    ctx.log.info("Processing of GMail2GDrive config finished.")
+    ctx.log.info("Processing of GmailProcessor config finished.")
     return result
   }
 

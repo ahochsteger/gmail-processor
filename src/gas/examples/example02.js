@@ -1,4 +1,4 @@
-/* global GMail2GDrive */
+/* global GmailProcessor */
 
 var example02ConfigV2 = {
   description: "An example V2 configuration",
@@ -56,10 +56,11 @@ var example02ConfigV2 = {
 }
 
 function example02EffectiveConfig() {
-  const effectiveConfig = GMail2GDrive.Lib.getEffectiveConfig(example02ConfigV2)
+  const effectiveConfig =
+    GmailProcessor.Lib.getEffectiveConfig(example02ConfigV2)
   console.log(JSON.stringify(effectiveConfig, null, 2))
 }
 
 function example02Run() {
-  GMail2GDrive.Lib.run(example02ConfigV2, "dry-run")
+  GmailProcessor.Lib.run(example02ConfigV2, "dry-run")
 }

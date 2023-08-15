@@ -1,234 +1,143 @@
-# GMail2GDrive
+# 📧 Gmail Processor 🚀 - Automate Email Processing with Ease
 
-Gmail2GDrive is a Google Apps Script which automatically stores and sorts Gmail attachments into Google Drive folders, and can also save the thread as a PDF file.
+![GitHub](https://img.shields.io/github/license/ahochsteger/gmail2gdrive) ![GitHub release (with filter)](https://img.shields.io/github/v/release/ahochsteger/gmail2gdrive) ![GitHub Repo stars](https://img.shields.io/github/stars/ahochsteger/gmail2gdrive) ![GitHub forks](https://img.shields.io/github/forks/ahochsteger/gmail2gdrive) ![GitHub commit activity (branch)](https://img.shields.io/github/commit-activity/t/ahochsteger/gmail2gdrive/v2) ![GitHub contributors](https://img.shields.io/github/contributors/ahochsteger/gmail2gdrive) ![GitHub closed issues](https://img.shields.io/github/issues-closed/ahochsteger/gmail2gdrive) ![GitHub issues](https://img.shields.io/github/issues/ahochsteger/gmail2gdrive) ![GitHub closed pull requests](https://img.shields.io/github/issues-pr-closed/ahochsteger/gmail2gdrive) ![GitHub pull requests](https://img.shields.io/github/issues-pr/ahochsteger/gmail2gdrive) ![GitHub repo size](https://img.shields.io/github/repo-size/ahochsteger/gmail2gdrive)
 
-It does so by defining a list of rules which consist of Gmail search filters and Google Drive destination folders.
-This way the attachments of periodic emails can be automatically organized in folders without the need to install and run anything on the client.
+**[Gmail Processor](https://github.com/ahochsteger/gmail2gdrive)** is an open-source project that automates the processing of Gmail messages and attachments using [Google Apps Script](https://www.google.com/script/start/) and execute actions (e.g. store attachments in a GDrive folder, log information in a spreadsheet) depending on matching criteria.
 
-## Features (TODO: Update)
+This project is the successor of [Gmail2GDrive](https://github.com/ahochsteger/gmail2gdrive) with vastly enhanced functionality, completely re-written in [TypeScript](https://www.typescriptlang.org/) with extensibility and stability in mind, using a modern development setup and automation all over the place (dependency updates, tests, documentation, releases, deployments). There's a convenient migration available to convert your old configuration to the new format (see [Getting Started: Migrating from GMail2GDrive v1](#getting-started-migrating-from-gmail2gdrive-v1)).
 
-- Automatically sorts your attachments in the background
-- Filter for relevant emails
-- Specify the destination folder
-- Rename attachments (using date format strings and email subject as filenames)
-- Save the thread as a PDF File
+## Key Features
 
-## Setup using Library
+- 🤖 **Extensive Automation**: Automate email processing using the provided configuration to match threads, messages, and attachments, and trigger actions accordingly.
+- 📁 **Google Drive Integration**: Store files such as attachments, PDFs of messages, or entire threads into any location within Google Drive, providing easy organization and accessibility.
+- 📄 **Google Spreadsheet Logging**: Keep track of processed threads, messages, and attachments by logging valuable information to a Google Spreadsheet.
+- 🔧 **Flexible Configuration**: Gmail Processor operates based on a JSON configuration that allows you to define matching rules and specify corresponding actions to be executed.
+- 📐 **Extensible Architecture**: Designed with extensibility in mind, Gmail Processor enables seamless addition of new actions and integrations in the future to adapt to evolving requirements.
 
-1. Open [Google Apps Script](https://script.google.com/).
-2. Create an empty project.
-3. Give the project a name (e.g. `MyGMail2GDrive`)
-4. Add the GMail2GDrive library:
-   1. Script ID: `1yhOQyl_xWtnGJn_bzlL7oA4d_q5KoMyZyWIqXDJX1SY7bi22_lpjMiQK`
-   2. Version: Last development snapshot or a certain stable version
-   3. Set the identifier to: `GMail2GDrive`
-5. Replace the content of the initially created file `Code.gs` with the example [docs/Code.gs](docs/Code.gs) and save the changes.
-6. Grant permissions
-   1. Perform an initial run (using an empty configuration `{}` is ok)
-   2. Select the account you want to grant access to
-   3. When the message "Google did not verify the app" click on "Advanced" and proceed to run your script
-   4. Grant access to GMail and Google Drive
-7. Create a time based trigger which periodically executes `run` (e.g. once per day)
+## Getting Started
 
-## Full Setup (TODO: Update)
+There are two ways to use GmailProcessor in your Google Apps Script project:
 
-1. Open [Google Apps Script](https://script.google.com/).
-2. Create an empty project.
-3. Give the project a name (e.g. MyGmail2GDrive)
-4. Replace the content of the created file Code.gs with the provided [Code.gs](https://github.com/ahochsteger/gmail2gdrive/blob/master/Code.gs) and save the changes.
-5. Create a new script file with the name 'Config' and replace its content with the provided [Config.gs](https://github.com/ahochsteger/gmail2gdrive/blob/master/Config.gs) and save the changes.
-6. Adjust the configuration to your needs. It is recommended to restrict the timeframe using 'newerThan' to prevent running into API quotas by Google.
-7. Test the script by manually executing the function 'Gmail2GDrive'.
-8. Create a time based trigger which periodically executes 'Gmail2GDrive' (e.g. once per day) to automatically organize your Gmail attachments within Google Drive.
+1. **Referencing** the provided library (recommended): Use this, if you just want to use it, get easy upgrades and don't want to fiddle with the library code at all.
+2. **Copying** the library code (advanced): Use this if you want full control over what's being executed or if you want to use your own modified library versions.
 
-## Reference Documentation
+### Getting Started: Referencing the Provided Library
 
-See the [GMail Processor Reference Documentation](docs/reference-docs.md) for a full up-to-date reference documentation.
+To use the Gmail Processor library directly within Google Apps Script, you can choose from three available channels - depending on your needs: `stable`, `testing`, and `dev`.
 
-## Configuration
+Follow these steps:
 
-The documentation of the configuration schema can be found in [docs/config-schema-v2.md](docs/config-schema-v2.md).
-To support the migration from the v1 configuration format the documentation can be found in [docs/config-schema-v1.md](docs/config-schema-v1.md).
+1. Open [Google Apps Script](https://script.google.com/home?hl=en).
+2. Create an empty project and give it a name (e.g. `MyGmailProcessor`) or select an existing one.
+3. Add the library in the Libraries section using the ＋ icon and insert the Script ID `1yhOQyl_xWtnGJn_bzlL7oA4d_q5KoMyZyWIqXDJX1SY7bi22_lpjMiQK` (stable release channel).
+   - Alternatively you can use `TODO` for the testing release channel or `TODO` for development release channel.
+   - Version: Last development snapshot or a certain stable version
+4. Press "Look up" and select the desired release number or "HEAD (Development Mode)" if you always want to used the latest version of the release channel.
+5. Set the identifier to: `GmailProcessor` (any name will do, but we will use that name as a reference later in all examples and documentation)
+6. Replace the contents of the initially created file `Code.gs` with the example from [gettingStarted.js](src/gas/examples/gettingStarted.js) and save the changes.
+7. Perform initial start of the function `run` to grant the permissions (see below for an explanation why these are required):
+   1. Select the account you want to grant access for
+   2. When the message "Google did not verify the app" click on "Advanced" and proceed to run your script
+   3. Grant access to GMail and Google Drive
 
-Various configuration values (e.g. a GDrive location) can contain [meta info placeholder](docs/meta-infos.md) that get replaced with dynamic values.
-
-## Global Configuration (TODO: Remove when all is in generated docs)
-
-- globalFilter: Global filter expression (see [https://support.google.com/mail/answer/7190?hl=en](https://support.google.com/mail/answer/7190?hl=en) for avialable search operators)
-  - Example: "globalFilter": "has:attachment -in:trash -in:drafts -in:spam"
-- processedLabel: The GMail label to mark processed threads (will be created, if not existing)
-  - Example: "processedLabel": "to-gdrive/processed"
-- sleepTime: Sleep time in milliseconds between processed messages
-  - Example: "sleepTime": 100
-- maxRuntime: Maximum script runtime in seconds (Google Scripts will be killed after 5 minutes)
-  - Example: "maxRuntime": 280
-- newerThan: Only process message newer than (leave empty for no restriction; use d, m and y for day, month and year)
-  - Example: "newerThan": "1m"
-- timezone: Timezone for date/time operations
-  - Example: "timezone": "GMT"
-- rules: List of rules to be processed
-  - Example: "rules": [ {..rule1..}, {..rule2..}, ... ]
-
-## Rule Configuration (Version 1) (TODO: Remove when all is in generated docs)
-
-A rule supports the following parameters documentation:
-
-- filter (String, mandatory): a typical gmail search expression (see [http://support.google.com/mail/bin/answer.py?hl=en&amp;answer=7190](http://support.google.com/mail/bin/answer.py?hl=en&answer=7190))
-- folder (String, mandatory): a path to an existing Google Drive folder (will be created, if not existing)
-- archive (boolean, optional): Should the gmail thread be archived after processing? (default: false)
-- filenameFrom (String, optional): The attachment filename that should be renamed when stored in Google Drive
-- filenameFromRegexp (String, optional): A regular expression to specify only relevant attachments
-- filenameTo (String, optional): The pattern for the new filename of the attachment. If 'filenameFrom' is not given then this will be the new filename for all attachments.
-  - You can use '%s' to insert the email subject and date format patterns like 'yyyy' for year, 'MM' for month and 'dd' for day as pattern in the filename.
-  - See [https://developers.google.com/apps-script/reference/utilities/utilities#formatDate(Date,String,String)](<https://developers.google.com/apps-script/reference/utilities/utilities#formatDate(Date,String,String)>) for more information on the possible date format strings.
-- saveThreadPDF (boolean, optional): Should the thread be saved as a PDF? (default: false)
-
-## Processing Commands (TODO: Remove when all is in generated docs)
-
-### Thread Commands
-
-| V1 Config             | Command                    | Arguments                  | Notes |
-| --------------------- | -------------------------- | -------------------------- | ----- |
-| "archive": true       | thread.moveToArchive       | -                          |       |
-| "saveThreadPDF": true | thread.exportAsPdfToGDrive | location, conflictStrategy |       |
-
-## Example Configuration (TODO: Remove when all is in generated docs)
+Now you can start using the Gmail Processor Library in your Google Apps Script project as follows:
 
 ```javascript
-/**
- * Configuration for Gmail2GDrive
- * See https://github.com/ahochsteger/gmail2gdrive/blob/master/README.md for a config reference
- */
-function getGmail2GDriveConfig() {
-  return {
-    // Global filter
-    globalFilter: "has:attachment -in:trash -in:drafts -in:spam",
-    // Gmail label for processed threads (will be created, if not existing):
-    processedLabel: "to-gdrive/processed",
-    // Sleep time in milli seconds between processed messages:
-    sleepTime: 100,
-    // Maximum script runtime in seconds (google scripts will be killed after 5 minutes):
-    maxRuntime: 280,
-    // Only process message newer than (leave empty for no restriction; use d, m and y for day, month and year):
-    newerThan: "1m",
-    // Timezone for date/time operations:
-    timezone: "GMT",
-    // Processing rules:
-    rules: [
-      {
-        // Store all attachments sent to my.name+scans@gmail.com to the folder "Scans"
-        filter: "to:my.name+scans@gmail.com",
-        folder: "'Scans'-yyyy-MM-dd",
-      },
-      {
-        // Store all attachments from example1@example.com to the folder "Examples/example1"
-        filter: "from:example1@example.com",
-        folder: "'Examples/example1'",
-      },
-      {
-        // Store all pdf attachments from example2@example.com to the folder "Examples/example2"
-        filter: "from:example2@example.com",
-        folder: "'Examples/example2'",
-        filenameFromRegexp: ".*.pdf$",
-      },
-      {
-        // Store all attachments from example3a@example.com OR from:example3b@example.com
-        // to the folder "Examples/example3ab" while renaming all attachments to the pattern
-        // defined in 'filenameTo' and archive the thread.
-        filter: "(from:example3a@example.com OR from:example3b@example.com)",
-        folder: "'Examples/example3ab'",
-        filenameTo: "'file-'yyyy-MM-dd-'%s.txt'",
-        archive: true,
-      },
-      {
-        // Store threads marked with label "PDF" in the folder "PDF Emails" als PDF document.
-        filter: "label:PDF",
-        saveThreadPDF: true,
-        folder: "PDF Emails",
-      },
-      {
-        // Store all attachments named "file.txt" from example4@example.com to the
-        // folder "Examples/example4" and rename the attachment to the pattern
-        // defined in 'filenameTo' and archive the thread.
-        filter: "from:example4@example.com",
-        folder: "'Examples/example4'",
-        filenameFrom: "file.txt",
-        filenameTo: "'file-'yyyy-MM-dd-'%s.txt'",
-      },
-    ],
-  }
+var config = {
+  // Define your configuration JSON
+}
+
+GmailProcessor.Lib.run(config, "dry-run") // NOTE: Switch to "safe-mode" after testing the config
+```
+
+Adjust the configuration (see section [Configuration Reference](#configuration-reference)) to your needs. It's always recommended to test config changes using a _dry-run_ by passing `dry-run` as the 2nd parameter to the `run` function. That doesn't touch anything (neither in GMail nor GDrive) but produces a log that shows what would have been done. This way any change in your configuration or an upgrade to a newer version of the library can be tested without any risk of data-loss.
+
+If you're satisfied with the results change the run mode from `dry-run` to `safe-mode` to actually do the processing and execute the `run` function again.
+For automatic triggering you can create a time-based trigger that runs at certain intervalls (e.g. once per day or every hour).
+
+### Getting Started: Copying the Library Code
+
+To use a copy of the library code in your project simply replace steps 3-5 from above with the following steps and use `Lib.run` instead of `GmailProcessor.Lib.run`:
+
+1. Create a new file using the + icon at "Files" and selecting "Script"
+2. Give it a name (e.g. `Lib` resulting in the file `Lib.gs` to be created)
+3. Replace the contents of the file with the library code of the release asset `Lib.js` from the desired GmailProcessor release or your own built version from `build/lib/Lib.gs`.
+
+Now use it in your script:
+
+```javascript
+Lib.run(config,...)
+```
+
+### Required API Permissions
+
+To enable full processing of the emails the following permissions are requested during the initial run:
+
+- `https://mail.google.com/`: Access Gmail to process emails
+- `https://www.googleapis.com/auth/drive`: Access Google Drive to store files
+- `https://www.googleapis.com/auth/script.container.ui`: TODO
+- `https://www.googleapis.com/auth/spreadsheets`: Access Google Spreadsheets to store logs of processed emails
+- `https://www.googleapis.com/auth/userinfo.email`: Get the user's email address to be used in the configuration
+
+### Getting Started: Migrating from GMail2GDrive v1
+
+If you have been using the predecsssor GMail2GDrive before and want to migrate to GmailProcessor there's a convenient way to convert the old configuration to the new format by executing the function `convertConfig` in Google Apps Script and passing in the old config like this:
+
+```javascript
+var oldConfig = {
+  // The old Gmail2GDrive v1 config comes here ...
+}
+
+function convertConfig() {
+  const config = GmailProcessor.Lib.convertV1ConfigToV2Config(oldConfig)
+  console.log(JSON.stringify(config, null, 2))
 }
 ```
 
-## Migrating from Gmail2GDrive 1.x
+Note though, that the logging size is limited to about 8kB (or about 100kB if using StackDriver), so you may have split your rules into multiple runs to get all rules converted into individual thread configs.
 
-The configuration of version 1 just provided a single use-case: storing Gmail attachments to Google Drive which limited the extension to additional use-cases.
+If you want to manually convert your configuration have a look at [V1ToV2Converter.ts](src/lib/config/v1/V1ToV2Converter.ts) that implements the conversion logic.
 
-The config format of version 2 addresses this by providing a list of commands and multiple rules (for threads, messages and attachments) which should give enough flexibility for various use-cases.
+## Configuration Reference
 
-### Version 1 Config
+The following documentation is available:
 
-```json
-{
-  "folder": "'Scans'-yyyy-MM-dd",
-  "filenameFrom": "file.txt",
-  "filenameTo": "'file-'yyyy-MM-dd-'%s.txt'"
-}
-```
+- [Config Schema Documentation](docs/config-schema-v2.md): documents the schema of the configuration format
+- [Reference Documentation](docs/reference-docs.md): documents the actions, used enum types and substitution placeholder that can be used in strings to be replaced with dynamic values (e.g. for folder paths or filenames).
+  - See [all available actions](docs/reference-docs.md#actions) like `attachment.store` to store an attachment at a certain Google Drive location.
+  - See [all available enum values](docs/reference-docs.md#enum-types) like `ConflictStrategy` to specify how to deal with existing files at a Google Drive location.
+  - See [all available substitution placeholder](docs/reference-docs.md#substitution-placeholder) like `${message.date:format:yyyy-MM-dd}` to use the message date as the folder name of the Google Drive location.
 
-The supported date format provided by Google Apps Script Utilities is documented here:
+Have a look at the [examples](https://github.com/ahochsteger/gmail2gdrive/tree/v2/src/gas/examples) to see different usage scenarios.
 
-- [https://developers.google.com/apps-script/reference/utilities/utilities#formatdatedate,-timezone,-format](https://developers.google.com/apps-script/reference/utilities/utilities#formatdatedate,-timezone,-format)
-- [https://docs.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html](https://docs.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html)
+## Contributing
 
-### Version 2 Config (TODO: Update)
+Contributions to Gmail Processor are welcome! Whether you want to add new features, fix bugs, or improve documentation, check out the [contribution guidelines](CONTRIBUTING.md) to get started.
 
-```json
-{
-  "commands": [
-    {
-      "name": "attachment.storeToGDrive",
-      "args": {
-        "location": "Scans-${message.date:dateformat:yyyy-mm-dd}/file-${message.date:dateformat:yyyy-mm-dd}-${message.subject}"
-      }
-    }
-  ]
-}
-```
-
-Note that the date format has changed in version 2 since it's based on the `dateformat` npm package.
-Esp. take care that the casing has changed for month and minute!
-It is documented here:
-
-- [https://www.npmjs.com/package/dateformat](https://www.npmjs.com/package/dateformat)
-
-As a fallback the old format is still supported and can be auto-detected if it finds a single quote in the format string.
-It can also be configured in the settings, if auto-detection does not work as expected.
-Make sure though, to migrate to the new format as it is much more flexible and easier to read as it uses meaningful names (e.g. `${message.subject}` instead of `%s`).
-
-## Development (TODO: Update)
-
-Since version 2 GMail2GDrive uses a modern development setup using [TypeScript](https://www.typescriptlang.org/), [NPM](https://www.npmjs.com/), [clasp](https://developers.google.com/apps-script/guides/clasp), [Jest](https://jestjs.io/) to improve productivity and quality.
-
-Visual Studio Code is recommended as IDE.
-
-This shows a typical development flow:
+### Development Setup
 
 ```bash
-# Clean:
-npm run clean
+# Clone the repository
+git clone https://github.com/ahochsteger/gmail2gdrive.git
 
-# Build the project:
-npm run build
+# Navigate to the project folder
+cd gmail2gdrive
 
-# Test project:
-npm run test
-
-# Push Library to Google Apps Script:
-npm run push
+# Install dependencies
+npm install
 ```
 
-## Resources
+The recommended IDE for this project is [Visual Studio Code](https://code.visualstudio.com/), but any other IDEs with support for TypeScript and NPM will do.
+
+To validate any changes and update all generated artifacts (like doumentation, examples, JSON schema files, ...) use the `pre-commit` script and include them in the commit:
+
+```bash
+npm run pre-commit
+```
+
+Please add/update tests (using [Jest](https://jestjs.io/)) with your changes to keep the codebase in a well-tested state.
+
+### Development Resources (TODO: Update)
 
 - Google Apps Script Development
   - [https://github.com/google/clasp](https://github.com/google/clasp)
@@ -243,11 +152,21 @@ npm run push
   - [https://github.com/grant/ts2gas](https://github.com/grant/ts2gas)
   - [https://blog.filippo.io/gmail-bot-with-apps-script-and-typescript/](https://blog.filippo.io/gmail-bot-with-apps-script-and-typescript/)
 
-## Feedback and contributions
+## Contributors
 
-Feedback and contributions is well appreciated via [Github](https://github.com/ahochsteger/gmail2gdrive).
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
 
-## Thanks
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
 
-Thanks goes to [Amit Agarwal](http://www.labnol.org/about/) who provided similar functionality in his article [Send your Gmail Attachments to Google Drive](http://www.labnol.org/internet/send-gmail-to-google-drive/21236/) from which Gmail2GDrive evolved to provide more flexibility.
-Also thanks to many [contributors](https://github.com/ahochsteger/gmail2gdrive/graphs/contributors) that helped fixing bugs and extending GMail2GDrive with new functionality.
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+## License
+
+GmailProcessor is released under the [Apache 2.0 License](LICENSE).
+
+## Support
+
+For any questions, issues, or feedback, please open an [issue](https://github.com/ahochsteger/gmail2gdrive/issues) on GitHub.

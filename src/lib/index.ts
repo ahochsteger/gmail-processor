@@ -67,7 +67,7 @@ export function defaultContext(runMode = RunMode.SAFE_MODE) {
 }
 
 /**
- * @param configJson GMail2GDrive configuration JSON
+ * @param configJson GmailProcessor configuration JSON
  * @param runMode Just show what would have been done but don't write anything to GMail or GDrive.
  */
 export function run(

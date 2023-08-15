@@ -43,38 +43,38 @@ function generateGasExample() {
   case "${cfgMap[version]}" in
     1)
   cat <<EOF
-/* global GMail2GDrive */
+/* global GmailProcessor */
 
 var ${cfgMap[cfgName]} = $(cat "${cfgMap[cfgFile]}")
 
 function ${cfgMap[fnName]}EffectiveConfig() {
-  const effectiveConfig = GMail2GDrive.Lib.${cfgMap[getCfgFn]}(${cfgMap[cfgName]})
+  const effectiveConfig = GmailProcessor.Lib.${cfgMap[getCfgFn]}(${cfgMap[cfgName]})
   console.log(JSON.stringify(effectiveConfig, null, 2))
 }
 
 function ${cfgMap[fnName]}Run() {
-  GMail2GDrive.Lib.${cfgMap[runFn]}(${cfgMap[cfgName]}, "dry-run")
+  GmailProcessor.Lib.${cfgMap[runFn]}(${cfgMap[cfgName]}, "dry-run")
 }
 
 function ${cfgMap[fnName]}ConvertConfig() {
-  const config = GMail2GDrive.Lib.convertV1ConfigToV2Config(${cfgMap[cfgName]})
+  const config = GmailProcessor.Lib.convertV1ConfigToV2Config(${cfgMap[cfgName]})
   console.log(JSON.stringify(config, null, 2))
 }
 EOF
   ;;
     2)
   cat <<EOF
-/* global GMail2GDrive */
+/* global GmailProcessor */
 
 var ${cfgMap[cfgName]} = $(cat "${cfgMap[cfgFile]}")
 
 function ${cfgMap[fnName]}EffectiveConfig() {
-  const effectiveConfig = GMail2GDrive.Lib.${cfgMap[getCfgFn]}(${cfgMap[cfgName]})
+  const effectiveConfig = GmailProcessor.Lib.${cfgMap[getCfgFn]}(${cfgMap[cfgName]})
   console.log(JSON.stringify(effectiveConfig, null, 2))
 }
 
 function ${cfgMap[fnName]}Run() {
-  GMail2GDrive.Lib.${cfgMap[runFn]}(${cfgMap[cfgName]}, "dry-run")
+  GmailProcessor.Lib.${cfgMap[runFn]}(${cfgMap[cfgName]}, "dry-run")
 }
 EOF
     ;;
@@ -92,23 +92,23 @@ import { V1Config } from "../../lib/config/v1/V1Config"
 import { PartialDeep } from "type-fest"
 import { RunMode } from "../../lib/Context"
 import { ProcessingConfig } from "../../lib/config/Config"
-import { GMail2GDrive } from "../mocks/Examples"
+import { GmailProcessor } from "../mocks/Examples"
 import { MockFactory, Mocks } from "../mocks/MockFactory"
 
 const ${cfgMap[cfgName]}: PartialDeep<${cfgMap[cfgType]}> = $(cat "${cfgMap[cfgFile]}")
 
 let mocks: Mocks
 beforeEach(() => {
-  mocks = MockFactory.newMocks(GMail2GDrive.Lib.${cfgMap[getCfgFn]}(${cfgMap[cfgName]}), RunMode.DANGEROUS)
+  mocks = MockFactory.newMocks(GmailProcessor.Lib.${cfgMap[getCfgFn]}(${cfgMap[cfgName]}), RunMode.DANGEROUS)
 })
 
 it("should provide the effective config of v${cfgMap[version]} example ${cfgMap[fnName]}", () => {
-  const effectiveConfig = GMail2GDrive.Lib.${cfgMap[getCfgFn]}(${cfgMap[cfgName]})
+  const effectiveConfig = GmailProcessor.Lib.${cfgMap[getCfgFn]}(${cfgMap[cfgName]})
     expect(effectiveConfig).toBeInstanceOf(ProcessingConfig)
 })
 
 it("should process a v${cfgMap[version]} config example", () => {
-  const result = GMail2GDrive.Lib.${cfgMap[runFn]}(${cfgMap[cfgName]}, "dry-run", mocks.envContext)
+  const result = GmailProcessor.Lib.${cfgMap[runFn]}(${cfgMap[cfgName]}, "dry-run", mocks.envContext)
   expect(result.status).toEqual("ok")
 })
 
@@ -123,23 +123,23 @@ EOF
 import { PartialDeep } from "type-fest"
 import { RunMode } from "../../lib/Context"
 import { Config, ProcessingConfig } from "../../lib/config/Config"
-import { GMail2GDrive } from "../mocks/Examples"
+import { GmailProcessor } from "../mocks/Examples"
 import { MockFactory, Mocks } from "../mocks/MockFactory"
 
 const ${cfgMap[cfgName]}: PartialDeep<${cfgMap[cfgType]}> = $(cat "${cfgMap[cfgFile]}")
 
 let mocks: Mocks
 beforeEach(() => {
-  mocks = MockFactory.newMocks(GMail2GDrive.Lib.${cfgMap[getCfgFn]}(${cfgMap[cfgName]}), RunMode.DANGEROUS)
+  mocks = MockFactory.newMocks(GmailProcessor.Lib.${cfgMap[getCfgFn]}(${cfgMap[cfgName]}), RunMode.DANGEROUS)
 })
 
 it("should provide the effective config of v${cfgMap[version]} example ${cfgMap[fnName]}", () => {
-  const effectiveConfig = GMail2GDrive.Lib.${cfgMap[getCfgFn]}(${cfgMap[cfgName]})
+  const effectiveConfig = GmailProcessor.Lib.${cfgMap[getCfgFn]}(${cfgMap[cfgName]})
     expect(effectiveConfig).toBeInstanceOf(ProcessingConfig)
 })
 
 it("should process a v${cfgMap[version]} config example", () => {
-  const result = GMail2GDrive.Lib.${cfgMap[runFn]}(${cfgMap[cfgName]}, "dry-run", mocks.envContext)
+  const result = GmailProcessor.Lib.${cfgMap[runFn]}(${cfgMap[cfgName]}, "dry-run", mocks.envContext)
   expect(result.status).toEqual("ok")
 })
 EOF

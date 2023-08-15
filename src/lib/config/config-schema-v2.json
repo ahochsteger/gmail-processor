@@ -144,7 +144,7 @@
         },
         "Config": {
             "additionalProperties": false,
-            "description": "Represents the configuration root for GMail2GDrive",
+            "description": "Represents the configuration root for GmailProcessor",
             "properties": {
                 "attachments": {
                     "default": [],
@@ -157,7 +157,7 @@
                 },
                 "description": {
                     "default": "",
-                    "description": "The description of the GMail2GDrive config",
+                    "description": "The description of the GmailProcessor config",
                     "title": "description",
                     "type": "string"
                 },
@@ -177,7 +177,7 @@
                 },
                 "settings": {
                     "$ref": "#/definitions/SettingsConfig",
-                    "description": "Represents a settings config that affect the way GMail2GDrive works.",
+                    "description": "Represents a settings config that affect the way GmailProcessor works.",
                     "title": "settings"
                 },
                 "threads": {
@@ -390,7 +390,7 @@
         },
         "SettingsConfig": {
             "additionalProperties": false,
-            "description": "Represents a settings config that affect the way GMail2GDrive works.",
+            "description": "Represents a settings config that affect the way GmailProcessor works.",
             "properties": {
                 "logSheetLocation": {
                     "default": "",

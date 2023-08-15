@@ -28,7 +28,7 @@ export enum MarkProcessedMethod {
 }
 
 /**
- * Represents a settings config that affect the way GMail2GDrive works.
+ * Represents a settings config that affect the way GmailProcessor works.
  */
 export class SettingsConfig {
   /**

@@ -1,4 +1,4 @@
-/* global GMail2GDrive */
+/* global GmailProcessor */
 
 var example01ConfigV1 = {
   globalFilter: "has:attachment -in:trash -in:drafts -in:spam",
@@ -43,15 +43,15 @@ var example01ConfigV1 = {
 
 function example01EffectiveConfig() {
   const effectiveConfig =
-    GMail2GDrive.Lib.getEffectiveConfigV1(example01ConfigV1)
+    GmailProcessor.Lib.getEffectiveConfigV1(example01ConfigV1)
   console.log(JSON.stringify(effectiveConfig, null, 2))
 }
 
 function example01Run() {
-  GMail2GDrive.Lib.runWithV1Config(example01ConfigV1, "dry-run")
+  GmailProcessor.Lib.runWithV1Config(example01ConfigV1, "dry-run")
 }
 
 function example01ConvertConfig() {
-  const config = GMail2GDrive.Lib.convertV1ConfigToV2Config(example01ConfigV1)
+  const config = GmailProcessor.Lib.convertV1ConfigToV2Config(example01ConfigV1)
   console.log(JSON.stringify(config, null, 2))
 }

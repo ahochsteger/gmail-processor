@@ -1,4 +1,4 @@
-/* global GMail2GDrive */
+/* global GmailProcessor */
 
 var exampleMinConfigV2 = {
   threads: [{}],
@@ -6,10 +6,10 @@ var exampleMinConfigV2 = {
 
 function exampleMinEffectiveConfig() {
   const effectiveConfig =
-    GMail2GDrive.Lib.getEffectiveConfig(exampleMinConfigV2)
+    GmailProcessor.Lib.getEffectiveConfig(exampleMinConfigV2)
   console.log(JSON.stringify(effectiveConfig, null, 2))
 }
 
 function exampleMinRun() {
-  GMail2GDrive.Lib.run(exampleMinConfigV2, "dry-run")
+  GmailProcessor.Lib.run(exampleMinConfigV2, "dry-run")
 }

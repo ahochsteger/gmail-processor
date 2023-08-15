@@ -1,7 +1,7 @@
 import { PartialDeep } from "type-fest"
 import { RunMode } from "../../lib/Context"
 import { Config, ProcessingConfig } from "../../lib/config/Config"
-import { GMail2GDrive } from "../mocks/Examples"
+import { GmailProcessor } from "../mocks/Examples"
 import { MockFactory, Mocks } from "../mocks/MockFactory"
 
 const e2e01ConfigV2: PartialDeep<Config> = {
@@ -46,7 +46,7 @@ const e2e01ConfigV2: PartialDeep<Config> = {
       ],
       match: {
         query:
-          "from:${user.email} to:${user.email} subject:'GMail2GDrive-Test'",
+          "from:${user.email} to:${user.email} subject:'GmailProcessor-Test'",
       },
       attachments: [
         {
@@ -58,7 +58,7 @@ const e2e01ConfigV2: PartialDeep<Config> = {
               name: "attachment.store",
               args: {
                 location:
-                  "/GMail2GDrive-Tests/v2/e2e01/${attachment.name.match.basename}-stored.png",
+                  "/GmailProcessor-Tests/v2/e2e01/${attachment.name.match.basename}-stored.png",
               },
             },
             {
@@ -85,18 +85,18 @@ const e2e01ConfigV2: PartialDeep<Config> = {
 let mocks: Mocks
 beforeEach(() => {
   mocks = MockFactory.newMocks(
-    GMail2GDrive.Lib.getEffectiveConfig(e2e01ConfigV2),
+    GmailProcessor.Lib.getEffectiveConfig(e2e01ConfigV2),
     RunMode.DANGEROUS,
   )
 })
 
 it("should provide the effective config of v2 example e2e01", () => {
-  const effectiveConfig = GMail2GDrive.Lib.getEffectiveConfig(e2e01ConfigV2)
+  const effectiveConfig = GmailProcessor.Lib.getEffectiveConfig(e2e01ConfigV2)
   expect(effectiveConfig).toBeInstanceOf(ProcessingConfig)
 })
 
 it("should process a v2 config example", () => {
-  const result = GMail2GDrive.Lib.run(
+  const result = GmailProcessor.Lib.run(
     e2e01ConfigV2,
     "dry-run",
     mocks.envContext,

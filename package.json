@@ -1,7 +1,7 @@
 {
-  "name": "gmail2gdrive",
+  "name": "gmail-processor",
   "version": "2.0.0",
-  "description": "Gmail2GDrive is a Google Apps Script which automatically stores and sorts Gmail attachments into Google Drive folders, and can also save the thread as a PDF file.",
+  "description": "Gmail Processor is an open-source project that automates the processing of Gmail messages and attachments using Google Apps Script and execute actions (e.g. store attachments in a GDrive folder, log information in a spreadsheet) depending on matching criteria.",
   "scripts": {
     "build": "concurrently 'npm:build:*'",
     "build:examples": "scripts/build-gas.sh examples",

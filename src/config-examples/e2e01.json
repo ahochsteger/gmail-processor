@@ -38,7 +38,7 @@
         }
       ],
       "match": {
-        "query": "from:${user.email} to:${user.email} subject:'GMail2GDrive-Test'"
+        "query": "from:${user.email} to:${user.email} subject:'GmailProcessor-Test'"
       },
       "attachments": [
         {
@@ -49,7 +49,7 @@
             {
               "name": "attachment.store",
               "args": {
-                "location": "/GMail2GDrive-Tests/v2/e2e01/${attachment.name.match.basename}-stored.png"
+                "location": "/GmailProcessor-Tests/v2/e2e01/${attachment.name.match.basename}-stored.png"
               }
             },
             {

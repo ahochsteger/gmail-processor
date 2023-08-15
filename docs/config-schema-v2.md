@@ -205,17 +205,17 @@ Only include attachments smaller than the given size in bytes
 <a name="reference-config"></a>
 ## Config
 
-Represents the configuration root for GMail2GDrive
+Represents the configuration root for GmailProcessor
 
 **`Config` Properties**
 
 |   |Type|Description|Required|
 |---|---|---|---|
 |**attachments**|`AttachmentConfig` `[]`|The list of handler that define the way attachments are processed|No, default: `[]`|
-|**description**|`string`|The description of the GMail2GDrive config|No, default: |
+|**description**|`string`|The description of the GmailProcessor config|No, default: |
 |**global**|`GlobalConfig`|The global configuration defines matching and actions for all threads, messages or attachments.|No|
 |**messages**|`MessageConfig` `[]`|The list of handler that define the way nested messages or attachments are processed|No, default: `[]`|
-|**settings**|`SettingsConfig`|Represents a settings config that affect the way GMail2GDrive works.|No|
+|**settings**|`SettingsConfig`|Represents a settings config that affect the way GmailProcessor works.|No|
 |**threads**|`ThreadConfig` `[]`|The list of handler that define the way nested threads, messages or attachments are processed|No, default: `[]`|
 
 Additional properties are not allowed.
@@ -229,7 +229,7 @@ The list of handler that define the way attachments are processed
 
 ### Config.description
 
-The description of the GMail2GDrive config
+The description of the GmailProcessor config
 
 * **Type**: `string`
 * **Required**: No, default: 
@@ -250,7 +250,7 @@ The list of handler that define the way nested messages or attachments are proce
 
 ### Config.settings
 
-Represents a settings config that affect the way GMail2GDrive works.
+Represents a settings config that affect the way GmailProcessor works.
 
 * **Type**: `SettingsConfig`
 * **Required**: No
@@ -528,7 +528,7 @@ A RegEx matching the recipient email address of messages
 <a name="reference-settingsconfig"></a>
 ## SettingsConfig
 
-Represents a settings config that affect the way GMail2GDrive works.
+Represents a settings config that affect the way GmailProcessor works.
 
 **`SettingsConfig` Properties**
 

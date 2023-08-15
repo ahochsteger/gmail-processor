@@ -1,6 +1,6 @@
 import * as lib from "../../lib"
 
-export const GMail2GDrive = {
+export const GmailProcessor = {
   Lib: {
     ...lib,
   },

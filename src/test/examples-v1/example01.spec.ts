@@ -3,7 +3,7 @@ import { V1Config } from "../../lib/config/v1/V1Config"
 import { PartialDeep } from "type-fest"
 import { RunMode } from "../../lib/Context"
 import { ProcessingConfig } from "../../lib/config/Config"
-import { GMail2GDrive } from "../mocks/Examples"
+import { GmailProcessor } from "../mocks/Examples"
 import { MockFactory, Mocks } from "../mocks/MockFactory"
 
 const example01ConfigV1: PartialDeep<V1Config> = {
@@ -50,19 +50,19 @@ const example01ConfigV1: PartialDeep<V1Config> = {
 let mocks: Mocks
 beforeEach(() => {
   mocks = MockFactory.newMocks(
-    GMail2GDrive.Lib.getEffectiveConfigV1(example01ConfigV1),
+    GmailProcessor.Lib.getEffectiveConfigV1(example01ConfigV1),
     RunMode.DANGEROUS,
   )
 })
 
 it("should provide the effective config of v1 example example01", () => {
   const effectiveConfig =
-    GMail2GDrive.Lib.getEffectiveConfigV1(example01ConfigV1)
+    GmailProcessor.Lib.getEffectiveConfigV1(example01ConfigV1)
   expect(effectiveConfig).toBeInstanceOf(ProcessingConfig)
 })
 
 it("should process a v1 config example", () => {
-  const result = GMail2GDrive.Lib.runWithV1Config(
+  const result = GmailProcessor.Lib.runWithV1Config(
     example01ConfigV1,
     "dry-run",
     mocks.envContext,

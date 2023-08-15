@@ -1,16 +1,16 @@
-declare namespace GMail2GDrive {
+declare namespace GmailProcessor {
   namespace Lib {
     type E2EConfig = any
   }
 }
 
-declare var GMail2GDrive: {
+declare var GmailProcessor: {
   Lib: {
     E2EInit(config: any)
   }
 }
 
-const e2eConfig: GMail2GDrive.Lib.E2EConfig = {
+const e2eConfig: GmailProcessor.Lib.E2EConfig = {
   globals: {
     repoBaseUrl:
       "https://raw.githubusercontent.com/ahochsteger/gmail2gdrive/v2/src/e2e-test/files",
@@ -57,5 +57,5 @@ const e2eConfig: GMail2GDrive.Lib.E2EConfig = {
 }
 
 function e2eInit() {
-  GMail2GDrive.Lib.E2EInit(e2eConfig)
+  GmailProcessor.Lib.E2EInit(e2eConfig)
 }
