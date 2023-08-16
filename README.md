@@ -5,7 +5,7 @@
 
 **[Gmail Processor](https://github.com/ahochsteger/gmail2gdrive)** is an open-source project that automates the processing of Gmail messages and attachments using [Google Apps Script](https://www.google.com/script/start/) and execute actions (e.g. store attachments in a GDrive folder, log information in a spreadsheet) depending on matching criteria.
 
-This project is the successor of [Gmail2GDrive](https://github.com/ahochsteger/gmail2gdrive) with vastly enhanced functionality, completely re-written in [TypeScript](https://www.typescriptlang.org/) with extensibility and stability in mind, using a modern development setup and automation all over the place (dependency updates, tests, documentation, releases, deployments). There's a convenient migration available to convert your old configuration to the new format (see [Getting Started: Migrating from GMail2GDrive v1](#getting-started-migrating-from-gmail2gdrive-v1)).
+Gmail Processor is the successor of [Gmail2GDrive](https://github.com/ahochsteger/gmail2gdrive) with vastly enhanced functionality, completely re-written in [TypeScript](https://www.typescriptlang.org/) with extensibility and stability in mind, using a modern development setup and automation all over the place (dependency updates, tests, documentation, releases, deployments). There's a convenient migration available to convert your old configuration to the new format (see [Getting Started: Migrating from GMail2GDrive v1](#getting-started-migrating-from-gmail2gdrive-v1)).
 
 ## Key Features
 
@@ -62,7 +62,7 @@ To use a copy of the library code in your project simply replace steps 3-5 from 
 
 1. Create a new file using the + icon at "Files" and selecting "Script"
 2. Give it a name (e.g. `Lib` resulting in the file `Lib.gs` to be created)
-3. Replace the contents of the file with the library code of the release asset `Lib.js` from the desired GmailProcessor release or your own built version from `build/lib/Lib.gs`.
+3. Replace the contents of the file with the library code of the release asset [`Lib.js`](https://github.com/ahochsteger/gmail2gdrive/releases/latest/download/Lib.js) from the latest release or your own built version from `build/lib/Lib.gs`.
 
 Now use it in your script:
 
