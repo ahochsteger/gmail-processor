@@ -1,39 +1,58 @@
-name: Node.js CI
+name: CI
 
 on:
   push:
     branches:
+      - beta
       - main
+  release:
+  workflow_dispatch:
+
+env:
+  CLASP_ACCESS_TOKEN: ${{secrets.CLASP_ACCESS_TOKEN}}
+  CLASP_CLIENT_ID: ${{secrets.CLASP_CLIENT_ID}}
+  CLASP_CLIENT_SECRET: ${{secrets.CLASP_CLIENT_SECRET}}
+  CLASP_EXAMPLES_DEPLOYMENT_ID_DEV: ${{secrets.CLASP_EXAMPLES_DEPLOYMENT_ID_DEV}}
+  CLASP_EXAMPLES_DEPLOYMENT_ID_STABLE: ${{secrets.CLASP_EXAMPLES_DEPLOYMENT_ID_STABLE}}
+  CLASP_EXAMPLES_DEPLOYMENT_ID_TESTING: ${{secrets.CLASP_EXAMPLES_DEPLOYMENT_ID_TESTING}}
+  CLASP_ID_TOKEN: ${{secrets.CLASP_ID_TOKEN}}
+  CLASP_LIB_DEPLOYMENT_ID_DEV: ${{secrets.CLASP_LIB_DEPLOYMENT_ID_DEV}}
+  CLASP_LIB_DEPLOYMENT_ID_STABLE: ${{secrets.CLASP_LIB_DEPLOYMENT_ID_STABLE}}
+  CLASP_LIB_DEPLOYMENT_ID_TESTING: ${{secrets.CLASP_LIB_DEPLOYMENT_ID_TESTING}}
+  CLASP_REFRESH_TOKEN: ${{secrets.CLASP_REFRESH_TOKEN}}
+  CLASP_EXAMPLES_SCRIPT_ID: ${{secrets.CLASP_EXAMPLES_SCRIPT_ID}}
+  CLASP_LIB_SCRIPT_ID: ${{secrets.CLASP_LIB_SCRIPT_ID}}
+  GCLOUD_PROJECT_ID: ${{secrets.GCLOUD_PROJECT_ID}}
+  GCLOUD_PROJECT_NR: ${{secrets.GCLOUD_PROJECT_NR}}
 
 jobs:
   build:
     runs-on: ubuntu-latest
     environment: dev
-    env:
-      CLASP_ACCESS_TOKEN: ${{secrets.CLASP_ACCESS_TOKEN}}
-      CLASP_CLIENT_ID: ${{secrets.CLASP_CLIENT_ID}}
-      CLASP_CLIENT_SECRET: ${{secrets.CLASP_CLIENT_SECRET}}
-      CLASP_EXAMPLES_DEPLOYMENT_ID_DEV: ${{secrets.CLASP_EXAMPLES_DEPLOYMENT_ID_DEV}}
-      CLASP_EXAMPLES_DEPLOYMENT_ID_STABLE: ${{secrets.CLASP_EXAMPLES_DEPLOYMENT_ID_STABLE}}
-      CLASP_EXAMPLES_DEPLOYMENT_ID_TESTING: ${{secrets.CLASP_EXAMPLES_DEPLOYMENT_ID_TESTING}}
-      CLASP_ID_TOKEN: ${{secrets.CLASP_ID_TOKEN}}
-      CLASP_LIB_DEPLOYMENT_ID_DEV: ${{secrets.CLASP_LIB_DEPLOYMENT_ID_DEV}}
-      CLASP_LIB_DEPLOYMENT_ID_STABLE: ${{secrets.CLASP_LIB_DEPLOYMENT_ID_STABLE}}
-      CLASP_LIB_DEPLOYMENT_ID_TESTING: ${{secrets.CLASP_LIB_DEPLOYMENT_ID_TESTING}}
-      CLASP_REFRESH_TOKEN: ${{secrets.CLASP_REFRESH_TOKEN}}
-      CLASP_EXAMPLES_SCRIPT_ID: ${{secrets.CLASP_EXAMPLES_SCRIPT_ID}}
-      CLASP_LIB_SCRIPT_ID: ${{secrets.CLASP_LIB_SCRIPT_ID}}
-      GCLOUD_PROJECT_ID: ${{secrets.GCLOUD_PROJECT_ID}}
-      GCLOUD_PROJECT_NR: ${{secrets.GCLOUD_PROJECT_NR}}
-
     steps:
-      - uses: actions/checkout@v3
-      - name: Use Node.js
+      - id: checkout
+        name: Checkout
+        uses: actions/checkout@v3
+      - id: nodejs
+        name: Use Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18.x
-      - run: npm run ci
-      - name: Jest coverage report
+      - id: build
+        name: Build
+        run: npm run ci
+      - id: coverage
+        name: Coverage Report
         uses: ArtiomTr/jest-coverage-report-action@v2
-      - run: npm run push
+      - name: Release
+        if: ${{ github.ref == 'refs/heads/beta' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx semantic-release
+      - id: push
         if: github.ref == 'refs/heads/main'
+        name: Push
+        run: npm run push
+      # - name: Deploy
+      #   if: ${{ github.ref == 'refs/heads/beta' }}
+      #   run: npm run deploy

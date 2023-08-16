@@ -23,7 +23,7 @@
     "lint:cpd": "jscpd",
     "lint:fix": "prettier -w .",
     "lint:prune": "npx ts-prune",
-    "pre-commit": "npm run clean && npm run update && npm run build && npm run lint:fix && npm run lint && npm run test",
+    "pre-commit": "npm run clean && npm run update && npm run build && npm run lint:fix && npm run lint && npm run test && npm audit signatures",
     "push": "concurrently 'npm:push:*'",
     "push:examples": "scripts/clasp.sh examples push",
     "push:lib": "scripts/clasp.sh lib push",
