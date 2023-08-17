@@ -85,7 +85,7 @@ function run() {
 
 ### Required API Permissions
 
-To enable full processing of the emails the following permissions are requested during the initial run:
+To enable full processing of the emails the following [OAuth Scopes for Google APIs](https://developers.google.com/identity/protocols/oauth2/scopes#script) are requested and need to be granted:
 
 - `https://mail.google.com/`: Access Gmail API to process emails
 - `https://www.googleapis.com/auth/drive`: Access Google Drive API to store files
