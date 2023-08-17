@@ -51,6 +51,13 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/48987577?v=4",
       "profile": "https://www.kurzmann.io/",
       "contributions": ["code"]
+    },
+    {
+      "login": "Claude123",
+      "name": "NadavClaudeCohen",
+      "avatar_url": "https://avatars.githubusercontent.com/u/28677693?v=4",
+      "profile": "https://github.com/Claude123",
+      "contributions": ["code"]
     }
   ],
   "contributorsPerLine": 7,
