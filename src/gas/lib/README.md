@@ -1,3 +1,3 @@
-# gmail2gdrive (Google Apps Script Library)
+# Gmail Processor Examples
 
-This is a Google Apps Script Library to automatically process emails from GMail and store attachments in Google Drive.
+These are examples for the Google Apps Script Library _Gmail Processor_ that show how to use the new configuration format.

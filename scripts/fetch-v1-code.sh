@@ -11,6 +11,6 @@ files="
 mkdir -p "${dest_dir}"
 for f in ${files}; do
   echo "${f}"
-  curl -sfL "https://github.com/ahochsteger/gmail2gdrive/raw/master/${f}" \
+  curl -sfL "https://github.com/ahochsteger/gmail-processor/raw/1.x/${f}" \
   >"${dest_dir}/${f}"
 done

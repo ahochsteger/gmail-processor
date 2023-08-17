@@ -13,7 +13,7 @@ declare var GmailProcessor: {
 const e2eConfig: GmailProcessor.Lib.E2EConfig = {
   globals: {
     repoBaseUrl:
-      "https://raw.githubusercontent.com/ahochsteger/gmail2gdrive/v2/src/e2e-test/files",
+      "https://raw.githubusercontent.com/ahochsteger/gmail-processor/main/src/e2e-test/files",
     subjectPrefix: "[GmailProcessor-Test] ",
     to: Session.getActiveUser().getEmail(),
   },

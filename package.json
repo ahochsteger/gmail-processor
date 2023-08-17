@@ -27,14 +27,14 @@
     "push": "concurrently 'npm:push:*'",
     "push:examples": "scripts/clasp.sh examples push",
     "push:lib": "scripts/clasp.sh lib push",
-    "repush": "concurrently 'npm:repush:*'",
-    "repush:examples": "npm run update:examples && npm run build:examples && npm run push:examples",
-    "repush:lib": "npm run build:lib && npm run push:lib",
     "redeploy": "concurrently 'npm:redeploy:*'",
     "redeploy:examples": "npm run update:examples && npm run build:examples && npm run deploy:examples",
     "redeploy:lib": "npm run build:lib && npm run deploy:lib",
     "release:dry-run": "npx semantic-release --dry-run",
     "release:perform": "npx semantic-release",
+    "repush": "concurrently 'npm:repush:*'",
+    "repush:examples": "npm run update:examples && npm run build:examples && npm run push:examples",
+    "repush:lib": "npm run build:lib && npm run push:lib",
     "test": "jest --reporters=summary --silent",
     "test:verbose": "jest --detectOpenHandles --reporters='default' --runInBand --verbose",
     "update": "concurrently 'npm:update:*'",
@@ -44,15 +44,18 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ahochsteger/gmail2gdrive.git"
+    "url": "git+https://github.com/ahochsteger/gmail-processor.git"
   },
   "keywords": [
-    "gmail",
-    "gmail2gdrive",
-    "gdrive",
-    "email",
     "attachment",
-    "pdf"
+    "email",
+    "gdrive",
+    "gmail",
+    "gmail-processor",
+    "gmail2gdrive",
+    "processor",
+    "pdf",
+    "script"
   ],
   "license": "Apache-2.0",
   "devDependencies": {
