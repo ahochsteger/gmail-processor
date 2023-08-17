@@ -93,6 +93,13 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/6454983?v=4",
       "profile": "https://github.com/steve192",
       "contributions": ["code"]
+    },
+    {
+      "login": "gregorynicholas",
+      "name": "gregory nicholas",
+      "avatar_url": "https://avatars.githubusercontent.com/u/407650?v=4",
+      "profile": "https://gregorynicholas.com/",
+      "contributions": ["example"]
     }
   ],
   "contributorsPerLine": 7,
