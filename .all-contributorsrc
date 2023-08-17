@@ -30,6 +30,13 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/7525600?v=4",
       "profile": "https://github.com/piraveen",
       "contributions": ["code", "doc"]
+    },
+    {
+      "login": "cciprian5",
+      "name": "Ciprian Constantinescu",
+      "avatar_url": "https://avatars.githubusercontent.com/u/24846146?v=4",
+      "profile": "https://github.com/cciprian5",
+      "contributions": ["code", "example"]
     }
   ],
   "contributorsPerLine": 7,
