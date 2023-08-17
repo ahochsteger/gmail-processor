@@ -86,6 +86,13 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/86243?v=4",
       "profile": "https://denny.me/",
       "contributions": ["code"]
+    },
+    {
+      "login": "steve192",
+      "name": "steve192",
+      "avatar_url": "https://avatars.githubusercontent.com/u/6454983?v=4",
+      "profile": "https://github.com/steve192",
+      "contributions": ["code"]
     }
   ],
   "contributorsPerLine": 7,
