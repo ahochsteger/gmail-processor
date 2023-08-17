@@ -72,6 +72,13 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/971788?v=4",
       "profile": "http://www.tomjudge.com/",
       "contributions": ["code", "example"]
+    },
+    {
+      "login": "DavidLemayian",
+      "name": "David Lemayian ✨",
+      "avatar_url": "https://avatars.githubusercontent.com/u/877919?v=4",
+      "profile": "https://davidlemayian.com/",
+      "contributions": ["doc"]
     }
   ],
   "contributorsPerLine": 7,
