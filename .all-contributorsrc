@@ -37,6 +37,13 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/24846146?v=4",
       "profile": "https://github.com/cciprian5",
       "contributions": ["code", "example"]
+    },
+    {
+      "login": "marcusschweizer",
+      "name": "marcusschweizer",
+      "avatar_url": "https://avatars.githubusercontent.com/u/25128893?v=4",
+      "profile": "https://github.com/marcusschweizer",
+      "contributions": ["code"]
     }
   ],
   "contributorsPerLine": 7,
