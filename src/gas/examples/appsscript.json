@@ -11,14 +11,6 @@
       }
     ]
   },
-  "oauthScopes": [
-    "https://mail.google.com/",
-    "https://www.googleapis.com/auth/drive",
-    "https://www.googleapis.com/auth/script.container.ui",
-    "https://www.googleapis.com/auth/script.external_request",
-    "https://www.googleapis.com/auth/script.send_mail",
-    "https://www.googleapis.com/auth/spreadsheets",
-    "https://www.googleapis.com/auth/userinfo.email"
-  ],
+  "oauthScopes": [],
   "timeZone": "Etc/UTC"
 }
