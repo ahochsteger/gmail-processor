@@ -65,6 +65,13 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/992753?v=4",
       "profile": "https://github.com/tomlux",
       "contributions": ["code", "example"]
+    },
+    {
+      "login": "amishHammer",
+      "name": "Tom Judge",
+      "avatar_url": "https://avatars.githubusercontent.com/u/971788?v=4",
+      "profile": "http://www.tomjudge.com/",
+      "contributions": ["code", "example"]
     }
   ],
   "contributorsPerLine": 7,

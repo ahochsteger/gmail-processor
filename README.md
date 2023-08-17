@@ -3,7 +3,7 @@
 ![GitHub](https://img.shields.io/github/license/ahochsteger/gmail-processor) ![GitHub release (with filter)](https://img.shields.io/github/v/release/ahochsteger/gmail-processor) ![GitHub Workflow Status (with event)](https://img.shields.io/github/actions/workflow/status/ahochsteger/gmail-processor/ci.yaml)
  ![GitHub Repo stars](https://img.shields.io/github/stars/ahochsteger/gmail-processor) ![GitHub forks](https://img.shields.io/github/forks/ahochsteger/gmail-processor) ![GitHub commit activity (branch)](https://img.shields.io/github/commit-activity/t/ahochsteger/gmail-processor/v2) ![GitHub contributors](https://img.shields.io/github/contributors/ahochsteger/gmail-processor) ![GitHub closed issues](https://img.shields.io/github/issues-closed/ahochsteger/gmail-processor) ![GitHub issues](https://img.shields.io/github/issues/ahochsteger/gmail-processor) ![GitHub closed pull requests](https://img.shields.io/github/issues-pr-closed/ahochsteger/gmail-processor) ![GitHub pull requests](https://img.shields.io/github/issues-pr/ahochsteger/gmail-processor) ![GitHub repo size](https://img.shields.io/github/repo-size/ahochsteger/gmail-processor)
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-7-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-8-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 **[Gmail Processor](https://github.com/ahochsteger/gmail-processor)** is an open-source project that automates the processing of Gmail messages and attachments using [Google Apps Script](https://www.google.com/script/start/) and execute actions (e.g. store attachments in a GDrive folder, log information in a spreadsheet) depending on matching criteria.
@@ -192,6 +192,9 @@ Helpful resources about development for Google Apps Script:
       <td align="center" valign="top" width="14.28%"><a href="https://www.kurzmann.io/"><img src="https://avatars.githubusercontent.com/u/48987577?v=4?s=100" width="100px;" alt="Markus Kurzmann"/><br /><sub><b>Markus Kurzmann</b></sub></a><br /><a href="https://github.com/ahochsteger/gmail-processor/commits?author=maks-io" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/Claude123"><img src="https://avatars.githubusercontent.com/u/28677693?v=4?s=100" width="100px;" alt="NadavClaudeCohen"/><br /><sub><b>NadavClaudeCohen</b></sub></a><br /><a href="https://github.com/ahochsteger/gmail-processor/commits?author=Claude123" title="Code">💻</a> <a href="https://github.com/ahochsteger/gmail-processor/commits?author=Claude123" title="Documentation">📖</a> <a href="#example-Claude123" title="Examples">💡</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/tomlux"><img src="https://avatars.githubusercontent.com/u/992753?v=4?s=100" width="100px;" alt="Schuller Tom"/><br /><sub><b>Schuller Tom</b></sub></a><br /><a href="https://github.com/ahochsteger/gmail-processor/commits?author=tomlux" title="Code">💻</a> <a href="#example-tomlux" title="Examples">💡</a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="http://www.tomjudge.com/"><img src="https://avatars.githubusercontent.com/u/971788?v=4?s=100" width="100px;" alt="Tom Judge"/><br /><sub><b>Tom Judge</b></sub></a><br /><a href="https://github.com/ahochsteger/gmail-processor/commits?author=amishHammer" title="Code">💻</a> <a href="#example-amishHammer" title="Examples">💡</a></td>
     </tr>
   </tbody>
   <tfoot>
