@@ -1,6 +1,6 @@
 /* global GmailProcessor */
 
-var e2e01ConfigV2 = {
+const e2e01ConfigV2 = {
   description: "End-to-end (E2E) test configuration",
   settings: {
     logSheetLocation:

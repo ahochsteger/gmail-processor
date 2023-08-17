@@ -45,7 +45,7 @@ function generateGasExample() {
   cat <<EOF
 /* global GmailProcessor */
 
-var ${cfgMap[cfgName]} = $(cat "${cfgMap[cfgFile]}")
+const ${cfgMap[cfgName]} = $(cat "${cfgMap[cfgFile]}")
 
 function ${cfgMap[fnName]}EffectiveConfig() {
   const effectiveConfig = GmailProcessor.Lib.${cfgMap[getCfgFn]}(${cfgMap[cfgName]})
@@ -66,7 +66,7 @@ EOF
   cat <<EOF
 /* global GmailProcessor */
 
-var ${cfgMap[cfgName]} = $(cat "${cfgMap[cfgFile]}")
+const ${cfgMap[cfgName]} = $(cat "${cfgMap[cfgFile]}")
 
 function ${cfgMap[fnName]}EffectiveConfig() {
   const effectiveConfig = GmailProcessor.Lib.${cfgMap[getCfgFn]}(${cfgMap[cfgName]})

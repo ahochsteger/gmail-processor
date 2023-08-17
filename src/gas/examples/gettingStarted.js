@@ -1,6 +1,6 @@
 /* global GmailProcessor */
 
-var gettingStartedConfigV2 = {
+const gettingStartedConfigV2 = {
   settings: {
     // Place settings here
   },

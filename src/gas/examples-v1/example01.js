@@ -1,6 +1,6 @@
 /* global GmailProcessor */
 
-var example01ConfigV1 = {
+const example01ConfigV1 = {
   globalFilter: "has:attachment -in:trash -in:drafts -in:spam",
   processedLabel: "gmail2gdrive/client-test",
   sleepTime: 100,

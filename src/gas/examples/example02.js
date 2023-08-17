@@ -1,6 +1,6 @@
 /* global GmailProcessor */
 
-var example02ConfigV2 = {
+const example02ConfigV2 = {
   description: "An example V2 configuration",
   settings: {
     maxBatchSize: 10,

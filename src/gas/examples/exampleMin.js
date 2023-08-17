@@ -1,6 +1,6 @@
 /* global GmailProcessor */
 
-var exampleMinConfigV2 = {
+const exampleMinConfigV2 = {
   threads: [{}],
 }
 
