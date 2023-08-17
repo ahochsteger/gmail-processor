@@ -41,14 +41,17 @@ Follow these steps:
    2. When the message "Google did not verify the app" click on "Advanced" and proceed to run your script
    3. Grant access to GMail and Google Drive
 
-Now you can start using the Gmail Processor Library in your Google Apps Script project as follows:
+Now you can start using the Gmail Processor Library in your script file (e.g. `Code.gs`) of your Google Apps Script project as follows:
 
 ```javascript
 var config = {
   // Define your configuration JSON
 }
 
-GmailProcessor.Lib.run(config, "dry-run") // NOTE: Switch to "safe-mode" after testing the config
+function run() {
+  // NOTE: Switch to "safe-mode" after testing the config
+  GmailProcessor.Lib.run(config, "dry-run")
+}
 ```
 
 Adjust the configuration (see section [Configuration Reference](#configuration-reference)) to your needs. It's always recommended to test config changes using a _dry-run_ by passing `dry-run` as the 2nd parameter to the `run` function. That doesn't touch anything (neither in GMail nor GDrive) but produces a log that shows what would have been done. This way any change in your configuration or an upgrade to a newer version of the library can be tested without any risk of data-loss.
@@ -64,10 +67,17 @@ To use a copy of the library code in your project simply replace steps 3-5 from 
 2. Give it a name (e.g. `Lib` resulting in the file `Lib.gs` to be created)
 3. Replace the contents of the file with the library code of the release asset [`Lib.js`](https://github.com/ahochsteger/gmail-processor/releases/latest/download/Lib.js) from the latest release or your own built version from [`build/gas/lib/Lib.js`](build/gas/lib/Lib.js).
 
-Now use it in your script:
+Now use it in your script file (e.g. `Code.gs`):
 
 ```javascript
-Lib.run(config,...)
+var config = {
+  // Define your configuration JSON
+}
+
+function run() {
+  // NOTE: Switch to "safe-mode" after testing the config
+  Lib.run(config, "dry-run")
+}
 ```
 
 ### Required API Permissions
