@@ -23,6 +23,13 @@
         "tool",
         "test"
       ]
+    },
+    {
+      "login": "piraveen",
+      "name": "Piraveen Kamalathas",
+      "avatar_url": "https://avatars.githubusercontent.com/u/7525600?v=4",
+      "profile": "https://github.com/piraveen",
+      "contributions": ["code", "doc"]
     }
   ],
   "contributorsPerLine": 7,
