@@ -79,6 +79,13 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/877919?v=4",
       "profile": "https://davidlemayian.com/",
       "contributions": ["doc"]
+    },
+    {
+      "login": "denny",
+      "name": "Denny de la Haye",
+      "avatar_url": "https://avatars.githubusercontent.com/u/86243?v=4",
+      "profile": "https://denny.me/",
+      "contributions": ["code"]
     }
   ],
   "contributorsPerLine": 7,
