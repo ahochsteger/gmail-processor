@@ -3,7 +3,7 @@
 ![GitHub](https://img.shields.io/github/license/ahochsteger/gmail-processor) ![GitHub release (with filter)](https://img.shields.io/github/v/release/ahochsteger/gmail-processor) ![GitHub Workflow Status (with event)](https://img.shields.io/github/actions/workflow/status/ahochsteger/gmail-processor/ci.yaml)
  ![GitHub Repo stars](https://img.shields.io/github/stars/ahochsteger/gmail-processor) ![GitHub forks](https://img.shields.io/github/forks/ahochsteger/gmail-processor) ![GitHub commit activity (branch)](https://img.shields.io/github/commit-activity/t/ahochsteger/gmail-processor/v2) ![GitHub contributors](https://img.shields.io/github/contributors/ahochsteger/gmail-processor) ![GitHub closed issues](https://img.shields.io/github/issues-closed/ahochsteger/gmail-processor) ![GitHub issues](https://img.shields.io/github/issues/ahochsteger/gmail-processor) ![GitHub closed pull requests](https://img.shields.io/github/issues-pr-closed/ahochsteger/gmail-processor) ![GitHub pull requests](https://img.shields.io/github/issues-pr/ahochsteger/gmail-processor) ![GitHub repo size](https://img.shields.io/github/repo-size/ahochsteger/gmail-processor)
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-0-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 **[Gmail Processor](https://github.com/ahochsteger/gmail-processor)** is an open-source project that automates the processing of Gmail messages and attachments using [Google Apps Script](https://www.google.com/script/start/) and execute actions (e.g. store attachments in a GDrive folder, log information in a spreadsheet) depending on matching criteria.
@@ -182,6 +182,22 @@ Helpful resources about development for Google Apps Script:
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
+<table>
+  <tbody>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/ahochsteger"><img src="https://avatars.githubusercontent.com/u/207989?v=4?s=100" width="100px;" alt="Andreas Hochsteger"/><br /><sub><b>Andreas Hochsteger</b></sub></a><br /><a href="https://github.com/ahochsteger/gmail-processor/commits?author=ahochsteger" title="Code">💻</a> <a href="https://github.com/ahochsteger/gmail-processor/commits?author=ahochsteger" title="Documentation">📖</a> <a href="#example-ahochsteger" title="Examples">💡</a> <a href="#infra-ahochsteger" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="#maintenance-ahochsteger" title="Maintenance">🚧</a> <a href="https://github.com/ahochsteger/gmail-processor/pulls?q=is%3Apr+reviewed-by%3Aahochsteger" title="Reviewed Pull Requests">👀</a> <a href="#tool-ahochsteger" title="Tools">🔧</a> <a href="https://github.com/ahochsteger/gmail-processor/commits?author=ahochsteger" title="Tests">⚠️</a></td>
+    </tr>
+  </tbody>
+  <tfoot>
+    <tr>
+      <td align="center" size="13px" colspan="7">
+        <img src="https://raw.githubusercontent.com/all-contributors/all-contributors-cli/1b8533af435da9854653492b1327a23a4dbd0a10/assets/logo-small.svg">
+          <a href="https://all-contributors.js.org/docs/en/bot/usage">Add your contributions</a>
+        </img>
+      </td>
+    </tr>
+  </tfoot>
+</table>
 
 <!-- markdownlint-restore -->
 <!-- prettier-ignore-end -->
