@@ -44,6 +44,13 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/25128893?v=4",
       "profile": "https://github.com/marcusschweizer",
       "contributions": ["code"]
+    },
+    {
+      "login": "maks-io",
+      "name": "Markus Kurzmann",
+      "avatar_url": "https://avatars.githubusercontent.com/u/48987577?v=4",
+      "profile": "https://www.kurzmann.io/",
+      "contributions": ["code"]
     }
   ],
   "contributorsPerLine": 7,
