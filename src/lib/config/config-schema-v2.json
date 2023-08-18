@@ -405,7 +405,7 @@
                     "type": "string"
                 },
                 "markProcessedMethod": {
-                    "description": "The method to mark processed threads/messages.\n* `add-label`: Add the label from `markProcessedLabel` to the thread. This is just for compatibility to v1 and is limited to one message per thread.\n* `mark-message-read`: Mark the message as read. This is the new default since it provides more flexibility esp. when threads contain multiple messages.",
+                    "description": "The method to mark processed threads/messages.",
                     "enum": [
                         "add-label",
                         "mark-read"
