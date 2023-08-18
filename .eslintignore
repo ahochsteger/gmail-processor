@@ -1,5 +1,6 @@
 bak/
 build/
+docs/api/
 dist/
 gas/
 node_modules/

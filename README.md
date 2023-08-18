@@ -1,9 +1,11 @@
 # 📧 Gmail Processor 🚀 - Automate Email Processing with Ease
 
-![GitHub](https://img.shields.io/github/license/ahochsteger/gmail-processor) ![GitHub release (with filter)](https://img.shields.io/github/v/release/ahochsteger/gmail-processor) ![GitHub Workflow Status (with event)](https://img.shields.io/github/actions/workflow/status/ahochsteger/gmail-processor/ci.yaml)
- ![GitHub Repo stars](https://img.shields.io/github/stars/ahochsteger/gmail-processor) ![GitHub forks](https://img.shields.io/github/forks/ahochsteger/gmail-processor) ![GitHub commit activity (branch)](https://img.shields.io/github/commit-activity/t/ahochsteger/gmail-processor/v2) ![GitHub contributors](https://img.shields.io/github/contributors/ahochsteger/gmail-processor) ![GitHub closed issues](https://img.shields.io/github/issues-closed/ahochsteger/gmail-processor) ![GitHub issues](https://img.shields.io/github/issues/ahochsteger/gmail-processor) ![GitHub closed pull requests](https://img.shields.io/github/issues-pr-closed/ahochsteger/gmail-processor) ![GitHub pull requests](https://img.shields.io/github/issues-pr/ahochsteger/gmail-processor) ![GitHub repo size](https://img.shields.io/github/repo-size/ahochsteger/gmail-processor)
+![GitHub](https://img.shields.io/github/license/ahochsteger/gmail-processor) ![GitHub release (with filter)](https://img.shields.io/github/v/release/ahochsteger/gmail-processor) ![GitHub Workflow Status (with event)](https://img.shields.io/github/actions/workflow/status/ahochsteger/gmail-processor/ci.yaml) ![GitHub Repo stars](https://img.shields.io/github/stars/ahochsteger/gmail-processor) ![GitHub forks](https://img.shields.io/github/forks/ahochsteger/gmail-processor) ![GitHub commit activity (branch)](https://img.shields.io/github/commit-activity/t/ahochsteger/gmail-processor/v2) ![GitHub contributors](https://img.shields.io/github/contributors/ahochsteger/gmail-processor) ![GitHub closed issues](https://img.shields.io/github/issues-closed/ahochsteger/gmail-processor) ![GitHub issues](https://img.shields.io/github/issues/ahochsteger/gmail-processor) ![GitHub closed pull requests](https://img.shields.io/github/issues-pr-closed/ahochsteger/gmail-processor) ![GitHub pull requests](https://img.shields.io/github/issues-pr/ahochsteger/gmail-processor) ![GitHub repo size](https://img.shields.io/github/repo-size/ahochsteger/gmail-processor)
+
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+
 [![All Contributors](https://img.shields.io/badge/all_contributors-12-orange.svg?style=flat-square)](#contributors)
+
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 **[Gmail Processor](https://github.com/ahochsteger/gmail-processor)** is an open-source project that automates the processing of Gmail messages and attachments using [Google Apps Script](https://www.google.com/script/start/) and execute actions (e.g. store attachments in a GDrive folder, log information in a spreadsheet) depending on matching criteria.
@@ -20,24 +22,25 @@ Gmail Processor is the successor of [Gmail2GDrive](https://github.com/ahochstege
 
 ## Getting Started
 
-There are two ways to use GmailProcessor in your Google Apps Script project:
+There are different ways to get started with GmailProcessor in your Google Apps Script project:
 
-1. **Referencing** the provided library (recommended): Use this, if you just want to use it, get easy upgrades and don't want to fiddle with the library code at all.
-2. **Copying** the library code (advanced): Use this if you want full control over what's being executed or if you want to use your own modified library versions.
+1. [**Use** a library reference (recommended)](#use-a-library-reference-recommended): Use this, if you just want to use the library, get easy updates and don't want to fiddle with the library code at all.
+2. [**Copy** the library code (advanced)](#copy-the-library-code-advanced): Use this if you want full control over what's being executed or if you want to use your own modified library versions.
+3. [**Migrate** from GMail2GDrive](#migrate-from-gmail2gdrive): Use this, if you've used GMail2GDrive before and want to migrate to Gmail Processor.
 
-### Getting Started: Referencing the Provided Library
+### Use a Library Reference (recommended)
 
-To use the Gmail Processor library directly within Google Apps Script, you can choose from three available channels - depending on your needs: `stable`, `testing`, and `dev`.
+To use the Gmail Processor library directly within Google Apps Script, you can choose from three available release channels with the associated script IDs - depending on your needs:
 
 Follow these steps:
 
 1. Open [Google Apps Script](https://script.google.com/home?hl=en).
 2. Create an empty project and give it a name (e.g. `MyGmailProcessor`) or select an existing one.
-3. Add the library in the Libraries section using the ＋ icon and insert the Script ID `1yhOQyl_xWtnGJn_bzlL7oA4d_q5KoMyZyWIqXDJX1SY7bi22_lpjMiQK` (stable release channel).
-   - Alternatively you can use `TODO` for the testing release channel or `TODO` for development release channel.
-   - Version: Last development snapshot or a certain stable version
-4. Press "Look up" and select the desired release number or "HEAD (Development Mode)" if you always want to used the latest version of the release channel.
-5. Set the identifier to: `GmailProcessor` (any name will do, but we will use that name as a reference later in all examples and documentation)
+3. Add the library in the Libraries section using the ＋ icon and insert one of these Script IDs:
+   - **Stable** (recommended): `1Qvk0v7ggfW-TJ84dlYPlDzJG8y-Dif-j9kdA1aWv4wzxE_IOkeV2juLB`
+   - **Beta** (for pre-release tests): `1yhOQyl_xWtnGJn_bzlL7oA4d_q5KoMyZyWIqXDJX1SY7bi22_lpjMiQK`
+4. Press "Look up" and select the desired release number as **version** or "HEAD (Development Mode)" if you always want to use the latest version of the desired release channel.
+5. Set the **identifier** to `GmailProcessor` (any name will do, but we will use this identifier as a reference in all examples and documentation)
 6. Replace the contents of the initially created file `Code.gs` with the example from [gettingStarted.js](src/gas/examples/gettingStarted.js) and save the changes.
 7. Perform initial start of the function `run` to grant the permissions (see below for an explanation why these are required):
    1. Select the account you want to grant access for
@@ -62,7 +65,7 @@ Adjust the configuration (see section [Configuration Reference](#configuration-r
 If you're satisfied with the results change the run mode from `dry-run` to `safe-mode` to actually do the processing and execute the `run` function again.
 For automatic triggering you can create a time-based trigger that runs at certain intervalls (e.g. once per day or every hour).
 
-### Getting Started: Copying the Library Code
+### Copy the Library Code (advanced)
 
 To use a copy of the library code in your project simply replace steps 3-5 from above with the following steps and use `Lib.run` instead of `GmailProcessor.Lib.run`:
 
@@ -92,17 +95,19 @@ To enable full processing of the emails the following [OAuth Scopes for Google A
 - `https://www.googleapis.com/auth/spreadsheets`: Access Google Spreadsheets API to store logs of processed emails
 - `https://www.googleapis.com/auth/userinfo.email`: Get the user's email address to be used in the configuration
 
-### Getting Started: Migrating from GMail2GDrive v1
+### Migrate from GMail2GDrive
+
+Make sure, you've done the initial steps above (e.g. [use a library reference](#use-a-library-reference-recommended)) before migrating the old configuration to the new format.
 
 If you have been using the predecsssor GMail2GDrive before and want to migrate to GmailProcessor there's a convenient way to convert the old configuration to the new format by executing the function `convertConfig` in Google Apps Script and passing in the old config like this:
 
 ```javascript
 var oldConfig = {
-  // The old Gmail2GDrive v1 config comes here ...
+  // The old Gmail2GDrive config comes here ...
 }
 
 function convertConfig() {
-  const config = GmailProcessor.Lib.convertV1ConfigToV2Config(oldConfig)
+  const config = GmailProcessor.Lib.convertV1Config(oldConfig)
   console.log(JSON.stringify(config, null, 2))
 }
 ```
@@ -115,13 +120,13 @@ If you want to manually convert your configuration have a look at [V1ToV2Convert
 
 The following documentation is available:
 
-- [Config Schema Documentation](docs/config-schema-v2.md): documents the schema of the configuration format
+- [Config Documentation](docs/api/classes/Config.html): documents the schema of the configuration format
 - [Reference Documentation](docs/reference-docs.md): documents the actions, used enum types and substitution placeholder that can be used in strings to be replaced with dynamic values (e.g. for folder paths or filenames).
   - See [all available actions](docs/reference-docs.md#actions) like `attachment.store` to store an attachment at a certain Google Drive location.
   - See [all available enum values](docs/reference-docs.md#enum-types) like `ConflictStrategy` to specify how to deal with existing files at a Google Drive location.
   - See [all available substitution placeholder](docs/reference-docs.md#substitution-placeholder) like `${message.date:format:yyyy-MM-dd}` to use the message date as the folder name of the Google Drive location.
 
-Have a look at the [examples](https://github.com/ahochsteger/gmail-processor/tree/main/src/gas/examples) to see different usage scenarios.
+Have a look at the [examples](src/gas/examples) to see different usage scenarios.
 
 ## Contributing
 

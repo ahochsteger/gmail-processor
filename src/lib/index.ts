@@ -5,6 +5,7 @@ import {
   MetaInfoType as MIT,
   MetaInfo,
   ProcessingResult,
+  ProcessingStatus,
   RunMode,
   newMetaInfo as mi,
 } from "./Context"
@@ -13,11 +14,51 @@ import {
   DriveUtils,
   FileContent,
 } from "./adapter/GDriveAdapter"
+import {
+  ActionConfig,
+  AttachmentActionConfig,
+  MessageActionConfig,
+  ProcessingStage,
+  ThreadActionConfig,
+} from "./config/ActionConfig"
+import { AttachmentConfig } from "./config/AttachmentConfig"
+import { AttachmentMatchConfig } from "./config/AttachmentMatchConfig"
 import { Config, RequiredConfig, configToJson } from "./config/Config"
+import { GlobalConfig, VariableEntry } from "./config/GlobalConfig"
+import { MessageConfig } from "./config/MessageConfig"
+import { MessageFlag } from "./config/MessageFlag"
+import { MessageMatchConfig } from "./config/MessageMatchConfig"
+import { MarkProcessedMethod, SettingsConfig } from "./config/SettingsConfig"
+import { ThreadConfig } from "./config/ThreadConfig"
+import { ThreadMatchConfig } from "./config/ThreadMatchConfig"
 import { V1Config, newV1Config } from "./config/v1/V1Config"
 import { V1ToV2Converter } from "./config/v1/V1ToV2Converter"
 import { GmailProcessor } from "./processors/GmailProcessor"
 import { Logger } from "./utils/Logger"
+
+export {
+  ActionConfig,
+  AttachmentActionConfig,
+  AttachmentConfig,
+  AttachmentMatchConfig,
+  Config,
+  FileConfig,
+  GlobalConfig,
+  MarkProcessedMethod,
+  MessageActionConfig,
+  MessageConfig,
+  MessageFlag,
+  MessageMatchConfig,
+  ProcessingResult,
+  ProcessingStage,
+  ProcessingStatus,
+  RunMode,
+  SettingsConfig,
+  ThreadActionConfig,
+  ThreadConfig,
+  ThreadMatchConfig,
+  VariableEntry,
+}
 
 const gmailProcessor = new GmailProcessor()
 
@@ -137,7 +178,7 @@ export function getEffectiveConfigV1(
  * @param v1configJson JSON representation of the v1 configuration without defaults
  * @returns Converted JSON representation of the configuration, omitting default values
  */
-export function convertV1ConfigToV2Config(
+export function convertV1Config(
   v1configJson: PartialDeep<V1Config>,
 ): PartialDeep<Config> {
   return V1ToV2Converter.v1ConfigToV2ConfigJson(v1configJson)

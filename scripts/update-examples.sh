@@ -57,7 +57,7 @@ function ${cfgMap[fnName]}Run() {
 }
 
 function ${cfgMap[fnName]}ConvertConfig() {
-  const config = GmailProcessor.Lib.convertV1ConfigToV2Config(${cfgMap[cfgName]})
+  const config = GmailProcessor.Lib.convertV1Config(${cfgMap[cfgName]})
   console.log(JSON.stringify(config, null, 2))
 }
 EOF
@@ -87,7 +87,7 @@ function generateTestExample() {
   case "${cfgMap[version]}" in
     1)
   cat <<EOF
-import { convertV1ConfigToV2Config } from "../../lib"
+import { convertV1Config } from "../../lib"
 import { V1Config } from "../../lib/config/v1/V1Config"
 import { PartialDeep } from "type-fest"
 import { RunMode } from "../../lib/Context"
@@ -113,7 +113,7 @@ it("should process a v${cfgMap[version]} config example", () => {
 })
 
 it("should convert a v1 config example", () => {
-  const config = convertV1ConfigToV2Config(${cfgMap[cfgName]})
+  const config = convertV1Config(${cfgMap[cfgName]})
   console.log(JSON.stringify(config, null, 2))
 })
 EOF

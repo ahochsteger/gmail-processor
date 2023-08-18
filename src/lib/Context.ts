@@ -18,13 +18,13 @@ export type Thread = GoogleAppsScript.Gmail.GmailThread
 
 /** The runtime mode in which processing takes place. */
 export enum RunMode {
-  /** Don't execute writing actions */
+  /** This run-mode skips execution of writing actions. Use this for testing config changes or library upgrades. */
   DRY_RUN = "dry-run",
-  /** Don't execute deleting actions */
+  /** This run-mode can be used for normal uperation but will skip possibly destructive actions like overwriting files or removing threads or messages. */
   SAFE_MODE = "safe-mode",
   /**
-   * Execute all actions including deletes.
-   * ATTENTION: I know exactly what I'm doing when using this mode and won't complain if something goes wrong!
+   * This run-mode will execute all configured actions including possibly destructive actions like overwriting files or removing threads or messages.
+   * ATTENTION: Use this only if you know exactly what you're doing and won't complain if something goes wrong!
    */
   DANGEROUS = "dangerous",
 }
@@ -48,7 +48,7 @@ type MetaInfoValueType =
       obj: Message | Attachment,
       cfg: MessageMatchConfig | AttachmentMatchConfig,
     ) => unknown)
-type MetaInfoEntry = {
+export type MetaInfoEntry = {
   description: string
   type: MetaInfoType
   value: MetaInfoValueType

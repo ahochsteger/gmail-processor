@@ -1,10 +1,5 @@
 import { PartialDeep } from "type-fest"
-import {
-  convertV1ConfigToV2Config,
-  getEffectiveConfigV1,
-  run,
-  runWithV1Config,
-} from "."
+import { convertV1Config, getEffectiveConfigV1, run, runWithV1Config } from "."
 import { ConfigMocks } from "../test/mocks/ConfigMocks"
 import { ContextMocks } from "../test/mocks/ContextMocks"
 import { MockFactory, Mocks } from "../test/mocks/MockFactory"
@@ -214,7 +209,7 @@ describe("v1 config compatibility", () => {
   }
   it("should convert a v1 config JSON to v2 config", () => {
     const v1config = ConfigMocks.newDefaultV1ConfigJson()
-    const actual = convertV1ConfigToV2Config(v1config)
+    const actual = convertV1Config(v1config)
     expect(actual).toMatchObject(expectedConfig)
   })
   it("should get effective v2 config from v1 config", () => {
@@ -382,7 +377,7 @@ describe("v1 config compatibility", () => {
         },
       ],
     }
-    const essentialConfig = convertV1ConfigToV2Config(exampleMinConfigV1)
+    const essentialConfig = convertV1Config(exampleMinConfigV1)
     console.log(JSON.stringify(essentialConfig, null, 2))
   })
 })

@@ -25,7 +25,6 @@ function exampleMinRun() {
 }
 
 function exampleMinConvertConfig() {
-  const config =
-    GmailProcessor.Lib.convertV1ConfigToV2Config(exampleMinConfigV1)
+  const config = GmailProcessor.Lib.convertV1Config(exampleMinConfigV1)
   console.log(JSON.stringify(config, null, 2))
 }

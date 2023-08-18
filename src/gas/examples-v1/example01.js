@@ -52,6 +52,6 @@ function example01Run() {
 }
 
 function example01ConvertConfig() {
-  const config = GmailProcessor.Lib.convertV1ConfigToV2Config(example01ConfigV1)
+  const config = GmailProcessor.Lib.convertV1Config(example01ConfigV1)
   console.log(JSON.stringify(config, null, 2))
 }

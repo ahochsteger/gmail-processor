@@ -27,7 +27,7 @@ export const DEFAULT_GLOBAL_QUERY = `${DEFAULT_GLOBAL_QUERY_PREFIX} newer_than:$
 /**
  * A variable entry available for string substitution (using `${variables.<varName>}`)
  */
-class VariableEntry {
+export class VariableEntry {
   constructor(public key: string, public value: string) {}
 }
 

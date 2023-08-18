@@ -1,4 +1,4 @@
-import { convertV1ConfigToV2Config } from "../../lib"
+import { convertV1Config } from "../../lib"
 import { V1Config } from "../../lib/config/v1/V1Config"
 import { PartialDeep } from "type-fest"
 import { RunMode } from "../../lib/Context"
@@ -44,6 +44,6 @@ it("should process a v1 config example", () => {
 })
 
 it("should convert a v1 config example", () => {
-  const config = convertV1ConfigToV2Config(exampleMinConfigV1)
+  const config = convertV1Config(exampleMinConfigV1)
   console.log(JSON.stringify(config, null, 2))
 })
