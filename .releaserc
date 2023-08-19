@@ -13,7 +13,7 @@
     "@semantic-release/changelog",
     ["@semantic-release/npm", { "npmPublish": false }],
     ["@semantic-release/github", {
-      "assets": "build/gas/lib/Lib.js",
+      "assets": "build/gas/lib/GmailProcessorLib.js",
       "successComment": false
      }],
      "@semantic-release/git"

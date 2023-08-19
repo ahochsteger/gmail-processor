@@ -23,7 +23,7 @@ import {
 } from "./config/ActionConfig"
 import { AttachmentConfig } from "./config/AttachmentConfig"
 import { AttachmentMatchConfig } from "./config/AttachmentMatchConfig"
-import { Config, RequiredConfig, configToJson } from "./config/Config"
+import { Config } from "./config/Config"
 import { GlobalConfig, VariableEntry } from "./config/GlobalConfig"
 import { MessageConfig } from "./config/MessageConfig"
 import { MessageFlag } from "./config/MessageFlag"
@@ -31,11 +31,12 @@ import { MessageMatchConfig } from "./config/MessageMatchConfig"
 import { MarkProcessedMethod, SettingsConfig } from "./config/SettingsConfig"
 import { ThreadConfig } from "./config/ThreadConfig"
 import { ThreadMatchConfig } from "./config/ThreadMatchConfig"
-import { V1Config, newV1Config } from "./config/v1/V1Config"
+import { V1Config } from "./config/v1/V1Config"
 import { V1ToV2Converter } from "./config/v1/V1ToV2Converter"
 import { GmailProcessor } from "./processors/GmailProcessor"
 import { Logger } from "./utils/Logger"
 
+// NOTE: These exports are required for typedoc to generate documentation.
 export {
   ActionConfig,
   AttachmentActionConfig,
@@ -60,7 +61,7 @@ export {
   VariableEntry,
 }
 
-const gmailProcessor = new GmailProcessor()
+export const gmailProcessor = new GmailProcessor()
 
 export function buildMetaInfo(ctx: EnvContext) {
   const m: MetaInfo = {
@@ -117,60 +118,6 @@ export function run(
   ctx: EnvContext = defaultContext(runMode as RunMode),
 ): ProcessingResult {
   return gmailProcessor.runWithJson(configJson, ctx)
-}
-
-/**
- * @param v1configJson GMail2GDrive v1 configuration JSON
- * @param runMode The runtime mode controls the behavior of actions
- */
-export function runWithV1Config(
-  v1configJson: PartialDeep<V1Config>,
-  runMode: string = RunMode.SAFE_MODE,
-  ctx: EnvContext = defaultContext(runMode as RunMode),
-): ProcessingResult {
-  ctx.log.info("Processing v1 legacy config: ", v1configJson)
-  ctx.env.runMode = runMode as RunMode
-  const v1config = newV1Config(v1configJson)
-  const config = V1ToV2Converter.v1ConfigToV2Config(v1config)
-  ctx.log.warn(
-    "Using deprecated v1 config format - switching to the new v2 config format is strongly recommended:\n",
-    configToJson(config),
-  )
-  return gmailProcessor.run(config, ctx)
-}
-
-/**
- * Add defaults to a JSON configuration
- * @param configJson JSON representation of the configuration without defaults
- * @returns JSON representation of the configuration with defaults added
- */
-export function getEffectiveConfig(
-  configJson: PartialDeep<Config>,
-): RequiredConfig {
-  return gmailProcessor.getEffectiveConfig(configJson)
-}
-
-/**
- * Removes defaults from a JSON configuration
- * @param configJson JSON representation of the configuration possibly including defaults
- * @returns JSON representation of the configuration with defaults removed
- */
-export function getEssentialConfig(
-  configJson: PartialDeep<Config>,
-): PartialDeep<Config> {
-  return gmailProcessor.getEssentialConfig(configJson)
-}
-
-/**
- * Add defaults to a JSON v1 configuration
- * @param v1configJson JSON representation of the v1 configuration without defaults
- * @returns JSON representation of the configuration with defaults added
- */
-export function getEffectiveConfigV1(
-  v1configJson: PartialDeep<V1Config>,
-): RequiredConfig {
-  const v1config = newV1Config(v1configJson)
-  return V1ToV2Converter.v1ConfigToV2Config(v1config)
 }
 
 /**
@@ -255,7 +202,7 @@ function initMails(config: E2EConfig) {
   })
 }
 
-export function initDrive(config: E2EConfig) {
+function initDrive(config: E2EConfig) {
   config.files
     .filter((file) => file.destFolder !== undefined)
     .forEach((file) => {

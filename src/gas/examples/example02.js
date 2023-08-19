@@ -55,12 +55,6 @@ const example02ConfigV2 = {
   ],
 }
 
-function example02EffectiveConfig() {
-  const effectiveConfig =
-    GmailProcessor.Lib.getEffectiveConfig(example02ConfigV2)
-  console.log(JSON.stringify(effectiveConfig, null, 2))
-}
-
 function example02Run() {
-  GmailProcessor.Lib.run(example02ConfigV2, "dry-run")
+  GmailProcessorLib.run(example02ConfigV2, "dry-run")
 }

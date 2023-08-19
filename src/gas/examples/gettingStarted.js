@@ -33,13 +33,6 @@ const gettingStartedConfigV2 = {
   ],
 }
 
-function gettingStartedEffectiveConfig() {
-  const effectiveConfig = GmailProcessor.Lib.getEffectiveConfig(
-    gettingStartedConfigV2,
-  )
-  console.log(JSON.stringify(effectiveConfig, null, 2))
-}
-
 function gettingStartedRun() {
-  GmailProcessor.Lib.run(gettingStartedConfigV2, "dry-run")
+  GmailProcessorLib.run(gettingStartedConfigV2, "dry-run")
 }

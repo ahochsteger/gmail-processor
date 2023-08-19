@@ -1,10 +1,6 @@
 import { convertV1Config } from "../../lib"
 import { V1Config } from "../../lib/config/v1/V1Config"
 import { PartialDeep } from "type-fest"
-import { RunMode } from "../../lib/Context"
-import { ProcessingConfig } from "../../lib/config/Config"
-import { GmailProcessor } from "../mocks/Examples"
-import { MockFactory, Mocks } from "../mocks/MockFactory"
 
 const example01ConfigV1: PartialDeep<V1Config> = {
   globalFilter: "has:attachment -in:trash -in:drafts -in:spam",
@@ -46,29 +42,6 @@ const example01ConfigV1: PartialDeep<V1Config> = {
     },
   ],
 }
-
-let mocks: Mocks
-beforeEach(() => {
-  mocks = MockFactory.newMocks(
-    GmailProcessor.Lib.getEffectiveConfigV1(example01ConfigV1),
-    RunMode.DANGEROUS,
-  )
-})
-
-it("should provide the effective config of v1 example example01", () => {
-  const effectiveConfig =
-    GmailProcessor.Lib.getEffectiveConfigV1(example01ConfigV1)
-  expect(effectiveConfig).toBeInstanceOf(ProcessingConfig)
-})
-
-it("should process a v1 config example", () => {
-  const result = GmailProcessor.Lib.runWithV1Config(
-    example01ConfigV1,
-    "dry-run",
-    mocks.envContext,
-  )
-  expect(result.status).toEqual("ok")
-})
 
 it("should convert a v1 config example", () => {
   const config = convertV1Config(example01ConfigV1)

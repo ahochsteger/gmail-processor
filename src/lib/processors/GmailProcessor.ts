@@ -115,15 +115,17 @@ export class GmailProcessor {
     configJson: PartialDeep<Config>,
     ctx: EnvContext,
   ): ProcessingResult {
-    const config = this.getEffectiveConfig(configJson)
+    const config = GmailProcessor.getEffectiveConfig(configJson)
     return this.run(config, ctx)
   }
 
-  public getEffectiveConfig(configJson: PartialDeep<Config>): RequiredConfig {
+  public static getEffectiveConfig(
+    configJson: PartialDeep<Config>,
+  ): RequiredConfig {
     return newConfig(configJson)
   }
 
-  public getEssentialConfig(
+  public static getEssentialConfig(
     configJson: PartialDeep<Config>,
   ): PartialDeep<Config> {
     return essentialConfig(configJson)

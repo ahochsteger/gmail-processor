@@ -1,17 +1,22 @@
 /* eslint-disable no-undef, @typescript-eslint/no-var-requires */
 const GasPlugin = require("gas-webpack-plugin")
-
 module.exports = {
-  mode: "development",
-  entry: "./build/lib",
+  mode: "production",
+  context: __dirname,
+  entry: "./build/lib/index.js",
   output: {
     path: __dirname,
-    filename: "build/gas/lib/Lib.js",
+    filename: "./build/gas/lib/GmailProcessorLib.js",
     library: {
-      name: "Lib",
+      name: "GmailProcessor",
       type: "var",
     },
   },
-  plugins: [new GasPlugin()],
+  plugins: [
+    new GasPlugin({
+      autoGlobalExportsFiles: ["./build/lib/index.js"],
+      comment: true,
+    }),
+  ],
   devtool: false,
 }

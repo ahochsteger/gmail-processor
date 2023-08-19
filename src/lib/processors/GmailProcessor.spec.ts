@@ -69,7 +69,7 @@ describe("getEffectiveConfig", () => {
         timezone: "Europe/Vienna",
       },
     }
-    const actual = gmailProcessor.getEffectiveConfig(simpleConfig)
+    const actual = GmailProcessor.getEffectiveConfig(simpleConfig)
     expect(actual).toMatchObject(expected)
   })
 })

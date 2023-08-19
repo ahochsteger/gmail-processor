@@ -47,17 +47,8 @@ function generateGasExample() {
 
 const ${cfgMap[cfgName]} = $(cat "${cfgMap[cfgFile]}")
 
-function ${cfgMap[fnName]}EffectiveConfig() {
-  const effectiveConfig = GmailProcessor.Lib.${cfgMap[getCfgFn]}(${cfgMap[cfgName]})
-  console.log(JSON.stringify(effectiveConfig, null, 2))
-}
-
-function ${cfgMap[fnName]}Run() {
-  GmailProcessor.Lib.${cfgMap[runFn]}(${cfgMap[cfgName]}, "dry-run")
-}
-
 function ${cfgMap[fnName]}ConvertConfig() {
-  const config = GmailProcessor.Lib.convertV1Config(${cfgMap[cfgName]})
+  const config = GmailProcessorLib.convertV1Config(${cfgMap[cfgName]})
   console.log(JSON.stringify(config, null, 2))
 }
 EOF
@@ -68,13 +59,8 @@ EOF
 
 const ${cfgMap[cfgName]} = $(cat "${cfgMap[cfgFile]}")
 
-function ${cfgMap[fnName]}EffectiveConfig() {
-  const effectiveConfig = GmailProcessor.Lib.${cfgMap[getCfgFn]}(${cfgMap[cfgName]})
-  console.log(JSON.stringify(effectiveConfig, null, 2))
-}
-
 function ${cfgMap[fnName]}Run() {
-  GmailProcessor.Lib.${cfgMap[runFn]}(${cfgMap[cfgName]}, "dry-run")
+  GmailProcessorLib.${cfgMap[runFn]}(${cfgMap[cfgName]}, "dry-run")
 }
 EOF
     ;;
@@ -90,27 +76,8 @@ function generateTestExample() {
 import { convertV1Config } from "../../lib"
 import { V1Config } from "../../lib/config/v1/V1Config"
 import { PartialDeep } from "type-fest"
-import { RunMode } from "../../lib/Context"
-import { ProcessingConfig } from "../../lib/config/Config"
-import { GmailProcessor } from "../mocks/Examples"
-import { MockFactory, Mocks } from "../mocks/MockFactory"
 
 const ${cfgMap[cfgName]}: PartialDeep<${cfgMap[cfgType]}> = $(cat "${cfgMap[cfgFile]}")
-
-let mocks: Mocks
-beforeEach(() => {
-  mocks = MockFactory.newMocks(GmailProcessor.Lib.${cfgMap[getCfgFn]}(${cfgMap[cfgName]}), RunMode.DANGEROUS)
-})
-
-it("should provide the effective config of v${cfgMap[version]} example ${cfgMap[fnName]}", () => {
-  const effectiveConfig = GmailProcessor.Lib.${cfgMap[getCfgFn]}(${cfgMap[cfgName]})
-    expect(effectiveConfig).toBeInstanceOf(ProcessingConfig)
-})
-
-it("should process a v${cfgMap[version]} config example", () => {
-  const result = GmailProcessor.Lib.${cfgMap[runFn]}(${cfgMap[cfgName]}, "dry-run", mocks.envContext)
-  expect(result.status).toEqual("ok")
-})
 
 it("should convert a v1 config example", () => {
   const config = convertV1Config(${cfgMap[cfgName]})
@@ -122,24 +89,19 @@ EOF
   cat <<EOF
 import { PartialDeep } from "type-fest"
 import { RunMode } from "../../lib/Context"
-import { Config, ProcessingConfig } from "../../lib/config/Config"
-import { GmailProcessor } from "../mocks/Examples"
+import { Config } from "../../lib/config/Config"
+import { GmailProcessorLib } from "../mocks/Examples"
 import { MockFactory, Mocks } from "../mocks/MockFactory"
 
 const ${cfgMap[cfgName]}: PartialDeep<${cfgMap[cfgType]}> = $(cat "${cfgMap[cfgFile]}")
 
 let mocks: Mocks
 beforeEach(() => {
-  mocks = MockFactory.newMocks(GmailProcessor.Lib.${cfgMap[getCfgFn]}(${cfgMap[cfgName]}), RunMode.DANGEROUS)
-})
-
-it("should provide the effective config of v${cfgMap[version]} example ${cfgMap[fnName]}", () => {
-  const effectiveConfig = GmailProcessor.Lib.${cfgMap[getCfgFn]}(${cfgMap[cfgName]})
-    expect(effectiveConfig).toBeInstanceOf(ProcessingConfig)
+  mocks = MockFactory.newMocks(${cfgMap[cfgName]}, RunMode.DANGEROUS)
 })
 
 it("should process a v${cfgMap[version]} config example", () => {
-  const result = GmailProcessor.Lib.${cfgMap[runFn]}(${cfgMap[cfgName]}, "dry-run", mocks.envContext)
+  const result = GmailProcessorLib.${cfgMap[runFn]}(${cfgMap[cfgName]}, "dry-run", mocks.envContext)
   expect(result.status).toEqual("ok")
 })
 EOF

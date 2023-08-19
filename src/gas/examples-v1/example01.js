@@ -41,17 +41,7 @@ const example01ConfigV1 = {
   ],
 }
 
-function example01EffectiveConfig() {
-  const effectiveConfig =
-    GmailProcessor.Lib.getEffectiveConfigV1(example01ConfigV1)
-  console.log(JSON.stringify(effectiveConfig, null, 2))
-}
-
-function example01Run() {
-  GmailProcessor.Lib.runWithV1Config(example01ConfigV1, "dry-run")
-}
-
 function example01ConvertConfig() {
-  const config = GmailProcessor.Lib.convertV1Config(example01ConfigV1)
+  const config = GmailProcessorLib.convertV1Config(example01ConfigV1)
   console.log(JSON.stringify(config, null, 2))
 }

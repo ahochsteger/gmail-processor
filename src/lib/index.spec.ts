@@ -1,7 +1,6 @@
 import { PartialDeep } from "type-fest"
-import { convertV1Config, getEffectiveConfigV1, run, runWithV1Config } from "."
+import { convertV1Config, run } from "."
 import { ConfigMocks } from "../test/mocks/ConfigMocks"
-import { ContextMocks } from "../test/mocks/ContextMocks"
 import { MockFactory, Mocks } from "../test/mocks/MockFactory"
 import { RunMode } from "./Context"
 import { Config, newConfig } from "./config/Config"
@@ -17,18 +16,6 @@ beforeEach(() => {
 describe("run", () => {
   it("test", () => {
     const result = run(configJson, RunMode.DANGEROUS, mocks.envContext)
-    expect(result.status).toEqual("ok")
-  })
-})
-
-describe("runWithV1ConfigJson", () => {
-  it("should process a v1 config JSON", () => {
-    const v1config = ConfigMocks.newDefaultV1ConfigJson()
-    const result = runWithV1Config(
-      v1config,
-      RunMode.DANGEROUS,
-      ContextMocks.newEnvContextMock(),
-    )
     expect(result.status).toEqual("ok")
   })
 })
@@ -210,11 +197,6 @@ describe("v1 config compatibility", () => {
   it("should convert a v1 config JSON to v2 config", () => {
     const v1config = ConfigMocks.newDefaultV1ConfigJson()
     const actual = convertV1Config(v1config)
-    expect(actual).toMatchObject(expectedConfig)
-  })
-  it("should get effective v2 config from v1 config", () => {
-    const v1config = ConfigMocks.newDefaultV1ConfigJson()
-    const actual = getEffectiveConfigV1(v1config)
     expect(actual).toMatchObject(expectedConfig)
   })
   // it("should get essential v2 config from v1 config", () => {
