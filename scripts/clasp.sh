@@ -85,7 +85,6 @@ setupConfig
 CLASP_PROFILE="${1:?Missing profile name!}"
 cmd="${2:?}"
 shift 2
-exit 0
 
 cd "${CLASP_BASEDIR}/${CLASP_PROFILE}"
 case "${cmd}" in
