@@ -60,6 +60,8 @@
   "license": "Apache-2.0",
   "devDependencies": {
     "@google/clasp": "^2.4.2",
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/git": "^10.0.1",
     "@types/google-apps-script": "^1.0.64",
     "@types/jest": "^29.5.2",
     "@types/node": "^18.16.18",
