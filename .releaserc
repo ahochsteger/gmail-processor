@@ -10,13 +10,23 @@
   "plugins": [
     "@semantic-release/commit-analyzer",
     "@semantic-release/release-notes-generator",
-    "@semantic-release/changelog",
+    ["@semantic-release/changelog", { "changelogTitle":"Changelog" }],
     ["@semantic-release/npm", { "npmPublish": false }],
     ["@semantic-release/github", {
       "assets": "build/gas/lib/GmailProcessorLib.js",
       "successComment": false
      }],
-     "@semantic-release/git"
+     [
+      "@qiwi/semantic-release-gh-pages-plugin", {
+        "branches": [
+          ["main", "gh-pages"],
+          ["beta", "gh-pages-beta"]
+        ],
+        "msg": "docs: update <%= nextRelease.gitTag %>",
+        "src": "build/docs"
+      }
+    ],
+    "@semantic-release/git"
   ],
   "tagFormat": "${version}"
 }

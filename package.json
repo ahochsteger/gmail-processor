@@ -60,6 +60,7 @@
   "license": "Apache-2.0",
   "devDependencies": {
     "@google/clasp": "^2.4.2",
+    "@qiwi/semantic-release-gh-pages-plugin": "^5.2.8",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
     "@types/google-apps-script": "^1.0.64",

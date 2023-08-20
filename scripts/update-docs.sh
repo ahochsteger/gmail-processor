@@ -118,6 +118,5 @@ extractAllPlaceholder >"${placeholderDataFile}"
 npx typedoc \
   --basePath src \
   --cleanOutputDir \
-  --plugin typedoc-plugin-markdown \
-  --out docs/api \
+  --out build/docs \
   src/lib/index.ts
