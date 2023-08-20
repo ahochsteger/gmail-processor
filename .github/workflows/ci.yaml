@@ -49,7 +49,7 @@ jobs:
         name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npx run release:perform
+        run: npm run release:perform
       - id: push
         name: Push
         run: npm run push
