@@ -1,3 +1,13 @@
+# Changelog
+
+# [2.0.0-beta.4](https://github.com/ahochsteger/gmail-processor/compare/2.0.0-beta.3...2.0.0-beta.4) (2023-08-20)
+
+
+### Bug Fixes
+
+* ci workflow + release config ([49ae903](https://github.com/ahochsteger/gmail-processor/commit/49ae903807efa979468c43f86f5402fbaa0c279c))
+* release command in workflow ([203a66c](https://github.com/ahochsteger/gmail-processor/commit/203a66cbb18bf98d12409af16011b1c29c8c73f0))
+
 Changelog
 
 # [2.0.0-beta.3](https://github.com/ahochsteger/gmail-processor/compare/2.0.0-beta.2...2.0.0-beta.3) (2023-08-20)
