@@ -6,7 +6,7 @@
       {
         "userSymbol": "GmailProcessor",
         "version": "0",
-        "libraryId": "1yhOQyl_xWtnGJn_bzlL7oA4d_q5KoMyZyWIqXDJX1SY7bi22_lpjMiQK",
+        "libraryId": "${CLASP_LIB_SCRIPT_ID}",
         "developmentMode": true
       }
     ]

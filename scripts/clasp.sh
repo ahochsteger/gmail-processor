@@ -37,6 +37,7 @@ function setupConfig() {
     CFG_TYPE="BETA"
   fi
 
+  # TODO: Use github enviroments instead: https://github.com/ahochsteger/gmail-processor/settings/environments
   CLASP_SCRIPT_ID[lib]=$(eval "echo \${CLASP_LIB_SCRIPT_ID_${CFG_TYPE}:?}")
   CLASP_SCRIPT_ID[examples]=$(eval "echo \${CLASP_EXAMPLES_SCRIPT_ID_${CFG_TYPE}:?}")
   CLASP_DEPLOYMENT_ID[lib]=$(eval "echo \${CLASP_LIB_DEPLOYMENT_ID_${CFG_TYPE}:?}")
@@ -76,8 +77,10 @@ END
 function runClasp() {
   getClaspAuthFile >.clasprc.json
   getClaspProjectFile >.clasp.json
+  # Insert script ID of the lib:
+  sed -ri "s/\\\$\{CLASP_LIB_SCRIPT_ID\}/${CLASP_SCRIPT_ID[lib]}/g" appsscript.json
   npx clasp --auth .clasprc.json --project .clasp.json "${@}"
-  #npx clasp --auth <(getClaspAuthFile) --project <(getClaspProjectFile) "${@}"
+  rm -f .clasprc.json .clasp.json
 }
 
 setupConfig

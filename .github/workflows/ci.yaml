@@ -5,23 +5,22 @@ on:
     branches:
       - beta
       - main
-  release:
   workflow_dispatch:
 
 env:
   CLASP_ACCESS_TOKEN: ${{secrets.CLASP_ACCESS_TOKEN}}
   CLASP_CLIENT_ID: ${{secrets.CLASP_CLIENT_ID}}
   CLASP_CLIENT_SECRET: ${{secrets.CLASP_CLIENT_SECRET}}
-  CLASP_EXAMPLES_DEPLOYMENT_ID_DEV: ${{secrets.CLASP_EXAMPLES_DEPLOYMENT_ID_DEV}}
-  CLASP_EXAMPLES_DEPLOYMENT_ID_STABLE: ${{secrets.CLASP_EXAMPLES_DEPLOYMENT_ID_STABLE}}
-  CLASP_EXAMPLES_DEPLOYMENT_ID_TESTING: ${{secrets.CLASP_EXAMPLES_DEPLOYMENT_ID_TESTING}}
+  CLASP_EXAMPLES_DEPLOYMENT_ID_BETA: ${{secrets.CLASP_EXAMPLES_DEPLOYMENT_ID_BETA}}
+  CLASP_EXAMPLES_DEPLOYMENT_ID_MAIN: ${{secrets.CLASP_EXAMPLES_DEPLOYMENT_ID_MAIN}}
+  CLASP_EXAMPLES_SCRIPT_ID_BETA: ${{secrets.CLASP_EXAMPLES_SCRIPT_ID_BETA}}
+  CLASP_EXAMPLES_SCRIPT_ID_MAIN: ${{secrets.CLASP_EXAMPLES_SCRIPT_ID_MAIN}}
   CLASP_ID_TOKEN: ${{secrets.CLASP_ID_TOKEN}}
-  CLASP_LIB_DEPLOYMENT_ID_DEV: ${{secrets.CLASP_LIB_DEPLOYMENT_ID_DEV}}
-  CLASP_LIB_DEPLOYMENT_ID_STABLE: ${{secrets.CLASP_LIB_DEPLOYMENT_ID_STABLE}}
-  CLASP_LIB_DEPLOYMENT_ID_TESTING: ${{secrets.CLASP_LIB_DEPLOYMENT_ID_TESTING}}
+  CLASP_LIB_DEPLOYMENT_ID_BETA: ${{secrets.CLASP_LIB_DEPLOYMENT_ID_BETA}}
+  CLASP_LIB_DEPLOYMENT_ID_MAIN: ${{secrets.CLASP_LIB_DEPLOYMENT_ID_MAIN}}
+  CLASP_LIB_SCRIPT_ID_BETA: ${{secrets.CLASP_LIB_SCRIPT_ID_BETA}}
+  CLASP_LIB_SCRIPT_ID_MAIN: ${{secrets.CLASP_LIB_SCRIPT_ID_MAIN}}
   CLASP_REFRESH_TOKEN: ${{secrets.CLASP_REFRESH_TOKEN}}
-  CLASP_EXAMPLES_SCRIPT_ID: ${{secrets.CLASP_EXAMPLES_SCRIPT_ID}}
-  CLASP_LIB_SCRIPT_ID: ${{secrets.CLASP_LIB_SCRIPT_ID}}
   GCLOUD_PROJECT_ID: ${{secrets.GCLOUD_PROJECT_ID}}
   GCLOUD_PROJECT_NR: ${{secrets.GCLOUD_PROJECT_NR}}
 
@@ -33,6 +32,8 @@ jobs:
       - id: checkout
         name: Checkout
         uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
       - id: nodejs
         name: Use Node.js
         uses: actions/setup-node@v3
@@ -44,15 +45,14 @@ jobs:
       - id: coverage
         name: Coverage Report
         uses: ArtiomTr/jest-coverage-report-action@v2
-      - name: Release
-        if: ${{ github.ref == 'refs/heads/beta' }}
+      - id: release
+        name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npx semantic-release
+        run: npx run release:perform
       - id: push
-        if: github.ref == 'refs/heads/main'
         name: Push
         run: npm run push
-      # - name: Deploy
-      #   if: ${{ github.ref == 'refs/heads/beta' }}
-      #   run: npm run deploy
+      - id: deploy
+        name: Deploy
+        run: npm run deploy

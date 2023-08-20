@@ -16,7 +16,7 @@
     "deploy:examples": "scripts/clasp.sh examples deploy",
     "deploy:lib": "scripts/clasp.sh lib deploy",
     "github:secrets:list": "gh secret list",
-    "github:secrets:update": "gh secret set -f .env",
+    "github:secrets:update": "grep -E -v '^(#.*|GITHUB_.*)$' <.env | gh secret set -f -",
     "github:test:push": "act push",
     "lint": "concurrently 'npm:lint:*(!lint:fix)'",
     "lint:code": "eslint .",
