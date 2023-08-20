@@ -4,6 +4,7 @@
   "description": "Gmail Processor is an open-source project that automates the processing of Gmail messages and attachments using Google Apps Script and execute actions (e.g. store attachments in a GDrive folder, log information in a spreadsheet) depending on matching criteria.",
   "scripts": {
     "build": "concurrently 'npm:build:*'",
+    "build:docs": "npx typedoc --basePath src --cleanOutputDir --out build/docs src/lib/index.ts",
     "build:examples": "scripts/build-gas.sh examples",
     "build:lib": "scripts/build-gas.sh lib",
     "ci": "npm run ci:build",

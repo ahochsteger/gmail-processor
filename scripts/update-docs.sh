@@ -114,9 +114,3 @@ extractAllPlaceholder >"${placeholderDataFile}"
 } >"${outfile}"
 #npx prettier -w "${outfile}"
 
-# Update API docs:
-npx typedoc \
-  --basePath src \
-  --cleanOutputDir \
-  --out build/docs \
-  src/lib/index.ts
