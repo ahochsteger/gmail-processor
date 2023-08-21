@@ -1,7 +1,18 @@
 # 📧 Gmail Processor 🚀 - Automate Email Processing with Ease
 
-![GitHub](https://img.shields.io/github/license/ahochsteger/gmail-processor) ![GitHub release (with filter)](https://img.shields.io/github/v/release/ahochsteger/gmail-processor) ![GitHub Workflow Status (with event)](https://img.shields.io/github/actions/workflow/status/ahochsteger/gmail-processor/ci.yaml) ![GitHub Repo stars](https://img.shields.io/github/stars/ahochsteger/gmail-processor) ![GitHub forks](https://img.shields.io/github/forks/ahochsteger/gmail-processor) ![GitHub commit activity (branch)](https://img.shields.io/github/commit-activity/t/ahochsteger/gmail-processor/v2) ![GitHub contributors](https://img.shields.io/github/contributors/ahochsteger/gmail-processor) ![GitHub closed issues](https://img.shields.io/github/issues-closed/ahochsteger/gmail-processor) ![GitHub issues](https://img.shields.io/github/issues/ahochsteger/gmail-processor) ![GitHub closed pull requests](https://img.shields.io/github/issues-pr-closed/ahochsteger/gmail-processor) ![GitHub pull requests](https://img.shields.io/github/issues-pr/ahochsteger/gmail-processor) ![GitHub repo size](https://img.shields.io/github/repo-size/ahochsteger/gmail-processor)
-
+[![GitHub](https://img.shields.io/github/license/ahochsteger/gmail-processor)](#license)
+[![GitHub release (with filter)](https://img.shields.io/github/v/release/ahochsteger/gmail-processor)](https://github.com/ahochsteger/gmail-processor/releases)
+[![GitHub tag (with filter)](https://img.shields.io/github/v/tag/ahochsteger/gmail-processor)](https://github.com/ahochsteger/gmail-processor/tags)
+[![GitHub Workflow Status (with event)](https://img.shields.io/github/actions/workflow/status/ahochsteger/gmail-processor/ci.yaml)](https://github.com/ahochsteger/gmail-processor/actions/workflows/ci.yaml)
+[![GitHub Repo stars](https://img.shields.io/github/stars/ahochsteger/gmail-processor)](https://github.com/ahochsteger/gmail-processor/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/ahochsteger/gmail-processor)](https://github.com/ahochsteger/gmail-processor/forks?include=active&page=1&period=2y&sort_by=last_updated)
+[![GitHub commit activity (branch)](https://img.shields.io/github/commit-activity/t/ahochsteger/gmail-processor)](https://github.com/ahochsteger/gmail-processor/commits)
+[![GitHub contributors](https://img.shields.io/github/contributors/ahochsteger/gmail-processor)](https://github.com/ahochsteger/gmail-processor/graphs/contributors)
+[![GitHub issues](https://img.shields.io/github/issues/ahochsteger/gmail-processor)](https://github.com/ahochsteger/gmail-processor/issues)
+[![GitHub closed issues](https://img.shields.io/github/issues-closed/ahochsteger/gmail-processor)](https://github.com/ahochsteger/gmail-processor/issues?q=is%3Aissue+is%3Aclosed)
+[![GitHub pull requests](https://img.shields.io/github/issues-pr/ahochsteger/gmail-processor)](https://github.com/ahochsteger/gmail-processor/pulls)
+[![GitHub closed pull requests](https://img.shields.io/github/issues-pr-closed/ahochsteger/gmail-processor)](https://github.com/ahochsteger/gmail-processor/pulls?q=is%3Apr+is%3Aclosed)
+![GitHub repo size](https://img.shields.io/github/repo-size/ahochsteger/gmail-processor)
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 
 [![All Contributors](https://img.shields.io/badge/all_contributors-12-orange.svg?style=flat-square)](#contributors)
@@ -10,7 +21,7 @@
 
 **[Gmail Processor](https://github.com/ahochsteger/gmail-processor)** is an open-source project that automates the processing of Gmail messages and attachments using [Google Apps Script](https://www.google.com/script/start/) and execute actions (e.g. store attachments in a GDrive folder, log information in a spreadsheet) depending on matching criteria.
 
-Gmail Processor is the successor of [Gmail2GDrive](https://github.com/ahochsteger/gmail-processor/tree/1.x) with vastly enhanced functionality, completely re-written in [TypeScript](https://www.typescriptlang.org/) with extensibility and stability in mind, using a modern development setup and automation all over the place (dependency updates, tests, documentation, releases, deployments). There's a convenient migration available to convert your old configuration to the new format (see [Getting Started: Migrating from GMail2GDrive v1](#getting-started-migrating-from-gmail2gdrive-v1)).
+Gmail Processor is the successor of [Gmail2GDrive](https://github.com/ahochsteger/gmail-processor/tree/1.x) with vastly enhanced functionality, completely re-written in [TypeScript](https://www.typescriptlang.org/) with extensibility and stability in mind, using a modern development setup and automation all over the place (dependency updates, tests, documentation, releases, deployments). There's a convenient migration available to convert your old configuration to the new format (see [Getting Started: Migrating from GMail2GDrive v1](#migrate-from-gmail2gdrive)).
 
 ## Key Features
 
@@ -109,7 +120,7 @@ If you want to manually convert your configuration have a look at [V1ToV2Convert
 
 The following documentation is available:
 
-- [Config Documentation](docs/api/classes/Config.html): documents the schema of the configuration format
+- [Config Documentation](https://ahochsteger.github.io/gmail-processor/classes/Config.html): documents the schema of the configuration format
 - [Reference Documentation](docs/reference-docs.md): documents the actions, used enum types and substitution placeholder that can be used in strings to be replaced with dynamic values (e.g. for folder paths or filenames).
   - See [all available actions](docs/reference-docs.md#actions) like `attachment.store` to store an attachment at a certain Google Drive location.
   - See [all available enum values](docs/reference-docs.md#enum-types) like `ConflictStrategy` to specify how to deal with existing files at a Google Drive location.
