@@ -7,27 +7,23 @@ on:
       - main
   workflow_dispatch:
 
-env:
-  CLASP_ACCESS_TOKEN: ${{secrets.CLASP_ACCESS_TOKEN}}
-  CLASP_CLIENT_ID: ${{secrets.CLASP_CLIENT_ID}}
-  CLASP_CLIENT_SECRET: ${{secrets.CLASP_CLIENT_SECRET}}
-  CLASP_EXAMPLES_DEPLOYMENT_ID_BETA: ${{secrets.CLASP_EXAMPLES_DEPLOYMENT_ID_BETA}}
-  CLASP_EXAMPLES_DEPLOYMENT_ID_MAIN: ${{secrets.CLASP_EXAMPLES_DEPLOYMENT_ID_MAIN}}
-  CLASP_EXAMPLES_SCRIPT_ID_BETA: ${{secrets.CLASP_EXAMPLES_SCRIPT_ID_BETA}}
-  CLASP_EXAMPLES_SCRIPT_ID_MAIN: ${{secrets.CLASP_EXAMPLES_SCRIPT_ID_MAIN}}
-  CLASP_ID_TOKEN: ${{secrets.CLASP_ID_TOKEN}}
-  CLASP_LIB_DEPLOYMENT_ID_BETA: ${{secrets.CLASP_LIB_DEPLOYMENT_ID_BETA}}
-  CLASP_LIB_DEPLOYMENT_ID_MAIN: ${{secrets.CLASP_LIB_DEPLOYMENT_ID_MAIN}}
-  CLASP_LIB_SCRIPT_ID_BETA: ${{secrets.CLASP_LIB_SCRIPT_ID_BETA}}
-  CLASP_LIB_SCRIPT_ID_MAIN: ${{secrets.CLASP_LIB_SCRIPT_ID_MAIN}}
-  CLASP_REFRESH_TOKEN: ${{secrets.CLASP_REFRESH_TOKEN}}
-  GCLOUD_PROJECT_ID: ${{secrets.GCLOUD_PROJECT_ID}}
-  GCLOUD_PROJECT_NR: ${{secrets.GCLOUD_PROJECT_NR}}
-
 jobs:
   build:
     runs-on: ubuntu-latest
-    environment: dev
+    environment:
+      name: ${{ github.ref_name }}
+    env:
+      CLASP_ACCESS_TOKEN: ${{secrets.CLASP_ACCESS_TOKEN}}
+      CLASP_CLIENT_ID: ${{secrets.CLASP_CLIENT_ID}}
+      CLASP_CLIENT_SECRET: ${{secrets.CLASP_CLIENT_SECRET}}
+      CLASP_EXAMPLES_DEPLOYMENT_ID: ${{secrets.CLASP_EXAMPLES_DEPLOYMENT_ID}}
+      CLASP_EXAMPLES_SCRIPT_ID: ${{secrets.CLASP_EXAMPLES_SCRIPT_ID}}
+      CLASP_ID_TOKEN: ${{secrets.CLASP_ID_TOKEN}}
+      CLASP_LIB_DEPLOYMENT_ID: ${{secrets.CLASP_LIB_DEPLOYMENT_ID}}
+      CLASP_LIB_SCRIPT_ID: ${{secrets.CLASP_LIB_SCRIPT_ID}}
+      CLASP_REFRESH_TOKEN: ${{secrets.CLASP_REFRESH_TOKEN}}
+      GCLOUD_PROJECT_ID: ${{secrets.GCLOUD_PROJECT_ID}}
+      GCLOUD_PROJECT_NR: ${{secrets.GCLOUD_PROJECT_NR}}
     steps:
       - id: checkout
         name: Checkout
@@ -39,6 +35,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18.x
+          cache: "npm"
       - id: build
         name: Build
         run: npm run ci

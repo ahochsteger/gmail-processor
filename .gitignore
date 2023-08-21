@@ -7,4 +7,5 @@ dist-examples/
 node_modules/
 .clasp.json
 .env
+*.env
 !.vscode/settings.json

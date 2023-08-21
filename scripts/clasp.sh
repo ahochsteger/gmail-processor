@@ -22,26 +22,20 @@ declare -A -g CLASP_DEPLOYMENT_ID
 # global CLASP_DEPLOYMENT_ID
 
 function setupConfig() {
-  local CFG_TYPE
   if [[ "${REF_NAME}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then # Regular Release
-    CFG_TYPE="MAIN"
     CLASP_DEPLOYMENT_NAME="Release ${REF_NAME}"
   elif [[ "${REF_NAME}" =~ ^[0-9]+\.[0-9]+\.[0-9]+-(alpha|beta|rc)\.[0-9]+$ ]]; then # Pre-Release
-    CFG_TYPE="BETA"
     CLASP_DEPLOYMENT_NAME="Pre-Release ${REF_NAME}"
   elif [[ "${REF_NAME}" == "main" ]]; then # Main Branch
-    CFG_TYPE="MAIN"
     CLASP_DEPLOYMENT_NAME="Branch ${REF_NAME}"
   else # Other Branch/Tag
     CLASP_DEPLOYMENT_NAME="${REF_TYPE^} ${REF_NAME}"
-    CFG_TYPE="BETA"
   fi
 
-  # TODO: Use github enviroments instead: https://github.com/ahochsteger/gmail-processor/settings/environments
-  CLASP_SCRIPT_ID[lib]=$(eval "echo \${CLASP_LIB_SCRIPT_ID_${CFG_TYPE}:?}")
-  CLASP_SCRIPT_ID[examples]=$(eval "echo \${CLASP_EXAMPLES_SCRIPT_ID_${CFG_TYPE}:?}")
-  CLASP_DEPLOYMENT_ID[lib]=$(eval "echo \${CLASP_LIB_DEPLOYMENT_ID_${CFG_TYPE}:?}")
-  CLASP_DEPLOYMENT_ID[examples]=$(eval "echo \${CLASP_EXAMPLES_DEPLOYMENT_ID_${CFG_TYPE}:?}")
+  CLASP_SCRIPT_ID[lib]=$(eval "echo \${CLASP_LIB_SCRIPT_ID:?}")
+  CLASP_SCRIPT_ID[examples]=$(eval "echo \${CLASP_EXAMPLES_SCRIPT_ID:?}")
+  CLASP_DEPLOYMENT_ID[lib]=$(eval "echo \${CLASP_LIB_DEPLOYMENT_ID:?}")
+  CLASP_DEPLOYMENT_ID[examples]=$(eval "echo \${CLASP_EXAMPLES_DEPLOYMENT_ID:?}")
 }
 
 function getClaspAuthFile() 
