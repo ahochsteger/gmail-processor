@@ -8,17 +8,15 @@ import { GmailProcessor } from "./GmailProcessor"
 
 let config: RequiredConfig
 let mocks: Mocks
-let gmailProcessor: GmailProcessor
 
 beforeEach(() => {
   mocks = MockFactory.newMocks()
   config = mocks.processingContext.proc.config
-  gmailProcessor = new GmailProcessor()
 })
 
 describe("run", () => {
   it("should process a v2 config object", () => {
-    gmailProcessor.run(config, mocks.envContext)
+    GmailProcessor.run(config, mocks.envContext)
     expect(mocks.envContext.env.gmailApp.search).toHaveBeenCalledTimes(
       config.threads.length,
     )

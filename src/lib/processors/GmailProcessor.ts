@@ -89,7 +89,7 @@ export class GmailProcessor {
     return actionRegistry
   }
 
-  public run(config: RequiredConfig, ctx: EnvContext) {
+  public static run(config: RequiredConfig, ctx: EnvContext) {
     ctx.log.info("Processing of GmailProcessor config started ...")
 
     const actionRegistry = GmailProcessor.setupActionRegistry(ctx)
@@ -111,7 +111,7 @@ export class GmailProcessor {
     return result
   }
 
-  public runWithJson(
+  public static runWithJson(
     configJson: PartialDeep<Config>,
     ctx: EnvContext,
   ): ProcessingResult {

@@ -61,8 +61,6 @@ export {
   VariableEntry,
 }
 
-export const gmailProcessor = new GmailProcessor()
-
 export function buildMetaInfo(ctx: EnvContext) {
   const m: MetaInfo = {
     "date.now": mi(MIT.DATE, () => new Date(), "The current timestamp."),
@@ -117,7 +115,7 @@ export function run(
   runMode: string = RunMode.SAFE_MODE,
   ctx: EnvContext = defaultContext(runMode as RunMode),
 ): ProcessingResult {
-  return gmailProcessor.runWithJson(configJson, ctx)
+  return GmailProcessor.runWithJson(configJson, ctx)
 }
 
 /**

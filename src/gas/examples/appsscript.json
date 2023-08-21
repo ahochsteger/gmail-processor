@@ -4,13 +4,18 @@
   "dependencies": {
     "libraries": [
       {
-        "userSymbol": "GmailProcessor",
+        "userSymbol": "GmailProcessorLib",
         "version": "0",
         "libraryId": "${CLASP_LIB_SCRIPT_ID}",
         "developmentMode": true
       }
     ]
   },
-  "oauthScopes": [],
+  "oauthScopes": [
+    "https://mail.google.com/",
+    "https://www.googleapis.com/auth/drive",
+    "https://www.googleapis.com/auth/spreadsheets",
+    "https://www.googleapis.com/auth/userinfo.email"
+  ],
   "timeZone": "Etc/UTC"
 }
