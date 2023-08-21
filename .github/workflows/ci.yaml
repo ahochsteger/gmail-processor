@@ -51,5 +51,6 @@ jobs:
         name: Push
         run: npm run push
       - id: deploy
+        if: ${{ github.ref_type == 'tag' }}
         name: Deploy
         run: npm run deploy
