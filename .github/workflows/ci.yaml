@@ -46,6 +46,9 @@ jobs:
       - id: coverage
         name: Coverage Comment
         uses: MishaKav/jest-coverage-comment@main
+      - id: coveralls
+        name: Coveralls
+        uses: coverallsapp/github-action@v2
       - id: push-lib
         name: Push Lib
         run: npm run push
