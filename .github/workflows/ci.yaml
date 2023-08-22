@@ -42,7 +42,10 @@ jobs:
           cache: "npm"
       - id: build
         name: Build
-        run: npm run ci
+        run: npm run ci:build
+      - id: test
+        name: Test
+        run: npm run ci:test
       - id: coverage
         name: Coverage Comment
         uses: MishaKav/jest-coverage-comment@main
