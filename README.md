@@ -13,6 +13,7 @@
 [![GitHub pull requests](https://img.shields.io/github/issues-pr/ahochsteger/gmail-processor)](https://github.com/ahochsteger/gmail-processor/pulls)
 [![GitHub closed pull requests](https://img.shields.io/github/issues-pr-closed/ahochsteger/gmail-processor)](https://github.com/ahochsteger/gmail-processor/pulls?q=is%3Apr+is%3Aclosed)
 ![GitHub repo size](https://img.shields.io/github/repo-size/ahochsteger/gmail-processor)
+
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 
 [![All Contributors](https://img.shields.io/badge/all_contributors-12-orange.svg?style=flat-square)](#contributors)
@@ -48,15 +49,17 @@ Follow these steps:
 1. Open [Google Apps Script](https://script.google.com/home?hl=en).
 2. Create an empty project and give it a name (e.g. `MyGmailProcessor`) or select an existing one.
 3. Add the library in the Libraries section using the ＋ icon and insert one of these Script IDs:
-   - **Stable** (recommended): `1Qvk0v7ggfW-TJ84dlYPlDzJG8y-Dif-j9kdA1aWv4wzxE_IOkeV2juLB`
-   - **Beta** (for pre-release tests): `1yhOQyl_xWtnGJn_bzlL7oA4d_q5KoMyZyWIqXDJX1SY7bi22_lpjMiQK`
+   - **Stable** (recommended):
+     `1Qvk0v7ggfW-TJ84dlYPlDzJG8y-Dif-j9kdA1aWv4wzxE_IOkeV2juLB`
+   - **Beta** (for pre-release tests):
+     `1yhOQyl_xWtnGJn_bzlL7oA4d_q5KoMyZyWIqXDJX1SY7bi22_lpjMiQK`
 4. Press "Look up" and select the desired release number as **version** or "HEAD (Development Mode)" if you always want to use the latest version of the desired release channel.
-5. Set the **identifier** to `GmailProcessor` (any name will do, but we will use this identifier as a reference in all examples and documentation)
+5. Set the **identifier** to `GmailProcessorLib` (any name will do, but we will use this identifier as a reference in all examples and documentation)
 6. Replace the contents of the initially created file `Code.gs` with the example from [gettingStarted.js](src/gas/examples/gettingStarted.js) and save the changes.
 7. Perform initial start of the function `run` to grant the permissions (see below for an explanation why these are required):
    1. Select the account you want to grant access for
-   2. When the message "Google did not verify the app" click on "Advanced" and proceed to run your script
-   3. Grant access to GMail and Google Drive
+   2. When the message "Google did not verify the app" click on "Advanced" and "Go to ..." to proceed
+   3. Grant access to GMail, Google Drive and Google Sheets by clicking "Allow"
 
 Now you can start using the Gmail Processor Library in your script file (e.g. `Code.gs`) of your Google Apps Script project as follows:
 
@@ -74,14 +77,14 @@ function run() {
 Adjust the configuration (see section [Configuration Reference](#configuration-reference)) to your needs. It's always recommended to test config changes using a _dry-run_ by passing `dry-run` as the 2nd parameter to the `run` function. That doesn't touch anything (neither in GMail nor GDrive) but produces a log that shows what would have been done. This way any change in your configuration or an upgrade to a newer version of the library can be tested without any risk of data-loss.
 
 If you're satisfied with the results change the run mode from `dry-run` to `safe-mode` to actually do the processing and execute the `run` function again.
-For automatic triggering you can create a time-based trigger that runs at certain intervalls (e.g. once per day or every hour).
+For automatic triggering you can create a time-based trigger that runs at certain intervals (e.g. once per day or every hour).
 
 ### Copy the Library Code (advanced)
 
 To use a copy of the library code in your project simply replace steps 3-5 from above with the following steps:
 
 1. Create a new file using the + icon at "Files" and selecting "Script"
-2. Give it a name (e.g. `GmailProcessor` resulting in the file `GmailProcessorLib.gs` to be created)
+2. Give it a name (e.g. `GmailProcessorLib` resulting in the file `GmailProcessorLib.gs` to be created)
 3. Replace the contents of the file with the library code of the release asset [`GmailProcessorLib.js`](https://github.com/ahochsteger/gmail-processor/releases/latest/download/GmailProcessorLib.js) from the latest release or your own built version from [`build/gas/lib/GmailProcessorLib.js`](build/gas/lib/GmailProcessorLib.js).
 
 Follow the remaining steps from step 6 onwards from above.
@@ -99,7 +102,7 @@ To enable full processing of the emails the following [OAuth Scopes for Google A
 
 Make sure, you've done the initial steps above (e.g. [use a library reference](#use-a-library-reference-recommended)) before migrating the old configuration to the new format.
 
-If you have been using the predecsssor GMail2GDrive before and want to migrate to GmailProcessor there's a convenient way to convert the old configuration to the new format by executing the function `convertConfig` in Google Apps Script and passing in the old config like this:
+If you have been using the predecessor GMail2GDrive before and want to migrate to GmailProcessor there's a convenient way to convert the old configuration to the new format by executing the function `convertConfig` in Google Apps Script and passing in the old config like this:
 
 ```javascript
 var oldConfig = {
@@ -156,7 +159,7 @@ The recommended IDE for this project is [Visual Studio Code](https://code.visual
 Please add/update the tests for any change to keep the codebase in a well-tested state. For every source file `*.ts` the corresponding test file is named `*.spec.ts` and they are implemented using [Jest](https://jestjs.io/) as the testing framework.
 Remote services are mocked (see [MockFactory.ts](src/test/mocks/MockFactory.ts)) to simplify local testing in isolation.
 
-After the changes and tests are done run the `pre-commit` script that validates the changes and updates all generated artifacts (like doumentation, examples, JSON schema files, ...) and include all updated files in your commit.
+After the changes and tests are done run the `pre-commit` script that validates the changes and updates all generated artifacts (like documentation, examples, JSON schema files, ...) and include all updated files in your commit.
 
 ### Development Resources
 
