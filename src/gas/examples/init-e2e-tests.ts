@@ -2,7 +2,7 @@ declare namespace GmailProcessorLib {
   type E2EConfig = any
 }
 
-declare var GmailProcessorLib: {
+declare const GmailProcessorLib: {
   E2EInit(config: any)
 }
 

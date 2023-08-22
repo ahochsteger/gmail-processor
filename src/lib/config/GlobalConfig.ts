@@ -76,15 +76,9 @@ export function newGlobalConfig(
 export function normalizeGlobalConfig(
   config: PartialDeep<GlobalConfig>,
 ): PartialDeep<GlobalConfig> {
-  config.thread = normalizeThreadConfig(
-    (config.thread ?? {}) as PartialDeep<ThreadConfig>,
-  )
-  config.message = normalizeMessageConfig(
-    (config.message ?? {}) as PartialDeep<MessageConfig>,
-  )
-  config.attachment = normalizeAttachmentConfig(
-    (config.attachment ?? {}) as PartialDeep<AttachmentConfig>,
-  )
+  config.thread = normalizeThreadConfig(config.thread ?? {})
+  config.message = normalizeMessageConfig(config.message ?? {})
+  config.attachment = normalizeAttachmentConfig(config.attachment ?? {})
   return config
 }
 
