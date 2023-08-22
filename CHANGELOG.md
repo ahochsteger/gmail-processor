@@ -1,5 +1,15 @@
 # Changelog
 
+# [2.0.0-beta.5](https://github.com/ahochsteger/gmail-processor/compare/2.0.0-beta.4...2.0.0-beta.5) (2023-08-22)
+
+
+### Bug Fixes
+
+* cleanup files after clasp run ([d70cb44](https://github.com/ahochsteger/gmail-processor/commit/d70cb44787dd9f4446e0b2a5230a8de2d0516f88))
+* eliminate defaults from converted config ([1fd9d7f](https://github.com/ahochsteger/gmail-processor/commit/1fd9d7f545c712a81c2b8bd5a2cfcbe3509dd1ef))
+* folder conversion without single quotes ([96a6b47](https://github.com/ahochsteger/gmail-processor/commit/96a6b476c3c67b53ec9154bbafe11919eabb4eb0))
+* regression error + example scopes ([73e87de](https://github.com/ahochsteger/gmail-processor/commit/73e87dee872bbc19dac62052fab0ab26f6a9ccb1))
+
 # [2.0.0-beta.4](https://github.com/ahochsteger/gmail-processor/compare/2.0.0-beta.3...2.0.0-beta.4) (2023-08-20)
 
 
