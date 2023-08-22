@@ -74,6 +74,9 @@ function runClasp() {
   # Insert script ID of the lib:
   sed -ri "s/\\\$\{CLASP_LIB_SCRIPT_ID\}/${CLASP_SCRIPT_ID[lib]}/g" appsscript.json
   npx clasp --auth .clasprc.json --project .clasp.json "${@}"
+}
+
+function cleanup() {
   rm -f .clasprc.json .clasp.json
 }
 
@@ -87,6 +90,10 @@ cd "${CLASP_BASEDIR}/${CLASP_PROFILE}"
 case "${cmd}" in
   clasp) # Run generic clasp command
     runClasp "${@}"
+    cleanup
+  ;;
+  cleanup)
+    cleanup
   ;;
   logs)
     functionName="${1:?}"
@@ -97,10 +104,12 @@ case "${cmd}" in
       -f scripts/clasp-logs.jq \
       --arg functionName "${functionName}" \
       --argjson logTimeSeconds "${logTimeSeconds}"
+    cleanup
   ;;
   run)
     functionName="${1:?}"
     runClasp run "${functionName}"
+    cleanup
   ;;
   run-with-logs)
     functionName="${1:?}"
@@ -108,12 +117,15 @@ case "${cmd}" in
     runClasp run "${functionName}"
     sleep "${CLASP_LOG_WAIT_SECONDS}"
     runClasp logs "${functionName}" "${logTimeSeconds}"
+    cleanup
   ;;
   push)
     runClasp push --force
+    cleanup
   ;;
   deploy)
     runClasp deploy -i "${CLASP_DEPLOYMENT_ID[${CLASP_PROFILE}]}" -d "${CLASP_DEPLOYMENT_NAME}"
+    cleanup
   ;;
   *)
     echo "Unknown command: ${cmd}"
