@@ -1,5 +1,12 @@
 # Changelog
 
+# [2.0.0-beta.7](https://github.com/ahochsteger/gmail-processor/compare/2.0.0-beta.6...2.0.0-beta.7) (2023-08-22)
+
+
+### Bug Fixes
+
+* releases ci steps ([095e5a3](https://github.com/ahochsteger/gmail-processor/commit/095e5a366c1dd3e76c965870da431b43462175ad))
+
 # [2.0.0-beta.6](https://github.com/ahochsteger/gmail-processor/compare/2.0.0-beta.5...2.0.0-beta.6) (2023-08-22)
 
 
