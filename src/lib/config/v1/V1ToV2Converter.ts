@@ -32,21 +32,27 @@ export class V1ToV2Converter {
     const matches = convertedFormat.match(unsupportedFormatStrings)
     if (matches) {
       throw new Error(
-        "Conversion of date format not possible - unsupported date format: " +
-          matches[0],
+        `Conversion of date format not possible - unsupported date format '${matches[0]}' in format string '${format}'!`,
       )
     }
     return convertedFormat
   }
 
-  public static convertFromV1Pattern(
-    s: string,
-    dateKey: string,
-    isPath: boolean,
-  ) {
-    const containsSingleQuotedStringRegex = /'([^'\n]+)'/g
+  public static sanitizeLocation(location: string, isPath: boolean): string {
+    // Normalize path to form `/path1/path2`
+    if (isPath && location !== "" && !location.startsWith("/")) {
+      location = `/${location}`
+    }
+    if (isPath && location.endsWith("/")) {
+      location = location.slice(0, -1)
+    }
+    return location
+  }
+
+  public static convertFromV1Pattern(s: string, dateKey: string) {
+    const containsSingleQuotedStringRegex = /^'([^'\n]+)'$/g
     const legacyDateFormatRegex = /('([^']+)')?([^']+)('([^']+)')?/g
-    if (s.replace(containsSingleQuotedStringRegex, "") !== "") {
+    if (!s.match(containsSingleQuotedStringRegex)) {
       // Support original date format
       s = s.replace(
         legacyDateFormatRegex,
@@ -71,13 +77,6 @@ export class V1ToV2Converter {
       .replace(/#FILE#/g, "${attachment.name}") // Alternative syntax (from PR #22)
       .replace(/%d/g, "${threadConfig.index}") // Original subject syntax
 
-    // Normalize path to form `/path1/path2`
-    if (isPath && s !== "" && !s.startsWith("/")) {
-      s = `/${s}`
-    }
-    if (isPath && s.endsWith("/")) {
-      s = s.slice(0, -1)
-    }
     return s
   }
 
@@ -86,19 +85,22 @@ export class V1ToV2Converter {
     if (rule.filenameFromRegexp) {
       filename = "${attachment.name.match.1}"
     } else if (rule.filenameTo) {
-      filename = this.convertFromV1Pattern(
-        rule.filenameTo,
-        "message.date",
+      filename = this.sanitizeLocation(
+        this.convertFromV1Pattern(rule.filenameTo, "message.date"),
         false,
       )
     } else {
       filename = defaultFilename
     }
     let folder = ""
+    folder +=
+      rule.folder.indexOf("'") >= 0
+        ? this.convertFromV1Pattern(rule.folder, "message.date")
+        : rule.folder
+    folder = this.sanitizeLocation(folder, true)
     if (rule.parentFolderId) {
-      folder = `\${id:${rule.parentFolderId}}`
+      folder = `\${id:${rule.parentFolderId}}${folder}`
     }
-    folder += this.convertFromV1Pattern(rule.folder, "message.date", true)
     return `${folder}/${filename}`
   }
 

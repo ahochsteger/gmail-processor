@@ -87,7 +87,7 @@ it("should convert rule with filter and folder", () => {
     rules: [
       {
         filter: "from:example1@example.com",
-        folder: "'Examples/example1'",
+        folder: "Examples/example1",
       },
     ],
   }
@@ -131,7 +131,7 @@ it("should convert rule with filter, folder and filenameFromRegexp", () => {
     rules: [
       {
         filter: "from:example2@example.com",
-        folder: "'Examples/example2'",
+        folder: "Examples/example2",
         filenameFromRegexp: "(.*\\.pdf)$",
       },
     ],
@@ -167,7 +167,7 @@ it("should convert rule with filter, folder, filenameTo and archive", () => {
     rules: [
       {
         filter: "(from:example3a@example.com OR from:example3b@example.com)",
-        folder: "'Examples/example3ab'",
+        folder: "Examples/example3ab",
         filenameTo: "'file-'yyyy-MM-dd-'%s.txt'",
         archive: true,
       },
@@ -204,7 +204,7 @@ it("should convert rule with filter, folder and parentFolderId", () => {
         // Store all attachments from example1@example.com to the SHARED Drive folder "Shared Drives/Lambda/Examples/example1"
         parentFolderId: "FOLDER_ID_FOR_Examples_FOLDER", // This approach is with the ID of "Examples"
         filter: "from:example1@example.com",
-        folder: "'example1'", // Note: We omited the folder path "Examples" since it's the direct parent
+        folder: "example1", // Note: We omited the folder path "Examples" since it's the direct parent
       },
     ],
   }
@@ -233,7 +233,7 @@ it("should convert rule with filter, folder, filenameTo and archive", () => {
         // %o - The original filename of the attachement
         filter:
           "has:attachment (from:example3a@example.com OR from:example3b@example.com)",
-        folder: "'Examples/example3ab'",
+        folder: "Examples/example3ab",
         filenameTo: "'file-'yyyy-MM-dd-'%s.txt'",
         archive: true,
       },
@@ -261,7 +261,7 @@ it("should convert rule with filter, saveThreadPDF and folder", () => {
         // Store threads marked with label "PDF" in the folder "PDF Emails" as PDF document.
         filter: "label:PDF",
         saveThreadPDF: true,
-        folder: "'PDF Emails'",
+        folder: "PDF Emails",
       },
     ],
   }
@@ -291,7 +291,7 @@ it("should convert rule with filter, saveMessagePDF, skipPDFHeader and folder", 
         filter: "from:no_reply@email-invoice.example.com",
         saveMessagePDF: true,
         skipPDFHeader: true, // Skip Email Header
-        folder: "'PDF Emails'",
+        folder: "PDF Emails",
       },
     ],
   }
@@ -316,7 +316,7 @@ it("should convert rule with filter, saveMessagePDF, skipPDFHeader and folder", 
         filter: "from:no_reply@email-invoice.example.com",
         saveMessagePDF: true,
         skipPDFHeader: true, // Skip Email Header
-        folder: "'PDF Emails'",
+        folder: "PDF Emails",
       },
     ],
   }
@@ -383,7 +383,7 @@ it("should convert rule with filter, folder filenameFrom and filenameTo", () => 
         // %o - The original filename of the attachement
         // %d - A running counter from 1 for each match of this rule.
         filter: "has:attachment from:example4@example.com",
-        folder: "'Examples/example4'",
+        folder: "Examples/example4",
         filenameFrom: "file.txt",
         filenameTo: "'file-'yyyy-MM-dd-'%s.txt'",
       },
@@ -416,7 +416,7 @@ it("should convert rule with filter, folder filenameFrom and filenameTo", () => 
         // Store all of the emails with the text "receipt" from billing@zoom.us
         // into the folder "Examples/example5" and rename the filenames to be zoom-1.pdf, zoom-2.pdf...
         filter: "receipt from:billing@zoom.us",
-        folder: "'Examples/example5'",
+        folder: "Examples/example5",
         filenameFrom: "zoom.pdf",
         filenameTo: "'zoom-%d.pdf'",
       },
@@ -447,7 +447,7 @@ it("should convert rule with filter, saveThreadPDF, ruleLabel and folder", () =>
         filter: "label:PDF",
         saveThreadPDF: true,
         ruleLabel: "addPDFlabel",
-        folder: "'PDF Emails'",
+        folder: "PDF Emails",
       },
     ],
   }
@@ -491,17 +491,12 @@ describe("V1 Format Conversion", () => {
       V1ToV2Converter.convertFromV1Pattern(
         "'file-'yyyy-MM-dd-'%s.txt'",
         "message.date",
-        false,
       ),
     ).toBe("file-${message.date:format:yyyy-MM-dd-}${message.subject}.txt")
   })
   it("should support old filename pattern (type: 'string'format)", () => {
     expect(
-      V1ToV2Converter.convertFromV1Pattern(
-        "'file-'yyyy-MM-dd",
-        "message.date",
-        false,
-      ),
+      V1ToV2Converter.convertFromV1Pattern("'file-'yyyy-MM-dd", "message.date"),
     ).toBe("file-${message.date:format:yyyy-MM-dd}")
   })
   it("should support old filename pattern (type: format'string')", () => {
@@ -509,25 +504,26 @@ describe("V1 Format Conversion", () => {
       V1ToV2Converter.convertFromV1Pattern(
         "yyyy-MM-dd'-%s.txt'",
         "message.date",
-        false,
       ),
     ).toBe("${message.date:format:yyyy-MM-dd}-${message.subject}.txt")
   })
   it("should support old filename pattern (type: format)", () => {
     expect(
-      V1ToV2Converter.convertFromV1Pattern("yyyy-MM-dd", "message.date", false),
+      V1ToV2Converter.convertFromV1Pattern("yyyy-MM-dd", "message.date"),
     ).toBe("${message.date:format:yyyy-MM-dd}")
   })
   it("should support old filename pattern (type: 'string')", () => {
     expect(
-      V1ToV2Converter.convertFromV1Pattern("'%s.txt'", "message.date", false),
+      V1ToV2Converter.convertFromV1Pattern("'%s.txt'", "message.date"),
     ).toBe("${message.subject}.txt")
   })
   it("should support all old filename substitution parameters (type: '%s','%o','%filename','#SUBJECT#','#FILE#',yyyy-mm-dd)", () => {
     expect(
-      V1ToV2Converter.convertFromV1Pattern(
-        "'%s,%o,%filename,#SUBJECT#,#FILE#,'yyyy-MM-dd",
-        "message.date",
+      V1ToV2Converter.sanitizeLocation(
+        V1ToV2Converter.convertFromV1Pattern(
+          "'%s,%o,%filename,#SUBJECT#,#FILE#,'yyyy-MM-dd",
+          "message.date",
+        ),
         true,
       ),
     ).toBe(
