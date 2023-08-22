@@ -4,10 +4,8 @@ declare namespace GmailProcessor {
   }
 }
 
-declare var GmailProcessor: {
-  Lib: {
-    E2EInit(config: any)
-  }
+declare var GmailProcessorLib: {
+  E2EInit(config: any)
 }
 
 const e2eConfig: GmailProcessor.Lib.E2EConfig = {
@@ -57,5 +55,5 @@ const e2eConfig: GmailProcessor.Lib.E2EConfig = {
 }
 
 function e2eInit() {
-  GmailProcessor.Lib.E2EInit(e2eConfig)
+  GmailProcessorLib.E2EInit(e2eConfig)
 }
