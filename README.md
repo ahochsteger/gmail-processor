@@ -4,6 +4,7 @@
 [![GitHub release (with filter)](https://img.shields.io/github/v/release/ahochsteger/gmail-processor)](https://github.com/ahochsteger/gmail-processor/releases)
 [![GitHub tag (with filter)](https://img.shields.io/github/v/tag/ahochsteger/gmail-processor)](https://github.com/ahochsteger/gmail-processor/tags)
 [![GitHub Workflow Status (with event)](https://img.shields.io/github/actions/workflow/status/ahochsteger/gmail-processor/ci.yaml)](https://github.com/ahochsteger/gmail-processor/actions/workflows/ci.yaml)
+[![Coveralls branch](https://img.shields.io/coverallsCoverage/github/ahochsteger/gmail-processor)](https://coveralls.io/github/ahochsteger/gmail-processor)
 [![GitHub Repo stars](https://img.shields.io/github/stars/ahochsteger/gmail-processor)](https://github.com/ahochsteger/gmail-processor/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/ahochsteger/gmail-processor)](https://github.com/ahochsteger/gmail-processor/forks?include=active&page=1&period=2y&sort_by=last_updated)
 [![GitHub commit activity (branch)](https://img.shields.io/github/commit-activity/t/ahochsteger/gmail-processor)](https://github.com/ahochsteger/gmail-processor/commits)
