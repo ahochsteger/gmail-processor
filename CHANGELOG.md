@@ -1,5 +1,13 @@
 # Changelog
 
+# [2.0.0-beta.6](https://github.com/ahochsteger/gmail-processor/compare/2.0.0-beta.5...2.0.0-beta.6) (2023-08-22)
+
+
+### Bug Fixes
+
+* github pages deployment ([315c0ff](https://github.com/ahochsteger/gmail-processor/commit/315c0ff714333028e7139b08bc3a0377424a8746))
+* remove workflow permission declaration ([7e726ee](https://github.com/ahochsteger/gmail-processor/commit/7e726ee9c35c05102fb40c0d0a884cff4c99e29d))
+
 # [2.0.0-beta.5](https://github.com/ahochsteger/gmail-processor/compare/2.0.0-beta.4...2.0.0-beta.5) (2023-08-22)
 
 
