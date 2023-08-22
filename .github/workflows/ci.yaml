@@ -12,6 +12,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      releaseVersion: ${{ steps.release.outputs.releaseVersion }}
     environment:
       name: ${{ github.ref_name }}
     env:
@@ -44,28 +46,29 @@ jobs:
       - id: coverage
         name: Coverage Report
         uses: ArtiomTr/jest-coverage-report-action@v2
+      - id: push-lib
+        name: Push Lib
+        run: npm run push
       - id: release
         name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npm run release:perform
-      - id: push
-        name: Push
-        run: npm run push
-      - id: deploy
-        if: ${{ github.ref_type == 'tag' }}
-        name: Deploy
+        run: npm run release:perform && npm run release:releaseVersion | grep -E '^releaseVersion=' >> "$GITHUB_OUTPUT" || true
+      - id: deploy-lib
+        if: ${{ steps.release.outputs.releaseVersion }}
+        name: Deploy Lib
         run: npm run deploy
       - id: setup-pages
-        if: ${{ github.ref_type == 'tag' }}
+        if: ${{ steps.release.outputs.releaseVersion }}
         name: Setup Pages
         uses: actions/configure-pages@v3
-      - name: Upload Pages
-        if: ${{ github.ref_type == 'tag' }}
+      - id: upload-pages
+        if: ${{ steps.release.outputs.releaseVersion }}
+        name: Upload Pages
         uses: actions/upload-pages-artifact@v2
         with:
           path: "build/docs"
       - name: Deploy Pages
-        if: ${{ github.ref_type == 'tag' }}
+        if: ${{ steps.release.outputs.releaseVersion }}
         id: deploy-pages
         uses: actions/deploy-pages@v2

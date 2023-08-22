@@ -35,6 +35,7 @@
     "redeploy:lib": "npm run build:lib && npm run deploy:lib",
     "release:dry-run": "npx semantic-release --dry-run",
     "release:perform": "npx semantic-release",
+    "release:releaseVersion": "git tag --points-at | awk '/.+/ {print \"releaseVersion=\"$0}'",
     "repush": "concurrently 'npm:repush:*'",
     "repush:examples": "npm run update:examples && npm run build:examples && npm run push:examples",
     "repush:lib": "npm run build:lib && npm run push:lib",
