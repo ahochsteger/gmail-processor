@@ -126,7 +126,9 @@ export function run(
 export function convertV1Config(
   v1configJson: PartialDeep<V1Config>,
 ): PartialDeep<Config> {
-  return V1ToV2Converter.v1ConfigToV2ConfigJson(v1configJson)
+  return GmailProcessor.getEssentialConfig(
+    V1ToV2Converter.v1ConfigToV2ConfigJson(v1configJson),
+  )
 }
 
 // E2E Functionality (TODO: Move to E2ETests.ts)
