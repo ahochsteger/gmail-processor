@@ -1,14 +1,12 @@
-declare namespace GmailProcessor {
-  namespace Lib {
-    type E2EConfig = any
-  }
+declare namespace GmailProcessorLib {
+  type E2EConfig = any
 }
 
 declare var GmailProcessorLib: {
   E2EInit(config: any)
 }
 
-const e2eConfig: GmailProcessor.Lib.E2EConfig = {
+const e2eConfig: GmailProcessorLib.E2EConfig = {
   globals: {
     repoBaseUrl:
       "https://raw.githubusercontent.com/ahochsteger/gmail-processor/main/src/e2e-test/files",
