@@ -52,6 +52,12 @@ jobs:
       - id: coveralls
         name: Coveralls
         uses: coverallsapp/github-action@v2
+      - id: sonarcloud
+        name: SonarCloud Scan
+        uses: sonarsource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       - id: push-lib
         name: Push Lib
         run: npm run push
