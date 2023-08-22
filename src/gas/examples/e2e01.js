@@ -1,5 +1,3 @@
-/* global GmailProcessor */
-
 const e2e01ConfigV2 = {
   description: "End-to-end (E2E) test configuration",
   settings: {

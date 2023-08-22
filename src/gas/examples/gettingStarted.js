@@ -1,5 +1,3 @@
-/* global GmailProcessor */
-
 const gettingStartedConfigV2 = {
   settings: {
     // Place settings here

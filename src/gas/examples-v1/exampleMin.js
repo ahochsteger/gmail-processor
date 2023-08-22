@@ -1,5 +1,3 @@
-/* global GmailProcessor */
-
 const exampleMinConfigV1 = {
   processedLabel: "gmail2gdrive/client-test",
   sleepTime: 100,

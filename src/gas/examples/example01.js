@@ -1,5 +1,3 @@
-/* global GmailProcessor */
-
 const example01ConfigV2 = {
   description: "An example V2 configuration",
   settings: {

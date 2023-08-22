@@ -1,5 +1,3 @@
-/* global GmailProcessor */
-
 const exampleMinConfigV2 = {
   threads: [{}],
 }

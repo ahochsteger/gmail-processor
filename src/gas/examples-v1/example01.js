@@ -1,5 +1,3 @@
-/* global GmailProcessor */
-
 const example01ConfigV1 = {
   globalFilter: "has:attachment -in:trash -in:drafts -in:spam",
   processedLabel: "gmail2gdrive/client-test",

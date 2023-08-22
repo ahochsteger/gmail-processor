@@ -43,8 +43,6 @@ function generateGasExample() {
   case "${cfgMap[version]}" in
     1)
   cat <<EOF
-/* global GmailProcessor */
-
 const ${cfgMap[cfgName]} = $(cat "${cfgMap[cfgFile]}")
 
 function ${cfgMap[fnName]}ConvertConfig() {
@@ -55,8 +53,6 @@ EOF
   ;;
     2)
   cat <<EOF
-/* global GmailProcessor */
-
 const ${cfgMap[cfgName]} = $(cat "${cfgMap[cfgFile]}")
 
 function ${cfgMap[fnName]}Run() {
@@ -115,7 +111,7 @@ EOF
 
 function generateExamplesFromConfig() {
   local version="${1}"
-  local dirSuffix="${2}"
+  local subdir="${2}"
   shift 2
   local files="${*}"
 
@@ -126,20 +122,20 @@ function generateExamplesFromConfig() {
     buildCfgMap "${version}" "${fnName}" "${file}"
 
     # Generate GAS example:
-    mkdir -p "src/gas/examples${dirSuffix}"
+    mkdir -p "src/gas/${subdir}"
     generateGasExample \
-    >"src/gas/examples${dirSuffix}/${fnName}.js"
+    >"src/gas/${subdir}/${fnName}.js"
     
     # Generate test example:
-    mkdir -p "src/test/examples${dirSuffix}"
+    mkdir -p "src/test/${subdir}"
     generateTestExample \
-    >"src/test/examples${dirSuffix}/${fnName}.spec.ts"
+    >"src/test/${subdir}/${fnName}.spec.ts"
   done
 }
 
 rm -f src/gas/examples*/*.js src/test/examples*/*.spec.ts
-generateExamplesFromConfig 1 "-v1" src/config-examples-v1/*.json
-generateExamplesFromConfig 2 "" src/config-examples/*.json*
+generateExamplesFromConfig 1 "examples-v1" src/config-examples-v1/*.{json,jsonc}
+generateExamplesFromConfig 2 "examples" src/config-examples/*.{json,jsonc}
 
 npx prettier -w \
   src/gas/examples* \
