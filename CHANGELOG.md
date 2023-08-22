@@ -1,5 +1,12 @@
 # Changelog
 
+# [2.0.0-beta.10](https://github.com/ahochsteger/gmail-processor/compare/2.0.0-beta.9...2.0.0-beta.10) (2023-08-22)
+
+
+### Bug Fixes
+
+* init e2e tests ([9e00810](https://github.com/ahochsteger/gmail-processor/commit/9e008106304db56ac55f350fef411078d92c02f2))
+
 # [2.0.0-beta.9](https://github.com/ahochsteger/gmail-processor/compare/2.0.0-beta.8...2.0.0-beta.9) (2023-08-22)
 
 
