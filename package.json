@@ -29,6 +29,7 @@
     "push": "concurrently 'npm:push:*'",
     "push:examples": "scripts/clasp.sh examples push",
     "push:lib": "scripts/clasp.sh lib push",
+    "rebuild": "npm run clean && npm run build",
     "redeploy": "concurrently 'npm:redeploy:*'",
     "redeploy:examples": "npm run update:examples && npm run build:examples && npm run deploy:examples",
     "redeploy:lib": "npm run build:lib && npm run deploy:lib",
