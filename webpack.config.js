@@ -8,7 +8,7 @@ module.exports = {
     path: __dirname,
     filename: "./build/gas/lib/GmailProcessorLib.js",
     library: {
-      name: "GmailProcessor",
+      name: "GmailProcessorLib",
       type: "var",
     },
   },
