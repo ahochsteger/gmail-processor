@@ -23,7 +23,7 @@ export default {
   // collectCoverageFrom: undefined,
 
   // The directory where Jest should output its coverage files
-  coverageDirectory: "coverage",
+  coverageDirectory: "build/coverage",
 
   // An array of regexp pattern strings used to skip coverage collection
   // coveragePathIgnorePatterns: [
@@ -40,6 +40,7 @@ export default {
   //   "lcov",
   //   "clover"
   // ],
+  coverageReporters: ["json-summary", "lcov"],
 
   // An object that configures minimum threshold enforcement for coverage results
   // coverageThreshold: undefined,
@@ -172,6 +173,7 @@ export default {
 
   // This option allows the use of a custom results processor
   // testResultsProcessor: undefined,
+  testResultsProcessor: "jest-sonar-reporter",
 
   // This option allows use of a custom test runner
   // testRunner: "jest-circus/runner",

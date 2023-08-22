@@ -9,8 +9,8 @@
     "build:lib": "scripts/build-gas.sh lib",
     "ci": "npm run ci:build && npm run ci:test",
     "ci:build": "npm run clean && npm ci && npm run build",
-    "ci:test": "jest --ci --reporters=github-actions --coverage --coverageReporters lcov --coverageReporters json-summary",
-    "clean": "rm -rf build coverage",
+    "ci:test": "jest --ci --coverage",
+    "clean": "rm -rf build",
     "deploy": "concurrently 'npm:deploy:*'",
     "deploy:examples": "scripts/clasp.sh examples deploy",
     "deploy:lib": "scripts/clasp.sh lib deploy",
@@ -80,6 +80,7 @@
     "gas-webpack-plugin": "^2.5.0",
     "jest": "^29.5.0",
     "jest-mock-extended": "^3.0.4",
+    "jest-sonar-reporter": "^2.0.0",
     "jscpd": "^3.5.9",
     "json5": "^2.2.3",
     "prettier": "^2.8.8",
@@ -103,5 +104,9 @@
   },
   "engines": {
     "node": ">=18"
+  },
+  "jestSonar": {
+    "reportPath": "build/test-reports",
+    "reportFile": "test-report.xml"
   }
 }
