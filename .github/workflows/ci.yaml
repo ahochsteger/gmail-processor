@@ -1,11 +1,19 @@
 name: CI
 
 on:
+  # Runs on pushes targeting certain branches
   push:
     branches:
+      - $default-branch # main
       - beta
-      - main
+  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
 
 jobs:
   build:
@@ -54,3 +62,16 @@ jobs:
         if: ${{ github.ref_type == 'tag' }}
         name: Deploy
         run: npm run deploy
+      - id: setup-pages
+        if: ${{ github.ref_type == 'tag' }}
+        name: Setup Pages
+        uses: actions/configure-pages@v3
+      - name: Upload Pages
+        if: ${{ github.ref_type == 'tag' }}
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: "build/docs"
+      - name: Deploy Pages
+        if: ${{ github.ref_type == 'tag' }}
+        id: deploy-pages
+        uses: actions/deploy-pages@v2

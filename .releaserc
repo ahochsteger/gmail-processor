@@ -20,16 +20,6 @@
       "assets": "build/gas/lib/GmailProcessorLib.js",
       "successComment": false
      }],
-     [
-      "@qiwi/semantic-release-gh-pages-plugin", {
-        "branches": [
-          ["main", "gh-pages"],
-          ["beta", "gh-pages-beta"]
-        ],
-        "msg": "docs: update <%= nextRelease.gitTag %>",
-        "src": "build/docs"
-      }
-    ],
     "@semantic-release/git"
   ],
   "tagFormat": "${version}"
