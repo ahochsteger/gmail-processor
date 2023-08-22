@@ -33,6 +33,7 @@ jobs:
         name: Checkout
         uses: actions/checkout@v3
         with:
+          persist-credentials: false
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
       - id: nodejs
