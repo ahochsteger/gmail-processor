@@ -1,5 +1,12 @@
 # Changelog
 
+# [2.0.0-beta.12](https://github.com/ahochsteger/gmail-processor/compare/2.0.0-beta.11...2.0.0-beta.12) (2023-08-22)
+
+
+### Bug Fixes
+
+* code smells ([b76bcd9](https://github.com/ahochsteger/gmail-processor/commit/b76bcd9a2466c7472afc72ac17b0f3d30e4ddf94))
+
 # [2.0.0-beta.11](https://github.com/ahochsteger/gmail-processor/compare/2.0.0-beta.10...2.0.0-beta.11) (2023-08-22)
 
 
