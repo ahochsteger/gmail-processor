@@ -1,5 +1,12 @@
 # Changelog
 
+# [2.0.0-beta.9](https://github.com/ahochsteger/gmail-processor/compare/2.0.0-beta.8...2.0.0-beta.9) (2023-08-22)
+
+
+### Bug Fixes
+
+* pages deployment + coverage ([506dbb2](https://github.com/ahochsteger/gmail-processor/commit/506dbb2e73b969bf31b3bf73defd6101a234f571))
+
 # [2.0.0-beta.8](https://github.com/ahochsteger/gmail-processor/compare/2.0.0-beta.7...2.0.0-beta.8) (2023-08-22)
 
 
