@@ -38,6 +38,7 @@ it("should construct a GMail search query with globals (query, newerThan) and pr
     config,
   )
   const matchConfig = ThreadProcessor.buildMatchConfig(
+    ctx,
     ctx.proc.config.global.thread.match,
     threadConfig.match,
   )
@@ -86,6 +87,7 @@ it("should process a matching thread config", () => {
     }),
   ])
   expect(result.status).toEqual(ProcessingStatus.OK)
+  expect(result.processedThreads).toEqual(1)
 })
 
 it("should process a non-matching thread config", () => {

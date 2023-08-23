@@ -16,7 +16,6 @@ import { RequiredThreadConfig } from "../config/ThreadConfig"
 import {
   RequiredThreadMatchConfig,
   ThreadMatchConfig,
-  newThreadMatchConfig,
 } from "../config/ThreadMatchConfig"
 import { PatternUtil } from "../utils/PatternUtil"
 import { BaseProcessor } from "./BaseProcessor"
@@ -65,22 +64,39 @@ export class ThreadProcessor extends BaseProcessor {
   }
 
   public static buildMatchConfig(
+    ctx: ProcessingContext,
     global: ThreadMatchConfig,
     local: RequiredThreadMatchConfig,
   ): RequiredThreadMatchConfig {
-    return newThreadMatchConfig({
-      query: `${global.query} ${local.query}`,
-      maxMessageCount: this.effectiveNumber(
+    const matchConfig: RequiredThreadMatchConfig = {
+      firstMessageSubject: PatternUtil.substitute(
+        ctx,
+        this.effectiveValue(
+          global.firstMessageSubject,
+          local.firstMessageSubject,
+          "",
+        ),
+      ),
+      labels: PatternUtil.substitute(
+        ctx,
+        this.effectiveCSV(global.labels, local.labels),
+      ),
+      query: PatternUtil.substitute(
+        ctx,
+        `${global.query} ${local.query}`.trim(),
+      ),
+      maxMessageCount: this.effectiveMaxNumber(
         global.maxMessageCount,
         local.maxMessageCount,
         -1,
       ),
-      minMessageCount: this.effectiveNumber(
+      minMessageCount: this.effectiveMinNumber(
         global.minMessageCount,
         local.minMessageCount,
         -1,
       ),
-    })
+    }
+    return matchConfig
   }
 
   public static getRegexMapFromThreadMatchConfig(
@@ -257,13 +273,41 @@ export class ThreadProcessor extends BaseProcessor {
   }
 
   public static matches(
+    ctx: ProcessingContext,
     matchConfig: RequiredThreadMatchConfig,
     thread: GoogleAppsScript.Gmail.GmailThread,
   ): boolean {
     if (!thread.getFirstMessageSubject().match(matchConfig.firstMessageSubject))
-      return false
-    if (thread.getMessageCount() < matchConfig.minMessageCount) return false
-    if (thread.getMessageCount() > matchConfig.maxMessageCount) return false
+      return this.noMatch(
+        ctx,
+        `firstMessageSubject '${thread.getFirstMessageSubject()}' does not match '${
+          matchConfig.firstMessageSubject
+        }'`,
+      )
+    if (
+      matchConfig.minMessageCount != -1 &&
+      thread.getMessageCount() < matchConfig.minMessageCount
+    )
+      return this.noMatch(
+        ctx,
+        `messageCount ${thread.getMessageCount()} < minMessageCount ${
+          matchConfig.minMessageCount
+        }`,
+      )
+    if (
+      matchConfig.maxMessageCount != -1 &&
+      thread.getMessageCount() > matchConfig.maxMessageCount
+    )
+      return this.noMatch(
+        ctx,
+        `messageCount ${thread.getMessageCount()} > maxMessageCount ${
+          matchConfig.maxMessageCount
+        }`,
+      )
+    const threadLabels = thread
+      .getLabels()
+      .map((l) => l.getName())
+      .join(",")
     if (
       !matchConfig.labels
         .split(",")
@@ -271,7 +315,10 @@ export class ThreadProcessor extends BaseProcessor {
           thread.getLabels().map((l) => l.getName() == matchLabel),
         )
     )
-      return true
+      return this.noMatch(
+        ctx,
+        `labels '${threadLabels}' do not contain all of '${matchConfig.labels}'`,
+      )
     return true
   }
 
@@ -286,6 +333,7 @@ export class ThreadProcessor extends BaseProcessor {
         `Processing of thread config index '${configIndex}' started ...`,
       )
       const matchConfig = this.buildMatchConfig(
+        ctx,
         ctx.proc.config.global.thread.match,
         config.match,
       )
@@ -302,7 +350,7 @@ export class ThreadProcessor extends BaseProcessor {
       ctx.log.info(`-> got ${threads.length} threads`)
       for (let threadIndex = 0; threadIndex < threads.length; threadIndex++) {
         const thread = threads[threadIndex]
-        if (!this.matches(matchConfig, thread)) {
+        if (!this.matches(ctx, matchConfig, thread)) {
           ctx.log.debug(
             `Skipping non-matching thread id ${thread.getId()} (date:'${thread
               .getLastMessageDate()
@@ -357,6 +405,7 @@ export class ThreadProcessor extends BaseProcessor {
       ctx.thread.config.actions,
       ctx.proc.config.global.thread.actions,
     )
+    result.processedThreads += 1
     ctx.log.info(`Processing of thread id ${thread.getId()} finished.`)
     return result
   }

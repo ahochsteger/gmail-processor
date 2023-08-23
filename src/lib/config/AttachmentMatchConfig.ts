@@ -21,7 +21,8 @@ export class AttachmentMatchConfig {
    */
   includeInlineImages? = true
   /**
-   * Only include attachments larger than the given size in bytes
+   * Only include attachments larger than the given size in bytes.
+   * Set to `-1` to ignore it.
    */
   largerThan? = -1
   /**
@@ -29,9 +30,10 @@ export class AttachmentMatchConfig {
    */
   name? = "(.*)"
   /**
-   * Only include attachments smaller than the given size in bytes
+   * Only include attachments smaller than the given size in bytes.
+   * Set to `-1` to ignore it.
    */
-  smallerThan? = Number.MAX_SAFE_INTEGER
+  smallerThan? = -1
 }
 
 export type RequiredAttachmentMatchConfig = RequiredDeep<AttachmentMatchConfig>

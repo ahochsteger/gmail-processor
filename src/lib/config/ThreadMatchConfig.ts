@@ -18,13 +18,15 @@ export class ThreadMatchConfig {
   labels? = ".*"
 
   /**
-   * The maximum number of messages a matching thread is allowed to have
+   * The maximum number of messages a matching thread is allowed to have.
+   * Set to `-1` to ignore it.
    */
   @Expose()
   maxMessageCount? = -1
 
   /**
-   * The minimum number of messages a matching thread must have
+   * The minimum number of messages a matching thread must have.
+   * Set to `-1` to ignore it.
    */
   @Expose()
   minMessageCount? = 1

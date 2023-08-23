@@ -80,7 +80,7 @@ it("should build a match config with special globals", () => {
   expect(actual).toMatchObject(expected)
 })
 
-it("should match messages with matching parameters", () => {
+it("should match attachments with matching parameters", () => {
   const matchExamples: { config: AttachmentMatchConfig; matched: string[] }[] =
     [
       {
@@ -123,7 +123,13 @@ it("should match messages with matching parameters", () => {
     })
     const res = []
     for (const att of mockedMessage.getAttachments()) {
-      if (AttachmentProcessor.matches(attachmentConfig.match, att)) {
+      if (
+        AttachmentProcessor.matches(
+          mocks.messageContext,
+          attachmentConfig.match,
+          att,
+        )
+      ) {
         res.push(att.getName())
       }
     }

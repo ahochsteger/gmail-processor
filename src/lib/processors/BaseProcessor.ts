@@ -127,6 +127,11 @@ export abstract class BaseProcessor {
     return true
   }
 
+  protected static noMatch(ctx: ProcessingContext, message: string): boolean {
+    ctx.log.debug(`-> Reason: ${message}`)
+    return false
+  }
+
   protected static isSet(
     value: boolean | number | string | undefined,
     unsetValue?: unknown,
@@ -135,6 +140,19 @@ export abstract class BaseProcessor {
   }
   protected static getStr(value: string, defaultVal = "") {
     return this.isSet(value) ? value : defaultVal
+  }
+
+  protected static effectiveCSV(
+    global: string | undefined,
+    local: string,
+  ): string {
+    return [
+      ...new Set(
+        [...(global ?? "").split(","), ...(local ?? "").split(",")].map((v) =>
+          v.trim(),
+        ),
+      ),
+    ].join(",")
   }
 
   protected static effectiveValue<T extends boolean | string | number>(
@@ -147,6 +165,28 @@ export abstract class BaseProcessor {
       : this.isSet(local, unsetValue)
       ? local
       : unsetValue
+  }
+
+  protected static effectiveMaxNumber(
+    global: number | undefined,
+    local: number,
+    unsetValue: number,
+  ): number {
+    global = global ?? unsetValue
+    if (global === unsetValue) return local
+    if (local === unsetValue) return global
+    return Math.max(global, local)
+  }
+
+  protected static effectiveMinNumber(
+    global: number | undefined,
+    local: number,
+    unsetValue: number,
+  ): number {
+    global = global ?? unsetValue
+    if (global === unsetValue) return local
+    if (local === unsetValue) return global
+    return Math.min(global, local)
   }
 
   protected static effectiveNumber(

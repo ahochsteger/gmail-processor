@@ -148,9 +148,11 @@ Represents a config to match a certain GMail attachment
 |**contentType**|`string`|A RegEx matching the content type of the attachment|No, default: `".*"`|
 |**includeAttachments**|`boolean`|Should regular attachments be included in attachment processing (default: true)|No, default: `true`|
 |**includeInlineImages**|`boolean`|Should inline images be included in attachment processing (default: true)|No, default: `true`|
-|**largerThan**|`number`|Only include attachments larger than the given size in bytes|No, default: `-1`|
+|**largerThan**|`number`|Only include attachments larger than the given size in bytes.
+Set to `-1` to ignore it.|No, default: `-1`|
 |**name**|`string`|A RegEx matching the name of the attachment|No, default: `"(.*)"`|
-|**smallerThan**|`number`|Only include attachments smaller than the given size in bytes|No|
+|**smallerThan**|`number`|Only include attachments smaller than the given size in bytes.
+Set to `-1` to ignore it.|No, default: `-1`|
 
 Additional properties are not allowed.
 
@@ -177,7 +179,8 @@ Should inline images be included in attachment processing (default: true)
 
 ### AttachmentMatchConfig.largerThan
 
-Only include attachments larger than the given size in bytes
+Only include attachments larger than the given size in bytes.
+Set to `-1` to ignore it.
 
 * **Type**: `number`
 * **Required**: No, default: `-1`
@@ -191,10 +194,11 @@ A RegEx matching the name of the attachment
 
 ### AttachmentMatchConfig.smallerThan
 
-Only include attachments smaller than the given size in bytes
+Only include attachments smaller than the given size in bytes.
+Set to `-1` to ignore it.
 
 * **Type**: `number`
-* **Required**: No
+* **Required**: No, default: `-1`
 
 
 
@@ -760,8 +764,10 @@ Represents a config to match a certain GMail thread
 |---|---|---|---|
 |**firstMessageSubject**|`string`|The regex to match `firstMessageSubject`|No, default: `".*"`|
 |**labels**|`string`|The regex to match at least one label|No, default: `".*"`|
-|**maxMessageCount**|`number`|The maximum number of messages a matching thread is allowed to have|No, default: `-1`|
-|**minMessageCount**|`number`|The minimum number of messages a matching thread must have|No, default: `1`|
+|**maxMessageCount**|`number`|The maximum number of messages a matching thread is allowed to have.
+Set to `-1` to ignore it.|No, default: `-1`|
+|**minMessageCount**|`number`|The minimum number of messages a matching thread must have.
+Set to `-1` to ignore it.|No, default: `1`|
 |**query**|`string`|The GMail search query additional to the global query to find threads to be processed.
 See [Search operators you can use with Gmail](https://support.google.com/mail/answer/7190?hl=en) for more information.|No, default: |
 
@@ -783,14 +789,16 @@ The regex to match at least one label
 
 ### ThreadMatchConfig.maxMessageCount
 
-The maximum number of messages a matching thread is allowed to have
+The maximum number of messages a matching thread is allowed to have.
+Set to `-1` to ignore it.
 
 * **Type**: `number`
 * **Required**: No, default: `-1`
 
 ### ThreadMatchConfig.minMessageCount
 
-The minimum number of messages a matching thread must have
+The minimum number of messages a matching thread must have.
+Set to `-1` to ignore it.
 
 * **Type**: `number`
 * **Required**: No, default: `1`

@@ -2,7 +2,6 @@ import { ProcessingStage } from "../config/ActionConfig"
 import { RequiredAttachmentConfig } from "../config/AttachmentConfig"
 import {
   AttachmentMatchConfig,
-  newAttachmentMatchConfig,
   RequiredAttachmentMatchConfig,
 } from "../config/AttachmentMatchConfig"
 import {
@@ -42,14 +41,42 @@ export class AttachmentProcessor extends BaseProcessor {
     return attachmentContext
   }
   public static matches(
+    ctx: MessageContext,
     matchConfig: RequiredAttachmentMatchConfig,
     attachment: GoogleAppsScript.Gmail.GmailAttachment,
   ) {
     if (!attachment.getContentType().match(matchConfig.contentType))
-      return false
-    if (!attachment.getName().match(matchConfig.name)) return false
-    if (attachment.getSize() <= matchConfig.largerThan) return false
-    if (attachment.getSize() >= matchConfig.smallerThan) return false
+      return this.noMatch(
+        ctx,
+        `contentType '${attachment.getContentType()}' does not match '${
+          matchConfig.contentType
+        }'`,
+      )
+    if (!attachment.getName().match(matchConfig.name))
+      return this.noMatch(
+        ctx,
+        `name '${attachment.getName()}' does not match '${matchConfig.name}'`,
+      )
+    if (
+      matchConfig.largerThan != -1 &&
+      attachment.getSize() <= matchConfig.largerThan
+    )
+      return this.noMatch(
+        ctx,
+        `size ${attachment.getSize()} not larger than ${
+          matchConfig.largerThan
+        }`,
+      )
+    if (
+      matchConfig.smallerThan != -1 &&
+      attachment.getSize() >= matchConfig.smallerThan
+    )
+      return this.noMatch(
+        ctx,
+        `size ${attachment.getSize()} not smaller than ${
+          matchConfig.smallerThan
+        }`,
+      )
     return true
   }
 
@@ -58,7 +85,7 @@ export class AttachmentProcessor extends BaseProcessor {
     global: RequiredAttachmentMatchConfig,
     local: RequiredAttachmentMatchConfig,
   ): RequiredAttachmentMatchConfig {
-    return newAttachmentMatchConfig({
+    const matchConfig: RequiredAttachmentMatchConfig = {
       contentType: PatternUtil.substitute(
         ctx,
         `${global.contentType}|${local.contentType}`.replace(".*|", ""),
@@ -66,15 +93,24 @@ export class AttachmentProcessor extends BaseProcessor {
       includeAttachments: global.includeAttachments && local.includeAttachments,
       includeInlineImages:
         global.includeInlineImages && local.includeInlineImages,
-      largerThan: Math.max(global.largerThan, local.largerThan),
+      largerThan: this.effectiveMaxNumber(
+        global.largerThan,
+        local.largerThan,
+        -1,
+      ),
       name: PatternUtil.substitute(
         ctx,
         `${global.name}|${local.name}`
           .replace("(.*)|", "")
           .replace("|(.*)", ""),
       ),
-      smallerThan: Math.min(global.smallerThan, local.smallerThan),
-    })
+      smallerThan: this.effectiveMinNumber(
+        global.smallerThan,
+        local.smallerThan,
+        -1,
+      ),
+    }
+    return matchConfig
   }
 
   public static getRegexMapFromAttachmentMatchConfig(
@@ -178,7 +214,7 @@ export class AttachmentProcessor extends BaseProcessor {
       const attachments = ctx.message.object.getAttachments(opts)
       for (let index = 0; index < attachments.length; index++) {
         const attachment = attachments[index]
-        if (!this.matches(matchConfig, attachment)) {
+        if (!this.matches(ctx, matchConfig, attachment)) {
           ctx.log.debug(
             `Skipping non-matching attachment hash '${attachment.getHash()}' (name:'${attachment.getName()}', type:${attachment.getContentType()}, size:${attachment.getSize()}) started ...`,
           )
@@ -231,6 +267,7 @@ export class AttachmentProcessor extends BaseProcessor {
       ctx.attachment.config.actions,
       ctx.proc.config.global.attachment.actions,
     )
+    result.processedAttachments += 1
     ctx.log.info(
       `Processing of attachment hash '${attachment.getHash()}' finished.`,
     )

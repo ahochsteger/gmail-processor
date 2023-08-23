@@ -123,7 +123,7 @@
                 },
                 "largerThan": {
                     "default": -1,
-                    "description": "Only include attachments larger than the given size in bytes",
+                    "description": "Only include attachments larger than the given size in bytes.\nSet to `-1` to ignore it.",
                     "title": "largerThan",
                     "type": "number"
                 },
@@ -134,7 +134,8 @@
                     "type": "string"
                 },
                 "smallerThan": {
-                    "description": "Only include attachments smaller than the given size in bytes",
+                    "default": -1,
+                    "description": "Only include attachments smaller than the given size in bytes.\nSet to `-1` to ignore it.",
                     "title": "smallerThan",
                     "type": "number"
                 }
@@ -577,13 +578,13 @@
                 },
                 "maxMessageCount": {
                     "default": -1,
-                    "description": "The maximum number of messages a matching thread is allowed to have",
+                    "description": "The maximum number of messages a matching thread is allowed to have.\nSet to `-1` to ignore it.",
                     "title": "maxMessageCount",
                     "type": "number"
                 },
                 "minMessageCount": {
                     "default": 1,
-                    "description": "The minimum number of messages a matching thread must have",
+                    "description": "The minimum number of messages a matching thread must have.\nSet to `-1` to ignore it.",
                     "title": "minMessageCount",
                     "type": "number"
                 },

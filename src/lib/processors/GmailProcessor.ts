@@ -108,6 +108,16 @@ export class GmailProcessor {
       newProcessingResult(),
     )
     ctx.log.info("Processing of GmailProcessor config finished.")
+    ctx.log.info(`Processing summary:`)
+    ctx.log.info(` - Processed threads: ${result.processedThreads}`)
+    ctx.log.info(` - Processed messages: ${result.processedMessages}`)
+    ctx.log.info(` - Processed attachments: ${result.processedAttachments}`)
+    ctx.log.info(` - Executed actions: ${result.performedActions.length}`)
+    ctx.log.info(
+      ` - Failed action (if any): ${JSON.stringify(result.failedAction)}`,
+    )
+    ctx.log.info(` - Error (if any): ${JSON.stringify(result.error)}`)
+    ctx.log.info(` - Overall status: ${result.status}`)
     return result
   }
 

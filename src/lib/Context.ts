@@ -150,7 +150,7 @@ export type AttachmentContext = MessageContext & {
 
 /** The result status of processing a config or an action. */
 export enum ProcessingStatus {
-  /** An error has occured. */
+  /** An error has occurred. */
   ERROR = "error",
   /** The processing was successful. */
   OK = "ok",
@@ -165,6 +165,9 @@ export class ProcessingError extends Error {
 export type ProcessingResult = {
   status: ProcessingStatus
   performedActions: ActionConfig[]
+  processedThreads: number
+  processedMessages: number
+  processedAttachments: number
   failedAction?: ActionConfig
   error?: Error
 }
@@ -172,5 +175,8 @@ export function newProcessingResult(): ProcessingResult {
   return {
     status: ProcessingStatus.OK,
     performedActions: [],
+    processedAttachments: 0,
+    processedMessages: 0,
+    processedThreads: 0,
   }
 }

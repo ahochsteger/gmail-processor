@@ -99,7 +99,9 @@ describe("match()", () => {
       })
       const res = []
       for (const m of mockedThread.getMessages()) {
-        if (MessageProcessor.matches(messageConfig.match, m)) {
+        if (
+          MessageProcessor.matches(mocks.threadContext, messageConfig.match, m)
+        ) {
           res.push(m.getSubject())
         }
       }
