@@ -134,8 +134,8 @@ function generateExamplesFromConfig() {
 }
 
 rm -f src/gas/examples*/*.js src/test/examples*/*.spec.ts
-generateExamplesFromConfig 1 "examples-v1" src/config-examples-v1/*.{json,jsonc}
-generateExamplesFromConfig 2 "examples" src/config-examples/*.{json,jsonc}
+generateExamplesFromConfig 1 "examples-v1" src/config-examples-v1/*.json*
+generateExamplesFromConfig 2 "examples" src/config-examples/*.json*
 
 npx prettier -w \
   src/gas/examples* \
