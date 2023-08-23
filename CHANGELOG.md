@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.0.1](https://github.com/ahochsteger/gmail-processor/compare/2.0.0...2.0.1) (2023-08-23)
+
+
+### Bug Fixes
+
+* example generation ([1fd5eab](https://github.com/ahochsteger/gmail-processor/commit/1fd5eabe67f2c524e096b45b45f193c103978bb4))
+* match processing + improved logging ([16c2ffb](https://github.com/ahochsteger/gmail-processor/commit/16c2ffb6c0d670bac8e944670035cf73b4b99986))
+
 # [2.0.0](https://github.com/ahochsteger/gmail-processor/compare/1.1.0...2.0.0) (2023-08-22)
 
 
