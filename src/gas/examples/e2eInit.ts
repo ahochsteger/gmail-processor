@@ -1,12 +1,8 @@
-declare namespace GmailProcessorLib {
-  type E2EConfig = any
-}
-
 declare const GmailProcessorLib: {
-  E2EInit(config: any)
+  E2E: any
 }
 
-const e2eConfig: GmailProcessorLib.E2EConfig = {
+const e2eConfig = {
   globals: {
     repoBaseUrl:
       "https://raw.githubusercontent.com/ahochsteger/gmail-processor/main/src/e2e-test/files",
@@ -16,7 +12,7 @@ const e2eConfig: GmailProcessorLib.E2EConfig = {
   folders: [
     {
       name: "e2e",
-      location: "{id:1yVPXknT_gIdB6-jJdGF2u3mQR6en4dGy}/e2e",
+      location: "/GmailProcessor-Tests/e2e",
     },
   ],
   files: [
@@ -44,14 +40,26 @@ const e2eConfig: GmailProcessorLib.E2EConfig = {
   ],
   mails: [
     {
-      name: "01-multiple",
-      subject: "Test Mail with attachments",
+      name: "01-single-attachment",
+      subject: "Test with a single attachments",
+      htmlBody: "Test email with a single attachment from the github repo.",
+      files: ["plaintext-repo"],
+    },
+    {
+      name: "02-multiple-attachments",
+      subject: "Test with multiple attachments",
       htmlBody: "Test email with multiple attachments from different sources.",
       files: ["gmail-logo", "plaintext-drive", "plaintext-repo"],
+    },
+    {
+      name: "01-multiple",
+      subject: "Test with no attachments",
+      htmlBody: "Test email with no attachments.",
+      files: [],
     },
   ],
 }
 
 function e2eInit() {
-  GmailProcessorLib.E2EInit(e2eConfig)
+  GmailProcessorLib.E2E.initAll(e2eConfig)
 }

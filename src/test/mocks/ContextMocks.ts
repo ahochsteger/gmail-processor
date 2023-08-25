@@ -1,5 +1,4 @@
 import { MockProxy } from "jest-mock-extended"
-import { buildMetaInfo } from "../../lib"
 import {
   AttachmentContext,
   ContextType,
@@ -9,6 +8,7 @@ import {
   RunMode,
   ThreadContext,
 } from "../../lib/Context"
+import { EnvProvider } from "../../lib/EnvProvider"
 import { GDriveAdapter } from "../../lib/adapter/GDriveAdapter"
 import { GmailAdapter } from "../../lib/adapter/GmailAdapter"
 import { SpreadsheetAdapter } from "../../lib/adapter/SpreadsheetAdapter"
@@ -34,6 +34,7 @@ export class ContextMocks {
       env: {
         gmailApp: mocks.gmailApp,
         gdriveApp: mocks.gdriveApp,
+        mailApp: mocks.mailApp,
         spreadsheetApp: mocks.spreadsheetApp,
         cacheService: mocks.cacheService,
         utilities: mocks.utilities,
@@ -45,7 +46,7 @@ export class ContextMocks {
       log: new Logger(),
       meta: {},
     }
-    envContext.envMeta = buildMetaInfo(envContext)
+    envContext.envMeta = EnvProvider.buildMetaInfo(envContext)
     envContext.meta = { ...envContext.envMeta }
     return envContext
   }

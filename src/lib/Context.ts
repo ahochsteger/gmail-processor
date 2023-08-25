@@ -72,6 +72,7 @@ export type MetaInfo = {
 type EnvInfo = {
   gmailApp: GoogleAppsScript.Gmail.GmailApp
   gdriveApp: GoogleAppsScript.Drive.DriveApp
+  mailApp: GoogleAppsScript.Mail.MailApp
   utilities: GoogleAppsScript.Utilities.Utilities
   spreadsheetApp: GoogleAppsScript.Spreadsheet.SpreadsheetApp
   cacheService: GoogleAppsScript.Cache.CacheService

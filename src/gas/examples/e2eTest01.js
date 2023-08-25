@@ -1,10 +1,4 @@
-import { PartialDeep } from "type-fest"
-import { RunMode } from "../../lib/Context"
-import { Config } from "../../lib/config/Config"
-import { GmailProcessorLib } from "../mocks/Examples"
-import { MockFactory, Mocks } from "../mocks/MockFactory"
-
-const e2e01ConfigV2: PartialDeep<Config> = {
+const e2eTest01ConfigV2 = {
   description: "End-to-end (E2E) test configuration",
   settings: {
     logSheetLocation:
@@ -82,16 +76,6 @@ const e2e01ConfigV2: PartialDeep<Config> = {
   ],
 }
 
-let mocks: Mocks
-beforeEach(() => {
-  mocks = MockFactory.newMocks(e2e01ConfigV2, RunMode.DANGEROUS)
-})
-
-it("should process a v2 config example", () => {
-  const result = GmailProcessorLib.run(
-    e2e01ConfigV2,
-    "dry-run",
-    mocks.envContext,
-  )
-  expect(result.status).toEqual("ok")
-})
+function e2eTest01Run() {
+  GmailProcessorLib.run(e2eTest01ConfigV2, "dry-run")
+}

@@ -56,6 +56,8 @@ class EnvMocks {
     mock<GoogleAppsScript.Drive.DriveApp>()
   public gmailApp: MockProxy<GoogleAppsScript.Gmail.GmailApp> =
     mock<GoogleAppsScript.Gmail.GmailApp>()
+  public mailApp: MockProxy<GoogleAppsScript.Mail.MailApp> =
+    mock<GoogleAppsScript.Mail.MailApp>()
   public message: MockProxy<GoogleAppsScript.Gmail.GmailMessage> =
     mock<GoogleAppsScript.Gmail.GmailMessage>()
   public spreadsheetApp: MockProxy<GoogleAppsScript.Spreadsheet.SpreadsheetApp> =
