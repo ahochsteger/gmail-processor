@@ -1,8 +1,4 @@
-declare const GmailProcessorLib: {
-  E2E: any
-}
-
-const e2eConfig = {
+var e2eConfig = {
   globals: {
     repoBaseUrl:
       "https://raw.githubusercontent.com/ahochsteger/gmail-processor/main/src/e2e-test/files",

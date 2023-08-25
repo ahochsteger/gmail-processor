@@ -133,7 +133,7 @@ function generateExamplesFromConfig() {
   done
 }
 
-rm -f src/gas/examples*/*.js src/test/examples*/*.spec.ts
+rm -f src/gas/examples*/example*.js src/test/examples*/*.spec.ts
 generateExamplesFromConfig 1 "examples-v1" src/config-examples-v1/*.json*
 generateExamplesFromConfig 2 "examples" src/config-examples/*.json*
 
