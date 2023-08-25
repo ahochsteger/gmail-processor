@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.2](https://github.com/ahochsteger/gmail-processor/compare/2.0.1...2.0.2) (2023-08-25)
+
+
+### Bug Fixes
+
+* non-working e2e tests + refactoring ([005a305](https://github.com/ahochsteger/gmail-processor/commit/005a305d1f74da226766f5138c2b11a9236dff95))
+
 ## [2.0.1](https://github.com/ahochsteger/gmail-processor/compare/2.0.0...2.0.1) (2023-08-23)
 
 
