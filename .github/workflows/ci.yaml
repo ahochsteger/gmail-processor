@@ -42,6 +42,47 @@ jobs:
         with:
           node-version: 18.x
           cache: "npm"
+      # - id: release-status-1
+      #   name: Release Status 1
+      #   uses: Sujimoshi/semantic-release-action@master
+      #   with:
+      #     # NOTE: Keep in sync with .releaserc
+      #     branches: |
+      #       +([0-9])?(.{+([0-9]),x}).x
+      #       main
+      #       next
+      #       next-major
+      #       { "name": "alpha", "prerelease": true }
+      #       { "name": "beta", "prerelease": true }
+      #     plugins: |
+      #       @semantic-release/commit-analyzer
+      #       @semantic-release/release-notes-generator
+      #     tagFormat: "${version}"
+      - id: release-status-2
+        name: Release Status 2
+        #run: npm run release:perform && npm run release:releaseVersion | grep -E '^releaseVersion=' >> "${GITHUB_OUTPUT}" || true
+        uses: cycjimmy/semantic-release-action@v3
+        with:
+          dry_run: true
+      - id: release-info
+        name: Release Info
+        run: |
+          # echo "RS1 channel: ${{ steps.release-status-1.outputs.channel }}"
+          # echo "RS1 name: ${{ steps.release-status-1.outputs.name }}"
+          # echo "RS1 tag: ${{ steps.release-status-1.outputs.tag }}"
+          # echo "RS1 type: ${{ steps.release-status-1.outputs.type }}"
+          # echo "RS1 version: ${{ steps.release-status-1.outputs.version }}"
+          echo "RS2 last_release_git_head: ${{ steps.release-status-2.outputs.last_release_git_head }}"
+          echo "RS2 last_release_git_tag: ${{ steps.release-status-2.outputs.last_release_git_tag }}"
+          echo "RS2 last_release_version: ${{ steps.release-status-2.outputs.last_release_version }}"
+          echo "RS2 new_release_channel: ${{ steps.release-status-2.outputs.new_release_channel }}"
+          echo "RS2 new_release_git_head: ${{ steps.release-status-2.outputs.new_release_git_head }}"
+          echo "RS2 new_release_git_tag: ${{ steps.release-status-2.outputs.new_release_git_tag }}"
+          echo "RS2 new_release_major_version: ${{ steps.release-status-2.outputs.new_release_major_version }}"
+          echo "RS2 new_release_minor_version: ${{ steps.release-status-2.outputs.new_release_minor_version }}"
+          echo "RS2 new_release_patch_version: ${{ steps.release-status-2.outputs.new_release_patch_version }}"
+          echo "RS2 new_release_published: ${{ steps.release-status-2.outputs.new_release_published }}"
+          echo "RS2 new_release_version: ${{ steps.release-status-2.outputs.new_release_version }}"
       - id: build
         name: Build
         run: npm run ci:build
@@ -60,47 +101,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      - id: release-status-1
-        name: Release Status 1
-        uses: Sujimoshi/semantic-release-action@master
-        with:
-          # NOTE: Keep in sync with .releaserc
-          branches: |
-            +([0-9])?(.{+([0-9]),x}).x
-            main
-            next
-            next-major
-            { "name": "alpha", "prerelease": true }
-            { "name": "beta", "prerelease": true }
-          plugins: |
-            @semantic-release/commit-analyzer
-            @semantic-release/release-notes-generator
-          tagFormat: "${version}"
-      - id: release-status-2
-        name: Release Status 2
-        #run: npm run release:perform && npm run release:releaseVersion | grep -E '^releaseVersion=' >> "${GITHUB_OUTPUT}" || true
-        uses: cycjimmy/semantic-release-action@v3
-        with:
-          dry_run: true
-      - id: release-info
-        name: Release Info
-        run: |
-          echo "RS1 channel: ${{ steps.release-status-1.outputs.channel }}"
-          echo "RS1 name: ${{ steps.release-status-1.outputs.name }}"
-          echo "RS1 tag: ${{ steps.release-status-1.outputs.tag }}"
-          echo "RS1 type: ${{ steps.release-status-1.outputs.type }}"
-          echo "RS1 version: ${{ steps.release-status-1.outputs.version }}"
-          echo "RS2 last_release_git_head: ${{ steps.release-status-2.outputs.last_release_git_head }}"
-          echo "RS2 last_release_git_tag: ${{ steps.release-status-2.outputs.last_release_git_tag }}"
-          echo "RS2 last_release_version: ${{ steps.release-status-2.outputs.last_release_version }}"
-          echo "RS2 new_release_channel: ${{ steps.release-status-2.outputs.new_release_channel }}"
-          echo "RS2 new_release_git_head: ${{ steps.release-status-2.outputs.new_release_git_head }}"
-          echo "RS2 new_release_git_tag: ${{ steps.release-status-2.outputs.new_release_git_tag }}"
-          echo "RS2 new_release_major_version: ${{ steps.release-status-2.outputs.new_release_major_version }}"
-          echo "RS2 new_release_minor_version: ${{ steps.release-status-2.outputs.new_release_minor_version }}"
-          echo "RS2 new_release_patch_version: ${{ steps.release-status-2.outputs.new_release_patch_version }}"
-          echo "RS2 new_release_published: ${{ steps.release-status-2.outputs.new_release_published }}"
-          echo "RS2 new_release_version: ${{ steps.release-status-2.outputs.new_release_version }}"
       - id: push-lib
         name: Push Lib
         run: npm run push
