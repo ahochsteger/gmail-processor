@@ -9,10 +9,13 @@ it("should create a new processing result", () => {
   const actual = newProcessingResult()
   const expected: ProcessingResult = {
     status: ProcessingStatus.OK,
-    performedActions: [],
+    executedActions: [],
     processedAttachments: 0,
+    processedAttachmentConfigs: 0,
     processedMessages: 0,
+    processedMessageConfigs: 0,
     processedThreads: 0,
+    processedThreadConfigs: 0,
   }
   expect(actual).toMatchObject(expected)
 })

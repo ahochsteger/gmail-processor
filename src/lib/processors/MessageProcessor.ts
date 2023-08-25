@@ -289,21 +289,12 @@ export class MessageProcessor extends BaseProcessor {
       ),
     }
     const messageConfig = ctx.message.config
-    if (messageConfig.match) {
-      // Test for message rules
-      m = this.buildRegExpSubustitutionMap(
-        ctx,
-        m,
-        keyPrefix,
-        this.getRegexMapFromMessageMatchConfig(messageConfig.match),
-      )
-      if (!m[`${keyPrefix}.matched`]) {
-        const message = ctx.message.object
-        ctx.log.info(
-          `Skipped message with id ${message.getId()} because it did not match the regex rules.`,
-        )
-      }
-    }
+    m = this.buildRegExpSubustitutionMap(
+      ctx,
+      m,
+      keyPrefix,
+      this.getRegexMapFromMessageMatchConfig(messageConfig.match),
+    )
     return m
   }
 
@@ -345,6 +336,7 @@ export class MessageProcessor extends BaseProcessor {
         })
         result = this.processEntity(messageContext, result)
       }
+      result.processedMessageConfigs += 1
       ctx.log.info(`Processing of message config '${config.name}' finished.`)
     }
     return result

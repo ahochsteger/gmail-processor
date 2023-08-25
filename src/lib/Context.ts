@@ -164,20 +164,26 @@ export class ProcessingError extends Error {
 }
 
 export type ProcessingResult = {
-  status: ProcessingStatus
-  performedActions: ActionConfig[]
-  processedThreads: number
-  processedMessages: number
-  processedAttachments: number
-  failedAction?: ActionConfig
   error?: Error
+  failedAction?: ActionConfig
+  executedActions: ActionConfig[]
+  processedAttachmentConfigs: number
+  processedAttachments: number
+  processedMessageConfigs: number
+  processedMessages: number
+  processedThreadConfigs: number
+  processedThreads: number
+  status: ProcessingStatus
 }
 export function newProcessingResult(): ProcessingResult {
   return {
-    status: ProcessingStatus.OK,
-    performedActions: [],
+    executedActions: [],
+    processedAttachmentConfigs: 0,
     processedAttachments: 0,
+    processedMessageConfigs: 0,
     processedMessages: 0,
+    processedThreadConfigs: 0,
     processedThreads: 0,
+    status: ProcessingStatus.OK,
   }
 }

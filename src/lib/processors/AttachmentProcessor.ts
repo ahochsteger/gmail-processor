@@ -183,12 +183,6 @@ export class AttachmentProcessor extends BaseProcessor {
       keyPrefix,
       this.getRegexMapFromAttachmentMatchConfig(attachmentConfig.match),
     )
-    if (!m[`${keyPrefix}.matched`]) {
-      const attachment = ctx.attachment.object
-      ctx.log.info(
-        `Skipped attachment with name '${attachment.getName()}' because it did not match the regex rules.`,
-      )
-    }
     return m
   }
 
@@ -228,6 +222,7 @@ export class AttachmentProcessor extends BaseProcessor {
         })
         result = this.processEntity(attachmentContext, result)
       }
+      result.processedAttachmentConfigs += 1
       ctx.log.info(`Processing of attachment config '${config.name}' finished.`)
     }
     return result

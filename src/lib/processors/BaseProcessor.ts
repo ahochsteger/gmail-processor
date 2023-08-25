@@ -93,7 +93,7 @@ export abstract class BaseProcessor {
               action.name,
               action.args as ActionArgsType,
             )
-            result.performedActions.push(action)
+            result.executedActions.push(action)
           } catch (err) {
             result.failedAction = action
             result.status = ProcessingStatus.ERROR
@@ -128,7 +128,7 @@ export abstract class BaseProcessor {
   }
 
   protected static noMatch(ctx: ProcessingContext, message: string): boolean {
-    ctx.log.debug(`-> Reason: ${message}`)
+    ctx.log.debug(`NO MATCH: ${message}`)
     return false
   }
 

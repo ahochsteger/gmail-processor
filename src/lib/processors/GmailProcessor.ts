@@ -7,6 +7,7 @@ import {
   ProcessingContext,
   ProcessingInfo,
   ProcessingResult,
+  ProcessingStatus,
   newMetaInfo as mi,
   newProcessingResult,
 } from "../Context"
@@ -107,17 +108,29 @@ export class GmailProcessor {
       config.threads,
       newProcessingResult(),
     )
+    if (result.status !== ProcessingStatus.OK) {
+      ctx.log.error(`There have been errors during processing:`)
+      ctx.log.error(
+        ` - Failed action: ${JSON.stringify(result.failedAction ?? "-")}`,
+      )
+      ctx.log.error(` - Error: ${JSON.stringify(result.error ?? "-")}`)
+    }
     ctx.log.info("Processing of GmailProcessor config finished.")
     ctx.log.info(`Processing summary:`)
-    ctx.log.info(` - Processed threads: ${result.processedThreads}`)
-    ctx.log.info(` - Processed messages: ${result.processedMessages}`)
-    ctx.log.info(` - Processed attachments: ${result.processedAttachments}`)
-    ctx.log.info(` - Executed actions: ${result.performedActions.length}`)
     ctx.log.info(
-      ` - Failed action (if any): ${JSON.stringify(result.failedAction)}`,
+      ` - Processed thread configs: ${result.processedThreadConfigs}`,
     )
-    ctx.log.info(` - Error (if any): ${JSON.stringify(result.error)}`)
-    ctx.log.info(` - Overall status: ${result.status}`)
+    ctx.log.info(` - Processed threads: ${result.processedThreads}`)
+    ctx.log.info(
+      ` - Processed message configs: ${result.processedMessageConfigs}`,
+    )
+    ctx.log.info(` - Processed messages: ${result.processedMessages}`)
+    ctx.log.info(
+      ` - Processed attachment configs: ${result.processedAttachmentConfigs}`,
+    )
+    ctx.log.info(` - Processed attachments: ${result.processedAttachments}`)
+    ctx.log.info(` - Executed actions: ${result.executedActions.length}`)
+    ctx.log.info(` - Result status: ${result.status}`)
     return result
   }
 

@@ -254,21 +254,12 @@ export class ThreadProcessor extends BaseProcessor {
       ),
     }
     const threadConfig = ctx.thread.config
-    if (threadConfig.match) {
-      // Test for message rules
-      m = this.buildRegExpSubustitutionMap(
-        ctx,
-        m,
-        keyPrefix,
-        this.getRegexMapFromThreadMatchConfig(threadConfig.match),
-      )
-      if (!m[`${keyPrefix}.matched`]) {
-        const thread = ctx.thread.object
-        ctx.log.info(
-          `Skipped thread with id ${thread.getId()} because it did not match the regex rules.`,
-        )
-      }
-    }
+    m = this.buildRegExpSubustitutionMap(
+      ctx,
+      m,
+      keyPrefix,
+      this.getRegexMapFromThreadMatchConfig(threadConfig.match),
+    )
     return m
   }
 
@@ -367,6 +358,7 @@ export class ThreadProcessor extends BaseProcessor {
         })
         result = this.processEntity(threadContext, result)
       }
+      result.processedThreadConfigs += 1
       ctx.log.info(
         `Processing of thread config index '${configIndex}' finished.`,
       )
