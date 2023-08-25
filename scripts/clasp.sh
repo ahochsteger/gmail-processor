@@ -80,6 +80,15 @@ function cleanup() {
   rm -f .clasprc.json .clasp.json
 }
 
+function getLastVersion() {
+  runClasp versions \
+  | tail -n 1 \
+  | awk '{print $1}' \
+  >"../${CLASP_PROFILE}-version.txt"
+  echo -n "Last version: "
+  cat "../${CLASP_PROFILE}-version.txt"
+}
+
 setupConfig
 
 CLASP_PROFILE="${1:?Missing profile name!}"
@@ -121,10 +130,12 @@ case "${cmd}" in
   ;;
   push)
     runClasp push --force
+    getLastVersion
     cleanup
   ;;
   deploy)
     runClasp deploy -i "${CLASP_DEPLOYMENT_ID[${CLASP_PROFILE}]}" -d "${CLASP_DEPLOYMENT_NAME}"
+    getLastVersion
     cleanup
   ;;
   *)
