@@ -62,16 +62,13 @@ jobs:
         name: Release Status 2
         #run: npm run release:perform && npm run release:releaseVersion | grep -E '^releaseVersion=' >> "${GITHUB_OUTPUT}" || true
         uses: cycjimmy/semantic-release-action@v3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           dry_run: true
       - id: release-info
         name: Release Info
         run: |
-          # echo "RS1 channel: ${{ steps.release-status-1.outputs.channel }}"
-          # echo "RS1 name: ${{ steps.release-status-1.outputs.name }}"
-          # echo "RS1 tag: ${{ steps.release-status-1.outputs.tag }}"
-          # echo "RS1 type: ${{ steps.release-status-1.outputs.type }}"
-          # echo "RS1 version: ${{ steps.release-status-1.outputs.version }}"
           echo "RS2 last_release_git_head: ${{ steps.release-status-2.outputs.last_release_git_head }}"
           echo "RS2 last_release_git_tag: ${{ steps.release-status-2.outputs.last_release_git_tag }}"
           echo "RS2 last_release_version: ${{ steps.release-status-2.outputs.last_release_version }}"
