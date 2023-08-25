@@ -22,16 +22,6 @@ declare -A -g CLASP_DEPLOYMENT_ID
 # global CLASP_DEPLOYMENT_ID
 
 function setupConfig() {
-  if [[ "${REF_NAME}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then # Regular Release
-    CLASP_DEPLOYMENT_NAME="Release ${REF_NAME}"
-  elif [[ "${REF_NAME}" =~ ^[0-9]+\.[0-9]+\.[0-9]+-(alpha|beta|rc)\.[0-9]+$ ]]; then # Pre-Release
-    CLASP_DEPLOYMENT_NAME="Pre-Release ${REF_NAME}"
-  elif [[ "${REF_NAME}" == "main" ]]; then # Main Branch
-    CLASP_DEPLOYMENT_NAME="Branch ${REF_NAME}"
-  else # Other Branch/Tag
-    CLASP_DEPLOYMENT_NAME="${REF_TYPE^} ${REF_NAME}"
-  fi
-
   CLASP_SCRIPT_ID[lib]=$(eval "echo \${CLASP_LIB_SCRIPT_ID:?}")
   CLASP_SCRIPT_ID[examples]=$(eval "echo \${CLASP_EXAMPLES_SCRIPT_ID:?}")
   CLASP_DEPLOYMENT_ID[lib]=$(eval "echo \${CLASP_LIB_DEPLOYMENT_ID:?}")
@@ -134,6 +124,10 @@ case "${cmd}" in
     cleanup
   ;;
   deploy)
+    if [[ -z "${CLASP_DEPLOYMENT_NAME}" ]]; then
+      echo "ERROR: CLASP_DEPLOYMENT_NAME required for deployment!"
+      exit 1
+    fi
     runClasp deploy -i "${CLASP_DEPLOYMENT_ID[${CLASP_PROFILE}]}" -d "${CLASP_DEPLOYMENT_NAME}"
     getLastVersion
     cleanup

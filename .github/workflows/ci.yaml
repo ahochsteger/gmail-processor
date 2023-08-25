@@ -79,6 +79,8 @@ jobs:
         if: ${{ steps.release.outputs.new_release_version }}
         name: Deploy Lib
         run: npm run deploy
+        env:
+          CLASP_DEPLOYMENT_NAME: ${{ steps.release.outputs.new_release_version }}
       - id: setup-pages
         name: Setup Pages
         uses: actions/configure-pages@v3
