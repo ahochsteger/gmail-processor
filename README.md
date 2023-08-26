@@ -1,11 +1,19 @@
-# 📧 Gmail Processor 🚀 - Automate Email Processing with Ease
+# 📧 Gmail Processor 🤖 - Automate Email Processing with Ease
 
 [![GitHub](https://img.shields.io/github/license/ahochsteger/gmail-processor)](#license)
 [![GitHub release (with filter)](https://img.shields.io/github/v/release/ahochsteger/gmail-processor)](https://github.com/ahochsteger/gmail-processor/releases)
+[![GitHub Release Date - Published_At](https://img.shields.io/github/release-date/ahochsteger/gmail-processor)](https://github.com/ahochsteger/gmail-processor/releases)
+[![GitHub Workflow Status (with event)](https://img.shields.io/github/actions/workflow/status/ahochsteger/gmail-processor/ci.yaml)](https://github.com/ahochsteger/gmail-processor/actions/workflows/ci.yaml)
+[![Coveralls branch](https://img.shields.io/coverallsCoverage/github/ahochsteger/gmail-processor)](https://coveralls.io/github/ahochsteger/gmail-processor)
+
+<details>
+<summary>More badges ...</summary>
+
 [![GitHub tag (with filter)](https://img.shields.io/github/v/tag/ahochsteger/gmail-processor)](https://github.com/ahochsteger/gmail-processor/tags)
 [![GitHub Repo stars](https://img.shields.io/github/stars/ahochsteger/gmail-processor)](https://github.com/ahochsteger/gmail-processor/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/ahochsteger/gmail-processor)](https://github.com/ahochsteger/gmail-processor/forks?include=active&page=1&period=2y&sort_by=last_updated)
 [![GitHub commit activity (branch)](https://img.shields.io/github/commit-activity/t/ahochsteger/gmail-processor)](https://github.com/ahochsteger/gmail-processor/commits)
+![GitHub repo size](https://img.shields.io/github/repo-size/ahochsteger/gmail-processor)
 [![GitHub contributors](https://img.shields.io/github/contributors/ahochsteger/gmail-processor)](https://github.com/ahochsteger/gmail-processor/graphs/contributors)
 [![All Contributors](https://img.shields.io/badge/all_contributors-12-orange.svg?style=flat-square)](#contributors)
 
@@ -14,10 +22,6 @@
 [![GitHub pull requests](https://img.shields.io/github/issues-pr/ahochsteger/gmail-processor)](https://github.com/ahochsteger/gmail-processor/pulls)
 [![GitHub closed pull requests](https://img.shields.io/github/issues-pr-closed/ahochsteger/gmail-processor)](https://github.com/ahochsteger/gmail-processor/pulls?q=is%3Apr+is%3Aclosed)
 
-[![GitHub Workflow Status (with event)](https://img.shields.io/github/actions/workflow/status/ahochsteger/gmail-processor/ci.yaml)](https://github.com/ahochsteger/gmail-processor/actions/workflows/ci.yaml)
-[![Coveralls branch](https://img.shields.io/coverallsCoverage/github/ahochsteger/gmail-processor)](https://coveralls.io/github/ahochsteger/gmail-processor)
-![GitHub repo size](https://img.shields.io/github/repo-size/ahochsteger/gmail-processor)
-
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=ahochsteger_gmail-processor&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=ahochsteger_gmail-processor)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=ahochsteger_gmail-processor&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=ahochsteger_gmail-processor)
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=ahochsteger_gmail-processor&metric=bugs)](https://sonarcloud.io/summary/new_code?id=ahochsteger_gmail-processor)
@@ -25,8 +29,11 @@
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=ahochsteger_gmail-processor&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=ahochsteger_gmail-processor)
 [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=ahochsteger_gmail-processor&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=ahochsteger_gmail-processor)
 [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=ahochsteger_gmail-processor&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=ahochsteger_gmail-processor)
+</details>
 
-**[Gmail Processor](https://github.com/ahochsteger/gmail-processor)** is an open-source project that automates the processing of Gmail messages and attachments using [Google Apps Script](https://www.google.com/script/start/) and execute actions (e.g. store attachments in a GDrive folder, log information in a spreadsheet) depending on matching criteria.
+**[Gmail Processor](https://github.com/ahochsteger/gmail-processor)** is an open-source [Google Apps Script](https://www.google.com/script/start/) library that automates the processing of Gmail messages and attachments by executing actions (e.g. store attachments in a GDrive folder, log information in a spreadsheet) depending on powerful matching criteria.
+
+![Dall-e generated image: A friendly smiling robot sitting on a table, sorting mails into three paper trays, colorful flat style, white background](./docs/images/gmail-processor-robot-256.png)
 
 Gmail Processor is the successor of [Gmail2GDrive](https://github.com/ahochsteger/gmail-processor/tree/1.x) with vastly enhanced functionality, completely re-written in [TypeScript](https://www.typescriptlang.org/) with extensibility and stability in mind, using a modern development setup and automation all over the place (dependency updates, tests, documentation, releases, deployments). There's a convenient migration available to convert your old configuration to the new format (see [Getting Started: Migrating from GMail2GDrive v1](#migrate-from-gmail2gdrive)).
 
