@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.3](https://github.com/ahochsteger/gmail-processor/compare/2.0.2...2.0.3) (2023-08-27)
+
+
+### Bug Fixes
+
+* failure on locations without leading slash ([0d1adb4](https://github.com/ahochsteger/gmail-processor/commit/0d1adb442c1d3b0541fc754a9bba23ae6b56d783))
+
 ## [2.0.2](https://github.com/ahochsteger/gmail-processor/compare/2.0.1...2.0.2) (2023-08-25)
 
 
