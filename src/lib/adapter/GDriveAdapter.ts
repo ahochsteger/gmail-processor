@@ -18,9 +18,9 @@ export enum ConflictStrategy {
   UPDATE = "update",
 }
 
-type LocationInfo = {
+export type LocationInfo = {
   filename: string
-  folderId: string | null
+  folderId?: string
   folderPath: string
   fullPath: string
   location: string
@@ -147,22 +147,26 @@ export class DriveUtils {
   }
 
   public static extractLocationInfo(location: string): LocationInfo {
-    // See regex tests on regex101.com: https://regex101.com/r/rIxb5B/1
+    // See regex tests on regex101.com: https://regex101.com/r/rIxb5B/4
     const locationRegex =
-      /^({id:(?<folderId>[^}]*)})?(?<fullpath>(?<folderPath>(\/([^/\n]+))*)\/(?<filename>[^/\n]+))$/
+      /^({id:(?<folderId>[^}]+)}\/)?(?<folderPath>[^\n]*\/)?(?<filename>[^/\n]+)$/
     const matches = locationRegex.exec(location)
     if (!matches || !matches.groups) {
       throw new Error(`Invalid location format: ${location}`)
     }
+    const folderId = matches.groups.folderId
+    let folderPath = matches.groups.folderPath ?? ""
+    if (folderPath.startsWith("/")) folderPath = folderPath.slice(1)
+    if (folderPath.endsWith("/")) folderPath = folderPath.slice(0, -1)
+    const filename = matches.groups.filename
+    const fullPath = `${folderPath ? folderPath + "/" : ""}${filename}`
     return {
       location,
-      folderId: matches.groups.folderId,
-      pathSegments: matches.groups.folderPath.startsWith("/")
-        ? matches.groups.folderPath.slice(1).split("/")
-        : [],
-      filename: matches.groups.filename,
-      folderPath: matches.groups.folderPath,
-      fullPath: matches.groups.fullPath,
+      folderId,
+      pathSegments: folderPath ? folderPath.split("/") : [],
+      filename,
+      folderPath: folderPath,
+      fullPath: fullPath,
     }
   }
 

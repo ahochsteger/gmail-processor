@@ -33,9 +33,19 @@ it("should provide attachment.store in the action registry", () => {
   expect(actual).toEqual(expected)
 })
 
-it("should create a file", () => {
+it("should create a file with leading slash location", () => {
   const result = AttachmentActions.store(mocks.attachmentContext, {
     location: `/${NEW_FILE_NAME}`,
+    conflictStrategy: ConflictStrategy.KEEP,
+    description: "automated test",
+  })
+  expect(result.gdriveFile).toBe(mocks.newFile)
+  expect(mocks.rootFolder.createFile).toBeCalled()
+})
+
+it("should create a file without a leading slash location", () => {
+  const result = AttachmentActions.store(mocks.attachmentContext, {
+    location: `${NEW_FILE_NAME}`,
     conflictStrategy: ConflictStrategy.KEEP,
     description: "automated test",
   })

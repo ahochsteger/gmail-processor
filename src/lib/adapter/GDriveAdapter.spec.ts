@@ -12,7 +12,13 @@ import {
 } from "../../test/mocks/GDriveMocks"
 import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
 import { RunMode } from "../Context"
-import { ConflictStrategy, FileContent, GDriveAdapter } from "./GDriveAdapter"
+import {
+  ConflictStrategy,
+  DriveUtils,
+  FileContent,
+  GDriveAdapter,
+  LocationInfo,
+} from "./GDriveAdapter"
 
 let mocks: Mocks
 let gdriveAdapter: GDriveAdapter
@@ -186,7 +192,47 @@ describe("createFile() with folderId", () => {
     expect(file.getId()).toEqual(NEW_NESTED_FILE_ID)
   })
 })
-
+describe("DriveUtils.extractLocationInfo()", () => {
+  it("should parse locations with folder IDs", () => {
+    const location = `{id:${ROOT_FOLDER_ID}}/${NEW_FOLDER_NAME}/${NEW_NESTED_FILE_NAME}`
+    const actual = DriveUtils.extractLocationInfo(location)
+    const expected: LocationInfo = {
+      folderId: ROOT_FOLDER_ID,
+      folderPath: `${NEW_FOLDER_NAME}`,
+      filename: NEW_NESTED_FILE_NAME,
+      fullPath: `${NEW_FOLDER_NAME}/${NEW_NESTED_FILE_NAME}`,
+      location: location,
+      pathSegments: [NEW_FOLDER_NAME],
+    }
+    expect(actual).toMatchObject(expected)
+  })
+  it("should parse locations with leading slashes", () => {
+    const location = `/${NEW_FOLDER_NAME}/${NEW_NESTED_FILE_NAME}`
+    const actual = DriveUtils.extractLocationInfo(location)
+    const expected: LocationInfo = {
+      folderPath: `${NEW_FOLDER_NAME}`,
+      filename: NEW_NESTED_FILE_NAME,
+      fullPath: `${NEW_FOLDER_NAME}/${NEW_NESTED_FILE_NAME}`,
+      location: location,
+      pathSegments: [NEW_FOLDER_NAME],
+    }
+    expect(actual).toMatchObject(expected)
+    expect(actual.folderId).toBeUndefined()
+  })
+  it("should parse locations without leading slashes", () => {
+    const location = `/${NEW_FOLDER_NAME}/${NEW_NESTED_FILE_NAME}`
+    const actual = DriveUtils.extractLocationInfo(location)
+    const expected: LocationInfo = {
+      folderPath: `${NEW_FOLDER_NAME}`,
+      filename: NEW_NESTED_FILE_NAME,
+      fullPath: `${NEW_FOLDER_NAME}/${NEW_NESTED_FILE_NAME}`,
+      location: location,
+      pathSegments: [NEW_FOLDER_NAME],
+    }
+    expect(actual).toMatchObject(expected)
+    expect(actual.folderId).toBeUndefined()
+  })
+})
 test.todo("should transparently create a folder or return an existing one")
 test.todo(
   "should get a collection of files within a folder matching the given name",
