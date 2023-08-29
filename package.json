@@ -74,7 +74,7 @@
     "all-contributors-cli": "^6.26.1",
     "concurrently": "^8.2.1",
     "eslint": "^8.48.0",
-    "eslint-config-prettier": "^8.8.0",
+    "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-googleappsscript": "^1.0.5",
     "eslint-plugin-prettier": "^4.2.1",
     "gas-webpack-plugin": "^2.5.0",
