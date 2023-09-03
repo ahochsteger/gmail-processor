@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.0.4](https://github.com/ahochsteger/gmail-processor/compare/2.0.3...2.0.4) (2023-09-03)
+
+
+### Bug Fixes
+
+* logger uses wrong console log levels ([a40407d](https://github.com/ahochsteger/gmail-processor/commit/a40407de54ff91fb41af4002bf74ad3ddcc89ee6))
+* TypeError on empty message subjects ([9976e45](https://github.com/ahochsteger/gmail-processor/commit/9976e45c19c93471b9ede504d575ecaac6016ef4)), closes [#105](https://github.com/ahochsteger/gmail-processor/issues/105)
+
 ## [2.0.3](https://github.com/ahochsteger/gmail-processor/compare/2.0.2...2.0.3) (2023-08-27)
 
 
