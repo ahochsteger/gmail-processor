@@ -127,6 +127,11 @@ export abstract class BaseProcessor {
     return true
   }
 
+  protected static matchError(ctx: ProcessingContext, message: string): boolean {
+    ctx.log.warn(`MATCH ERROR: ${message}`)
+    return false
+  }
+
   protected static noMatch(ctx: ProcessingContext, message: string): boolean {
     ctx.log.debug(`NO MATCH: ${message}`)
     return false
@@ -193,7 +198,7 @@ export abstract class BaseProcessor {
     global: number | undefined,
     local: number,
     unsetValue: number,
-  ): typeof unsetValue {
+  ): number {
     return this.effectiveValue(global, local, unsetValue) as number
   }
 

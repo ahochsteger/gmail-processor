@@ -48,52 +48,56 @@ export class MessageProcessor extends BaseProcessor {
     matchConfig: RequiredMessageMatchConfig,
     message: GoogleAppsScript.Gmail.GmailMessage,
   ) {
-    if (!message.getFrom().match(matchConfig.from))
-      return this.noMatch(
-        ctx,
-        `from '${message.getFrom()}' does not match '${matchConfig.from}'`,
-      )
-    if (!message.getTo().match(matchConfig.to))
-      return this.noMatch(
-        ctx,
-        `to '${message.getTo()}' does not match '${matchConfig.to}'`,
-      )
-    if (!message.getSubject().match(matchConfig.subject))
-      return this.noMatch(
-        ctx,
-        `subject '${message.getSubject()}' does not match '${
-          matchConfig.subject
-        }'`,
-      )
-    if (!this.matchTimestamp(matchConfig.newerThan, message.getDate(), true))
-      return this.noMatch(
-        ctx,
-        `date '${message.getDate()}' not newer than '${matchConfig.newerThan}'`,
-      )
-    if (!this.matchTimestamp(matchConfig.olderThan, message.getDate(), false))
-      return this.noMatch(
-        ctx,
-        `date '${message.getDate()}' not older than '${matchConfig.olderThan}'`,
-      )
-    for (let i = 0; i < matchConfig.is.length; i++) {
-      const flag = matchConfig.is[i]
-      switch (flag) {
-        case MessageFlag.READ:
-          if (message.isUnread())
-            return this.noMatch(ctx, `message is not read`)
-          break
-        case MessageFlag.UNREAD:
-          if (!message.isUnread()) return this.noMatch(ctx, `message is read`)
-          break
-        case MessageFlag.STARRED:
-          if (!message.isStarred())
-            return this.noMatch(ctx, `message is not starred`)
-          break
-        case MessageFlag.UNSTARRED:
-          if (message.isStarred())
-            return this.noMatch(ctx, `message is starred`)
-          break
+    try {
+      if (!message.getFrom().match(matchConfig.from))
+        return this.noMatch(
+          ctx,
+          `from '${message.getFrom()}' does not match '${matchConfig.from}'`,
+        )
+      if (!message.getTo().match(matchConfig.to))
+        return this.noMatch(
+          ctx,
+          `to '${message.getTo()}' does not match '${matchConfig.to}'`,
+        )
+      if (!(message.getSubject() ?? "").match(matchConfig.subject))
+        return this.noMatch(
+          ctx,
+          `subject '${message.getSubject()}' does not match '${
+            matchConfig.subject
+          }'`,
+        )
+      if (!this.matchTimestamp(matchConfig.newerThan, message.getDate(), true))
+        return this.noMatch(
+          ctx,
+          `date '${message.getDate()}' not newer than '${matchConfig.newerThan}'`,
+        )
+      if (!this.matchTimestamp(matchConfig.olderThan, message.getDate(), false))
+        return this.noMatch(
+          ctx,
+          `date '${message.getDate()}' not older than '${matchConfig.olderThan}'`,
+        )
+      for (let i = 0; i < matchConfig.is.length; i++) {
+        const flag = matchConfig.is[i]
+        switch (flag) {
+          case MessageFlag.READ:
+            if (message.isUnread())
+              return this.noMatch(ctx, `message is not read`)
+            break
+          case MessageFlag.UNREAD:
+            if (!message.isUnread()) return this.noMatch(ctx, `message is read`)
+            break
+          case MessageFlag.STARRED:
+            if (!message.isStarred())
+              return this.noMatch(ctx, `message is not starred`)
+            break
+          case MessageFlag.UNSTARRED:
+            if (message.isStarred())
+              return this.noMatch(ctx, `message is starred`)
+            break
+        }
       }
+    } catch(e) {
+      return this.matchError(ctx, `Skipping message (id:${message.getId()}) due to error during match check: ${e} (matchConfig: ${JSON.stringify(matchConfig)})`)
     }
     return true
   }

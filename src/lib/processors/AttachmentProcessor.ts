@@ -45,38 +45,42 @@ export class AttachmentProcessor extends BaseProcessor {
     matchConfig: RequiredAttachmentMatchConfig,
     attachment: GoogleAppsScript.Gmail.GmailAttachment,
   ) {
-    if (!attachment.getContentType().match(matchConfig.contentType))
-      return this.noMatch(
-        ctx,
-        `contentType '${attachment.getContentType()}' does not match '${
-          matchConfig.contentType
-        }'`,
+    try {
+      if (!attachment.getContentType().match(matchConfig.contentType))
+        return this.noMatch(
+          ctx,
+          `contentType '${attachment.getContentType()}' does not match '${
+            matchConfig.contentType
+          }'`,
+        )
+      if (!attachment.getName().match(matchConfig.name))
+        return this.noMatch(
+          ctx,
+          `name '${attachment.getName()}' does not match '${matchConfig.name}'`,
+        )
+      if (
+        matchConfig.largerThan != -1 &&
+        attachment.getSize() <= matchConfig.largerThan
       )
-    if (!attachment.getName().match(matchConfig.name))
-      return this.noMatch(
-        ctx,
-        `name '${attachment.getName()}' does not match '${matchConfig.name}'`,
+        return this.noMatch(
+          ctx,
+          `size ${attachment.getSize()} not larger than ${
+            matchConfig.largerThan
+          }`,
+        )
+      if (
+        matchConfig.smallerThan != -1 &&
+        attachment.getSize() >= matchConfig.smallerThan
       )
-    if (
-      matchConfig.largerThan != -1 &&
-      attachment.getSize() <= matchConfig.largerThan
-    )
-      return this.noMatch(
-        ctx,
-        `size ${attachment.getSize()} not larger than ${
-          matchConfig.largerThan
-        }`,
-      )
-    if (
-      matchConfig.smallerThan != -1 &&
-      attachment.getSize() >= matchConfig.smallerThan
-    )
-      return this.noMatch(
-        ctx,
-        `size ${attachment.getSize()} not smaller than ${
-          matchConfig.smallerThan
-        }`,
-      )
+        return this.noMatch(
+          ctx,
+          `size ${attachment.getSize()} not smaller than ${
+            matchConfig.smallerThan
+          }`,
+        )
+    } catch(e) {
+      return this.matchError(ctx, `Skipping attachment (name:${attachment.getName()}, hash:${attachment.getHash()}) due to error during match check: ${e} (matchConfig: ${JSON.stringify(matchConfig)})`)
+    }
     return true
   }
 

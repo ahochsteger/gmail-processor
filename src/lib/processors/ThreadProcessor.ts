@@ -268,48 +268,52 @@ export class ThreadProcessor extends BaseProcessor {
     matchConfig: RequiredThreadMatchConfig,
     thread: GoogleAppsScript.Gmail.GmailThread,
   ): boolean {
-    if (!thread.getFirstMessageSubject().match(matchConfig.firstMessageSubject))
-      return this.noMatch(
-        ctx,
-        `firstMessageSubject '${thread.getFirstMessageSubject()}' does not match '${
-          matchConfig.firstMessageSubject
-        }'`,
-      )
-    if (
-      matchConfig.minMessageCount != -1 &&
-      thread.getMessageCount() < matchConfig.minMessageCount
-    )
-      return this.noMatch(
-        ctx,
-        `messageCount ${thread.getMessageCount()} < minMessageCount ${
-          matchConfig.minMessageCount
-        }`,
-      )
-    if (
-      matchConfig.maxMessageCount != -1 &&
-      thread.getMessageCount() > matchConfig.maxMessageCount
-    )
-      return this.noMatch(
-        ctx,
-        `messageCount ${thread.getMessageCount()} > maxMessageCount ${
-          matchConfig.maxMessageCount
-        }`,
-      )
-    const threadLabels = thread
-      .getLabels()
-      .map((l) => l.getName())
-      .join(",")
-    if (
-      !matchConfig.labels
-        .split(",")
-        .every((matchLabel) =>
-          thread.getLabels().map((l) => l.getName() == matchLabel),
+    try {
+      if (!(thread.getFirstMessageSubject() ?? "").match(matchConfig.firstMessageSubject))
+        return this.noMatch(
+          ctx,
+          `firstMessageSubject '${thread.getFirstMessageSubject()}' does not match '${
+            matchConfig.firstMessageSubject
+          }'`,
         )
-    )
-      return this.noMatch(
-        ctx,
-        `labels '${threadLabels}' do not contain all of '${matchConfig.labels}'`,
+      if (
+        matchConfig.minMessageCount != -1 &&
+        thread.getMessageCount() < matchConfig.minMessageCount
       )
+        return this.noMatch(
+          ctx,
+          `messageCount ${thread.getMessageCount()} < minMessageCount ${
+            matchConfig.minMessageCount
+          }`,
+        )
+      if (
+        matchConfig.maxMessageCount != -1 &&
+        thread.getMessageCount() > matchConfig.maxMessageCount
+      )
+        return this.noMatch(
+          ctx,
+          `messageCount ${thread.getMessageCount()} > maxMessageCount ${
+            matchConfig.maxMessageCount
+          }`,
+        )
+      const threadLabels = thread
+        .getLabels()
+        .map((l) => l.getName())
+        .join(",")
+      if (
+        !matchConfig.labels
+          .split(",")
+          .every((matchLabel) =>
+            thread.getLabels().map((l) => l.getName() == matchLabel),
+          )
+      )
+        return this.noMatch(
+          ctx,
+          `labels '${threadLabels}' do not contain all of '${matchConfig.labels}'`,
+        )
+    } catch(e) {
+      return this.matchError(ctx, `Skipping thread (id:${JSON.stringify(thread.getId())}) due to error during match check: ${e} (matchConfig: ${JSON.stringify(matchConfig)})`)
+    }
     return true
   }
 
@@ -345,7 +349,7 @@ export class ThreadProcessor extends BaseProcessor {
           ctx.log.debug(
             `Skipping non-matching thread id ${thread.getId()} (date:'${thread
               .getLastMessageDate()
-              .toISOString()}',  subject:'${thread.getFirstMessageSubject()}').`,
+              .toISOString()}',  firstMessageSubject:'${thread.getFirstMessageSubject()}').`,
           )
           continue
         }
