@@ -78,8 +78,13 @@ export class AttachmentProcessor extends BaseProcessor {
             matchConfig.smallerThan
           }`,
         )
-    } catch(e) {
-      return this.matchError(ctx, `Skipping attachment (name:${attachment.getName()}, hash:${attachment.getHash()}) due to error during match check: ${e} (matchConfig: ${JSON.stringify(matchConfig)})`)
+    } catch (e) {
+      return this.matchError(
+        ctx,
+        `Skipping attachment (name:${attachment.getName()}, hash:${attachment.getHash()}) due to error during match check: ${e} (matchConfig: ${JSON.stringify(
+          matchConfig,
+        )})`,
+      )
     }
     return true
   }

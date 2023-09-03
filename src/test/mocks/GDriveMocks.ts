@@ -117,7 +117,7 @@ export class GDriveMocks {
     folder.createFolder
       .calledWith(anyString())
       .mockImplementation((name: string) => {
-        throw Error(`Cannot create folder ${name} - no mock data available!`)
+        throw Error(`Cannot create folder '${name}' - no mock data available!`)
       })
       .mockName("createFolder-error")
 

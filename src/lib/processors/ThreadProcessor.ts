@@ -269,7 +269,11 @@ export class ThreadProcessor extends BaseProcessor {
     thread: GoogleAppsScript.Gmail.GmailThread,
   ): boolean {
     try {
-      if (!(thread.getFirstMessageSubject() ?? "").match(matchConfig.firstMessageSubject))
+      if (
+        !(thread.getFirstMessageSubject() ?? "").match(
+          matchConfig.firstMessageSubject,
+        )
+      )
         return this.noMatch(
           ctx,
           `firstMessageSubject '${thread.getFirstMessageSubject()}' does not match '${
@@ -311,8 +315,15 @@ export class ThreadProcessor extends BaseProcessor {
           ctx,
           `labels '${threadLabels}' do not contain all of '${matchConfig.labels}'`,
         )
-    } catch(e) {
-      return this.matchError(ctx, `Skipping thread (id:${JSON.stringify(thread.getId())}) due to error during match check: ${e} (matchConfig: ${JSON.stringify(matchConfig)})`)
+    } catch (e) {
+      return this.matchError(
+        ctx,
+        `Skipping thread (id:${JSON.stringify(
+          thread.getId(),
+        )}) due to error during match check: ${e} (matchConfig: ${JSON.stringify(
+          matchConfig,
+        )})`,
+      )
     }
     return true
   }

@@ -69,12 +69,16 @@ export class MessageProcessor extends BaseProcessor {
       if (!this.matchTimestamp(matchConfig.newerThan, message.getDate(), true))
         return this.noMatch(
           ctx,
-          `date '${message.getDate()}' not newer than '${matchConfig.newerThan}'`,
+          `date '${message.getDate()}' not newer than '${
+            matchConfig.newerThan
+          }'`,
         )
       if (!this.matchTimestamp(matchConfig.olderThan, message.getDate(), false))
         return this.noMatch(
           ctx,
-          `date '${message.getDate()}' not older than '${matchConfig.olderThan}'`,
+          `date '${message.getDate()}' not older than '${
+            matchConfig.olderThan
+          }'`,
         )
       for (let i = 0; i < matchConfig.is.length; i++) {
         const flag = matchConfig.is[i]
@@ -96,8 +100,13 @@ export class MessageProcessor extends BaseProcessor {
             break
         }
       }
-    } catch(e) {
-      return this.matchError(ctx, `Skipping message (id:${message.getId()}) due to error during match check: ${e} (matchConfig: ${JSON.stringify(matchConfig)})`)
+    } catch (e) {
+      return this.matchError(
+        ctx,
+        `Skipping message (id:${message.getId()}) due to error during match check: ${e} (matchConfig: ${JSON.stringify(
+          matchConfig,
+        )})`,
+      )
     }
     return true
   }

@@ -19,10 +19,7 @@ export enum LogLevel {
 }
 
 export class Logger {
-  getMessage(
-    message?: unknown,
-    level: LogLevel = LogLevel.INFO,
-  ) {
+  getMessage(message?: unknown, level: LogLevel = LogLevel.INFO) {
     return `[${new Date().toISOString()}] ${level.toUpperCase()}: ${message}`
   }
   log(
@@ -31,9 +28,9 @@ export class Logger {
     ...optionalParams: unknown[]
   ) {
     if ([LogLevel.WARN, LogLevel.ERROR].includes(level)) {
-      console.error(this.getMessage(message,level),...optionalParams)
+      console.error(this.getMessage(message, level), ...optionalParams)
     } else {
-      console.log(this.getMessage(message,level),...optionalParams)
+      console.log(this.getMessage(message, level), ...optionalParams)
     }
   }
   debug(message?: unknown, ...optionalParams: unknown[]) {

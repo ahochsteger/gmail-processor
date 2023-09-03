@@ -127,7 +127,10 @@ export abstract class BaseProcessor {
     return true
   }
 
-  protected static matchError(ctx: ProcessingContext, message: string): boolean {
+  protected static matchError(
+    ctx: ProcessingContext,
+    message: string,
+  ): boolean {
     ctx.log.warn(`MATCH ERROR: ${message}`)
     return false
   }
