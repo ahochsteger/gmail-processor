@@ -1,4 +1,5 @@
 import { Session } from "google-apps-script"
+import EnvContext from "../../lib/Context"
 import * as GmailProcessorLib from "../../lib/index"
 
 /** @type {GmailProcessorLib.E2EConfig} */

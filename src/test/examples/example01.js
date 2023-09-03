@@ -1,6 +1,7 @@
+import EnvContext from "../../lib/Context"
 import * as GmailProcessorLib from "../../lib/index"
 
-/** @type {Config} */
+/** @type {GmailProcessorLib.Config} */
 export const example01Config = {
   description: "An example V2 configuration",
   settings: {

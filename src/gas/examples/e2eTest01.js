@@ -1,4 +1,4 @@
-/** @type {Config} */
+/** @type {GmailProcessorLib.Config} */
 const e2eTest01Config = {
   description: "End-to-end (E2E) test configuration",
   settings: {

@@ -1,6 +1,7 @@
+import EnvContext from "../../lib/Context"
 import * as GmailProcessorLib from "../../lib/index"
 
-/** @type {Config} */
+/** @type {GmailProcessorLib.Config} */
 export const gettingStartedAddLabelConfig = {
   settings: {
     // Decide on the method to be used to mark processed threads/messages:

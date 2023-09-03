@@ -1,4 +1,4 @@
-/** @type {Config} */
+/** @type {GmailProcessorLib.Config} */
 const example01Config = {
   description: "An example V2 configuration",
   settings: {

@@ -1,6 +1,6 @@
 import * as GmailProcessorLib from "../../lib/index"
 
-/** @type {V1Config} */
+/** @type {GmailProcessorLib.V1Config} */
 export const migrationExample01Config = {
   globalFilter: "has:attachment -in:trash -in:drafts -in:spam",
   processedLabel: "gmail2gdrive/client-test",

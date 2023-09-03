@@ -1,6 +1,7 @@
+import EnvContext from "../../lib/Context"
 import * as GmailProcessorLib from "../../lib/index"
 
-/** @type {Config} */
+/** @type {GmailProcessorLib.Config} */
 export const gettingStartedConfig = {
   settings: {
     // Place settings here

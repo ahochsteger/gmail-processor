@@ -1,6 +1,7 @@
+import EnvContext from "../../lib/Context"
 import * as GmailProcessorLib from "../../lib/index"
 
-/** @type {Config} */
+/** @type {GmailProcessorLib.Config} */
 export const e2eTest01Config = {
   description: "End-to-end (E2E) test configuration",
   settings: {

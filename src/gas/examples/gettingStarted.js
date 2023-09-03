@@ -1,4 +1,4 @@
-/** @type {Config} */
+/** @type {GmailProcessorLib.Config} */
 const gettingStartedConfig = {
   settings: {
     // Place settings here

@@ -1,4 +1,4 @@
-/** @type {Config} */
+/** @type {GmailProcessorLib.Config} */
 const exampleMinConfig = {
   threads: [{}],
 }

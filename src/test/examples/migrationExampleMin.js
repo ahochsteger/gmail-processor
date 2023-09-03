@@ -1,6 +1,6 @@
 import * as GmailProcessorLib from "../../lib/index"
 
-/** @type {V1Config} */
+/** @type {GmailProcessorLib.V1Config} */
 export const migrationExampleMinConfig = {
   processedLabel: "gmail2gdrive/client-test",
   sleepTime: 100,
