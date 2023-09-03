@@ -28,14 +28,14 @@ it("should log an info message", () => {
 })
 
 it("should log a warning message", () => {
-  const spy = jest.spyOn(console, "log").mockImplementation()
+  const spy = jest.spyOn(console, "error").mockImplementation()
   spy.mockClear()
   logger.warn("Log message")
   expect(spy.mock.calls[0][0]).toMatch(/^\[[^\]]+\] WARN: Log message$/)
 })
 
 it("should log an error message", () => {
-  const spy = jest.spyOn(console, "log").mockImplementation()
+  const spy = jest.spyOn(console, "error").mockImplementation()
   spy.mockClear()
   logger.error("Log message")
   expect(spy.mock.calls[0][0]).toMatch(/^\[[^\]]+\] ERROR: Log message$/)
@@ -46,7 +46,7 @@ it("should log an EnvContext", () => {
   const ctx = mocks.envContext
   spy.mockClear()
   logger.logEnvContext(ctx, LogLevel.WARN)
-  expect(spy.mock.calls[0][0]).toMatch(/^\[[^\]]+\] WARN: EnvContext: .+/)
+  expect(spy.mock.calls[0][0]).toMatch(/^\[[^\]]+\] DEBUG: EnvContext: .+/)
 })
 
 it("should log an ProcessingContext", () => {
@@ -64,7 +64,7 @@ it("should log an ThreadContext", () => {
   const ctx = mocks.threadContext
   spy.mockClear()
   logger.logThreadContext(ctx, LogLevel.ERROR)
-  expect(spy.mock.calls[0][0]).toMatch(/^\[[^\]]+\] ERROR: ThreadContext: .+/)
+  expect(spy.mock.calls[0][0]).toMatch(/^\[[^\]]+\] DEBUG: ThreadContext: .+/)
 })
 
 it("should log an MessageContext", () => {
@@ -72,7 +72,7 @@ it("should log an MessageContext", () => {
   const ctx = mocks.messageContext
   spy.mockClear()
   logger.logMessageContext(ctx, LogLevel.INFO)
-  expect(spy.mock.calls[0][0]).toMatch(/^\[[^\]]+\] INFO: MessageContext: .+/)
+  expect(spy.mock.calls[0][0]).toMatch(/^\[[^\]]+\] DEBUG: MessageContext: .+/)
 })
 
 it("should log an AttachmentContext", () => {

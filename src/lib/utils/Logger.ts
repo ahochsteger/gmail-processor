@@ -19,15 +19,22 @@ export enum LogLevel {
 }
 
 export class Logger {
+  getMessage(
+    message?: unknown,
+    level: LogLevel = LogLevel.INFO,
+  ) {
+    return `[${new Date().toISOString()}] ${level.toUpperCase()}: ${message}`
+  }
   log(
     message?: unknown,
     level: LogLevel = LogLevel.INFO,
     ...optionalParams: unknown[]
   ) {
-    console.log(
-      `[${new Date().toISOString()}] ${level.toUpperCase()}: ${message}`,
-      ...optionalParams,
-    )
+    if ([LogLevel.WARN, LogLevel.ERROR].includes(level)) {
+      console.error(this.getMessage(message,level),...optionalParams)
+    } else {
+      console.log(this.getMessage(message,level),...optionalParams)
+    }
   }
   debug(message?: unknown, ...optionalParams: unknown[]) {
     this.log(message, LogLevel.DEBUG, ...optionalParams)
@@ -46,7 +53,7 @@ export class Logger {
       runMode: ctx.env.runMode,
       timezone: ctx.env.timezone,
     }
-    this.log(`EnvContext: ${JSON.stringify(logObj, null, 2)}`, level)
+    this.debug(`EnvContext: ${JSON.stringify(logObj, null, 2)}`, level)
   }
   logProcessingContext(
     ctx: ProcessingContext,
@@ -55,7 +62,7 @@ export class Logger {
     const logObj = {
       config: ctx.proc.config,
     }
-    this.log(`ProcessingContext: ${JSON.stringify(logObj, null, 2)}`, level)
+    this.debug(`ProcessingContext: ${JSON.stringify(logObj, null, 2)}`, level)
   }
   logThreadContext(ctx: ThreadContext, level: LogLevel = LogLevel.DEBUG) {
     const logObj = {
@@ -65,7 +72,7 @@ export class Logger {
         firstMessageSubject: ctx.thread.object.getFirstMessageSubject(),
       },
     }
-    this.log(`ThreadContext: ${JSON.stringify(logObj, null, 2)}`, level)
+    this.debug(`ThreadContext: ${JSON.stringify(logObj, null, 2)}`, level)
   }
   logMessageContext(ctx: MessageContext, level: LogLevel = LogLevel.DEBUG) {
     const logObj = {
@@ -77,7 +84,7 @@ export class Logger {
         to: ctx.message.object.getTo(),
       },
     }
-    this.log(`MessageContext: ${JSON.stringify(logObj, null, 2)}`, level)
+    this.debug(`MessageContext: ${JSON.stringify(logObj, null, 2)}`, level)
   }
   logAttachmentContext(
     ctx: AttachmentContext,
@@ -91,6 +98,6 @@ export class Logger {
         size: ctx.attachment.object.getSize(),
       },
     }
-    this.log(`AttachmentContext: ${JSON.stringify(logObj, null, 2)}`, level)
+    this.debug(`AttachmentContext: ${JSON.stringify(logObj, null, 2)}`, level)
   }
 }
