@@ -1,0 +1,4 @@
+{
+  "scriptId": "${CLASP_SCRIPT_ID}",
+  "projectId": "${GCLOUD_PROJECT_ID}"
+}
