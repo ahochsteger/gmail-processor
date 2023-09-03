@@ -259,11 +259,11 @@ export class GDriveAdapter extends BaseAdapter {
 
   /**
    * Creates a new file in Google Drive
-   * @param location The location of the file including the filename
-   * @param content The content of the file as a string representation
-   * @param mimeType The mime-type of the file
-   * @param description The description of the file
-   * @param conflictStrategy The conflict strategy in case a file already exists at the file location (skip, replace)
+   * @param location - The location of the file including the filename
+   * @param content - The content of the file as a string representation
+   * @param mimeType - The mime-type of the file
+   * @param description - The description of the file
+   * @param conflictStrategy - The conflict strategy in case a file already exists at the file location (skip, replace)
    */
   public createFile(
     location: string,

@@ -61,11 +61,12 @@ export {
   VariableEntry
 }
 
-/** Run Gmail Processor with the given config
- * @param {Config} configJson GmailProcessor configuration JSON - @see Config
- * @param {RunMode} runMode The processing mode - @see RunMode
- * @param {EnvContext} ctx The environment context to be used for processing - @see EnvContext
- * @returns {ProcessingResult} Processing result - @see ProcessingResult
+/**
+ * Run Gmail Processor with the given config
+ * @param configJson - GmailProcessor configuration JSON - @see Config
+ * @param runMode - The processing mode - @see RunMode
+ * @param ctx - The environment context to be used for processing - @see EnvContext
+ * @returns Processing result - @see ProcessingResult
  */
 export function run(
   configJson: PartialDeep<Config>,
@@ -77,8 +78,8 @@ export function run(
 
 /**
  * Convert a GMail2GDrive v1.x config JSON into a Gmail Processor config
- * @param {V1Config} v1configJson JSON of the v1 config
- * @returns {Config} Converted JSON config - @see Config
+ * @param v1configJson - JSON of the v1 config
+ * @returns Converted JSON config - @see Config
  */
 export function convertV1Config(
   v1configJson: PartialDeep<V1Config>,

@@ -17,10 +17,11 @@ import { PatternUtil } from "../utils/PatternUtil"
 export abstract class BaseProcessor {
   /**
    * Extends the given dataMap with additional data resulting from specified regex matches to perform.
-   * @param ctx Processing context
-   * @param m Map with meta infos as key/value pairs
-   * @param keyPrefix Key name prefix for the new map data (e.g. "message")
-   * @param regexMap Map with attribute names and regex to do matches on (e.g. {"subject": "Message ([0-9]+)"})
+   * @param ctx - Processing context
+   * @param m - Map with meta infos as key/value pairs
+   * @param keyPrefix - Key name prefix for the new map data (e.g. `message`)
+   * @param regexMap - Map with attribute names and regex to do matches on (e.g. `{"subject": "Message ([0-9]+)"}`)
+   * @returns Meta info map enhanced with regex substitution values
    */
   public static buildRegExpSubustitutionMap(
     ctx: ProcessingContext,

@@ -16,7 +16,8 @@ type LocationType = string
  * The method to mark processed threads/messages.
  */
 export enum MarkProcessedMethod {
-  /** (deprecated): Adds the label set using `markProcessedLabel` to the thread.
+  /**
+   * (deprecated): Adds the label set using `markProcessedLabel` to the thread.
    * ATTENTION: This method is just for compatibility with v1 configs and does not support multiple messages per thread!
    */
   ADD_THREAD_LABEL = "add-label",

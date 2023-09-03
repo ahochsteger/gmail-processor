@@ -357,8 +357,9 @@ export class MessageProcessor extends BaseProcessor {
 
   /**
    * Processes a message.
-   * @param message The message to be processed.
-   * @param rule The rule to be processed.
+   * @param ctx - The message context
+   * @param result - The processing result up to now
+   * @returns The result after processing
    */
   public static processEntity(
     ctx: MessageContext,
