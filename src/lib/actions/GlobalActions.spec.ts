@@ -19,7 +19,7 @@ it("should log with default level to console", () => {
 })
 
 it("should log to console with a certain log level to console", () => {
-  spy = jest.spyOn(console, "log").mockImplementation()
+  spy = jest.spyOn(console, "error").mockImplementation()
   GlobalActions.log(mocks.processingContext, {
     level: LogLevel.WARN,
     message: "Log message",
