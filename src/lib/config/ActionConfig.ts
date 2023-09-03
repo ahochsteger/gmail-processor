@@ -9,7 +9,7 @@ import { essentialObject } from "../utils/ConfigUtils"
 import { RequiredDeep } from "../utils/UtilityTypes"
 
 /**
- * The stage of processing
+ * The stage of action processing
  */
 export enum ProcessingStage {
   /** The stage before processing the main object (thread, message, attachment) */
