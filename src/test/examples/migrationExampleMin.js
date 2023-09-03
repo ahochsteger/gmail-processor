@@ -1,4 +1,7 @@
-const exampleMinConfigV1 = {
+import * as GmailProcessorLib from "../../lib/index"
+
+/** @type {V1Config} */
+export const migrationExampleMinConfig = {
   processedLabel: "gmail2gdrive/client-test",
   sleepTime: 100,
   maxRuntime: 280,
@@ -12,7 +15,8 @@ const exampleMinConfigV1 = {
   ],
 }
 
-function exampleMinConvertConfig() {
-  const config = GmailProcessorLib.convertV1Config(exampleMinConfigV1)
+export function migrationExampleMinConvertConfig() {
+  const config = GmailProcessorLib.convertV1Config(migrationExampleMinConfig)
   console.log(JSON.stringify(config, null, 2))
+  return config
 }

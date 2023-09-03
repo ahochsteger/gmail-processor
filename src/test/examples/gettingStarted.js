@@ -1,10 +1,7 @@
-import { PartialDeep } from "type-fest"
-import { RunMode } from "../../lib/Context"
-import { Config } from "../../lib/config/Config"
-import { GmailProcessorLib } from "../mocks/Examples"
-import { MockFactory, Mocks } from "../mocks/MockFactory"
+import * as GmailProcessorLib from "../../lib/index"
 
-const gettingStartedConfigV2: PartialDeep<Config> = {
+/** @type {Config} */
+export const gettingStartedConfig = {
   settings: {
     // Place settings here
   },
@@ -37,16 +34,13 @@ const gettingStartedConfigV2: PartialDeep<Config> = {
   ],
 }
 
-let mocks: Mocks
-beforeEach(() => {
-  mocks = MockFactory.newMocks(gettingStartedConfigV2, RunMode.DANGEROUS)
-})
-
-it("should process a v2 config example", () => {
-  const result = GmailProcessorLib.run(
-    gettingStartedConfigV2,
-    "dry-run",
-    mocks.envContext,
+export function gettingStartedRun(
+  /** @type {EnvContext | undefined} */
+  ctx,
+) {
+  return GmailProcessorLib.run(
+    gettingStartedConfig,
+    GmailProcessorLib.RunMode.DRY_RUN,
+    ctx,
   )
-  expect(result.status).toEqual("ok")
-})
+}

@@ -103,7 +103,7 @@ export default {
 
   // A preset that is used as a base for Jest's configuration
   // preset: undefined,
-  preset: "ts-jest",
+  preset: "ts-jest/presets/js-with-ts",
 
   // Run tests from one or more projects
   // projects: undefined,
@@ -186,6 +186,14 @@ export default {
   // transform: {
   //   '^.+\\.tsx?$': 'babel-jest',
   // },
+  transform: {
+    "^.+\\.tsx?$": [
+      "ts-jest",
+      {
+        /* ts-jest config goes here in Jest */
+      },
+    ],
+  },
 
   // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation
   // transformIgnorePatterns: [

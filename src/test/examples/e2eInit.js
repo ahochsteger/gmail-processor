@@ -1,5 +1,8 @@
+import { Session } from "google-apps-script"
+import * as GmailProcessorLib from "../../lib/index"
+
 /** @type {GmailProcessorLib.E2EConfig} */
-const e2eConfig = {
+export const e2eConfig = {
   globals: {
     repoBaseUrl:
       "https://raw.githubusercontent.com/ahochsteger/gmail-processor/main/src/e2e-test/files",
@@ -57,7 +60,7 @@ const e2eConfig = {
   ],
 }
 
-function e2eInit(
+export function e2eInit(
   /** @type {EnvContext | undefined} */
   ctx,
 ) {

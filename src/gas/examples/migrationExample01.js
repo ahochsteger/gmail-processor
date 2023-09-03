@@ -1,8 +1,5 @@
-import { convertV1Config } from "../../lib"
-import { V1Config } from "../../lib/config/v1/V1Config"
-import { PartialDeep } from "type-fest"
-
-const example01ConfigV1: PartialDeep<V1Config> = {
+/** @type {V1Config} */
+const migrationExample01Config = {
   globalFilter: "has:attachment -in:trash -in:drafts -in:spam",
   processedLabel: "gmail2gdrive/client-test",
   sleepTime: 100,
@@ -43,7 +40,8 @@ const example01ConfigV1: PartialDeep<V1Config> = {
   ],
 }
 
-it("should convert a v1 config example", () => {
-  const config = convertV1Config(example01ConfigV1)
+function migrationExample01ConvertConfig() {
+  const config = GmailProcessorLib.convertV1Config(migrationExample01Config)
   console.log(JSON.stringify(config, null, 2))
-})
+  return config
+}

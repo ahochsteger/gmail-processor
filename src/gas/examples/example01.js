@@ -1,4 +1,5 @@
-const example01ConfigV2 = {
+/** @type {Config} */
+const example01Config = {
   description: "An example V2 configuration",
   settings: {
     maxBatchSize: 10,
@@ -37,6 +38,13 @@ const example01ConfigV2 = {
   ],
 }
 
-function example01Run() {
-  GmailProcessorLib.run(example01ConfigV2, "dry-run")
+function example01Run(
+  /** @type {EnvContext | undefined} */
+  ctx,
+) {
+  return GmailProcessorLib.run(
+    example01Config,
+    GmailProcessorLib.RunMode.DRY_RUN,
+    ctx,
+  )
 }

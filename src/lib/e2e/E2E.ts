@@ -14,23 +14,27 @@ export type FileConfig = {
   destFolder: string
 }
 
-export type E2EConfig = {
-  globals: {
+export class E2EConfig {
+  public globals: {
     repoBaseUrl: string
     subjectPrefix: string
     to: string
+  } = {
+    repoBaseUrl: "",
+    subjectPrefix: "",
+    to: "",
   }
-  folders: {
+  public folders: {
     name: string
     location: string
-  }[]
-  files: FileConfig[]
-  mails: {
+  }[] = []
+  public files: FileConfig[] = []
+  public mails: {
     name: string
     subject: string
     htmlBody: string
     files: string[]
-  }[]
+  }[] = []
 }
 
 export class E2E {

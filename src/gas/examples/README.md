@@ -1,3 +1,5 @@
-# Gmail Processor Examples using GMail2GDrive v1.x Config Format
+# Gmail Processor Examples
 
-These are examples for the Google Apps Script Library Gmail Processor that show how to use the old configuration format of GMail2GDrive v1.x.
+These are generated examples for the Google Apps Script Library Gmail Processor.
+
+NOTE: Changes in this files will get overwritten - change the files at `src/test/examples/*.js` instead.

@@ -1,9 +1,11 @@
+import * as GmailProcessorLib from "../../lib/index"
+
 /** @type {Config} */
-const exampleMinConfig = {
+export const exampleMinConfig = {
   threads: [{}],
 }
 
-function exampleMinRun(
+export function exampleMinRun(
   /** @type {EnvContext | undefined} */
   ctx,
 ) {

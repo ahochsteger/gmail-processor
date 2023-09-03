@@ -1,10 +1,7 @@
-import { PartialDeep } from "type-fest"
-import { RunMode } from "../../lib/Context"
-import { Config } from "../../lib/config/Config"
-import { GmailProcessorLib } from "../mocks/Examples"
-import { MockFactory, Mocks } from "../mocks/MockFactory"
+import * as GmailProcessorLib from "../../lib/index"
 
-const example02ConfigV2: PartialDeep<Config> = {
+/** @type {Config} */
+export const example02Config = {
   description: "An example V2 configuration",
   settings: {
     maxBatchSize: 10,
@@ -59,16 +56,13 @@ const example02ConfigV2: PartialDeep<Config> = {
   ],
 }
 
-let mocks: Mocks
-beforeEach(() => {
-  mocks = MockFactory.newMocks(example02ConfigV2, RunMode.DANGEROUS)
-})
-
-it("should process a v2 config example", () => {
-  const result = GmailProcessorLib.run(
-    example02ConfigV2,
-    "dry-run",
-    mocks.envContext,
+export function example02Run(
+  /** @type {EnvContext | undefined} */
+  ctx,
+) {
+  return GmailProcessorLib.run(
+    example02Config,
+    GmailProcessorLib.RunMode.DRY_RUN,
+    ctx,
   )
-  expect(result.status).toEqual("ok")
-})
+}

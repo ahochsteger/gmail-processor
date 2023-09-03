@@ -1,4 +1,7 @@
-const example01ConfigV1 = {
+import * as GmailProcessorLib from "../../lib/index"
+
+/** @type {V1Config} */
+export const migrationExample01Config = {
   globalFilter: "has:attachment -in:trash -in:drafts -in:spam",
   processedLabel: "gmail2gdrive/client-test",
   sleepTime: 100,
@@ -39,7 +42,8 @@ const example01ConfigV1 = {
   ],
 }
 
-function example01ConvertConfig() {
-  const config = GmailProcessorLib.convertV1Config(example01ConfigV1)
+export function migrationExample01ConvertConfig() {
+  const config = GmailProcessorLib.convertV1Config(migrationExample01Config)
   console.log(JSON.stringify(config, null, 2))
+  return config
 }

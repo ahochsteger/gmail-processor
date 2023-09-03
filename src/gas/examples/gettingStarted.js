@@ -1,4 +1,5 @@
-const gettingStartedConfigV2 = {
+/** @type {Config} */
+const gettingStartedConfig = {
   settings: {
     // Place settings here
   },
@@ -31,6 +32,13 @@ const gettingStartedConfigV2 = {
   ],
 }
 
-function gettingStartedRun() {
-  GmailProcessorLib.run(gettingStartedConfigV2, "dry-run")
+function gettingStartedRun(
+  /** @type {EnvContext | undefined} */
+  ctx,
+) {
+  return GmailProcessorLib.run(
+    gettingStartedConfig,
+    GmailProcessorLib.RunMode.DRY_RUN,
+    ctx,
+  )
 }

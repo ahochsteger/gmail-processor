@@ -1,5 +1,7 @@
+import * as GmailProcessorLib from "../../lib/index"
+
 /** @type {Config} */
-const e2eTest01Config = {
+export const e2eTest01Config = {
   description: "End-to-end (E2E) test configuration",
   settings: {
     logSheetLocation:
@@ -131,7 +133,7 @@ const e2eTest01Config = {
   ],
 }
 
-function e2eTest01Run(
+export function e2eTest01Run(
   /** @type {EnvContext | undefined} */
   ctx,
 ) {
