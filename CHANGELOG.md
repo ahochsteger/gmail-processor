@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.5](https://github.com/ahochsteger/gmail-processor/compare/2.0.4...2.0.5) (2023-09-05)
+
+
+### Bug Fixes
+
+* action error handling ([d5a825c](https://github.com/ahochsteger/gmail-processor/commit/d5a825ce0f46e3a6419947faff9d385fe7f82a4f)), closes [#104](https://github.com/ahochsteger/gmail-processor/issues/104)
+
 ## [2.0.4](https://github.com/ahochsteger/gmail-processor/compare/2.0.3...2.0.4) (2023-09-03)
 
 
