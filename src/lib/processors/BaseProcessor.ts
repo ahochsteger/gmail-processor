@@ -10,7 +10,7 @@ import {
   ThreadContext,
   newMetaInfo as mi,
 } from "../Context"
-import { ActionArgsType } from "../actions/ActionRegistry"
+import { ActionArgsType, ActionReturnType } from "../actions/ActionRegistry"
 import { ActionConfig, ProcessingStage } from "../config/ActionConfig"
 import { PatternUtil } from "../utils/PatternUtil"
 
@@ -78,6 +78,26 @@ export abstract class BaseProcessor {
     return m
   }
 
+  protected static handleActionResult(
+    result: ProcessingResult,
+    action: ActionConfig,
+    actionResult: ActionReturnType,
+  ): ProcessingResult {
+    result.executedActions.push(action)
+    if (!actionResult.ok) {
+      result.status = ProcessingStatus.ERROR
+      result.failedAction = action
+      result.error = actionResult.error
+      throw new ProcessingError(
+        `Error "${String(actionResult.error)}" during execution of action ${
+          action.name
+        } using args ${JSON.stringify(action.args)}!`,
+        result,
+      )
+    }
+    return result
+  }
+
   protected static executeActions(
     ctx: ProcessingContext,
     processingStage: ProcessingStage,
@@ -88,28 +108,20 @@ export abstract class BaseProcessor {
       ;(actions || [])
         .filter((action) => action.processingStage === processingStage)
         .forEach((action) => {
+          let actionResult: ActionReturnType
           try {
-            ctx.proc.actionRegistry.executeAction(
+            actionResult = ctx.proc.actionRegistry.executeAction(
               ctx,
               action.name,
               action.args as ActionArgsType,
             )
-            result.executedActions.push(action)
           } catch (err) {
-            result.failedAction = action
-            result.status = ProcessingStatus.ERROR
-            if (err instanceof Error) {
-              result.error = err
-            } else {
-              result.error = new Error(String(err))
+            actionResult = {
+              ok: false,
+              error: err instanceof Error ? err : new Error(String(err)),
             }
-            throw new ProcessingError(
-              `Error "${result.error.message}" during execution of action ${
-                action.name
-              } using args ${JSON.stringify(action.args)}!`,
-              result,
-            )
           }
+          result = this.handleActionResult(result, action, actionResult)
         })
     })
     return result

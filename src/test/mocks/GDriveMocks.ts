@@ -8,15 +8,17 @@ import {
 } from "./GDriveData"
 import { Mocks } from "./MockFactory"
 
-export const E2E_TEST_FOLDER_ID = "GmailProcessor-Tests-id"
-export const E2E_TEST_FOLDER_NAME = "GmailProcessor-Tests"
+export const E2E_BASE_FOLDER_ID = "GmailProcessor-Tests-id"
+export const E2E_BASE_FOLDER_NAME = "GmailProcessor-Tests"
+export const E2E_TEST_FOLDER_ID = "e2e01-id"
+export const E2E_TEST_FOLDER_NAME = "e2e01"
 export const EXISTING_FILE_ID = "some-existing-file-id"
 export const EXISTING_FILE_NAME = "some-existing-file.txt"
-export const EXISTING_FOLDER_ID = "some-existing-folder-id"
-export const EXISTING_FOLDER_NAME = "some-existing-folder"
+export const EXISTING_FOLDER_ID = "folder-1-id"
+export const EXISTING_FOLDER_NAME = "Folder 1"
 export const LOGSHEET_FILE_ID = "logsheet-file-id"
 export const LOGSHEET_FILE_NAME = "logsheet-${date.now:format:yyyy-MM}"
-export const LOGSHEET_FILE_PATH = `/${E2E_TEST_FOLDER_NAME}/${LOGSHEET_FILE_NAME}`
+export const LOGSHEET_FILE_PATH = `/${E2E_BASE_FOLDER_NAME}/${LOGSHEET_FILE_NAME}`
 export const MESSAGE_PDF_FILE_ID = "created-message-pdf-file-id"
 export const MESSAGE_PDF_FILE_NAME = "created-message-pdf-file.pdf"
 export const NEW_EXISTING_FILE_ID = "new-existing-file-id"
@@ -27,6 +29,8 @@ export const NEW_FOLDER_ID = "created-folder-id"
 export const NEW_FOLDER_NAME = "created-folder"
 export const NEW_NESTED_FILE_ID = "created-nested-file-id"
 export const NEW_NESTED_FILE_NAME = "created-nested-file.txt"
+export const NEW_NESTED_FOLDER_ID = "subject-1-id"
+export const NEW_NESTED_FOLDER_NAME = "Subject 1"
 export const NO_FILE_ID = "no-file-id"
 export const NO_FILE_NAME = "no-file.txt"
 export const NO_FOLDER_ID = "no-folder-id"
@@ -150,6 +154,8 @@ export class GDriveMocks {
       this.setupFolderMocks(spec, folderData)
     }
 
+    // TODO: Setup E2E folders:
+
     return folder
   }
 
@@ -260,6 +266,15 @@ export class GDriveMocks {
           mocks.existingFolder,
           EXISTING_FOLDER_ID,
           EXISTING_FOLDER_NAME,
+          EntryScope.EXISTING,
+          [
+            new FolderData(
+              mocks.newNestedFolder,
+              NEW_NESTED_FOLDER_ID,
+              NEW_NESTED_FOLDER_NAME,
+              EntryScope.CREATED,
+            ),
+          ],
         ),
         new FileData(
           mocks.newFile,
@@ -292,11 +307,17 @@ export class GDriveMocks {
           ],
         ),
         new FolderData(
-          mocks.existingFolder,
-          E2E_TEST_FOLDER_ID,
-          E2E_TEST_FOLDER_NAME,
+          mocks.e2eBaseFolder,
+          E2E_BASE_FOLDER_ID,
+          E2E_BASE_FOLDER_NAME,
           EntryScope.CREATED,
           [
+            new FolderData(
+              mocks.e2eTestFolder,
+              E2E_TEST_FOLDER_ID,
+              E2E_TEST_FOLDER_NAME,
+              EntryScope.CREATED,
+            ),
             new FileData(
               mocks.logSpreadsheetFile,
               LOGSHEET_FILE_ID,

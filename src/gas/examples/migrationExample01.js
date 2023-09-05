@@ -1,4 +1,4 @@
-/** @type {V1Config} */
+/** @type {GmailProcessorLib.V1Config} */
 const migrationExample01Config = {
   globalFilter: "has:attachment -in:trash -in:drafts -in:spam",
   processedLabel: "gmail2gdrive/client-test",

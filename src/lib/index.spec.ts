@@ -2,7 +2,7 @@ import { PartialDeep } from "type-fest"
 import { convertV1Config, run } from "."
 import { ConfigMocks } from "../test/mocks/ConfigMocks"
 import { MockFactory, Mocks } from "../test/mocks/MockFactory"
-import { RunMode } from "./Context"
+import { ProcessingStatus, RunMode } from "./Context"
 import { Config, newConfig } from "./config/Config"
 
 let configJson: PartialDeep<Config>
@@ -16,7 +16,9 @@ beforeEach(() => {
 describe("run", () => {
   it("test", () => {
     const result = run(configJson, RunMode.DANGEROUS, mocks.envContext)
-    expect(result.status).toEqual("ok")
+    expect(result).toMatchObject({
+      status: ProcessingStatus.OK,
+    })
   })
 })
 

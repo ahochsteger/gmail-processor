@@ -10,6 +10,18 @@ import {
 export class GlobalActions implements ActionProvider<ProcessingContext> {
   [key: string]: ActionFunction<ProcessingContext>
 
+  /** Terminate processing due to an error. */
+  public static panic<
+    TArgs extends {
+      /** The message to be logged before termination */
+      message: string
+    },
+  >(context: ProcessingContext, args: TArgs): ActionReturnType {
+    const msg = PatternUtil.substitute(context, args.message)
+    context.log.error(msg)
+    throw new Error(msg)
+  }
+
   /** Create a log entry. */
   public static log<
     TArgs extends {

@@ -46,9 +46,15 @@ class EnvMocks {
     mock<GoogleAppsScript.Base.Blob>()
   public newPdfFile: MockProxy<GoogleAppsScript.Drive.File> =
     mock<GoogleAppsScript.Drive.File>()
+  public e2eBaseFolder: MockProxy<GoogleAppsScript.Drive.Folder> =
+    mock<GoogleAppsScript.Drive.Folder>()
+  public e2eTestFolder: MockProxy<GoogleAppsScript.Drive.Folder> =
+    mock<GoogleAppsScript.Drive.Folder>()
   public existingFolder: MockProxy<GoogleAppsScript.Drive.Folder> =
     mock<GoogleAppsScript.Drive.Folder>()
   public newFolder: MockProxy<GoogleAppsScript.Drive.Folder> =
+    mock<GoogleAppsScript.Drive.Folder>()
+  public newNestedFolder: MockProxy<GoogleAppsScript.Drive.Folder> =
     mock<GoogleAppsScript.Drive.Folder>()
   public rootFolder: MockProxy<GoogleAppsScript.Drive.Folder> =
     mock<GoogleAppsScript.Drive.Folder>()

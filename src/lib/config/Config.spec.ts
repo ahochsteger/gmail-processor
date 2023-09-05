@@ -2,6 +2,10 @@
 import { PartialDeep } from "type-fest"
 import { ConfigMocks } from "../../test/mocks/ConfigMocks"
 import {
+  EXISTING_FILE_NAME,
+  EXISTING_FOLDER_NAME,
+} from "../../test/mocks/GDriveMocks"
+import {
   Config,
   ProcessingConfig,
   RequiredConfig,
@@ -182,8 +186,7 @@ it("should provide essential JSON config with defaults removed", () => {
                   {
                     args: {
                       conflictStrategy: "replace",
-                      location:
-                        "Folder2/Subfolder2/${message.subject.match.1}/${email.subject} - ${match.att.1}.jpg",
+                      location: `${EXISTING_FOLDER_NAME}/\${message.subject.match.1}/\${email.subject} - \${match.att.1}.jpg`,
                     },
                     name: "attachment.store",
                   },
@@ -229,7 +232,7 @@ it("should provide essential JSON config with defaults removed", () => {
             actions: [
               {
                 args: {
-                  location: "/Folder1/Subfolder1/${message.subject}.pdf",
+                  location: `/${EXISTING_FOLDER_NAME}/${EXISTING_FILE_NAME}`,
                 },
                 name: "message.storePDF",
               },
@@ -246,7 +249,7 @@ it("should provide essential JSON config with defaults removed", () => {
         actions: [
           {
             args: {
-              location: "/Folder1/Subfolder1/${thread.firstMessageSubject}",
+              location: `/${EXISTING_FOLDER_NAME}/${EXISTING_FILE_NAME}`,
             },
             name: "thread.storePDF",
           },

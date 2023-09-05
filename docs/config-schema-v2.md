@@ -53,6 +53,7 @@ The name of the action to be executed
     * 
     * `"attachment.store"`
     * `"global.log"`
+    * `"global.panic"`
     * `"global.sheetLog"`
     * `"message.forward"`
     * `"message.markRead"`
@@ -359,6 +360,7 @@ The name of the action to be executed
 * **Allowed values**:
     * 
     * `"global.log"`
+    * `"global.panic"`
     * `"global.sheetLog"`
     * `"message.forward"`
     * `"message.markRead"`
@@ -661,6 +663,7 @@ The name of the action to be executed
 * **Allowed values**:
     * 
     * `"global.log"`
+    * `"global.panic"`
     * `"global.sheetLog"`
     * `"thread.addLabel"`
     * `"thread.markImportant"`

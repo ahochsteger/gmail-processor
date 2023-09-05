@@ -1,5 +1,6 @@
 import { ConfigMocks } from "../../test/mocks/ConfigMocks"
 import { ContextMocks } from "../../test/mocks/ContextMocks"
+import { EXISTING_FOLDER_NAME } from "../../test/mocks/GDriveMocks"
 import { GMailData } from "../../test/mocks/GMailMocks"
 import {
   MockFactory,
@@ -79,7 +80,8 @@ describe("Pattern Substitution", () => {
                       name: "attachment.store",
                       args: {
                         location:
-                          "Folder2/Subfolder2/${message.subject.match.1}/${message.subject} - " +
+                          EXISTING_FOLDER_NAME +
+                          "/${message.subject.match.1}/${message.subject} - " +
                           "${attachment.name.match.1}.jpg",
                         conflictStrategy: "replace",
                       },

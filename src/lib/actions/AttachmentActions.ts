@@ -33,8 +33,8 @@ export class AttachmentActions implements ActionProvider<AttachmentContext> {
   >(
     context: AttachmentContext,
     args: TArgs,
-  ): ActionReturnType & { gdriveFile: GoogleAppsScript.Drive.File } {
-    const gdriveFile = context.proc.gdriveAdapter.storeAttachment(
+  ): ActionReturnType & { file: GoogleAppsScript.Drive.File } {
+    const file = context.proc.gdriveAdapter.storeAttachment(
       context.attachment.object,
       PatternUtil.substitute(context, args.location),
       args.conflictStrategy || ConflictStrategy.KEEP,
@@ -42,7 +42,7 @@ export class AttachmentActions implements ActionProvider<AttachmentContext> {
     )
     return {
       ok: true,
-      gdriveFile,
+      file: file,
     }
   }
 }

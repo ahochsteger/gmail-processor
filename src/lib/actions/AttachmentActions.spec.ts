@@ -39,7 +39,7 @@ it("should create a file with leading slash location", () => {
     conflictStrategy: ConflictStrategy.KEEP,
     description: "automated test",
   })
-  expect(result.gdriveFile).toBe(mocks.newFile)
+  expect(result.file).toBe(mocks.newFile)
   expect(mocks.rootFolder.createFile).toBeCalled()
 })
 
@@ -49,7 +49,7 @@ it("should create a file without a leading slash location", () => {
     conflictStrategy: ConflictStrategy.KEEP,
     description: "automated test",
   })
-  expect(result.gdriveFile).toBe(mocks.newFile)
+  expect(result.file).toBe(mocks.newFile)
   expect(mocks.rootFolder.createFile).toBeCalled()
 })
 

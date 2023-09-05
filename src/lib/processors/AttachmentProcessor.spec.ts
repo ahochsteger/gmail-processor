@@ -142,7 +142,9 @@ it("should process attachment configs", () => {
     mocks.messageContext,
     mocks.messageContext.message.config.attachments,
   )
-  expect(result.status).toEqual(ProcessingStatus.OK)
+  expect(result).toMatchObject({
+    status: ProcessingStatus.OK,
+  })
 })
 
 it("should process a non-matching attachment config", () => {
@@ -153,10 +155,14 @@ it("should process a non-matching attachment config", () => {
       },
     }),
   ])
-  expect(result.status).toEqual(ProcessingStatus.OK)
+  expect(result).toMatchObject({
+    status: ProcessingStatus.OK,
+  })
 })
 
 it("should process an attachment entity", () => {
   const result = AttachmentProcessor.processEntity(mocks.attachmentContext)
-  expect(result.status).toEqual(ProcessingStatus.OK)
+  expect(result).toMatchObject({
+    status: ProcessingStatus.OK,
+  })
 })

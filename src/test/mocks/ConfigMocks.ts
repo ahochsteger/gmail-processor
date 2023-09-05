@@ -11,7 +11,11 @@ import {
 } from "../../lib/config/SettingsConfig"
 import { ThreadConfig } from "../../lib/config/ThreadConfig"
 import { V1Config } from "../../lib/config/v1/V1Config"
-import { LOGSHEET_FILE_PATH } from "./GDriveMocks"
+import {
+  EXISTING_FILE_NAME,
+  EXISTING_FOLDER_NAME,
+  LOGSHEET_FILE_PATH,
+} from "./GDriveMocks"
 
 export class ConfigMocks {
   public static newDefaultSettingsConfigJson(): PartialDeep<SettingsConfig> {
@@ -32,7 +36,7 @@ export class ConfigMocks {
     return {
       args: {
         folderType: "path",
-        folder: "Folder2/Subfolder2/${message.subject.match.1}",
+        folder: `/${EXISTING_FOLDER_NAME}`,
         filename: "${message.subject} - ${match.file.1}.jpg",
         onExists: "replace",
       },
@@ -128,7 +132,8 @@ export class ConfigMocks {
                     name: "attachment.store",
                     args: {
                       location:
-                        "Folder2/Subfolder2/${message.subject.match.1}/${email.subject} - ${match.att.1}.jpg",
+                        EXISTING_FOLDER_NAME +
+                        "/${message.subject.match.1}/${email.subject} - ${match.att.1}.jpg",
                       conflictStrategy: "replace",
                     },
                   },
@@ -163,7 +168,7 @@ export class ConfigMocks {
               {
                 name: "message.storePDF",
                 args: {
-                  location: "/Folder1/Subfolder1/${message.subject}.pdf",
+                  location: `/${EXISTING_FOLDER_NAME}/${EXISTING_FILE_NAME}`,
                 },
               },
             ],
@@ -180,7 +185,7 @@ export class ConfigMocks {
           {
             name: "thread.storePDF",
             args: {
-              location: "/Folder1/Subfolder1/${thread.firstMessageSubject}",
+              location: `/${EXISTING_FOLDER_NAME}/${EXISTING_FILE_NAME}`,
             },
           },
         ],

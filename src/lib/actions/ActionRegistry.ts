@@ -103,12 +103,13 @@ export class ActionRegistry {
   ): ActionReturnType {
     const fn = this.getAction(name)
     if (!fn) throw this.unknownActionError(name)
-    let result: ActionReturnType = { ok: true }
+    let result: ActionReturnType
     try {
       context.log.info(
         `Executing action '${name}' with args: ${JSON.stringify(args)}`,
       )
       result = {
+        ok: true,
         ...fn(context, args),
       } as ActionReturnType
     } catch (e: any) {

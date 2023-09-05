@@ -1,4 +1,4 @@
-/** @type {V1Config} */
+/** @type {GmailProcessorLib.V1Config} */
 const migrationExampleMinConfig = {
   processedLabel: "gmail2gdrive/client-test",
   sleepTime: 100,

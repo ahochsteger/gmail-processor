@@ -25,6 +25,7 @@
                         "",
                         "attachment.store",
                         "global.log",
+                        "global.panic",
                         "global.sheetLog",
                         "message.forward",
                         "message.markRead",
@@ -248,6 +249,7 @@
                     "enum": [
                         "",
                         "global.log",
+                        "global.panic",
                         "global.sheetLog",
                         "message.forward",
                         "message.markRead",
@@ -475,6 +477,7 @@
                     "enum": [
                         "",
                         "global.log",
+                        "global.panic",
                         "global.sheetLog",
                         "thread.addLabel",
                         "thread.markImportant",

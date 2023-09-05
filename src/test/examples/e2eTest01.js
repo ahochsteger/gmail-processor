@@ -67,7 +67,7 @@ export const e2eTest01Config = {
                   name: "attachment.store",
                   args: {
                     location:
-                      "/GmailProcessor-Tests/v2/e2e01/${attachment.name.match.basename}-stored.png",
+                      "/GmailProcessor-Tests/e2e01/${attachment.name.match.basename}-stored.png",
                   },
                 },
                 {
@@ -93,7 +93,7 @@ export const e2eTest01Config = {
                   name: "attachment.store",
                   args: {
                     location:
-                      "/GmailProcessor-Tests/v2/e2e01/txt/${attachment.name.match.basename}-stored.txt",
+                      "/GmailProcessor-Tests/e2e01/${attachment.name.match.basename}-stored.txt",
                   },
                 },
               ],

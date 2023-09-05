@@ -74,7 +74,9 @@ it("should process thread configs", () => {
     mocks.processingContext,
     mocks.processingContext.proc.config.threads,
   )
-  expect(result.status).toEqual(ProcessingStatus.OK)
+  expect(result).toMatchObject({
+    status: ProcessingStatus.OK,
+  })
 })
 
 it("should process a matching thread config", () => {
@@ -99,10 +101,14 @@ it("should process a non-matching thread config", () => {
       },
     }),
   ])
-  expect(result.status).toEqual(ProcessingStatus.OK) // TODO: Consider a separate status here (e.g. NO_MATCH)
+  expect(result).toMatchObject({
+    status: ProcessingStatus.OK, // TODO: Consider a separate status here (e.g. NO_MATCH)
+  })
 })
 
 it("should process an thread entity", () => {
   const result = ThreadProcessor.processEntity(mocks.threadContext)
-  expect(result.status).toEqual(ProcessingStatus.OK)
+  expect(result).toMatchObject({
+    status: ProcessingStatus.OK,
+  })
 })
