@@ -55,7 +55,10 @@ export class SpreadsheetAdapter extends BaseAdapter {
       "context.type",
     ],
   }
-  constructor(public ctx: EnvContext, public settings: SettingsConfig) {
+  constructor(
+    public ctx: EnvContext,
+    public settings: SettingsConfig,
+  ) {
     super(ctx, settings)
     this.spreadsheetApp = ctx.env.spreadsheetApp
     this.driveApp = ctx.env.gdriveApp

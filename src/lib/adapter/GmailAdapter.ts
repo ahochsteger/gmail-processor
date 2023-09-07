@@ -3,7 +3,10 @@ import { SettingsConfig } from "../config/SettingsConfig"
 import { BaseAdapter } from "./BaseAdapter"
 
 export class GmailAdapter extends BaseAdapter {
-  constructor(public ctx: EnvContext, public settings: SettingsConfig) {
+  constructor(
+    public ctx: EnvContext,
+    public settings: SettingsConfig,
+  ) {
     super(ctx, settings)
   }
 

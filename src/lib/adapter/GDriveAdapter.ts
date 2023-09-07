@@ -253,7 +253,10 @@ export class DriveUtils {
 }
 
 export class GDriveAdapter extends BaseAdapter {
-  constructor(public ctx: EnvContext, public settings: SettingsConfig) {
+  constructor(
+    public ctx: EnvContext,
+    public settings: SettingsConfig,
+  ) {
     super(ctx, settings)
   }
 

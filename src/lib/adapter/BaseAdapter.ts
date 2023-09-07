@@ -7,5 +7,8 @@ export interface Adapter {
 }
 
 export class BaseAdapter implements Adapter {
-  constructor(public ctx: EnvContext, public settings: SettingsConfig) {}
+  constructor(
+    public ctx: EnvContext,
+    public settings: SettingsConfig,
+  ) {}
 }
