@@ -69,6 +69,7 @@ Follow these steps:
    - **Beta** (for pre-release tests):
      `1yhOQyl_xWtnGJn_bzlL7oA4d_q5KoMyZyWIqXDJX1SY7bi22_lpjMiQK`
 4. Press "Look up" and select the desired release number as **version** or "HEAD (Development Mode)" if you always want to use the latest version of the desired release channel.
+   - Unfortunately Google Apps Script does not show the description of the library version to see the corresponding release version. This URL can be used to verify the release version of a Google Apps Script Library: <https://script.google.com/macros/library/d/1Qvk0v7ggfW-TJ84dlYPlDzJG8y-Dif-j9kdA1aWv4wzxE_IOkeV2juLB/{libVersion}> (replace `{libVersion}` with the number from the drop-down in Google Apps Script).
 5. Set the **identifier** to `GmailProcessorLib` (any name will do, but we will use this identifier as a reference in all examples and documentation)
 6. Replace the contents of the initially created file `Code.gs` with the example from [gettingStarted.js](src/gas/examples/gettingStarted.js) and save the changes.
 7. Perform initial start of the function `run` to grant the permissions (see below for an explanation why these are required):
