@@ -1,5 +1,17 @@
 # Changelog
 
+# [2.1.0](https://github.com/ahochsteger/gmail-processor/compare/2.0.5...2.1.0) (2023-09-13)
+
+
+### Bug Fixes
+
+* broken convertV1Config on Google Apps Script ([edfe49b](https://github.com/ahochsteger/gmail-processor/commit/edfe49b135682bb380f9da36bb2bbd35ca6db2c2))
+
+
+### Features
+
+* add custom markProcessedMethod, now required ([0a79cd1](https://github.com/ahochsteger/gmail-processor/commit/0a79cd14466de9b946468a861c3d957104adc14c))
+
 ## [2.0.5](https://github.com/ahochsteger/gmail-processor/compare/2.0.4...2.0.5) (2023-09-05)
 
 
