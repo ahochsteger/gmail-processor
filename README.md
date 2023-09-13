@@ -47,6 +47,22 @@ Gmail Processor is the successor of [Gmail2GDrive](https://github.com/ahochstege
 - 🔧 **Flexible Configuration**: Gmail Processor operates based on a JSON configuration that allows you to define matching rules and specify corresponding actions to be executed.
 - 📐 **Extensible Architecture**: Designed with extensibility in mind, Gmail Processor enables seamless addition of new actions and integrations in the future to adapt to evolving requirements.
 
+## How it Works
+
+**[Gmail Processor](https://github.com/ahochsteger/gmail-processor)** is fed with a JSON configuration that defines a hierarchical list of matching configurations (for threads, containing messages and containing attachments) as well as a list of actions on each level (e.g. export the thread as PDF to Google Drive, add a label to a thread, mark a message as read, store an attachment to a Google Drive folder, ...).
+
+To remember, which threads or messages have already been processed the following methods are currently supported (more to come if there is some demand):
+
+- **Mark processed threads by attaching a label**: This is recommended for simple cases without multiple mail messages in a single thread
+  - PROS: Keeps processed messages in an unread state.
+  - CONS: Cannot process additional messages that may be added after a thread has already been processed.
+- **Mark processed messages as read**: This is the recommended way because it also can deal with multiple messages per thread.
+  - PROS: Can process additional messages within the same thread even after a thread has already been processed.
+  - CONS: Marks the processed messages as read, which may be surprising if not paying attention to.
+- **Custom**: Leaves the decision on how to remember processed threads/messages to the user of the library using actions
+  - PROS: Most flexible, can deal with edge cases
+  - CONS: Great care has to be taken that the matching configuration and the actions to mark entities as processed fit together. Otherwise they may get processed over and over again.
+
 ## Getting Started
 
 There are different ways to get started with GmailProcessor in your Google Apps Script project:
