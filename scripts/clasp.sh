@@ -52,17 +52,13 @@ function getPatchedReleaseNotes() {
   local releaseId="${1:-latest}"
   local releaseInfo; releaseInfo=$(getReleaseInfo)
   gh api "/repos/ahochsteger/gmail-processor/releases/${releaseId}" \
-  --jq .body | sed -re "s|^(## .*)$|\1\n\n${releaseInfo}|g"
+  --jq .body | sed -re "s|^(# .*)$|\1\n\n${releaseInfo}|g"
 }
 
 function updateGithubRelease() {
   local releaseId="${1:-latest}"
   local releaseNotes; releaseNotes=$(getPatchedReleaseNotes "${releaseId}")
   local releaseId; releaseId=$(gh api /repos/ahochsteger/gmail-processor/releases/latest --jq .id)
-  local releaseNotes; releaseNotes=$(
-    gh api "/repos/ahochsteger/gmail-processor/releases/${releaseId}" \
-    --jq .body | sed -re "s|^(## .*)$|\1\n\n${releaseInfo}|g"
-  )
   gh api -X PATCH "/repos/ahochsteger/gmail-processor/releases/${releaseId}" \
     -f body="${releaseNotes}"
 }
@@ -208,7 +204,7 @@ case "${cmd}" in
     getPatchedReleaseNotes
   ;;
   update-github-release)
-    updateGithubRelease
+    updateGithubRelease "${1:-latest}"
   ;;
   last-version)
     getLastGASVersion
