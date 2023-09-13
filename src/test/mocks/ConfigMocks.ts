@@ -197,7 +197,7 @@ export class ConfigMocks {
     ]
   }
 
-  public static newDefaultConfigJson(): PartialDeep<Config> {
+  public static newDefaultConfigJson(): Config {
     return {
       settings: this.newDefaultSettingsConfigJson(),
       threads: this.newComplexThreadConfigList(),
@@ -205,7 +205,7 @@ export class ConfigMocks {
     }
   }
 
-  public static newDefaultV1ConfigJson(): PartialDeep<V1Config> {
+  public static newDefaultV1ConfigJson(): V1Config {
     return {
       globalFilter: "has:attachment -in:trash -in:drafts -in:spam",
       processedLabel: "gmail2gdrive/client-test",
@@ -249,7 +249,7 @@ export class ConfigMocks {
   }
 
   public static newDefaultConfig(
-    configJson: PartialDeep<Config> = this.newDefaultConfigJson(),
+    configJson: Config = this.newDefaultConfigJson(),
   ): RequiredConfig {
     return newConfig(configJson)
   }

@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { PartialDeep } from "type-fest"
 import {
   EnvContext,
   ProcessingResult,
@@ -58,34 +57,32 @@ export {
   ThreadMatchConfig,
   V1Config,
   V1Rule,
-  VariableEntry,
+  VariableEntry
 }
 
 /**
  * Run Gmail Processor with the given config
- * @param configJson - GmailProcessor configuration JSON - @see Config
+ * @param config - GmailProcessor configuration JSON - @see Config
  * @param runMode - The processing mode - @see RunMode
  * @param ctx - The environment context to be used for processing - @see EnvContext
  * @returns Processing result - @see ProcessingResult
  */
 export function run(
-  configJson: PartialDeep<Config>,
+  config: Config,
   runMode: string = RunMode.SAFE_MODE,
   ctx: EnvContext = EnvProvider.defaultContext(runMode as RunMode),
 ): ProcessingResult {
-  return GmailProcessor.runWithJson(configJson, ctx)
+  return GmailProcessor.runWithJson(config, ctx)
 }
 
 /**
  * Convert a GMail2GDrive v1.x config JSON into a Gmail Processor config
- * @param v1configJson - JSON of the v1 config
+ * @param v1config - JSON of the v1 config - @see V1Config
  * @returns Converted JSON config - @see Config
  */
-export function convertV1Config(
-  v1configJson: PartialDeep<V1Config>,
-): PartialDeep<Config> {
+export function convertV1Config(v1config: V1Config): Config {
   return GmailProcessor.getEssentialConfig(
-    V1ToV2Converter.v1ConfigToV2ConfigJson(v1configJson),
+    V1ToV2Converter.v1ConfigToV2ConfigJson(v1config),
   )
 }
 
@@ -101,3 +98,5 @@ export function convertV1Config(
 ;(globalThis as any).ProcessingStage = ProcessingStage
 ;(globalThis as any).RunMode = RunMode
 ;(globalThis as any).V1Config = V1Config
+;(globalThis as any).convertV1Config = convertV1Config
+;(globalThis as any).run = run
