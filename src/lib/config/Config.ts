@@ -16,6 +16,7 @@ import {
   normalizeGlobalConfig,
 } from "./GlobalConfig"
 import { MessageConfig, essentialMessageConfig } from "./MessageConfig"
+import { MessageFlag } from "./MessageFlag"
 import {
   MarkProcessedMethod,
   SettingsConfig,
@@ -86,6 +87,12 @@ export function configToJson<T = ProcessingConfig>(
 }
 
 export function newConfig(json: PartialDeep<Config>): RequiredConfig {
+  // Validate required settings:
+  if (!json.settings?.markProcessedMethod) {
+    throw new Error(
+      "No markProcessedMethod not set in settings! Make sure to choose from one of the available methods.",
+    )
+  }
   const config = plainToInstance(ProcessingConfig, normalizeConfig(json), {
     exposeDefaultValues: true,
     exposeUnsetFields: false,
@@ -94,7 +101,7 @@ export function newConfig(json: PartialDeep<Config>): RequiredConfig {
   // Validate resulting config:
   if (config.threads.length < 1) {
     throw new Error(
-      "No thread configuration found - make sure there is at least one thread configuration present!",
+      "No thread configuration found! Make sure there is at least one thread configuration present!",
     )
   }
 
@@ -124,27 +131,37 @@ export function normalizeConfig(
   config.global = normalizeGlobalConfig(config.global || {})
   config.global.thread = config.global.thread ?? {}
   config.global.thread.actions = config.global.thread.actions ?? []
+  config.global.thread.match = config.global.thread.match ?? {}
   config.global.message = config.global.message ?? {}
   config.global.message.actions = config.global.message.actions ?? []
-  if (
-    config.settings.markProcessedMethod == MarkProcessedMethod.ADD_THREAD_LABEL
-  ) {
-    config.global.thread.actions.push({
-      name: "thread.addLabel",
-      args: {
-        label: config.settings.markProcessedLabel,
-      },
-      processingStage: ProcessingStage.POST_MAIN,
-    })
-  } else {
-    config.global.message.actions.push({
-      name: "message.markRead",
-      processingStage: ProcessingStage.POST_MAIN,
-    })
+  config.global.message.match = config.global.message.match ?? {}
+  config.global.attachment = config.global.attachment ?? {}
+  config.global.attachment.actions = config.global.attachment.actions ?? []
+  switch (config.settings.markProcessedMethod) {
+    case MarkProcessedMethod.ADD_THREAD_LABEL:
+      config.global.thread.match.query += ` -label:${config.settings.markProcessedLabel}`
+      config.global.thread.actions.push({
+        name: "thread.addLabel",
+        args: {
+          label: config.settings.markProcessedLabel,
+        },
+        processingStage: ProcessingStage.POST_MAIN,
+      })
+      break
+    case MarkProcessedMethod.CUSTOM:
+      // Do nothing!
+      break
+    case MarkProcessedMethod.MARK_MESSAGE_READ:
+      config.global.message.match.is = (
+        config.global.message.match.is ?? []
+      ).concat([MessageFlag.UNREAD])
+      config.global.message.actions.push({
+        name: "message.markRead",
+        processingStage: ProcessingStage.POST_MAIN,
+      })
+      break
   }
-
   config.threads = normalizeThreadConfigs(config.threads)
-
   return config
 }
 
@@ -152,12 +169,19 @@ export function essentialConfig(
   config: PartialDeep<Config>,
 ): PartialDeep<Config> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  config = essentialObject(config as any, newConfig({ threads: [{}] }) as any, {
-    attachments: essentialAttachmentConfig,
-    global: essentialGlobalConfig,
-    messages: essentialMessageConfig,
-    settings: essentialSettingsConfig,
-    threads: essentialThreadConfig,
-  })
+  config = essentialObject(
+    config,
+    newConfig({
+      settings: { markProcessedMethod: MarkProcessedMethod.MARK_MESSAGE_READ },
+      threads: [{}],
+    }),
+    {
+      attachments: essentialAttachmentConfig,
+      global: essentialGlobalConfig,
+      messages: essentialMessageConfig,
+      settings: essentialSettingsConfig,
+      threads: essentialThreadConfig,
+    },
+  )
   return config
 }

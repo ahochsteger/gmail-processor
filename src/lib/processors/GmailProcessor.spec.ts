@@ -74,6 +74,7 @@ describe("getEffectiveConfig", () => {
   it("should enhance a minimal configuration with default values", () => {
     const simpleConfig = {
       settings: {
+        markProcessedMethod: MarkProcessedMethod.MARK_MESSAGE_READ,
         timezone: "Europe/Vienna",
       },
       threads: [{}],

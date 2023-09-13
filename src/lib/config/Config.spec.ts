@@ -2,13 +2,8 @@
 import { PartialDeep } from "type-fest"
 import { ConfigMocks } from "../../test/mocks/ConfigMocks"
 import {
-  EXISTING_FILE_NAME,
-  EXISTING_FOLDER_NAME,
-} from "../../test/mocks/GDriveMocks"
-import {
   Config,
   ProcessingConfig,
-  RequiredConfig,
   configToJson,
   essentialConfig,
   newConfig,
@@ -18,12 +13,18 @@ import {
   DEFAULT_SETTING_MAX_BATCH_SIZE,
   DEFAULT_SETTING_MAX_RUNTIME,
   DEFAULT_SETTING_SLEEP_TIME_THREADS,
+  MarkProcessedMethod,
 } from "./SettingsConfig"
 // import * as configSchema from "../../schema-v2.json"
 // import { defaults } from "json-schema-defaults"
 
 it("New instance should contain defaults", () => {
-  const cfg = newConfig({ threads: [{}] }) as RequiredConfig
+  const cfg = newConfig({
+    settings: {
+      markProcessedMethod: MarkProcessedMethod.MARK_MESSAGE_READ,
+    },
+    threads: [{}],
+  })
   expect(cfg.description).toEqual("")
   expect(cfg.threads).toMatchObject([{}])
 })
@@ -90,6 +91,7 @@ describe("newConfig", () => {
         },
       },
       settings: {
+        markProcessedMethod: MarkProcessedMethod.ADD_THREAD_LABEL,
         markProcessedLabel: "some-label",
       },
       threads: [
@@ -135,6 +137,7 @@ describe("configToJson", () => {
     const configJson: PartialDeep<ProcessingConfig> = {
       description: "config description",
       settings: {
+        markProcessedMethod: MarkProcessedMethod.ADD_THREAD_LABEL,
         markProcessedLabel: "some label",
       },
       threads: [
@@ -146,6 +149,7 @@ describe("configToJson", () => {
     const expected: PartialDeep<ProcessingConfig> = {
       ...configJson,
       settings: {
+        markProcessedMethod: MarkProcessedMethod.ADD_THREAD_LABEL,
         maxBatchSize: DEFAULT_SETTING_MAX_BATCH_SIZE,
         maxRuntime: DEFAULT_SETTING_MAX_RUNTIME,
         sleepTimeThreads: DEFAULT_SETTING_SLEEP_TIME_THREADS,
@@ -157,110 +161,57 @@ describe("configToJson", () => {
   })
 })
 
+it("should enforce required settings", () => {
+  expect(() =>
+    newConfig({
+      threads: [{}],
+    }),
+  ).toThrowError("No markProcessedMethod not set in settings!")
+})
+
+it("should enforce required thread configs", () => {
+  expect(() =>
+    newConfig({
+      settings: {
+        markProcessedMethod: MarkProcessedMethod.MARK_MESSAGE_READ,
+      },
+    }),
+  ).toThrowError("No thread configuration found")
+})
+
 it("should provide essential JSON config with defaults removed", () => {
-  const config = newConfig(ConfigMocks.newDefaultConfigJson())
+  const config = newConfig({
+    settings: {
+      logSheetLocation: "",
+      markProcessedMethod: MarkProcessedMethod.MARK_MESSAGE_READ,
+      maxBatchSize: 100,
+      maxRuntime: 280,
+      sleepTimeAttachments: 1,
+      sleepTimeMessages: 10,
+      timezone: "default",
+    },
+    threads: [ConfigMocks.newDefaultThreadConfigJson()],
+  })
   const actual = essentialConfig(config)
   expect(actual).toMatchObject({
     settings: {
-      markProcessedLabel: "to-gdrive/processed",
+      markProcessedMethod: MarkProcessedMethod.MARK_MESSAGE_READ,
       maxBatchSize: 100,
       sleepTimeAttachments: 1,
       sleepTimeMessages: 10,
-      timezone: "UTC",
     },
     threads: [
       {
+        description: "A sample thread config",
         match: {
-          query: "has:attachment from:example4@example.com",
-        },
-        messages: [
-          {
-            actions: [
-              {
-                name: "message.markRead",
-              },
-            ],
-            attachments: [
-              {
-                actions: [
-                  {
-                    args: {
-                      conflictStrategy: "replace",
-                      location: `${EXISTING_FOLDER_NAME}/\${message.subject.match.1}/\${email.subject} - \${match.att.1}.jpg`,
-                    },
-                    name: "attachment.store",
-                  },
-                ],
-                match: {
-                  contentType: "application/(?<appType>.*)",
-                  name: "attachment(?<attNr>[0-9]+)\\.pdf",
-                },
-              },
-              {
-                actions: [
-                  {
-                    args: {
-                      conflictStrategy: "skip",
-                      location:
-                        "Folder3/Subfolder3/${att.basename}-${date:yyyy-MM-dd}.${att.ext}",
-                    },
-                    name: "attachment.store",
-                  },
-                ],
-                match: {
-                  name: "Image-([0-9]+)\\.jpg",
-                },
-              },
-            ],
-            match: {
-              from: "(.+)@example.com",
-              is: ["read"],
-              subject: "Message (?<myMatchGroup>.*)",
-              to: "my\\.address\\+(.+)@gmail.com",
-            },
-          },
-        ],
-      },
-      {
-        description:
-          "Example that stores all attachments of matching messages to a certain GDrive folder",
-        match: {
+          minMessageCount: -1,
           query: "has:attachment from:example@example.com",
         },
-        messages: [
-          {
-            actions: [
-              {
-                args: {
-                  location: `/${EXISTING_FOLDER_NAME}/${EXISTING_FILE_NAME}`,
-                },
-                name: "message.storePDF",
-              },
-            ],
-            match: {
-              from: "(.+)@example.com",
-              subject: "Prefix - (?<prefix>.*) - Suffix(?<suffix>.*)",
-              to: "my\\.address\\+(.+)@gmail.com",
-            },
-          },
-        ],
-      },
-      {
-        actions: [
-          {
-            args: {
-              location: `/${EXISTING_FOLDER_NAME}/${EXISTING_FILE_NAME}`,
-            },
-            name: "thread.storePDF",
-          },
-        ],
-        description:
-          "Example that stores all attachments of all found threads to a certain GDrive folder",
-        match: {
-          query: "has:attachment from:example@example.com",
-        },
+        name: "default-thread-config",
       },
     ],
     global: {},
   } as Config)
+  expect(actual.settings?.maxRuntime).toBeUndefined()
+  expect(actual.settings?.timezone).toBeUndefined()
 })

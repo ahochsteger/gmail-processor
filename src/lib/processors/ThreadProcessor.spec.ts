@@ -44,7 +44,7 @@ it("should construct a GMail search query with globals (query, newerThan) and pr
   )
   const actualQuery = ThreadProcessor.buildQuery(ctx, matchConfig)
   expect(actualQuery).toEqual(
-    "some-global-query newer_than:3m some-thread-specific-query newer_than:2m -label:some-label",
+    "some-global-query newer_than:3m -label:some-label some-thread-specific-query newer_than:2m",
   )
 })
 

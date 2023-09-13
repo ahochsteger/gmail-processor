@@ -549,7 +549,8 @@ Example: `GmailProcessor/logsheet-${date.now:format:yyyy-MM}`|No, default: |
 |**sleepTimeAttachments**|`number`|The sleep time in milliseconds between processing each attachment|No, default: `0`|
 |**sleepTimeMessages**|`number`|The sleep time in milliseconds between processing each message|No, default: `0`|
 |**sleepTimeThreads**|`number`|The sleep time in milliseconds between processing each thread|No, default: `100`|
-|**timezone**|`string`|Overrides the <a href="https://developers.google.com/apps-script/reference/base/session#getscripttimezone">script timezone</a>, which is used by default.|No|
+|**timezone**|`string`|The timezone to be used for date/time operations.
+Value `default` uses the <a href="https://developers.google.com/apps-script/reference/base/session#getscripttimezone">script timezone</a>.|No, default: `"default"`|
 
 Additional properties are not allowed.
 
@@ -576,6 +577,7 @@ The method to mark processed threads/messages.
 * **Required**: No
 * **Allowed values**:
     * `"add-label"`
+    * `"custom"`
     * `"mark-read"`
 
 ### SettingsConfig.maxBatchSize
@@ -615,10 +617,11 @@ The sleep time in milliseconds between processing each thread
 
 ### SettingsConfig.timezone
 
-Overrides the <a href="https://developers.google.com/apps-script/reference/base/session#getscripttimezone">script timezone</a>, which is used by default.
+The timezone to be used for date/time operations.
+Value `default` uses the <a href="https://developers.google.com/apps-script/reference/base/session#getscripttimezone">script timezone</a>.
 
 * **Type**: `string`
-* **Required**: No
+* **Required**: No, default: `"default"`
 
 
 

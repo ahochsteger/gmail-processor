@@ -93,6 +93,10 @@ export class GmailProcessor {
   public static run(config: RequiredConfig, ctx: EnvContext) {
     ctx.log.info("Processing of GmailProcessor config started ...")
 
+    ctx.env.timezone =
+      config.settings.timezone && config.settings.timezone != "default"
+        ? config.settings.timezone
+        : ctx.env.timezone
     const actionRegistry = GmailProcessor.setupActionRegistry(ctx)
     const processingContext = GmailProcessor.buildContext(ctx, {
       actionRegistry: actionRegistry,

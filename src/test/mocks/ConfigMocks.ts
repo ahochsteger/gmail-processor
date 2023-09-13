@@ -18,16 +18,15 @@ import {
 } from "./GDriveMocks"
 
 export class ConfigMocks {
-  public static newDefaultSettingsConfigJson(): PartialDeep<SettingsConfig> {
+  public static newDefaultSettingsConfigJson(): SettingsConfig {
     return {
       logSheetLocation: LOGSHEET_FILE_PATH,
       markProcessedMethod: MarkProcessedMethod.MARK_MESSAGE_READ,
       maxBatchSize: 100,
       maxRuntime: 280,
-      markProcessedLabel: "to-gdrive/processed",
-      sleepTimeThreads: 100,
-      sleepTimeMessages: 10,
       sleepTimeAttachments: 1,
+      sleepTimeMessages: 10,
+      sleepTimeThreads: 100,
       timezone: "UTC",
     }
   }

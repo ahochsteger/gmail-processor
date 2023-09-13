@@ -4,6 +4,8 @@ import * as GmailProcessorLib from "../../lib/index"
 /** @type {GmailProcessorLib.Config} */
 export const gettingStartedConfig = {
   settings: {
+    markProcessedMethod:
+      GmailProcessorLib.MarkProcessedMethod.MARK_MESSAGE_READ,
     // Place settings here
   },
   global: {

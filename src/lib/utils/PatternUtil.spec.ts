@@ -9,6 +9,7 @@ import {
 } from "../../test/mocks/MockFactory"
 import { RunMode } from "../Context"
 import { Config, newConfig } from "../config/Config"
+import { MarkProcessedMethod } from "../config/SettingsConfig"
 import { PatternUtil } from "./PatternUtil"
 
 let mocks: Mocks
@@ -63,6 +64,9 @@ describe("Pattern Substitution", () => {
       "message.date: 2019-05-01_18-48-31, message.subject.match.1: 01, " +
       "message.subject.match.2: Some more text"
     const config: Config = {
+      settings: {
+        markProcessedMethod: MarkProcessedMethod.MARK_MESSAGE_READ,
+      },
       threads: [
         {
           messages: [
@@ -131,6 +135,9 @@ describe("Pattern Substitution", () => {
       ],
     }
     const config: Config = {
+      settings: {
+        markProcessedMethod: MarkProcessedMethod.MARK_MESSAGE_READ,
+      },
       threads: [
         {
           messages: [

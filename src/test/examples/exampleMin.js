@@ -3,6 +3,10 @@ import * as GmailProcessorLib from "../../lib/index"
 
 /** @type {GmailProcessorLib.Config} */
 export const exampleMinConfig = {
+  settings: {
+    markProcessedMethod:
+      GmailProcessorLib.MarkProcessedMethod.MARK_MESSAGE_READ,
+  },
   threads: [{}],
 }
 

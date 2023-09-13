@@ -11,7 +11,6 @@ import {
   newProcessingResult,
 } from "../Context"
 import { ProcessingStage } from "../config/ActionConfig"
-import { MarkProcessedMethod } from "../config/SettingsConfig"
 import { RequiredThreadConfig } from "../config/ThreadConfig"
 import {
   RequiredThreadMatchConfig,
@@ -40,27 +39,15 @@ export class ThreadProcessor extends BaseProcessor {
     }
     return threadContext
   }
-  private static buildFilter(
-    prefix: string,
-    value: string,
-    unsetValue?: string,
-  ): string {
-    return this.isSet(value, unsetValue) ? ` ${prefix}${value}` : ""
-  }
+
   public static buildQuery(
     ctx: ProcessingContext,
     threadMatchConfig: RequiredThreadMatchConfig,
   ) {
-    let gSearchExp = this.getStr(threadMatchConfig.query)
-    gSearchExp += this.buildFilter(
-      "-label:",
-      ctx.proc.config.settings?.markProcessedMethod ===
-        MarkProcessedMethod.ADD_THREAD_LABEL
-        ? ctx.proc.config.settings?.markProcessedLabel
-        : "",
-      "",
-    )
-    return gSearchExp.trim().replace(/[ ]+/g, " ")
+    let query = this.getStr(threadMatchConfig.query)
+    query = query.trim().replace(/[ ]+/g, " ")
+    ctx.log.debug(`Built GMail search query: ${query}`)
+    return query
   }
 
   public static buildMatchConfig(

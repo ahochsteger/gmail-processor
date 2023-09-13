@@ -411,6 +411,7 @@
                     "description": "The method to mark processed threads/messages.",
                     "enum": [
                         "add-label",
+                        "custom",
                         "mark-read"
                     ],
                     "title": "markProcessedMethod",
@@ -447,7 +448,8 @@
                     "type": "number"
                 },
                 "timezone": {
-                    "description": "Overrides the <a href=\"https://developers.google.com/apps-script/reference/base/session#getscripttimezone\">script timezone</a>, which is used by default.",
+                    "default": "default",
+                    "description": "The timezone to be used for date/time operations.\nValue `default` uses the <a href=\"https://developers.google.com/apps-script/reference/base/session#getscripttimezone\">script timezone</a>.",
                     "title": "timezone",
                     "type": "string"
                 }

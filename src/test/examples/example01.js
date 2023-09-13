@@ -5,6 +5,8 @@ import * as GmailProcessorLib from "../../lib/index"
 export const example01Config = {
   description: "An example V2 configuration",
   settings: {
+    markProcessedMethod:
+      GmailProcessorLib.MarkProcessedMethod.MARK_MESSAGE_READ,
     maxBatchSize: 10,
     maxRuntime: 280,
     sleepTimeThreads: 100,

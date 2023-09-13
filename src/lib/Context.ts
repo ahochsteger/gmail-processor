@@ -78,7 +78,7 @@ type EnvInfo = {
   cacheService: GoogleAppsScript.Cache.CacheService
   runMode: RunMode
   session: GoogleAppsScript.Base.Session
-  timezone?: string
+  timezone: string
 }
 
 export type ProcessingInfo = {
@@ -158,7 +158,10 @@ export enum ProcessingStatus {
 }
 
 export class ProcessingError extends Error {
-  constructor(message: string, public cause: ProcessingResult) {
+  constructor(
+    message: string,
+    public cause: ProcessingResult,
+  ) {
     super(message)
   }
 }

@@ -1,5 +1,9 @@
 /** @type {GmailProcessorLib.Config} */
 const exampleMinConfig = {
+  settings: {
+    markProcessedMethod:
+      GmailProcessorLib.MarkProcessedMethod.MARK_MESSAGE_READ,
+  },
   threads: [{}],
 }
 

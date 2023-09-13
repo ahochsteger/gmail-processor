@@ -10,22 +10,50 @@ export const DEFAULT_SETTING_MAX_BATCH_SIZE = 10
 export const DEFAULT_SETTING_MAX_RUNTIME = 280
 export const DEFAULT_SETTING_SLEEP_TIME_THREADS = 100
 
-type LocationType = string
-
 /**
- * The method to mark processed threads/messages.
+ * The method to mark processed threads/messages/attachments.
  */
 export enum MarkProcessedMethod {
   /**
-   * (deprecated): Adds the label set using `markProcessedLabel` to the thread.
-   * ATTENTION: This method is just for compatibility with v1 configs and does not support multiple messages per thread!
+   * Adds the label defined in the setting `markProcessedLabel` to each processed thread.
+   *
+   * **NOTE:**
+   * - Automatically appends the action `thread.addLabel` to the list of global thread actions
+   * - Automatically appends `-label:<markProcessedLabel>` to the global thread match query config
+   *
+   * **Limitations:**
+   * - It cannot handle multiple messages per thread properly.
    */
   ADD_THREAD_LABEL = "add-label",
   /**
-   * Mark the message as read.
-   * This is the new default since it provides more flexibility esp. when threads contain multiple messages.
+   * Doesn't do anything to mark threads, messages or attachments as processed and leaves this task to the user.
+   *
+   * **NOTE:**
+   * - Use actions on the desired level (threads, messages or attachments) to mark them as processed.
+   * - Take care to exclude them from queries in the thread match config, to prevent re-processing over and over again.
+   *
+   * **Limitations:**
+   * - Is more complex since you have to take care to
+   */
+  CUSTOM = "custom",
+  /**
+   * Marks processed messages as read, which is more flexible than adding a thread label.
+   * But it comes at the cost of marking messages as read, which may not be expected.
+   *
+   * **NOTE:**
+   * - Automatically appends the action `message.markRead` to the list of global message actions
+   * - Automatically appends `-is:read` to the global thread match query config
+   * - Automatically adds `is: ["unread"]` to the global message match config
+   *
+   * **Limitations:**
+   * - Since it marks messages as read it may not be applicable in all cases.
    */
   MARK_MESSAGE_READ = "mark-read",
+  // /**
+  //  * (Experimental) Adds labels to threads that track processed threads, messages or attachments.
+  //  * This is the most flexible method, since it can track each state in a label.
+  //  */
+  // ADD_LABEL_METADATA = "add-label-metadata",
 }
 
 /**
@@ -37,7 +65,7 @@ export class SettingsConfig {
    * Example: `GmailProcessor/logsheet-${date.now:format:yyyy-MM}`
    */
   @Expose()
-  logSheetLocation?: LocationType = ""
+  logSheetLocation? = ""
   /**
    * The maximum batch size of threads to process in a single run to respect Google processing limits
    */
@@ -75,14 +103,15 @@ export class SettingsConfig {
   @Expose()
   sleepTimeAttachments? = 0
   /**
-   * Overrides the <a href="https://developers.google.com/apps-script/reference/base/session#getscripttimezone">script timezone</a>, which is used by default.
+   * The timezone to be used for date/time operations.
+   * Value `default` uses the <a href="https://developers.google.com/apps-script/reference/base/session#getscripttimezone">script timezone</a>.
    */
   @Expose()
-  timezone?: string
+  timezone?: string = "default"
 }
 
 export function newSettingsConfig(
-  json: PartialDeep<SettingsConfig> = {},
+  json: SettingsConfig = {},
 ): RequiredDeep<SettingsConfig> {
   return plainToInstance(SettingsConfig, json, {
     exposeDefaultValues: true,
@@ -93,7 +122,11 @@ export function newSettingsConfig(
 export function essentialSettingsConfig(
   config: PartialDeep<SettingsConfig>,
 ): PartialDeep<SettingsConfig> {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  config = essentialObject(config as any, newSettingsConfig() as any)
+  config = essentialObject(
+    config,
+    newSettingsConfig(),
+    {},
+    ["markProcessedMethod"], // TODO: Extract from class definition
+  )
   return config
 }

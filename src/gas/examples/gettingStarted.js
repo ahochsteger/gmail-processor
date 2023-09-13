@@ -1,6 +1,8 @@
 /** @type {GmailProcessorLib.Config} */
 const gettingStartedConfig = {
   settings: {
+    markProcessedMethod:
+      GmailProcessorLib.MarkProcessedMethod.MARK_MESSAGE_READ,
     // Place settings here
   },
   global: {
