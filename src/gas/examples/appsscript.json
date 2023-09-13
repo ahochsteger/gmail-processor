@@ -1,5 +1,8 @@
 {
   "exceptionLogging": "STACKDRIVER",
+  "executionApi": {
+    "access": "ANYONE"
+  },
   "runtimeVersion": "V8",
   "dependencies": {
     "libraries": [
