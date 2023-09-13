@@ -4,6 +4,8 @@
 set -euo pipefail
 
 export LC_ALL=C
+export GENERATING_DOCS=true
+
 scriptdir=$(dirname "$0")
 outfile="docs/reference-docs.md"
 allDataFile="build/typedoc/all.json"

@@ -16,7 +16,9 @@ const mocks = MockFactory.newCustomMocks(
 const ctx = mocks.attachmentContext
 
 function write(s: string) {
-  process.stdout.write(`${s}\n`)
+  if (process.env.GENERATING_DOCS==="true") {
+    process.stdout.write(`${s}\n`)
+  }
 }
 
 function genMetaInfoDocs(contextType: ContextType, m: MetaInfo, position = "standard") {
