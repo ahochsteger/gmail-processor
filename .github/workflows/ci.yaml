@@ -86,23 +86,14 @@ jobs:
         run: npm run deploy
         env:
           CLASP_DEPLOYMENT_NAME: ${{ steps.release.outputs.new_release_version }}
-      - id: release-notes
-        if: ${{ steps.release.outputs.new_release_published == 'true' }}
-        name: Release Notes
-        run: |
-          echo 'release_notes<<EOF' >> $GITHUB_OUTPUT
-          npm run release:notes >> ${GITHUB_OUTPUT}
-          echo 'EOF' >> $GITHUB_OUTPUT
-        env:
-          CLASP_DEPLOYMENT_NAME: ${{ steps.release.outputs.new_release_version }}
       - id: update-release-notes
         if: ${{ steps.release.outputs.new_release_published == 'true' }}
         name: Update Release Notes
-        uses: tubone24/update_release@v1.3.1
+        run: |
+          npm run release:update
         env:
+          CLASP_DEPLOYMENT_NAME: ${{ steps.release.outputs.new_release_version }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          body: ${{ steps.release-notes.outputs.release_notes }}
       - id: setup-pages
         name: Setup Pages
         uses: actions/configure-pages@v3
