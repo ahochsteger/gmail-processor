@@ -27,7 +27,7 @@ function runModeAwareAction<T extends ProcessingContext>(
       ctx.log.log(
         `Skipped calling method '${propertyKey}' (runMode:${runMode})`,
       )
-      return
+      return // TODO: Return skipped: true
     }
   }
   return descriptor

@@ -154,8 +154,6 @@ export class GDriveMocks {
       this.setupFolderMocks(spec, folderData)
     }
 
-    // TODO: Setup E2E folders:
-
     return folder
   }
 
