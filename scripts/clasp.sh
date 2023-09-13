@@ -34,6 +34,8 @@ function buildClaspProjectFile() {
 }
 
 function runClasp() {
+  buildClaspProjectFile
+  buildClaspManifestFile
   buildClaspAuthFile
   (
     cd "${CLASP_DIR}"
@@ -41,17 +43,68 @@ function runClasp() {
   )
 }
 
+function getReleaseInfo() {
+  local lastGasVersion; lastGasVersion=$(getLastGASVersion)
+  echo "Google Apps Script Version: [${lastGasVersion}](https://script.google.com/macros/library/d/${CLASP_SCRIPT_ID}/${lastGasVersion})"
+}
+
+function getPatchedReleaseNotes() {
+  local releaseId="${1:-latest}"
+  local releaseInfo; releaseInfo=$(getReleaseInfo)
+  gh api "/repos/ahochsteger/gmail-processor/releases/${releaseId}" \
+  --jq .body | sed -re "s|^(## .*)$|\1\n\n${releaseInfo}|g"
+}
+
+function updateGithubRelease() {
+  local releaseId="${1:-latest}"
+  local releaseNotes; releaseNotes=$(getPatchedReleaseNotes "${releaseId}")
+  local releaseId; releaseId=$(gh api /repos/ahochsteger/gmail-processor/releases/latest --jq .id)
+  local releaseNotes; releaseNotes=$(
+    gh api "/repos/ahochsteger/gmail-processor/releases/${releaseId}" \
+    --jq .body | sed -re "s|^(## .*)$|\1\n\n${releaseInfo}|g"
+  )
+  gh api -X PATCH "/repos/ahochsteger/gmail-processor/releases/${releaseId}" \
+    -f body="${releaseNotes}"
+}
+
 function cleanup() {
   rm -f "${CLASP_DIR}/.clasprc.json"
 }
 
-function getLastVersion() {
-  runClasp versions \
+function getLastGASVersion() {
+  runClasp versions 2>/dev/null \
   | tail -n 1 \
   | awk '{print $1}' \
   >"${CLASP_BASEDIR}/${CLASP_PROFILE}-version.txt"
-  echo -n "Last version: "
   cat "${CLASP_BASEDIR}/${CLASP_PROFILE}-version.txt"
+}
+
+function getGithubVersions() {
+  gh api /repos/ahochsteger/gmail-processor/releases \
+  --jq ".[]|select(.target_commitish==\"main\" and .prerelease==false)|[.tag_name,(.published_at[0:10])]|@tsv"
+}
+
+function getGASVersions() {
+  runClasp versions 2>/dev/null \
+  | sort -ruV \
+  | awk '/^[0-9]+/ {print $3"\t"$1}'
+}
+
+function getMergedVersions() {
+  gh api /repos/ahochsteger/gmail-processor/releases \
+  --jq "\"$(getGASVersions)\" as \$gasVersionsText|(\$gasVersionsText|split(\"\\n\")|[.[]|split(\"\\t\")|{(.[0]):.[1]}]|add) as \$versionMap | .[]|select(.target_commitish==\"main\" and .prerelease==false and \$versionMap[.tag_name])|[.tag_name,\$versionMap[.tag_name],(.published_at[0:10])]|@tsv"
+}
+
+function getMergedVersionsAsMarkdown() {
+  echo "| Release Version | Apps Script Version | Release Date |"
+  echo "|---------|-------------|--------------|"
+  getMergedVersions \
+  | awk '{print "| "$1" | "$2" | "$3" |"}'
+}
+
+function showLastGASVersion() {
+  echo -n "Last GAS version: "
+
 }
 
 function buildExamples() {
@@ -103,8 +156,8 @@ case "${CLASP_PROFILE}" in
   ;;
 esac
 
-CLASP_DIR="${CLASP_BASEDIR}/${CLASP_PROFILE}"
-CLASP_SRC_DIR="${CLASP_SRC_BASEDIR}/${CLASP_PROFILE}"
+export CLASP_DIR="${CLASP_BASEDIR}/${CLASP_PROFILE}"
+export CLASP_SRC_DIR="${CLASP_SRC_BASEDIR}/${CLASP_PROFILE}"
 
 case "${cmd}" in
   build)
@@ -142,12 +195,36 @@ case "${cmd}" in
   ;;
   push)
     runClasp push --force
-    getLastVersion
+    showLastGASVersion
   ;;
   deploy)
     CLASP_DEPLOYMENT_NAME="${CLASP_DEPLOYMENT_NAME:-$(git describe --tags)}"
     runClasp deploy -i "${CLASP_DEPLOYMENT_ID}" -d "${CLASP_DEPLOYMENT_NAME}"
-    getLastVersion
+    showLastGASVersion
+  ;;
+  release-info)
+    getReleaseInfo
+  ;;
+  release-notes)
+    getPatchedReleaseNotes
+  ;;
+  update-github-release)
+    updateGithubRelease
+  ;;
+  last-version)
+    getLastGASVersion
+  ;;
+  versions)
+    getMergedVersions
+  ;;
+  versions-gas)
+    getGASVersions
+  ;;
+  versions-github)
+    getGithubVersions
+  ;;
+  versions-markdown)
+    getMergedVersionsAsMarkdown
   ;;
   *)
     echo "Unknown command: ${cmd}"
