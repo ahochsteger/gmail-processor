@@ -95,8 +95,9 @@ jobs:
           echo 'EOF' >> $GITHUB_OUTPUT
         env:
           CLASP_DEPLOYMENT_NAME: ${{ steps.release.outputs.new_release_version }}
-      - id: update-release
-        name: Update Release
+      - id: update-release-notes
+        if: ${{ steps.release.outputs.new_release_published == 'true' }}
+        name: Update Release Notes
         uses: tubone24/update_release@v1.3.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
