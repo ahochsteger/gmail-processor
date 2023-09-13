@@ -15,17 +15,9 @@ export function essentialObject(
   propEssentialMap: { [key: string]: (obj: any) => any } = {},
   requiredProps: string[] = [],
 ): any {
-  const metadataKeys = Reflect.getMetadataKeys(obj)
   requiredProps = requiredProps.concat([])
-  console.log(
-    `essentialObject(): requiredProps=${JSON.stringify(
-      requiredProps,
-    )}, metadataKeys=${metadataKeys}`,
-  )
   Object.keys(obj).forEach((key: string) => {
     const prop = essentialProp((obj as any)[key], propEssentialMap[key])
-    const propType = Reflect.getMetadata("design:type", obj, key)
-    console.log(`essentialObject(): propType(${key})=${propType}`)
     const jsonVal = JSON.stringify(prop)
     if (
       !requiredProps.includes(key) &&
