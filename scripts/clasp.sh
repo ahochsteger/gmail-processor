@@ -103,8 +103,7 @@ function getMergedVersionsAsMarkdown() {
 }
 
 function showLastGASVersion() {
-  echo -n "Last GAS version: "
-
+  echo "Last GAS version: $(getLastGASVersion)"
 }
 
 function buildExamples() {
