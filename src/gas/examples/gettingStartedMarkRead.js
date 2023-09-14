@@ -1,4 +1,7 @@
-/** @type {GmailProcessorLib.Config} */
+/**
+ * This is a getting started example configuration using `MARK_MESSAGE_READ`.
+ * @type {GmailProcessorLib.Config}
+ */
 const gettingStartedMarkReadConfig = {
   settings: {
     // Decide on the method to be used to mark processed threads/messages:

@@ -1,4 +1,7 @@
-/** @type {GmailProcessorLib.Config} */
+/**
+ * This is a getting started example configuration.
+ * @type {GmailProcessorLib.Config}
+ */
 const gettingStartedConfig = {
   settings: {
     markProcessedMethod:

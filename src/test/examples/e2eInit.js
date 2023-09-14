@@ -2,7 +2,10 @@ import { Session } from "google-apps-script"
 import EnvContext from "../../lib/Context"
 import * as GmailProcessorLib from "../../lib/index"
 
-/** @type {GmailProcessorLib.E2EConfig} */
+/**
+ * This is a special configuration used to initialize example emails for end-to-end testing.
+ * @type {GmailProcessorLib.E2EConfig}
+ */
 export const e2eConfig = {
   globals: {
     repoBaseUrl:

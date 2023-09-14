@@ -1,4 +1,8 @@
-/** @type {GmailProcessorLib.Config} */
+/**
+ * This is an example to immediately cancel processing for special use cases.
+ * It is used for testing the error handling of actions.
+ * @type {GmailProcessorLib.Config}
+ */
 const exampleActionErrorConfig = {
   settings: {
     markProcessedMethod:

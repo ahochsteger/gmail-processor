@@ -1,4 +1,7 @@
-/** @type {GmailProcessorLib.E2EConfig} */
+/**
+ * This is a special configuration used to initialize example emails for end-to-end testing.
+ * @type {GmailProcessorLib.E2EConfig}
+ */
 const e2eConfig = {
   globals: {
     repoBaseUrl:

@@ -1,7 +1,10 @@
 import EnvContext from "../../lib/Context"
 import * as GmailProcessorLib from "../../lib/index"
 
-/** @type {GmailProcessorLib.Config} */
+/**
+ * This is a getting started example configuration.
+ * @type {GmailProcessorLib.Config}
+ */
 export const gettingStartedConfig = {
   settings: {
     markProcessedMethod:

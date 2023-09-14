@@ -1,7 +1,11 @@
 import EnvContext from "../../lib/Context"
 import * as GmailProcessorLib from "../../lib/index"
 
-/** @type {GmailProcessorLib.Config} */
+/**
+ * This is an example to immediately cancel processing for special use cases.
+ * It is used for testing the error handling of actions.
+ * @type {GmailProcessorLib.Config}
+ */
 export const exampleActionErrorConfig = {
   settings: {
     markProcessedMethod:

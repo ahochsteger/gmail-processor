@@ -1,6 +1,9 @@
 import * as GmailProcessorLib from "../../lib/index"
 
-/** @type {GmailProcessorLib.V1Config} */
+/**
+ * This is a Gmail2GDrive v1.x configuration example to demostrate the conversion to the Gmail Processor v2.x config format.
+ * @type {GmailProcessorLib.V1Config}
+ */
 export const migrationExample01Config = {
   globalFilter: "has:attachment -in:trash -in:drafts -in:spam",
   processedLabel: "gmail2gdrive/client-test",

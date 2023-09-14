@@ -1,7 +1,10 @@
 import EnvContext from "../../lib/Context"
 import * as GmailProcessorLib from "../../lib/index"
 
-/** @type {GmailProcessorLib.Config} */
+/**
+ * This is a getting started example configuration using `MARK_MESSAGE_READ`.
+ * @type {GmailProcessorLib.Config}
+ */
 export const gettingStartedMarkReadConfig = {
   settings: {
     // Decide on the method to be used to mark processed threads/messages:
