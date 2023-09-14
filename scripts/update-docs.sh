@@ -7,7 +7,7 @@ export LC_ALL=C
 export GENERATING_DOCS=true
 
 scriptdir=$(dirname "$0")
-outfile="docs/reference-docs.md"
+refdocs_outfile="docs/reference-docs.md"
 allDataFile="build/typedoc/all.json"
 actionDataFile="build/typedoc/actions.json"
 enumDataFile="build/typedoc/enums.json"
@@ -96,23 +96,25 @@ function generateEnumDocs() {
     <"${enumDataFile}"
 }
 
-function generateExampleDocs() {
-  echo "## Examples"
-}
-
+# Extract Data
 extractAllDocs "${allDataFile}"
 extractAllActions "${allDataFile}" >"${actionDataFile}"
 extractAllEnums <"${allDataFile}" >"${enumDataFile}"
 extractAllPlaceholder >"${placeholderDataFile}"
 
+# Generate Reference Docs
 {
   echo "# GMail Processor Reference Documentation"
+  echo ""
+  echo "* [GMail Processor Reference Documentation](#gmail-processor-reference-documentation)"
+  echo "  * [Actions](#actions)"
+  echo "  * [Enum Types](#enum-types)"
+  echo "  * [Substitution Placeholder](#substitution-placeholder)"
   echo ""
   generateActionDocs
   echo ""
   generateEnumDocs
   echo ""
   generatePlaceholderDocs
-} >"${outfile}"
-#npx prettier -w "${outfile}"
-
+  echo ""
+} >"${refdocs_outfile}"

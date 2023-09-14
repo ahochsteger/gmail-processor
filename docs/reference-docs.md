@@ -1,5 +1,10 @@
 # GMail Processor Reference Documentation
 
+- [GMail Processor Reference Documentation](#gmail-processor-reference-documentation)
+  - [Actions](#actions)
+  - [Enum Types](#enum-types)
+  - [Substitution Placeholder](#substitution-placeholder)
+
 ## Actions
 
 The following actions can be triggered depending on the valid context which is prefixed in the action name:

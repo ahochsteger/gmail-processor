@@ -86,8 +86,8 @@ Follow these steps:
      `1yhOQyl_xWtnGJn_bzlL7oA4d_q5KoMyZyWIqXDJX1SY7bi22_lpjMiQK`
 4. Press "Look up" and select the desired release number as **version** or "HEAD (Development Mode)" if you always want to use the latest version of the desired release channel.
    - Unfortunately Google Apps Script does not show the description of the library version to see the corresponding release version. This URL can be used to verify the release version of a Google Apps Script Library: <https://script.google.com/macros/library/d/1Qvk0v7ggfW-TJ84dlYPlDzJG8y-Dif-j9kdA1aWv4wzxE_IOkeV2juLB/{libVersion}> (replace `{libVersion}` with the number from the drop-down in Google Apps Script).
-5. Set the **identifier** to `GmailProcessorLib` (any name will do, but we will use this identifier as a reference in all examples and documentation)
-6. Replace the contents of the initially created file `Code.gs` with the example from [gettingStarted.js](src/gas/examples/gettingStarted.js) and save the changes.
+5. Set the **identifier** to `GmailProcessorLib` (any name will do, but we will use this identifier as a reference in all [examples](docs/examples.md) and documentation)
+6. Replace the contents of the initially created file `Code.gs` with the code from the [examples](docs/examples.md) and save the changes.
 7. Perform initial start of the function `run` to grant the permissions (see below for an explanation why these are required):
    1. Select the account you want to grant access for
    2. When the message "Google did not verify the app" click on "Advanced" and "Go to ..." to proceed
@@ -97,6 +97,11 @@ Now you can start using the Gmail Processor Library in your script file (e.g. `C
 
 ```javascript
 var config = {
+  settings: {
+    // Decide the mark processed method to be used:
+    markProcessedMethod: GmailProcessorLib.MarkProcessedMethod.MY_CHOSEN_METHOD,
+  },
+  threads: [{}],
   // Define your configuration JSON
 }
 
@@ -127,6 +132,8 @@ To enable full processing of the emails the following [OAuth Scopes for Google A
 
 - `https://mail.google.com/`: Access Gmail API to process emails
 - `https://www.googleapis.com/auth/drive`: Access Google Drive API to store files
+- `https://www.googleapis.com/auth/script.external_request`: Used for end-to-end tests to fetch example attachments via HTTP
+- `https://www.googleapis.com/auth/script.send_mail`: Used for end-to-end tests to send example emails
 - `https://www.googleapis.com/auth/spreadsheets`: Access Google Spreadsheets API to store logs of processed emails
 - `https://www.googleapis.com/auth/userinfo.email`: Get the user's email address to be used in the configuration
 
@@ -161,60 +168,15 @@ The following documentation is available:
   - See [all available enum values](docs/reference-docs.md#enum-types) like `ConflictStrategy` to specify how to deal with existing files at a Google Drive location.
   - See [all available substitution placeholder](docs/reference-docs.md#substitution-placeholder) like `${message.date:format:yyyy-MM-dd}` to use the message date as the folder name of the Google Drive location.
 
-Have a look at the [examples](src/gas/examples) to see different usage scenarios.
+Have a look at the [examples](docs/examples.md) to see different usage scenarios.
 
 ## Contributing
 
 Contributions to Gmail Processor are welcome! Whether you want to add new features, fix bugs, or improve documentation, check out the [contribution guidelines](CONTRIBUTING.md) to get started.
 
-### Development Setup
+### Development Guide
 
-```bash
-# Clone the repository
-git clone https://github.com/ahochsteger/gmail-processor.git
-
-# Navigate to the project folder
-cd gmail-processor
-
-# Install dependencies
-npm install
-
-# Perform changes
-code .
-
-# Pre-commit updates + tests
-npm run pre-commit
-```
-
-The recommended IDE for this project is [Visual Studio Code](https://code.visualstudio.com/), but any other IDEs with support for TypeScript and NPM will do.
-
-Please add/update the tests for any change to keep the codebase in a well-tested state. For every source file `*.ts` the corresponding test file is named `*.spec.ts` and they are implemented using [Jest](https://jestjs.io/) as the testing framework.
-Remote services are mocked (see [MockFactory.ts](src/test/mocks/MockFactory.ts)) to simplify local testing in isolation.
-
-After the changes and tests are done run the `pre-commit` script that validates the changes and updates all generated artifacts (like documentation, examples, JSON schema files, ...) and include all updated files in your commit.
-
-### Development Resources
-
-A list of tools, libraries and frameworks that are used for development:
-
-- [NPM - Node Package Manager](https://docs.npmjs.com/about-npm): For package management and building
-- [Clasp](https://github.com/google/clasp): For deploying the library and examples to Google Apps Script
-- [TypeScript](https://www.typescriptlang.org/): The language used for developing the library
-- [Jest](https://jestjs.io/): For test automation
-- [webpack](https://webpack.js.org/): For packaging the library
-- [semantic-release](https://github.com/semantic-release/semantic-release): For release automation and publishing
-- For a complete list have a look at the dependencies in [`package.json`](package.json)
-
-Helpful resources about development for Google Apps Script:
-
-- [https://github.com/labnol/apps-script-starter](https://github.com/labnol/apps-script-starter)
-- [https://github.com/labnol/google-apps-script-awesome-list](https://github.com/labnol/google-apps-script-awesome-list)
-- [https://blog.gsmart.in/es6-and-npm-modules-in-google-apps-script/](https://blog.gsmart.in/es6-and-npm-modules-in-google-apps-script/)
-- [https://github.com/gsmart-in/AppsCurryStep1](https://github.com/gsmart-in/AppsCurryStep1)
-- [https://developers.google.com/apps-script/guides/typescript](https://developers.google.com/apps-script/guides/typescript)
-- [https://github.com/google/clasp/blob/master/docs/typescript.md](https://github.com/google/clasp/blob/master/docs/typescript.md)
-- [https://github.com/grant/ts2gas](https://github.com/grant/ts2gas)
-- [https://blog.filippo.io/gmail-bot-with-apps-script-and-typescript/](https://blog.filippo.io/gmail-bot-with-apps-script-and-typescript/)
+See the [Development Guide](CONTRIBUTING.md#development-guide) for details.
 
 ## Contributors
 
