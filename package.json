@@ -48,6 +48,7 @@
     "test:examples": "jest --reporters=summary --silent --testPathPattern src/gas/examples",
     "test:verbose": "jest --detectOpenHandles --reporters='default' --runInBand --verbose",
     "update": "concurrently 'npm:update:*'",
+    "update:contributors": "npx all-contributors generate",
     "update:docs": "scripts/update-docs.sh",
     "update:examples": "scripts/update-examples.sh",
     "update:schema": "scripts/update-schema.sh"
