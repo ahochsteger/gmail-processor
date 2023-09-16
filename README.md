@@ -31,6 +31,7 @@
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=ahochsteger_gmail-processor&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=ahochsteger_gmail-processor)
 [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=ahochsteger_gmail-processor&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=ahochsteger_gmail-processor)
 [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=ahochsteger_gmail-processor&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=ahochsteger_gmail-processor)
+
 </details>
 
 **[Gmail Processor](https://github.com/ahochsteger/gmail-processor)** is an open-source [Google Apps Script](https://www.google.com/script/start/) library that automates the processing of Gmail messages and attachments by executing actions (e.g. store attachments in a GDrive folder, log information in a spreadsheet) depending on powerful matching criteria.

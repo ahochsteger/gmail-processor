@@ -57,7 +57,7 @@ export {
   ThreadMatchConfig,
   V1Config,
   V1Rule,
-  VariableEntry
+  VariableEntry,
 }
 
 /**

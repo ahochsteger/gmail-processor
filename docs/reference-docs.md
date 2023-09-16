@@ -1,9 +1,9 @@
 # GMail Processor Reference Documentation
 
-- [GMail Processor Reference Documentation](#gmail-processor-reference-documentation)
-  - [Actions](#actions)
-  - [Enum Types](#enum-types)
-  - [Substitution Placeholder](#substitution-placeholder)
+* [GMail Processor Reference Documentation](#gmail-processor-reference-documentation)
+  * [Actions](#actions)
+  * [Enum Types](#enum-types)
+  * [Substitution Placeholder](#substitution-placeholder)
 
 ## Actions
 
