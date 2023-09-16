@@ -33,9 +33,13 @@ function buildClaspProjectFile() {
   cat "${CLASP_SRC_DIR}/.clasp.json" | envsubst >"${CLASP_DIR}/.clasp.json"
 }
 
-function runClasp() {
-  buildClaspProjectFile
+function buildClaspFiles() {
   buildClaspManifestFile
+  buildClaspProjectFile
+}
+
+function runClasp() {
+  buildClaspFiles
   buildClaspAuthFile
   (
     cd "${CLASP_DIR}"
@@ -106,7 +110,18 @@ function buildExamples() {
   rm -rf "${CLASP_DIR}"
   mkdir -p "${CLASP_DIR}"
 
-  cp -pr "${CLASP_SRC_DIR}"/*.{js,json} package.json "${CLASP_DIR}/"
+  for f in "${CLASP_SRC_DIR}"/*.js; do
+    sed -z -r 's#(import [^\n]+\n\n?)*##g' \
+      <"${f}" \
+    | sed -r 's#^export (const|function) #\1 #g' \
+      >"${CLASP_DIR}/${f##*/}"
+  done
+
+  # Format example files:
+  npx prettier -w \
+    "${CLASP_DIR}"/*.js
+
+  cp -pr package.json "${CLASP_DIR}/"
 }
 
 function buildLib() {
@@ -128,8 +143,6 @@ function build() {
     echo "ERROR: Unknown clasp profile: ${CLASP_PROFILE}"
     exit 1
   fi
-  buildClaspManifestFile
-  buildClaspProjectFile
 }
 
 CLASP_PROFILE="${1:?Missing profile name!}"

@@ -5,9 +5,7 @@
   * [example02.js](#example02js)
   * [exampleActionError.js](#exampleactionerrorjs)
   * [exampleMin.js](#exampleminjs)
-  * [gettingStartedAddLabel.js](#gettingstartedaddlabeljs)
   * [gettingStarted.js](#gettingstartedjs)
-  * [gettingStartedMarkRead.js](#gettingstartedmarkreadjs)
   * [migrationExample01.js](#migrationexample01js)
   * [migrationExampleMin.js](#migrationexampleminjs)
 
@@ -73,7 +71,7 @@ function example01Run(
 }
 ```
 
-Source: [Testing version (maintained)](../src/test/examples/example01.js), [GAS version (generated)](../src/gas/examples/example01.js)
+Source file: [example01.js](../src/gas/examples/example01.js)
 
 ## example02.js
 
@@ -153,7 +151,7 @@ function example02Run(
 }
 ```
 
-Source: [Testing version (maintained)](../src/test/examples/example02.js), [GAS version (generated)](../src/gas/examples/example02.js)
+Source file: [example02.js](../src/gas/examples/example02.js)
 
 ## exampleActionError.js
 
@@ -205,7 +203,7 @@ function exampleActionErrorRun(
 }
 ```
 
-Source: [Testing version (maintained)](../src/test/examples/exampleActionError.js), [GAS version (generated)](../src/gas/examples/exampleActionError.js)
+Source file: [exampleActionError.js](../src/gas/examples/exampleActionError.js)
 
 ## exampleMin.js
 
@@ -247,78 +245,7 @@ function exampleMinRun(ctx) {
 }
 ```
 
-Source: [Testing version (maintained)](../src/test/examples/exampleMin.js), [GAS version (generated)](../src/gas/examples/exampleMin.js)
-
-## gettingStartedAddLabel.js
-
-This is a getting started example configuration using `ADD_THREAD_LABEL`.
-
-```javascript
-/**
- * This is a getting started example configuration using `ADD_THREAD_LABEL`.
- * @type {GmailProcessorLib.Config}
- */
-const gettingStartedAddLabelConfig = {
-  settings: {
-    // Decide on the method to be used to mark processed threads/messages:
-    // - mark-read: Mark each processed messages as read (can deal with multiple messages per thread but touches the read status)
-    //   "markProcessedMethod": "mark-read"
-    // - add-label: Add a label (specified by markProcessedLabel) to the processed thread (unable to deal with multiple messages per thread, but doesn't touch the read status)
-    //   "markProcessedMethod": "add-label",
-    //   "markProcessedLabel": "GmailProcessor/processed",
-    markProcessedMethod: GmailProcessorLib.MarkProcessedMethod.ADD_THREAD_LABEL,
-    markProcessedLabel: "GmailProcessor/processed",
-
-    // Add more settings if required ...
-  },
-  global: {
-    // Place global thread, message or attachment configuration here
-    thread: {
-      match: {
-        query:
-          "has:attachment -in:trash -in:drafts -in:spam -label:GmailProcessor/processed newer_than:1d",
-      },
-    },
-  },
-  threads: [
-    // Place thread processing config here
-    {
-      match: {
-        query: "from:some.email@gmail.com",
-      },
-      attachments: [
-        {
-          match: {
-            name: "^my-file-.+.pdf$",
-          },
-          actions: [
-            {
-              name: "thread.storePDF",
-              args: {
-                folder:
-                  "folder/${message.date:format:yyyy-MM-dd}/${attachment.name}",
-              },
-            },
-          ],
-        },
-      ],
-    },
-  ],
-}
-
-function gettingStartedAddLabelRun(
-  /** @type {EnvContext | undefined} */
-  ctx,
-) {
-  return GmailProcessorLib.run(
-    gettingStartedAddLabelConfig,
-    GmailProcessorLib.RunMode.DRY_RUN,
-    ctx,
-  )
-}
-```
-
-Source: [Testing version (maintained)](../src/test/examples/gettingStartedAddLabel.js), [GAS version (generated)](../src/gas/examples/gettingStartedAddLabel.js)
+Source file: [exampleMin.js](../src/gas/examples/exampleMin.js)
 
 ## gettingStarted.js
 
@@ -329,85 +256,20 @@ This is a getting started example configuration.
  * This is a getting started example configuration.
  * @type {GmailProcessorLib.Config}
  */
-const gettingStartedConfig = {
-  settings: {
-    markProcessedMethod:
-      GmailProcessorLib.MarkProcessedMethod.MARK_MESSAGE_READ,
-    // Place settings here
-  },
-  global: {
-    // Place global thread, message or attachment configuration here
-  },
-  threads: [
-    // Place thread processing config here
-    {
-      match: {
-        query: "from:some.email@gmail.com",
-      },
-      attachments: [
-        {
-          match: {
-            name: "^my-file-.+.pdf$",
-          },
-          actions: [
-            {
-              name: "thread.storePDF",
-              args: {
-                folder:
-                  "folder/${message.date:format:yyyy-MM-dd}/${attachment.name}",
-              },
-            },
-          ],
-        },
-      ],
-    },
-  ],
-}
-
-function gettingStartedRun(
-  /** @type {EnvContext | undefined} */
-  ctx,
-) {
-  return GmailProcessorLib.run(
-    gettingStartedConfig,
-    GmailProcessorLib.RunMode.DRY_RUN,
-    ctx,
-  )
-}
-```
-
-Source: [Testing version (maintained)](../src/test/examples/gettingStarted.js), [GAS version (generated)](../src/gas/examples/gettingStarted.js)
-
-## gettingStartedMarkRead.js
-
-This is a getting started example configuration using `MARK_MESSAGE_READ`.
-
-```javascript
-/**
- * This is a getting started example configuration using `MARK_MESSAGE_READ`.
- * @type {GmailProcessorLib.Config}
- */
-const gettingStartedMarkReadConfig = {
+const config = {
   settings: {
     // Decide on the method to be used to mark processed threads/messages:
-    // - mark-read: Mark each processed messages as read (can deal with multiple messages per thread but touches the read status)
-    //   "markProcessedMethod": "mark-read"
-    // - add-label: Add a label (specified by markProcessedLabel) to the processed thread (unable to deal with multiple messages per thread, but doesn't touch the read status)
-    //   "markProcessedMethod": "add-label",
-    //   "markProcessedLabel": "GmailProcessor/processed",
+    // MARK_MESSAGE_READ: Mark each processed messages as read (can deal with multiple messages per thread but touches the read status)
     markProcessedMethod:
       GmailProcessorLib.MarkProcessedMethod.MARK_MESSAGE_READ,
+    // ADD_THREAD_LABEL: Add a label (specified by markProcessedLabel) to the processed thread (unable to deal with multiple messages per thread, but doesn't touch the read status)
+    // markProcessedMethod: GmailProcessorLib.MarkProcessedMethod.ADD_THREAD_LABEL,
+    // markProcessedLabel: "GmailProcessor/processed",
 
     // Add more settings if required ...
   },
   global: {
     // Place global thread, message or attachment configuration here
-    thread: {
-      match: {
-        query:
-          "has:attachment -in:trash -in:drafts -in:spam is:unread newer_than:1d",
-      },
-    },
   },
   threads: [
     // Place thread processing config here
@@ -435,19 +297,15 @@ const gettingStartedMarkReadConfig = {
   ],
 }
 
-function gettingStartedMarkReadRun(
+function run(
   /** @type {EnvContext | undefined} */
   ctx,
 ) {
-  return GmailProcessorLib.run(
-    gettingStartedMarkReadConfig,
-    GmailProcessorLib.RunMode.DRY_RUN,
-    ctx,
-  )
+  return GmailProcessorLib.run(config, GmailProcessorLib.RunMode.DRY_RUN, ctx)
 }
 ```
 
-Source: [Testing version (maintained)](../src/test/examples/gettingStartedMarkRead.js), [GAS version (generated)](../src/gas/examples/gettingStartedMarkRead.js)
+Source file: [gettingStarted.js](../src/gas/examples/gettingStarted.js)
 
 ## migrationExample01.js
 
@@ -506,7 +364,7 @@ function migrationExample01ConvertConfig() {
 }
 ```
 
-Source: [Testing version (maintained)](../src/test/examples/migrationExample01.js), [GAS version (generated)](../src/gas/examples/migrationExample01.js)
+Source file: [migrationExample01.js](../src/gas/examples/migrationExample01.js)
 
 ## migrationExampleMin.js
 
@@ -538,4 +396,4 @@ function migrationExampleMinConvertConfig() {
 }
 ```
 
-Source: [Testing version (maintained)](../src/test/examples/migrationExampleMin.js), [GAS version (generated)](../src/gas/examples/migrationExampleMin.js)
+Source file: [migrationExampleMin.js](../src/gas/examples/migrationExampleMin.js)

@@ -1,8 +1,12 @@
+import { Session } from "google-apps-script"
+import EnvContext from "../../lib/Context"
+import * as GmailProcessorLib from "../../lib/index"
+
 /**
  * This is a special configuration used to initialize example emails for end-to-end testing.
  * @type {GmailProcessorLib.E2EConfig}
  */
-const e2eConfig = {
+export const e2eConfig = {
   globals: {
     repoBaseUrl:
       "https://raw.githubusercontent.com/ahochsteger/gmail-processor/main/src/e2e-test/files",
@@ -60,7 +64,7 @@ const e2eConfig = {
   ],
 }
 
-function e2eInit(
+export function e2eInit(
   /** @type {EnvContext | undefined} */
   ctx,
 ) {

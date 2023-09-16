@@ -4,20 +4,12 @@ import { validateV1Config } from "../../lib/config/v1/V1Validate"
 import { PartialDeep } from "type-fest"
 import { Config, ProcessingResult, RunMode, V1Config } from "../../lib"
 import { EnvContext, ProcessingStatus } from "../../lib/Context"
-import { MockFactory, Mocks } from "../mocks/MockFactory"
+import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
 import { e2eTest01Config, e2eTest01Run } from "./e2eTest01"
 import { example01Config, example01Run } from "./example01"
 import { example02Config, example02Run } from "./example02"
 import { exampleMinConfig, exampleMinRun } from "./exampleMin"
-import { gettingStartedConfig, gettingStartedRun } from "./gettingStarted"
-import {
-  gettingStartedAddLabelConfig,
-  gettingStartedAddLabelRun,
-} from "./gettingStartedAddLabel"
-import {
-  gettingStartedMarkReadConfig,
-  gettingStartedMarkReadRun,
-} from "./gettingStartedMarkRead"
+import { config, run } from "./gettingStarted"
 import {
   migrationExample01Config,
   migrationExample01ConvertConfig,
@@ -69,20 +61,7 @@ describe("example02", () =>
   testExample("example02", example02Config, example02Run))
 describe("exampleMin", () =>
   testExample("exampleMin", exampleMinConfig, exampleMinRun))
-describe("gettingStarted", () =>
-  testExample("gettingStarted", gettingStartedConfig, gettingStartedRun))
-describe("gettingStartedAddLabel", () =>
-  testExample(
-    "gettingStartedAddLabel",
-    gettingStartedAddLabelConfig,
-    gettingStartedAddLabelRun,
-  ))
-describe("gettingStartedMarkRead", () =>
-  testExample(
-    "gettingStartedMarkRead",
-    gettingStartedMarkReadConfig,
-    gettingStartedMarkReadRun,
-  ))
+describe("gettingStarted", () => testExample("gettingStarted", config, run))
 describe("migrationExample01", () =>
   testMigrationExample(
     "migrationExample01",

@@ -2,14 +2,35 @@
 
 set -euo pipefail
 
-examples_outfile="docs/examples.md"
+src_basedir="src/gas/examples"
+dest_basedir="build/gas/examples"
+docs_outfile="docs/examples.md"
 
-function generateExampleDocs() {
-  local gas_examples_base_dir="src/gas/examples"
-  local test_examples_base_dir="src/test/examples"
+function generateExamplesGas() {
+  local src_dir="${1}"
+  local dest_dir="${2}"
+  rm -rf "${dest_dir}"
+  mkdir -p "${dest_dir}"
+  for f in "${src_dir}"/*.js; do
+    sed -z -r 's#(import [^\n]+\n\n?)*##g' \
+      <"${f}" \
+    | sed -r 's#^export (const|function) #\1 #g' \
+      >"${dest_dir}/${f##*/}"
+  done
+
+  # Format example files:
+  npx prettier -w \
+    "${dest_dir}"/*.js
+}
+
+function generateExamplesDoc() {
+  local src_dir="${1}"
+  local dest_dir="${2}"
+  local filename_filter="${3}"
+
   local example_files; example_files=$(
-    find "${gas_examples_base_dir}" -type f -name '*.js' -printf "%P\n" \
-    | grep -E -v '^e2e'
+    find "${dest_dir}" -type f -name "*.js" -printf "%P\n" \
+    | grep -E "${filename_filter}"
   )
   
   echo "# Examples"
@@ -27,28 +48,19 @@ function generateExampleDocs() {
     echo "## ${f}"
     echo ""
     npx jsdoc -X "src/gas/examples/${f}" \
-    | gojq -r ".[0].description // \"*NOTE:* This example misses a description - please add a [JSDoc](https://jsdoc.app/) comment in [${f}](../${test_examples_base_dir}/${f})!\""
+    | gojq -r ".[0].description // \"*NOTE:* This example misses a description - please add a [JSDoc](https://jsdoc.app/) comment in [${f}](../${src_dir}/${f})!\""
     echo ""
     echo "\`\`\`javascript"
-    cat "${gas_examples_base_dir}/${f}"
+    cat "${dest_dir}/${f}"
     echo "\`\`\`"
     echo ""
-    echo "Source: [Testing version (maintained)](../${test_examples_base_dir}/${f}), [GAS version (generated)](../${gas_examples_base_dir}/${f})"
+    echo "Source file: [${f}](../${src_dir}/${f})"
   done < <(echo "${example_files}")
 }
 
 # Generate example files:
-rm -f src/gas/examples/*.js
-for f in src/test/examples/*.js; do
-  sed -z -r 's#(import [^\n]+\n\n?)*##g' \
-    <"${f}" \
-  | sed -r 's#^export (const|function) #\1 #g' \
-    >"src/gas/examples/${f##*/}"
-done
-
-# Format example files:
-npx prettier -w \
-  src/gas/examples/*.js
+generateExamplesGas "${src_basedir}" "${dest_basedir}"
 
 # Generate example docs:
-generateExampleDocs >"${examples_outfile}"
+generateExamplesDoc "${src_basedir}" "${dest_basedir}" "^(example|gettingStarted|migration).*\.js\$" >"${docs_outfile}"
+npx prettier -w "${docs_outfile}"
