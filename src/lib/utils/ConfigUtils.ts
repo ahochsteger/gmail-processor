@@ -22,8 +22,8 @@ export function essentialObject(
     if (
       !requiredProps.includes(key) &&
       (prop === null ||
-      jsonVal === JSON.stringify(defaultObj[key]) ||
-      jsonVal === "[]" ||
+        jsonVal === JSON.stringify(defaultObj[key]) ||
+        jsonVal === "[]" ||
         jsonVal === "{}")
     )
       delete (obj as any)[key]
