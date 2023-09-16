@@ -49,6 +49,7 @@ jobs:
           node-version: 18.x
           cache: "npm"
       - id: release-status
+        if: ${{ env.DO_PUSH }}
         name: Release Status
         uses: cycjimmy/semantic-release-action@v3
         env:
