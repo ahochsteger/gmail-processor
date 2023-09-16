@@ -1,8 +1,10 @@
+import * as GmailProcessorLib from "../../lib/index"
+
 /**
  * This is a minimal Gmail2GDrive v1.x configuration example to demostrate the conversion to the Gmail Processor v2.x config format.
  * @type {GmailProcessorLib.V1Config}
  */
-const migrationExampleMinConfig = {
+export const migrationExampleMinConfig = {
   processedLabel: "gmail2gdrive/client-test",
   sleepTime: 100,
   maxRuntime: 280,
@@ -16,7 +18,7 @@ const migrationExampleMinConfig = {
   ],
 }
 
-function migrationExampleMinConvertConfig() {
+export function migrationExampleMinConvertConfig() {
   const config = GmailProcessorLib.convertV1Config(migrationExampleMinConfig)
   console.log(JSON.stringify(config, null, 2))
   return config

@@ -1,8 +1,11 @@
+import EnvContext from "../../lib/Context"
+import * as GmailProcessorLib from "../../lib/index"
+
 /**
  * This is a more advanced configuration example.
  * @type {GmailProcessorLib.Config}
  */
-const example02Config = {
+export const example02Config = {
   description: "An example V2 configuration",
   settings: {
     markProcessedMethod:
@@ -59,7 +62,7 @@ const example02Config = {
   ],
 }
 
-function example02Run(
+export function example02Run(
   /** @type {EnvContext | undefined} */
   ctx,
 ) {

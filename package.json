@@ -45,6 +45,7 @@
     "repush:examples": "npm run rebuild:examples && npm run push:examples",
     "repush:lib": "npm run rebuild:lib && npm run push:lib",
     "test": "jest --reporters=summary --silent",
+    "test:examples": "jest --reporters=summary --silent --testPathPattern src/gas/examples",
     "test:verbose": "jest --detectOpenHandles --reporters='default' --runInBand --verbose",
     "update": "concurrently 'npm:update:*'",
     "update:docs": "scripts/update-docs.sh",
