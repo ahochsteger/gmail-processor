@@ -1,6 +1,9 @@
 name: CI
 
 on:
+  pull_request:
+    branches:
+      - main
   # Runs on pushes targeting certain branches
   push:
     branches:
@@ -30,6 +33,7 @@ jobs:
       CLASP_REFRESH_TOKEN: ${{secrets.CLASP_REFRESH_TOKEN}}
       GCLOUD_PROJECT_ID: ${{secrets.GCLOUD_PROJECT_ID}}
       GCLOUD_PROJECT_NR: ${{secrets.GCLOUD_PROJECT_NR}}
+      DO_PUSH: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
     steps:
       - id: checkout
         name: Checkout
@@ -70,11 +74,13 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       - id: push-gas
+        if: ${{ env.DO_PUSH }}
         name: Push Lib to GAS
         run: |
           npm run push
           echo "new_gas_version=$(cat build/gas/lib-version.txt)" >> "${GITHUB_OUTPUT}"
       - id: release
+        if: ${{ env.DO_PUSH }}
         name: Release
         uses: cycjimmy/semantic-release-action@v3
         env:
@@ -94,9 +100,11 @@ jobs:
           CLASP_DEPLOYMENT_NAME: ${{ steps.release.outputs.new_release_version }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - id: setup-pages
+        if: ${{ env.DO_PUSH }}
         name: Setup Pages
         uses: actions/configure-pages@v3
       - id: upload-pages
+        if: ${{ env.DO_PUSH }}
         name: Upload Pages
         uses: actions/upload-pages-artifact@v2
         with:
