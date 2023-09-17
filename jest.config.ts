@@ -110,7 +110,18 @@ export default {
 
   // Use this configuration option to add custom reporters to Jest
   // reporters: undefined,
-  reporters: [["github-actions", { silent: false }], "summary"],
+  reporters: [
+    ["github-actions", { silent: false }],
+    [
+      "@casualbot/jest-sonar-reporter",
+      {
+        relativePaths: true,
+        outputDirectory: "build/coverage",
+        outputName: "sonar-report.xml",
+      },
+    ],
+    "summary",
+  ],
 
   // Automatically reset mock state before every test
   // resetMocks: false,
@@ -174,7 +185,6 @@ export default {
 
   // This option allows the use of a custom results processor
   // testResultsProcessor: undefined,
-  testResultsProcessor: "jest-sonar-reporter",
 
   // This option allows use of a custom test runner
   // testRunner: "jest-circus/runner",
