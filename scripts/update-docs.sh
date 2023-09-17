@@ -116,5 +116,4 @@ extractAllPlaceholder >"${placeholderDataFile}"
   generateEnumDocs
   echo ""
   generatePlaceholderDocs
-  echo ""
 } >"${refdocs_outfile}"
