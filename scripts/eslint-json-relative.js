@@ -3,9 +3,9 @@
 /**
  * JSON ESlint formatter with relative paths.
  *
- * @param {array} results
- * @param {object} context
- * @returns {string}
+ * @param results - ESlint results
+ * @param context - ESlint context
+ * @returns Formatted JSON result with relative paths
  */
 module.exports = function (results, context) {
   results.forEach((result) => {

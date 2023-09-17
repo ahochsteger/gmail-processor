@@ -29,7 +29,7 @@ export class V1ToV2Converter {
     // See https://date-fns.org/v2.30.0/docs/format
     const convertedFormat = format.replace(/u/g, "i")
     const unsupportedFormatStrings = /[Fa]/
-    const matches = convertedFormat.match(unsupportedFormatStrings)
+    const matches = RegExp(unsupportedFormatStrings).exec(convertedFormat)
     if (matches) {
       throw new Error(
         `Conversion of date format not possible - unsupported date format '${matches[0]}' in format string '${format}'!`,
@@ -56,14 +56,14 @@ export class V1ToV2Converter {
       // Support original date format
       s = s.replace(
         legacyDateFormatRegex,
-        `$2\${${dateKey}:olddateformat:$3}$5`,
+        `$2\${${dateKey}:oldDateFormat:$3}$5`,
       )
-      const regexp = /:olddateformat:([^}]+)}/g
+      const regexp = /:oldDateFormat:([^}]+)}/g
       const matches = s.matchAll(regexp)
       for (const match of matches) {
         if (match.length > 1) {
           const convertedFormat = this.convertDateFormat(match[1])
-          s = s.replace(/:olddateformat:[^}]+}/g, `:format:${convertedFormat}}`)
+          s = s.replace(/:oldDateFormat:[^}]+}/g, `:format:${convertedFormat}}`)
         }
       }
     } else {
@@ -254,23 +254,6 @@ export class V1ToV2Converter {
     partialV1Config: PartialDeep<V1Config>,
   ): PartialDeep<Config> {
     const v1Config = newV1Config(partialV1Config)
-    // const config = newConfig()
-    // // Old processing logic:
-    // // if (config.globalFilter===undefined) {
-    // //   config.globalFilter = "has:attachment -in:trash -in:drafts -in:spam";
-    // // }
-    // config.global.thread.match.query =
-    //   v1Config.globalFilter || "has:attachment -in:trash -in:drafts -in:spam"
-    // // Old processing logic:
-    // // var gSearchExp  = config.globalFilter + " " + rule.filter + " -label:" + config.processedLabel;
-    // config.settings.markProcessedLabel = v1Config.processedLabel
-    // config.settings.sleepTimeThreads = v1Config.sleepTime
-    // config.settings.maxRuntime = v1Config.maxRuntime
-    // config.global.thread.match.newerThan = v1Config.newerThan
-    // config.settings.timezone = v1Config.timezone
-    // v1Config.rules.forEach((rule) => {
-    //   config.threads.push(this.v1RuleToV2ThreadConfig(rule))
-    // })
     const threadConfigs = v1Config.rules.map((rule) =>
       this.v1RuleToV2ThreadConfig(rule),
     )

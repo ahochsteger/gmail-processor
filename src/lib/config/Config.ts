@@ -29,7 +29,7 @@ import {
 } from "./ThreadConfig"
 
 /**
- * Represents a configuration for GmailProcessoror in normalized form for processing
+ * Represents a configuration for GmailProcessor in normalized form for processing
  */
 export class ProcessingConfig {
   /**
@@ -128,7 +128,7 @@ export function normalizeConfig(
 
   // Inject mark processed actions
   config.settings = config.settings ?? {}
-  config.global = normalizeGlobalConfig(config.global || {})
+  config.global = normalizeGlobalConfig(config.global ?? {})
   config.global.thread = config.global.thread ?? {}
   config.global.thread.actions = config.global.thread.actions ?? []
   config.global.thread.match = config.global.thread.match ?? {}

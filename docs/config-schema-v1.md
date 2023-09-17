@@ -21,7 +21,7 @@
 |**globalFilter**|`string`|Global filter|No, default: `"has:attachment -in:trash -in:drafts -in:spam"`|
 |**maxRuntime**|`number`|Maximum script runtime in seconds (google scripts will be killed after 5 minutes)| &#10003; Yes|
 |**newerThan**|`string`|Only process message newer than (leave empty for no restriction; use d, m and y for day, month and year)| &#10003; Yes|
-|**processedLabel**|`string`|Gmail label for processed threads (will be created, if not existing)| &#10003; Yes|
+|**processedLabel**|`string`|GMail label for processed threads (will be created, if not existing)| &#10003; Yes|
 |**rules**|`V1Rule` `[]`|Processing rules| &#10003; Yes|
 |**sleepTime**|`number`|Sleep time in milliseconds between processed messages| &#10003; Yes|
 |**timezone**|`string`|Timezone for date/time operations| &#10003; Yes|
@@ -51,7 +51,7 @@ Only process message newer than (leave empty for no restriction; use d, m and y 
 
 ### V1Config.processedLabel
 
-Gmail label for processed threads (will be created, if not existing)
+GMail label for processed threads (will be created, if not existing)
 
 * **Type**: `string`
 * **Required**:  &#10003; Yes

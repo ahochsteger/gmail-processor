@@ -309,11 +309,11 @@ Source file: [gettingStarted.js](../src/gas/examples/gettingStarted.js)
 
 ## migrationExample01.js
 
-This is a Gmail2GDrive v1.x configuration example to demostrate the conversion to the Gmail Processor v2.x config format.
+This is a Gmail2GDrive v1.x configuration example to demonstrate the conversion to the Gmail Processor v2.x config format.
 
 ```javascript
 /**
- * This is a Gmail2GDrive v1.x configuration example to demostrate the conversion to the Gmail Processor v2.x config format.
+ * This is a Gmail2GDrive v1.x configuration example to demonstrate the conversion to the Gmail Processor v2.x config format.
  * @type {GmailProcessorLib.V1Config}
  */
 const migrationExample01Config = {
@@ -368,11 +368,11 @@ Source file: [migrationExample01.js](../src/gas/examples/migrationExample01.js)
 
 ## migrationExampleMin.js
 
-This is a minimal Gmail2GDrive v1.x configuration example to demostrate the conversion to the Gmail Processor v2.x config format.
+This is a minimal Gmail2GDrive v1.x configuration example to demonstrate the conversion to the Gmail Processor v2.x config format.
 
 ```javascript
 /**
- * This is a minimal Gmail2GDrive v1.x configuration example to demostrate the conversion to the Gmail Processor v2.x config format.
+ * This is a minimal Gmail2GDrive v1.x configuration example to demonstrate the conversion to the Gmail Processor v2.x config format.
  * @type {GmailProcessorLib.V1Config}
  */
 const migrationExampleMinConfig = {

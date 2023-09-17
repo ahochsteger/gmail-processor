@@ -38,7 +38,7 @@ export class AttachmentActions implements ActionProvider<AttachmentContext> {
       context.attachment.object,
       PatternUtil.substitute(context, args.location),
       args.conflictStrategy || ConflictStrategy.KEEP,
-      PatternUtil.substitute(context, args.description || ""),
+      PatternUtil.substitute(context, args.description ?? ""),
     )
     return {
       ok: true,

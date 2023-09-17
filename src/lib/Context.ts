@@ -20,7 +20,7 @@ export type Thread = GoogleAppsScript.Gmail.GmailThread
 export enum RunMode {
   /** This run-mode skips execution of writing actions. Use this for testing config changes or library upgrades. */
   DRY_RUN = "dry-run",
-  /** This run-mode can be used for normal uperation but will skip possibly destructive actions like overwriting files or removing threads or messages. */
+  /** This run-mode can be used for normal operation but will skip possibly destructive actions like overwriting files or removing threads or messages. */
   SAFE_MODE = "safe-mode",
   /**
    * This run-mode will execute all configured actions including possibly destructive actions like overwriting files or removing threads or messages.
@@ -29,11 +29,11 @@ export enum RunMode {
   DANGEROUS = "dangerous",
 }
 
-/** The type of meta information used for context substitution placerholders. */
+/** The type of meta information used for context substitution placeholders. */
 export enum MetaInfoType {
   /** Boolean type substituted to `true` or `false`. */
   BOOLEAN = "boolean",
-  /** Date/time type. For substitution a format string can be given using `${<placeholder>:format:<formatstring>}`. */
+  /** Date/time type. For substitution a format string can be given using `${<placeholder>:format:<pattern>}`. */
   DATE = "date",
   /** A numeric data type. */
   NUMBER = "number",
@@ -64,7 +64,6 @@ export function newMetaInfo(
     value,
   }
 }
-// export class MetaInfo extends Map<string, MetaInfoEntry> {}
 export type MetaInfo = {
   [k: string]: MetaInfoEntry
 }

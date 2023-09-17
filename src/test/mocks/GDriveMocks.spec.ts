@@ -128,8 +128,8 @@ describe("setupFolder()", () => {
 describe("setupFileIterator()", () => {
   it("should setup a default file iterator", () => {
     const it = GDriveMocks.setupFileIterator()
-    expect(it.hasNext()).toBeFalsy() // First invokation
-    expect(it.hasNext()).toBeFalsy() // Second invokation
+    expect(it.hasNext()).toBeFalsy() // First invocation
+    expect(it.hasNext()).toBeFalsy() // Second invocation
     expect(() => {
       it.next()
     }).toThrowError()
@@ -143,8 +143,8 @@ describe("setupFileIterator()", () => {
     const it = GDriveMocks.setupFileIterator([
       new FileData(file, "some-id", "some-name"),
     ])
-    expect(it.hasNext()).toBeTruthy() // First invokation
-    expect(it.hasNext()).toBeFalsy() // Second invokation
+    expect(it.hasNext()).toBeTruthy() // First invocation
+    expect(it.hasNext()).toBeFalsy() // Second invocation
     expect(it.next()).toBe(file)
     expect(() => {
       it.next()
@@ -155,8 +155,8 @@ describe("setupFileIterator()", () => {
 describe("setupFolderIterator()", () => {
   it("should setup a default folder iterator", () => {
     const it = GDriveMocks.setupFolderIterator()
-    expect(it.hasNext()).toBeFalsy() // First invokation
-    expect(it.hasNext()).toBeFalsy() // Second invokation
+    expect(it.hasNext()).toBeFalsy() // First invocation
+    expect(it.hasNext()).toBeFalsy() // Second invocation
     expect(() => {
       it.next()
     }).toThrowError()
@@ -170,8 +170,8 @@ describe("setupFolderIterator()", () => {
     const it = GDriveMocks.setupFolderIterator([
       new FolderData(folder, "some-id", "some-name"),
     ])
-    expect(it.hasNext()).toBeTruthy() // First invokation
-    expect(it.hasNext()).toBeFalsy() // Second invokation
+    expect(it.hasNext()).toBeTruthy() // First invocation
+    expect(it.hasNext()).toBeFalsy() // Second invocation
     expect(it.next()).toBe(folder)
     expect(() => {
       it.next()

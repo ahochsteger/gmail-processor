@@ -105,7 +105,7 @@ describe("Features", () => {
       "should be able to automatically create a time-based trigger (issue #32)",
     )
     test.todo("should provide a simple configuration syntax (PR #40)")
-    test.todo("may support devcontainers (PR #42)")
+    test.todo("may support devContainers (PR #42)")
   })
   describe("Error Handling", () => {
     test.todo(

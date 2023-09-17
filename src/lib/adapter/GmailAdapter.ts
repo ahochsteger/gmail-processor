@@ -82,7 +82,7 @@ Subject: ${message.getSubject()}<br />
 
   public messageUnstar(message: GoogleAppsScript.Gmail.GmailMessage) {
     this.ctx.log.info(
-      `Marking message '${message.getSubject()}' as unstarred ...`,
+      `Marking message '${message.getSubject()}' as un-starred ...`,
     )
     return message.unstar()
   }

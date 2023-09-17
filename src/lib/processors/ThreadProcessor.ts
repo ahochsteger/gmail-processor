@@ -45,7 +45,7 @@ export class ThreadProcessor extends BaseProcessor {
     threadMatchConfig: RequiredThreadMatchConfig,
   ) {
     let query = this.getStr(threadMatchConfig.query)
-    query = query.trim().replace(/[ ]+/g, " ")
+    query = query.trim().replace(/ +/g, " ")
     ctx.log.debug(`Built GMail search query: ${query}`)
     return query
   }
@@ -241,7 +241,7 @@ export class ThreadProcessor extends BaseProcessor {
       ),
     }
     const threadConfig = ctx.thread.config
-    m = this.buildRegExpSubustitutionMap(
+    m = this.buildRegExpSubstitutionMap(
       ctx,
       m,
       keyPrefix,
@@ -257,8 +257,8 @@ export class ThreadProcessor extends BaseProcessor {
   ): boolean {
     try {
       if (
-        !(thread.getFirstMessageSubject() ?? "").match(
-          matchConfig.firstMessageSubject,
+        !RegExp(matchConfig.firstMessageSubject).exec(
+          thread.getFirstMessageSubject() ?? "",
         )
       )
         return this.noMatch(

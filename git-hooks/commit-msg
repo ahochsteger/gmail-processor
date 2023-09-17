@@ -3,7 +3,7 @@
 
 commit_msg=$(cat "${1:?Missing commit message file}") 
 
-if ! echo "$commit_msg" | grep -Eq "^(build|chore|ci|docs|feat|feat!|fix|perf|refactor|revert|style|test)(\(.+\))?: .*$" ; then 
+if ! echo "${commit_msg}" | grep -Eq "^(build|chore|ci|docs|feat|feat!|fix|perf|refactor|revert|style|test)(\(.+\))?: .*$" ; then 
 
   echo "Invalid commit message - use conventional commits: https://www.conventionalcommits.org/en/v1.0.0/" 
 

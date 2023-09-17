@@ -45,29 +45,6 @@ describe("run", () => {
     })
     expect(() => GmailProcessor.run(config, mocks.envContext)).toThrow()
   })
-
-  // it("should stop processing and return with an error result if action can be executed but thows an error", () => {
-  //   config.threads[0].actions.unshift({
-  //     name: "thread.storePDF",
-  //     args: {},
-  //     description: "Failing action",
-  //     processingStage: ProcessingStage.PRE_MAIN,
-  //   })
-  //   const result = GmailProcessor.run(config, mocks.envContext)
-  //   const expectedResult = {
-  //     processedAttachmentConfigs: 0,
-  //     processedAttachments: 0,
-  //     processedMessageConfigs: 0,
-  //     processedMessages: 0,
-  //     processedThreadConfigs: 0,
-  //     processedThreads: 0,
-  //     status: ProcessingStatus.ERROR,
-  //   }
-  //   expect(result).toMatchObject(expectedResult)
-  //   expect(result.executedActions.length).toEqual(1)
-  //   expect(result.error).toBeUndefined()
-  //   expect(result.failedAction).toBeUndefined()
-  // })
 })
 
 describe("getEffectiveConfig", () => {

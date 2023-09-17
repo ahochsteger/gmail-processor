@@ -52,15 +52,15 @@ export function newAttachmentConfig(
 export function normalizeAttachmentConfig(
   config: PartialDeep<AttachmentConfig>,
 ): PartialDeep<AttachmentConfig> {
-  config.match = config.match || newAttachmentMatchConfig()
+  config.match = config.match ?? newAttachmentMatchConfig()
   return config
 }
 
 export function normalizeAttachmentConfigs(
   configs: PartialDeep<AttachmentConfig>[],
 ): PartialDeep<AttachmentConfig>[] {
-  for (let index = 0; index < configs.length; index++) {
-    normalizeAttachmentConfig(configs[index])
+  for (const config of configs) {
+    normalizeAttachmentConfig(config)
   }
   return configs
 }

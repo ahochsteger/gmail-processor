@@ -6,6 +6,6 @@ export enum MessageFlag {
   STARRED = "starred",
   /** Matches unread messages. */
   UNREAD = "unread",
-  /** Matches unstarred messages. */
+  /** Matches un-starred messages. */
   UNSTARRED = "unstarred",
 }

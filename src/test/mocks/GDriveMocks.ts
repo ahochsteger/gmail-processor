@@ -115,7 +115,7 @@ export class GDriveMocks {
           .forEach((spec) => {
             file = this.setupFileMocks(spec, folderData)
           })
-        return file !== null ? file : mock<GoogleAppsScript.Drive.File>()
+        return file ?? mock<GoogleAppsScript.Drive.File>()
       })
       .mockName("createFile-error")
     folder.createFolder

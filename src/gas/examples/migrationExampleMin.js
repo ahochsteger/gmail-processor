@@ -1,7 +1,7 @@
 import * as GmailProcessorLib from "../../lib/index"
 
 /**
- * This is a minimal Gmail2GDrive v1.x configuration example to demostrate the conversion to the Gmail Processor v2.x config format.
+ * This is a minimal Gmail2GDrive v1.x configuration example to demonstrate the conversion to the Gmail Processor v2.x config format.
  * @type {GmailProcessorLib.V1Config}
  */
 export const migrationExampleMinConfig = {

@@ -64,15 +64,15 @@ export function normalizeMessageConfig(
   config: PartialDeep<MessageConfig>,
 ): PartialDeep<MessageConfig> {
   config.attachments = normalizeAttachmentConfigs(config.attachments ?? [])
-  config.match = config.match || newMessageMatchConfig()
+  config.match = config.match ?? newMessageMatchConfig()
   return config
 }
 
 export function normalizeMessageConfigs(
   configs: PartialDeep<MessageConfig>[],
 ): PartialDeep<MessageConfig>[] {
-  for (let index = 0; index < configs.length; index++) {
-    normalizeMessageConfig(configs[index])
+  for (const config of configs) {
+    normalizeMessageConfig(config)
   }
   return configs
 }

@@ -32,7 +32,7 @@ it("should convert settings", () => {
   expect(actual).toMatchObject(expected)
 })
 
-it("should create default gobal config", () => {
+it("should create default global config", () => {
   const v1config: PartialDeep<V1Config> = {
     rules: [
       {
@@ -205,7 +205,7 @@ it("should convert rule with filter, folder and parentFolderId", () => {
         // Store all attachments from example1@example.com to the SHARED Drive folder "Shared Drives/Lambda/Examples/example1"
         parentFolderId: "FOLDER_ID_FOR_Examples_FOLDER", // This approach is with the ID of "Examples"
         filter: "from:example1@example.com",
-        folder: "example1", // Note: We omited the folder path "Examples" since it's the direct parent
+        folder: "example1", // Note: We omitted the folder path "Examples" since it's the direct parent
       },
     ],
   }
@@ -231,7 +231,7 @@ it("should convert rule with filter, folder, filenameTo and archive", () => {
         // defined in 'filenameTo' and archive the thread.
         // filenameTo supports the following printf style substitutions:
         // %s - The subject of the message/thread
-        // %o - The original filename of the attachement
+        // %o - The original filename of the attachment
         filter:
           "has:attachment (from:example3a@example.com OR from:example3b@example.com)",
         folder: "Examples/example3ab",
@@ -381,7 +381,7 @@ it("should convert rule with filter, folder filenameFrom and filenameTo", () => 
         // defined in 'filenameTo' and archive the thread.
         // filenameTo supports the following printf style substitutions:
         // %s - The subject of the message/thread
-        // %o - The original filename of the attachement
+        // %o - The original filename of the attachment
         // %d - A running counter from 1 for each match of this rule.
         filter: "has:attachment from:example4@example.com",
         folder: "Examples/example4",
