@@ -70,7 +70,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       - id: push-gas
         if: ${{ env.DO_PUSH }}
-        name: Push Lib to GAS
+        name: Push to GAS
         run: |
           npm run push
           echo "new_gas_version=$(cat build/gas/lib-version.txt)" >> "${GITHUB_OUTPUT}"
