@@ -59,9 +59,6 @@ jobs:
       - id: test
         name: Test
         run: npm run ci:test
-      - id: coverage
-        name: Coverage Comment
-        uses: MishaKav/jest-coverage-comment@main
       - id: coveralls
         name: Coveralls
         uses: coverallsapp/github-action@v2
