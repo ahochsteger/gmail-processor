@@ -40,7 +40,7 @@ export default {
   //   "lcov",
   //   "clover"
   // ],
-  coverageReporters: ["json-summary", "lcov"],
+  coverageReporters: ["json-summary", "lcovonly"],
 
   // An object that configures minimum threshold enforcement for coverage results
   // coverageThreshold: undefined,
