@@ -21,7 +21,7 @@
     "secrets:sync": "scripts/github-secrets.sh sync all",
     "test:push": "act push",
     "lint": "concurrently 'npm:lint:*(!lint:fix)'",
-    "lint:code": "eslint -f scripts/eslint-json-relative.js -o build/eslint/eslint_report-relative.json .",
+    "lint:code": "eslint -f scripts/eslint-json-relative.js -o build/eslint/eslint_report.json .",
     "lint:cpd": "jscpd",
     "lint:fix": "prettier -w .",
     "lint:prune": "npx ts-prune",
