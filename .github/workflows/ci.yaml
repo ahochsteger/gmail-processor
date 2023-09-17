@@ -1,9 +1,6 @@
 name: CI
 
 on:
-  pull_request:
-    branches:
-      - main
   # Runs on pushes targeting certain branches
   push:
     branches:
