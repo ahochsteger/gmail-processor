@@ -12,11 +12,8 @@ export CLASP_ID_TOKEN="${CLASP_ID_TOKEN:?}"
 export CLASP_CLIENT_ID="${CLASP_CLIENT_ID:?}"
 export CLASP_CLIENT_SECRET="${CLASP_CLIENT_SECRET:?}"
 export CLASP_DEPLOYMENT_NAME="${CLASP_DEPLOYMENT_NAME:-}"
-CLASP_LOG_TIME_SECONDS=600
-CLASP_LOG_WAIT_SECONDS=5
-
-export REF_TYPE="${REF_TYPE:-${GITHUB_REF_TYPE:-branch}}"
-export REF_NAME="${REF_NAME:-${GITHUB_REF_NAME:-beta}}"
+export CLASP_LOG_TIME_SECONDS="${CLASP_LOG_TIME_SECONDS:-600}"
+export CLASP_LOG_WAIT_SECONDS="${CLASP_LOG_WAIT_SECONDS:-5}"
 
 function buildClaspAuthFile() 
 {
@@ -39,6 +36,7 @@ function buildClaspFiles() {
 }
 
 function runClasp() {
+  setupClaspIDs
   buildClaspFiles
   buildClaspAuthFile
   (
@@ -48,6 +46,7 @@ function runClasp() {
 }
 
 function getReleaseInfo() {
+  setupClaspIDs
   local lastGasVersion; lastGasVersion=$(getLastGASVersion)
   echo "Google Apps Script Version: [${lastGasVersion}](https://script.google.com/macros/library/d/${CLASP_SCRIPT_ID}/${lastGasVersion})"
 }
@@ -145,25 +144,26 @@ function build() {
   fi
 }
 
+function setupClaspIDs() {
+  case "${CLASP_PROFILE}" in
+    examples)
+      export CLASP_SCRIPT_ID="${CLASP_EXAMPLES_SCRIPT_ID:?}"
+      export CLASP_DEPLOYMENT_ID="${CLASP_EXAMPLES_DEPLOYMENT_ID:?}"
+    ;;
+    lib)
+      export CLASP_SCRIPT_ID="${CLASP_LIB_SCRIPT_ID:?}"
+      export CLASP_DEPLOYMENT_ID="${CLASP_LIB_DEPLOYMENT_ID:?}"
+    ;;
+    *)
+      echo "ERROR: Unsupported profile '${CLASP_PROFILE}'!"
+      exit 1
+    ;;
+  esac
+}
+
 CLASP_PROFILE="${1:?Missing profile name!}"
 cmd="${2:?}"
 shift 2
-
-case "${CLASP_PROFILE}" in
-  examples)
-    export CLASP_SCRIPT_ID="${CLASP_EXAMPLES_SCRIPT_ID:?}"
-    export CLASP_DEPLOYMENT_ID="${CLASP_EXAMPLES_DEPLOYMENT_ID:?}"
-  ;;
-  lib)
-    export CLASP_SCRIPT_ID="${CLASP_LIB_SCRIPT_ID:?}"
-    export CLASP_DEPLOYMENT_ID="${CLASP_LIB_DEPLOYMENT_ID:?}"
-  ;;
-  *)
-    echo "ERROR: Unsupported profile '${CLASP_PROFILE}'!"
-    exit 1
-  ;;
-esac
-
 export CLASP_DIR="${CLASP_BASEDIR}/${CLASP_PROFILE}"
 export CLASP_SRC_DIR="${CLASP_SRC_BASEDIR}/${CLASP_PROFILE}"
 
@@ -206,6 +206,7 @@ case "${cmd}" in
     showLastGASVersion
   ;;
   deploy)
+    setupClaspIDs
     CLASP_DEPLOYMENT_NAME="${CLASP_DEPLOYMENT_NAME:-$(git describe --tags)}"
     runClasp deploy -i "${CLASP_DEPLOYMENT_ID}" -d "${CLASP_DEPLOYMENT_NAME}"
     showLastGASVersion
