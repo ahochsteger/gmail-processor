@@ -22,7 +22,7 @@ export class MessageActions implements ActionProvider<MessageContext> {
     return {
       message: context.proc.gmailAdapter.messageForward(
         context.message.object,
-        args.to as string,
+        args.to,
       ),
     }
   }
@@ -57,7 +57,7 @@ export class MessageActions implements ActionProvider<MessageContext> {
     }
   }
 
-  /** Stars the message. */
+  /** Adds a star to a message. */
   @writingAction()
   public static star(context: MessageContext) {
     return {
@@ -65,7 +65,7 @@ export class MessageActions implements ActionProvider<MessageContext> {
     }
   }
 
-  /** Unstars the message. */
+  /** Removes the star from a message. */
   @writingAction()
   public static unstar(context: MessageContext) {
     return {
@@ -101,11 +101,11 @@ export class MessageActions implements ActionProvider<MessageContext> {
         new FileContent(
           context.proc.gmailAdapter.messageAsPdf(
             context.message.object,
-            args.skipHeader as boolean,
+            args.skipHeader,
           ),
-          PatternUtil.substitute(context, args.description || ""),
+          PatternUtil.substitute(context, args.description ?? ""),
         ),
-        args.conflictStrategy as ConflictStrategy,
+        args.conflictStrategy,
       ),
     }
   }

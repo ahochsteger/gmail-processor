@@ -79,15 +79,15 @@ export function normalizeThreadConfig(
   }
 
   config.messages = normalizeMessageConfigs(config.messages)
-  config.match = config.match || newThreadMatchConfig()
+  config.match = config.match ?? newThreadMatchConfig()
   return config
 }
 
 export function normalizeThreadConfigs(
   configs: PartialDeep<ThreadConfig>[],
 ): PartialDeep<ThreadConfig>[] {
-  for (let index = 0; index < configs.length; index++) {
-    normalizeThreadConfig(configs[index])
+  for (const config of configs) {
+    normalizeThreadConfig(config)
   }
   return configs
 }

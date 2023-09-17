@@ -43,7 +43,7 @@ function testMigrationExample(
   v1config: V1Config,
   fn: () => PartialDeep<Config>,
 ) {
-  it(`should sucessfully run migration example ${name}`, () => {
+  it(`should successfully run migration example ${name}`, () => {
     const config = fn()
     expect(config.threads?.length).toEqual(v1config.rules.length)
   })

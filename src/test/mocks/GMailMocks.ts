@@ -92,7 +92,7 @@ export class GMailMocks {
   ): MockProxy<GoogleAppsScript.Gmail.GmailThread> {
     // NOTE: Keep ThreadData, newThreadMock and getThreadSampleData in sync
     const d = this.getThreadSampleData(data)
-    d.messages = d.messages !== undefined ? d.messages : []
+    d.messages = d.messages ?? []
     const t = mock<GoogleAppsScript.Gmail.GmailThread>()
     t.addLabel.mockReturnValue(t)
     t.getFirstMessageSubject.mockReturnValue(d.firstMessageSubject)
@@ -179,7 +179,7 @@ export class GMailMocks {
   public static getMessages(data: {
     messages: MessageData[]
   }): GoogleAppsScript.Gmail.GmailMessage[] {
-    const dataMessages = data.messages !== undefined ? data.messages : []
+    const dataMessages = data.messages ?? []
     const a: GoogleAppsScript.Gmail.GmailMessage[] = []
     dataMessages.forEach((dm) => a.push(this.newMessageMock(dm)))
     return a
@@ -189,8 +189,7 @@ export class GMailMocks {
     attachments: AttachmentData[]
   }): GoogleAppsScript.Gmail.GmailAttachment[] {
     const a: GoogleAppsScript.Gmail.GmailAttachment[] = []
-    const dataAttachments =
-      data.attachments !== undefined ? data.attachments : []
+    const dataAttachments = data.attachments ?? []
     dataAttachments.forEach((da) => a.push(this.newAttachmentMock(da)))
     return a
   }
@@ -301,6 +300,6 @@ export class GMailMocks {
     // See https://stackoverflow.com/questions/5515869/string-length-in-bytes-in-javascript/5515960#5515960
     // Matches only the 10.. bytes that are non-initial characters in a multi-byte sequence.
     const m = encodeURIComponent(str).match(/%[89ABab]/g)
-    return (str === undefined ? "" : str).length + (m ? m.length : 0)
+    return (str ?? "").length + (m ? m.length : 0)
   }
 }

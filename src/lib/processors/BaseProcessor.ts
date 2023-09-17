@@ -23,7 +23,7 @@ export abstract class BaseProcessor {
    * @param regexMap - Map with attribute names and regex to do matches on (e.g. `{"subject": "Message ([0-9]+)"}`)
    * @returns Meta info map enhanced with regex substitution values
    */
-  public static buildRegExpSubustitutionMap(
+  public static buildRegExpSubstitutionMap(
     ctx: ProcessingContext,
     m: MetaInfo,
     keyPrefix: string,
@@ -215,7 +215,7 @@ export abstract class BaseProcessor {
     local: number,
     unsetValue: number,
   ): number {
-    return this.effectiveValue(global, local, unsetValue) as number
+    return this.effectiveValue(global, local, unsetValue)
   }
 
   protected static getRefDocs(

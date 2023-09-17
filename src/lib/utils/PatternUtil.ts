@@ -35,7 +35,7 @@ type Placeholder = {
 }
 
 const placeholderRegex =
-  /\$\{(?<fullname>(?<type>[^\\.]+)\.(?<name>[^:}]+))(:(?<modifier>[^:}]+)(:(?<arg>[^}]+))?)?\}/g
+  /\$\{(?<fullName>(?<type>[^\\.]+)\.(?<name>[^:}]+))(:(?<modifier>[^:}]+)(:(?<arg>[^}]+))?)?\}/g
 export const defaultDateFormat = "yyyy-MM-dd HH:mm:ss"
 export const defaultJoinSeparator = ","
 
@@ -49,9 +49,9 @@ export class PatternUtil {
   public static nextPlaceholder(s: string): Placeholder | undefined {
     placeholderRegex.lastIndex = 0 // Reset lastIndex to always start from the beginning
     const match = placeholderRegex.exec(s)
-    if (!match || !match.groups) return
+    if (!match?.groups) return
     return {
-      fullName: match.groups?.fullname ?? "",
+      fullName: match.groups?.fullName ?? "",
       type: match.groups?.type ?? "",
       name: match.groups?.name ?? "",
       modifier: match.groups?.modifier ?? "",

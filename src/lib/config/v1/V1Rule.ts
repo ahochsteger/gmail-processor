@@ -63,7 +63,7 @@ export function newV1Rule(
       // defined in 'filenameTo' and archive the thread.
       // filenameTo supports the following printf style substitutions:
       // %s - The subject of the message/thread
-      // %o - The original filename of the attachement
+      // %o - The original filename of the attachment
       "filter": "has:attachment (from:example3a@example.com OR from:example3b@example.com)",
       "folder": "'Examples/example3ab'",
       "filenameTo": "'file-'yyyy-MM-dd-'%s.txt'",
@@ -98,14 +98,14 @@ export function newV1Rule(
       // defined in 'filenameTo' and archive the thread.
       // filenameTo supports the following printf style substitutions:
       // %s - The subject of the message/thread
-      // %o - The original filename of the attachement
+      // %o - The original filename of the attachment
       // %d - A running counter from 1 for each match of this rule.
       "filter": "has:attachment from:example4@example.com",
       "folder": "'Examples/example4'",
       "filenameFrom": "file.txt",
       "filenameTo": "'file-'yyyy-MM-dd-'%s.txt'"
     },
-       // Sotre all of the emails with the text "receipt" from billing@zoom.us
+       // Store all of the emails with the text "receipt" from billing@zoom.us
        // into the folder "Examples/example5" and rename the filenames to be zoom-1.pdf, zoom-2.pdf...
       "filter": "receipt from:billing@zoom.us",
       "folder": "'Examples/example5'",

@@ -17,17 +17,17 @@ export CLASP_LOG_WAIT_SECONDS="${CLASP_LOG_WAIT_SECONDS:-5}"
 
 function buildClaspAuthFile() 
 {
-  cat "${CLASP_SRC_DIR}/.clasprc.json" | envsubst >"${CLASP_DIR}/.clasprc.json"
+  envsubst <"${CLASP_SRC_DIR}/.clasprc.json" >"${CLASP_DIR}/.clasprc.json"
   # NOTE: The auth file is automatically cleaned up after script termination using 'trap 0'
 }
 
 function buildClaspManifestFile() 
 {
-  cat "${CLASP_SRC_DIR}/appsscript.json" | envsubst >"${CLASP_DIR}/appsscript.json"
+  envsubst <"${CLASP_SRC_DIR}/appsscript.json" >"${CLASP_DIR}/appsscript.json"
 }
 
 function buildClaspProjectFile() {
-  cat "${CLASP_SRC_DIR}/.clasp.json" | envsubst >"${CLASP_DIR}/.clasp.json"
+  envsubst <"${CLASP_SRC_DIR}/.clasp.json" >"${CLASP_DIR}/.clasp.json"
 }
 
 function buildClaspFiles() {
@@ -90,8 +90,9 @@ function getGASVersions() {
 }
 
 function getMergedVersions() {
+  local gasVersions; gasVersions=$(getGASVersions)
   gh api /repos/ahochsteger/gmail-processor/releases \
-  --jq "\"$(getGASVersions)\" as \$gasVersionsText|(\$gasVersionsText|split(\"\\n\")|[.[]|split(\"\\t\")|{(.[0]):.[1]}]|add) as \$versionMap | .[]|select(.target_commitish==\"main\" and .prerelease==false and \$versionMap[.tag_name])|[.tag_name,\$versionMap[.tag_name],(.published_at[0:10])]|@tsv"
+  --jq "\"${gasVersions}\" as \$gasVersionsText|(\$gasVersionsText|split(\"\\n\")|[.[]|split(\"\\t\")|{(.[0]):.[1]}]|add) as \$versionMap | .[]|select(.target_commitish==\"main\" and .prerelease==false and \$versionMap[.tag_name])|[.tag_name,\$versionMap[.tag_name],(.published_at[0:10])]|@tsv"
 }
 
 function getMergedVersionsAsMarkdown() {
@@ -102,7 +103,8 @@ function getMergedVersionsAsMarkdown() {
 }
 
 function showLastGASVersion() {
-  echo "Last GAS version: $(getLastGASVersion)"
+  local lastGasVersion; lastGasVersion=$(getLastGASVersion)
+  echo "Last GAS version: ${lastGasVersion}"
 }
 
 function buildExamples() {

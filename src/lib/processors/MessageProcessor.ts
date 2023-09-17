@@ -49,17 +49,17 @@ export class MessageProcessor extends BaseProcessor {
     message: GoogleAppsScript.Gmail.GmailMessage,
   ) {
     try {
-      if (!message.getFrom().match(matchConfig.from))
+      if (!RegExp(matchConfig.from).exec(message.getFrom()))
         return this.noMatch(
           ctx,
           `from '${message.getFrom()}' does not match '${matchConfig.from}'`,
         )
-      if (!message.getTo().match(matchConfig.to))
+      if (!RegExp(matchConfig.to).exec(message.getTo()))
         return this.noMatch(
           ctx,
           `to '${message.getTo()}' does not match '${matchConfig.to}'`,
         )
-      if (!(message.getSubject() ?? "").match(matchConfig.subject))
+      if (!RegExp(matchConfig.subject).exec(message.getSubject() ?? ""))
         return this.noMatch(
           ctx,
           `subject '${message.getSubject()}' does not match '${
@@ -80,8 +80,7 @@ export class MessageProcessor extends BaseProcessor {
             matchConfig.olderThan
           }'`,
         )
-      for (let i = 0; i < matchConfig.is.length; i++) {
-        const flag = matchConfig.is[i]
+      for (const flag of matchConfig.is) {
         switch (flag) {
           case MessageFlag.READ:
             if (message.isUnread())
@@ -121,7 +120,7 @@ export class MessageProcessor extends BaseProcessor {
         ctx,
         this.effectiveValue(global.from, local.from, ""),
       ),
-      is: (global.is || []).concat(local.is),
+      is: (global.is ?? []).concat(local.is),
       newerThan: this.effectiveValue(global.newerThan, local.newerThan, ""),
       olderThan: this.effectiveValue(global.olderThan, local.olderThan, ""),
       subject: PatternUtil.substitute(
@@ -302,7 +301,7 @@ export class MessageProcessor extends BaseProcessor {
       ),
     }
     const messageConfig = ctx.message.config
-    m = this.buildRegExpSubustitutionMap(
+    m = this.buildRegExpSubstitutionMap(
       ctx,
       m,
       keyPrefix,

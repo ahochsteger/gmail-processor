@@ -17,7 +17,7 @@ export function essentialObject(
 ): any {
   requiredProps = requiredProps.concat([])
   Object.keys(obj).forEach((key: string) => {
-    const prop = essentialProp((obj as any)[key], propEssentialMap[key])
+    const prop = essentialProp(obj[key], propEssentialMap[key])
     const jsonVal = JSON.stringify(prop)
     if (
       !requiredProps.includes(key) &&
@@ -26,7 +26,7 @@ export function essentialObject(
         jsonVal === "[]" ||
         jsonVal === "{}")
     )
-      delete (obj as any)[key]
+      delete obj[key]
   })
   return obj
 }

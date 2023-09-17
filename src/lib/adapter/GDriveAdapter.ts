@@ -104,7 +104,7 @@ export class DriveUtils {
             )
           } else {
             ctx.log.warn(
-              `A file with the same name already exists at location: ${location}. Skipping replacing due to runmode ...`,
+              `A file with the same name already exists at location: ${location}. Skipping replacing due to runMode ...`,
             )
             file = existingFile
           }
@@ -117,7 +117,7 @@ export class DriveUtils {
             file = this.updateExistingFile(ctx, existingFile, fileData)
           } else {
             ctx.log.warn(
-              `A file with the same name already exists at location: ${location}. Skipping update due to runmode ...`,
+              `A file with the same name already exists at location: ${location}. Skipping update due to runMode ...`,
             )
             file = existingFile
           }
@@ -151,7 +151,7 @@ export class DriveUtils {
     const locationRegex =
       /^({id:(?<folderId>[^}]+)}\/)?(?<folderPath>[^\n]*\/)?(?<filename>[^/\n]+)$/
     const matches = locationRegex.exec(location)
-    if (!matches || !matches.groups) {
+    if (!matches?.groups) {
       throw new Error(`Invalid location format: ${location}`)
     }
     const folderId = matches.groups.folderId

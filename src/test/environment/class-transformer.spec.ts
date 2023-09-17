@@ -68,7 +68,7 @@ const jsonData = {
   bool: false,
   nested: {
     arr: ["c", "d"],
-    str: "mystring",
+    str: "myString",
   },
   nestedArray: [
     {
@@ -89,7 +89,7 @@ function expectDefaultsToBeSet(actual: any) {
 function expectSetValuesToBePresent(actual: any) {
   expect(actual.bool).toEqual(false)
   expect(actual.nested.arr).toEqual(["c", "d"])
-  expect(actual.nested.str).toEqual("mystring")
+  expect(actual.nested.str).toEqual("myString")
   expect(actual.nestedArray.length).toEqual(1)
   expect(actual.nestedArray[0].num).toEqual(3)
   expect(actual.nestedArray[0].str).toEqual("nestedArrayStr")
@@ -107,44 +107,36 @@ function expectUnsetFieldsNotToBeExposed(actual: any) {
 
 describe("plainToInstance", () => {
   it("should set values from JSON", () => {
-    {
-      const actual = plainToInstance(Root, jsonData, {})
-      expectSetValuesToBePresent(actual)
-    }
+    const actual = plainToInstance(Root, jsonData, {})
+    expectSetValuesToBePresent(actual)
   })
   it("should set defaults for missing properties from JSON", () => {
-    {
-      const actual = plainToInstance(Root, jsonData, {
-        exposeDefaultValues: true,
-      })
-      expectSetValuesToBePresent(actual)
-      expectDefaultsToBeSet(actual)
-    }
+    const actual = plainToInstance(Root, jsonData, {
+      exposeDefaultValues: true,
+    })
+    expectSetValuesToBePresent(actual)
+    expectDefaultsToBeSet(actual)
   })
   it("should not expose unset fields from JSON", () => {
-    {
-      const actual = plainToInstance(Root, jsonData, {
-        exposeUnsetFields: false,
-      })
-      expectSetValuesToBePresent(actual)
-      expectUnsetFieldsNotToBeExposed(actual)
-    }
+    const actual = plainToInstance(Root, jsonData, {
+      exposeUnsetFields: false,
+    })
+    expectSetValuesToBePresent(actual)
+    expectUnsetFieldsNotToBeExposed(actual)
   })
   it("should remove additional properties from JSON", () => {
-    {
-      const json = { ...jsonData, add: "additional" } as any
-      json.nested.add = "additional"
-      json.nestedArray[0].add = "additional"
-      const actual = plainToInstance(
-        Root,
-        { ...jsonData, add: "additional" },
-        {
-          excludeExtraneousValues: true,
-        },
-      )
-      expectSetValuesToBePresent(actual)
-      expectAdditionalValuesToBeRemoved(actual)
-    }
+    const json = { ...jsonData, add: "additional" } as any
+    json.nested.add = "additional"
+    json.nestedArray[0].add = "additional"
+    const actual = plainToInstance(
+      Root,
+      { ...jsonData, add: "additional" },
+      {
+        excludeExtraneousValues: true,
+      },
+    )
+    expectSetValuesToBePresent(actual)
+    expectAdditionalValuesToBeRemoved(actual)
   })
   it("should keep set properties while setting defaults for missing properties from JSON", () => {
     const actual = plainToInstance(Root, jsonData, {

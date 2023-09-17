@@ -25,7 +25,7 @@
                 },
                 "processedLabel": {
                     "default": "to-gdrive/processed",
-                    "description": "Gmail label for processed threads (will be created, if not existing)",
+                    "description": "GMail label for processed threads (will be created, if not existing)",
                     "title": "processedLabel",
                     "type": "string"
                 },

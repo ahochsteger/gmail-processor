@@ -30,7 +30,7 @@ beforeEach(() => {
 class MyMessageActions implements ActionProvider<MessageContext> {
   [key: string]: ActionFunction<MessageContext>
   public static testFunc(ctx: ProcessingContext, args: ActionArgsType) {
-    ctx.log.info(`args.val: ${args}`)
+    ctx.log.info(`args.val: ${JSON.stringify(args)}`)
   }
   @destructiveAction()
   public static destruct<TArgs extends ActionArgsType>(

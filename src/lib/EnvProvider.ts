@@ -15,7 +15,7 @@ export class EnvProvider {
       "env.runMode": mi(
         MIT.STRING,
         () => ctx.env.runMode,
-        "The runmode used for processing.",
+        "The runMode used for processing.",
       ),
       "env.timezone": mi(
         MIT.STRING,

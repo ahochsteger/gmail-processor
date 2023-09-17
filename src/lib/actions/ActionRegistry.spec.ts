@@ -170,7 +170,7 @@ describe("ActionRegistry.getActions()", () => {
 
 describe("ActionRegistry.getAction()", () => {
   it("should return undefined for action with other prefix", () => {
-    const actual = actionRegistry.getAction("someprefix.myAction")
+    const actual = actionRegistry.getAction("somePrefix.myAction")
     expect(actual).toBeUndefined()
   })
   it("should return undefined for action with matching prefix but unavailable function name", () => {
@@ -187,7 +187,7 @@ describe("ActionRegistry.getAction()", () => {
 
 describe("ActionRegistry.hasAction()", () => {
   it("should return false for action with other prefix", () => {
-    const actual = actionRegistry.hasAction("someprefix.myAction")
+    const actual = actionRegistry.hasAction("somePrefix.myAction")
     expect(actual).toBe(false)
   })
   it("should return false for action with matching prefix but unavailable function name", () => {
@@ -207,7 +207,7 @@ describe("ActionRegistry.invokeAction()", () => {
     expect(() => {
       actionRegistry.executeAction(
         mocks.processingContext,
-        "someprefix.myAction",
+        "somePrefix.myAction",
         { someArg: "some value" },
       )
     }).toThrow()
@@ -258,18 +258,4 @@ describe("ActionProvider", () => {
     )
     expect(result.ok).toBeTruthy()
   })
-  // it("should throw an error when executing an action with extra arguments", () => {
-  //   expect(() => {
-  //     myThreadActionProvider.instanceThreadMethodWithArgs(mocks.threadContext, {
-  //       threadBoolArg: true,
-  //       threadStringArg: "myString",
-  //       additionalArg: 123,
-  //     })
-  //   }).toThrow()
-  // })
-  // it("should throw an error when executing an action with missing arguments", () => {
-  //   expect(() => {
-  //     myThreadActionProvider.instanceThreadMethodWithArgs(mocks.threadContext, {})
-  //   }).toThrow()
-  // })
 })

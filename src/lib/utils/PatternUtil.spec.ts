@@ -58,7 +58,7 @@ describe("Pattern Substitution", () => {
       "message.to: ${message.to}, message.date: ${message.date:format:yyyy-MM-dd_HH-mm-ss}, " +
       "message.subject.match.1: ${message.subject.match.1}, message.subject.match.2: " +
       "${message.subject.match.2}"
-    const expRslt =
+    const expected =
       "Evaluation data: message.subject: Message 01: Some more text, " +
       "message.from: some.email@example.com, message.to: my.email+emailsuffix@example.com, " +
       "message.date: 2019-05-01_18-48-31, message.subject.match.1: 01, " +
@@ -100,7 +100,7 @@ describe("Pattern Substitution", () => {
     }
     const customMocks = MockFactory.newCustomMocks(config, gmailData)
     const s2 = PatternUtil.substitute(customMocks.attachmentContext, pattern)
-    expect(s2).toEqual(expRslt)
+    expect(s2).toEqual(expected)
   })
 
   it("should handle a thread with one message", () => {
@@ -416,7 +416,7 @@ describe("Timezone Handling", () => {
   })
 })
 describe("Placeholder Handling", () => {
-  it("should find multiple occurance of placeholder", () => {
+  it("should find multiple occurrence of placeholder", () => {
     const s =
       "${message.bcc},${message.cc},${date.now:format:yyyy-MM-dd HH:mm:ss},${message.from}," +
       "${message.id},${message.replyTo},${message.subject},${message.to},${date.now:format:yyyy-MM-dd HH:mm:ss}"
