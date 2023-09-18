@@ -44,11 +44,17 @@ function getReleaseInfo() {
   echo "Google Apps Script Version: [${lastGasVersion}](https://script.google.com/macros/library/d/${CLASP_SCRIPT_ID}/${lastGasVersion})"
 }
 
+function getGithubReleaseNotes() {
+  local releaseId="${1:-latest}"
+  gh api "/repos/ahochsteger/gmail-processor/releases/${releaseId}" \
+  --jq .body
+}
+
 function getPatchedReleaseNotes() {
   local releaseId="${1:-latest}"
   local releaseInfo; releaseInfo=$(getReleaseInfo)
   gh api "/repos/ahochsteger/gmail-processor/releases/${releaseId}" \
-  --jq .body | sed -re "s|^(# .*)$|\1\n\n${releaseInfo}|g"
+  --jq .body | sed -re "s|^(##? .*)$|\1\n\n${releaseInfo}|g"
 }
 
 function updateGithubRelease() {
@@ -56,7 +62,8 @@ function updateGithubRelease() {
   local releaseNotes; releaseNotes=$(getPatchedReleaseNotes "${releaseId}")
   local releaseId; releaseId=$(gh api /repos/ahochsteger/gmail-processor/releases/latest --jq .id)
   gh api -X PATCH "/repos/ahochsteger/gmail-processor/releases/${releaseId}" \
-    -f body="${releaseNotes}"
+    -f body="${releaseNotes}" \
+    -F draft=false
 }
 
 function cleanup() {
@@ -218,6 +225,9 @@ case "${cmd}" in
   ;;
   release-notes)
     getPatchedReleaseNotes
+  ;;
+  release-notes-github)
+    getGithubReleaseNotes "${1:-latest}"
   ;;
   update-github-release)
     updateGithubRelease "${1:-latest}"

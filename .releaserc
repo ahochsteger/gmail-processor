@@ -4,22 +4,38 @@
     "main",
     "next",
     "next-major",
-    { "name": "beta", "prerelease": true },
-    { "name": "alpha", "prerelease": true }
+    {
+      "name": "beta",
+      "prerelease": true
+    },
+    {
+      "name": "alpha",
+      "prerelease": true
+    }
   ],
   "plugins": [
     "@semantic-release/commit-analyzer",
     "@semantic-release/release-notes-generator",
-    ["@semantic-release/changelog", {
-      "changelogTitle":"# Changelog"
-    }],
-    ["@semantic-release/npm", {
-      "npmPublish": false
-    }],
-    ["@semantic-release/github", {
-      "assets": "build/gas/lib/GmailProcessorLib.js",
-      "successComment": false
-     }],
+    [
+      "@semantic-release/changelog",
+      {
+        "changelogTitle": "# Changelog"
+      }
+    ],
+    [
+      "@semantic-release/npm",
+      {
+        "npmPublish": false
+      }
+    ],
+    [
+      "@semantic-release/github",
+      {
+        "assets": "build/gas/lib/GmailProcessorLib.js",
+        "draftRelease": true,
+        "successComment": false
+      }
+    ],
     "@semantic-release/git"
   ],
   "tagFormat": "${version}"
