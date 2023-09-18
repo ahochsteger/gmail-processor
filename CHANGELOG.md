@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.1.1](https://github.com/ahochsteger/gmail-processor/compare/2.1.0...2.1.1) (2023-09-18)
+
+
+### Bug Fixes
+
+* potential ReDoS vulnerability ([e527384](https://github.com/ahochsteger/gmail-processor/commit/e527384656af9c0b0f7d1cb34365bb138d56a386))
+* typos, code smells ([f6c9e33](https://github.com/ahochsteger/gmail-processor/commit/f6c9e33c6fdca1334e0fb658996cb1cccdc74adb))
+
 # [2.1.0](https://github.com/ahochsteger/gmail-processor/compare/2.0.5...2.1.0) (2023-09-13)
 
 
