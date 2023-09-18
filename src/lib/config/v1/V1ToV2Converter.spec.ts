@@ -215,7 +215,7 @@ it("should convert rule with filter, folder and parentFolderId", () => {
     {
       args: {
         location:
-          "${id:FOLDER_ID_FOR_Examples_FOLDER}/example1/${attachment.name}",
+          "{id:FOLDER_ID_FOR_Examples_FOLDER}/example1/${attachment.name}",
       },
       name: "attachment.store",
     },

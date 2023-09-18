@@ -99,7 +99,7 @@ export class V1ToV2Converter {
         : rule.folder
     folder = this.sanitizeLocation(folder, true)
     if (rule.parentFolderId) {
-      folder = `\${id:${rule.parentFolderId}}${folder}`
+      folder = `{id:${rule.parentFolderId}}${folder}`
     }
     return `${folder}/${filename}`
   }
