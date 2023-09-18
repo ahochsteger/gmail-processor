@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.2](https://github.com/ahochsteger/gmail-processor/compare/2.1.1...2.1.2) (2023-09-18)
+
+
+### Bug Fixes
+
+* wrong conversion of location with folder IDs ([0993562](https://github.com/ahochsteger/gmail-processor/commit/0993562639c253ed8721ba4b5718f11f9ccf6c90)), closes [#111](https://github.com/ahochsteger/gmail-processor/issues/111)
+
 ## [2.1.1](https://github.com/ahochsteger/gmail-processor/compare/2.1.0...2.1.1) (2023-09-18)
 
 
