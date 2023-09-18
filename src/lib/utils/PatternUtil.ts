@@ -34,8 +34,10 @@ type Placeholder = {
   length: number
 }
 
+// NOTE: The character limitations in the regex are present to prevent ReDos attacks.
+// See https://owasp.org/www-community/attacks/Regular_expression_Denial_of_Service_-_ReDoS
 const placeholderRegex =
-  /\$\{(?<fullName>(?<type>[^\\.]+)\.(?<name>[^:}]+))(:(?<modifier>[^:}]+)(:(?<arg>[^}]+))?)?\}/g
+  /\$\{(?<fullName>(?<type>[^\\.]{1,16})\.(?<name>[^:}]{1,32}))(:(?<modifier>[^:}]{1,16})(:(?<arg>[^}]{1,1000}))?)?\}/g
 export const defaultDateFormat = "yyyy-MM-dd HH:mm:ss"
 export const defaultJoinSeparator = ","
 
