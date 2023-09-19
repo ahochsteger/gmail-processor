@@ -18,6 +18,8 @@ jobs:
       CLASP_REFRESH_TOKEN: ${{secrets.CLASP_REFRESH_TOKEN}}
       GCLOUD_PROJECT_ID: ${{secrets.GCLOUD_PROJECT_ID}}
       GCLOUD_PROJECT_NR: ${{secrets.GCLOUD_PROJECT_NR}}
+    environment:
+      name: pr
     steps:
       - id: checkout
         name: Checkout

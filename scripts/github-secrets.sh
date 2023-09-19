@@ -5,13 +5,13 @@ set -euo pipefail
 function deleteSecret() {
   local env="${1}"
   local secret="${2}"
-  echo "Deleting secret${env:+ for env ${env}} ${secret} ..."
+  echo -e "\nDeleting secret${env:+ for env ${env}} ${secret} ..."
   gh secret delete ${env:+-e ${env}} "${secret}"
 }
 
 function getSecrets() {
   local env="${1}"
-  echo "Listing secrets${env:+ for env ${env}} ..."
+  echo -e "\nListing ${env:-global} secrets ..."
   gh secret list ${env:+-e ${env}}
 }
 
@@ -33,9 +33,9 @@ function getLocalSecretNames() {
 
 function checkSecrets() {
   local env="${1:-}"
-  echo "Missing github secrets${env:+ for env ${env}}:"
+  echo -e "\nMissing ${env:-global} github secrets:"
   getMissingGithubSecretNames "${env}"
-  echo "Obsolete github secrets${env:+ for env ${env}}:"
+  echo -e "\nObsolete ${env:-global} github secrets:"
   getObsoleteGithubSecretNames "${env}"
 }
 
@@ -59,11 +59,11 @@ function updateSecrets() {
 
 function syncSecrets() {
   local env="${1}"
-  echo "Missing secrets${env:+ for env ${env}}:"
+  echo -e "\nMissing ${env:-global} secrets:"
   getMissingGithubSecretNames "${env}"
-  echo "Updating all secrets${env:+ for env ${env}}:"
+  echo -e "\nUpdating all ${env:-global} secrets:"
   updateSecrets "${env}"
-  echo "Removing obsolete secrets${env:+ for env ${env}}:"
+  echo -e "\nRemoving obsolete ${env:-global} secrets:"
   for secret in $(getObsoleteGithubSecretNames "${env}"); do
     deleteSecret "${env}" "${secret}"
   done
@@ -78,6 +78,7 @@ if [[ "${env}" == "all" ]]; then
   "${0}" "${cmd}"
   "${0}" "${cmd}" "beta"
   "${0}" "${cmd}" "main"
+  "${0}" "${cmd}" "pr"
   exit 0
 fi
 
