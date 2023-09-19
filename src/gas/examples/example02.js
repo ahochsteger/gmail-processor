@@ -62,10 +62,13 @@ export const example02Config = {
   ],
 }
 
-export function example02Run(
-  /** @type {EnvContext | undefined} */
-  ctx,
-) {
+/**
+ * Run Gmail Processor with config
+ * @param {GoogleAppsScript.Events.TimeDriven | undefined} evt Event information
+ * @param {EnvContext | undefined} ctx Environment context
+ * @returns {GmailProcessorLib.ProcessingResult} Processing result
+ */
+export function example02Run(_evt, ctx) {
   return GmailProcessorLib.run(
     example02Config,
     GmailProcessorLib.RunMode.DRY_RUN,

@@ -21,11 +21,12 @@ export const exampleMinConfig = {
 }
 
 /**
- * Function to run the minimal example configuration
+ * Run Gmail Processor with config
+ * @param {GoogleAppsScript.Events.TimeDriven | undefined} evt Event information
  * @param {EnvContext | undefined} ctx Environment context
  * @returns {GmailProcessorLib.ProcessingResult} Processing result
  */
-export function exampleMinRun(ctx) {
+export function exampleMinRun(_evt, ctx) {
   return GmailProcessorLib.run(
     exampleMinConfig,
     GmailProcessorLib.RunMode.DRY_RUN,

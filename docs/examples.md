@@ -59,10 +59,13 @@ const example01Config = {
   ],
 }
 
-function example01Run(
-  /** @type {EnvContext | undefined} */
-  ctx,
-) {
+/**
+ * Run Gmail Processor with config
+ * @param {GoogleAppsScript.Events.TimeDriven | undefined} evt Event information
+ * @param {EnvContext | undefined} ctx Environment context
+ * @returns {GmailProcessorLib.ProcessingResult} Processing result
+ */
+function example01Run(_evt, ctx) {
   return GmailProcessorLib.run(
     example01Config,
     GmailProcessorLib.RunMode.DRY_RUN,
@@ -139,10 +142,13 @@ const example02Config = {
   ],
 }
 
-function example02Run(
-  /** @type {EnvContext | undefined} */
-  ctx,
-) {
+/**
+ * Run Gmail Processor with config
+ * @param {GoogleAppsScript.Events.TimeDriven | undefined} evt Event information
+ * @param {EnvContext | undefined} ctx Environment context
+ * @returns {GmailProcessorLib.ProcessingResult} Processing result
+ */
+function example02Run(_evt, ctx) {
   return GmailProcessorLib.run(
     example02Config,
     GmailProcessorLib.RunMode.DRY_RUN,
@@ -191,10 +197,13 @@ const exampleActionErrorConfig = {
   ],
 }
 
-function exampleActionErrorRun(
-  /** @type {EnvContext | undefined} */
-  ctx,
-) {
+/**
+ * Run Gmail Processor with config
+ * @param {GoogleAppsScript.Events.TimeDriven | undefined} evt Event information
+ * @param {EnvContext | undefined} ctx Environment context
+ * @returns {GmailProcessorLib.ProcessingResult} Processing result
+ */
+function exampleActionErrorRun(_evt, ctx) {
   return GmailProcessorLib.run(
     exampleActionErrorConfig,
     GmailProcessorLib.RunMode.DRY_RUN,
@@ -232,11 +241,12 @@ const exampleMinConfig = {
 }
 
 /**
- * Function to run the minimal example configuration
+ * Run Gmail Processor with config
+ * @param {GoogleAppsScript.Events.TimeDriven | undefined} evt Event information
  * @param {EnvContext | undefined} ctx Environment context
  * @returns {GmailProcessorLib.ProcessingResult} Processing result
  */
-function exampleMinRun(ctx) {
+function exampleMinRun(_evt, ctx) {
   return GmailProcessorLib.run(
     exampleMinConfig,
     GmailProcessorLib.RunMode.DRY_RUN,
@@ -297,10 +307,13 @@ const config = {
   ],
 }
 
-function run(
-  /** @type {EnvContext | undefined} */
-  ctx,
-) {
+/**
+ * Run Gmail Processor with config
+ * @param {GoogleAppsScript.Events.TimeDriven | undefined} evt Event information
+ * @param {EnvContext | undefined} ctx Environment context
+ * @returns {GmailProcessorLib.ProcessingResult} Processing result
+ */
+function run(_evt, ctx) {
   return GmailProcessorLib.run(config, GmailProcessorLib.RunMode.DRY_RUN, ctx)
 }
 ```
@@ -357,6 +370,10 @@ const migrationExample01Config = {
   ],
 }
 
+/**
+ * Run config conversion
+ * @returns {GmailProcessorLib.Config} Converted configuration
+ */
 function migrationExample01ConvertConfig() {
   const config = GmailProcessorLib.convertV1Config(migrationExample01Config)
   console.log(JSON.stringify(config, null, 2))
@@ -389,6 +406,10 @@ const migrationExampleMinConfig = {
   ],
 }
 
+/**
+ * Run config conversion
+ * @returns {GmailProcessorLib.Config} Converted configuration
+ */
 function migrationExampleMinConvertConfig() {
   const config = GmailProcessorLib.convertV1Config(migrationExampleMinConfig)
   console.log(JSON.stringify(config, null, 2))

@@ -64,9 +64,12 @@ export const e2eConfig = {
   ],
 }
 
-export function e2eInit(
-  /** @type {EnvContext | undefined} */
-  ctx,
-) {
+/**
+ * Initialize data for end-to-end tests.
+ * @param {GoogleAppsScript.Events.TimeDriven} evt Event information
+ * @param {EnvContext | undefined} ctx Environment context
+ * @returns {GmailProcessorLib.ProcessingResult} Processing result
+ */
+export function e2eInit(_evt, ctx) {
   return GmailProcessorLib.E2E.initAll(e2eConfig, ctx)
 }

@@ -24,11 +24,14 @@ let mocks: Mocks
 function testExample(
   name: string,
   config: Config,
-  fn: (ctx: EnvContext) => ProcessingResult,
+  fn: (
+    _evt: GoogleAppsScript.Events.TimeDriven | undefined,
+    ctx: EnvContext,
+  ) => ProcessingResult,
 ) {
   it(`should successfully run example ${name}`, () => {
     mocks = MockFactory.newMocks(config, RunMode.DANGEROUS)
-    const result = fn(mocks.envContext)
+    const result = fn(undefined, mocks.envContext)
     expect(result.status).toEqual(ProcessingStatus.OK)
     expect(result.processedThreadConfigs).toEqual(config.threads?.length)
   })

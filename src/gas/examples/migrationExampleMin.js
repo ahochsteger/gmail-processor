@@ -18,6 +18,10 @@ export const migrationExampleMinConfig = {
   ],
 }
 
+/**
+ * Run config conversion
+ * @returns {GmailProcessorLib.Config} Converted configuration
+ */
 export function migrationExampleMinConvertConfig() {
   const config = GmailProcessorLib.convertV1Config(migrationExampleMinConfig)
   console.log(JSON.stringify(config, null, 2))

@@ -137,10 +137,13 @@ export const e2eTest01Config = {
   ],
 }
 
-export function e2eTest01Run(
-  /** @type {EnvContext | undefined} */
-  ctx,
-) {
+/**
+ * Run Gmail Processor with config
+ * @param {GoogleAppsScript.Events.TimeDriven | undefined} evt Event information
+ * @param {EnvContext | undefined} ctx Environment context
+ * @returns {GmailProcessorLib.ProcessingResult} Processing result
+ */
+export function e2eTest01Run(_evt, ctx) {
   return GmailProcessorLib.run(
     e2eTest01Config,
     GmailProcessorLib.RunMode.DRY_RUN,
