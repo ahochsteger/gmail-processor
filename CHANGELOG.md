@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.3](https://github.com/ahochsteger/gmail-processor/compare/2.1.2...2.1.3) (2023-09-19)
+
+
+### Bug Fixes
+
+* failure on running time-triggered ([731d635](https://github.com/ahochsteger/gmail-processor/commit/731d635865aae30b4d3a1318271ab53ec44ba16b)), closes [#120](https://github.com/ahochsteger/gmail-processor/issues/120)
+
 ## [2.1.2](https://github.com/ahochsteger/gmail-processor/compare/2.1.1...2.1.2) (2023-09-18)
 
 
