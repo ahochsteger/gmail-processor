@@ -91,7 +91,7 @@
     "gas-webpack-plugin": "^2.5.0",
     "jest": "^29.7.0",
     "jest-mock-extended": "^3.0.4",
-    "jscpd": "^3.5.9",
+    "jscpd": "^3.5.10",
     "jsdoc": "^4.0.2",
     "json5": "^2.2.3",
     "prettier": "^3.0.3",
