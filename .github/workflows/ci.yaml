@@ -1,13 +1,32 @@
 name: CI
 
 on:
-  # Runs on pushes targeting certain branches
   push:
     branches:
-      - main # $default-branch
-      - beta
-  # Allows you to run this workflow manually from the Actions tab
+      - main
+      # - beta
   workflow_dispatch:
+    inputs:
+      skip_coveralls:
+        description: "Skip coveralls"
+        type: boolean
+        default: false
+      skip_pages:
+        description: "Skip pages"
+        type: boolean
+        default: true
+      skip_release:
+        description: "Skip release"
+        type: boolean
+        default: false
+      skip_sonarcloud:
+        description: "Skip sonarcloud"
+        type: boolean
+        default: false
+      skip_tests:
+        description: "Skip tests"
+        type: boolean
+        default: false
 
 jobs:
   build:
@@ -16,8 +35,10 @@ jobs:
       new_gas_version: ${{ steps.push-gas.outputs.new_gas_version }}
       new_release_published: ${{ steps.release.outputs.new_release_published }}
       new_release_version: ${{ steps.release.outputs.new_release_version }}
+      pages_version: ${{ steps.release-status.outputs.new_release_published == 'true' && steps.release-status.outputs.new_release_version || 'main' }}
+      do_push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
     environment:
-      name: ${{ github.ref_name }}
+      name: main
     env:
       CLASP_ACCESS_TOKEN: ${{secrets.CLASP_ACCESS_TOKEN}}
       CLASP_CLIENT_ID: ${{secrets.CLASP_CLIENT_ID}}
@@ -46,7 +67,7 @@ jobs:
           node-version: 20.x
           cache: "npm"
       - id: release-status
-        if: ${{ env.DO_PUSH }}
+        if: ${{ env.DO_PUSH && !github.event.inputs.skip_release }}
         name: Release Status
         uses: cycjimmy/semantic-release-action@v3
         env:
@@ -57,12 +78,15 @@ jobs:
         name: Build
         run: npm run ci:build
       - id: test
+        if: ${{ !github.event.inputs.skip_tests }}
         name: Test
         run: npm run ci:test
       - id: coveralls
+        if: ${{ !github.event.inputs.skip_coveralls }}
         name: Coveralls
         uses: coverallsapp/github-action@v2
       - id: sonarcloud
+        if: ${{ !github.event.inputs.skip_sonarcloud }}
         name: SonarCloud Scan
         uses: sonarsource/sonarcloud-github-action@master
         env:
@@ -76,19 +100,19 @@ jobs:
           npm run push
           echo "new_gas_version=$(cat build/gas/lib-version.txt)" >> "${GITHUB_OUTPUT}"
       - id: release
-        if: ${{ env.DO_PUSH }}
+        if: ${{ !github.event.inputs.skip_release && env.DO_PUSH }}
         name: Release
         uses: cycjimmy/semantic-release-action@v3
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - id: deploy-lib
-        if: ${{ steps.release.outputs.new_release_published == 'true' }}
+        if: ${{ !github.event.inputs.skip_release && steps.release.outputs.new_release_published == 'true' }}
         name: Deploy Lib
         run: npm run deploy
         env:
           CLASP_DEPLOYMENT_NAME: ${{ steps.release.outputs.new_release_version }}
       - id: update-release-notes
-        if: ${{ steps.release.outputs.new_release_published == 'true' }}
+        if: ${{ !github.event.inputs.skip_release && steps.release.outputs.new_release_published == 'true' }}
         name: Update Release Notes
         run: |
           npm run release:update
@@ -96,11 +120,11 @@ jobs:
           CLASP_DEPLOYMENT_NAME: ${{ steps.release.outputs.new_release_version }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - id: setup-pages
-        if: ${{ env.DO_PUSH }}
+        if: ${{ !github.event.inputs.skip_pages && env.DO_PUSH }}
         name: Setup Pages
         uses: actions/configure-pages@v3
       - id: upload-pages
-        if: ${{ env.DO_PUSH }}
+        if: ${{ !github.event.inputs.skip_pages && env.DO_PUSH }}
         name: Upload Pages
         uses: actions/upload-pages-artifact@v2
         with:
@@ -109,7 +133,7 @@ jobs:
     # See https://github.com/actions/starter-workflows/blob/main/pages/static.yml
     runs-on: ubuntu-latest
     needs: build
-    if: ${{ false && needs.build.outputs.new_release_published == 'true' }}
+    if: ${{ !github.event.inputs.skip_pages && needs.build.outputs.new_release_published == 'true' }}
     # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
     permissions:
       contents: read

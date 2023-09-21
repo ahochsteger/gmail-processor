@@ -4,20 +4,24 @@ on:
   pull_request:
     branches:
       - main
-  # Allows you to run this workflow manually from the Actions tab
+    types: [opened, synchronize, reopened]
   workflow_dispatch:
-
+    inputs:
+      skip_coveralls:
+        description: "Skip coveralls"
+        type: boolean
+        default: false
+      skip_tests:
+        description: "Skip tests"
+        type: boolean
+        default: false
+      skip_sonarcloud:
+        description: "Skip sonarcloud"
+        type: boolean
+        default: false
 jobs:
   pr-build:
     runs-on: ubuntu-latest
-    env:
-      CLASP_ACCESS_TOKEN: ${{secrets.CLASP_ACCESS_TOKEN}}
-      CLASP_CLIENT_ID: ${{secrets.CLASP_CLIENT_ID}}
-      CLASP_CLIENT_SECRET: ${{secrets.CLASP_CLIENT_SECRET}}
-      CLASP_ID_TOKEN: ${{secrets.CLASP_ID_TOKEN}}
-      CLASP_REFRESH_TOKEN: ${{secrets.CLASP_REFRESH_TOKEN}}
-      GCLOUD_PROJECT_ID: ${{secrets.GCLOUD_PROJECT_ID}}
-      GCLOUD_PROJECT_NR: ${{secrets.GCLOUD_PROJECT_NR}}
     environment:
       name: pr
     steps:
@@ -38,14 +42,17 @@ jobs:
         name: Build
         run: npm run ci:build
       - id: test
+        if: ${{ !github.event.inputs.skip_tests }}
         name: Test
         run: npm run ci:test
       - id: coveralls
+        if: ${{ !github.event.inputs.skip_coveralls }}
         name: Coveralls
         uses: coverallsapp/github-action@v2
       - id: sonarcloud
+        if: ${{ !github.event.inputs.skip_sonarcloud }}
         name: SonarCloud Scan
         uses: sonarsource/sonarcloud-github-action@master
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
