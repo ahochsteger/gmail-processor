@@ -1,4 +1,4 @@
-<!DOCTYPE html><html class="default" lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>E2EConfig | gmail-processor</title><meta name="description" content="Documentation for gmail-processor"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="../assets/style.css"/><link rel="stylesheet" href="../assets/highlight.css"/><script defer src="../assets/main.js"></script><script async src="../assets/search.js" id="tsd-search-script"></script><script async src="../assets/navigation.js" id="tsd-nav-script"></script></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os"</script><header class="tsd-page-toolbar">
+<!DOCTYPE html><html class="default" lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>V1Rule | gmail-processor</title><meta name="description" content="Documentation for gmail-processor"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="../assets/style.css"/><link rel="stylesheet" href="../assets/highlight.css"/><script defer src="../assets/main.js"></script><script async src="../assets/search.js" id="tsd-search-script"></script><script async src="../assets/navigation.js" id="tsd-nav-script"></script></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os"</script><header class="tsd-page-toolbar">
 <div class="tsd-toolbar-contents container">
 <div class="table-cell" id="tsd-search" data-base="..">
 <div class="field"><label for="tsd-search-field" class="tsd-widget tsd-toolbar-icon search no-caption"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#icon-search"></use></svg></label><input type="text" id="tsd-search-field" aria-label="Search"/></div>
@@ -13,14 +13,14 @@
 <div class="tsd-page-title">
 <ul class="tsd-breadcrumb">
 <li><a href="../modules.html">gmail-processor</a></li>
-<li><a href="E2EConfig.html">E2EConfig</a></li></ul>
-<h1>Class E2EConfig</h1></div>
+<li><a href="V1Rule.html">V1Rule</a></li></ul>
+<h1>Class V1Rule</h1></div>
 <section class="tsd-panel tsd-hierarchy">
 <h4>Hierarchy</h4>
 <ul class="tsd-hierarchy">
-<li><span class="target">E2EConfig</span></li></ul></section><aside class="tsd-sources">
+<li><span class="target">V1Rule</span></li></ul></section><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/ahochsteger/gmail-processor/blob/15c0bb6/src/lib/e2e/E2E.ts#L17">lib/e2e/E2E.ts:17</a></li></ul></aside>
+<li>Defined in <a href="https://github.com/ahochsteger/gmail-processor/blob/e2c3b20/src/lib/config/v1/V1Rule.ts#L6">lib/config/v1/V1Rule.ts:6</a></li></ul></aside>
 <section class="tsd-panel-group tsd-index-group">
 <section class="tsd-panel tsd-index-panel">
 <details class="tsd-index-content tsd-index-accordion" open><summary class="tsd-accordion-summary tsd-index-summary">
@@ -28,72 +28,129 @@
 <div class="tsd-accordion-details">
 <section class="tsd-index-section">
 <h3 class="tsd-index-heading">Constructors</h3>
-<div class="tsd-index-list"><a href="E2EConfig.html#constructor" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-512"></use></svg><span>constructor</span></a>
+<div class="tsd-index-list"><a href="V1Rule.html#constructor" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-512"></use></svg><span>constructor</span></a>
 </div></section>
 <section class="tsd-index-section">
 <h3 class="tsd-index-heading">Properties</h3>
-<div class="tsd-index-list"><a href="E2EConfig.html#files" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>files</span></a>
-<a href="E2EConfig.html#folders" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>folders</span></a>
-<a href="E2EConfig.html#globals" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>globals</span></a>
-<a href="E2EConfig.html#mails" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>mails</span></a>
+<div class="tsd-index-list"><a href="V1Rule.html#archive" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>archive?</span></a>
+<a href="V1Rule.html#filenameFrom" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>filename<wbr/>From?</span></a>
+<a href="V1Rule.html#filenameFromRegexp" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>filename<wbr/>From<wbr/>Regexp?</span></a>
+<a href="V1Rule.html#filenameTo" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>filename<wbr/>To?</span></a>
+<a href="V1Rule.html#filter" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>filter</span></a>
+<a href="V1Rule.html#folder" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>folder</span></a>
+<a href="V1Rule.html#newerThan" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>newer<wbr/>Than?</span></a>
+<a href="V1Rule.html#parentFolderId" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>parent<wbr/>Folder<wbr/>Id?</span></a>
+<a href="V1Rule.html#ruleLabel" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>rule<wbr/>Label?</span></a>
+<a href="V1Rule.html#saveMessagePDF" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>save<wbr/>MessagePDF?</span></a>
+<a href="V1Rule.html#saveThreadPDF" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>save<wbr/>ThreadPDF?</span></a>
+<a href="V1Rule.html#skipPDFHeader" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>skipPDFHeader?</span></a>
 </div></section></div></details></section></section>
 <section class="tsd-panel-group tsd-member-group">
 <h2>Constructors</h2>
 <section class="tsd-panel tsd-member"><a id="constructor" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>constructor</span><a href="#constructor" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
-<li class="tsd-signature tsd-anchor-link" id="constructor.new_E2EConfig"><span class="tsd-kind-constructor-signature">new <wbr/>E2EConfig</span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="E2EConfig.html" class="tsd-signature-type tsd-kind-class">E2EConfig</a><a href="#constructor.new_E2EConfig" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></li>
+<li class="tsd-signature tsd-anchor-link" id="constructor.new_V1Rule"><span class="tsd-kind-constructor-signature">new <wbr/>V1<wbr/>Rule</span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="V1Rule.html" class="tsd-signature-type tsd-kind-class">V1Rule</a><a href="#constructor.new_V1Rule" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></li>
 <li class="tsd-description">
-<h4 class="tsd-returns-title">Returns <a href="E2EConfig.html" class="tsd-signature-type tsd-kind-class">E2EConfig</a></h4></li></ul></section></section>
+<h4 class="tsd-returns-title">Returns <a href="V1Rule.html" class="tsd-signature-type tsd-kind-class">V1Rule</a></h4></li></ul></section></section>
 <section class="tsd-panel-group tsd-member-group">
 <h2>Properties</h2>
-<section class="tsd-panel tsd-member"><a id="files" class="tsd-anchor"></a>
-<h3 class="tsd-anchor-link"><span>files</span><a href="#files" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
-<div class="tsd-signature"><span class="tsd-kind-property">files</span><span class="tsd-signature-symbol">:</span> <a href="../types/FileConfig.html" class="tsd-signature-type tsd-kind-type-alias">FileConfig</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> = []</span></div><aside class="tsd-sources">
+<section class="tsd-panel tsd-member"><a id="archive" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagOptional">Optional</code> <span>archive</span><a href="#archive" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">archive</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> = false</span></div>
+<div class="tsd-comment tsd-typography"><p>Archive thread after processing</p>
+</div>
+<div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/ahochsteger/gmail-processor/blob/15c0bb6/src/lib/e2e/E2E.ts#L31">lib/e2e/E2E.ts:31</a></li></ul></aside></section>
-<section class="tsd-panel tsd-member"><a id="folders" class="tsd-anchor"></a>
-<h3 class="tsd-anchor-link"><span>folders</span><a href="#folders" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
-<div class="tsd-signature"><span class="tsd-kind-property">folders</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span><br/><span>    </span><span class="tsd-kind-property">location</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span>    </span><span class="tsd-kind-property">name</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span class="tsd-signature-symbol">}</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> = []</span></div>
-<div class="tsd-type-declaration">
-<h4>Type declaration</h4>
-<ul class="tsd-parameters">
-<li class="tsd-parameter">
-<h5><span class="tsd-kind-property">location</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5></li>
-<li class="tsd-parameter">
-<h5><span class="tsd-kind-property">name</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5></li></ul></div><aside class="tsd-sources">
+<li>Defined in <a href="https://github.com/ahochsteger/gmail-processor/blob/e2c3b20/src/lib/config/v1/V1Rule.ts#L8">lib/config/v1/V1Rule.ts:8</a></li></ul></aside></section>
+<section class="tsd-panel tsd-member"><a id="filenameFrom" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagOptional">Optional</code> <span>filename<wbr/>From</span><a href="#filenameFrom" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">filename<wbr/>From</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = &quot;&quot;</span></div>
+<div class="tsd-comment tsd-typography"><p>Rename matching attachments from the given filename</p>
+</div>
+<div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/ahochsteger/gmail-processor/blob/15c0bb6/src/lib/e2e/E2E.ts#L27">lib/e2e/E2E.ts:27</a></li></ul></aside></section>
-<section class="tsd-panel tsd-member"><a id="globals" class="tsd-anchor"></a>
-<h3 class="tsd-anchor-link"><span>globals</span><a href="#globals" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
-<div class="tsd-signature"><span class="tsd-kind-property">globals</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span><br/><span>    </span><span class="tsd-kind-property">repoBaseUrl</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span>    </span><span class="tsd-kind-property">subjectPrefix</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span>    </span><span class="tsd-kind-property">to</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span class="tsd-signature-symbol">}</span><span class="tsd-signature-symbol"> = ...</span></div>
-<div class="tsd-type-declaration">
-<h4>Type declaration</h4>
-<ul class="tsd-parameters">
-<li class="tsd-parameter">
-<h5><span class="tsd-kind-property">repo<wbr/>Base<wbr/>Url</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5></li>
-<li class="tsd-parameter">
-<h5><span class="tsd-kind-property">subject<wbr/>Prefix</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5></li>
-<li class="tsd-parameter">
-<h5><span class="tsd-kind-property">to</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5></li></ul></div><aside class="tsd-sources">
+<li>Defined in <a href="https://github.com/ahochsteger/gmail-processor/blob/e2c3b20/src/lib/config/v1/V1Rule.ts#L10">lib/config/v1/V1Rule.ts:10</a></li></ul></aside></section>
+<section class="tsd-panel tsd-member"><a id="filenameFromRegexp" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagOptional">Optional</code> <span>filename<wbr/>From<wbr/>Regexp</span><a href="#filenameFromRegexp" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">filename<wbr/>From<wbr/>Regexp</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = &quot;&quot;</span></div>
+<div class="tsd-comment tsd-typography"><p>Rename matching attachments from the given filename regex</p>
+</div>
+<div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/ahochsteger/gmail-processor/blob/15c0bb6/src/lib/e2e/E2E.ts#L18">lib/e2e/E2E.ts:18</a></li></ul></aside></section>
-<section class="tsd-panel tsd-member"><a id="mails" class="tsd-anchor"></a>
-<h3 class="tsd-anchor-link"><span>mails</span><a href="#mails" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
-<div class="tsd-signature"><span class="tsd-kind-property">mails</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span><br/><span>    </span><span class="tsd-kind-property">files</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">; </span><br/><span>    </span><span class="tsd-kind-property">htmlBody</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span>    </span><span class="tsd-kind-property">name</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span>    </span><span class="tsd-kind-property">subject</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span class="tsd-signature-symbol">}</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> = []</span></div>
-<div class="tsd-type-declaration">
-<h4>Type declaration</h4>
-<ul class="tsd-parameters">
-<li class="tsd-parameter">
-<h5><span class="tsd-kind-property">files</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h5></li>
-<li class="tsd-parameter">
-<h5><span class="tsd-kind-property">html<wbr/>Body</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5></li>
-<li class="tsd-parameter">
-<h5><span class="tsd-kind-property">name</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5></li>
-<li class="tsd-parameter">
-<h5><span class="tsd-kind-property">subject</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5></li></ul></div><aside class="tsd-sources">
+<li>Defined in <a href="https://github.com/ahochsteger/gmail-processor/blob/e2c3b20/src/lib/config/v1/V1Rule.ts#L12">lib/config/v1/V1Rule.ts:12</a></li></ul></aside></section>
+<section class="tsd-panel tsd-member"><a id="filenameTo" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagOptional">Optional</code> <span>filename<wbr/>To</span><a href="#filenameTo" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">filename<wbr/>To</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = &quot;&quot;</span></div>
+<div class="tsd-comment tsd-typography"><p>Rename matching attachments to the given filename</p>
+</div>
+<div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/ahochsteger/gmail-processor/blob/15c0bb6/src/lib/e2e/E2E.ts#L32">lib/e2e/E2E.ts:32</a></li></ul></aside></section></section></div>
+<li>Defined in <a href="https://github.com/ahochsteger/gmail-processor/blob/e2c3b20/src/lib/config/v1/V1Rule.ts#L14">lib/config/v1/V1Rule.ts:14</a></li></ul></aside></section>
+<section class="tsd-panel tsd-member"><a id="filter" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>filter</span><a href="#filter" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">filter</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = &quot;&quot;</span></div>
+<div class="tsd-comment tsd-typography"><p>Search filter for threads</p>
+</div>
+<div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/ahochsteger/gmail-processor/blob/e2c3b20/src/lib/config/v1/V1Rule.ts#L16">lib/config/v1/V1Rule.ts:16</a></li></ul></aside></section>
+<section class="tsd-panel tsd-member"><a id="folder" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>folder</span><a href="#folder" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">folder</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = &quot;&quot;</span></div>
+<div class="tsd-comment tsd-typography"><p>GDrive folder to store attachments to</p>
+</div>
+<div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/ahochsteger/gmail-processor/blob/e2c3b20/src/lib/config/v1/V1Rule.ts#L18">lib/config/v1/V1Rule.ts:18</a></li></ul></aside></section>
+<section class="tsd-panel tsd-member"><a id="newerThan" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagOptional">Optional</code> <span>newer<wbr/>Than</span><a href="#newerThan" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">newer<wbr/>Than</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = &quot;&quot;</span></div>
+<div class="tsd-comment tsd-typography"><p>Restrict to threads containing messages newer than the given relative date/time</p>
+</div>
+<div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/ahochsteger/gmail-processor/blob/e2c3b20/src/lib/config/v1/V1Rule.ts#L20">lib/config/v1/V1Rule.ts:20</a></li></ul></aside></section>
+<section class="tsd-panel tsd-member"><a id="parentFolderId" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagOptional">Optional</code> <span>parent<wbr/>Folder<wbr/>Id</span><a href="#parentFolderId" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">parent<wbr/>Folder<wbr/>Id</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = &quot;&quot;</span></div>
+<div class="tsd-comment tsd-typography"><p>Parent folder ID to be used (for shared drives)</p>
+</div>
+<div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/ahochsteger/gmail-processor/blob/e2c3b20/src/lib/config/v1/V1Rule.ts#L22">lib/config/v1/V1Rule.ts:22</a></li></ul></aside></section>
+<section class="tsd-panel tsd-member"><a id="ruleLabel" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagOptional">Optional</code> <span>rule<wbr/>Label</span><a href="#ruleLabel" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">rule<wbr/>Label</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = &quot;&quot;</span></div>
+<div class="tsd-comment tsd-typography"><p>Add the given label to the processed thread</p>
+</div>
+<div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/ahochsteger/gmail-processor/blob/e2c3b20/src/lib/config/v1/V1Rule.ts#L24">lib/config/v1/V1Rule.ts:24</a></li></ul></aside></section>
+<section class="tsd-panel tsd-member"><a id="saveMessagePDF" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagOptional">Optional</code> <span>save<wbr/>MessagePDF</span><a href="#saveMessagePDF" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">save<wbr/>MessagePDF</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> = false</span></div>
+<div class="tsd-comment tsd-typography"><p>Save the message to PDF</p>
+</div>
+<div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/ahochsteger/gmail-processor/blob/e2c3b20/src/lib/config/v1/V1Rule.ts#L26">lib/config/v1/V1Rule.ts:26</a></li></ul></aside></section>
+<section class="tsd-panel tsd-member"><a id="saveThreadPDF" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagOptional">Optional</code> <span>save<wbr/>ThreadPDF</span><a href="#saveThreadPDF" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">save<wbr/>ThreadPDF</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> = false</span></div>
+<div class="tsd-comment tsd-typography"><p>Save the thread to PDF</p>
+</div>
+<div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/ahochsteger/gmail-processor/blob/e2c3b20/src/lib/config/v1/V1Rule.ts#L28">lib/config/v1/V1Rule.ts:28</a></li></ul></aside></section>
+<section class="tsd-panel tsd-member"><a id="skipPDFHeader" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagOptional">Optional</code> <span>skipPDFHeader</span><a href="#skipPDFHeader" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">skipPDFHeader</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> = false</span></div>
+<div class="tsd-comment tsd-typography"><p>Skip header for PDF</p>
+</div>
+<div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/ahochsteger/gmail-processor/blob/e2c3b20/src/lib/config/v1/V1Rule.ts#L30">lib/config/v1/V1Rule.ts:30</a></li></ul></aside></section></section></div>
 <div class="col-sidebar">
 <div class="page-menu">
 <div class="tsd-navigation settings">
@@ -114,10 +171,18 @@
 <div class="tsd-accordion-details">
 <ul>
 <li><a href="#constructor" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-512"></use></svg><span>constructor</span></a></li>
-<li><a href="#files" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>files</span></a></li>
-<li><a href="#folders" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>folders</span></a></li>
-<li><a href="#globals" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>globals</span></a></li>
-<li><a href="#mails" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>mails</span></a></li></ul></div></details></div>
+<li><a href="#archive" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>archive</span></a></li>
+<li><a href="#filenameFrom" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>filename<wbr/>From</span></a></li>
+<li><a href="#filenameFromRegexp" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>filename<wbr/>From<wbr/>Regexp</span></a></li>
+<li><a href="#filenameTo" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>filename<wbr/>To</span></a></li>
+<li><a href="#filter" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>filter</span></a></li>
+<li><a href="#folder" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>folder</span></a></li>
+<li><a href="#newerThan" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>newer<wbr/>Than</span></a></li>
+<li><a href="#parentFolderId" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>parent<wbr/>Folder<wbr/>Id</span></a></li>
+<li><a href="#ruleLabel" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>rule<wbr/>Label</span></a></li>
+<li><a href="#saveMessagePDF" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>save<wbr/>MessagePDF</span></a></li>
+<li><a href="#saveThreadPDF" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>save<wbr/>ThreadPDF</span></a></li>
+<li><a href="#skipPDFHeader" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>skipPDFHeader</span></a></li></ul></div></details></div>
 <div class="site-menu">
 <nav class="tsd-navigation"><a href="../modules.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1"></use></svg><span>gmail-processor</span></a>
 <ul class="tsd-small-nested-navigation" id="tsd-nav-container" data-base="..">
@@ -132,7 +197,7 @@
 <li><a href="AttachmentMatchConfig.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-128"></use></svg>AttachmentMatchConfig</a></li>
 <li><a href="Config.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-128"></use></svg>Config</a></li>
 <li><a href="E2E.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-128"></use></svg>E2E</a></li>
-<li><a href="E2EConfig.html" class="current"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-128"></use></svg>E2EConfig</a></li>
+<li><a href="E2EConfig.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-128"></use></svg>E2EConfig</a></li>
 <li><a href="GlobalConfig.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-128"></use></svg>GlobalConfig</a></li>
 <li><a href="MessageActionConfig.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-128"></use></svg>MessageActionConfig</a></li>
 <li><a href="MessageConfig.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-128"></use></svg>MessageConfig</a></li>
