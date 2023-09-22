@@ -127,4 +127,3 @@ jobs:
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: build/docs
-          target-folder: ${{ github.ref == 'refs/heads/main' && '' || 'value_for_other_branches' }}
