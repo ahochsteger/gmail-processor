@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      # - beta
   workflow_dispatch:
     inputs:
       skip_coveralls:
@@ -15,6 +14,10 @@ on:
         description: "Skip pages"
         type: boolean
         default: true
+      skip_gas:
+        description: "Skip push"
+        type: boolean
+        default: false
       skip_release:
         description: "Skip release"
         type: boolean
@@ -51,7 +54,6 @@ jobs:
       CLASP_REFRESH_TOKEN: ${{secrets.CLASP_REFRESH_TOKEN}}
       GCLOUD_PROJECT_ID: ${{secrets.GCLOUD_PROJECT_ID}}
       GCLOUD_PROJECT_NR: ${{secrets.GCLOUD_PROJECT_NR}}
-      DO_PUSH: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
     steps:
       - id: checkout
         name: Checkout
@@ -66,14 +68,6 @@ jobs:
         with:
           node-version: 20.x
           cache: "npm"
-      - id: release-status
-        if: ${{ env.DO_PUSH && !github.event.inputs.skip_release }}
-        name: Release Status
-        uses: cycjimmy/semantic-release-action@v3
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          dry_run: true
       - id: build
         name: Build
         run: npm run ci:build
@@ -81,6 +75,14 @@ jobs:
         if: ${{ !github.event.inputs.skip_tests }}
         name: Test
         run: npm run ci:test
+      - id: release-status
+        if: ${{ !github.event.inputs.skip_release }}
+        name: Release Status
+        uses: cycjimmy/semantic-release-action@v3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          dry_run: true
       - id: coveralls
         if: ${{ !github.event.inputs.skip_coveralls }}
         name: Coveralls
@@ -94,19 +96,19 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_PROJECT_VERSION: ${{ steps.release-status.outputs.new_release_published == 'true' && steps.release-status.outputs.new_release_version || '' }}
       - id: push-gas
-        if: ${{ env.DO_PUSH }}
+        if: ${{ !github.event.inputs.skip_gas }}
         name: Push to GAS
         run: |
           npm run push
           echo "new_gas_version=$(cat build/gas/lib-version.txt)" >> "${GITHUB_OUTPUT}"
       - id: release
-        if: ${{ !github.event.inputs.skip_release && env.DO_PUSH }}
+        if: ${{ !github.event.inputs.skip_release }}
         name: Release
         uses: cycjimmy/semantic-release-action@v3
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - id: deploy-lib
-        if: ${{ !github.event.inputs.skip_release && steps.release.outputs.new_release_published == 'true' }}
+        if: ${{ !github.event.inputs.skip_release && !github.event.inputs.skip_release && steps.release.outputs.new_release_published == 'true' }}
         name: Deploy Lib
         run: npm run deploy
         env:
@@ -119,33 +121,10 @@ jobs:
         env:
           CLASP_DEPLOYMENT_NAME: ${{ steps.release.outputs.new_release_version }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - id: setup-pages
-        if: ${{ !github.event.inputs.skip_pages && env.DO_PUSH }}
-        name: Setup Pages
-        uses: actions/configure-pages@v3
-      - id: upload-pages
-        if: ${{ !github.event.inputs.skip_pages && env.DO_PUSH }}
-        name: Upload Pages
-        uses: actions/upload-pages-artifact@v2
-        with:
-          path: "build/docs"
-  pages:
-    # See https://github.com/actions/starter-workflows/blob/main/pages/static.yml
-    runs-on: ubuntu-latest
-    needs: build
-    if: ${{ !github.event.inputs.skip_pages && needs.build.outputs.new_release_published == 'true' }}
-    # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
-    permissions:
-      contents: read
-      pages: write
-      id-token: write
-
-    # Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
-    # However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
-    concurrency:
-      group: "pages"
-      cancel-in-progress: false
-    steps:
       - name: Deploy Pages
         id: deploy-pages
-        uses: actions/deploy-pages@v2
+        if: ${{ !github.event.inputs.skip_pages }}
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: build/docs
+          target-folder: ${{ github.ref == 'refs/heads/main' && '' || 'value_for_other_branches' }}
