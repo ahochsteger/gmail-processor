@@ -11,17 +11,23 @@ on:
         description: "Skip coveralls"
         type: boolean
         default: false
-      skip_tests:
-        description: "Skip tests"
+      skip_pages:
+        description: "Skip pages"
         type: boolean
-        default: false
+        default: true
       skip_sonarcloud:
         description: "Skip sonarcloud"
         type: boolean
         default: false
+      skip_tests:
+        description: "Skip tests"
+        type: boolean
+        default: false
+
 jobs:
   pr-build:
     runs-on: ubuntu-latest
+    concurrency: ci-${{ github.ref }}
     environment:
       name: pr
     steps:
@@ -56,3 +62,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      - name: Deploy Pages
+        id: deploy-pages
+        if: ${{ !github.event.inputs.skip_pages }}
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: docs/build
+          target-folder: pr/${{ github.ref }}

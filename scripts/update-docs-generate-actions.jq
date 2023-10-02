@@ -1,34 +1,44 @@
 $enumList[0] as $enums
-| .[]
-| ("action." + .actionName) as $actionAnchor
 | [
-  "<a id=\"" + $actionAnchor + "\">`" + .actionName + "`</a>",
-  .description,
-  ( if .args then
-      (
-      "<ul>" + ([
-        .args[]
-        | ($actionAnchor + "." + .name) as $actionArgAnchor
-        | .type as $type
-        | [
-          "<li><a id=\"" + $actionArgAnchor + "\">`",
-          .name,
-          "`</a> (`",
-          .type,
-          "`): ",
-          .description,
-          (
-            if ($enums[]|select(.name==$type)) then
-              " For valid values see enum docs for type " + .type + "."
-            else "" end
-          ),
-          "</li>"
-        ]
-        | join("")
-      ] | join("")) + "</ul>")
-    else "" end
+  .[]
+  | .prefix as $prefix
+  | (($prefix[0]|ascii_upcase)+$prefix[1:]) as $title
+  | (
+    "",
+    "## " + $title + " Actions",
+    (
+      .actions[]
+      | [
+        "",
+        "### `" + .actionName + "`",
+        "",
+        .description,
+        "",
+        ( if (.args and (.args|length>0)) then
+            (
+            "| Arguments | Type | Description |",
+            "|-----------|------|-------------|",
+            ([
+              .args[]
+              | . as $arg
+              | [
+                "`" + $arg.name + "`",
+                "`" + $arg.type + "`",
+                (.description | gsub("\n";"<br />") | gsub("placeholder";"[placeholder](placeholder)")) +
+                (
+                    if ([$enums[]|select(.name==$arg.type)]|length>0) then
+                      (" See [Enum Type `" + $arg.type + "`](enum-types.md#" + ($arg.type|ascii_downcase) + ") for valid values.")
+                    else "" end
+                )
+              ]
+              | join(" | ")
+              | "| " + . + " |"
+            ] | join("\n")))
+          else "This acton takes no arguments." end
+        )
+      ]
+      | join("\n")
+    )
   )
 ]
-| join(" | ")
-| gsub("\n";"<br>")
-| "| " + . + " |"
+| join("\n")

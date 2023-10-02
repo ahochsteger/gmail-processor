@@ -13,7 +13,7 @@ export class GlobalActions implements ActionProvider<ProcessingContext> {
   /** Terminate processing due to an error. */
   public static panic<
     TArgs extends {
-      /** The message to be logged before termination */
+      /** The message to be logged before termination. */
       message: string
     },
   >(context: ProcessingContext, args: TArgs): ActionReturnType {
@@ -25,11 +25,10 @@ export class GlobalActions implements ActionProvider<ProcessingContext> {
   /** Create a log entry. */
   public static log<
     TArgs extends {
-      /** The message to be logged */
+      /** The message to be logged. */
       message: string
       /**
-       * The level of the log message (default: `info`):
-       *
+       * The level of the log message (default: `info`).
        */
       level?: LogLevel
     },
@@ -43,9 +42,9 @@ export class GlobalActions implements ActionProvider<ProcessingContext> {
   /** Create a log entry in the log spreadsheet. */
   public static sheetLog<
     TArgs extends {
-      /** The message to be logged */
+      /** The message to be logged. */
       message: string
-      /** The level of the log message (default: info) */
+      /** The level of the log message (default: info). */
       level?: LogLevel
     },
   >(context: ProcessingContext, args: TArgs): ActionReturnType {

@@ -1,8 +1,8 @@
 # Contributing
 
 <!-- See
+ * https://github.com/github/docs/blob/main/CONTRIBUTING.md
  * https://mozillascience.github.io/working-open-workshop/contributing/
- *
 -->
 
 Thank you for investing your time in contributing to our project!
@@ -11,26 +11,9 @@ Read our [Code of Conduct](CODE_OF_CONDUCT.md) to keep our community approachabl
 
 In this guide you will get an overview of the contribution workflow from opening an issue, creating a PR, reviewing, and merging the PR.
 
-- [Contributing](#contributing)
-  - [New contributor guide](#new-contributor-guide)
-  - [Getting started](#getting-started)
-    - [Issues](#issues)
-      - [Create a new issue](#create-a-new-issue)
-      - [Solve an issue](#solve-an-issue)
-      - [How to use Labels](#how-to-use-labels)
-    - [Make Changes](#make-changes)
-    - [Commit your update](#commit-your-update)
-    - [Pull Request](#pull-request)
-    - [Your PR is merged!](#your-pr-is-merged)
-  - [Development Guide](#development-guide)
-    - [Development Flow](#development-flow)
-    - [Testing](#testing)
-    - [Code Style](#code-style)
-    - [Development Resources](#development-resources)
-
 ## New contributor guide
 
-To get an overview of the project, read the [README](README.md). Here are some resources to help you get started with open source contributions:
+To get an overview of the project, read the [README](https://github.com/ahochsteger/gmail-processor/blob/main/README.md). Here are some resources to help you get started with open source contributions:
 
 - [Finding ways to contribute to open source on GitHub](https://docs.github.com/en/get-started/exploring-projects-on-github/finding-ways-to-contribute-to-open-source-on-github)
 - [Set up Git](https://docs.github.com/en/get-started/quickstart/set-up-git)
@@ -65,7 +48,7 @@ Labels can help you find an issue you'd like to help with.
 ### Make Changes
 
 1. [Fork the repository](https://docs.github.com/en/github/getting-started-with-github/fork-a-repo#fork-an-example-repository) so that you can make your changes without affecting the original project until you're ready to merge them.
-2. Install or update to **Node.js** to the [latest LTS release](https://nodejs.dev/en/about/releases/) or see the specified node engine version in [package.json](package.json). For more information, see [Development Guidelines](#development-guide).
+2. Install or update to **Node.js** to the [latest LTS release](https://nodejs.dev/en/about/releases/) or see the specified node engine version in [package.json](https://github.com/ahochsteger/gmail-processor/blob/main/package.json). For more information, see [Development Guidelines](#development-guide).
 3. Create a working branch and start with your changes!
 
 ### Commit your update
@@ -84,7 +67,7 @@ When you're finished with the changes, create a pull request, also known as a PR
 - As you update your PR and apply changes, mark each conversation as [resolved](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/commenting-on-a-pull-request#resolving-conversations).
 - If you run into any merge issues, checkout this [git tutorial](https://github.com/skills/resolve-merge-conflicts) to help you resolve merge conflicts and other issues.
 
-### Your PR is merged!
+### Your PR is merged
 
 Congratulations :tada::tada: The project team thanks you :sparkles:.
 
@@ -117,7 +100,7 @@ The recommended IDE for this project is [Visual Studio Code](https://code.visual
 ### Testing
 
 Please add/update the tests for any change to keep the codebase in a well-tested state. For every source file `*.ts` the corresponding test file is named `*.spec.ts` and they are implemented using [Jest](https://jestjs.io/) as the testing framework.
-Remote services are mocked (see [MockFactory.ts](src/test/mocks/MockFactory.ts)) to simplify local testing in isolation.
+Remote services are mocked (see [MockFactory.ts](https://github.com/ahochsteger/gmail-processor/blob/main/src/test/mocks/MockFactory.ts)) to simplify local testing in isolation.
 
 After the changes and tests are done run the `pre-commit` script that validates the changes and updates all generated artifacts (like documentation, examples, JSON schema files, ...) and include all updated files in your commit.
 
@@ -135,7 +118,7 @@ A list of tools, libraries and frameworks that are used for development:
 - [Jest](https://jestjs.io/): For test automation
 - [webpack](https://webpack.js.org/): For packaging the library
 - [semantic-release](https://github.com/semantic-release/semantic-release): For release automation and publishing
-- For a complete list have a look at the dependencies in [`package.json`](package.json)
+- For a complete list have a look at the dependencies in [`package.json`](https://github.com/ahochsteger/gmail-processor/blob/main/package.json)
 
 Helpful resources about development for Google Apps Script:
 

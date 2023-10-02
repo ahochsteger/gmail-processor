@@ -1,67 +1,7 @@
 {
-    "$ref": "#/definitions/V1Config",
     "$schema": "http://json-schema.org/draft-07/schema#",
+    "additionalProperties": false,
     "definitions": {
-        "V1Config": {
-            "additionalProperties": false,
-            "properties": {
-                "globalFilter": {
-                    "default": "has:attachment -in:trash -in:drafts -in:spam",
-                    "description": "Global filter",
-                    "title": "globalFilter",
-                    "type": "string"
-                },
-                "maxRuntime": {
-                    "default": 280,
-                    "description": "Maximum script runtime in seconds (google scripts will be killed after 5 minutes)",
-                    "title": "maxRuntime",
-                    "type": "number"
-                },
-                "newerThan": {
-                    "default": "2m",
-                    "description": "Only process message newer than (leave empty for no restriction; use d, m and y for day, month and year)",
-                    "title": "newerThan",
-                    "type": "string"
-                },
-                "processedLabel": {
-                    "default": "to-gdrive/processed",
-                    "description": "GMail label for processed threads (will be created, if not existing)",
-                    "title": "processedLabel",
-                    "type": "string"
-                },
-                "rules": {
-                    "default": [],
-                    "description": "Processing rules",
-                    "items": {
-                        "$ref": "#/definitions/V1Rule"
-                    },
-                    "title": "rules",
-                    "type": "array"
-                },
-                "sleepTime": {
-                    "default": 100,
-                    "description": "Sleep time in milliseconds between processed messages",
-                    "title": "sleepTime",
-                    "type": "number"
-                },
-                "timezone": {
-                    "default": "UTC",
-                    "description": "Timezone for date/time operations",
-                    "title": "timezone",
-                    "type": "string"
-                }
-            },
-            "required": [
-                "maxRuntime",
-                "newerThan",
-                "processedLabel",
-                "rules",
-                "sleepTime",
-                "timezone"
-            ],
-            "title": "V1Config",
-            "type": "object"
-        },
         "V1Rule": {
             "additionalProperties": false,
             "properties": {
@@ -145,6 +85,62 @@
             "title": "V1Rule",
             "type": "object"
         }
-    }
+    },
+    "properties": {
+        "globalFilter": {
+            "default": "has:attachment -in:trash -in:drafts -in:spam",
+            "description": "Global filter",
+            "title": "globalFilter",
+            "type": "string"
+        },
+        "maxRuntime": {
+            "default": 280,
+            "description": "Maximum script runtime in seconds (google scripts will be killed after 5 minutes)",
+            "title": "maxRuntime",
+            "type": "number"
+        },
+        "newerThan": {
+            "default": "2m",
+            "description": "Only process message newer than (leave empty for no restriction; use d, m and y for day, month and year)",
+            "title": "newerThan",
+            "type": "string"
+        },
+        "processedLabel": {
+            "default": "to-gdrive/processed",
+            "description": "GMail label for processed threads (will be created, if not existing)",
+            "title": "processedLabel",
+            "type": "string"
+        },
+        "rules": {
+            "default": [],
+            "description": "Processing rules",
+            "items": {
+                "$ref": "#/definitions/V1Rule"
+            },
+            "title": "rules",
+            "type": "array"
+        },
+        "sleepTime": {
+            "default": 100,
+            "description": "Sleep time in milliseconds between processed messages",
+            "title": "sleepTime",
+            "type": "number"
+        },
+        "timezone": {
+            "default": "UTC",
+            "description": "Timezone for date/time operations",
+            "title": "timezone",
+            "type": "string"
+        }
+    },
+    "required": [
+        "maxRuntime",
+        "newerThan",
+        "processedLabel",
+        "rules",
+        "sleepTime",
+        "timezone"
+    ],
+    "type": "object"
 }
 

@@ -7,7 +7,8 @@ export LC_ALL=C
 export GENERATING_DOCS=true
 
 scriptdir=$(dirname "$0")
-refdocs_outfile="docs/reference-docs.md"
+docs_outpath="docs/docs/"
+refdocs_outpath="${docs_outpath}/reference/"
 allDataFile="build/typedoc/all.json"
 actionDataFile="build/typedoc/actions.json"
 enumDataFile="build/typedoc/enums.json"
@@ -49,17 +50,16 @@ function extractAllPlaceholder() {
 }
 
 function generateActionDocs() {
-  echo "## Actions"
+  echo "# Actions"
   echo ""
-  echo "The following actions can be triggered depending on the valid context which is prefixed in the action name:"
+  echo "## Overview"
   echo ""
-  echo "* \`global\`: Globally available, can be placed anywhere in the configuration."
-  echo "* \`thread\`: Run in the context of a thread (includes \`message\` and \`attachment\` context)."
-  echo "* \`message\`: Run in the context of a message (includes \`attachment\` context)."
-  echo "* \`attachment\`: Run in the context of an attachment."
+  echo "The actions can be only be triggered in valid processing scopes:"
   echo ""
-  echo "| Action Name | Description | Arguments |"
-  echo "|-------------|-------------|-----------|"
+  echo "* [\`global.*\`](#global-actions): Globally available, can be placed anywhere in the configuration."
+  echo "* [\`thread.*\`](#thread-actions): Run in the context of a thread (includes \`message\` and \`attachment\` context)."
+  echo "* [\`message.*\`](#message-actions): Run in the context of a message (includes \`attachment\` context)."
+  echo "* [\`attachment.*\`](#attachment-actions): Run in the context of an attachment."
   gojq -r \
     --slurpfile enumList "${enumDataFile}" \
     -f "${scriptdir}/update-docs-generate-actions.jq" \
@@ -67,33 +67,43 @@ function generateActionDocs() {
 }
 
 function generatePlaceholderDocs {
-  echo "## Substitution Placeholder"
+  echo "# Placeholder"
+  echo ""
+  echo "## Overview"
   echo ""
   echo "The placeholder in the following table are available for substitution in strings, depending on the scope which are defined as follows:"
   echo ""
-  echo "* \`env\`: This scope is valid globally and can also be used for internal purposes before processing starts (e.g. during adapter initialization)."
-  echo "* \`proc\`: This scope is valid globally during any processing phase."
-  echo "* \`thread\`: This scope is valid during processing a GMail thread and matching messages + attachments."
-  echo "* \`message\`: This scope is valid during processing a GMail message and matching attachments."
-  echo "* \`attachment\`: This scope is valid during processing a GMail attachment."
-  echo ""
-  echo "| Key | Type | Scope | Example | Description |"
-  echo "|-----|------|-------|---------|-------------|"
+  echo "* [\`env.*\`](#scope-env): This scope is valid globally and can also be used for internal purposes before processing starts (e.g. during adapter initialization)."
+  echo "* [\`proc.*\`](#scope-proc): This scope is valid globally during any processing phase."
+  echo "* [\`thread.*\`](#scope-thread): This scope is valid during processing a GMail thread and matching messages + attachments."
+  echo "* [\`message.*\`](#scope-message): This scope is valid during processing a GMail message and matching attachments."
+  echo "* [\`attachment.*\`](#scope-attachment): This scope is valid during processing a GMail attachment."
   gojq -r \
     -f "${scriptdir}/update-docs-generate-placeholder.jq" \
     <"${placeholderDataFile}"
 }
 
 function generateEnumDocs() {
-  echo "## Enum Types"
+  echo "# Enum Types"
   echo ""
-  echo "The following table lists all enum types and their values referenced in the configuration above."
-  echo ""
-  echo "| Enum Type | Description | Values |"
-  echo "|-----------|-------------|--------|"
+  echo "These are the supported enum types and the possible values that can be used in the configuration."
   gojq -r \
     -f "${scriptdir}/update-docs-generate-enums.jq" \
     <"${enumDataFile}"
+}
+
+function saveWithSidebarPos() {
+  local sidebarPos="${1}"
+  local destFile="${2}"
+  local destDir="${destFile%/*}"
+  mkdir -p "${destDir}"
+  {
+    echo "---"
+    echo "sidebar_position: ${sidebarPos}"
+    echo "---"
+    cat
+  } >"${destFile}"
+
 }
 
 # Extract Data
@@ -102,18 +112,10 @@ extractAllActions "${allDataFile}" >"${actionDataFile}"
 extractAllEnums <"${allDataFile}" >"${enumDataFile}"
 extractAllPlaceholder >"${placeholderDataFile}"
 
-# Generate Reference Docs
-{
-  echo "# GMail Processor Reference Documentation"
-  echo ""
-  echo "* [GMail Processor Reference Documentation](#gmail-processor-reference-documentation)"
-  echo "  * [Actions](#actions)"
-  echo "  * [Enum Types](#enum-types)"
-  echo "  * [Substitution Placeholder](#substitution-placeholder)"
-  echo ""
-  generateActionDocs
-  echo ""
-  generateEnumDocs
-  echo ""
-  generatePlaceholderDocs
-} >"${refdocs_outfile}"
+generateEnumDocs | saveWithSidebarPos 32 "${refdocs_outpath}/enum-types.md"
+generateActionDocs | saveWithSidebarPos 33 "${refdocs_outpath}/actions.md"
+generatePlaceholderDocs | saveWithSidebarPos 34 "${refdocs_outpath}/placeholder.md"
+
+cat CONTRIBUTING.md | saveWithSidebarPos 50 "${docs_outpath}/CONTRIBUTING.md"
+cat CODE_OF_CONDUCT.md | saveWithSidebarPos 60 "${docs_outpath}/CODE_OF_CONDUCT.md"
+cat CHANGELOG.md | saveWithSidebarPos 70 "${docs_outpath}/CHANGELOG.md"

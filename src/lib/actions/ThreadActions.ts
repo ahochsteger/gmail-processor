@@ -123,7 +123,7 @@ export class ThreadActions implements ActionProvider<ThreadContext> {
     TArgs extends {
       /** The location (path + filename) of the Google Drive file.
        * For shared folders or Team Drives prepend the location with `{id:<folderId>}`.
-       * Supports context substitution placeholder.
+       * Supports placeholder substitution.
        */
       location: string
       /**
@@ -132,7 +132,7 @@ export class ThreadActions implements ActionProvider<ThreadContext> {
       conflictStrategy: ConflictStrategy
       /**
        * The description to be attached to the Google Drive file.
-       * Supports context substitution placeholder.
+       * Supports placeholder substitution.
        */
       description?: string
       /** Skip the header if `true`. */
