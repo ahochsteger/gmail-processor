@@ -8,5 +8,6 @@ dist-examples/
 node_modules/
 .env
 *.env
+*.bak
 !.vscode/settings.json
 debug.json

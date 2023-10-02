@@ -6,7 +6,7 @@ import * as GmailProcessorLib from "../../lib/index"
  * @type {GmailProcessorLib.Config}
  */
 export const example02Config = {
-  description: "An example V2 configuration",
+  description: "This is a more advanced configuration example.",
   settings: {
     markProcessedMethod:
       GmailProcessorLib.MarkProcessedMethod.MARK_MESSAGE_READ,

@@ -58,7 +58,7 @@ export class ProcessingConfig {
 }
 
 /**
- * Represents the configuration root for GmailProcessor
+ * The input configuration for Gmail Processor.
  */
 export class Config extends ProcessingConfig {
   /**

@@ -1,14 +1,20 @@
 .[]
-| ("enum." + .name) as $enumAnchor
 | [
-  "<a id=\"" + $enumAnchor + "\">`" + .name + "`</a>",
+  "",
+  # "<a id=\"" + $enumAnchor + "\">`" + .name + "`</a>",
+  "## " + .name,
+  "",
   .description,
-  "<ul>" + ([
+  "",
+  "| Value | Description |",
+  "|-------|-------------|",
+  ([
     .values[]
-    | ($enumAnchor + "." + .value) as $enumValueAnchor
-    | "<li><a id=\"" + $enumValueAnchor + "\">`" + (.value | tostring) + "`</a>: " + .description + "</li>"
-  ] | join("")) + "</ul>"
+    | [
+      "`" + (.value | tostring) + "`",
+      (.description | gsub("\n";"<br />"))
+    ] | join(" | ")
+    | "| " + . + " |"
+  ] | join("\n"))
 ]
-| join(" | ")
-| gsub("\n";"<br>")
-| "| " + . + " |"
+| join("\n")

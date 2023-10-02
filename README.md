@@ -18,6 +18,7 @@
 ![GitHub repo size](https://img.shields.io/github/repo-size/ahochsteger/gmail-processor)
 [![GitHub contributors](https://img.shields.io/github/contributors/ahochsteger/gmail-processor)](https://github.com/ahochsteger/gmail-processor/graphs/contributors)
 [![All Contributors](https://img.shields.io/badge/all_contributors-12-orange.svg?style=flat-square)](#contributors)
+[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](CODE_OF_CONDUCT.md)
 
 [![GitHub issues](https://img.shields.io/github/issues/ahochsteger/gmail-processor)](https://github.com/ahochsteger/gmail-processor/issues)
 [![GitHub closed issues](https://img.shields.io/github/issues-closed/ahochsteger/gmail-processor)](https://github.com/ahochsteger/gmail-processor/issues?q=is%3Aissue+is%3Aclosed)
@@ -34,9 +35,9 @@
 
 </details>
 
-**[Gmail Processor](https://github.com/ahochsteger/gmail-processor)** is an open-source [Google Apps Script](https://www.google.com/script/start/) library that automates the processing of Gmail messages and attachments by executing actions (e.g. store attachments in a GDrive folder, log information in a spreadsheet) depending on powerful matching criteria.
+**[Gmail Processor](https://github.com/ahochsteger/gmail-processor)** is an open-source [Google Apps Script](https://www.google.com/script/start/) library that automates the processing of Gmail messages and attachments by executing actions (e.g. store attachments in a GDrive folder, log information into a spreadsheet) depending on powerful matching criteria.
 
-![Dall-e generated image: A friendly smiling robot sitting on a table, sorting mails into three paper trays, colorful flat style, white background](./docs/images/gmail-processor-robot-320.png)
+![Dall-e generated image: A friendly smiling robot sitting on a table, sorting mails into three paper trays, colorful flat style, white background](./docs/static/img/gmail-processor-robot-320.png)
 
 Gmail Processor is the successor of [Gmail2GDrive](https://github.com/ahochsteger/gmail-processor/tree/1.x) with vastly enhanced functionality, completely re-written in [TypeScript](https://www.typescriptlang.org/) with extensibility and stability in mind, using a modern development setup and automation all over the place (dependency updates, tests, documentation, releases, deployments). There's a convenient migration available to convert your old configuration to the new format (see [Getting Started: Migrating from GMail2GDrive v1](#migrate-from-gmail2gdrive)).
 
@@ -44,7 +45,7 @@ Gmail Processor is the successor of [Gmail2GDrive](https://github.com/ahochstege
 
 - 🤖 **Extensive Automation**: Automate email processing using the provided configuration to match threads, messages, and attachments, and trigger actions accordingly.
 - 📁 **Google Drive Integration**: Store files such as attachments, PDFs of messages, or entire threads into any location within Google Drive, providing easy organization and accessibility.
-- 📄 **Google Spreadsheet Logging**: Keep track of processed threads, messages, and attachments by logging valuable information to a Google Spreadsheet.
+- 📄 **Google Spreadsheet Logging**: Keep track of processed threads, messages, and attachments by logging valuable information into a Google Spreadsheet.
 - 🔧 **Flexible Configuration**: Gmail Processor operates based on a JSON configuration that allows you to define matching rules and specify corresponding actions to be executed.
 - 📐 **Extensible Architecture**: Designed with extensibility in mind, Gmail Processor enables seamless addition of new actions and integrations in the future to adapt to evolving requirements.
 
@@ -87,8 +88,8 @@ Follow these steps:
      `1yhOQyl_xWtnGJn_bzlL7oA4d_q5KoMyZyWIqXDJX1SY7bi22_lpjMiQK`
 4. Press "Look up" and select the desired release number as **version** or "HEAD (Development Mode)" if you always want to use the latest version of the desired release channel.
    - Unfortunately Google Apps Script does not show the description of the library version to see the corresponding release version. This URL can be used to verify the release version of a Google Apps Script Library: <https://script.google.com/macros/library/d/1Qvk0v7ggfW-TJ84dlYPlDzJG8y-Dif-j9kdA1aWv4wzxE_IOkeV2juLB/{libVersion}> (replace `{libVersion}` with the number from the drop-down in Google Apps Script).
-5. Set the **identifier** to `GmailProcessorLib` (any name will do, but we will use this identifier as a reference in all [examples](docs/examples.md) and documentation)
-6. Replace the contents of the initially created file `Code.gs` with the code from the [examples](docs/examples.md) and save the changes.
+5. Set the **identifier** to `GmailProcessorLib` (any name will do, but we will use this identifier as a reference in all [examples](docs/docs/examples.mdx) and documentation)
+6. Replace the contents of the initially created file `Code.gs` with the code from the [examples](docs/docs/examples.mdx) and save the changes.
 7. Perform initial start of the function `run` to grant the permissions (see below for an explanation why these are required):
    1. Select the account you want to grant access for
    2. When the message "Google did not verify the app" click on "Advanced" and "Go to ..." to proceed

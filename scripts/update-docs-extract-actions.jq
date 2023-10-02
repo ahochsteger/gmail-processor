@@ -24,3 +24,12 @@
     ]
   }
 ]
+| sort_by(.prefix)
+| group_by(.prefix)
+| [
+  .[]
+  | {
+    "prefix": .[0].prefix,
+    "actions": .
+  }
+]

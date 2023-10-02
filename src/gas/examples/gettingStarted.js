@@ -6,6 +6,7 @@ import * as GmailProcessorLib from "../../lib/index"
  * @type {GmailProcessorLib.Config}
  */
 export const config = {
+  description: "This is a getting started example configuration.",
   settings: {
     // Decide on the method to be used to mark processed threads/messages:
     // MARK_MESSAGE_READ: Mark each processed messages as read (can deal with multiple messages per thread but touches the read status)

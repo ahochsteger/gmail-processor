@@ -11,13 +11,14 @@ import {
 export class AttachmentActions implements ActionProvider<AttachmentContext> {
   [key: string]: ActionFunction<AttachmentContext>
 
-  /** Store an attachment at a Google Drive location. */
+  /** Store an attachment to a Google Drive location. */
   @writingAction<AttachmentContext>()
   public static store<
     TArgs extends {
-      /** The location (path + filename) of the Google Drive file.
-       * For shared folders or Team Drives prepend the location with `{id:<folderId>}`.
-       * Supports context substitution placeholder.
+      /**
+       * The location (path + filename) of the Google Drive file.
+       * For shared folders or Team Drives prepend the location with the folder ID like `{id:<folderId>}/...`.
+       * Supports placeholder substitution.
        */
       location: string
       /**
@@ -26,7 +27,7 @@ export class AttachmentActions implements ActionProvider<AttachmentContext> {
       conflictStrategy: ConflictStrategy
       /**
        * The description to be attached to the Google Drive file.
-       * Supports context substitution placeholder.
+       * Supports placeholder substitution.
        */
       description?: string
     },

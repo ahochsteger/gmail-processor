@@ -1,0 +1,29 @@
+{
+  "description": "This is a getting started example configuration.",
+  "settings": {
+    "markProcessedMethod": "mark-read"
+  },
+  "global": {},
+  "threads": [
+    {
+      "match": {
+        "query": "from:some.email@gmail.com"
+      },
+      "attachments": [
+        {
+          "match": {
+            "name": "^my-file-.+.pdf$"
+          },
+          "actions": [
+            {
+              "name": "thread.storePDF",
+              "args": {
+                "folder": "folder/${message.date:format:yyyy-MM-dd}/${attachment.name}"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
