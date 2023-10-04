@@ -56,7 +56,8 @@ jobs:
         name: Coveralls
         uses: coverallsapp/github-action@v2
       - id: sonarcloud
-        if: ${{ !github.event.inputs.skip_sonarcloud }}
+        if: ${{ !github.event.inputs.skip_sonarcloud && !github.actor == 'dependabot[bot]' }}
+        # NOTE: Dependabot has no access to secrets https://docs.github.com/en/code-security/dependabot/working-with-dependabot/automating-dependabot-with-github-actions
         name: SonarCloud Scan
         uses: sonarsource/sonarcloud-github-action@master
         env:
