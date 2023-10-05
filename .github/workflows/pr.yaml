@@ -55,18 +55,3 @@ jobs:
         if: ${{ !github.event.inputs.skip_coveralls }}
         name: Coveralls
         uses: coverallsapp/github-action@v2
-      - id: sonarcloud
-        if: ${{ !github.event.inputs.skip_sonarcloud && !github.actor == 'dependabot[bot]' }}
-        # NOTE: Dependabot has no access to secrets https://docs.github.com/en/code-security/dependabot/working-with-dependabot/automating-dependabot-with-github-actions
-        name: SonarCloud Scan
-        uses: sonarsource/sonarcloud-github-action@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      - name: Deploy Pages
-        id: deploy-pages
-        if: ${{ !github.event.inputs.skip_pages }}
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          folder: docs/build
-          target-folder: pr/${{ github.ref }}
