@@ -67,7 +67,7 @@ describe("Features", () => {
       "should be able to skip threads containing more than maxMailsInThread messages (PR #40)",
     )
     test.todo(
-      "should be able to specify regex options (e.g. case-insensitive match) (issue #51)",
+      "should be able to specify regex options (e.g. case-insensitive match) (issue #51,#87)",
     )
     test.todo(
       "should be able to filter by date at the thread handler level (PR #60)",
