@@ -1,11 +1,11 @@
 name: CI
 
 on:
-    push:
+  push:
     branches:
       - main
   workflow_dispatch:
-inputs:
+    inputs:
       skip_coveralls:
         description: "Skip coveralls"
         type: boolean
