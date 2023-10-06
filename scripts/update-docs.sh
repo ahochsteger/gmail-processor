@@ -116,6 +116,7 @@ generateEnumDocs | saveWithSidebarPos 32 "${refdocs_outpath}/enum-types.md"
 generateActionDocs | saveWithSidebarPos 33 "${refdocs_outpath}/actions.md"
 generatePlaceholderDocs | saveWithSidebarPos 34 "${refdocs_outpath}/placeholder.md"
 
-cat CONTRIBUTING.md | saveWithSidebarPos 50 "${docs_outpath}/CONTRIBUTING.md"
-cat CODE_OF_CONDUCT.md | saveWithSidebarPos 60 "${docs_outpath}/CODE_OF_CONDUCT.md"
-cat CHANGELOG.md | saveWithSidebarPos 70 "${docs_outpath}/CHANGELOG.md"
+# Copy community files:
+cat CONTRIBUTING.md | saveWithSidebarPos 71 "${docs_outpath}/community/CONTRIBUTING.md"
+cat CODE_OF_CONDUCT.md | saveWithSidebarPos 72 "${docs_outpath}/community/CODE_OF_CONDUCT.md"
+cat CHANGELOG.md | saveWithSidebarPos 73 "${docs_outpath}/community/CHANGELOG.md"

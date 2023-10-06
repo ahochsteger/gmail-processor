@@ -6,8 +6,7 @@ sidebar_position: 20
 There are different ways to get started with GmailProcessor in your Google Apps Script project:
 
 1. [**Use** a library reference (recommended)](#use-a-library-reference-recommended): Use this, if you just want to use the library, get easy updates and don't want to fiddle with the library code at all.
-2. [**Copy** the library code (advanced)](#copy-the-library-code-advanced): Use this if you want full control over what's being executed or if you want to use your own modified library versions.
-3. [**Migrate** from GMail2GDrive](#migrate-from-gmail2gdrive): Use this, if you've used GMail2GDrive before and want to migrate to Gmail Processor.
+2. [**Copy** the library code (advanced)](#copy-the-library-code-advanced): Use this if you want full control over what's being executed or use your own modified library.
 
 ## Use a Library Reference (recommended)
 
@@ -24,8 +23,8 @@ Follow these steps:
 4. Press "Look up" and select the desired release number as **version** (recommended for stability) or "HEAD (Development Mode)" (recommended for automatically staying up-to-date with the potential risk of broken updates).
    - See the [Gmail Processor Release Notes](https://github.com/ahochsteger/gmail-processor/releases) for their corresponding Google Apps Script library version.
    - Or use this URL to verify the release version of a Google Apps Script Library: <https://script.google.com/macros/library/d/1Qvk0v7ggfW-TJ84dlYPlDzJG8y-Dif-j9kdA1aWv4wzxE_IOkeV2juLB/{libVersion}> (replace `{libVersion}` with the number from the drop-down in Google Apps Script).
-5. Set the **identifier** to `GmailProcessorLib` (any name will do, but we will use this identifier as a reference in all [examples](examples.mdx) and documentation)
-6. Replace the contents of the initially created file `Code.gs` with the code from the [Getting Started Example](examples.mdx#gettingstartedjs) and save the changes.
+5. Set the **identifier** to `GmailProcessorLib` (any name will do, but we will use this identifier as a reference in all [examples](examples/index.md) and documentation)
+6. Replace the contents of the initially created file `Code.gs` with the code from the [Getting Started Example](examples/gettingStarted.mdx) and save the changes.
 7. Perform an initial execution of the function `run` to grant all required permissions (see [Required API Permissions](#required-api-permissions) for more details):
    1. Select your account you want to grant access for
    2. When the message "Google did not verify the app" click on "Advanced" and "Go to ..." to proceed
@@ -63,19 +62,6 @@ To use a copy of the library code in your project simply replace steps 3-5 from 
 3. Replace the contents of the file with the library code of the release asset [`GmailProcessorLib.js`](https://github.com/ahochsteger/gmail-processor/releases/latest/download/GmailProcessorLib.js) from the latest release or your own built version from `build/gas/lib/GmailProcessorLib.js`.
 
 Follow the remaining steps from step 6 onwards from above.
-
-## Migrate from GMail2GDrive
-
-Make sure, you've done the initial steps above (e.g. [use a library reference](#use-a-library-reference-recommended)) before migrating the old configuration to the new format.
-
-The [Playground](/playground) provides a convenient way to migrate your old GMail2GDrive configuration to the new format of Gmail Processor by following these steps:
-
-1. Copy the JSON configuration from GMail2GDrive (just the config, not the full code!) to the clipboard.
-2. Use the paste action (📋) in the config toolbar to paste the config into the editor.
-3. Convert the config using the convert action (🔄) to transform the configuration into the new Gmail Processor format.
-4. Copy the full executable code (🚀) and paste it into `Code.gs` of Google Apps Script.
-
-If you want to manually convert your configuration or need to understand how the transformation is done have a look at [V1ToV2Converter.ts](https://github.com/ahochsteger/gmail-processor/blob/main/src/lib/config/v1/V1ToV2Converter.ts) that implements the conversion logic.
 
 ## Required API Permissions
 

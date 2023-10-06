@@ -24,6 +24,7 @@
 [![GitHub closed issues](https://img.shields.io/github/issues-closed/ahochsteger/gmail-processor)](https://github.com/ahochsteger/gmail-processor/issues?q=is%3Aissue+is%3Aclosed)
 [![GitHub pull requests](https://img.shields.io/github/issues-pr/ahochsteger/gmail-processor)](https://github.com/ahochsteger/gmail-processor/pulls)
 [![GitHub closed pull requests](https://img.shields.io/github/issues-pr-closed/ahochsteger/gmail-processor)](https://github.com/ahochsteger/gmail-processor/pulls?q=is%3Apr+is%3Aclosed)
+[![Known Vulnerabilities](https://snyk.io/test/github/ahochsteger/gmail-processor/badge.svg)](https://snyk.io/test/github/ahochsteger/gmail-processor)
 
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=ahochsteger_gmail-processor&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=ahochsteger_gmail-processor)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=ahochsteger_gmail-processor&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=ahochsteger_gmail-processor)

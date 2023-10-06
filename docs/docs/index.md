@@ -1,10 +1,8 @@
 ---
+id: about
 sidebar_position: 10
 ---
-
-# Documentation
-
-## What is Gmail Processor?
+# About Gmail Processor
 
 **[Gmail Processor](https://github.com/ahochsteger/gmail-processor)** is an open-source [Google Apps Script](https://www.google.com/script/start/) library that automates the processing of Gmail messages and attachments by executing actions (e.g. store attachments in a GDrive folder, log information into a spreadsheet) depending on powerful matching criteria.
 
@@ -42,5 +40,5 @@ The following pages provide all required information to successfully use Gmail P
 
 * The **[Getting Started Guide](getting-started.md)** shows how to setup Gmail Processor in Google Apps Script and quickly get it up and running.
 * The **[Config Reference](reference/index.md)** provides detailed information about the Gmail Processor configuration.
-* The **[examples](examples.mdx)** show different ways of using Gmail Processor.
+* The **[Examples](examples/index.md)** show different ways of using Gmail Processor.
 * The **[Playground](/playground)** helps to create the configuration in a schema-aware online editor with a visual schema guide on the side.

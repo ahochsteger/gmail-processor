@@ -12,8 +12,8 @@ import ConfigSchemaV1 from "../../../src/lib/config/v1/config-schema-v1.json"
 import JSONSchemaViewer from "@theme/JSONSchemaViewer"
 
 import {
-  PlaygroundContextProvider,
-  usePlaygroundContext,
+    PlaygroundContextProvider,
+    usePlaygroundContext,
 } from "@site/src/contexts/PlaygroundContext"
 
 // Type I need for useRef
@@ -47,11 +47,9 @@ function PlaygroundInner(): JSX.Element {
     const code = `const config = ${config.trim()}
     
 function run() {
-  GmailProcessorLib.run(
-    config,
-    GmailProcessorLib.RunMode.DRY_RUN,
-  )
-}`
+  GmailProcessorLib.run(config, "dry-run")
+}
+`
     await navigator.clipboard.writeText(code)
     toast.success("Code copied")
   }

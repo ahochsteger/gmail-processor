@@ -19,7 +19,7 @@ const config = {
   ],
   title: 'Gmail Processor',
   tagline: 'Process emails with ease',
-  favicon: 'img/favicon.ico',
+  favicon: 'img/favicon.svg',
 
   // Set the production url of your site here
   url: 'https://ahochsteger.github.io/',
@@ -92,8 +92,9 @@ const config = {
           {to: '/playground', label: 'Playground', position: 'left'},
           {
             href: 'https://github.com/ahochsteger/gmail-processor',
-            label: 'GitHub',
             position: 'right',
+            className: 'header-github-link',
+            'aria-label': 'GitHub repository',
           },
         ],
       },
