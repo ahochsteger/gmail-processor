@@ -26,8 +26,8 @@ function testExample(
   config: Config,
   fn: (
     _evt: GoogleAppsScript.Events.TimeDriven | undefined,
-    ctx: EnvContext
-  ) => ProcessingResult
+    ctx: EnvContext,
+  ) => ProcessingResult,
 ) {
   it(`should successfully run example ${name}`, () => {
     mocks = MockFactory.newMocks(config, RunMode.DANGEROUS)
@@ -44,7 +44,7 @@ function testExample(
 function testMigrationExample(
   name: string,
   v1config: V1Config,
-  fn: () => PartialDeep<Config>
+  fn: () => PartialDeep<Config>,
 ) {
   it(`should successfully run migration example ${name}`, () => {
     const config = fn()
@@ -69,11 +69,11 @@ describe("migrationExample01", () =>
   testMigrationExample(
     "migrationExample01",
     migrationExample01Config,
-    migrationExample01ConvertConfig
+    migrationExample01ConvertConfig,
   ))
 describe("migrationExampleMin", () =>
   testMigrationExample(
     "migrationExampleMin",
     migrationExampleMinConfig,
-    migrationExampleMinConvertConfig
+    migrationExampleMinConvertConfig,
   ))
