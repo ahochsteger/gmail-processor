@@ -1,0 +1,62 @@
+name: CI
+
+on:
+    push:
+    branches:
+      - main
+  workflow_dispatch:
+inputs:
+      skip_coveralls:
+        description: "Skip coveralls"
+        type: boolean
+        default: false
+      skip_pages:
+        description: "Skip pages"
+        type: boolean
+        default: true
+      skip_gas:
+        description: "Skip push"
+        type: boolean
+        default: false
+      skip_release:
+        description: "Skip release"
+        type: boolean
+        default: false
+      skip_sonarcloud:
+        description: "Skip sonarcloud"
+        type: boolean
+        default: false
+      skip_tests:
+        description: "Skip tests"
+        type: boolean
+        default: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    environment:
+      name: main
+    env:
+      CLASP_LIB_SCRIPT_ID: ${{secrets.CLASP_LIB_SCRIPT_ID}}
+    steps:
+      - id: checkout
+        name: Checkout
+        uses: actions/checkout@v3
+        with:
+          persist-credentials: false
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+      - id: nodejs
+        name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20.x
+          cache: "npm"
+      - id: build
+        name: Build
+        run: npm run ci:docs
+      - name: Deploy Pages
+        id: deploy-pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: docs/build

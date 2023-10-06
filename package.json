@@ -11,6 +11,7 @@
     "build:lib": "scripts/clasp.sh lib build",
     "ci": "npm run ci:build && npm run ci:test",
     "ci:build": "npm run clean && npm ci && (cd docs && npm ci) && npm run build && npm run lint:code",
+    "ci:docs": "npm run clean:docs && npm ci && cd docs && npm ci && npm run build",
     "ci:test": "jest --ci --coverage",
     "clean": "rm -rf build docs/build",
     "clean:docs": "rm -rf docs/build",

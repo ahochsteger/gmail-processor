@@ -10,10 +10,6 @@ on:
         description: "Skip coveralls"
         type: boolean
         default: false
-      skip_pages:
-        description: "Skip pages"
-        type: boolean
-        default: true
       skip_gas:
         description: "Skip push"
         type: boolean
@@ -121,9 +117,3 @@ jobs:
         env:
           CLASP_DEPLOYMENT_NAME: ${{ steps.release.outputs.new_release_version }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Deploy Pages
-        id: deploy-pages
-        if: ${{ !github.event.inputs.skip_pages }}
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          folder: docs/build
