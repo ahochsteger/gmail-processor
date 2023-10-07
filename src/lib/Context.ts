@@ -78,6 +78,7 @@ type EnvInfo = {
   runMode: RunMode
   session: GoogleAppsScript.Base.Session
   timezone: string
+  urlFetchApp: typeof UrlFetchApp
 }
 
 export type ProcessingInfo = {

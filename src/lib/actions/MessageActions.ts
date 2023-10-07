@@ -8,6 +8,11 @@ import {
   ActionReturnType,
 } from "./ActionRegistry"
 
+type MessageReturnType = ActionReturnType & {
+  message?: GoogleAppsScript.Gmail.GmailMessage
+}
+type FileReturnType = ActionReturnType & { file?: GoogleAppsScript.Drive.File }
+
 export class MessageActions implements ActionProvider<MessageContext> {
   [key: string]: ActionFunction<MessageContext>
 
@@ -18,7 +23,7 @@ export class MessageActions implements ActionProvider<MessageContext> {
       /** The recipient of the forwarded message. */
       to: string
     },
-  >(context: MessageContext, args: TArgs): ActionReturnType {
+  >(context: MessageContext, args: TArgs): MessageReturnType {
     return {
       message: context.proc.gmailAdapter.messageForward(
         context.message.object,
@@ -94,7 +99,7 @@ export class MessageActions implements ActionProvider<MessageContext> {
       /** Skip the header if `true`. */
       skipHeader: boolean
     },
-  >(context: MessageContext, args: TArgs) {
+  >(context: MessageContext, args: TArgs): FileReturnType {
     return {
       file: context.proc.gdriveAdapter.createFile(
         PatternUtil.substitute(context, args.location),
@@ -103,6 +108,64 @@ export class MessageActions implements ActionProvider<MessageContext> {
             context.message.object,
             args.skipHeader,
           ),
+          PatternUtil.substitute(context, args.description ?? ""),
+        ),
+        args.conflictStrategy,
+      ),
+    }
+  }
+
+  /** Store a document referenced by a URL contained in the message body to GDrive. */
+  @writingAction()
+  public static storeFromURL<
+    TArgs extends {
+      /**
+       * The RegEx of a matching URL to read the document from.
+       */
+      urlRegex: string
+      /**
+       * The location (path + filename) of the Google Drive file.
+       * For shared folders or Team Drives prepend the location with `{id:<folderId>}`.
+       * Supports placeholder substitution.
+       */
+      location: string
+      /**
+       * The strategy to be used in case a file already exists at the desired location.
+       */
+      conflictStrategy: ConflictStrategy
+      /**
+       * The description to be attached to the Google Drive file.
+       * Supports placeholder substitution.
+       */
+      description?: string
+      /**
+       * The header to pass to the URL. May be used to pass an authentication token.
+       * Supports placeholder substitution.
+       */
+      headers?: { [k: string]: string }
+    },
+  >(context: MessageContext, args: TArgs): FileReturnType {
+    const message = context.message.object
+    const url = new RegExp(args.urlRegex).exec(message.getBody())?.[0]
+    if (!url) {
+      const msg = `The regex ${
+        args.urlRegex
+      } did not match any URLs for message ID '${message.getId()}'`
+      context.log.warn(msg)
+      return {
+        ok: false,
+        error: new Error(msg),
+      }
+    }
+    const blob = context.env.urlFetchApp.fetch(url, {
+      headers: args.headers ?? {},
+    })
+    return {
+      ok: true,
+      file: context.proc.gdriveAdapter.createFile(
+        PatternUtil.substitute(context, args.location),
+        new FileContent(
+          blob,
           PatternUtil.substitute(context, args.description ?? ""),
         ),
         args.conflictStrategy,
