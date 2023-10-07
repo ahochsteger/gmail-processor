@@ -3,13 +3,13 @@ import { ContextMocks } from "../../test/mocks/ContextMocks"
 import { EXISTING_FOLDER_NAME } from "../../test/mocks/GDriveMocks"
 import { GMailData } from "../../test/mocks/GMailMocks"
 import {
+  fakedSystemDateTimeString,
   MockFactory,
   Mocks,
-  fakedSystemTime,
 } from "../../test/mocks/MockFactory"
-import { RunMode } from "../Context"
 import { Config, newConfig } from "../config/Config"
 import { MarkProcessedMethod } from "../config/SettingsConfig"
+import { RunMode } from "../Context"
 import { PatternUtil } from "./PatternUtil"
 
 let mocks: Mocks
@@ -264,8 +264,8 @@ describe("Substitutions", () => {
     expect(actual).toMatchObject({
       envRunMode: RunMode.DANGEROUS,
       envTimeZone: "UTC",
-      dateNow: fakedSystemTime,
-      timerStartTime: fakedSystemTime,
+      dateNow: fakedSystemDateTimeString,
+      timerStartTime: fakedSystemDateTimeString,
     })
   })
   it("should substitute global variables", () => {
@@ -422,7 +422,26 @@ describe("Placeholder Handling", () => {
       "${message.id},${message.replyTo},${message.subject},${message.to},${date.now:format:yyyy-MM-dd HH:mm:ss}"
     const actual = PatternUtil.substitute(mocks.attachmentContext, s)
     expect(actual).toEqual(
-      `message-bcc@example.com,message-cc@example.com,${fakedSystemTime},message-from@example.com,message-id,message-reply-to@example.com,Message Subject 1,message-to@example.com,${fakedSystemTime}`,
+      `message-bcc@example.com,message-cc@example.com,${fakedSystemDateTimeString},message-from@example.com,message-id,message-reply-to@example.com,Message Subject 1,message-to@example.com,${fakedSystemDateTimeString}`,
     )
+  })
+})
+describe("Date Placeholder", () => {
+  it("should handle modifier 'format'", () => {
+    expect(
+      PatternUtil.valueToString(
+        mocks.envContext,
+        "date.now:format:yyyy-MM-dd HH:mm:ss",
+      ),
+    ).toEqual(fakedSystemDateTimeString)
+  })
+  it("should handle modifier 'offset-format'", () => {
+    const offset = "-2d"
+    expect(
+      PatternUtil.valueToString(
+        mocks.envContext,
+        `date.now:offset-format:${offset}:yyyy-MM-dd HH:mm:ss`,
+      ),
+    ).toEqual("2023-06-24 09:00:00")
   })
 })

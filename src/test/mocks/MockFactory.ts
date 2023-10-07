@@ -16,8 +16,9 @@ import { GDriveMocks, LOGSHEET_FILE_ID } from "./GDriveMocks"
 import { GMailData, GMailMocks, IndexType } from "./GMailMocks"
 import { SpreadsheetMocks } from "./SpreadsheetMocks"
 
-export const fakedSystemTime = "2023-06-26 09:00:00"
-jest.useFakeTimers({ now: new Date(fakedSystemTime + "Z") })
+export const fakedSystemDateTimeString = "2023-06-26 09:00:00"
+export const fakedSystemDateTime = new Date(fakedSystemDateTimeString + "Z")
+jest.useFakeTimers({ now: fakedSystemDateTime })
 
 class EnvMocks {
   public attachment: MockProxy<GoogleAppsScript.Gmail.GmailAttachment> =
