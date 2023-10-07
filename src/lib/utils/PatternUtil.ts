@@ -1,10 +1,9 @@
 import { format as formatDateTime, utcToZonedTime } from "date-fns-tz"
 import {
   AttachmentContext,
-  EnvContext,
+  Context,
   MessageContext,
   MetaInfo,
-  ProcessingContext,
   ThreadContext,
 } from "../Context"
 
@@ -64,12 +63,7 @@ export class PatternUtil {
   }
 
   public static valueToString(
-    ctx:
-      | EnvContext
-      | ProcessingContext
-      | ThreadContext
-      | MessageContext
-      | AttachmentContext,
+    ctx: Context,
     ref: Placeholder | string,
     m: MetaInfo = ctx.meta,
     defaultValue = "",
@@ -105,40 +99,12 @@ export class PatternUtil {
     }
     switch (typeof value) {
       case "object":
-        switch (value?.constructor?.name) {
-          case "Array":
-            if (Array.isArray(value)) {
-              const separator =
-                p.modifier === PlaceholderModifierType.JOIN
-                  ? p.arg
-                  : defaultJoinSeparator
-              stringValue = value.join(separator)
-            } else {
-              ctx.log.warn(
-                `Placeholder '${
-                  p.fullName
-                }' array cannot be converted to string (value: ${JSON.stringify(
-                  value,
-                )})!`,
-              )
-            }
-            break
-          case "Date": {
-            const format =
-              p.modifier === PlaceholderModifierType.FORMAT
-                ? p.arg
-                : defaultDateFormat
-            stringValue = this.formatDate(
-              value as Date,
-              format,
-              ctx.env.timezone,
-            )
-            break
-          }
-          default:
-            stringValue = JSON.stringify(value)
-            break
-        }
+        stringValue = PatternUtil.objectValueToString(
+          ctx,
+          p,
+          value,
+          defaultValue,
+        )
         break
       case "string":
         stringValue = value
@@ -153,15 +119,50 @@ export class PatternUtil {
     return stringValue
   }
 
-  public static substitute(
-    ctx:
-      | EnvContext
-      | ProcessingContext
-      | ThreadContext
-      | MessageContext
-      | AttachmentContext,
-    s: string,
+  private static objectValueToString(
+    ctx: Context,
+    p: Placeholder,
+    value: object | null,
+    defaultValue: string,
   ) {
+    let stringValue = defaultValue
+    switch (value?.constructor?.name) {
+      case "Array":
+        if (Array.isArray(value)) {
+          const separator =
+            p.modifier === PlaceholderModifierType.JOIN
+              ? p.arg
+              : defaultJoinSeparator
+          stringValue = value.join(separator)
+        } else {
+          ctx.log.warn(
+            `Placeholder '${
+              p.fullName
+            }' array cannot be converted to string (value: ${JSON.stringify(
+              value,
+            )})!`,
+          )
+        }
+        break
+      case "Date": {
+        stringValue = PatternUtil.dateToString(ctx, p, value)
+        break
+      }
+      default:
+        stringValue = JSON.stringify(value)
+        break
+    }
+    return stringValue
+  }
+
+  private static dateToString(ctx: Context, p: Placeholder, value: object) {
+    const format =
+      p.modifier === PlaceholderModifierType.FORMAT ? p.arg : defaultDateFormat
+    const stringValue = this.formatDate(value as Date, format, ctx.env.timezone)
+    return stringValue
+  }
+
+  public static substitute(ctx: Context, s: string) {
     let p
     while ((p = PatternUtil.nextPlaceholder(s))) {
       const stringValue = this.valueToString(ctx, p)
@@ -170,16 +171,7 @@ export class PatternUtil {
     return s
   }
 
-  public static stringValue(
-    ctx:
-      | EnvContext
-      | ProcessingContext
-      | ThreadContext
-      | MessageContext
-      | AttachmentContext,
-    key: string,
-    m: MetaInfo = ctx.meta,
-  ) {
+  public static stringValue(ctx: Context, key: string, m: MetaInfo = ctx.meta) {
     const stringValue = PatternUtil.valueToString(ctx, key, m)
     return stringValue
   }

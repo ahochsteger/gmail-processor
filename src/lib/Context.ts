@@ -189,3 +189,10 @@ export function newProcessingResult(): ProcessingResult {
     status: ProcessingStatus.OK,
   }
 }
+
+export type Context =
+  | EnvContext
+  | ProcessingContext
+  | ThreadContext
+  | MessageContext
+  | AttachmentContext
