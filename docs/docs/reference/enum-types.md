@@ -74,6 +74,17 @@ The type of meta information used for context substitution placeholders.
 | `string` | A string data type. |
 | `variable` | A custom configuration variable. |
 
+## PlaceholderModifierType
+
+The modifiers for placeholder expressions.
+
+| Value | Description |
+|-------|-------------|
+| `format` | Use `${<key>:format:<format>}` to format the date/time using a [date-fns format strings](https://date-fns.org/docs/format). |
+| `join` | Use `${<key>:join:<string>}` to join the values of an array (default: `,`). |
+| `` | No modifier |
+| `offset-format` | Use `${<key>:offset-format:<offset>:<format>}` to calculate the date/time offset using a [parse-duration format string](https://github.com/jkroso/parse-duration#parsestr-formatms) and then format the resulting date/time using a [date-fns format strings](https://date-fns.org/docs/format). |
+
 ## PlaceholderType
 
 The type of a placeholder.

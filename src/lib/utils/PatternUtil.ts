@@ -1,4 +1,6 @@
+import { addMilliseconds } from "date-fns"
 import { format as formatDateTime, utcToZonedTime } from "date-fns-tz"
+import parse from "parse-duration"
 import {
   AttachmentContext,
   Context,
@@ -7,9 +9,23 @@ import {
   ThreadContext,
 } from "../Context"
 
-enum PlaceholderModifierType {
+/**
+ * The modifiers for placeholder expressions.
+ */
+export enum PlaceholderModifierType {
+  /** No modifier */
   NONE = "",
+  /**
+   * Use \`$\{<key>:format:<format>\}\` to format the date/time using a [date-fns format strings](https://date-fns.org/docs/format).
+   */
   FORMAT = "format",
+  /**
+   * Use \`$\{<key>:offset-format:<offset>:<format>\}\` to calculate the date/time offset using a [parse-duration format string](https://github.com/jkroso/parse-duration#parsestr-formatms) and then format the resulting date/time using a [date-fns format strings](https://date-fns.org/docs/format).
+   */
+  OFFSET_FORMAT = "offset-format",
+  /**
+   * Use \`$\{<key>:join:<string>\}\` to join the values of an array (default: `,`).
+   */
   JOIN = "join",
 }
 
@@ -145,7 +161,7 @@ export class PatternUtil {
         }
         break
       case "Date": {
-        stringValue = PatternUtil.dateToString(ctx, p, value)
+        stringValue = PatternUtil.dateToString(ctx, p, value as Date)
         break
       }
       default:
@@ -155,10 +171,23 @@ export class PatternUtil {
     return stringValue
   }
 
-  private static dateToString(ctx: Context, p: Placeholder, value: object) {
-    const format =
-      p.modifier === PlaceholderModifierType.FORMAT ? p.arg : defaultDateFormat
-    const stringValue = this.formatDate(value as Date, format, ctx.env.timezone)
+  private static dateToString(ctx: Context, p: Placeholder, value: Date) {
+    let format = defaultDateFormat
+    let dateTime = value
+    switch (p.modifier) {
+      case PlaceholderModifierType.FORMAT:
+        format = p.arg
+        break
+      case PlaceholderModifierType.OFFSET_FORMAT:
+        {
+          const args = p.arg.split(/:(.*)/s)
+          const offset = args[0] ?? ""
+          format = args[1] ?? defaultDateFormat
+          dateTime = addMilliseconds(value, parse(offset) ?? 0)
+        }
+        break
+    }
+    const stringValue = this.formatDate(dateTime, format, ctx.env.timezone)
     return stringValue
   }
 
