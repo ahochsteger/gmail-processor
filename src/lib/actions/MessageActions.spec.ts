@@ -1,5 +1,5 @@
 import { ConfigMocks } from "../../test/mocks/ConfigMocks"
-import { NEW_PDF_FILE_NAME } from "../../test/mocks/GDriveMocks"
+import { NEW_FILE_NAME, NEW_PDF_FILE_NAME } from "../../test/mocks/GDriveMocks"
 import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
 import { ProcessingContext, RunMode } from "../Context"
 import { ConflictStrategy } from "../adapter/GDriveAdapter"
@@ -30,6 +30,7 @@ it("should provide actions in the action registry", () => {
     "message.markUnread",
     "message.moveToTrash",
     "message.star",
+    "message.storeFromURL",
     "message.storePDF",
     "message.unstar",
   ])
@@ -58,6 +59,29 @@ it("should store a message as PDF", () => {
   expect(mocks.newPdfBlob.getAs).toBeCalledWith("application/pdf")
   expect(mocks.newPdfBlob.getDataAsString()).toEqual("PDF Content")
   expect(result.file).toBeDefined()
+})
+
+it("should store a document from URL", () => {
+  const result = MessageActions.storeFromURL(mocks.messageContext, {
+    urlRegex:
+      "https://raw\\.githubusercontent\\.com/ahochsteger/gmail-processor/main/src/e2e-test/files/.+\\.txt",
+    location: `/${NEW_FILE_NAME}`,
+    conflictStrategy: ConflictStrategy.KEEP,
+  })
+  expect(mocks.urlFetchApp.fetch).toBeCalled()
+  expect(result.ok).toBeTruthy()
+  expect(result.file).toBeDefined()
+})
+
+it("should store a document from URL", () => {
+  const result = MessageActions.storeFromURL(mocks.messageContext, {
+    urlRegex: "https://some-non-matching-url",
+    location: `/${NEW_FILE_NAME}`,
+    conflictStrategy: ConflictStrategy.KEEP,
+  })
+  expect(mocks.urlFetchApp.fetch).not.toBeCalled()
+  expect(result.ok).toBeFalsy()
+  expect(result.file).not.toBeDefined()
 })
 
 it("should execute all actions using the action registry", () => {
