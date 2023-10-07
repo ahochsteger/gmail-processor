@@ -87,6 +87,18 @@ Adds a star to a message.
 
 This acton takes no arguments.
 
+### `message.storeFromURL`
+
+Store a document referenced by a URL contained in the message body to GDrive.
+
+| Arguments | Type | Description |
+|-----------|------|-------------|
+| `conflictStrategy` | `ConflictStrategy` | The strategy to be used in case a file already exists at the desired location. See [Enum Type `ConflictStrategy`](enum-types.md#conflictstrategy) for valid values. |
+| `description` | `string` | The description to be attached to the Google Drive file.<br />Supports [placeholder](placeholder) substitution. |
+| `headers` | `` | The header to pass to the URL. May be used to pass an authentication token.<br />Supports [placeholder](placeholder) substitution. |
+| `location` | `string` | The location (path + filename) of the Google Drive file.<br />For shared folders or Team Drives prepend the location with `{id:<folderId>}`.<br />Supports [placeholder](placeholder) substitution. |
+| `urlRegex` | `string` | The RegEx of a matching URL to read the document from. |
+
 ### `message.storePDF`
 
 Generate a PDF document from the message and store it to GDrive.
