@@ -87,6 +87,10 @@ class EnvMocks {
     mock<GoogleAppsScript.Base.User>()
   public utilities: MockProxy<GoogleAppsScript.Utilities.Utilities> =
     mock<GoogleAppsScript.Utilities.Utilities>()
+  public urlFetchApp: MockProxy<GoogleAppsScript.URL_Fetch.UrlFetchApp> =
+    mock<GoogleAppsScript.URL_Fetch.UrlFetchApp>()
+  public urlResponse: MockProxy<GoogleAppsScript.URL_Fetch.HTTPResponse> =
+    mock<GoogleAppsScript.URL_Fetch.HTTPResponse>()
 
   constructor() {
     this.cache.get
@@ -141,6 +145,8 @@ export class Mocks extends EnvMocks {
     )
 
     // Setup special mocks:
+    this.urlFetchApp.fetch.mockReturnValue(this.urlResponse)
+    this.urlResponse.getBlob.mockReturnValue(this.newBlob)
     this.attachment.copyBlob.mockReturnValue(this.newBlob)
 
     const [threadIndex, messageIndex, attachmentIndex] = dataIndex

@@ -41,6 +41,7 @@ export class ContextMocks {
         runMode,
         session: mocks.session,
         timezone: "UTC",
+        urlFetchApp: mocks.urlFetchApp,
       },
       envMeta: {},
       log: new Logger(),

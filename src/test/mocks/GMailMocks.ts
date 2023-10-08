@@ -33,6 +33,7 @@ type MessageData = {
   // NOTE: Keep MessageData, newMessageMock and getMessageSampleData in sync
   attachments?: AttachmentData[]
   bcc?: string
+  body?: string
   cc?: string
   date?: Date
   from?: string
@@ -138,6 +139,7 @@ export class GMailMocks {
     m.forward.mockReturnValue(m)
     m.getAttachments.mockReturnValue(this.getAttachments(d))
     m.getBcc.mockReturnValue(d.bcc)
+    m.getBody.mockReturnValue(d.body)
     m.getCc.mockReturnValue(d.cc)
     m.getDate.mockReturnValue(d.date)
     m.getFrom.mockReturnValue(d.from)
@@ -262,6 +264,9 @@ export class GMailMocks {
     const sampleData: RequiredMessageData = {
       attachments: attachments,
       bcc: data.bcc ?? "message-bcc@example.com",
+      body:
+        data.body ??
+        "Message body with contained url https://raw.githubusercontent.com/ahochsteger/gmail-processor/main/src/e2e-test/files/plain-text-from-repo.txt and some text after the url.",
       cc: data.cc ?? "message-cc@example.com",
       date: data.date ?? new Date("2019-05-02T07:15:28Z"),
       from: data.from ?? "message-from@example.com",

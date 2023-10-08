@@ -45,6 +45,7 @@ export class EnvProvider {
         runMode: runMode,
         session: Session,
         timezone: Session?.getScriptTimeZone() || "UTC",
+        urlFetchApp: UrlFetchApp,
       },
       envMeta: {},
       log: logger,
