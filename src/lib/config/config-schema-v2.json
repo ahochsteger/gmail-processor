@@ -299,6 +299,12 @@
             "additionalProperties": false,
             "description": "Represents a config to match a certain GMail message",
             "properties": {
+                "body": {
+                    "default": ".*",
+                    "description": "A RegEx matching the body of messages",
+                    "title": "body",
+                    "type": "string"
+                },
                 "from": {
                     "default": ".*",
                     "description": "A RegEx matching the sender email address of messages",
@@ -324,6 +330,12 @@
                     "default": "",
                     "description": "An RFC 3339 date/time format matching messages older than the given date/time",
                     "title": "olderThan",
+                    "type": "string"
+                },
+                "plainBody": {
+                    "default": ".*",
+                    "description": "A RegEx matching the plain body of messages",
+                    "title": "plainBody",
                     "type": "string"
                 },
                 "subject": {
