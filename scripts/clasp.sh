@@ -170,6 +170,18 @@ function setupClaspIDs() {
   esac
 }
 
+function checkGuardedAction() {
+  local action="${1}"
+  local guardedEnv="main"
+  # Check if running on a valid environment
+  if [[ "${GITHUB_ACTIONS:-}" != "true" ]] && [[ "${DEPLOYMENT_ENV:-}" == "${guardedEnv}" ]]; then
+    echo "ATTENTION: You're going to perform the guarded action '${action}' on the environment '${guardedEnv}'!"
+    read -p "Press CTRL+C to exit or ENTER to continue: "
+  else
+    echo "NOTE: Allowing guarded action '${action}' on the environment '${guardedEnv}'."
+  fi
+}
+
 CLASP_PROFILE="${1:?Missing profile name!}"
 cmd="${2:?}"
 shift 2
@@ -181,6 +193,7 @@ case "${cmd}" in
     build
   ;;
   clasp) # Run generic clasp command
+    checkGuardedAction "${cmd}"
     runClasp "${@}"
   ;;
   clean)
@@ -201,22 +214,26 @@ case "${cmd}" in
   ;;
   run)
     functionName="${1:?}"
+    checkGuardedAction "${cmd}"
     runClasp run "${functionName}"
   ;;
   run-with-logs)
     functionName="${1:?}"
     logTimeSeconds="${2:-${CLASP_LOG_TIME_SECONDS}}"
+    checkGuardedAction "${cmd}"
     runClasp run "${functionName}"
     sleep "${CLASP_LOG_WAIT_SECONDS}"
     runClasp logs "${functionName}" "${logTimeSeconds}"
   ;;
   push)
+    checkGuardedAction "${cmd}"
     runClasp push --force
     showLastGASVersion
   ;;
   deploy)
     setupClaspIDs
     CLASP_DEPLOYMENT_NAME="${CLASP_DEPLOYMENT_NAME:-$(git describe --tags)}"
+    checkGuardedAction "${cmd}"
     runClasp deploy -i "${CLASP_DEPLOYMENT_ID}" -d "${CLASP_DEPLOYMENT_NAME}"
     showLastGASVersion
   ;;
@@ -230,6 +247,7 @@ case "${cmd}" in
     getGithubReleaseNotes "${1:-latest}"
   ;;
   update-github-release)
+    checkGuardedAction "${cmd}"
     updateGithubRelease "${1:-latest}"
   ;;
   last-version)
