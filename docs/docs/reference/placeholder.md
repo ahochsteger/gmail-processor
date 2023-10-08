@@ -44,12 +44,12 @@ These placeholder are valid during processing a GMail thread and matching messag
 | <a id="placeholder.thread.isInSpam">`thread.isInSpam`</a> | `true` if the thread is marked as spam. See [GmailThread.isInSpam()](https://developers.google.com/apps-script/reference/gmail/gmail-thread#isInSpam\(\)) reference docs. | `false` |
 | <a id="placeholder.thread.isInTrash">`thread.isInTrash`</a> | `true` if the thread is marked as spam. See [GmailThread.isInTrash()](https://developers.google.com/apps-script/reference/gmail/gmail-thread#isInTrash\(\)) reference docs. | `false` |
 | <a id="placeholder.thread.isUnread">`thread.isUnread`</a> | `true` if the thread has any unread messages. See [GmailThread.isUnread()](https://developers.google.com/apps-script/reference/gmail/gmail-thread#isUnread\(\)) reference docs. | `true` |
-| <a id="placeholder.thread.labels">`thread.labels`</a> | The user-created labels on the thread. See [GmailThread.getLabels()](https://developers.google.com/apps-script/reference/gmail/gmail-thread#getLabels\(\)) reference docs. | `` |
+| <a id="placeholder.thread.labels">`thread.labels`</a> | The user-created labels on the thread. See [GmailThread.getLabels()](https://developers.google.com/apps-script/reference/gmail/gmail-thread#getLabels\(\)) reference docs. |  |
 | <a id="placeholder.thread.lastMessageDate">`thread.lastMessageDate`</a> | The date of the thread's most recent message. See [GmailThread.getLastMessageDate()](https://developers.google.com/apps-script/reference/gmail/gmail-thread#getLastMessageDate\(\)) reference docs. Use `"${<key>:format:<format>}"` to format the date/time using a custom [date-fns format strings](https://date-fns.org/docs/format) (default: `"yyyy-MM-dd HH:mm:ss"`). | `2019-05-02 07:15:28` |
 | <a id="placeholder.thread.matched">`thread.matched`</a> | The overall matching result for all conditions in the match config. | `true` |
 | <a id="placeholder.thread.messageCount">`thread.messageCount`</a> | The number of messages in the thread. See [GmailThread.getMessageCount()](https://developers.google.com/apps-script/reference/gmail/gmail-thread#getMessageCount\(\)) reference docs. | `2` |
 | <a id="placeholder.thread.permalink">`thread.permalink`</a> | The permalink for the thread. See [GmailThread.getPermalink()](https://developers.google.com/apps-script/reference/gmail/gmail-thread#getPermalink\(\)) reference docs. | `some-permalink-url` |
-| <a id="placeholder.thread.url">`thread.url`</a> | The URL of the thread. | `https://mail.google.com/mail/u/0/#inbox/threadId123` |
+| <a id="placeholder.thread.url">`thread.url`</a> | The URL of the thread. | `https://mail.google.com/mail/u/0...` |
 | <a id="placeholder.threadConfig.index">`threadConfig.index`</a> | The index number (0-based) of the thead config. | `0` |
 
 ## Message Placeholder
@@ -59,6 +59,7 @@ These placeholder are valid during processing a GMail message and matching attac
 | Key | Description | Example |
 |-----|-------------|---------|
 | <a id="placeholder.message.bcc">`message.bcc`</a> | The comma-separated recipients bcc'd on the message. See [GmailMessage.getBcc()](https://developers.google.com/apps-script/reference/gmail/gmail-message#getBcc\(\)) reference docs. | `message-bcc@example.com` |
+| <a id="placeholder.message.body">`message.body`</a> | The body of the message. See [GmailMessage.getBody()](https://developers.google.com/apps-script/reference/gmail/gmail-message#getBody\(\)) reference docs. | `<p>Message body with contained u...` |
 | <a id="placeholder.message.cc">`message.cc`</a> | The comma-separated recipients cc'd on the message. See [GmailMessage.getCc()](https://developers.google.com/apps-script/reference/gmail/gmail-message#getCc\(\)) reference docs. | `message-cc@example.com` |
 | <a id="placeholder.message.date">`message.date`</a> | The date and time of the message. See [GmailMessage.getDate()](https://developers.google.com/apps-script/reference/gmail/gmail-message#getDate\(\)) reference docs. Use `"${<key>:format:<format>}"` to format the date/time using a custom [date-fns format strings](https://date-fns.org/docs/format) (default: `"yyyy-MM-dd HH:mm:ss"`). | `2019-05-02 07:15:28` |
 | <a id="placeholder.message.from">`message.from`</a> | The sender of the message. See [GmailMessage.getFrom()](https://developers.google.com/apps-script/reference/gmail/gmail-message#getFrom\(\)) reference docs. | `message-from@example.com` |
@@ -74,12 +75,13 @@ These placeholder are valid during processing a GMail message and matching attac
 | <a id="placeholder.message.isStarred">`message.isStarred`</a> | `true` if the message is starred. See [GmailMessage.isStarred()](https://developers.google.com/apps-script/reference/gmail/gmail-message#isStarred\(\)) reference docs. | `false` |
 | <a id="placeholder.message.isUnread">`message.isUnread`</a> | `true` if the message is unread. See [GmailMessage.isUnread()](https://developers.google.com/apps-script/reference/gmail/gmail-message#isUnread\(\)) reference docs. | `true` |
 | <a id="placeholder.message.matched">`message.matched`</a> | The overall matching result for all conditions in the match config. | `false` |
+| <a id="placeholder.message.plainBody">`message.plainBody`</a> | The plain body of the message. See [GmailMessage.getPlainBody()](https://developers.google.com/apps-script/reference/gmail/gmail-message#getPlainBody\(\)) reference docs. |  |
 | <a id="placeholder.message.replyTo">`message.replyTo`</a> | The reply-to address of the message (usually the sender). See [GmailMessage.getReplyTo()](https://developers.google.com/apps-script/reference/gmail/gmail-message#getReplyTo\(\)) reference docs. | `message-reply-to@example.com` |
 | <a id="placeholder.message.subject">`message.subject`</a> | The subject of the message. See [GmailMessage.getSubject()](https://developers.google.com/apps-script/reference/gmail/gmail-message#getSubject\(\)) reference docs. | `Message Subject 1` |
 | <a id="placeholder.message.subject.match.1">`message.subject.match.1`</a> | The matching regex group number as defined in the match config (e.g.: `"Message (?<myMatchGroup>.*)"`). | `Subject 1` |
 | <a id="placeholder.message.subject.match.myMatchGroup">`message.subject.match.myMatchGroup`</a> | The matching named regex group name as defined in the match config (e.g.: `"Message (?<myMatchGroup>.*)"`). | `Subject 1` |
 | <a id="placeholder.message.to">`message.to`</a> | The comma-separated recipients of the message. See [GmailMessage.getTo()](https://developers.google.com/apps-script/reference/gmail/gmail-message#getTo\(\)) reference docs. | `message-to@example.com` |
-| <a id="placeholder.message.url">`message.url`</a> | The URL of the message. | `https://mail.google.com/mail/u/0/#inbox/message-id` |
+| <a id="placeholder.message.url">`message.url`</a> | The URL of the message. | `https://mail.google.com/mail/u/0...` |
 | <a id="placeholder.messageConfig.index">`messageConfig.index`</a> | The index number (0-based) of the message config. | `0` |
 
 ## Attachment Placeholder
@@ -91,7 +93,7 @@ These placeholder are valid during processing a GMail attachment.
 | <a id="placeholder.attachment.contentType">`attachment.contentType`</a> | The content type of the attachment. See [GmailAttachment.getContentType()](https://developers.google.com/apps-script/reference/gmail/gmail-attachment#getContentType\(\)) reference docs. | `application/pdf` |
 | <a id="placeholder.attachment.contentType.match.1">`attachment.contentType.match.1`</a> | The matching regex group number as defined in the match config (e.g.: `"application/(?<appType>.*)"`). | `pdf` |
 | <a id="placeholder.attachment.contentType.match.appType">`attachment.contentType.match.appType`</a> | The matching named regex group name as defined in the match config (e.g.: `"application/(?<appType>.*)"`). | `pdf` |
-| <a id="placeholder.attachment.hash">`attachment.hash`</a> | The SHA1 content hash for the attachment. See [GmailAttachment.getHash()](https://developers.google.com/apps-script/reference/gmail/gmail-attachment#getHash\(\)) reference docs. | `aa0b8cc192a5d8d5b5d8ecda24fd0961b10ae283` |
+| <a id="placeholder.attachment.hash">`attachment.hash`</a> | The SHA1 content hash for the attachment. See [GmailAttachment.getHash()](https://developers.google.com/apps-script/reference/gmail/gmail-attachment#getHash\(\)) reference docs. | `aa0b8cc192a5d8d5b5d8ecda24fd0961...` |
 | <a id="placeholder.attachment.index">`attachment.index`</a> | The index number (0-based) of the attachment. | `0` |
 | <a id="placeholder.attachment.isGoogleType">`attachment.isGoogleType`</a> | `true` if this attachment is a Google Workspace file (Sheets, Docs, etc.). See [GmailAttachment.isGoogleType()](https://developers.google.com/apps-script/reference/gmail/gmail-attachment#isGoogleType\(\)) reference docs. | `false` |
 | <a id="placeholder.attachment.matched">`attachment.matched`</a> | The overall matching result for all conditions in the match config. | `true` |

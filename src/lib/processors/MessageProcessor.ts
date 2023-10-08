@@ -49,10 +49,24 @@ export class MessageProcessor extends BaseProcessor {
     message: GoogleAppsScript.Gmail.GmailMessage,
   ) {
     try {
+      if (!RegExp(matchConfig.body).exec(message.getBody()))
+        return this.noMatch(
+          ctx,
+          `from '${message.getBody().slice(0, 32)}...' does not match '${
+            matchConfig.body
+          }'`,
+        )
       if (!RegExp(matchConfig.from).exec(message.getFrom()))
         return this.noMatch(
           ctx,
           `from '${message.getFrom()}' does not match '${matchConfig.from}'`,
+        )
+      if (!RegExp(matchConfig.body).exec(message.getPlainBody()))
+        return this.noMatch(
+          ctx,
+          `from '${message.getPlainBody().slice(0, 32)}...' does not match '${
+            matchConfig.plainBody
+          }'`,
         )
       if (!RegExp(matchConfig.to).exec(message.getTo()))
         return this.noMatch(
@@ -116,6 +130,10 @@ export class MessageProcessor extends BaseProcessor {
     local: RequiredMessageMatchConfig,
   ): RequiredMessageMatchConfig {
     const matchConfig: RequiredMessageMatchConfig = {
+      body: PatternUtil.substitute(
+        ctx,
+        this.effectiveValue(global.body, local.body, ""),
+      ),
       from: PatternUtil.substitute(
         ctx,
         this.effectiveValue(global.from, local.from, ""),
@@ -123,6 +141,10 @@ export class MessageProcessor extends BaseProcessor {
       is: (global.is ?? []).concat(local.is),
       newerThan: this.effectiveValue(global.newerThan, local.newerThan, ""),
       olderThan: this.effectiveValue(global.olderThan, local.olderThan, ""),
+      plainBody: PatternUtil.substitute(
+        ctx,
+        this.effectiveValue(global.plainBody, local.plainBody, ""),
+      ),
       subject: PatternUtil.substitute(
         ctx,
         this.effectiveValue(global.subject, local.subject, ""),
@@ -142,7 +164,9 @@ export class MessageProcessor extends BaseProcessor {
     if (mmc === undefined) {
       return m
     }
+    if (mmc.body) m.set("body", mmc.body)
     if (mmc.from) m.set("from", mmc.from)
+    if (mmc.plainBody) m.set("plainBody", mmc.plainBody)
     if (mmc.subject) m.set("subject", mmc.subject)
     if (mmc.to) m.set("to", mmc.to)
     return m
@@ -159,6 +183,11 @@ export class MessageProcessor extends BaseProcessor {
           "getBcc",
           "The comma-separated recipients bcc'd on the message.",
         ),
+      ),
+      [`${keyPrefix}.body`]: mi(
+        MIT.STRING,
+        (msg: Message) => msg.getBody(),
+        this.getRefDocs(keyPrefix, "getBody", "The body of the message."),
       ),
       [`${keyPrefix}.cc`]: mi(
         MIT.STRING,
@@ -258,6 +287,15 @@ export class MessageProcessor extends BaseProcessor {
           keyPrefix,
           "isUnread",
           "`true` if the message is unread.",
+        ),
+      ),
+      [`${keyPrefix}.plainBody`]: mi(
+        MIT.STRING,
+        (msg: Message) => msg.getPlainBody(),
+        this.getRefDocs(
+          keyPrefix,
+          "getPlainBody",
+          "The plain body of the message.",
         ),
       ),
       [`${keyPrefix}.replyTo`]: mi(
