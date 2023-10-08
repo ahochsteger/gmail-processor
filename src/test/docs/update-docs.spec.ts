@@ -37,7 +37,7 @@ function genMetaInfoDocs(contextType: ContextType, m: MetaInfo, position = "stan
       if (idx < arr.length - 1) {
         condComma = ","
       }
-      write(`  {"key":"${k}", "type": "${m[k].type}", "scope": "${contextType}", "example": "${stringValue}", "description": ${JSON.stringify(desc)}}${condComma}`)
+      write(`  {"key":"${k}", "type": "${m[k].type}", "scope": "${contextType}", "example": ${JSON.stringify(stringValue)}, "description": ${JSON.stringify(desc)}}${condComma}`)
     })
     let suffix = ","
     if (position === "last") {

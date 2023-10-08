@@ -45,6 +45,7 @@ type MessageData = {
   isInTrash?: boolean
   isStarred?: boolean
   isUnread?: boolean
+  plainBody?: string
   replyTo?: string
   subject?: string
   to?: string
@@ -266,7 +267,7 @@ export class GMailMocks {
       bcc: data.bcc ?? "message-bcc@example.com",
       body:
         data.body ??
-        "Message body with contained url https://raw.githubusercontent.com/ahochsteger/gmail-processor/main/src/e2e-test/files/plain-text-from-repo.txt and some text after the url.",
+        '<p>Message body with contained url <a href="https://raw.githubusercontent.com/ahochsteger/gmail-processor/main/src/e2e-test/files/plain-text-from-repo.txt">https://raw.githubusercontent.com/ahochsteger/gmail-processor/main/src/e2e-test/files/plain-text-from-repo.txt</a> and some text after the url.</p>',
       cc: data.cc ?? "message-cc@example.com",
       date: data.date ?? new Date("2019-05-02T07:15:28Z"),
       from: data.from ?? "message-from@example.com",
@@ -278,6 +279,9 @@ export class GMailMocks {
       isInTrash: data.isInTrash ?? false,
       isStarred: data.isStarred ?? false,
       isUnread: data.isUnread ?? true,
+      plainBody:
+        data.plainBody ??
+        "Message body with contained url https://raw.githubusercontent.com/ahochsteger/gmail-processor/main/src/e2e-test/files/plain-text-from-repo.txt and some text after the url.",
       replyTo: data.replyTo ?? "message-reply-to@example.com",
       subject: data.subject ?? "Message Subject",
       to: data.to ?? "message-to@example.com",

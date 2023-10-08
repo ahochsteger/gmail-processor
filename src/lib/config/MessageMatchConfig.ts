@@ -9,6 +9,10 @@ import { MessageFlag } from "./MessageFlag"
  */
 export class MessageMatchConfig {
   /**
+   * A RegEx matching the body of messages
+   */
+  body? = ".*"
+  /**
    * A RegEx matching the sender email address of messages
    */
   from? = ".*"
@@ -24,6 +28,10 @@ export class MessageMatchConfig {
    * An RFC 3339 date/time format matching messages older than the given date/time
    */
   olderThan? = ""
+  /**
+   * A RegEx matching the plain body of messages
+   */
+  plainBody? = ".*"
   /**
    * A RegEx matching the subject of messages
    */
