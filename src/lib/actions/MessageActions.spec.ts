@@ -61,10 +61,9 @@ it("should store a message as PDF", () => {
   expect(result.file).toBeDefined()
 })
 
-it("should store a document from URL", () => {
+it("should store a document from a static URL", () => {
   const result = MessageActions.storeFromURL(mocks.messageContext, {
-    urlRegex:
-      "https://raw\\.githubusercontent\\.com/ahochsteger/gmail-processor/main/src/e2e-test/files/.+\\.txt",
+    url: "https://raw\\.githubusercontent\\.com/ahochsteger/gmail-processor/main/src/e2e-test/files/.+\\.txt",
     location: `/${NEW_FILE_NAME}`,
     conflictStrategy: ConflictStrategy.KEEP,
   })
@@ -73,9 +72,20 @@ it("should store a document from URL", () => {
   expect(result.file).toBeDefined()
 })
 
-it("should store a document from URL", () => {
+it("should store a document from an extracted URL", () => {
   const result = MessageActions.storeFromURL(mocks.messageContext, {
-    urlRegex: "https://some-non-matching-url",
+    url: "${message.body.match.url}",
+    location: `/${NEW_FILE_NAME}`,
+    conflictStrategy: ConflictStrategy.KEEP,
+  })
+  expect(mocks.urlFetchApp.fetch).toBeCalled()
+  expect(result.ok).toBeTruthy()
+  expect(result.file).toBeDefined()
+})
+
+it("should fail on invalid URLs", () => {
+  const result = MessageActions.storeFromURL(mocks.messageContext, {
+    url: "${message.body.match.non-matching-url}",
     location: `/${NEW_FILE_NAME}`,
     conflictStrategy: ConflictStrategy.KEEP,
   })

@@ -120,9 +120,12 @@ export class MessageActions implements ActionProvider<MessageContext> {
   public static storeFromURL<
     TArgs extends {
       /**
-       * The RegEx of a matching URL to read the document from.
+       * The URL of the document to be stored.
+       * To extract the URL from the message body use a message body matcher like `"(?<url>https://...)"` and `"${message.body.match.url}"` as the URL value.
+       * NOTE: Take care to narrow down the regex as good as possible to extract valid URLs.
+       * Use tools like [regex101.com](https://regex101.com) for testing on example messages.
        */
-      urlRegex: string
+      url: string
       /**
        * The location (path + filename) of the Google Drive file.
        * For shared folders or Team Drives prepend the location with `{id:<folderId>}`.
@@ -146,11 +149,11 @@ export class MessageActions implements ActionProvider<MessageContext> {
     },
   >(context: MessageContext, args: TArgs): FileReturnType {
     const message = context.message.object
-    const url = new RegExp(args.urlRegex).exec(message.getBody())?.[0]
+    const url = PatternUtil.substitute(context, args.url)
     if (!url) {
-      const msg = `The regex ${
-        args.urlRegex
-      } did not match any URLs for message ID '${message.getId()}'`
+      const msg = `Invalid URL '${url}' from '${
+        args.url
+      }' for message ID '${message.getId()}'!`
       context.log.warn(msg)
       return {
         ok: false,
