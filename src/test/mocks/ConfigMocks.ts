@@ -114,7 +114,7 @@ export class ConfigMocks {
         messages: [
           {
             match: {
-              body: "(?<url>https://raw\\.githubusercontent\\.com/ahochsteger/gmail-processor/main/src/e2e-test/files/[a-z-]+\\.txt)",
+              body: "(?<url>https://raw\\.githubusercontent\\.com/ahochsteger/gmail-processor/main/src/e2e-test/files/(?<filename>[0-9A-Za-z_-]+\\.txt))",
               from: "(.+)@example.com",
               subject: "Message (?<myMatchGroup>.*)",
               to: "my\\.address\\+(.+)@gmail.com",
