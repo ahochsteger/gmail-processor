@@ -24,7 +24,7 @@ $enumList[0] as $enums
               | [
                 "`" + $arg.name + "`",
                 "`" + $arg.type + "`",
-                (.description | gsub("\n";"<br />") | gsub("placeholder";"[placeholder](/placeholder)")) +
+                (.description | gsub("\n";"<br />") | gsub("placeholder";"[placeholder](placeholder.md)")) +
                 (
                     if ([$enums[]|select(.name==$arg.type)]|length>0) then
                       (" See [Enum Type `" + $arg.type + "`](enum-types.md#" + ($arg.type|ascii_downcase) + ") for valid values.")
