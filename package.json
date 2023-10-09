@@ -5,7 +5,7 @@
   "scripts": {
     "act:ci": "act push",
     "act:pr": "act pull_request",
-    "build": "concurrently 'npm:build:*'",
+    "build": "concurrently 'npm:build:*(!build:docs)'",
     "build:docs": "cd docs && npm run build",
     "build:examples": "scripts/clasp.sh examples build",
     "build:lib": "scripts/clasp.sh lib build",
