@@ -11,10 +11,6 @@ on:
         description: "Skip coveralls"
         type: boolean
         default: false
-      skip_pages:
-        description: "Skip pages"
-        type: boolean
-        default: true
       skip_sonarcloud:
         description: "Skip sonarcloud"
         type: boolean
