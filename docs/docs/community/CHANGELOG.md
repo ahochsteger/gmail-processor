@@ -1,4 +1,5 @@
 ---
+id: changelog
 sidebar_position: 73
 ---
 # Changelog

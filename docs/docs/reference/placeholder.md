@@ -1,19 +1,15 @@
 ---
+id: placeholder
 sidebar_position: 34
 ---
 # Placeholder
 
-## Overview
-
 The placeholder in the following table are available for substitution in strings, depending on the scope which are defined as follows:
 
-* [`env.*`](#scope-env): This scope is valid globally and can also be used for internal purposes before processing starts (e.g. during adapter initialization).
-* [`proc.*`](#scope-proc): This scope is valid globally during any processing phase.
-* [`thread.*`](#scope-thread): This scope is valid during processing a GMail thread and matching messages + attachments.
-* [`message.*`](#scope-message): This scope is valid during processing a GMail message and matching attachments.
-* [`attachment.*`](#scope-attachment): This scope is valid during processing a GMail attachment.
 
-## `env` Placeholder
+## Environment Placeholder
+
+These placeholder are valid globally and can also be used for internal purposes before processing starts (e.g. during adapter initialization).
 
 | Key | Description | Example |
 |-----|-------------|---------|
@@ -22,14 +18,18 @@ The placeholder in the following table are available for substitution in strings
 | <a id="placeholder.env.timezone">`env.timezone`</a> | The timezone used for processing. | `UTC` |
 | <a id="placeholder.user.email">`user.email`</a> | The email address of the active user. | `my.email@gmail.com` |
 
-## `proc` Placeholder
+## Processing Placeholder
+
+These placeholder are valid globally during any processing phase.
 
 | Key | Description | Example |
 |-----|-------------|---------|
 | <a id="placeholder.timer.startTime">`timer.startTime`</a> | The start timestamp of the processing script. Use `"${<key>:format:<format>}"` to format the date/time using a custom [date-fns format strings](https://date-fns.org/docs/format) (default: `"yyyy-MM-dd HH:mm:ss"`). | `2023-06-26 09:00:00` |
 | <a id="placeholder.variables.customVar">`variables.customVar`</a> | A custom defined variable. Custom variables defined at `global.variables` to better manage recurring substitution values. | `Custom value` |
 
-## `thread` Placeholder
+## Thread Placeholder
+
+These placeholder are valid during processing a GMail thread and matching messages + attachments.
 
 | Key | Description | Example |
 |-----|-------------|---------|
@@ -52,7 +52,9 @@ The placeholder in the following table are available for substitution in strings
 | <a id="placeholder.thread.url">`thread.url`</a> | The URL of the thread. | `https://mail.google.com/mail/u/0/#inbox/threadId123` |
 | <a id="placeholder.threadConfig.index">`threadConfig.index`</a> | The index number (0-based) of the thead config. | `0` |
 
-## `message` Placeholder
+## Message Placeholder
+
+These placeholder are valid during processing a GMail message and matching attachments.
 
 | Key | Description | Example |
 |-----|-------------|---------|
@@ -80,7 +82,9 @@ The placeholder in the following table are available for substitution in strings
 | <a id="placeholder.message.url">`message.url`</a> | The URL of the message. | `https://mail.google.com/mail/u/0/#inbox/message-id` |
 | <a id="placeholder.messageConfig.index">`messageConfig.index`</a> | The index number (0-based) of the message config. | `0` |
 
-## `attachment` Placeholder
+## Attachment Placeholder
+
+These placeholder are valid during processing a GMail attachment.
 
 | Key | Description | Example |
 |-----|-------------|---------|

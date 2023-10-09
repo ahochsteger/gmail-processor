@@ -69,15 +69,8 @@ function generateActionDocs() {
 function generatePlaceholderDocs {
   echo "# Placeholder"
   echo ""
-  echo "## Overview"
-  echo ""
   echo "The placeholder in the following table are available for substitution in strings, depending on the scope which are defined as follows:"
   echo ""
-  echo "* [\`env.*\`](#scope-env): This scope is valid globally and can also be used for internal purposes before processing starts (e.g. during adapter initialization)."
-  echo "* [\`proc.*\`](#scope-proc): This scope is valid globally during any processing phase."
-  echo "* [\`thread.*\`](#scope-thread): This scope is valid during processing a GMail thread and matching messages + attachments."
-  echo "* [\`message.*\`](#scope-message): This scope is valid during processing a GMail message and matching attachments."
-  echo "* [\`attachment.*\`](#scope-attachment): This scope is valid during processing a GMail attachment."
   gojq -r \
     -f "${scriptdir}/update-docs-generate-placeholder.jq" \
     <"${placeholderDataFile}"
@@ -92,13 +85,15 @@ function generateEnumDocs() {
     <"${enumDataFile}"
 }
 
-function saveWithSidebarPos() {
-  local sidebarPos="${1}"
-  local destFile="${2}"
+function saveToDocs() {
+  local id="${1}"
+  local sidebarPos="${2}"
+  local destFile="${3}"
   local destDir="${destFile%/*}"
   mkdir -p "${destDir}"
   {
     echo "---"
+    echo "id: ${id}"
     echo "sidebar_position: ${sidebarPos}"
     echo "---"
     cat
@@ -112,11 +107,11 @@ extractAllActions "${allDataFile}" >"${actionDataFile}"
 extractAllEnums <"${allDataFile}" >"${enumDataFile}"
 extractAllPlaceholder >"${placeholderDataFile}"
 
-generateEnumDocs | saveWithSidebarPos 32 "${refdocs_outpath}/enum-types.md"
-generateActionDocs | saveWithSidebarPos 33 "${refdocs_outpath}/actions.md"
-generatePlaceholderDocs | saveWithSidebarPos 34 "${refdocs_outpath}/placeholder.md"
+generateEnumDocs | saveToDocs enum-types 32 "${refdocs_outpath}/enum-types.md"
+generateActionDocs | saveToDocs actions 33 "${refdocs_outpath}/actions.md"
+generatePlaceholderDocs | saveToDocs placeholder 34 "${refdocs_outpath}/placeholder.md"
 
 # Copy community files:
-cat CONTRIBUTING.md | saveWithSidebarPos 71 "${docs_outpath}/community/CONTRIBUTING.md"
-cat CODE_OF_CONDUCT.md | saveWithSidebarPos 72 "${docs_outpath}/community/CODE_OF_CONDUCT.md"
-cat CHANGELOG.md | saveWithSidebarPos 73 "${docs_outpath}/community/CHANGELOG.md"
+cat CONTRIBUTING.md | saveToDocs contributing 71 "${docs_outpath}/community/CONTRIBUTING.md"
+cat CODE_OF_CONDUCT.md | saveToDocs code-of-conduct 72 "${docs_outpath}/community/CODE_OF_CONDUCT.md"
+cat CHANGELOG.md | saveToDocs changelog 73 "${docs_outpath}/community/CHANGELOG.md"

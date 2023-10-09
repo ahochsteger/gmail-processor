@@ -1,4 +1,5 @@
 ---
+id: enum-types
 sidebar_position: 32
 ---
 # Enum Types

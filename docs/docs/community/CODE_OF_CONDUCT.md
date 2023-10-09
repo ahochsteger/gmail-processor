@@ -1,4 +1,5 @@
 ---
+id: code-of-conduct
 sidebar_position: 72
 ---
 # Code of Conduct
