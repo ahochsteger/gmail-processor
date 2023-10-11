@@ -1,5 +1,12 @@
 # Changelog
 
+# [2.2.0](https://github.com/ahochsteger/gmail-processor/compare/2.1.3...2.2.0) (2023-10-11)
+
+
+### Features
+
+* add `offset-format` placeholder modifier ([6e56f69](https://github.com/ahochsteger/gmail-processor/commit/6e56f69e2c7a2988c788f6295377e1ed99d2d83b)), closes [#135](https://github.com/ahochsteger/gmail-processor/issues/135)
+
 ## [2.1.3](https://github.com/ahochsteger/gmail-processor/compare/2.1.2...2.1.3) (2023-09-19)
 
 
