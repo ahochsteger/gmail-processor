@@ -6,7 +6,7 @@
     "act:ci": "act push",
     "act:pr": "act pull_request",
     "build": "concurrently 'npm:build:*(!build:docs)'",
-    "build:docs": "cd docs && npm run build",
+    "build:docs": "cat <(echo -e \"---\nid: changelog\nsidebar_position: 73\n---\") CHANGELOG.md >docs/docs/community/CHANGELOG.md && npm run update:docs && cd docs && npm run build",
     "build:examples": "scripts/clasp.sh examples build",
     "build:lib": "scripts/clasp.sh lib build",
     "ci": "npm run ci:build && npm run ci:test",
