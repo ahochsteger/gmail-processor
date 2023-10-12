@@ -114,4 +114,4 @@ generatePlaceholderDocs | saveToDocs placeholder 34 "${refdocs_outpath}/placehol
 # Copy community files:
 cat CONTRIBUTING.md | saveToDocs contributing 71 "${docs_outpath}/community/CONTRIBUTING.md"
 cat CODE_OF_CONDUCT.md | saveToDocs code-of-conduct 72 "${docs_outpath}/community/CODE_OF_CONDUCT.md"
-cat CHANGELOG.md | saveToDocs changelog 73 "${docs_outpath}/community/CHANGELOG.md"
+#cat CHANGELOG.md | saveToDocs changelog 73 "${docs_outpath}/community/CHANGELOG.md"
