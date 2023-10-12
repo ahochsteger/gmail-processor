@@ -49,31 +49,31 @@ export class MessageProcessor extends BaseProcessor {
     message: GoogleAppsScript.Gmail.GmailMessage,
   ) {
     try {
-      if (!RegExp(matchConfig.body).exec(message.getBody()))
+      if (!this.matchRegExp(matchConfig.body, message.getBody()))
         return this.noMatch(
           ctx,
-          `from '${message.getBody().slice(0, 32)}...' does not match '${
+          `body '${message.getBody().slice(0, 32)}...' does not match '${
             matchConfig.body
           }'`,
         )
-      if (!RegExp(matchConfig.from).exec(message.getFrom()))
+      if (!this.matchRegExp(matchConfig.from, message.getFrom()))
         return this.noMatch(
           ctx,
           `from '${message.getFrom()}' does not match '${matchConfig.from}'`,
         )
-      if (!RegExp(matchConfig.body).exec(message.getPlainBody()))
+      if (!this.matchRegExp(matchConfig.plainBody, message.getPlainBody()))
         return this.noMatch(
           ctx,
-          `from '${message.getPlainBody().slice(0, 32)}...' does not match '${
-            matchConfig.plainBody
-          }'`,
+          `plainBody '${message
+            .getPlainBody()
+            .slice(0, 32)}...' does not match '${matchConfig.plainBody}'`,
         )
-      if (!RegExp(matchConfig.to).exec(message.getTo()))
+      if (!this.matchRegExp(matchConfig.to, message.getTo()))
         return this.noMatch(
           ctx,
           `to '${message.getTo()}' does not match '${matchConfig.to}'`,
         )
-      if (!RegExp(matchConfig.subject).exec(message.getSubject() ?? ""))
+      if (!this.matchRegExp(matchConfig.subject, message.getSubject() ?? ""))
         return this.noMatch(
           ctx,
           `subject '${message.getSubject()}' does not match '${

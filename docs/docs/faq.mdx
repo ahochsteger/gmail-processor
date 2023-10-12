@@ -38,3 +38,24 @@ function run2() {
   GmailProcessorLib.run(config2, ...)
 }
 ```
+
+## How do I store GDrive attachments in emails?
+
+Use the following config snippet to extract the fileId and filename of the GDrive attachment from the email body and use it for the download URL of the `message.storeFromURL` action:
+
+```json
+  {
+    "match": {
+      "body": "(?s)<a href=\"https://drive.google.com/file/d/(?<fileId>[^/]+)/view\\?usp=drivesdk\".*<span [^>]+>(?<filename>[^<]+)</span>"
+    },
+    "actions": [
+      {
+        "name": "message.storeFromURL",
+        "args": {
+          "url": "https://drive.google.com/uc?id=${message.body.match.fileId}&export=download",
+          "location": "/some-path/${message.body.match.filename}",
+        }
+      }
+    ]
+  }
+```

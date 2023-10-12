@@ -257,7 +257,8 @@ export class ThreadProcessor extends BaseProcessor {
   ): boolean {
     try {
       if (
-        !RegExp(matchConfig.firstMessageSubject).exec(
+        !this.matchRegExp(
+          matchConfig.firstMessageSubject,
           thread.getFirstMessageSubject() ?? "",
         )
       )

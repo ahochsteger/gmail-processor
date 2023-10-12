@@ -9,7 +9,8 @@ import { MessageFlag } from "./MessageFlag"
  */
 export class MessageMatchConfig {
   /**
-   * A RegEx matching the body of messages
+   * A RegEx matching the body of messages.
+   * Use `(?s)` at the beginning of the regex if you want `.` to match a newline.
    */
   body? = ".*"
   /**
@@ -29,7 +30,8 @@ export class MessageMatchConfig {
    */
   olderThan? = ""
   /**
-   * A RegEx matching the plain body of messages
+   * A RegEx matching the plain body of messages.
+   * Use `(?s)` at the beginning of the regex if you want `.` to match a newline.
    */
   plainBody? = ".*"
   /**

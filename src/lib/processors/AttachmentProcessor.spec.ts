@@ -101,6 +101,27 @@ it("should match attachments with matching parameters", () => {
         },
         matched: [],
       },
+      {
+        // Matching name
+        config: {
+          name: "attachment-1.txt",
+        },
+        matched: ["attachment-1.txt"],
+      },
+      {
+        // Non-matching name (case-sensitive)
+        config: {
+          name: "ATTACHMENT-1.txt",
+        },
+        matched: [],
+      },
+      {
+        // Matching name (case-insensitive)
+        config: {
+          name: "(?i)ATTACHMENT-1.txt",
+        },
+        matched: ["attachment-1.txt"],
+      },
     ]
   const mockedMessage = GMailMocks.newMessageMock({
     attachments: [

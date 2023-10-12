@@ -301,7 +301,7 @@
             "properties": {
                 "body": {
                     "default": ".*",
-                    "description": "A RegEx matching the body of messages",
+                    "description": "A RegEx matching the body of messages.\nUse `(?s)` at the beginning of the regex if you want `.` to match a newline.",
                     "title": "body",
                     "type": "string"
                 },
@@ -334,7 +334,7 @@
                 },
                 "plainBody": {
                     "default": ".*",
-                    "description": "A RegEx matching the plain body of messages",
+                    "description": "A RegEx matching the plain body of messages.\nUse `(?s)` at the beginning of the regex if you want `.` to match a newline.",
                     "title": "plainBody",
                     "type": "string"
                 },

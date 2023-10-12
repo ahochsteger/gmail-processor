@@ -46,14 +46,16 @@ export class AttachmentProcessor extends BaseProcessor {
     attachment: GoogleAppsScript.Gmail.GmailAttachment,
   ) {
     try {
-      if (!RegExp(matchConfig.contentType).exec(attachment.getContentType()))
+      if (
+        !this.matchRegExp(matchConfig.contentType, attachment.getContentType())
+      )
         return this.noMatch(
           ctx,
           `contentType '${attachment.getContentType()}' does not match '${
             matchConfig.contentType
           }'`,
         )
-      if (!RegExp(matchConfig.name).exec(attachment.getName()))
+      if (!this.matchRegExp(matchConfig.name, attachment.getName()))
         return this.noMatch(
           ctx,
           `name '${attachment.getName()}' does not match '${matchConfig.name}'`,
