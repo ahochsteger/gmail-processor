@@ -6,7 +6,7 @@ import * as GmailProcessorLib from "../../lib/index"
  * This is a special configuration used to initialize example emails for end-to-end testing.
  * @type {GmailProcessorLib.E2EConfig}
  */
-export const e2eConfig = {
+export const e2eInitConfig = {
   globals: {
     repoBaseUrl:
       "https://raw.githubusercontent.com/ahochsteger/gmail-processor/main/src/e2e-test/files",
@@ -71,5 +71,5 @@ export const e2eConfig = {
  * @returns {GmailProcessorLib.ProcessingResult} Processing result
  */
 export function e2eInit(_evt, ctx) {
-  return GmailProcessorLib.E2E.initAll(e2eConfig, ctx)
+  return GmailProcessorLib.E2E.initAll(e2eInitConfig, ctx)
 }
