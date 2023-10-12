@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.3.1](https://github.com/ahochsteger/gmail-processor/compare/2.3.0...2.3.1) (2023-10-12)
+
+
+### Bug Fixes
+
+* error on add label action ([1c95098](https://github.com/ahochsteger/gmail-processor/commit/1c950987ee66506c680a31e358b2018d89b78c26)), closes [#150](https://github.com/ahochsteger/gmail-processor/issues/150)
+
 # [2.3.0](https://github.com/ahochsteger/gmail-processor/compare/2.2.0...2.3.0) (2023-10-12)
 
 
