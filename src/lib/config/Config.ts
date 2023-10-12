@@ -143,7 +143,7 @@ export function normalizeConfig(
       config.global.thread.actions.push({
         name: "thread.addLabel",
         args: {
-          label: config.settings.markProcessedLabel,
+          name: config.settings.markProcessedLabel,
         },
         processingStage: ProcessingStage.POST_MAIN,
       })

@@ -91,17 +91,19 @@ Subject: ${message.getSubject()}<br />
     thread: GoogleAppsScript.Gmail.GmailThread,
     labelName: string,
   ) {
-    if (labelName !== "") {
-      let label = this.ctx.env.gmailApp.getUserLabelByName(labelName)
-      if (label == null) {
-        this.ctx.log.info(`Creating non-existing label '${labelName}' ...`)
-        label = this.ctx.env.gmailApp.createLabel(labelName)
-      }
-      this.ctx.log.info(
-        `Adding label '${labelName}' to thread '${thread.getFirstMessageSubject()}' ...`,
-      )
-      return thread.addLabel(label)
+    if (!labelName) {
+      throw new Error(`Invalid label name: '${labelName}'`)
     }
+    let label: GoogleAppsScript.Gmail.GmailLabel =
+      this.ctx.env.gmailApp.getUserLabelByName(labelName)
+    if (!label) {
+      this.ctx.log.info(`Creating non-existing label '${labelName}' ...`)
+      label = this.ctx.env.gmailApp.createLabel(labelName)
+    }
+    this.ctx.log.info(
+      `Adding label '${labelName}' to thread '${thread.getFirstMessageSubject()}' ...`,
+    )
+    return thread.addLabel(label)
   }
 
   public threadRemoveLabel(

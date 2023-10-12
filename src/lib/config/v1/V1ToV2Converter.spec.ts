@@ -467,7 +467,7 @@ it("should convert rule with filter, saveThreadPDF, ruleLabel and folder", () =>
           },
           {
             args: {
-              label: "addPDFlabel",
+              name: "addPDFlabel",
             },
             name: "thread.addLabel",
           },

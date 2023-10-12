@@ -229,7 +229,7 @@ export class V1ToV2Converter {
         newThreadActionConfig({
           name: "thread.addLabel",
           args: {
-            label: rule.ruleLabel,
+            name: rule.ruleLabel,
           },
         }),
       )
