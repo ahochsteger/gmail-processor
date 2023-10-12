@@ -94,6 +94,7 @@ Subject: ${message.getSubject()}<br />
     if (labelName !== "") {
       let label = this.ctx.env.gmailApp.getUserLabelByName(labelName)
       if (label == null) {
+        this.ctx.log.info(`Creating non-existing label '${labelName}' ...`)
         label = this.ctx.env.gmailApp.createLabel(labelName)
       }
       this.ctx.log.info(
