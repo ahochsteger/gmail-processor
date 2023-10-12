@@ -92,7 +92,10 @@ Subject: ${message.getSubject()}<br />
     labelName: string,
   ) {
     if (labelName !== "") {
-      const label = this.ctx.env.gmailApp.getUserLabelByName(labelName)
+      let label = this.ctx.env.gmailApp.getUserLabelByName(labelName)
+      if (label == null) {
+        label = this.ctx.env.gmailApp.createLabel(labelName)
+      }
       this.ctx.log.info(
         `Adding label '${labelName}' to thread '${thread.getFirstMessageSubject()}' ...`,
       )
