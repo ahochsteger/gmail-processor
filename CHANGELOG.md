@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.3.2](https://github.com/ahochsteger/gmail-processor/compare/2.3.1...2.3.2) (2023-10-12)
+
+
+### Bug Fixes
+
+* wrong arg name in thread.addLabel action ([fdb9452](https://github.com/ahochsteger/gmail-processor/commit/fdb9452539f90e6138492b2f5fdfb47f27a57077)), closes [#150](https://github.com/ahochsteger/gmail-processor/issues/150)
+
 ## [2.3.1](https://github.com/ahochsteger/gmail-processor/compare/2.3.0...2.3.1) (2023-10-12)
 
 
