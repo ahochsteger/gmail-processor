@@ -1,5 +1,13 @@
 # Changelog
 
+# [2.3.0](https://github.com/ahochsteger/gmail-processor/compare/2.2.0...2.3.0) (2023-10-12)
+
+
+### Features
+
+* add action message.storeFromURL ([3f817bf](https://github.com/ahochsteger/gmail-processor/commit/3f817bf5355e09b5a80bddb2229fa58aa0f68729)), closes [#136](https://github.com/ahochsteger/gmail-processor/issues/136)
+* add message matcher body + plainBody ([eb45984](https://github.com/ahochsteger/gmail-processor/commit/eb45984d1b71a7f0b2736d3b48a81bf5458ce3b8))
+
 # [2.2.0](https://github.com/ahochsteger/gmail-processor/compare/2.1.3...2.2.0) (2023-10-11)
 
 
