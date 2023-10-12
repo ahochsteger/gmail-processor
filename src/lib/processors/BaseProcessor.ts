@@ -33,12 +33,11 @@ export abstract class BaseProcessor {
     let matchesAll = true
     regexMap.forEach((value, k) => {
       ctx.log.debug(`Testing regex match for ${k} ...`)
-      const regex = new RegExp(value, "g")
       let result
       const keyName = `${keyPrefix}.${k}`
       let hasAtLeastOneMatch = false
       const stringValue = PatternUtil.stringValue(ctx, keyName, m)
-      if ((result = regex.exec(stringValue)) !== null) {
+      if ((result = this.matchRegExp(value, stringValue)) !== null) {
         ctx.log.debug(`... matches`)
         hasAtLeastOneMatch = true
         for (let i = 1; i < result.length; i++) {
@@ -138,6 +137,16 @@ export abstract class BaseProcessor {
       return isNewer ? matchTime < compareTime : matchTime >= compareTime
     }
     return true
+  }
+
+  protected static matchRegExp(regex: string, str: string, flags = "") {
+    const inlineModifierRegExp = /^\(\?(?<flags>[gimsuy]+)\)/
+    const res = inlineModifierRegExp.exec(regex)
+    if (res) {
+      const len = res[0].length
+      regex = regex.slice(len)
+    }
+    return RegExp(regex, flags + (res?.groups?.flags ?? "")).exec(str)
   }
 
   protected static matchError(

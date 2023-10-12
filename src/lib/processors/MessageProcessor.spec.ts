@@ -2,6 +2,7 @@ import { GMailMocks } from "../../test/mocks/GMailMocks"
 import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
 import { newMessageConfig } from "../config/MessageConfig"
 import { MessageFlag } from "../config/MessageFlag"
+import { MessageMatchConfig } from "../config/MessageMatchConfig"
 import { MessageProcessor } from "./MessageProcessor"
 
 let mocks: Mocks
@@ -12,7 +13,7 @@ beforeEach(() => {
 
 describe("match()", () => {
   it("should match messages with matching parameters", () => {
-    const matchExamples = [
+    const matchExamples: { config: MessageMatchConfig; matched: string[] }[] = [
       {
         config: {
           from: "from[0-1]@example.com",
@@ -73,6 +74,18 @@ describe("match()", () => {
         },
         matched: ["message-2"],
       },
+      {
+        config: {
+          body: "Test.+message 1",
+        },
+        matched: [],
+      },
+      {
+        config: {
+          body: "(?s)Test.+message 1",
+        },
+        matched: ["message-1"],
+      },
     ]
     const mockedThread = GMailMocks.newThreadMock({
       messages: [
@@ -82,6 +95,7 @@ describe("match()", () => {
           to: "to1@example.com",
           isStarred: false,
           isUnread: true,
+          body: "Test\nmessage 1",
         },
         {
           from: "from2@example.com",
@@ -89,6 +103,7 @@ describe("match()", () => {
           to: "to2@example.com",
           isStarred: true,
           isUnread: false,
+          body: "Test\nmessage 2",
         },
       ],
     })
