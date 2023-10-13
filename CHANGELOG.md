@@ -280,8 +280,6 @@ Changelog
 
 * add github pages publishing ([5d4ff4d](https://github.com/ahochsteger/gmail-processor/commit/5d4ff4da88a103f925f7fda43528d5e27f79ee3a))
 
-# Changelog
-
 ## [2.0.0-beta.2](https://github.com/ahochsteger/gmail-processor/compare/2.0.0-beta.1...2.0.0-beta.2) (2023-08-19)
 
 ### Bug Fixes
