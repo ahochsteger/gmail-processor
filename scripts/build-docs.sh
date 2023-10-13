@@ -6,7 +6,7 @@ changelog_outfile=docs/docs/community/CHANGELOG.md
 echo -e "---
 id: changelog
 sidebar_position: 73
-toc_min_heading_level: 1
+toc_min_heading_level: 2
 toc_max_heading_level: 2
 ---" \
   >"${changelog_outfile}"
