@@ -1,7 +1,10 @@
 Gmail2GDrive
 ============
 
-Gmail2GDrive is a [Google Apps Script](https://developers.google.com/apps-script/) which automatically stores and sorts Gmail attachments into Google Drive folders, and can also save the thread as a PDF file.
+[Gmail2GDrive](https://github.com/ahochsteger/gmail-processor/tree/1.x) is a [Google Apps Script](https://developers.google.com/apps-script/) which automatically stores and sorts Gmail attachments into Google Drive folders, and can also save the thread as a PDF file.
+
+> :warning: [Gmail2GDrive](https://github.com/ahochsteger/gmail-processor/tree/1.x) has been retired replaced by the much more powerful and flexible [Gmail Processor](https://ahochsteger.github.io/gmail-processor/).
+> Note that the original repository `gmail2gdrive` has been renamed to `gmail-processor` and is the home of the new library. If you still need `gmail2gdrive` have a look at the [`v1.x`](https://github.com/ahochsteger/gmail-processor/tree/1.x) branch.
 
 It does so by defining a list of rules which consist of Gmail search filters and Google Drive destination folders.
 This way the attachments of periodic emails can be automatically organized in folders without the need to install and run anything on the client.
