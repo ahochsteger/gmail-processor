@@ -11,3 +11,4 @@ node_modules/
 *.bak
 !.vscode/settings.json
 debug.json
+docs/docs/community/CHANGELOG.md
