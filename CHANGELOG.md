@@ -1,5 +1,12 @@
 # Changelog
 
+# [2.4.0](https://github.com/ahochsteger/gmail-processor/compare/2.3.2...2.4.0) (2023-10-13)
+
+
+### Features
+
+* add regex modifier support ([0ebb56f](https://github.com/ahochsteger/gmail-processor/commit/0ebb56f6ba2d49945d3d58864907b0e2592438ce))
+
 ## [2.3.2](https://github.com/ahochsteger/gmail-processor/compare/2.3.1...2.3.2) (2023-10-12)
 
 
