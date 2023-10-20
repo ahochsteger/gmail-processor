@@ -1,7 +1,8 @@
 {
   "description": "This is a getting started example configuration.",
   "settings": {
-    "markProcessedMethod": "mark-read"
+    "markProcessedMethod": "add-label",
+    "markProcessedLabel": "GmailProcessor/processed"
   },
   "global": {},
   "threads": [
@@ -18,7 +19,8 @@
             {
               "name": "thread.storePDF",
               "args": {
-                "folder": "folder/${message.date:format:yyyy-MM-dd}/${attachment.name}"
+                "location": "folder/${message.date:format:yyyy-MM-dd}/${thread.firstMessageSubject}.pdf",
+                "conflictStrategy": "keep"
               }
             }
           ]

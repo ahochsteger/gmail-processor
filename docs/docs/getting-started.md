@@ -24,34 +24,33 @@ Follow these steps:
    - See the [Gmail Processor Release Notes](https://github.com/ahochsteger/gmail-processor/releases) for their corresponding Google Apps Script library version.
    - Or use this URL to verify the release version of a Google Apps Script Library: <https://script.google.com/macros/library/d/1Qvk0v7ggfW-TJ84dlYPlDzJG8y-Dif-j9kdA1aWv4wzxE_IOkeV2juLB/{libVersion}> (replace `{libVersion}` with the number from the drop-down in Google Apps Script).
 5. Set the **identifier** to `GmailProcessorLib` (any name will do, but we will use this identifier as a reference in all [examples](examples/index.md) and documentation)
-6. Replace the contents of the initially created file `Code.gs` with the code from the [Getting Started Example](examples/gettingStarted.mdx) and save the changes.
-7. Perform an initial execution of the function `run` to grant all required permissions (see [Required API Permissions](#required-api-permissions) for more details):
+6. Replace the contents of the initially created file `Code.gs` with the following code, take the config from the [Getting Started Example](examples/gettingStarted.mdx) and save the changes:
+  ```javascript
+  var config = {
+    settings: {
+      // Decide the on the method to mark processed threads or messages:
+      markProcessedMethod: ...,
+    },
+    threads: [{}],
+    // Define your configuration JSON
+  }
+
+  function run() {
+    // NOTE: Switch to "safe-mode" after testing the config
+    GmailProcessorLib.run(config, "dry-run")
+  }
+  ```
+8. Perform an initial execution of the function `run` to grant all required permissions (see [Required API Permissions](#required-api-permissions) for more details):
    1. Select your account you want to grant access for
    2. When the message "Google did not verify the app" click on "Advanced" and "Go to ..." to proceed
    3. Grant access to all listed apps by clicking "Allow"
 
-Now you can start using the Gmail Processor Library in your script file (e.g. `Code.gs`) of your Google Apps Script project as follows:
-
-```javascript
-var config = {
-  settings: {
-    // Decide the mark processed method to be used:
-    markProcessedMethod: GmailProcessorLib.MarkProcessedMethod.MY_CHOSEN_METHOD,
-  },
-  threads: [{}],
-  // Define your configuration JSON
-}
-
-function run() {
-  // NOTE: Switch to "safe-mode" after testing the config
-  GmailProcessorLib.run(config, "dry-run")
-}
-```
-
-Adjust the configuration (see section [Configuration Reference](reference/index.md)) to your needs. It's always recommended to test config changes using a _dry-run_ by passing `dry-run` as the 2nd parameter to the `run` function. That doesn't touch anything (neither in GMail nor GDrive) but produces a log that shows what would have been done. This way any change in your configuration or an upgrade to a newer version of the library can be tested without any risk of data-loss.
+Adjust the configuration (see section [Configuration Reference](reference/index.md)) to your needs. It's always recommended to test config changes using the run mode `dry-run` (2nd parameter to the `run()` function). That doesn't touch anything (GMail, GDrive, Google Sheets) but produces a log that shows what would have been done. This way any change in your configuration or an upgrade to a newer version of the library can be tested without any risk of data-loss.
 
 If you're satisfied with the results change the run mode from `dry-run` to `safe-mode` to actually do the processing and execute the `run` function again.
 For automatic triggering you can create a [time-based trigger](https://developers.google.com/apps-script/guides/triggers/installable#manage_triggers_manually) that runs at certain intervals (e.g. once per day or every hour).
+
+Should you run into any problems please create an issue and put the configuration as well as the log output there. Make sure to remove any sensitive information before doing so, since the issue contents will be publicly visible.
 
 ## Copy the Library Code (advanced)
 

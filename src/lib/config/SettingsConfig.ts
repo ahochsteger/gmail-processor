@@ -77,7 +77,7 @@ export class SettingsConfig {
   @Expose()
   maxRuntime? = 280
   /**
-   * The label to be added to processed GMail threads (only for markProcessedMode="label", deprecated - only for compatibility to v1)
+   * The label to be added to processed GMail threads (only for markProcessedMode="label").
    */
   @Expose()
   markProcessedLabel? = ""

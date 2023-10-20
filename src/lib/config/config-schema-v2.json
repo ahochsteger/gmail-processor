@@ -366,7 +366,7 @@
                 },
                 "markProcessedLabel": {
                     "default": "",
-                    "description": "The label to be added to processed GMail threads (only for markProcessedMode=\"label\", deprecated - only for compatibility to v1)",
+                    "description": "The label to be added to processed GMail threads (only for markProcessedMode=\"label\".",
                     "title": "markProcessedLabel",
                     "type": "string"
                 },
