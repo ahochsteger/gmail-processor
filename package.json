@@ -110,7 +110,7 @@
     "typedoc": "^0.25.2",
     "typedoc-plugin-markdown": "^3.16.0",
     "typescript": "^5.2.2",
-    "typescript-json-schema": "^0.61.0",
+    "typescript-json-schema": "^0.62.0",
     "webpack": "^5.89.0",
     "webpack-cli": "^5.1.4"
   },
