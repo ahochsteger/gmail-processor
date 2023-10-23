@@ -80,7 +80,7 @@
   "devDependencies": {
     "@casualbot/jest-sonar-reporter": "^2.2.7",
     "@google/clasp": "^2.4.2",
-    "@qiwi/semantic-release-gh-pages-plugin": "^5.2.8",
+    "@qiwi/semantic-release-gh-pages-plugin": "^5.2.9",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
     "@types/google-apps-script": "^1.0.76",
