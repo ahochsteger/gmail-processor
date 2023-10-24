@@ -78,7 +78,7 @@
   ],
   "license": "Apache-2.0",
   "devDependencies": {
-    "@casualbot/jest-sonar-reporter": "^2.2.7",
+    "@casualbot/jest-sonar-reporter": "^2.3.1",
     "@google/clasp": "^2.4.2",
     "@qiwi/semantic-release-gh-pages-plugin": "^5.2.9",
     "@semantic-release/changelog": "^6.0.3",
