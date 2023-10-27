@@ -12,8 +12,8 @@ import ConfigSchemaV1 from "../../../src/lib/config/v1/config-schema-v1.json"
 import JSONSchemaViewer from "@theme/JSONSchemaViewer"
 
 import {
-    PlaygroundContextProvider,
-    usePlaygroundContext,
+  PlaygroundContextProvider,
+  usePlaygroundContext,
 } from "@site/src/contexts/PlaygroundContext"
 
 // Type I need for useRef
@@ -23,9 +23,7 @@ import ConfigToolbar from "@site/src/components/ConfigToolbar"
 import SchemaToolbar from "@site/src/components/SchemaToolbar"
 
 import { toast } from "react-toastify"
-// import { gettingStartedConfig } from "../../../src/gas/examples/gettingStarted"
-import { config } from "../../static/examples/gettingStarted"
-// import { example02Config } from "../../static/examples/example02"
+import config from "../../../src/gas/examples/gettingStarted.json"
 
 function PlaygroundInner(): JSX.Element {
   const {
