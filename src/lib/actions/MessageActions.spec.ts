@@ -1,5 +1,9 @@
 import { ConfigMocks } from "../../test/mocks/ConfigMocks"
-import { NEW_FILE_NAME, NEW_PDF_FILE_NAME } from "../../test/mocks/GDriveMocks"
+import {
+  E2E_BASE_FOLDER_NAME,
+  NEW_FILE_NAME,
+  NEW_PDF_FILE_NAME,
+} from "../../test/mocks/GDriveMocks"
 import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
 import { ProcessingContext, RunMode } from "../Context"
 import { ConflictStrategy } from "../adapter/GDriveAdapter"
@@ -29,6 +33,7 @@ it("should provide actions in the action registry", () => {
     "message.markRead",
     "message.markUnread",
     "message.moveToTrash",
+    "message.noop",
     "message.star",
     "message.storeFromURL",
     "message.storePDF",
@@ -52,7 +57,7 @@ it("should not forward a message (dry-run)", () => {
 
 it("should store a message as PDF", () => {
   const result = MessageActions.storePDF(mocks.messageContext, {
-    location: `/${NEW_PDF_FILE_NAME}`,
+    location: `${E2E_BASE_FOLDER_NAME}/${NEW_PDF_FILE_NAME}`,
     conflictStrategy: ConflictStrategy.KEEP,
     skipHeader: false,
   })
@@ -73,6 +78,7 @@ it("should store a document from a static URL", () => {
 })
 
 it("should store a document from an extracted URL", () => {
+  mocks = MockFactory.newMocks(ConfigMocks.newComplexConfigJson())
   const result = MessageActions.storeFromURL(mocks.messageContext, {
     url: "${message.body.match.url}",
     location: `/${NEW_FILE_NAME}`,

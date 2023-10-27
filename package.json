@@ -24,7 +24,7 @@
     "lint:code": "eslint -f scripts/eslint-json-relative.js -o build/eslint/eslint_report.json .",
     "lint:cpd": "jscpd",
     "lint:fix": "prettier -w .",
-    "lint:prune": "npx ts-prune",
+    "lint:prune": "npx ts-prune --ignore 'src/(lib/index.ts|test/mocks/GDriveMocks\\.ts)'",
     "packages:check": "npm outdated",
     "packages:update": "npm update --save",
     "pre-commit": "npm run clean && npm run update && npm run build && npm run lint:fix && npm run lint && npm run test && npm audit signatures && npm audit",
@@ -118,6 +118,7 @@
   "dependencies": {
     "ajv": "^8.12.0",
     "class-transformer": "^0.5.1",
+    "date-fns": "^2.0.0",
     "date-fns-tz": "^2.0.0",
     "parse-duration": "^1.1.0",
     "reflect-metadata": "^0.1.13",

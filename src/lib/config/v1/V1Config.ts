@@ -21,14 +21,24 @@ export class V1Config {
   @Type(() => V1Rule)
   rules: V1Rule[] = []
 }
+export const defaultV1Config: V1Config = {
+  globalFilter: "has:attachment -in:trash -in:drafts -in:spam",
+  processedLabel: "to-gdrive/processed",
+  sleepTime: 100,
+  maxRuntime: 280,
+  newerThan: "2m",
+  timezone: "UTC",
+  rules: [],
+}
 
+export type RequiredV1Config = RequiredDeep<V1Config>
 export function newV1Config(
   json: PartialDeep<V1Config> = {},
-): RequiredDeep<V1Config> {
+): RequiredV1Config {
   const config = plainToInstance(V1Config, json, {
     exposeDefaultValues: true,
     exposeUnsetFields: false,
-  }) as RequiredDeep<V1Config>
+  }) as RequiredV1Config
 
   // Validate resulting config:
   if (config.rules.length < 1) {

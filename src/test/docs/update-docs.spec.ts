@@ -7,7 +7,7 @@ import { MockFactory } from "../mocks/MockFactory"
 const dateInfo = `Use \`"\${<key>:format:<format>}"\` to format the date/time using a custom [date-fns format strings](https://date-fns.org/docs/format) (default: \`"${defaultDateFormat}"\`).`
 const variableInfo = `Custom variables defined at \`global.variables\` to better manage recurring substitution values.`
 const mocks = MockFactory.newCustomMocks(
-  ConfigMocks.newDefaultConfigJson(),
+  ConfigMocks.newComplexConfigJson(),
   GMailMocks.getGmailSampleData(),
   [0, 0, 0],
   [0, 0, 0],

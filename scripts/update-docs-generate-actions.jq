@@ -34,7 +34,7 @@ $enumList[0] as $enums
               | join(" | ")
               | "| " + . + " |"
             ] | join("\n")))
-          else "This acton takes no arguments." end
+          else "This action takes no arguments." end
         )
       ]
       | join("\n")

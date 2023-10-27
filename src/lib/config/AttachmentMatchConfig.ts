@@ -1,9 +1,7 @@
 import { plainToInstance } from "class-transformer"
 import "reflect-metadata"
-import { PartialDeep } from "type-fest"
 import { essentialObject } from "../utils/ConfigUtils"
 import { RequiredDeep } from "../utils/UtilityTypes"
-
 /**
  * Represents a config to match a certain GMail attachment
  */
@@ -39,7 +37,7 @@ export class AttachmentMatchConfig {
 export type RequiredAttachmentMatchConfig = RequiredDeep<AttachmentMatchConfig>
 
 export function newAttachmentMatchConfig(
-  json: PartialDeep<AttachmentMatchConfig> = {},
+  json: AttachmentMatchConfig = {},
 ): RequiredAttachmentMatchConfig {
   return plainToInstance(AttachmentMatchConfig, json, {
     exposeDefaultValues: true,
@@ -48,9 +46,8 @@ export function newAttachmentMatchConfig(
 }
 
 export function essentialAttachmentMatchConfig(
-  config: PartialDeep<AttachmentMatchConfig>,
-): PartialDeep<AttachmentMatchConfig> {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  config = essentialObject(config as any, newAttachmentMatchConfig() as any)
+  config: AttachmentMatchConfig,
+): AttachmentMatchConfig {
+  config = essentialObject(config, newAttachmentMatchConfig())
   return config
 }

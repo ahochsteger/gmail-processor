@@ -1,4 +1,3 @@
-import { PartialDeep } from "type-fest"
 import { ConfigMocks } from "../../test/mocks/ConfigMocks"
 import { LOGSHEET_FILE_PATH } from "../../test/mocks/GDriveMocks"
 import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
@@ -7,7 +6,7 @@ import { SpreadsheetAdapter } from "./SpreadsheetAdapter"
 
 let spreadsheetAdapter: SpreadsheetAdapter
 let mocks: Mocks
-let config: PartialDeep<Config>
+let config: Config
 beforeEach(() => {
   config = {
     ...ConfigMocks.newDefaultConfigJson(),

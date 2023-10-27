@@ -1,9 +1,12 @@
 import { Expose, Type, plainToInstance } from "class-transformer"
 import "reflect-metadata"
-import { PartialDeep } from "type-fest"
 import { essentialObject } from "../utils/ConfigUtils"
 import { RequiredDeep } from "../utils/UtilityTypes"
-import { AttachmentActionConfig, essentialActionConfig } from "./ActionConfig"
+import {
+  AttachmentActionConfig,
+  AttachmentContextActionConfigType,
+  essentialAttachmentActionConfig,
+} from "./ActionConfig"
 import {
   AttachmentMatchConfig,
   essentialAttachmentMatchConfig,
@@ -19,7 +22,7 @@ export class AttachmentConfig {
    */
   @Expose()
   @Type(() => AttachmentActionConfig)
-  actions?: AttachmentActionConfig[] = []
+  actions?: AttachmentContextActionConfigType[] = []
   /**
    * The description of the attachment handler config
    */
@@ -41,7 +44,7 @@ export class AttachmentConfig {
 export type RequiredAttachmentConfig = RequiredDeep<AttachmentConfig>
 
 export function newAttachmentConfig(
-  json: PartialDeep<AttachmentConfig> = {},
+  json: AttachmentConfig = {},
 ): RequiredAttachmentConfig {
   return plainToInstance(AttachmentConfig, normalizeAttachmentConfig(json), {
     exposeDefaultValues: true,
@@ -50,15 +53,15 @@ export function newAttachmentConfig(
 }
 
 export function normalizeAttachmentConfig(
-  config: PartialDeep<AttachmentConfig>,
-): PartialDeep<AttachmentConfig> {
+  config: AttachmentConfig,
+): AttachmentConfig {
   config.match = config.match ?? newAttachmentMatchConfig()
   return config
 }
 
 export function normalizeAttachmentConfigs(
-  configs: PartialDeep<AttachmentConfig>[],
-): PartialDeep<AttachmentConfig>[] {
+  configs: AttachmentConfig[],
+): AttachmentConfig[] {
   for (const config of configs) {
     normalizeAttachmentConfig(config)
   }
@@ -66,11 +69,10 @@ export function normalizeAttachmentConfigs(
 }
 
 export function essentialAttachmentConfig(
-  config: PartialDeep<AttachmentConfig>,
-): PartialDeep<AttachmentConfig> {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  config = essentialObject(config as any, newAttachmentConfig() as any, {
-    actions: essentialActionConfig,
+  config: AttachmentConfig,
+): AttachmentConfig {
+  config = essentialObject(config, newAttachmentConfig(), {
+    actions: essentialAttachmentActionConfig,
     match: essentialAttachmentMatchConfig,
   })
   return config

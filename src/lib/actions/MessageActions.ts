@@ -1,4 +1,5 @@
-import { ConflictStrategy, FileContent } from "../adapter/GDriveAdapter"
+import { FileContent } from "../adapter/GDriveAdapter"
+import { ActionBaseConfig, StoreActionBaseArgs } from "../config/ActionConfig"
 import { MessageContext } from "../Context"
 import { destructiveAction, writingAction } from "../utils/Decorators"
 import { PatternUtil } from "../utils/PatternUtil"
@@ -13,17 +14,51 @@ type MessageReturnType = ActionReturnType & {
 }
 type FileReturnType = ActionReturnType & { file?: GoogleAppsScript.Drive.File }
 
+export type MessageActionForwardArgs = {
+  /** The recipient of the forwarded message. */
+  to: string
+}
+type MessageActionConfigForward<TName extends string = string> =
+  ActionBaseConfig<TName, MessageActionForwardArgs>
+export type MessageActionStorePDFArgs = StoreActionBaseArgs & {
+  /**
+   * Skip the header if `true`.
+   */
+  skipHeader?: boolean
+}
+type MessageActionConfigStorePDF<TName extends string = string> =
+  ActionBaseConfig<TName, MessageActionStorePDFArgs>
+export type MessageActionStoreFromUrlArgs = StoreActionBaseArgs & {
+  /**
+   * The URL of the document to be stored.
+   * To extract the URL from the message body use a message body matcher like `"(?<url>https://...)"` and `"${message.body.match.url}"` as the URL value.
+   * NOTE: Take care to narrow down the regex as good as possible to extract valid URLs.
+   * Use tools like [regex101.com](https://regex101.com) for testing on example messages.
+   */
+  url: string
+  /**
+   * The header to pass to the URL. May be used to pass an authentication token.
+   * Supports placeholder substitution.
+   */
+  headers?: Record<string, string>
+}
+type MessageActionConfigStoreFromURL<TName extends string = string> =
+  ActionBaseConfig<TName, MessageActionStoreFromUrlArgs>
+
 export class MessageActions implements ActionProvider<MessageContext> {
   [key: string]: ActionFunction<MessageContext>
 
+  /** Do nothing (no operation). Used for testing. */
+  public static noop(context: MessageContext) {
+    context.log.info("NOOP: Do nothing.")
+  }
+
   /** Forwards this message. */
   @writingAction()
-  public static forward<
-    TArgs extends {
-      /** The recipient of the forwarded message. */
-      to: string
-    },
-  >(context: MessageContext, args: TArgs): MessageReturnType {
+  public static forward(
+    context: MessageContext,
+    args: MessageActionForwardArgs,
+  ): MessageReturnType {
     return {
       message: context.proc.gmailAdapter.messageForward(
         context.message.object,
@@ -80,26 +115,10 @@ export class MessageActions implements ActionProvider<MessageContext> {
 
   /** Generate a PDF document from the message and store it to GDrive. */
   @writingAction()
-  public static storePDF<
-    TArgs extends {
-      /** The location (path + filename) of the Google Drive file.
-       * For shared folders or Team Drives prepend the location with `{id:<folderId>}`.
-       * Supports placeholder substitution.
-       */
-      location: string
-      /**
-       * The strategy to be used in case a file already exists at the desired location.
-       */
-      conflictStrategy: ConflictStrategy
-      /**
-       * The description to be attached to the Google Drive file.
-       * Supports placeholder substitution.
-       */
-      description?: string
-      /** Skip the header if `true`. */
-      skipHeader: boolean
-    },
-  >(context: MessageContext, args: TArgs): FileReturnType {
+  public static storePDF(
+    context: MessageContext,
+    args: MessageActionStorePDFArgs,
+  ): FileReturnType {
     return {
       file: context.proc.gdriveAdapter.createFile(
         PatternUtil.substitute(context, args.location),
@@ -108,6 +127,7 @@ export class MessageActions implements ActionProvider<MessageContext> {
             context.message.object,
             args.skipHeader,
           ),
+          `${context.message.object.getSubject()}.pdf`,
           PatternUtil.substitute(context, args.description ?? ""),
         ),
         args.conflictStrategy,
@@ -117,37 +137,10 @@ export class MessageActions implements ActionProvider<MessageContext> {
 
   /** Store a document referenced by a URL contained in the message body to GDrive. */
   @writingAction()
-  public static storeFromURL<
-    TArgs extends {
-      /**
-       * The URL of the document to be stored.
-       * To extract the URL from the message body use a message body matcher like `"(?<url>https://...)"` and `"${message.body.match.url}"` as the URL value.
-       * NOTE: Take care to narrow down the regex as good as possible to extract valid URLs.
-       * Use tools like [regex101.com](https://regex101.com) for testing on example messages.
-       */
-      url: string
-      /**
-       * The location (path + filename) of the Google Drive file.
-       * For shared folders or Team Drives prepend the location with `{id:<folderId>}`.
-       * Supports placeholder substitution.
-       */
-      location: string
-      /**
-       * The strategy to be used in case a file already exists at the desired location.
-       */
-      conflictStrategy: ConflictStrategy
-      /**
-       * The description to be attached to the Google Drive file.
-       * Supports placeholder substitution.
-       */
-      description?: string
-      /**
-       * The header to pass to the URL. May be used to pass an authentication token.
-       * Supports placeholder substitution.
-       */
-      headers?: { [k: string]: string }
-    },
-  >(context: MessageContext, args: TArgs): FileReturnType {
+  public static storeFromURL(
+    context: MessageContext,
+    args: MessageActionStoreFromUrlArgs,
+  ): FileReturnType {
     const message = context.message.object
     const url = PatternUtil.substitute(context, args.url)
     if (!url) {
@@ -169,6 +162,7 @@ export class MessageActions implements ActionProvider<MessageContext> {
         PatternUtil.substitute(context, args.location),
         new FileContent(
           blob,
+          url.slice(url.lastIndexOf("/") + 1),
           PatternUtil.substitute(context, args.description ?? ""),
         ),
         args.conflictStrategy,
@@ -177,9 +171,13 @@ export class MessageActions implements ActionProvider<MessageContext> {
   }
 }
 
-type MethodNames<T> = keyof T
-type MessageActionMethodNames = Exclude<
-  MethodNames<typeof MessageActions>,
-  "prototype"
->
-export type MessageActionNames = `message.${MessageActionMethodNames}` | ""
+export type MessageActionConfigType =
+  | ActionBaseConfig<"message.noop">
+  | MessageActionConfigForward<"message.forward">
+  | MessageActionConfigStoreFromURL<"message.storeFromURL">
+  | MessageActionConfigStorePDF<"message.storePDF">
+  | ActionBaseConfig<"message.markRead">
+  | ActionBaseConfig<"message.markUnread">
+  | ActionBaseConfig<"message.moveToTrash">
+  | ActionBaseConfig<"message.star">
+  | ActionBaseConfig<"message.unstar">

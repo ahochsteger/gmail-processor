@@ -16,6 +16,10 @@ export const EXISTING_FILE_ID = "some-existing-file-id"
 export const EXISTING_FILE_NAME = "some-existing-file.txt"
 export const EXISTING_FOLDER_ID = "folder-1-id"
 export const EXISTING_FOLDER_NAME = "Folder 1"
+export const GENERIC_NEW_FILE_ID = "generic-created-file-id"
+export const GENERIC_NEW_FILE_NAME = "generic-created-file.txt"
+export const GENERIC_NEW_FOLDER_ID = "generic-created-folder-id"
+export const GENERIC_NEW_FOLDER_NAME = "generic-created-folder"
 export const LOGSHEET_FILE_ID = "logsheet-file-id"
 export const LOGSHEET_FILE_NAME = "logsheet-${date.now:format:yyyy-MM}"
 export const LOGSHEET_FILE_PATH = `/${E2E_BASE_FOLDER_NAME}/${LOGSHEET_FILE_NAME}`
@@ -37,8 +41,19 @@ export const NO_FOLDER_ID = "no-folder-id"
 export const NO_FOLDER_NAME = "no-folder"
 export const ROOT_FOLDER_ID = "root-folder-id"
 export const ROOT_FOLDER_NAME = "root-folder"
-export const NEW_PDF_FILE_ID = "created-thread-pdf-file-id"
-export const NEW_PDF_FILE_NAME = "created-thread-pdf-file.pdf"
+export const NEW_PDF_FILE_ID = "created-pdf-file-id"
+export const NEW_PDF_FILE_NAME = "created-pdf-file.pdf"
+
+export const genericNewFileNamePatterns = [
+  "example",
+  "generic",
+  "^Message Subject 1 - 1\\.jpg$",
+]
+export const genericNewFolderNamePatterns = [
+  "example",
+  "generic",
+  "^Subject 2$",
+]
 
 export class GDriveMocks {
   public static setupBlobMocks(
@@ -77,6 +92,8 @@ export class GDriveMocks {
 
   public static setupFolderMocks(
     folderData: FolderData,
+    genericNewFile: MockProxy<GoogleAppsScript.Drive.File> = mock<GoogleAppsScript.Drive.File>(),
+    genericNewFolder: MockProxy<GoogleAppsScript.Drive.Folder> = mock<GoogleAppsScript.Drive.Folder>(),
     parentFolder?: FolderData,
   ): MockProxy<GoogleAppsScript.Drive.Folder> {
     const folder = folderData.entry
@@ -105,23 +122,41 @@ export class GDriveMocks {
     ;(folder.createFile as MockProxy<CreateFileWithBlob>) = jest
       .fn((blobSource: GoogleAppsScript.Base.BlobSource) => {
         let file: GoogleAppsScript.Drive.File | null = null
+        const fileName = blobSource?.getBlob()?.getName()
+        for (const p of genericNewFileNamePatterns) {
+          if (fileName && new RegExp(p).exec(fileName)) {
+            file = genericNewFile
+          }
+        }
         folderData
           .getFiles()
           .filter(
             (spec) =>
-              spec.scope === EntryScope.CREATED &&
-              spec.name === blobSource.getBlob().getName(),
+              spec.scope === EntryScope.CREATED && spec.name === fileName,
           )
           .forEach((spec) => {
             file = this.setupFileMocks(spec, folderData)
           })
-        return file ?? mock<GoogleAppsScript.Drive.File>()
+        if (file) {
+          return file
+        } else {
+          throw new Error(
+            `Cannot create file '${fileName}' - no mock data available!`,
+          )
+        }
       })
       .mockName("createFile-error")
     folder.createFolder
       .calledWith(anyString())
       .mockImplementation((name: string) => {
-        throw Error(`Cannot create folder '${name}' - no mock data available!`)
+        for (const p of genericNewFolderNamePatterns) {
+          if (name && new RegExp(p).exec(name)) {
+            return genericNewFolder
+          }
+        }
+        throw new Error(
+          `Cannot create folder '${name}' - no mock data available!`,
+        )
       })
       .mockName("createFolder-error")
 
@@ -151,7 +186,7 @@ export class GDriveMocks {
           .mockName("createFolder-ok")
       }
       // Setup nested folders:
-      this.setupFolderMocks(spec, folderData)
+      this.setupFolderMocks(spec, genericNewFile, genericNewFolder, folderData)
     }
 
     return folder
@@ -196,8 +231,14 @@ export class GDriveMocks {
   public static setupGDriveAppMocks(
     driveSpec: GDriveData,
     gdriveApp: MockProxy<GoogleAppsScript.Drive.DriveApp> = mock<GoogleAppsScript.Drive.DriveApp>(),
+    genericNewFile: MockProxy<GoogleAppsScript.Drive.File> = mock<GoogleAppsScript.Drive.File>(),
+    genericNewFolder: MockProxy<GoogleAppsScript.Drive.Folder> = mock<GoogleAppsScript.Drive.Folder>(),
   ): MockProxy<GoogleAppsScript.Drive.DriveApp> {
-    const rootFolder = GDriveMocks.setupFolderMocks(driveSpec)
+    const rootFolder = GDriveMocks.setupFolderMocks(
+      driveSpec,
+      genericNewFile,
+      genericNewFolder,
+    )
     gdriveApp.getRootFolder.mockReturnValue(rootFolder)
     gdriveApp.getFileById.calledWith(anyString()).mockImplementation((id) => {
       throw Error(`No such file id: ${id}`)
@@ -247,6 +288,19 @@ export class GDriveMocks {
       EntryScope.EXISTING,
       [
         new FileData(
+          mocks.genericNewFile,
+          NEW_FILE_ID,
+          NEW_FILE_NAME,
+          mocks.genericNewBlob,
+          EntryScope.CREATED,
+        ),
+        new FolderData(
+          mocks.genericNewFolder,
+          NEW_FOLDER_ID,
+          NEW_FOLDER_NAME,
+          EntryScope.CREATED,
+        ),
+        new FileData(
           mocks.existingFile,
           EXISTING_FILE_ID,
           EXISTING_FILE_NAME,
@@ -281,14 +335,6 @@ export class GDriveMocks {
           mocks.newBlob,
           EntryScope.CREATED,
         ),
-        new FileData(
-          mocks.newPdfFile,
-          NEW_PDF_FILE_ID,
-          NEW_PDF_FILE_NAME,
-          mocks.newPdfBlob,
-          EntryScope.CREATED,
-          "PDF Content",
-        ),
         new FolderData(
           mocks.newFolder,
           NEW_FOLDER_ID,
@@ -321,6 +367,14 @@ export class GDriveMocks {
               LOGSHEET_FILE_ID,
               LOGSHEET_FILE_NAME,
               mocks.logSpreadsheetBlob,
+            ),
+            new FileData(
+              mocks.newPdfFile,
+              NEW_PDF_FILE_ID,
+              NEW_PDF_FILE_NAME,
+              mocks.newPdfBlob,
+              EntryScope.CREATED,
+              "PDF Content",
             ),
           ],
         ),

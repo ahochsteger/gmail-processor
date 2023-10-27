@@ -71,6 +71,7 @@ export const e2eTest01Config = {
                   args: {
                     location:
                       "/GmailProcessor-Tests/e2e01/${attachment.name.match.basename}-stored.png",
+                    conflictStrategy: "keep",
                   },
                 },
                 {
@@ -97,6 +98,7 @@ export const e2eTest01Config = {
                   args: {
                     location:
                       "/GmailProcessor-Tests/e2e01/${attachment.name.match.basename}-stored.txt",
+                    conflictStrategy: "keep",
                   },
                 },
               ],

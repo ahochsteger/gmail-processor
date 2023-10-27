@@ -1,6 +1,5 @@
 import { Expose, Type, plainToInstance } from "class-transformer"
 import "reflect-metadata"
-import { PartialDeep } from "type-fest"
 import { essentialObject } from "../utils/ConfigUtils"
 import { RequiredDeep } from "../utils/UtilityTypes"
 import {
@@ -67,29 +66,24 @@ export class GlobalConfig {
   variables?: VariableEntry[] = []
 }
 
-export function newGlobalConfig(
-  json: PartialDeep<GlobalConfig> = {},
-): RequiredDeep<GlobalConfig> {
+type RequiredGlobalConfig = RequiredDeep<GlobalConfig>
+
+export function newGlobalConfig(json: GlobalConfig = {}): RequiredGlobalConfig {
   return plainToInstance(GlobalConfig, normalizeGlobalConfig(json), {
     exposeDefaultValues: true,
     exposeUnsetFields: false,
-  }) as RequiredDeep<GlobalConfig>
+  }) as RequiredGlobalConfig
 }
 
-export function normalizeGlobalConfig(
-  config: PartialDeep<GlobalConfig>,
-): PartialDeep<GlobalConfig> {
+export function normalizeGlobalConfig(config: GlobalConfig): GlobalConfig {
   config.thread = normalizeThreadConfig(config.thread ?? {})
   config.message = normalizeMessageConfig(config.message ?? {})
   config.attachment = normalizeAttachmentConfig(config.attachment ?? {})
   return config
 }
 
-export function essentialGlobalConfig(
-  config: PartialDeep<GlobalConfig>,
-): PartialDeep<GlobalConfig> {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  config = essentialObject(config as any, newGlobalConfig() as any, {
+export function essentialGlobalConfig(config: GlobalConfig): GlobalConfig {
+  config = essentialObject(config, newGlobalConfig(), {
     attachment: essentialAttachmentConfig,
     message: essentialMessageConfig,
     thread: essentialThreadConfig,

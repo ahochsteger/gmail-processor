@@ -48,7 +48,7 @@ type MetaInfoValueType =
       obj: Message | Attachment,
       cfg: MessageMatchConfig | AttachmentMatchConfig,
     ) => unknown)
-export type MetaInfoEntry = {
+type MetaInfoEntry = {
   description: string
   type: MetaInfoType
   value: MetaInfoValueType

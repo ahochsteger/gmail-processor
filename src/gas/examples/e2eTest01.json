@@ -60,7 +60,8 @@
                 {
                   "name": "attachment.store",
                   "args": {
-                    "location": "/GmailProcessor-Tests/e2e01/${attachment.name.match.basename}-stored.png"
+                    "location": "/GmailProcessor-Tests/e2e01/${attachment.name.match.basename}-stored.png",
+                    "conflictStrategy": "keep"
                   }
                 },
                 {
@@ -87,7 +88,8 @@
                 {
                   "name": "attachment.store",
                   "args": {
-                    "location": "/GmailProcessor-Tests/e2e01/${attachment.name.match.basename}-stored.txt"
+                    "location": "/GmailProcessor-Tests/e2e01/${attachment.name.match.basename}-stored.txt",
+                    "conflictStrategy": "keep"
                   }
                 }
               ]

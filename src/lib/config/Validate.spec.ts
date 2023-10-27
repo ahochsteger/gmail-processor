@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ConfigMocks } from "../../test/mocks/ConfigMocks"
 import { validateConfig } from "./Validate"
 

@@ -1,10 +1,4 @@
-import { PartialDeep } from "type-fest"
 import { ConflictStrategy } from "../../adapter/GDriveAdapter"
-import {
-  newAttachmentActionConfig,
-  newMessageActionConfig,
-  newThreadActionConfig,
-} from "../ActionConfig"
 import { AttachmentConfig } from "../AttachmentConfig"
 import { Config, RequiredConfig, newConfig } from "../Config"
 import {
@@ -19,7 +13,7 @@ import {
   newThreadConfig,
 } from "../ThreadConfig"
 import { V1Config, newV1Config } from "./V1Config"
-import { V1Rule } from "./V1Rule"
+import { RequiredV1Rule } from "./V1Rule"
 
 export class V1ToV2Converter {
   public static convertDateFormat(format: string): string {
@@ -80,7 +74,10 @@ export class V1ToV2Converter {
     return s
   }
 
-  static getLocationFromRule(rule: V1Rule, defaultFilename: string): string {
+  static getLocationFromRule(
+    rule: RequiredV1Rule,
+    defaultFilename: string,
+  ): string {
     let filename
     if (rule.filenameFromRegexp) {
       filename = "${attachment.name.match.1}"
@@ -104,14 +101,14 @@ export class V1ToV2Converter {
     return `${folder}/${filename}`
   }
 
-  static v1RuleToV2ThreadConfig(rule: V1Rule): RequiredThreadConfig {
-    const threadConfig: PartialDeep<ThreadConfig> = {}
+  static v1RuleToV2ThreadConfig(rule: RequiredV1Rule): RequiredThreadConfig {
+    const threadConfig: ThreadConfig = {}
     threadConfig.actions = []
     threadConfig.attachments = []
     threadConfig.messages = []
     threadConfig.match = {}
-    const attachmentConfig: PartialDeep<AttachmentConfig> = {}
-    const messageConfig: PartialDeep<MessageConfig> = {}
+    const attachmentConfig: AttachmentConfig = {}
+    const messageConfig: MessageConfig = {}
     messageConfig.actions = []
     attachmentConfig.match = {}
     attachmentConfig.actions = []
@@ -134,15 +131,14 @@ export class V1ToV2Converter {
     // if (rule.saveMessagePDF) {
     //   processMessageToPdf(message, rule, config);
     if (rule.saveMessagePDF) {
-      messageConfig.actions.push(
-        newMessageActionConfig({
-          name: "message.storePDF",
-          args: {
-            location: this.getLocationFromRule(rule, "${message.subject}.pdf"),
-            skipHeader: rule.skipPDFHeader === true,
-          },
-        }),
-      )
+      messageConfig.actions.push({
+        name: "message.storePDF",
+        args: {
+          location: this.getLocationFromRule(rule, "${message.subject}.pdf"),
+          conflictStrategy: ConflictStrategy.KEEP,
+          skipHeader: rule.skipPDFHeader === true,
+        },
+      })
       threadConfig.messages.push(messageConfig)
     } else {
       // Old processing logic:
@@ -188,17 +184,15 @@ export class V1ToV2Converter {
       }
       // Old processing logic:
       //     file.setDescription("Mail title: " + message.getSubject() + "\nMail date: " + message.getDate() + "\nMail link: https://mail.google.com/mail/u/0/#inbox/" + message.getId());
-      attachmentConfig.actions.push(
-        newAttachmentActionConfig({
-          name: "attachment.store",
-          args: {
-            conflictStrategy: ConflictStrategy.KEEP,
-            description:
-              "Mail title: ${message.subject}\nMail date: ${message.date}\nMail link: https://mail.google.com/mail/u/0/#inbox/${message.id}",
-            location: this.getLocationFromRule(rule, "${attachment.name}"),
-          },
-        }),
-      )
+      attachmentConfig.actions.push({
+        name: "attachment.store",
+        args: {
+          conflictStrategy: ConflictStrategy.KEEP,
+          description:
+            "Mail title: ${message.subject}\nMail date: ${message.date}\nMail link: https://mail.google.com/mail/u/0/#inbox/${message.id}",
+          location: this.getLocationFromRule(rule, "${attachment.name}"),
+        },
+      })
       threadConfig.attachments.push(attachmentConfig)
     }
     // Old processing logic:
@@ -207,32 +201,29 @@ export class V1ToV2Converter {
     //   processThreadToPdf(thread, rule, config);
     // }
     if (rule.saveThreadPDF) {
-      threadConfig.actions.push(
-        newThreadActionConfig({
-          name: "thread.storePDF",
-          args: {
-            location: this.getLocationFromRule(
-              rule,
-              "${thread.firstMessageSubject}.pdf",
-            ),
-          },
-        }),
-      )
+      threadConfig.actions.push({
+        name: "thread.storePDF",
+        args: {
+          location: this.getLocationFromRule(
+            rule,
+            "${thread.firstMessageSubject}.pdf",
+          ),
+          conflictStrategy: ConflictStrategy.KEEP,
+        },
+      })
     }
     // Old processing logic:
     // if(rule.ruleLabel) {
     //   thread.addLabel(getOrCreateLabel(rule.ruleLabel));
     // }
     // thread.addLabel(label);
-    if (rule.ruleLabel != "") {
-      threadConfig.actions.push(
-        newThreadActionConfig({
-          name: "thread.addLabel",
-          args: {
-            name: rule.ruleLabel,
-          },
-        }),
-      )
+    if (rule.ruleLabel && rule.ruleLabel != "") {
+      threadConfig.actions.push({
+        name: "thread.addLabel",
+        args: {
+          name: rule.ruleLabel,
+        },
+      })
     }
     // Old processing logic:
     // if (doArchive) { // Archive a thread if required
@@ -240,26 +231,21 @@ export class V1ToV2Converter {
     //   thread.moveToArchive();
     // }
     if (rule.archive) {
-      threadConfig.actions.push(
-        newThreadActionConfig({
-          name: "thread.moveToArchive",
-        }),
-      )
+      threadConfig.actions.push({
+        name: "thread.moveToArchive",
+      })
     }
-    const resultingThreadConfig = newThreadConfig(threadConfig)
-    return resultingThreadConfig
+    return newThreadConfig(threadConfig)
   }
 
-  static v1ConfigToV2ConfigJson(
-    partialV1Config: PartialDeep<V1Config>,
-  ): PartialDeep<Config> {
+  static v1ConfigToV2ConfigJson(partialV1Config: V1Config): Config {
     const v1Config = newV1Config(partialV1Config)
     const threadConfigs = v1Config.rules.map((rule) =>
       this.v1RuleToV2ThreadConfig(rule),
     )
     const globalFilter = v1Config.globalFilter || DEFAULT_GLOBAL_QUERY_PREFIX
     const newerThan = v1Config.newerThan || DEFAULT_GLOBAL_QUERY_NEWER_THAN
-    const configJson: PartialDeep<Config> = {
+    const configJson: Config = {
       global: {
         thread: {
           match: {
@@ -279,9 +265,7 @@ export class V1ToV2Converter {
     return configJson
   }
 
-  static v1ConfigToV2Config(
-    v1ConfigJson: PartialDeep<V1Config>,
-  ): RequiredConfig {
+  static v1ConfigToV2Config(v1ConfigJson: V1Config): RequiredConfig {
     const configJson = this.v1ConfigToV2ConfigJson(v1ConfigJson)
     const config = newConfig(configJson)
     return config

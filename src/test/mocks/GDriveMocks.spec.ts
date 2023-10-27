@@ -95,7 +95,12 @@ describe("setupFolder()", () => {
   })
 
   it("should setup a folder with drive data", () => {
-    const folder = GDriveMocks.setupFolderMocks(driveSpec, driveSpec)
+    const folder = GDriveMocks.setupFolderMocks(
+      driveSpec,
+      mocks.genericNewFile,
+      mocks.genericNewFolder,
+      driveSpec,
+    )
     expect(folder.getId()).toEqual(ROOT_FOLDER_ID)
     expect(folder).toBe(mocks.rootFolder)
 
@@ -122,6 +127,34 @@ describe("setupFolder()", () => {
     // Test file/folder creation:
     expect(folder.createFile(mocks.newBlob)).toBe(mocks.newFile)
     expect(folder.createFolder(NEW_FOLDER_NAME)).toBe(mocks.newFolder)
+  })
+
+  it("should setup generic file behavior", () => {
+    const folder = GDriveMocks.setupFolderMocks(driveSpec)
+    for (const p of ["generic", "my-generic-file-name"]) {
+      const blob = mock<GoogleAppsScript.Base.Blob>()
+      blob.getName.mockReturnValue(p)
+      const blobSource = mock<GoogleAppsScript.Base.BlobSource>()
+      blobSource.getBlob.mockReturnValue(blob)
+      expect(folder.createFile(blobSource)).toBeDefined()
+    }
+    for (const p of ["any-file", "some-other-file"]) {
+      const blob = mock<GoogleAppsScript.Base.Blob>()
+      blob.getName.mockReturnValue(p)
+      const blobSource = mock<GoogleAppsScript.Base.BlobSource>()
+      blobSource.getBlob.mockReturnValue(blob)
+      expect(() => folder.createFile(blobSource)).toThrowError("no mock data")
+    }
+  })
+
+  it("should setup generic folder behavior", () => {
+    const folder = GDriveMocks.setupFolderMocks(driveSpec)
+    for (const p of ["generic", "my-generic-folder-name", "Subject 2"]) {
+      expect(folder.createFolder(p)).toBeDefined()
+    }
+    for (const p of ["any-folder", "some-folder"]) {
+      expect(() => folder.createFolder(p)).toThrowError("no mock data")
+    }
   })
 })
 

@@ -1,4 +1,5 @@
-import { ConflictStrategy, FileContent } from "../adapter/GDriveAdapter"
+import { FileContent } from "../adapter/GDriveAdapter"
+import { ActionBaseConfig, StoreActionBaseArgs } from "../config/ActionConfig"
 import { ThreadContext } from "../Context"
 import { destructiveAction, writingAction } from "../utils/Decorators"
 import { PatternUtil } from "../utils/PatternUtil"
@@ -8,8 +9,30 @@ import {
   ActionReturnType,
 } from "./ActionRegistry"
 
+export type ThreadActionLabelArgs = {
+  /** The name of the label. */
+  name: string
+}
+
+type ThreadActionConfigLabel<TName extends string = string> = ActionBaseConfig<
+  TName,
+  ThreadActionLabelArgs
+>
+export type ThreadActionArgsStorePDF = StoreActionBaseArgs & {
+  /** Skip the header if `true`. */
+  skipHeader?: boolean
+}
+
+type ThreadActionConfigStorePDF<TName extends string = string> =
+  ActionBaseConfig<TName, ThreadActionArgsStorePDF>
+
 export class ThreadActions implements ActionProvider<ThreadContext> {
   [key: string]: ActionFunction<ThreadContext>
+
+  /** Do nothing (no operation). Used for testing. */
+  public static noop(context: ThreadContext) {
+    context.log.info("NOOP: Do nothing.")
+  }
 
   /** Mark the thread as important. */
   @writingAction()
@@ -87,12 +110,7 @@ export class ThreadActions implements ActionProvider<ThreadContext> {
 
   /** Add a label to the thread. */
   @writingAction()
-  public static addLabel<
-    TArgs extends {
-      /** The name of the label. */
-      name: string
-    },
-  >(context: ThreadContext, args: TArgs) {
+  public static addLabel(context: ThreadContext, args: ThreadActionLabelArgs) {
     return {
       thread: context.proc.gmailAdapter.threadAddLabel(
         context.thread.object,
@@ -103,12 +121,10 @@ export class ThreadActions implements ActionProvider<ThreadContext> {
 
   /** Remove a label from the thread. */
   @writingAction()
-  public static removeLabel<
-    TArgs extends {
-      /** The name of the label. */
-      name: string
-    },
-  >(context: ThreadContext, args: TArgs) {
+  public static removeLabel(
+    context: ThreadContext,
+    args: ThreadActionLabelArgs,
+  ) {
     return {
       thread: context.proc.gmailAdapter.threadRemoveLabel(
         context.thread.object,
@@ -119,26 +135,10 @@ export class ThreadActions implements ActionProvider<ThreadContext> {
 
   /** Generate a PDF document for the whole thread and store it to GDrive. */
   @writingAction()
-  public static storePDF<
-    TArgs extends {
-      /** The location (path + filename) of the Google Drive file.
-       * For shared folders or Team Drives prepend the location with `{id:<folderId>}`.
-       * Supports placeholder substitution.
-       */
-      location: string
-      /**
-       * The strategy to be used in case a file already exists at the desired location.
-       */
-      conflictStrategy: ConflictStrategy
-      /**
-       * The description to be attached to the Google Drive file.
-       * Supports placeholder substitution.
-       */
-      description?: string
-      /** Skip the header if `true`. */
-      skipHeader?: boolean
-    },
-  >(context: ThreadContext, args: TArgs) {
+  public static storePDF(
+    context: ThreadContext,
+    args: ThreadActionArgsStorePDF,
+  ) {
     return {
       ok: true,
       file: context.proc.gdriveAdapter.createFile(
@@ -146,9 +146,10 @@ export class ThreadActions implements ActionProvider<ThreadContext> {
         new FileContent(
           context.proc.gmailAdapter.threadAsPdf(
             context.thread.object,
-            args.skipHeader,
+            args?.skipHeader ?? false,
           ),
-          PatternUtil.substitute(context, args.description || ""),
+          `${context.thread.object.getFirstMessageSubject()}.pdf`,
+          PatternUtil.substitute(context, args.description ?? ""),
         ),
         args.conflictStrategy,
       ),
@@ -156,9 +157,16 @@ export class ThreadActions implements ActionProvider<ThreadContext> {
   }
 }
 
-type MethodNames<T> = keyof T
-type ThreadActionMethodNames = Exclude<
-  MethodNames<typeof ThreadActions>,
-  "prototype"
->
-export type ThreadActionNames = `thread.${ThreadActionMethodNames}` | ""
+export type ThreadActionConfigType =
+  | ActionBaseConfig<"thread.noop">
+  | ThreadActionConfigLabel<"thread.addLabel">
+  | ThreadActionConfigLabel<"thread.removeLabel">
+  | ThreadActionConfigStorePDF<"thread.storePDF">
+  | ActionBaseConfig<"thread.markImportant">
+  | ActionBaseConfig<"thread.markRead">
+  | ActionBaseConfig<"thread.markUnimportant">
+  | ActionBaseConfig<"thread.markUnread">
+  | ActionBaseConfig<"thread.moveToArchive">
+  | ActionBaseConfig<"thread.moveToInbox">
+  | ActionBaseConfig<"thread.moveToSpam">
+  | ActionBaseConfig<"thread.moveToTrash">

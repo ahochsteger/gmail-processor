@@ -1,5 +1,8 @@
 import { ConfigMocks } from "../../test/mocks/ConfigMocks"
-import { NEW_PDF_FILE_NAME } from "../../test/mocks/GDriveMocks"
+import {
+  E2E_BASE_FOLDER_NAME,
+  NEW_PDF_FILE_NAME,
+} from "../../test/mocks/GDriveMocks"
 import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
 import { ProcessingContext, RunMode } from "../Context"
 import { ConflictStrategy } from "../adapter/GDriveAdapter"
@@ -32,6 +35,7 @@ it("should provide actions in the action registry", () => {
     "thread.moveToInbox",
     "thread.moveToSpam",
     "thread.moveToTrash",
+    "thread.noop",
     "thread.removeLabel",
     "thread.storePDF",
   ])
@@ -53,7 +57,7 @@ it("should not mark a thread as important (dryRun)", () => {
 
 it("should store a thread as PDF", () => {
   const result = ThreadActions.storePDF(mocks.threadContext, {
-    location: `/${NEW_PDF_FILE_NAME}`,
+    location: `${E2E_BASE_FOLDER_NAME}/${NEW_PDF_FILE_NAME}`,
     conflictStrategy: ConflictStrategy.REPLACE,
     skipHeader: false,
   })

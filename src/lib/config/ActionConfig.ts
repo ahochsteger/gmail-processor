@@ -1,10 +1,10 @@
 import { Expose, plainToInstance } from "class-transformer"
 import "reflect-metadata"
-import { PartialDeep } from "type-fest"
-import { AttachmentActionNames } from "../actions/AttachmentActions"
-import { GlobalActionNames } from "../actions/GlobalActions"
-import { MessageActionNames } from "../actions/MessageActions"
-import { ThreadActionNames } from "../actions/ThreadActions"
+import { AttachmentActionConfigType } from "../actions/AttachmentActions"
+import { GlobalActionConfigType } from "../actions/GlobalActions"
+import { MessageActionConfigType } from "../actions/MessageActions"
+import { ThreadActionConfigType } from "../actions/ThreadActions"
+import { ConflictStrategy } from "../adapter/GDriveAdapter"
 import { essentialObject } from "../utils/ConfigUtils"
 import { RequiredDeep } from "../utils/UtilityTypes"
 
@@ -20,12 +20,21 @@ export enum ProcessingStage {
   POST_MAIN = "post-main",
 }
 
-export abstract class ActionConfig {
+export type ActionBaseConfig<TName extends string = string, TArgs = unknown> = {
+  args?: TArgs
+  description?: string
+  name: TName
+  processingStage?: ProcessingStage
+}
+
+export abstract class ActionConfig<
+  TActionConfig extends ActionBaseConfig = ActionBaseConfig,
+> {
   /**
    * The arguments for a certain action
    */
   @Expose()
-  args?: { [k: string]: unknown } = {}
+  args?: TActionConfig["args"]
 
   /**
    * The description for the action
@@ -37,7 +46,7 @@ export abstract class ActionConfig {
    * The name of the action to be executed
    */
   @Expose()
-  name = ""
+  name: TActionConfig["name"] = ""
 
   /**
    * The processing stage in which the action should run (during main processing stage or pre-main/post-main)
@@ -46,62 +55,114 @@ export abstract class ActionConfig {
   processingStage? = ProcessingStage.POST_MAIN
 }
 
+export type StoreActionBaseArgs = {
+  /**
+   * The location (path + filename) of the Google Drive file.
+   * For shared folders or Team Drives prepend the location with the folder ID like `{id:<folderId>}/...`.
+   * Supports placeholder substitution.
+   */
+  location: string
+  /**
+   * The strategy to be used in case a file already exists at the desired location.
+   */
+  conflictStrategy: ConflictStrategy
+  /**
+   * The description to be attached to the Google Drive file.
+   * Supports placeholder substitution.
+   */
+  description?: string
+}
+
+type ProcessingContextActionConfigType = GlobalActionConfigType
+export type ThreadContextActionConfigType =
+  | ProcessingContextActionConfigType
+  | ThreadActionConfigType
+export type MessageContextActionConfigType =
+  | ThreadContextActionConfigType
+  | MessageActionConfigType
+export type AttachmentContextActionConfigType =
+  | MessageContextActionConfigType
+  | AttachmentActionConfigType
+
 /**
  * Represents a config to perform a actions for a GMail thread.
  */
-export class ThreadActionConfig extends ActionConfig {
-  name: GlobalActionNames | ThreadActionNames = ""
-}
+export class ThreadActionConfig extends ActionConfig<ThreadContextActionConfigType> {}
+export type RequiredThreadActionConfig = RequiredDeep<ThreadActionConfig>
 
 /**
  * Represents a config to perform a actions for a GMail message.
  */
-export class MessageActionConfig extends ActionConfig {
-  name: GlobalActionNames | ThreadActionNames | MessageActionNames = ""
-}
+export class MessageActionConfig extends ActionConfig<MessageContextActionConfigType> {}
+export type RequiredMessageActionConfig = RequiredDeep<MessageActionConfig>
 
 /**
  * Represents a config to perform a actions for a GMail attachment.
  */
-export class AttachmentActionConfig extends ActionConfig {
-  name:
-    | GlobalActionNames
-    | ThreadActionNames
-    | MessageActionNames
-    | AttachmentActionNames = ""
-}
+export class AttachmentActionConfig extends ActionConfig<AttachmentContextActionConfigType> {}
+export type RequiredAttachmentActionConfig =
+  RequiredDeep<AttachmentActionConfig>
 
-export function newThreadActionConfig(
-  json: PartialDeep<ThreadActionConfig> = {},
-): RequiredDeep<ThreadActionConfig> {
+export type ActionConfigType =
+  | ThreadActionConfig
+  | MessageActionConfig
+  | AttachmentActionConfig
+
+function newThreadActionConfig(
+  json: ThreadActionConfig,
+): RequiredThreadActionConfig {
   return plainToInstance(ThreadActionConfig, json, {
     exposeDefaultValues: true,
     exposeUnsetFields: false,
-  }) as RequiredDeep<ThreadActionConfig>
+  }) as RequiredThreadActionConfig
 }
 
-export function newMessageActionConfig(
-  json: PartialDeep<MessageActionConfig> = {},
-): RequiredDeep<MessageActionConfig> {
+function newMessageActionConfig(
+  json: MessageActionConfig,
+): RequiredMessageActionConfig {
   return plainToInstance(MessageActionConfig, json, {
     exposeDefaultValues: true,
     exposeUnsetFields: false,
-  }) as RequiredDeep<MessageActionConfig>
+  }) as RequiredMessageActionConfig
 }
 
-export function newAttachmentActionConfig(
-  json: PartialDeep<AttachmentActionConfig> = {},
-): RequiredDeep<AttachmentActionConfig> {
+function newAttachmentActionConfig(
+  json: AttachmentActionConfig,
+): RequiredAttachmentActionConfig {
   return plainToInstance(AttachmentActionConfig, json, {
     exposeDefaultValues: true,
     exposeUnsetFields: false,
-  }) as RequiredDeep<AttachmentActionConfig>
+  }) as RequiredAttachmentActionConfig
 }
 
-export function essentialActionConfig(
-  config: PartialDeep<ActionConfig>,
-): PartialDeep<ActionConfig> {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  config = essentialObject(config as any, newThreadActionConfig() as any)
+export function essentialThreadActionConfig(
+  config: ThreadActionConfig,
+): ThreadActionConfig {
+  config = essentialObject<ThreadActionConfig>(
+    config,
+    newThreadActionConfig({
+      name: "thread.noop",
+    }),
+  )
+  return config
+}
+
+export function essentialMessageActionConfig(
+  config: MessageActionConfig,
+): MessageActionConfig {
+  config = essentialObject<MessageActionConfig>(
+    config,
+    newMessageActionConfig({ name: "message.noop" }),
+  )
+  return config
+}
+
+export function essentialAttachmentActionConfig(
+  config: AttachmentActionConfig,
+): AttachmentActionConfig {
+  config = essentialObject<AttachmentActionConfig>(
+    config,
+    newAttachmentActionConfig({ name: "attachment.noop" }),
+  )
   return config
 }

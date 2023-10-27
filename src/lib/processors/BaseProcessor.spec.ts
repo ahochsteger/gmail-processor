@@ -48,7 +48,6 @@ it("should handle error throwing actions", () => {
       [
         {
           name: "test.errorThrowingMethod",
-          args: {},
           processingStage: ProcessingStage.MAIN,
         },
       ],

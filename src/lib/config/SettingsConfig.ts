@@ -1,6 +1,5 @@
 import { Expose, plainToInstance } from "class-transformer"
 import "reflect-metadata"
-import { PartialDeep } from "type-fest"
 import { essentialObject } from "../utils/ConfigUtils"
 import { RequiredDeep } from "../utils/UtilityTypes"
 
@@ -110,23 +109,25 @@ export class SettingsConfig {
   timezone?: string = "default"
 }
 
+type RequiredSettingsConfig = RequiredDeep<SettingsConfig>
+
 export function newSettingsConfig(
   json: SettingsConfig = {},
-): RequiredDeep<SettingsConfig> {
+): RequiredSettingsConfig {
   return plainToInstance(SettingsConfig, json, {
     exposeDefaultValues: true,
     exposeUnsetFields: false,
-  }) as RequiredDeep<SettingsConfig>
+  }) as RequiredSettingsConfig
 }
 
 export function essentialSettingsConfig(
-  config: PartialDeep<SettingsConfig>,
-): PartialDeep<SettingsConfig> {
+  config: SettingsConfig,
+): SettingsConfig {
   config = essentialObject(
     config,
     newSettingsConfig(),
     {},
-    ["markProcessedMethod"], // TODO: Extract from class definition
+    ["markProcessedMethod"], // TODO: Extract required properties from class definition
   )
   return config
 }

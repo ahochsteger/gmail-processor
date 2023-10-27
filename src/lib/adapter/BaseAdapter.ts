@@ -1,12 +1,7 @@
 import { EnvContext } from "../Context"
 import { SettingsConfig } from "../config/SettingsConfig"
 
-export interface Adapter {
-  ctx: EnvContext
-  settings: SettingsConfig
-}
-
-export class BaseAdapter implements Adapter {
+export class BaseAdapter {
   constructor(
     public ctx: EnvContext,
     public settings: SettingsConfig,

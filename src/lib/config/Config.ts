@@ -5,7 +5,6 @@ import {
   plainToInstance,
 } from "class-transformer"
 import "reflect-metadata"
-import { PartialDeep } from "type-fest"
 import { essentialObject } from "../utils/ConfigUtils"
 import { RequiredDeep } from "../utils/UtilityTypes"
 import { ProcessingStage } from "./ActionConfig"
@@ -80,13 +79,13 @@ export type RequiredConfig = RequiredDeep<ProcessingConfig>
 export function configToJson<T = ProcessingConfig>(
   config: T,
   withDefaults = false,
-): PartialDeep<Config> {
+): Config {
   return instanceToPlain(config, {
     exposeDefaultValues: withDefaults,
   })
 }
 
-export function newConfig(json: PartialDeep<Config>): RequiredConfig {
+export function newConfig(json: Config): RequiredConfig {
   // Validate required settings:
   if (!json.settings?.markProcessedMethod) {
     throw new Error(
@@ -96,21 +95,19 @@ export function newConfig(json: PartialDeep<Config>): RequiredConfig {
   const config = plainToInstance(ProcessingConfig, normalizeConfig(json), {
     exposeDefaultValues: true,
     exposeUnsetFields: false,
-  }) as RequiredConfig
+  })
 
   // Validate resulting config:
-  if (config.threads.length < 1) {
+  if (!config?.threads || config?.threads.length < 1) {
     throw new Error(
       "No thread configuration found! Make sure there is at least one thread configuration present!",
     )
   }
 
-  return config
+  return config as RequiredConfig
 }
 
-export function normalizeConfig(
-  config: PartialDeep<Config>,
-): PartialDeep<Config> {
+export function normalizeConfig(config: Config): Config {
   config.threads = config.threads ?? []
 
   // Normalize top-level attachments config:
@@ -139,14 +136,16 @@ export function normalizeConfig(
   config.global.attachment.actions = config.global.attachment.actions ?? []
   switch (config.settings.markProcessedMethod) {
     case MarkProcessedMethod.ADD_THREAD_LABEL:
-      config.global.thread.match.query += ` -label:${config.settings.markProcessedLabel}`
-      config.global.thread.actions.push({
-        name: "thread.addLabel",
-        args: {
-          name: config.settings.markProcessedLabel,
-        },
-        processingStage: ProcessingStage.POST_MAIN,
-      })
+      if (config.settings.markProcessedLabel) {
+        config.global.thread.match.query += ` -label:${config.settings.markProcessedLabel}`
+        config.global.thread.actions.push({
+          name: "thread.addLabel",
+          args: {
+            name: config.settings.markProcessedLabel,
+          },
+          processingStage: ProcessingStage.POST_MAIN,
+        })
+      }
       break
     case MarkProcessedMethod.CUSTOM:
       // Do nothing!
@@ -165,10 +164,7 @@ export function normalizeConfig(
   return config
 }
 
-export function essentialConfig(
-  config: PartialDeep<Config>,
-): PartialDeep<Config> {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function essentialConfig(config: Config): Config {
   config = essentialObject(
     config,
     newConfig({

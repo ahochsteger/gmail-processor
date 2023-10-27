@@ -1,4 +1,6 @@
 import { ProcessingContext } from "../Context"
+import { ActionBaseConfig } from "../config/ActionConfig"
+import { writingAction } from "../utils/Decorators"
 import { LogLevel } from "../utils/Logger"
 import { PatternUtil } from "../utils/PatternUtil"
 import {
@@ -7,32 +9,40 @@ import {
   ActionReturnType,
 } from "./ActionRegistry"
 
+export type GlobalActionLoggingBase = {
+  /**
+   * The level of the log message (default: `info`).
+   */
+  level?: LogLevel
+  /**
+   * The message to be logged.
+   */
+  message: string
+}
+
 export class GlobalActions implements ActionProvider<ProcessingContext> {
   [key: string]: ActionFunction<ProcessingContext>
 
+  /** Do nothing (no operation). Used for testing. */
+  public static noop(context: ProcessingContext) {
+    context.log.info("NOOP: Do nothing.")
+  }
+
   /** Terminate processing due to an error. */
-  public static panic<
-    TArgs extends {
-      /** The message to be logged before termination. */
-      message: string
-    },
-  >(context: ProcessingContext, args: TArgs): ActionReturnType {
+  public static panic(
+    context: ProcessingContext,
+    args: GlobalActionLoggingBase,
+  ): ActionReturnType {
     const msg = PatternUtil.substitute(context, args.message)
     context.log.error(msg)
     throw new Error(msg)
   }
 
   /** Create a log entry. */
-  public static log<
-    TArgs extends {
-      /** The message to be logged. */
-      message: string
-      /**
-       * The level of the log message (default: `info`).
-       */
-      level?: LogLevel
-    },
-  >(context: ProcessingContext, args: TArgs): ActionReturnType {
+  public static log(
+    context: ProcessingContext,
+    args: GlobalActionLoggingBase,
+  ): ActionReturnType {
     context.log.log(PatternUtil.substitute(context, args.message), args.level)
     return {
       ok: true,
@@ -40,14 +50,11 @@ export class GlobalActions implements ActionProvider<ProcessingContext> {
   }
 
   /** Create a log entry in the log spreadsheet. */
-  public static sheetLog<
-    TArgs extends {
-      /** The message to be logged. */
-      message: string
-      /** The level of the log message (default: info). */
-      level?: LogLevel
-    },
-  >(context: ProcessingContext, args: TArgs): ActionReturnType {
+  @writingAction<ProcessingContext>()
+  public static sheetLog(
+    context: ProcessingContext,
+    args: GlobalActionLoggingBase,
+  ): ActionReturnType {
     context.proc.spreadsheetAdapter.log(
       context,
       PatternUtil.substitute(context, args.message),
@@ -59,9 +66,8 @@ export class GlobalActions implements ActionProvider<ProcessingContext> {
   }
 }
 
-type MethodNames<T> = keyof T
-type GlobalActionMethodNames = Exclude<
-  MethodNames<typeof GlobalActions>,
-  "prototype"
->
-export type GlobalActionNames = `global.${GlobalActionMethodNames}` | ""
+export type GlobalActionConfigType =
+  | ActionBaseConfig<"global.noop">
+  | ActionBaseConfig<"global.log", GlobalActionLoggingBase>
+  | ActionBaseConfig<"global.panic", GlobalActionLoggingBase>
+  | ActionBaseConfig<"global.sheetLog", GlobalActionLoggingBase>

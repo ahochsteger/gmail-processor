@@ -1,4 +1,4 @@
-import { ConflictStrategy } from "../adapter/GDriveAdapter"
+import { ActionBaseConfig, StoreActionBaseArgs } from "../config/ActionConfig"
 import { AttachmentContext } from "../Context"
 import { writingAction } from "../utils/Decorators"
 import { PatternUtil } from "../utils/PatternUtil"
@@ -11,34 +11,21 @@ import {
 export class AttachmentActions implements ActionProvider<AttachmentContext> {
   [key: string]: ActionFunction<AttachmentContext>
 
+  /** Do nothing (no operation). Used for testing. */
+  public static noop(context: AttachmentContext) {
+    context.log.info("NOOP: Do nothing.")
+  }
+
   /** Store an attachment to a Google Drive location. */
   @writingAction<AttachmentContext>()
-  public static store<
-    TArgs extends {
-      /**
-       * The location (path + filename) of the Google Drive file.
-       * For shared folders or Team Drives prepend the location with the folder ID like `{id:<folderId>}/...`.
-       * Supports placeholder substitution.
-       */
-      location: string
-      /**
-       * The strategy to be used in case a file already exists at the desired location.
-       */
-      conflictStrategy: ConflictStrategy
-      /**
-       * The description to be attached to the Google Drive file.
-       * Supports placeholder substitution.
-       */
-      description?: string
-    },
-  >(
+  public static store(
     context: AttachmentContext,
-    args: TArgs,
+    args: StoreActionBaseArgs,
   ): ActionReturnType & { file: GoogleAppsScript.Drive.File } {
     const file = context.proc.gdriveAdapter.storeAttachment(
       context.attachment.object,
       PatternUtil.substitute(context, args.location),
-      args.conflictStrategy || ConflictStrategy.KEEP,
+      args.conflictStrategy,
       PatternUtil.substitute(context, args.description ?? ""),
     )
     return {
@@ -48,11 +35,6 @@ export class AttachmentActions implements ActionProvider<AttachmentContext> {
   }
 }
 
-type MethodNames<T> = keyof T
-type AttachmentActionMethodNames = Exclude<
-  MethodNames<typeof AttachmentActions>,
-  "prototype"
->
-export type AttachmentActionNames =
-  | `attachment.${AttachmentActionMethodNames}`
-  | ""
+export type AttachmentActionConfigType =
+  | ActionBaseConfig<"attachment.noop">
+  | ActionBaseConfig<"attachment.store", StoreActionBaseArgs>

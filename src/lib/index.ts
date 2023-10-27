@@ -1,63 +1,28 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {
-  EnvContext,
-  ProcessingResult,
-  ProcessingStatus,
-  RunMode,
-} from "./Context"
+import { EnvContext, ProcessingResult, RunMode } from "./Context"
 import { EnvProvider } from "./EnvProvider"
 import { ConflictStrategy } from "./adapter/GDriveAdapter"
-import {
-  ActionConfig,
-  AttachmentActionConfig,
-  MessageActionConfig,
-  ProcessingStage,
-  ThreadActionConfig,
-} from "./config/ActionConfig"
-import { AttachmentConfig } from "./config/AttachmentConfig"
-import { AttachmentMatchConfig } from "./config/AttachmentMatchConfig"
+import { ProcessingStage } from "./config/ActionConfig"
 import { Config } from "./config/Config"
-import { GlobalConfig, VariableEntry } from "./config/GlobalConfig"
-import { MessageConfig } from "./config/MessageConfig"
 import { MessageFlag } from "./config/MessageFlag"
-import { MessageMatchConfig } from "./config/MessageMatchConfig"
-import { MarkProcessedMethod, SettingsConfig } from "./config/SettingsConfig"
-import { ThreadConfig } from "./config/ThreadConfig"
-import { ThreadMatchConfig } from "./config/ThreadMatchConfig"
+import { MarkProcessedMethod } from "./config/SettingsConfig"
 import { V1Config } from "./config/v1/V1Config"
-import { V1Rule } from "./config/v1/V1Rule"
 import { V1ToV2Converter } from "./config/v1/V1ToV2Converter"
-import { E2E, E2EConfig, FileConfig } from "./e2e/E2E"
+import { E2E, E2EConfig } from "./e2e/E2E"
 import { GmailProcessor } from "./processors/GmailProcessor"
 import { LogLevel } from "./utils/Logger"
 
-// Export everything that should be part of the generated typedoc documentation
+// Re-export everything that should be accessible from the lib
 export {
-  ActionConfig,
-  AttachmentActionConfig,
-  AttachmentConfig,
-  AttachmentMatchConfig,
   Config,
   E2E,
   E2EConfig,
-  FileConfig,
-  GlobalConfig,
   MarkProcessedMethod,
-  MessageActionConfig,
-  MessageConfig,
   MessageFlag,
-  MessageMatchConfig,
   ProcessingResult,
   ProcessingStage,
-  ProcessingStatus,
   RunMode,
-  SettingsConfig,
-  ThreadActionConfig,
-  ThreadConfig,
-  ThreadMatchConfig,
   V1Config,
-  V1Rule,
-  VariableEntry,
 }
 
 /**

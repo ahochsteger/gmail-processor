@@ -1,9 +1,12 @@
 import { Expose, Type, plainToInstance } from "class-transformer"
 import "reflect-metadata"
-import { PartialDeep } from "type-fest"
 import { essentialObject } from "../utils/ConfigUtils"
 import { RequiredDeep } from "../utils/UtilityTypes"
-import { MessageActionConfig, essentialActionConfig } from "./ActionConfig"
+import {
+  MessageActionConfig,
+  MessageContextActionConfigType,
+  essentialMessageActionConfig,
+} from "./ActionConfig"
 import {
   AttachmentConfig,
   essentialAttachmentConfig,
@@ -24,7 +27,7 @@ export class MessageConfig {
    */
   @Expose()
   @Type(() => MessageActionConfig)
-  actions?: MessageActionConfig[] = []
+  actions?: MessageContextActionConfigType[] = []
   /**
    * The description of the message handler config
    */
@@ -52,7 +55,7 @@ export class MessageConfig {
 export type RequiredMessageConfig = RequiredDeep<MessageConfig>
 
 export function newMessageConfig(
-  json: PartialDeep<MessageConfig> = {},
+  json: MessageConfig = {},
 ): RequiredMessageConfig {
   return plainToInstance(MessageConfig, normalizeMessageConfig(json), {
     exposeDefaultValues: true,
@@ -60,29 +63,24 @@ export function newMessageConfig(
   }) as RequiredMessageConfig
 }
 
-export function normalizeMessageConfig(
-  config: PartialDeep<MessageConfig>,
-): PartialDeep<MessageConfig> {
+export function normalizeMessageConfig(config: MessageConfig): MessageConfig {
   config.attachments = normalizeAttachmentConfigs(config.attachments ?? [])
-  config.match = config.match ?? newMessageMatchConfig()
+  config.match = newMessageMatchConfig(config.match)
   return config
 }
 
 export function normalizeMessageConfigs(
-  configs: PartialDeep<MessageConfig>[],
-): PartialDeep<MessageConfig>[] {
+  configs: MessageConfig[],
+): MessageConfig[] {
   for (const config of configs) {
     normalizeMessageConfig(config)
   }
   return configs
 }
 
-export function essentialMessageConfig(
-  config: PartialDeep<MessageConfig>,
-): PartialDeep<MessageConfig> {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  config = essentialObject(config as any, newMessageConfig() as any, {
-    actions: essentialActionConfig,
+export function essentialMessageConfig(config: MessageConfig): MessageConfig {
+  config = essentialObject(config, newMessageConfig(), {
+    actions: essentialMessageActionConfig,
     attachments: essentialAttachmentConfig,
     match: essentialMessageMatchConfig,
   })

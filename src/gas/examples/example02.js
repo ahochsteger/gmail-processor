@@ -54,7 +54,8 @@ export const example02Config = {
         {
           name: "thread.storePDF",
           args: {
-            folder: "Scans-${message.date:format:yyyy-MM-dd}",
+            location: "GmailProcessor-Tests/${thread.firstMessageSubject}.pdf",
+            conflictStrategy: "keep",
           },
         },
       ],

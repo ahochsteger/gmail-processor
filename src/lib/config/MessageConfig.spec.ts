@@ -7,10 +7,10 @@ it("should expect a JSON config", () => {
     ConfigMocks.newDefaultMessageConfigJson(),
   )
   expect(messageConfig.match).toBeDefined()
-  expect(messageConfig.match.from).toBe("(.+)@example.com")
-  expect(messageConfig.match.is).toEqual([MessageFlag.UNREAD])
-  expect(messageConfig.match.subject).toBe("Prefix - (.*) - Suffix(.*)")
-  expect(messageConfig.match.to).toBe("my\\.address\\+(.+)@gmail.com")
+  expect(messageConfig.match?.from).toBe("(.+)@example.com")
+  expect(messageConfig.match?.is).toEqual([MessageFlag.UNREAD])
+  expect(messageConfig.match?.subject).toBe("Prefix - (.*) - Suffix(.*)")
+  expect(messageConfig.match?.to).toBe("my\\.address\\+(.+)@gmail.com")
 })
 
 it("should ensure nested object defaults", () => {
@@ -22,8 +22,8 @@ it("should ensure nested object defaults", () => {
   expect(messageConfig.actions).toEqual([])
   expect(messageConfig.attachments).toEqual([])
   expect(messageConfig.match).toBeDefined()
-  expect(messageConfig.match.from).toBe("test")
-  expect(messageConfig.match.is).toEqual([])
-  expect(messageConfig.match.subject).toBe(".*")
-  expect(messageConfig.match.to).toBe(".*")
+  expect(messageConfig.match?.from).toBe("test")
+  expect(messageConfig.match?.is).toEqual([])
+  expect(messageConfig.match?.subject).toBe(".*")
+  expect(messageConfig.match?.to).toBe(".*")
 })

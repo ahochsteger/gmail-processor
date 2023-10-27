@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { PartialDeep } from "type-fest"
 import { ConfigMocks } from "../../test/mocks/ConfigMocks"
 import {
   Config,
@@ -46,7 +45,7 @@ describe("normalizeConfig", () => {
       messages: [{ description: "Message config 1" }],
       attachments: [{ description: "Attachment config 1" }],
     }) as any
-    expect(cfg.threads[0].description).toEqual("Thread config 1")
+    expect(cfg.threads[0]?.description).toEqual("Thread config 1")
     expect(cfg.threads[1]?.messages[0]?.description).toEqual("Message config 1")
     expect(cfg.threads[1]?.messages[1]?.attachments[0]?.description).toEqual(
       "Attachment config 1",
@@ -61,28 +60,8 @@ describe("newConfig", () => {
     expect(actual).toMatchObject(expected)
   })
 
-  // TODO: Disabled option 'excludeExtraneousValues: true' since it causes nested data to get lost
-  // it("should remove additional properties from JSON", () => {
-  //   const expected: PartialDeep<ProcessingConfig> = {
-  //     global: {
-  //       thread: {
-  //         match: {
-  //           query: "global-query",
-  //         },
-  //       },
-  //     },
-  //     settings: {
-  //       markProcessedLabel: "processed-label",
-  //     },
-  //   }
-  //   const cfgJson = { ...expected, additionalProperty: "additional" }
-  //   const actual = newConfig(cfgJson)
-  //   expect((actual as any).additionalProperty).toBeUndefined()
-  //   expect(actual).toMatchObject(expected)
-  // })
-
   it("should create a nested config object from JSON", () => {
-    const expected: PartialDeep<ProcessingConfig> = {
+    const expected: ProcessingConfig = {
       global: {
         thread: {
           match: {
@@ -134,7 +113,7 @@ describe("newConfig", () => {
 
 describe("configToJson", () => {
   it("should serialize config to JSON with default values", () => {
-    const configJson: PartialDeep<ProcessingConfig> = {
+    const configJson: ProcessingConfig = {
       description: "config description",
       settings: {
         markProcessedMethod: MarkProcessedMethod.ADD_THREAD_LABEL,
@@ -146,7 +125,7 @@ describe("configToJson", () => {
         },
       ],
     }
-    const expected: PartialDeep<ProcessingConfig> = {
+    const expected: ProcessingConfig = {
       ...configJson,
       settings: {
         markProcessedMethod: MarkProcessedMethod.ADD_THREAD_LABEL,

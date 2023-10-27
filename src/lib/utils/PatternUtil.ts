@@ -54,7 +54,7 @@ type Placeholder = {
 const placeholderRegex =
   /\$\{(?<fullName>(?<type>[^\\.]{1,16})\.(?<name>[^:}]{1,32}))(:(?<modifier>[^:}]{1,16})(:(?<arg>[^}]{1,1000}))?)?\}/g
 export const defaultDateFormat = "yyyy-MM-dd HH:mm:ss"
-export const defaultJoinSeparator = ","
+const defaultJoinSeparator = ","
 
 export class PatternUtil {
   public static formatDate(date: Date, format: string, timezone = "UTC") {

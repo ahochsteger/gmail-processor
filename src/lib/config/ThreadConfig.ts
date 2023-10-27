@@ -1,9 +1,12 @@
 import { Expose, Type, plainToInstance } from "class-transformer"
 import "reflect-metadata"
-import { PartialDeep } from "type-fest"
 import { essentialObject } from "../utils/ConfigUtils"
 import { RequiredDeep } from "../utils/UtilityTypes"
-import { ThreadActionConfig, essentialActionConfig } from "./ActionConfig"
+import {
+  ThreadActionConfig,
+  ThreadContextActionConfigType,
+  essentialThreadActionConfig,
+} from "./ActionConfig"
 import { AttachmentConfig, essentialAttachmentConfig } from "./AttachmentConfig"
 import {
   MessageConfig,
@@ -25,7 +28,7 @@ export class ThreadConfig {
    */
   @Expose()
   @Type(() => ThreadActionConfig)
-  actions?: ThreadActionConfig[] = []
+  actions?: ThreadContextActionConfigType[] = []
   /**
    * The description of the thread handler config
    */
@@ -58,18 +61,14 @@ export class ThreadConfig {
 
 export type RequiredThreadConfig = RequiredDeep<ThreadConfig>
 
-export function newThreadConfig(
-  json: PartialDeep<ThreadConfig> = {},
-): RequiredThreadConfig {
+export function newThreadConfig(json: ThreadConfig = {}): RequiredThreadConfig {
   return plainToInstance(ThreadConfig, normalizeThreadConfig(json), {
     exposeDefaultValues: true,
     exposeUnsetFields: false,
   }) as RequiredThreadConfig
 }
 
-export function normalizeThreadConfig(
-  config: PartialDeep<ThreadConfig>,
-): PartialDeep<ThreadConfig> {
+export function normalizeThreadConfig(config: ThreadConfig): ThreadConfig {
   config.messages = config.messages ?? []
 
   // Normalize top-level attachments config:
@@ -84,20 +83,17 @@ export function normalizeThreadConfig(
 }
 
 export function normalizeThreadConfigs(
-  configs: PartialDeep<ThreadConfig>[],
-): PartialDeep<ThreadConfig>[] {
+  configs: ThreadConfig[],
+): ThreadConfig[] {
   for (const config of configs) {
     normalizeThreadConfig(config)
   }
   return configs
 }
 
-export function essentialThreadConfig(
-  config: PartialDeep<ThreadConfig>,
-): PartialDeep<ThreadConfig> {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  config = essentialObject(config as any, newThreadConfig() as any, {
-    actions: essentialActionConfig,
+export function essentialThreadConfig(config: ThreadConfig): ThreadConfig {
+  config = essentialObject(config, newThreadConfig(), {
+    actions: essentialThreadActionConfig,
     messages: essentialMessageConfig,
     attachments: essentialAttachmentConfig,
     match: essentialThreadMatchConfig,

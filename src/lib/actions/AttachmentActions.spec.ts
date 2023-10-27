@@ -24,7 +24,7 @@ it("should provide actions in the action registry", () => {
   const actionNames = Array.from(actionRegistry.getActions().keys())
     .filter((v) => v.startsWith("attachment."))
     .sort()
-  expect(actionNames).toEqual(["attachment.store"])
+  expect(actionNames).toEqual(["attachment.noop", "attachment.store"])
 })
 
 it("should provide attachment.store in the action registry", () => {

@@ -30,6 +30,7 @@ export type LocationInfo = {
 export class FileContent {
   constructor(
     public blob: GoogleAppsScript.Base.BlobSource,
+    public name: string = blob?.getBlob()?.getName() ?? "",
     public description = "",
   ) {}
 }
@@ -291,7 +292,11 @@ export class GDriveAdapter extends BaseAdapter {
     this.ctx.log.info(
       `Storing attachment '${attachment.getName()}' to '${location}' ...`,
     )
-    const fileData = new FileContent(attachment.copyBlob(), description)
+    const fileData = new FileContent(
+      attachment.copyBlob(),
+      attachment.getName(),
+      description,
+    )
     const file = DriveUtils.createFile(
       this.ctx,
       location,

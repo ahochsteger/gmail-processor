@@ -1,18 +1,46 @@
 import {
   AttachmentContext,
+  AttachmentInfo,
+  ContextType,
   MetaInfoType as MIT,
   MessageContext,
+  MessageInfo,
   MetaInfo,
   ProcessingContext,
   ProcessingError,
   ProcessingResult,
   ProcessingStatus,
   ThreadContext,
+  ThreadInfo,
   newMetaInfo as mi,
 } from "../Context"
 import { ActionArgsType, ActionReturnType } from "../actions/ActionRegistry"
 import { ActionConfig, ProcessingStage } from "../config/ActionConfig"
+import { AttachmentMatchConfig } from "../config/AttachmentMatchConfig"
+import { MessageMatchConfig } from "../config/MessageMatchConfig"
+import { ThreadMatchConfig } from "../config/ThreadMatchConfig"
 import { PatternUtil } from "../utils/PatternUtil"
+
+type TraceEntry = {
+  configIndex: number
+  index: number
+  match: ThreadMatchConfig | MessageMatchConfig | AttachmentMatchConfig
+  object: unknown
+}
+
+type ProcessingTrace = {
+  action: ActionConfig
+  traces: {
+    thread?: TraceEntry
+    message?: TraceEntry
+    attachment?: TraceEntry
+  }
+  data: { [k: string]: unknown }
+  error: {
+    message?: string
+    stack?: string
+  }
+}
 
 export abstract class BaseProcessor {
   /**
@@ -77,7 +105,101 @@ export abstract class BaseProcessor {
     return m
   }
 
+  protected static describeThread(thread: GoogleAppsScript.Gmail.GmailThread): {
+    [k: string]: unknown
+  } {
+    return {
+      id: thread.getId(),
+      firstMessageSubject: thread.getFirstMessageSubject(),
+      lastMessageDate: thread.getLastMessageDate(),
+      messageCount: thread.getMessages().length,
+      permalink: thread.getPermalink(),
+    }
+  }
+
+  protected static describeMessage(
+    message: GoogleAppsScript.Gmail.GmailMessage,
+  ): { [k: string]: unknown } {
+    return {
+      id: message.getId(),
+      subject: message.getSubject(),
+      date: message.getDate(),
+      from: message.getFrom(),
+      to: message.getTo(),
+      attachmentCount: message.getAttachments().length,
+    }
+  }
+
+  protected static describeAttachment(
+    attachment: GoogleAppsScript.Gmail.GmailAttachment,
+  ): { [k: string]: unknown } {
+    return {
+      hash: attachment.getHash(),
+      name: attachment.getName(),
+      isGoogleType: attachment.isGoogleType(),
+      contentType: attachment.getContentType(),
+    }
+  }
+
+  protected static getTraceEntry<
+    T extends ThreadInfo | MessageInfo | AttachmentInfo,
+  >(info: T, obj: unknown): TraceEntry {
+    return {
+      configIndex: info.configIndex,
+      index: info.index,
+      match: info.config.match,
+      object: obj,
+    }
+  }
+
+  protected static getSubstitutionData(ctx: ProcessingContext): {
+    [k: string]: unknown
+  } {
+    const d: { [k: string]: unknown } = {}
+    Object.keys(ctx.meta).forEach((key) => (d[key] = ctx.meta[key].value))
+    return d
+  }
+
+  protected static getProcessingTrace(
+    ctx: ProcessingContext,
+    action: ActionConfig,
+    actionResult: ActionReturnType,
+  ): ProcessingTrace {
+    const procTrace: ProcessingTrace = {
+      traces: {},
+      action: action,
+      data: this.getSubstitutionData(ctx),
+      error: {
+        message: actionResult.error?.message,
+        stack: actionResult.error?.stack,
+      },
+    }
+    if ((ContextType.THREAD in ctx) as unknown) {
+      const info = (ctx as ThreadContext).thread
+      procTrace.traces.thread = this.getTraceEntry<ThreadInfo>(
+        info,
+        this.describeThread(info.object),
+      )
+    }
+    if ((ContextType.MESSAGE in ctx) as unknown) {
+      const info = (ctx as MessageContext).message
+      procTrace.traces.message = this.getTraceEntry<MessageInfo>(
+        info,
+        this.describeMessage(info.object),
+      )
+    }
+    if ((ContextType.ATTACHMENT in ctx) as unknown) {
+      const info = (ctx as AttachmentContext).attachment
+      procTrace.traces.attachment = this.getTraceEntry<AttachmentInfo>(
+        info,
+        this.describeAttachment(info.object),
+      )
+    }
+    return procTrace
+  }
+
   protected static handleActionResult(
+    ctx: ProcessingContext,
     result: ProcessingResult,
     action: ActionConfig,
     actionResult: ActionReturnType,
@@ -87,10 +209,11 @@ export abstract class BaseProcessor {
       result.status = ProcessingStatus.ERROR
       result.failedAction = action
       result.error = actionResult.error
+      const trace = this.getProcessingTrace(ctx, action, actionResult)
       throw new ProcessingError(
-        `Error "${String(actionResult.error)}" during execution of action ${
-          action.name
-        } using args ${JSON.stringify(action.args)}!`,
+        `Error in action '${action.name}': ${String(
+          actionResult.error,
+        )}\nProcessing Trace:\n${JSON.stringify(trace, null, 2)}`,
         result,
       )
     }
@@ -112,7 +235,7 @@ export abstract class BaseProcessor {
             actionResult = ctx.proc.actionRegistry.executeAction(
               ctx,
               action.name,
-              action.args as ActionArgsType,
+              action.args as unknown as ActionArgsType,
             )
           } catch (err) {
             actionResult = {
@@ -120,7 +243,7 @@ export abstract class BaseProcessor {
               error: err instanceof Error ? err : new Error(String(err)),
             }
           }
-          result = this.handleActionResult(result, action, actionResult)
+          result = this.handleActionResult(ctx, result, action, actionResult)
         })
     })
     return result

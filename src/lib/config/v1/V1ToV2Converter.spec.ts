@@ -1,14 +1,19 @@
-import { PartialDeep } from "type-fest"
-import { RequiredDeep } from "../../utils/UtilityTypes"
+import { ConflictStrategy } from "../../adapter/GDriveAdapter"
 import { AttachmentActionConfig, ThreadActionConfig } from "../ActionConfig"
 import { Config } from "../Config"
 import { ThreadConfig } from "../ThreadConfig"
-import { V1Config, newV1Config } from "./V1Config"
+import {
+  RequiredV1Config,
+  V1Config,
+  defaultV1Config,
+  newV1Config,
+} from "./V1Config"
 import { V1ToV2Converter } from "./V1ToV2Converter"
 
 it("should convert settings", () => {
-  const v1config: PartialDeep<V1Config> = {
+  const v1config: V1Config = {
     maxRuntime: 234,
+    newerThan: "2m",
     processedLabel: "gmail2gdrive/client-test",
     sleepTime: 123,
     timezone: "Europe/Vienna",
@@ -19,7 +24,7 @@ it("should convert settings", () => {
       },
     ],
   }
-  const expected: PartialDeep<Config> = {
+  const expected: Config = {
     settings: {
       maxRuntime: 234,
       markProcessedLabel: "gmail2gdrive/client-test",
@@ -33,7 +38,8 @@ it("should convert settings", () => {
 })
 
 it("should create default global config", () => {
-  const v1config: PartialDeep<V1Config> = {
+  const v1config: V1Config = {
+    ...defaultV1Config,
     rules: [
       {
         filter: "",
@@ -41,7 +47,7 @@ it("should create default global config", () => {
       },
     ],
   }
-  const expected: PartialDeep<Config> = {
+  const expected: Config = {
     global: {
       thread: {
         match: {
@@ -57,7 +63,8 @@ it("should create default global config", () => {
 })
 
 it("should convert global config", () => {
-  const v1config: PartialDeep<V1Config> = {
+  const v1config: V1Config = {
+    ...defaultV1Config,
     globalFilter:
       "has:attachment -in:trash -in:drafts -in:spam -label:some-label",
     newerThan: "3d",
@@ -68,7 +75,7 @@ it("should convert global config", () => {
       },
     ],
   }
-  const expected: PartialDeep<Config> = {
+  const expected: Config = {
     global: {
       thread: {
         match: {
@@ -84,7 +91,8 @@ it("should convert global config", () => {
 })
 
 it("should convert rule with filter and folder", () => {
-  const v1config: PartialDeep<V1Config> = {
+  const v1config: V1Config = {
+    ...defaultV1Config,
     rules: [
       {
         filter: "from:example1@example.com",
@@ -106,7 +114,8 @@ it("should convert rule with filter and folder", () => {
 })
 
 it("should convert rule with filter and folder containing a date format", () => {
-  const v1config: PartialDeep<V1Config> = {
+  const v1config: V1Config = {
+    ...defaultV1Config,
     rules: [
       {
         filter: "to:my.name+scans@gmail.com",
@@ -128,7 +137,7 @@ it("should convert rule with filter and folder containing a date format", () => 
 })
 
 it("should convert rule with filter, folder and filenameFromRegexp", () => {
-  const v1config: RequiredDeep<V1Config> = newV1Config({
+  const v1config: RequiredV1Config = newV1Config({
     rules: [
       {
         filter: "from:example2@example.com",
@@ -137,7 +146,7 @@ it("should convert rule with filter, folder and filenameFromRegexp", () => {
       },
     ],
   })
-  const expectedThreadConfig: PartialDeep<ThreadConfig> = {
+  const expectedThreadConfig: ThreadConfig = {
     match: {
       query: "from:example2@example.com",
     },
@@ -164,7 +173,8 @@ it("should convert rule with filter, folder and filenameFromRegexp", () => {
 })
 
 it("should convert rule with filter, folder, filenameTo and archive", () => {
-  const v1config: PartialDeep<V1Config> = newV1Config({
+  const v1config: V1Config = newV1Config({
+    ...defaultV1Config,
     rules: [
       {
         filter: "(from:example3a@example.com OR from:example3b@example.com)",
@@ -179,13 +189,14 @@ it("should convert rule with filter, folder, filenameTo and archive", () => {
     args: {
       location:
         "/Examples/example3ab/file-${message.date:format:yyyy-MM-dd-}${message.subject}.txt",
+      conflictStrategy: ConflictStrategy.KEEP,
     },
     name: "attachment.store",
   }
   const expectedThreadActionConfig: ThreadActionConfig = {
     name: "thread.moveToArchive",
   }
-  const expectedThreadConfig: PartialDeep<ThreadConfig> = {
+  const expectedThreadConfig: ThreadConfig = {
     match: {
       query: "(from:example3a@example.com OR from:example3b@example.com)",
     },
@@ -199,7 +210,8 @@ it("should convert rule with filter, folder, filenameTo and archive", () => {
 })
 
 it("should convert rule with filter, folder and parentFolderId", () => {
-  const v1config: PartialDeep<V1Config> = {
+  const v1config: V1Config = {
+    ...defaultV1Config,
     rules: [
       {
         // Store all attachments from example1@example.com to the SHARED Drive folder "Shared Drives/Lambda/Examples/example1"
@@ -223,7 +235,8 @@ it("should convert rule with filter, folder and parentFolderId", () => {
 })
 
 it("should convert rule with filter, folder, filenameTo and archive", () => {
-  const v1config: PartialDeep<V1Config> = {
+  const v1config: V1Config = {
+    ...defaultV1Config,
     rules: [
       {
         // Store all attachments from example3a@example.com OR from:example3b@example.com
@@ -256,7 +269,8 @@ it("should convert rule with filter, folder, filenameTo and archive", () => {
 })
 
 it("should convert rule with filter, saveThreadPDF and folder", () => {
-  const v1config: PartialDeep<V1Config> = {
+  const v1config: V1Config = {
+    ...defaultV1Config,
     rules: [
       {
         // Store threads marked with label "PDF" in the folder "PDF Emails" as PDF document.
@@ -285,7 +299,8 @@ it("should convert rule with filter, saveThreadPDF and folder", () => {
 })
 
 it("should convert rule with filter, saveMessagePDF, skipPDFHeader and folder", () => {
-  const v1config: PartialDeep<V1Config> = {
+  const v1config: V1Config = {
+    ...defaultV1Config,
     rules: [
       {
         // Store each INDIVIDUAL email as "PDF" instead of an entire thread, in the folder "PDF Emails"
@@ -310,7 +325,8 @@ it("should convert rule with filter, saveMessagePDF, skipPDFHeader and folder", 
 })
 
 it("should convert rule with filter, saveMessagePDF, skipPDFHeader and folder", () => {
-  const v1config: PartialDeep<V1Config> = {
+  const v1config: V1Config = {
+    ...defaultV1Config,
     rules: [
       {
         // Store each INDIVIDUAL email as "PDF" instead of an entire thread, in the folder "PDF Emails"
@@ -335,7 +351,8 @@ it("should convert rule with filter, saveMessagePDF, skipPDFHeader and folder", 
 })
 
 it("should convert rule with filter, saveThreadPDF, folder and filenameTo", () => {
-  const v1config: PartialDeep<V1Config> = {
+  const v1config: V1Config = {
+    ...defaultV1Config,
     rules: [
       {
         // Store threads marked with label "PDF" in the folder "PDF Emails" as PDF document.
@@ -350,7 +367,7 @@ it("should convert rule with filter, saveThreadPDF, folder and filenameTo", () =
       },
     ],
   }
-  const expected: PartialDeep<Config> = {
+  const expected: Config = {
     threads: [
       {
         match: {
@@ -361,6 +378,7 @@ it("should convert rule with filter, saveThreadPDF, folder and filenameTo", () =
             args: {
               location:
                 "/PDF Emails/file-${message.date:format:yyyy-MM-dd-}${message.subject}",
+              conflictStrategy: ConflictStrategy.KEEP,
             },
             name: "thread.storePDF",
           },
@@ -373,7 +391,8 @@ it("should convert rule with filter, saveThreadPDF, folder and filenameTo", () =
 })
 
 it("should convert rule with filter, folder filenameFrom and filenameTo", () => {
-  const v1config: PartialDeep<V1Config> = {
+  const v1config: V1Config = {
+    ...defaultV1Config,
     rules: [
       {
         // Store all attachments named "file.txt" from example4@example.com to the
@@ -411,7 +430,8 @@ it("should convert rule with filter, folder filenameFrom and filenameTo", () => 
 })
 
 it("should convert rule with filter, folder filenameFrom and filenameTo", () => {
-  const v1config: PartialDeep<V1Config> = {
+  const v1config: V1Config = {
+    ...defaultV1Config,
     rules: [
       {
         // Store all of the emails with the text "receipt" from billing@zoom.us
@@ -441,7 +461,8 @@ it("should convert rule with filter, folder filenameFrom and filenameTo", () => 
 })
 
 it("should convert rule with filter, saveThreadPDF, ruleLabel and folder", () => {
-  const v1config: PartialDeep<V1Config> = {
+  const v1config: V1Config = {
+    ...defaultV1Config,
     rules: [
       {
         // Store threads marked with label "PDF" in the folder "PDF Emails" as PDF document and add "addPDFlabel" to the processed thread.
@@ -452,7 +473,7 @@ it("should convert rule with filter, saveThreadPDF, ruleLabel and folder", () =>
       },
     ],
   }
-  const expected: PartialDeep<Config> = {
+  const expected: Config = {
     threads: [
       {
         match: {
@@ -462,6 +483,7 @@ it("should convert rule with filter, saveThreadPDF, ruleLabel and folder", () =>
           {
             args: {
               location: "/PDF Emails/${thread.firstMessageSubject}.pdf",
+              conflictStrategy: ConflictStrategy.KEEP,
             },
             name: "thread.storePDF",
           },

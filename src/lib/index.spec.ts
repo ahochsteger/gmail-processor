@@ -1,11 +1,10 @@
-import { PartialDeep } from "type-fest"
 import { convertV1Config, run } from "."
 import { ConfigMocks } from "../test/mocks/ConfigMocks"
 import { MockFactory, Mocks } from "../test/mocks/MockFactory"
 import { ProcessingStatus, RunMode } from "./Context"
 import { Config, newConfig } from "./config/Config"
 
-let configJson: PartialDeep<Config>
+let configJson: Config
 let mocks: Mocks
 
 beforeEach(() => {

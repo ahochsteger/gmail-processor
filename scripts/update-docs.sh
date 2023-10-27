@@ -18,6 +18,7 @@ function extractAllDocs() {
   local jsonfile="${1}"
   npx typedoc \
     --json "${jsonfile}" \
+    --readme none \
     'src/lib/**/*.ts'
 }
 
@@ -27,15 +28,7 @@ function extractAllEnums() {
 
 function extractAllActions() {
   local inputFile="${1}"
-  local typeMap='{
-    "GlobalActions": "global",
-    "AttachmentActions": "attachment",
-    "MessageActions": "message",
-    "ThreadActions": "thread"
-  }'
-
   gojq -r \
-    --argjson typeMap "${typeMap}" \
     -f "${scriptdir}/update-docs-extract-actions.jq" \
     <"${inputFile}"
 }

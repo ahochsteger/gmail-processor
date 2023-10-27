@@ -1,4 +1,3 @@
-import { PartialDeep } from "type-fest"
 import {
   ContextType,
   EnvContext,
@@ -25,6 +24,7 @@ import {
   essentialConfig,
   newConfig,
 } from "../config/Config"
+import { VariableEntry } from "../config/GlobalConfig"
 import { Timer } from "../utils/Timer"
 import { ThreadProcessor } from "./ThreadProcessor"
 
@@ -55,8 +55,8 @@ export class GmailProcessor {
         "The start timestamp of the processing script.",
       ),
     }
-    ctx.proc.config.global.variables.forEach(
-      (entry) =>
+    ;(ctx.proc.config.global.variables as VariableEntry[]).forEach(
+      (entry: VariableEntry) =>
         (m[`variables.${entry.key}`] = mi(
           MIT.VARIABLE,
           entry.value,
@@ -139,22 +139,18 @@ export class GmailProcessor {
   }
 
   public static runWithJson(
-    configJson: PartialDeep<Config>,
+    configJson: Config,
     ctx: EnvContext,
   ): ProcessingResult {
     const config = GmailProcessor.getEffectiveConfig(configJson)
     return this.run(config, ctx)
   }
 
-  public static getEffectiveConfig(
-    configJson: PartialDeep<Config>,
-  ): RequiredConfig {
+  public static getEffectiveConfig(configJson: Config): RequiredConfig {
     return newConfig(configJson)
   }
 
-  public static getEssentialConfig(
-    configJson: PartialDeep<Config>,
-  ): PartialDeep<Config> {
+  public static getEssentialConfig(configJson: Config): Config {
     return essentialConfig(configJson)
   }
 }

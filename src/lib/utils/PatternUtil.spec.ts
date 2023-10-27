@@ -7,6 +7,7 @@ import {
   MockFactory,
   Mocks,
 } from "../../test/mocks/MockFactory"
+import { ConflictStrategy } from "../adapter/GDriveAdapter"
 import { Config, newConfig } from "../config/Config"
 import { MarkProcessedMethod } from "../config/SettingsConfig"
 import { RunMode } from "../Context"
@@ -87,7 +88,7 @@ describe("Pattern Substitution", () => {
                           EXISTING_FOLDER_NAME +
                           "/${message.subject.match.1}/${message.subject} - " +
                           "${attachment.name.match.1}.jpg",
-                        conflictStrategy: "replace",
+                        conflictStrategy: ConflictStrategy.REPLACE,
                       },
                     },
                   ],

@@ -1,5 +1,4 @@
 import { plainToInstance } from "class-transformer"
-import { PartialDeep } from "type-fest"
 import { essentialObject } from "../utils/ConfigUtils"
 import { RequiredDeep } from "../utils/UtilityTypes"
 import { MessageFlag } from "./MessageFlag"
@@ -47,7 +46,7 @@ export class MessageMatchConfig {
 export type RequiredMessageMatchConfig = RequiredDeep<MessageMatchConfig>
 
 export function newMessageMatchConfig(
-  json: PartialDeep<MessageMatchConfig> = {},
+  json: MessageMatchConfig = {},
 ): RequiredMessageMatchConfig {
   return plainToInstance(MessageMatchConfig, json, {
     exposeDefaultValues: true,
@@ -56,9 +55,8 @@ export function newMessageMatchConfig(
 }
 
 export function essentialMessageMatchConfig(
-  config: PartialDeep<MessageMatchConfig>,
-): PartialDeep<MessageMatchConfig> {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  config = essentialObject(config as any, newMessageMatchConfig() as any)
+  config: MessageMatchConfig,
+): MessageMatchConfig {
+  config = essentialObject(config, newMessageMatchConfig())
   return config
 }

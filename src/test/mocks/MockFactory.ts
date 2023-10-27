@@ -1,5 +1,4 @@
 import { MockProxy, matches, mock } from "jest-mock-extended"
-import { PartialDeep } from "type-fest"
 import {
   AttachmentContext,
   EnvContext,
@@ -17,7 +16,7 @@ import { GMailData, GMailMocks, IndexType } from "./GMailMocks"
 import { SpreadsheetMocks } from "./SpreadsheetMocks"
 
 export const fakedSystemDateTimeString = "2023-06-26 09:00:00"
-export const fakedSystemDateTime = new Date(fakedSystemDateTimeString + "Z")
+const fakedSystemDateTime = new Date(fakedSystemDateTimeString + "Z")
 jest.useFakeTimers({ now: fakedSystemDateTime })
 
 class EnvMocks {
@@ -31,6 +30,12 @@ class EnvMocks {
     mock<GoogleAppsScript.Base.Blob>()
   public existingFile: MockProxy<GoogleAppsScript.Drive.File> =
     mock<GoogleAppsScript.Drive.File>()
+  public genericNewBlob: MockProxy<GoogleAppsScript.Base.Blob> =
+    mock<GoogleAppsScript.Base.Blob>()
+  public genericNewFile: MockProxy<GoogleAppsScript.Drive.File> =
+    mock<GoogleAppsScript.Drive.File>()
+  public genericNewFolder: MockProxy<GoogleAppsScript.Drive.Folder> =
+    mock<GoogleAppsScript.Drive.Folder>()
   public newExistingBlob: MockProxy<GoogleAppsScript.Base.Blob> =
     mock<GoogleAppsScript.Base.Blob>()
   public newExistingFile: MockProxy<GoogleAppsScript.Drive.File> =
@@ -126,7 +131,7 @@ export class Mocks extends EnvMocks {
   public messageContext: MessageContext
   public attachmentContext: AttachmentContext
   constructor(
-    configJson: PartialDeep<Config> = ConfigMocks.newDefaultConfigJson(),
+    configJson: Config = ConfigMocks.newDefaultConfigJson(),
     gmailData: GMailData = GMailMocks.getGmailSampleData(),
     dataIndex: IndexType = [0, 0, 0],
     configIndex: IndexType = [0, 0, 0],
@@ -176,7 +181,7 @@ export class Mocks extends EnvMocks {
 
 export class MockFactory {
   public static newMocks(
-    config: PartialDeep<Config> = ConfigMocks.newDefaultConfig(),
+    config: Config = ConfigMocks.newDefaultConfig(),
     runMode = RunMode.DANGEROUS,
     mocks = new Mocks(
       config,
@@ -189,7 +194,7 @@ export class MockFactory {
     return mocks
   }
   public static newCustomMocks(
-    config: PartialDeep<Config> = ConfigMocks.newDefaultConfig(),
+    config: Config = ConfigMocks.newDefaultConfig(),
     gmailData: GMailData = GMailMocks.getGmailSampleData(),
     dataIndex: IndexType = [0, 0, 0],
     configIndex: IndexType = [0, 0, 0],

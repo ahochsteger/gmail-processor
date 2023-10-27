@@ -30,13 +30,12 @@ export class V1Rule {
   skipPDFHeader? = false
 }
 
-export function newV1Rule(
-  json: PartialDeep<V1Rule> = {},
-): RequiredDeep<V1Rule> {
+export type RequiredV1Rule = RequiredDeep<V1Rule>
+export function newV1Rule(json: PartialDeep<V1Rule> = {}): RequiredV1Rule {
   return plainToInstance(V1Rule, json, {
     exposeDefaultValues: true,
     exposeUnsetFields: false,
-  }) as RequiredDeep<V1Rule>
+  }) as RequiredV1Rule
 }
 
 /*

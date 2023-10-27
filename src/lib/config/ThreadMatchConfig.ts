@@ -1,6 +1,5 @@
 import { Expose, plainToInstance } from "class-transformer"
 import "reflect-metadata"
-import { PartialDeep } from "type-fest"
 import { essentialObject } from "../utils/ConfigUtils"
 import { RequiredDeep } from "../utils/UtilityTypes"
 import { DEFAULT_GLOBAL_QUERY } from "./GlobalConfig"
@@ -42,7 +41,7 @@ export class ThreadMatchConfig {
 export type RequiredThreadMatchConfig = RequiredDeep<ThreadMatchConfig>
 
 export function newThreadMatchConfig(
-  json: PartialDeep<ThreadMatchConfig> = {},
+  json: ThreadMatchConfig = {},
 ): RequiredThreadMatchConfig {
   json.query = json.query ?? DEFAULT_GLOBAL_QUERY // TODO: Move to normalizeThreadMatchConfig()
   return plainToInstance(ThreadMatchConfig, json, {
@@ -52,9 +51,8 @@ export function newThreadMatchConfig(
 }
 
 export function essentialThreadMatchConfig(
-  config: PartialDeep<ThreadMatchConfig>,
-): PartialDeep<ThreadMatchConfig> {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  config = essentialObject(config as any, newThreadMatchConfig() as any)
+  config: ThreadMatchConfig,
+): ThreadMatchConfig {
+  config = essentialObject(config, newThreadMatchConfig())
   return config
 }

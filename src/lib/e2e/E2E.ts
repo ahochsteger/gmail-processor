@@ -6,7 +6,7 @@ import {
   FileContent,
 } from "../adapter/GDriveAdapter"
 
-export type FileConfig = {
+type FileConfig = {
   name: string
   type: string
   filename: string

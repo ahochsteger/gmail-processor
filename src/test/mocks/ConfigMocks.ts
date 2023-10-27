@@ -1,5 +1,5 @@
-import { PartialDeep } from "type-fest"
-import { ThreadActionConfig } from "../../lib/config/ActionConfig"
+import { ConflictStrategy } from "../../lib/adapter/GDriveAdapter"
+import { ThreadContextActionConfigType } from "../../lib/config/ActionConfig"
 import { AttachmentConfig } from "../../lib/config/AttachmentConfig"
 import { Config, RequiredConfig, newConfig } from "../../lib/config/Config"
 import { GlobalConfig } from "../../lib/config/GlobalConfig"
@@ -12,6 +12,7 @@ import {
 import { ThreadConfig } from "../../lib/config/ThreadConfig"
 import { V1Config } from "../../lib/config/v1/V1Config"
 import {
+  E2E_BASE_FOLDER_NAME,
   EXISTING_FILE_NAME,
   EXISTING_FOLDER_NAME,
   LOGSHEET_FILE_PATH,
@@ -31,20 +32,18 @@ export class ConfigMocks {
     }
   }
 
-  public static newDefaultThreadActionConfigJson(): PartialDeep<ThreadActionConfig> {
+  public static newDefaultThreadActionConfigJson(): ThreadContextActionConfigType {
     return {
       args: {
-        folderType: "path",
-        folder: `/${EXISTING_FOLDER_NAME}`,
-        filename: "${message.subject} - ${match.file.1}.jpg",
-        onExists: "replace",
+        location: `/${E2E_BASE_FOLDER_NAME}/example-\${message.subject}.pdf`,
+        conflictStrategy: ConflictStrategy.REPLACE,
       },
       name: "thread.storePDF",
       description: "Default action config",
     }
   }
 
-  public static newDefaultAttachmentConfigJson(): PartialDeep<AttachmentConfig> {
+  public static newDefaultAttachmentConfigJson(): AttachmentConfig {
     return {
       name: "default-attachment-config",
       description: "Default attachment config",
@@ -59,7 +58,7 @@ export class ConfigMocks {
     }
   }
 
-  public static newDefaultMessageConfigJson(): PartialDeep<MessageConfig> {
+  public static newDefaultMessageConfigJson(): MessageConfig {
     return {
       name: "default-message-config",
       description: "Default message config",
@@ -75,16 +74,21 @@ export class ConfigMocks {
   }
 
   public static newDefaultThreadConfigJson(
-    includeCommands = false,
+    includeActions = false,
     includeMessages = false,
-  ): PartialDeep<ThreadConfig> {
+  ): ThreadConfig {
     return {
       name: "default-thread-config",
       description: "A sample thread config",
-      actions: includeCommands
-        ? [this.newDefaultThreadActionConfigJson() as ThreadActionConfig]
+      actions: includeActions ? [this.newDefaultThreadActionConfigJson()] : [],
+      messages: includeMessages
+        ? [
+            {
+              ...this.newDefaultMessageConfigJson(),
+              attachments: [this.newDefaultAttachmentConfigJson()],
+            },
+          ]
         : [],
-      messages: includeMessages ? [this.newDefaultMessageConfigJson()] : [],
       match: {
         query: "has:attachment from:example@example.com",
         maxMessageCount: -1,
@@ -94,7 +98,7 @@ export class ConfigMocks {
     }
   }
 
-  public static newDefaultGlobalConfigJson(): PartialDeep<GlobalConfig> {
+  public static newDefaultGlobalConfigJson(): GlobalConfig {
     return {
       variables: [
         {
@@ -105,7 +109,7 @@ export class ConfigMocks {
     }
   }
 
-  public static newComplexThreadConfigList(): PartialDeep<ThreadConfig>[] {
+  public static newComplexThreadConfigList(): ThreadConfig[] {
     return [
       {
         match: {
@@ -117,10 +121,10 @@ export class ConfigMocks {
               body: "(?<url>https://raw\\.githubusercontent\\.com/ahochsteger/gmail-processor/main/src/e2e-test/files/(?<filename>[0-9A-Za-z_-]+\\.txt))",
               from: "(.+)@example.com",
               subject: "Message (?<myMatchGroup>.*)",
-              to: "my\\.address\\+(.+)@gmail.com",
-              is: [MessageFlag.READ],
+              to: "message-to@example\\.com",
+              is: [MessageFlag.UNREAD],
             },
-            actions: [{ name: "message.markRead" }],
+            actions: [{ name: "message.star" }],
             attachments: [
               {
                 match: {
@@ -133,8 +137,8 @@ export class ConfigMocks {
                     args: {
                       location:
                         EXISTING_FOLDER_NAME +
-                        "/${message.subject.match.1}/${email.subject} - ${match.att.1}.jpg",
-                      conflictStrategy: "replace",
+                        "/${message.subject.match.1}/example-${attachment.name.match.attNr}.pdf",
+                      conflictStrategy: ConflictStrategy.REPLACE,
                     },
                   },
                 ],
@@ -147,7 +151,7 @@ export class ConfigMocks {
                     args: {
                       location:
                         "Folder3/Subfolder3/${att.basename}-${date:yyyy-MM-dd}.${att.ext}",
-                      conflictStrategy: "skip",
+                      conflictStrategy: ConflictStrategy.SKIP,
                     },
                   },
                 ],
@@ -169,6 +173,7 @@ export class ConfigMocks {
                 name: "message.storePDF",
                 args: {
                   location: `/${EXISTING_FOLDER_NAME}/${EXISTING_FILE_NAME}`,
+                  conflictStrategy: ConflictStrategy.REPLACE,
                 },
               },
             ],
@@ -186,6 +191,7 @@ export class ConfigMocks {
             name: "thread.storePDF",
             args: {
               location: `/${EXISTING_FOLDER_NAME}/${EXISTING_FILE_NAME}`,
+              conflictStrategy: ConflictStrategy.REPLACE,
             },
           },
         ],
@@ -198,10 +204,18 @@ export class ConfigMocks {
     ]
   }
 
-  public static newDefaultConfigJson(): Config {
+  public static newComplexConfigJson(): Config {
     return {
       settings: this.newDefaultSettingsConfigJson(),
       threads: this.newComplexThreadConfigList(),
+      global: this.newDefaultGlobalConfigJson(),
+    }
+  }
+
+  public static newDefaultConfigJson(): Config {
+    return {
+      settings: this.newDefaultSettingsConfigJson(),
+      threads: [this.newDefaultThreadConfigJson(true, true)],
       global: this.newDefaultGlobalConfigJson(),
     }
   }
