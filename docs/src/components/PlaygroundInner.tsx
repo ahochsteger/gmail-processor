@@ -1,29 +1,34 @@
-import BrowserOnly from "@docusaurus/BrowserOnly"
-import { useColorMode } from "@docusaurus/theme-common"
-import React from "react"
+import BrowserOnly from "@docusaurus/BrowserOnly";
+import { useColorMode } from "@docusaurus/theme-common";
+import TabItem from '@theme/TabItem';
+import Tabs from '@theme/Tabs';
+import React from "react";
 
-import JSONSchemaEditor from "@theme/JSONSchemaEditor"
+import JSONSchemaEditor from "@theme/JSONSchemaEditor";
 
-import { essentialConfig } from "../../../src/lib/config/Config"
-import ConfigSchemaV2 from "../../../src/lib/config/config-schema-v2.json"
-import { V1ToV2Converter } from "../../../src/lib/config/v1/V1ToV2Converter"
-import ConfigSchemaV1 from "../../../src/lib/config/v1/config-schema-v1.json"
+import { essentialConfig } from "../../../src/lib/config/Config";
+import ConfigSchemaV2 from "../../../src/lib/config/config-schema-v2.json";
+import { V1ToV2Converter } from "../../../src/lib/config/v1/V1ToV2Converter";
+import ConfigSchemaV1 from "../../../src/lib/config/v1/config-schema-v1.json";
 
-import JSONSchemaViewer from "@theme/JSONSchemaViewer"
+import JSONSchemaViewer from "@theme/JSONSchemaViewer";
 
 import {
   PlaygroundContextProvider,
   usePlaygroundContext,
-} from "@site/src/contexts/PlaygroundContext"
+} from "@site/src/contexts/PlaygroundContext";
 
 // Type I need for useRef
-import type { State as PlaygroundState } from "@site/src/contexts/PlaygroundContext"
+import type { State as PlaygroundState } from "@site/src/contexts/PlaygroundContext";
 
-import ConfigToolbar from "@site/src/components/ConfigToolbar"
-import SchemaToolbar from "@site/src/components/SchemaToolbar"
+import ConfigToolbar from "@site/src/components/ConfigToolbar";
 
-import { toast } from "react-toastify"
-import config from "../../../src/gas/examples/gettingStarted.json"
+import config from "@site/../src/gas/examples/gettingStarted.json";
+import { toast } from "react-toastify";
+
+import Actions from "@site/docs/reference/actions.md";
+import EnumTypes from "@site/docs/reference/enum-types.md";
+import Placeholder from "@site/docs/reference/placeholder.md";
 
 function PlaygroundInner(): JSX.Element {
   const {
@@ -60,9 +65,13 @@ function run() {
   }
 
   async function handleUpdateConfig(configString: string) {
-    const config = JSON.parse(configString)
-    const schema = config['rules'] ? ConfigSchemaV1 : ConfigSchemaV2
-    updateState({ fullSchema: schema, data: configString })
+    try {
+      const config = JSON.parse(configString)
+      const schema = config['rules'] ? ConfigSchemaV1 : ConfigSchemaV2
+      updateState({ fullSchema: schema, data: configString })
+    } catch {
+      // Ignore parsing errors
+    }
   }
 
   async function handleConvertConfig() {
@@ -91,7 +100,7 @@ function run() {
   
   return (
     <div style={{display:"flex"}}>
-      <div style={{ flex: "50%", height: "800px" }}>
+      <div style={{ flex: "50%" }}>
         <div style={{ boxSizing: "border-box", width: "100%" }}>
           <ConfigToolbar
             onConvert={handleConvertConfig}
@@ -106,22 +115,32 @@ function run() {
             editorDidMount={(editor) => {
               updateState({ editorRef: editor })
             }}
-            height={"70vh"}
+            height={"80vh"}
             key={JSON.stringify(fullSchema)}
           />
         </div>
       </div>
-      <div style={{ flex: "50%", height: "800px" }}>
-        <SchemaToolbar
-          onToggleSchema={handleToggleSchema}
-        />
+      <div style={{ flex: "50%", height: "85vh" }}>
         <div
-          style={{overflow: "auto", height: "800px"}}
+          style={{overflow: "auto", height: "100%"}}
         >
-          <JSONSchemaViewer
-            schema={fullSchema}
-            key={JSON.stringify(fullSchema)}
-          />
+          <Tabs>
+            <TabItem value="schema" label="Schema" default>
+              <JSONSchemaViewer
+                schema={fullSchema}
+                key={JSON.stringify(fullSchema)}
+              />
+            </TabItem>
+            <TabItem value="actions" label="Actions">
+              <Actions />
+            </TabItem>
+            <TabItem value="enum-types" label="Enum Types">
+              <EnumTypes />
+            </TabItem>
+            <TabItem value="placeholder" label="Placeholder">
+              <Placeholder />
+            </TabItem>
+          </Tabs>
         </div>
       </div>
     </div>

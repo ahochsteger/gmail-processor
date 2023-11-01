@@ -1,21 +1,13 @@
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
-
-const lightCodeTheme = require('prism-react-renderer/themes/vsLight');
-const darkCodeTheme = require('prism-react-renderer/themes/vsDark');
+import { themes } from 'prism-react-renderer';
+const lightCodeTheme = themes.vsLight;
+const darkCodeTheme = themes.vsDark;
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   themes: [
-    "docusaurus-json-schema-plugin",
-    [
-      "@easyops-cn/docusaurus-search-local",
-      /** @type {import("@easyops-cn/docusaurus-search-local").PluginOptions} */
-      {
-        hashed: true,
-        language: ["en"],
-      },
-    ],
+    'docusaurus-json-schema-plugin'
   ],
   title: 'Gmail Processor',
   tagline: 'Process emails with ease',

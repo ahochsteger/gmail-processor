@@ -36,7 +36,7 @@ export default function Playground(): JSX.Element {
       description="Playground of docusaurus-json-schema-plugin"
     >
       <PlaygroundComponent />
-      <ToastContainer position={toast.POSITION.BOTTOM_RIGHT} autoClose={3000} />
+      <ToastContainer theme="dark" position={toast.POSITION.BOTTOM_RIGHT} autoClose={3000} />
     </Layout>
   )
 }

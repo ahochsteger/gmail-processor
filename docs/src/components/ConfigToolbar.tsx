@@ -1,4 +1,5 @@
-import React from "react"
+import { Icon } from '@iconify/react';
+import React from "react";
 
 type Params = {
   onConvert: () => void
@@ -33,29 +34,29 @@ const ConfigToolbar = ({ onConvert, onCopyConfig, onCopyCode, onPaste }: Params)
 
   return (
     <div style={styles.toolbar}>
-      <h1>Config JSON</h1>
+      <h2>Config Editor</h2>
       &nbsp;
       <div style={{ flex: 1 }} />
       <button
         style={styles.icon}
         onClick={onPaste}
         title="Paste config from clipboard"
-      >📋</button>
+      ><Icon icon="mdi:content-paste" /></button>
       <button
         style={styles.icon}
         onClick={onConvert}
         title="Convert config (Gmail2GDrive -> GmailProcessor)"
-      >🔄</button>
+      ><Icon icon="mdi:autorenew" /></button>
       <button
         style={styles.icon}
         onClick={onCopyConfig}
         title="Copy just the config to clipboard"
-      >🗐</button>
+      ><Icon icon="mdi:content-copy" /></button>
       <button
         style={styles.icon}
         onClick={onCopyCode}
-        title="Copy the full executable code to clipboard"
-      >🚀</button>
+        title="Copy as executable JavaScript code to clipboard"
+      ><Icon icon="fluent:code-js-16-filled" /></button>
     </div>
   )
 }
