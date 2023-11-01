@@ -17,8 +17,8 @@
   "dependencies": {
     "@babel/plugin-proposal-decorators": "^7.23.0",
     "@babel/plugin-transform-class-properties": "^7.22.5",
-    "@docusaurus/core": "2.4.3",
-    "@docusaurus/preset-classic": "2.4.3",
+    "@docusaurus/core": "3.0.0",
+    "@docusaurus/preset-classic": "3.0.0",
     "@easyops-cn/docusaurus-search-local": "^0.36.0",
     "@mdx-js/react": "^1.6.22",
     "clsx": "^1.2.1",
