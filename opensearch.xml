@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/"
+                       xmlns:moz="http://www.mozilla.org/2006/browser/search/">
+  <ShortName>Gmail Processor</ShortName>
+  <Description>Search Gmail Processor</Description>
+  <InputEncoding>UTF-8</InputEncoding>
+  <Image width="16" height="16" type="image/x-icon">https://ahochsteger.github.io/gmail-processor/img/favicon.svg</Image>
+  <Url type="text/html" method="get" template="https://ahochsteger.github.io/gmail-processor/search?q={searchTerms}"/>
+  <Url type="application/opensearchdescription+xml" rel="self" template="https://ahochsteger.github.io/gmail-processor/opensearch.xml" />
+  <moz:SearchForm>https://ahochsteger.github.io/gmail-processor/</moz:SearchForm>
+</OpenSearchDescription>
