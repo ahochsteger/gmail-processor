@@ -167,7 +167,6 @@ const config = {
         searchPagePath: 'search',
       
         //... other Algolia params
-        ignoreCanonicalTo: true, // Fixes the problem of ignored pages due to wrong canonical URLs from Docusaurus
       },
     }),
 };
