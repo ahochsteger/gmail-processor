@@ -103,7 +103,7 @@
     "json5": "^2.2.3",
     "prettier": "^3.0.3",
     "prettier-plugin-organize-imports": "^3.2.3",
-    "semantic-release": "^22.0.6",
+    "semantic-release": "^22.0.7",
     "sonarqube-scanner": "^3.1.0",
     "ts-jest": "^29.1.1",
     "ts-prune": "^0.10.3",
