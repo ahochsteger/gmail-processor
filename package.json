@@ -102,7 +102,7 @@
     "jsdoc": "^4.0.2",
     "json5": "^2.2.3",
     "prettier": "^3.0.3",
-    "prettier-plugin-organize-imports": "^3.2.3",
+    "prettier-plugin-organize-imports": "^3.2.4",
     "semantic-release": "^22.0.7",
     "sonarqube-scanner": "^3.2.0",
     "ts-jest": "^29.1.1",
