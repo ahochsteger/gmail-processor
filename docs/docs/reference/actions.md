@@ -28,7 +28,9 @@ Store an attachment to a Google Drive location.
 | Arguments | Type | Description |
 |-----------|------|-------------|
 | `conflictStrategy` | `ConflictStrategy` | The strategy to be used in case a file already exists at the desired location. See [Enum Type `ConflictStrategy`](enum-types.md#conflictstrategy) for valid values. |
+| `convertToMimeType` | `string` | Convert the file to the given mime type.<br />Use one of the <a href="https://developers.google.com/drive/api/guides/mime-types?hl=en">supported mime-types</a> by Google Drive. |
 | `description` | `string` | The description to be attached to the Google Drive file.<br />Supports [placeholder](placeholder.md) substitution. |
+| `keepOriginalFile` | `string` | Keep the original (non-converted) file if it should be converted using.<br />For special Google Drive supported mime types see<br /><a href="https://developers.google.com/drive/api/guides/mime-types?hl=en">this page</a>. |
 | `location` | `string` | The location (path + filename) of the Google Drive file.<br />For shared folders or Team Drives prepend the location with the folder ID like `{id:<folderId>}/...`.<br />Supports [placeholder](placeholder.md) substitution. |
 
 ## Global Actions
@@ -147,8 +149,10 @@ Store a document referenced by a URL contained in the message body to GDrive.
 | Arguments | Type | Description |
 |-----------|------|-------------|
 | `conflictStrategy` | `ConflictStrategy` | The strategy to be used in case a file already exists at the desired location. See [Enum Type `ConflictStrategy`](enum-types.md#conflictstrategy) for valid values. |
+| `convertToMimeType` | `string` | Convert the file to the given mime type.<br />Use one of the <a href="https://developers.google.com/drive/api/guides/mime-types?hl=en">supported mime-types</a> by Google Drive. |
 | `description` | `string` | The description to be attached to the Google Drive file.<br />Supports [placeholder](placeholder.md) substitution. |
 | `headers` | `Record` | The header to pass to the URL. May be used to pass an authentication token.<br />Supports [placeholder](placeholder.md) substitution. |
+| `keepOriginalFile` | `string` | Keep the original (non-converted) file if it should be converted using.<br />For special Google Drive supported mime types see<br /><a href="https://developers.google.com/drive/api/guides/mime-types?hl=en">this page</a>. |
 | `location` | `string` | The location (path + filename) of the Google Drive file.<br />For shared folders or Team Drives prepend the location with the folder ID like `{id:<folderId>}/...`.<br />Supports [placeholder](placeholder.md) substitution. |
 | `url` | `string` | The URL of the document to be stored.<br />To extract the URL from the message body use a message body matcher like `"(?<url>https://...)"` and `"${message.body.match.url}"` as the URL value.<br />NOTE: Take care to narrow down the regex as good as possible to extract valid URLs.<br />Use tools like [regex101.com](https://regex101.com) for testing on example messages. |
 
@@ -160,7 +164,9 @@ Generate a PDF document from the message and store it to GDrive.
 | Arguments | Type | Description |
 |-----------|------|-------------|
 | `conflictStrategy` | `ConflictStrategy` | The strategy to be used in case a file already exists at the desired location. See [Enum Type `ConflictStrategy`](enum-types.md#conflictstrategy) for valid values. |
+| `convertToMimeType` | `string` | Convert the file to the given mime type.<br />Use one of the <a href="https://developers.google.com/drive/api/guides/mime-types?hl=en">supported mime-types</a> by Google Drive. |
 | `description` | `string` | The description to be attached to the Google Drive file.<br />Supports [placeholder](placeholder.md) substitution. |
+| `keepOriginalFile` | `string` | Keep the original (non-converted) file if it should be converted using.<br />For special Google Drive supported mime types see<br /><a href="https://developers.google.com/drive/api/guides/mime-types?hl=en">this page</a>. |
 | `location` | `string` | The location (path + filename) of the Google Drive file.<br />For shared folders or Team Drives prepend the location with the folder ID like `{id:<folderId>}/...`.<br />Supports [placeholder](placeholder.md) substitution. |
 | `skipHeader` | `boolean` | Skip the header if `true`. |
 
@@ -284,6 +290,8 @@ Generate a PDF document for the whole thread and store it to GDrive.
 | Arguments | Type | Description |
 |-----------|------|-------------|
 | `conflictStrategy` | `ConflictStrategy` | The strategy to be used in case a file already exists at the desired location. See [Enum Type `ConflictStrategy`](enum-types.md#conflictstrategy) for valid values. |
+| `convertToMimeType` | `string` | Convert the file to the given mime type.<br />Use one of the <a href="https://developers.google.com/drive/api/guides/mime-types?hl=en">supported mime-types</a> by Google Drive. |
 | `description` | `string` | The description to be attached to the Google Drive file.<br />Supports [placeholder](placeholder.md) substitution. |
+| `keepOriginalFile` | `string` | Keep the original (non-converted) file if it should be converted using.<br />For special Google Drive supported mime types see<br /><a href="https://developers.google.com/drive/api/guides/mime-types?hl=en">this page</a>. |
 | `location` | `string` | The location (path + filename) of the Google Drive file.<br />For shared folders or Team Drives prepend the location with the folder ID like `{id:<folderId>}/...`.<br />Supports [placeholder](placeholder.md) substitution. |
 | `skipHeader` | `boolean` | Skip the header if `true`. |

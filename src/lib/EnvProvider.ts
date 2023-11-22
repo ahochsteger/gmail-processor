@@ -38,6 +38,7 @@ export class EnvProvider {
       env: {
         cacheService: CacheService,
         gdriveApp: DriveApp,
+        driveApi: Drive,
         gmailApp: GmailApp,
         mailApp: MailApp,
         spreadsheetApp: SpreadsheetApp,

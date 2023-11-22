@@ -1,3 +1,4 @@
+import { MockProxy } from "jest-mock-extended"
 import {
   EXISTING_FILE_ID,
   EXISTING_FILE_NAME,
@@ -58,7 +59,7 @@ describe("createFile() strategy:ERROR", () => {
       new FileContent(mocks.newBlob),
       ConflictStrategy.ERROR,
     )
-    expect(file.getId()).toEqual(NEW_FILE_ID)
+    expect(file?.getId()).toEqual(NEW_FILE_ID)
     expect(mocks.rootFolder.createFile).toBeCalled()
   })
 })
@@ -137,8 +138,8 @@ describe("createFile() strategy:BACKUP, safe-mode", () => {
       new FileContent(mocks.newExistingBlob),
       ConflictStrategy.BACKUP,
     )
-    expect(createdFile.getId()).not.toEqual(EXISTING_FILE_ID)
-    expect(createdFile.getId()).toEqual(NEW_EXISTING_FILE_ID)
+    expect(createdFile?.getId()).not.toEqual(EXISTING_FILE_ID)
+    expect(createdFile?.getId()).toEqual(NEW_EXISTING_FILE_ID)
     expect(mocks.rootFolder.createFile).toBeCalled()
     expect(mocks.existingFile.setName).toBeCalled()
   })
@@ -189,7 +190,65 @@ describe("createFile() with folderId", () => {
     expect(mocks.rootFolder.createFolder).toBeCalled()
     expect(mocks.newFolder.createFile).toBeCalled()
     expect(file).toBe(mocks.newNestedFile)
-    expect(file.getId()).toEqual(NEW_NESTED_FILE_ID)
+    expect(file?.getId()).toEqual(NEW_NESTED_FILE_ID)
+  })
+})
+describe("createFile() convert", () => {
+  it("should create a file and convert to Google format without keeping the original file", () => {
+    gdriveAdapter.ctx.env.runMode = RunMode.SAFE_MODE
+    const createdFile = gdriveAdapter.createFile(
+      `/${NEW_EXISTING_FILE_NAME}`,
+      new FileContent(
+        mocks.newExistingBlob,
+        NEW_EXISTING_FILE_NAME,
+        "",
+        "application/vnd.google-apps.spreadsheet",
+        false,
+      ),
+      ConflictStrategy.KEEP,
+    )
+    expect(createdFile).not.toBe(mocks.existingFile)
+    expect(mocks.rootFolder.createFile).not.toHaveBeenCalled()
+    expect(
+      (
+        mocks.driveApi
+          .Files as MockProxy<GoogleAppsScript.Drive.Collection.FilesCollection>
+      ).copy,
+    ).not.toHaveBeenCalled()
+    expect(
+      (
+        mocks.driveApi
+          .Files as MockProxy<GoogleAppsScript.Drive.Collection.FilesCollection>
+      ).insert,
+    ).toHaveBeenCalled()
+  })
+  it("should create a file and convert to Google format while keeping the original file", () => {
+    gdriveAdapter.ctx.env.runMode = RunMode.SAFE_MODE
+    const createdFile = gdriveAdapter.createFile(
+      `/${NEW_EXISTING_FILE_NAME}`,
+      new FileContent(
+        mocks.newExistingBlob,
+        NEW_EXISTING_FILE_NAME,
+        "",
+        "application/vnd.google-apps.spreadsheet",
+        true,
+      ),
+      ConflictStrategy.KEEP,
+    )
+    expect(createdFile).not.toBe(mocks.existingFile)
+    expect(mocks.rootFolder.createFile).toHaveBeenCalled()
+    expect(
+      (
+        mocks.driveApi
+          .Files as MockProxy<GoogleAppsScript.Drive.Collection.FilesCollection>
+      ).insert,
+    ).not.toHaveBeenCalled()
+    expect(
+      (
+        mocks.driveApi
+          .Files as MockProxy<GoogleAppsScript.Drive.Collection.FilesCollection>
+      ).copy,
+    ).toHaveBeenCalled()
   })
 })
 describe("DriveUtils.extractLocationInfo()", () => {

@@ -32,6 +32,7 @@ export class ContextMocks {
     const envContext: EnvContext = {
       type: ContextType.ENV,
       env: {
+        driveApi: mocks.driveApi,
         gmailApp: mocks.gmailApp,
         gdriveApp: mocks.gdriveApp,
         mailApp: mocks.mailApp,

@@ -21,7 +21,7 @@ export class AttachmentActions implements ActionProvider<AttachmentContext> {
   public static store(
     context: AttachmentContext,
     args: StoreActionBaseArgs,
-  ): ActionReturnType & { file: GoogleAppsScript.Drive.File } {
+  ): ActionReturnType & { file?: GoogleAppsScript.Drive.File } {
     const file = context.proc.gdriveAdapter.storeAttachment(
       context.attachment.object,
       PatternUtil.substitute(context, args.location),
