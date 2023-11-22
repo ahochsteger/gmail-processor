@@ -233,11 +233,27 @@ export class GDriveMocks {
     return iterator
   }
 
+  public static setupDriveApiMocks(
+    driveApi: MockProxy<GoogleAppsScript.Drive>,
+    genericNewFile: MockProxy<GoogleAppsScript.Drive.File>,
+  ): MockProxy<GoogleAppsScript.Drive> {
+    const files: MockProxy<GoogleAppsScript.Drive.Collection.FilesCollection> =
+      mock<GoogleAppsScript.Drive.Collection.FilesCollection>()
+    files.copy
+      .mockReturnValue({ id: genericNewFile.getId() })
+      .mockName("copy-default")
+    files.insert
+      .mockReturnValue({ id: genericNewFile.getId() })
+      .mockName("insert-default")
+    driveApi.Files = files
+    return driveApi
+  }
+
   public static setupGDriveAppMocks(
     driveSpec: GDriveData,
-    gdriveApp: MockProxy<GoogleAppsScript.Drive.DriveApp> = mock<GoogleAppsScript.Drive.DriveApp>(),
-    genericNewFile: MockProxy<GoogleAppsScript.Drive.File> = mock<GoogleAppsScript.Drive.File>(),
-    genericNewFolder: MockProxy<GoogleAppsScript.Drive.Folder> = mock<GoogleAppsScript.Drive.Folder>(),
+    gdriveApp: MockProxy<GoogleAppsScript.Drive.DriveApp>,
+    genericNewFile: MockProxy<GoogleAppsScript.Drive.File>,
+    genericNewFolder: MockProxy<GoogleAppsScript.Drive.Folder>,
   ): MockProxy<GoogleAppsScript.Drive.DriveApp> {
     const rootFolder = GDriveMocks.setupFolderMocks(
       driveSpec,
@@ -399,8 +415,22 @@ export class GDriveMocks {
 
   public static setupAllMocks(mocks: Mocks) {
     const driveSpec = this.getSampleDriveData(mocks)
-    GDriveMocks.setupGDriveAppMocks(driveSpec, mocks.gdriveApp)
     // Setup special mocks:
+    this.setupFileMocks(
+      new FileData(
+        mocks.genericNewFile,
+        GENERIC_NEW_FILE_ID,
+        `/${GENERIC_NEW_FILE_NAME}`,
+      ),
+      driveSpec,
+    )
+    GDriveMocks.setupGDriveAppMocks(
+      driveSpec,
+      mocks.gdriveApp,
+      mocks.genericNewFile,
+      mocks.genericNewFolder,
+    )
+    GDriveMocks.setupDriveApiMocks(mocks.driveApi, mocks.genericNewFile)
     mocks.newHtmlBlob.getAs.mockReturnValue(mocks.newPdfBlob)
   }
 }

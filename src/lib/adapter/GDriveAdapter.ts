@@ -32,6 +32,8 @@ export class FileContent {
     public blob: GoogleAppsScript.Base.BlobSource,
     public name: string = blob?.getBlob()?.getName() ?? "",
     public description = "",
+    public toMimeType: string = "",
+    public keepNonConvertedOriginal: boolean = true,
   ) {}
 }
 
@@ -61,10 +63,10 @@ export class DriveUtils {
     location: string,
     fileData: FileContent,
     conflictStrategy: ConflictStrategy,
-  ): GoogleAppsScript.Drive.File {
+  ): GoogleAppsScript.Drive.File | undefined {
     const { locationInfo, parentFolder, existingFiles } =
       this.findFilesByLocation(ctx, location)
-    let file: GoogleAppsScript.Drive.File
+    let file: GoogleAppsScript.Drive.File | undefined
     if (existingFiles.hasNext()) {
       const existingFile = existingFiles.next()
 
@@ -205,7 +207,7 @@ export class DriveUtils {
     folder: GoogleAppsScript.Drive.Folder,
     existingFile: GoogleAppsScript.Drive.File,
     fileData: FileContent,
-  ): GoogleAppsScript.Drive.File {
+  ): GoogleAppsScript.Drive.File | undefined {
     const filename = existingFile.getName()
     const nameParts = filename.split(".")
     const baseName = nameParts.slice(0, -1).join(".")
@@ -222,14 +224,56 @@ export class DriveUtils {
     parentFolder: GoogleAppsScript.Drive.Folder,
     filename: string,
     fileData: FileContent,
-  ): GoogleAppsScript.Drive.File {
+  ): GoogleAppsScript.Drive.File | undefined {
     ctx.log.info(
       `Creating file '${filename}' in folder '${parentFolder.getName()}' ...`,
     )
-    const file = parentFolder.createFile(fileData.blob)
-    file.setName(filename)
-    file.setDescription(fileData.description)
-    return file
+
+    const fileMetadata: GoogleAppsScript.Drive.Schema.File = {
+      description: fileData.description,
+      mimeType: fileData.toMimeType,
+      parents: [{ id: parentFolder.getId() }],
+      title: filename,
+    }
+    let file: GoogleAppsScript.Drive.File | undefined
+    let convertedFile: GoogleAppsScript.Drive.Schema.File | undefined
+    if (!fileData.toMimeType || fileData.keepNonConvertedOriginal) {
+      file = parentFolder.createFile(fileData.blob)
+      file.setName(filename)
+      file.setDescription(fileData.description)
+      if (fileData.toMimeType) {
+        ctx.log.info(
+          `Converting file '${filename}' to '${fileData.toMimeType}' (keeping original) ...`,
+        )
+        // NOTE: See this link for various API methods: https://stackoverflow.com/a/49331989/236784
+        convertedFile = ctx.env.driveApi.Files?.copy(
+          fileMetadata,
+          file.getId(),
+          { convert: true, ocr: true },
+        )
+        if (!convertedFile?.id) {
+          throw new Error(
+            `Failed converting file '${filename}' to '${fileData.toMimeType}' (without keeping original) ...`,
+          )
+        }
+      }
+    } else {
+      ctx.log.info(
+        `Converting file '${filename}' to '${fileData.toMimeType}' (without keeping original) ...`,
+      )
+      convertedFile = ctx.env.driveApi.Files?.insert(
+        fileMetadata,
+        fileData.blob,
+      )
+      if (!convertedFile?.id) {
+        throw new Error(
+          `Failed converting file '${filename}' to '${fileData.toMimeType}' (without keeping original) ...`,
+        )
+      }
+    }
+    return convertedFile?.id
+      ? ctx.env.gdriveApp.getFileById(convertedFile.id)
+      : file
   }
 
   private static deleteFile(
@@ -247,7 +291,7 @@ export class DriveUtils {
   ): GoogleAppsScript.Drive.File {
     ctx.log.info(`Updating existing file '${file.getName()}' ...`)
     file = file
-      .setContent(fileData.blob.getBlob().getDataAsString()) // TODO: Test if binary content does not get corrupted here!
+      .setContent(fileData.blob.getBlob().getDataAsString())
       .setDescription(fileData.description)
     return file
   }
@@ -273,7 +317,7 @@ export class GDriveAdapter extends BaseAdapter {
     location: string,
     fileData: FileContent,
     conflictStrategy: ConflictStrategy,
-  ): GoogleAppsScript.Drive.File {
+  ): GoogleAppsScript.Drive.File | undefined {
     const file = DriveUtils.createFile(
       this.ctx,
       location,
@@ -288,7 +332,10 @@ export class GDriveAdapter extends BaseAdapter {
     location: string,
     conflictStrategy: ConflictStrategy,
     description: string,
-  ): GoogleAppsScript.Drive.File {
+    convertToMimeType: string = "",
+    keepNonConvertedOriginal: boolean = true,
+  ): GoogleAppsScript.Drive.File | undefined {
+    // TODO: Consider using parameter with type StorageActionBaseArgs here
     this.ctx.log.info(
       `Storing attachment '${attachment.getName()}' to '${location}' ...`,
     )
@@ -296,6 +343,8 @@ export class GDriveAdapter extends BaseAdapter {
       attachment.copyBlob(),
       attachment.getName(),
       description,
+      convertToMimeType,
+      keepNonConvertedOriginal,
     )
     const file = DriveUtils.createFile(
       this.ctx,

@@ -215,7 +215,12 @@ describe("setupFolderIterator()", () => {
 describe("setupGDriveAppMocks", () => {
   let app: MockProxy<GoogleAppsScript.Drive.DriveApp>
   beforeEach(() => {
-    app = GDriveMocks.setupGDriveAppMocks(driveSpec, mocks.gdriveApp)
+    app = GDriveMocks.setupGDriveAppMocks(
+      driveSpec,
+      mocks.gdriveApp,
+      mocks.genericNewFile,
+      mocks.genericNewFolder,
+    )
   })
 
   it("should setup a default drive app", () => {
@@ -229,7 +234,12 @@ describe("setupGDriveAppMocks", () => {
         throw new Error("No mock implementation available!")
       },
     })
-    const app = GDriveMocks.setupGDriveAppMocks(driveSpec, initialApp)
+    const app = GDriveMocks.setupGDriveAppMocks(
+      driveSpec,
+      initialApp,
+      mocks.genericNewFile,
+      mocks.genericNewFolder,
+    )
     expect(app).toBe(initialApp)
   })
 

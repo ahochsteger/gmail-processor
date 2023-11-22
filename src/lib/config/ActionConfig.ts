@@ -71,6 +71,17 @@ export type StoreActionBaseArgs = {
    * Supports placeholder substitution.
    */
   description?: string
+  /**
+   * Convert the file to the given mime type.
+   * Use one of the <a href="https://developers.google.com/drive/api/guides/mime-types?hl=en">supported mime-types</a> by Google Drive.
+   */
+  convertToMimeType?: string
+  /**
+   * Keep the original (non-converted) file if it should be converted using.
+   * For special Google Drive supported mime types see
+   * <a href="https://developers.google.com/drive/api/guides/mime-types?hl=en">this page</a>.
+   */
+  keepOriginalFile?: string
 }
 
 type ProcessingContextActionConfigType = GlobalActionConfigType
