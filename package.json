@@ -109,7 +109,7 @@
     "ts-prune": "^0.10.3",
     "typedoc": "^0.25.4",
     "typedoc-plugin-markdown": "^3.17.1",
-    "typescript": "^5.2.2",
+    "typescript": "^5.3.2",
     "typescript-json-schema": "^0.62.0",
     "webpack": "^5.89.0",
     "webpack-cli": "^5.1.4"
