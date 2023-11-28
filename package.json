@@ -86,7 +86,7 @@
     "@types/google-apps-script": "^1.0.78",
     "@types/jest": "^29.5.10",
     "@types/node": "^20.10.0",
-    "@typescript-eslint/eslint-plugin": "^6.12.0",
+    "@typescript-eslint/eslint-plugin": "^6.13.1",
     "@typescript-eslint/parser": "^6.13.1",
     "all-contributors-cli": "^6.26.1",
     "concurrently": "^8.2.2",
