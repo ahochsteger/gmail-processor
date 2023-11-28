@@ -83,7 +83,7 @@
     "@qiwi/semantic-release-gh-pages-plugin": "^5.2.10",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
-    "@types/google-apps-script": "^1.0.77",
+    "@types/google-apps-script": "^1.0.78",
     "@types/jest": "^29.5.10",
     "@types/node": "^20.9.2",
     "@typescript-eslint/eslint-plugin": "^6.12.0",
