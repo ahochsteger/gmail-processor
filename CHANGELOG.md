@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.4.1](https://github.com/ahochsteger/gmail-processor/compare/2.4.0...2.4.1) (2023-11-29)
+
+
+### Bug Fixes
+
+* revert "build(deps-dev): bump typescript from 5.2.2 to 5.3.2" ([7eee818](https://github.com/ahochsteger/gmail-processor/commit/7eee818e5b433ba88e0a1186818cb88a73ad42c5))
+
 # [2.4.0](https://github.com/ahochsteger/gmail-processor/compare/2.3.2...2.4.0) (2023-10-13)
 
 
