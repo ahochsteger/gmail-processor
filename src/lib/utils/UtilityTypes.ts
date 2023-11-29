@@ -10,11 +10,11 @@ export type RequiredDeep<
 > = A["length"] extends D
   ? never
   : T extends Primitive
-  ? NotNill<T>
-  : {
-      [P in keyof T]-?: T[P] extends Array<infer U>
-        ? Array<RequiredDeep<U, D, [0, ...A]>>
-        : T[P] extends ReadonlyArray<infer U2>
-        ? RequiredDeep<U2, D, [0, ...A]>
-        : RequiredDeep<T[P], D, [0, ...A]>
-    }
+    ? NotNill<T>
+    : {
+        [P in keyof T]-?: T[P] extends Array<infer U>
+          ? Array<RequiredDeep<U, D, [0, ...A]>>
+          : T[P] extends ReadonlyArray<infer U2>
+            ? RequiredDeep<U2, D, [0, ...A]>
+            : RequiredDeep<T[P], D, [0, ...A]>
+      }

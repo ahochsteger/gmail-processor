@@ -316,8 +316,8 @@ export abstract class BaseProcessor {
     return this.isSet(global, unsetValue) && !this.isSet(local, unsetValue)
       ? (global as T)
       : this.isSet(local, unsetValue)
-      ? local
-      : unsetValue
+        ? local
+        : unsetValue
   }
 
   protected static effectiveMaxNumber(
