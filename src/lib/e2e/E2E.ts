@@ -72,6 +72,7 @@ export class E2E {
         )
         return this.getBlobFromFileEntry(config, file)
       }) as GoogleAppsScript.Base.Blob[]
+      ctx.log.info(`Sending email '${mail.name}' ...`)
       ctx.env.mailApp.sendEmail({
         to: config.globals.to,
         subject: `${config.globals.subjectPrefix}${mail.subject}`,
@@ -91,6 +92,9 @@ export class E2E {
         if (!blob) return
         const folderLocation = config.folders.reduce((prev, current) =>
           current.name === file.destFolder ? current : prev,
+        )
+        ctx.log.info(
+          `Creating file '${folderLocation.location}/${file.filename}' ...`,
         )
         DriveUtils.createFile(
           ctx,
