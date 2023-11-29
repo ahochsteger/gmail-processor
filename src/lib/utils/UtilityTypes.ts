@@ -5,7 +5,7 @@ type Primitive = undefined | null | boolean | string | number | Function
 // Work-around to the error "Type instantiation is excessively deep and possibly infinite.":
 export type RequiredDeep<
   T,
-  D extends number = 7, // NOTE: This indicates the maximum recursion level which may be increased if needed
+  D extends number = 10, // NOTE: This indicates the maximum recursion level which may be increased if needed
   A extends unknown[] = [],
 > = A["length"] extends D
   ? never
