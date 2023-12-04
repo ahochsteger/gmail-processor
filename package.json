@@ -91,7 +91,7 @@
     "all-contributors-cli": "^6.26.1",
     "concurrently": "^8.2.2",
     "eslint": "^8.54.0",
-    "eslint-config-prettier": "^9.0.0",
+    "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-googleappsscript": "^1.0.5",
     "eslint-plugin-prettier": "^5.0.1",
     "eslint-plugin-tsdoc": "^0.2.17",
