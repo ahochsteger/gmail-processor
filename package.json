@@ -121,7 +121,7 @@
     "date-fns": "^2.30.0",
     "date-fns-tz": "^2.0.0",
     "parse-duration": "^1.1.0",
-    "reflect-metadata": "^0.1.14",
+    "reflect-metadata": "^0.2.1",
     "type-fest": "^4.8.3"
   },
   "engines": {
