@@ -7,17 +7,48 @@
     {
       "description": "Github workflow dependencies",
       "matchFileNames": [".github/workflows/*.yaml"],
-      "groupName": "github-workflow-deps"
+      "groupName": "github-workflow-deps-non-major",
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+      "automerge": true,
+      "semanticCommitType": "build"
+    },
+    {
+      "description": "Github workflow dependencies",
+      "matchFileNames": [".github/workflows/*.yaml"],
+      "groupName": "github-workflow-deps-major",
+      "matchUpdateTypes": ["major"],
+      "automerge": false,
+      "semanticCommitType": "build"
     },
     {
       "description": "Primary package.json dependencies",
       "matchFileNames": ["package.json"],
-      "groupName": "primary-deps"
+      "groupName": "primary-deps-non-major",
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+      "automerge": true
+    },
+    {
+      "description": "Primary package.json dependencies",
+      "matchFileNames": ["package.json"],
+      "groupName": "primary-deps-major",
+      "matchUpdateTypes": ["major"],
+      "automerge": false
     },
     {
       "description": "Docs package.json dependencies",
       "matchFileNames": ["docs/package.json"],
-      "groupName": "docs-deps"
+      "groupName": "docs-deps-non-major",
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+      "automerge": true,
+      "semanticCommitType": "chore"
+    },
+    {
+      "description": "Docs package.json dependencies",
+      "matchFileNames": ["docs/package.json"],
+      "groupName": "docs-deps-major",
+      "matchUpdateTypes": ["major"],
+      "automerge": false,
+      "semanticCommitType": "chore"
     }
   ]
 }
