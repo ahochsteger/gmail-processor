@@ -41,14 +41,14 @@ jobs:
     steps:
       - id: checkout
         name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3
         with:
           persist-credentials: false
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
       - id: nodejs
         name: Use Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@1a4442cacd436585916779262731d5b162bc6ec7 # v3
         with:
           node-version: 20.x
           cache: "npm"
@@ -57,6 +57,6 @@ jobs:
         run: npm run ci:docs
       - name: Deploy Pages
         id: deploy-pages
-        uses: JamesIves/github-pages-deploy-action@v4
+        uses: JamesIves/github-pages-deploy-action@65b5dfd4f5bcd3a7403bbc2959c144256167464e # v4
         with:
           folder: docs/build
