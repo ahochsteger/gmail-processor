@@ -2,5 +2,22 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:best-practices"
+  ],
+  "packageRules": [
+    {
+      "description": "Github workflow dependencies",
+      "matchFileNames": [".github/workflows/*.yaml"],
+      "groupName": "github-workflow-deps"
+    },
+    {
+      "description": "Primary package.json dependencies",
+      "matchFileNames": ["package.json"],
+      "groupName": "primary-deps"
+    },
+    {
+      "description": "Docs package.json dependencies",
+      "matchFileNames": ["docs/package.json"],
+      "groupName": "docs-deps"
+    }
   ]
 }
