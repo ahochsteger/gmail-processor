@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.4.2](https://github.com/ahochsteger/gmail-processor/compare/2.4.1...2.4.2) (2023-12-27)
+
+
+### Bug Fixes
+
+* **deps:** update dependency type-fest to v4.9.0 ([3f07e75](https://github.com/ahochsteger/gmail-processor/commit/3f07e75bbdc9cfc057f6b64e82103c61d0fff55c))
+
 ## [2.4.1](https://github.com/ahochsteger/gmail-processor/compare/2.4.0...2.4.1) (2023-11-29)
 
 
