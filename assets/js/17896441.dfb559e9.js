@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkdocs_new=self.webpackChunkdocs_new||[]).push([[918],{34817:(s,c,e)=>{e.d(c,{Z:()=>k});var n=e(1954);const k={...e(14107).Z,Icon:n.JO}}}]);
