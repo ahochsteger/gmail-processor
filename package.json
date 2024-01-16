@@ -85,7 +85,7 @@
     "@semantic-release/git": "10.0.1",
     "@types/google-apps-script": "1.0.78",
     "@types/jest": "29.5.11",
-    "@types/node": "20.11.3",
+    "@types/node": "20.11.4",
     "@typescript-eslint/eslint-plugin": "6.19.0",
     "@typescript-eslint/parser": "6.19.0",
     "all-contributors-cli": "6.26.1",
