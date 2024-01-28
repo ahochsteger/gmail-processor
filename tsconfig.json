@@ -7,7 +7,7 @@
     "esModuleInterop": true,
     "experimentalDecorators": true,
     "inlineSourceMap": true,
-    "lib": ["ES2019"],
+    "lib": ["ES2020"],
     "module": "commonjs",
     "noFallthroughCasesInSwitch": true,
     "noImplicitReturns": false,
@@ -18,8 +18,8 @@
     "strict": true,
     // ES2019 for V8 support: https://github.com/google/clasp/blob/master/docs/typescript.md#v8-engine-support
     "target": "ES2019",
-    "types": ["google-apps-script", "jest", "node"]
+    "types": ["google-apps-script", "jest"],
   },
   "include": ["src/**/*"],
-  "exclude": ["src/gas/**/*", "src/test/examples/*"]
+  "exclude": ["src/gas/**/*", "src/test/examples/*"],
 }
