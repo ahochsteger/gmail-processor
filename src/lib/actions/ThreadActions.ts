@@ -152,7 +152,11 @@ export class ThreadActions implements ActionProvider<ThreadContext> {
       file: context.proc.gdriveAdapter.createFile(
         PatternUtil.substitute(context, args.location),
         new FileContent(
-          context.proc.gmailAdapter.threadAsHtml(context.thread.object, args),
+          context.proc.gmailAdapter.threadAsHtml(
+            context.thread.object,
+            name,
+            args,
+          ),
           name,
           PatternUtil.substitute(context, args.description ?? ""),
         ),
@@ -167,13 +171,18 @@ export class ThreadActions implements ActionProvider<ThreadContext> {
     context: ThreadContext,
     args: ThreadActionExportArgs,
   ) {
+    const name = `${context.thread.object.getFirstMessageSubject()}.pdf`
     return {
       ok: true,
       file: context.proc.gdriveAdapter.createFile(
         PatternUtil.substitute(context, args.location),
         new FileContent(
-          context.proc.gmailAdapter.threadAsPdf(context.thread.object, args),
-          `${context.thread.object.getFirstMessageSubject()}.pdf`,
+          context.proc.gmailAdapter.threadAsPdf(
+            context.thread.object,
+            name,
+            args,
+          ),
+          name,
           PatternUtil.substitute(context, args.description ?? ""),
         ),
         args.conflictStrategy,
@@ -190,15 +199,16 @@ export class ThreadActions implements ActionProvider<ThreadContext> {
     context: ThreadContext,
     args: ThreadActionArgsStorePDF,
   ) {
+    const name = `${context.thread.object.getFirstMessageSubject()}.pdf`
     return {
       ok: true,
       file: context.proc.gdriveAdapter.createFile(
         PatternUtil.substitute(context, args.location),
         new FileContent(
-          context.proc.gmailAdapter.threadAsPdf(context.thread.object, {
+          context.proc.gmailAdapter.threadAsPdf(context.thread.object, name, {
             includeHeader: !args.skipHeader ?? true,
           }),
-          `${context.thread.object.getFirstMessageSubject()}.pdf`,
+          name,
           PatternUtil.substitute(context, args.description ?? ""),
         ),
         args.conflictStrategy,

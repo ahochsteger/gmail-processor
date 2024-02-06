@@ -128,7 +128,11 @@ export class MessageActions implements ActionProvider<MessageContext> {
       file: context.proc.gdriveAdapter.createFile(
         PatternUtil.substitute(context, args.location),
         new FileContent(
-          context.proc.gmailAdapter.messageAsHtml(context.message.object, args),
+          context.proc.gmailAdapter.messageAsHtml(
+            context.message.object,
+            name,
+            args,
+          ),
           name,
           PatternUtil.substitute(context, args.description ?? ""),
         ),
@@ -143,12 +147,17 @@ export class MessageActions implements ActionProvider<MessageContext> {
     context: MessageContext,
     args: MessageActionExportArgs,
   ): FileReturnType {
+    const name = `${context.message.object.getSubject()}.pdf`
     return {
       file: context.proc.gdriveAdapter.createFile(
         PatternUtil.substitute(context, args.location),
         new FileContent(
-          context.proc.gmailAdapter.messageAsPdf(context.message.object, args),
-          `${context.message.object.getSubject()}.pdf`,
+          context.proc.gmailAdapter.messageAsPdf(
+            context.message.object,
+            name,
+            args,
+          ),
+          name,
           PatternUtil.substitute(context, args.description ?? ""),
         ),
         args.conflictStrategy,
@@ -165,14 +174,15 @@ export class MessageActions implements ActionProvider<MessageContext> {
     context: MessageContext,
     args: MessageActionStorePDFArgs,
   ): FileReturnType {
+    const name = `${context.message.object.getSubject()}.pdf`
     return {
       file: context.proc.gdriveAdapter.createFile(
         PatternUtil.substitute(context, args.location),
         new FileContent(
-          context.proc.gmailAdapter.messageAsPdf(context.message.object, {
+          context.proc.gmailAdapter.messageAsPdf(context.message.object, name, {
             includeHeader: !args?.skipHeader ?? true,
           }),
-          `${context.message.object.getSubject()}.pdf`,
+          name,
           PatternUtil.substitute(context, args.description ?? ""),
         ),
         args.conflictStrategy,
