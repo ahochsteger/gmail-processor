@@ -190,8 +190,8 @@ export class ThreadActions implements ActionProvider<ThreadContext> {
 
   /**
    * Generate a PDF document for the whole thread and store it to GDrive.
+   * @deprecated Use `thread.exportAsPdf` instead.
    */
-  // * @deprecated Use {@link exportAsPdf} instead.
   @writingAction()
   public static storePDF(
     context: ThreadContext,

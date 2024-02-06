@@ -12,7 +12,11 @@ $enumList[0] as $enums
         "",
         "### `" + .actionName + "`",
         "",
-        .description,
+        .description + (
+          if .deprecated then
+            "\n**DEPRECATED**: " + .deprecationInfo
+          else "" end
+        ),
         "",
         ( if (.args and (.args|length>0)) then
             (

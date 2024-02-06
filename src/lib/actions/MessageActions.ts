@@ -166,8 +166,8 @@ export class MessageActions implements ActionProvider<MessageContext> {
 
   /**
    * Generate a PDF document from the message and store it to GDrive.
+   * @deprecated Use `message.exportAsPdf` instead.
    */
-  // * @deprecated Use {@link exportAsPdf} instead.
   @writingAction()
   public static storePDF(
     context: MessageContext,
