@@ -1,5 +1,23 @@
 # Changelog
 
+# [2.5.0](https://github.com/ahochsteger/gmail-processor/compare/2.4.2...2.5.0) (2024-02-06)
+
+
+### Bug Fixes
+
+* bad code smells ([5a98584](https://github.com/ahochsteger/gmail-processor/commit/5a98584d4c43b1207836090c8d5e2232003cde04))
+* missing blob names ([8f4f8ff](https://github.com/ahochsteger/gmail-processor/commit/8f4f8ffd602819ea871118b2bf2c0b60e35ce969))
+* missing URL polyfill + improved regex handling ([fb90dd9](https://github.com/ahochsteger/gmail-processor/commit/fb90dd9b1b009b4130b4e4e986fc97b4e0ef5aae))
+* more bad code smells from SonarCloud ([eba4fc6](https://github.com/ahochsteger/gmail-processor/commit/eba4fc620f3eaf8eba69c6732c5c8592c2a0164d))
+* security issues reported by SonarCloud ([f1c291a](https://github.com/ahochsteger/gmail-processor/commit/f1c291a95d81f58ad29d30b25398f802b3b0ce93))
+* use https to access gravatar.com ([9e2d164](https://github.com/ahochsteger/gmail-processor/commit/9e2d164ded52d99a8a4b30164729c5a45b18dbdc))
+* wrong args for thread.exportAsHtml ([44fd4d3](https://github.com/ahochsteger/gmail-processor/commit/44fd4d3e357c355c14f05e84aca030771ad4feaa))
+
+
+### Features
+
+* improved html+pdf exports of threads+messages ([b70a7ef](https://github.com/ahochsteger/gmail-processor/commit/b70a7ef78ec655cde7a875068907c32296a08831))
+
 ## [2.4.2](https://github.com/ahochsteger/gmail-processor/compare/2.4.1...2.4.2) (2023-12-27)
 
 
