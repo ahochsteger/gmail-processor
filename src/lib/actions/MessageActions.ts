@@ -180,7 +180,7 @@ export class MessageActions implements ActionProvider<MessageContext> {
         PatternUtil.substitute(context, args.location),
         new FileContent(
           context.proc.gmailAdapter.messageAsPdf(context.message.object, name, {
-            includeHeader: !args?.skipHeader ?? true,
+            includeHeader: !(args.skipHeader ?? false),
           }),
           name,
           PatternUtil.substitute(context, args.description ?? ""),
