@@ -1,0 +1,58 @@
+{
+  "description": "End-to-end (E2E) test configuration",
+  "settings": {
+    "logSheetLocation": "/GmailProcessor-Tests/logsheet-${date.now:format:yyyy-MM}",
+    "markProcessedMethod": "mark-read",
+    "timezone": "UTC"
+  },
+  "global": {
+    "thread": {
+      "match": {
+        "query": "has:attachment -in:trash -in:drafts -in:spam after:2024-02-06",
+        "maxMessageCount": -1,
+        "minMessageCount": 1
+      },
+      "actions": [
+        {
+          "name": "thread.exportAsHtml",
+          "args": {
+            "location": "/GmailProcessor-Tests/pr-291/thread-${thread.id}.html",
+            "conflictStrategy": "replace"
+          }
+        },
+        {
+          "name": "thread.exportAsPdf",
+          "args": {
+            "location": "/GmailProcessor-Tests/pr-291/thread-${thread.id}.pdf",
+            "conflictStrategy": "replace"
+          }
+        }
+      ]
+    },
+    "message": {
+      "actions": [
+        {
+          "name": "message.exportAsHtml",
+          "args": {
+            "location": "/GmailProcessor-Tests/pr-291/message-${message.id}.html",
+            "conflictStrategy": "replace"
+          }
+        },
+        {
+          "name": "message.exportAsPdf",
+          "args": {
+            "location": "/GmailProcessor-Tests/pr-291/message-${message.id}.pdf",
+            "conflictStrategy": "replace"
+          }
+        }
+      ]
+    }
+  },
+  "threads": [
+    {
+      "match": {
+        "query": "from:${user.email} to:${user.email} subject:'GmailProcessor-Test'"
+      }
+    }
+  ]
+}
