@@ -31,9 +31,16 @@ export class GmailExportAdapter extends BaseAdapter {
     super(ctx, settings)
   }
 
-  protected addressesToHtml(emails?: EmailAddress[]): string {
-    const addresses: EmailAddress[] =
-      emails === undefined ? [] : !Array.isArray(emails) ? [emails] : emails
+  protected addressesToHtml(emails?: EmailAddress | EmailAddress[]): string {
+    let addresses: EmailAddress[]
+
+    if (emails === undefined) {
+      addresses = []
+    } else if (!Array.isArray(emails)) {
+      addresses = [emails]
+    } else {
+      addresses = emails
+    }
     return addresses
       .map(
         (email) =>
@@ -105,7 +112,7 @@ export class GmailExportAdapter extends BaseAdapter {
     const images: GoogleAppsScript.Base.Blob[] = email
       .getAttachments({ includeInlineImages: true, includeAttachments: false })
       .map((att) => att.copyBlob())
-      .filter((blob) => blob) as GoogleAppsScript.Base.Blob[]
+      .filter((blob) => blob)
     // process all img tags which reference "attachments"
     return this.processImgAttachments(html, images)
   }
@@ -125,8 +132,8 @@ export class GmailExportAdapter extends BaseAdapter {
    */
   protected processImageTags(html: string): string {
     return html.replace(
-      /(?<tag><img[^>]+src=)(?<q>["'])(?<src>(?:(?!\2)[^\\]|\\.)*)\2/gi,
-      (_m, tag, q, src) => tag + q + (this.getDataUri(src) || src) + q,
+      /(?<tag><img[^>]+src=)(?<q>["'])(?<src>(?:(?!\k<q>)[^\\]|\\.)*)\k<q>/gi,
+      (_m, tag, q, src) => `${tag}${q}${this.getDataUri(src) ?? src}${q}`,
     )
   }
 
@@ -140,9 +147,9 @@ export class GmailExportAdapter extends BaseAdapter {
         const q = dq ? '"' : "'"
         let style = dq ? dqStyle : sqStyle
         style = style.replace(
-          /url\((?<q>\\?["']?)(?<url>[^)]*)\1\)/gi,
+          /url\((?<q>\\?["']?)(?<url>[^)]*)\k<q>\)/gi,
           (_m: string, q: string, url: string) =>
-            "url(" + q + (this.getDataUri(url) || url) + q + ")",
+            "url(" + q + (this.getDataUri(url) ?? url) + q + ")",
         )
         return tag + q + style + q
       },
@@ -157,9 +164,9 @@ export class GmailExportAdapter extends BaseAdapter {
       /(?<tag><style[^>]*>)(?<style>.*?)(?<end><\/style>)/gi,
       (_m, tag, style, end) => {
         style = style.replace(
-          /url\((?<q>["']?)(?<url>[^)]*)\1\)/gi,
+          /url\((?<q>["']?)(?<url>[^)]*)\k<q>\)/gi,
           (_m: unknown, q: string, url: string) =>
-            "url(" + q + (this.getDataUri(url) || url) + q + ")",
+            "url(" + q + (this.getDataUri(url) ?? url) + q + ")",
         )
         return tag + style + end
       },
@@ -177,13 +184,13 @@ export class GmailExportAdapter extends BaseAdapter {
     )[],
   ): string {
     return html.replace(
-      /(?<tag><img[^>]+src=)(?<q>["'])(?<src>\?view=att(?:(?!\2)[^\\]|\\.)*)\2/gi,
+      /(?<tag><img[^>]+src=)(?<q>["'])(?<src>\?view=att(?:(?!\k<q>)[^\\]|\\.)*)\k<q>/gi,
       (_m, tag, q, src) =>
-        tag + q + (this.getDataUri(images.shift()) || src) + q,
+        tag + q + (this.getDataUri(images.shift()) ?? src) + q,
     )
   }
 
-  protected generateMessageHtmlBody(
+  protected generateMessageHtmlHeader(
     message: GoogleAppsScript.Gmail.GmailMessage,
     opts: ExportOptionsType,
   ): string {
@@ -209,8 +216,6 @@ export class GmailExportAdapter extends BaseAdapter {
         ) as GoogleAppsScript.Base.Blob)
       ) {
         avatar = `<dd class="avatar"><img src="${this.getDataUri(avatarBlob)}" /></dd>`
-      } else {
-        avatar = ""
       }
       html += `${ind}<dl class="email-meta">
 ${ind}  <dt>From:</dt>${avatar}<dd class="strong">${from}</dd>
@@ -226,6 +231,15 @@ ${ind}  <dt>To:</dt><dd>${to}</dd>\n`
       html += `${ind}<dt>bcc:</dt><dd>${bcc}</dd>\n`
     }
     html += `${ind}</dl>\n`
+    return html
+  }
+
+  protected generateMessageHtmlBody(
+    message: GoogleAppsScript.Gmail.GmailMessage,
+    opts: ExportOptionsType,
+  ): string {
+    const ind = "    "
+    let html = this.generateMessageHtmlHeader(message, opts)
     let body = message.getBody()
     if (opts.embedRemoteImages) {
       body = this.embedHtmlImages(body)
@@ -240,13 +254,13 @@ ${ind}  <dt>To:</dt><dd>${to}</dd>\n`
 ${ind}<strong>Attachments:</strong>
 ${ind}<div class="email-attachments">\n`
 
-        for (let a = 0; a < attachments.length; a++) {
-          const filename = attachments[a].getName()
+        for (const attachment of attachments) {
+          const filename = attachment.getName()
           let imageData
 
           if (
             opts.embedAttachments &&
-            (imageData = this.getDataUri(attachments[a].copyBlob()))
+            (imageData = this.getDataUri(attachment.copyBlob()))
           ) {
             body += `${ind}  <img src="${imageData}" alt="&lt;${filename}&gt;" /><br />\n`
           } else {
