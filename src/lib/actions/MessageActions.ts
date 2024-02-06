@@ -128,15 +128,7 @@ export class MessageActions implements ActionProvider<MessageContext> {
       file: context.proc.gdriveAdapter.createFile(
         PatternUtil.substitute(context, args.location),
         new FileContent(
-          context.env.utilities
-            .newBlob(
-              context.proc.gmailAdapter.messageAsHtml(
-                context.message.object,
-                args,
-              ),
-              "text/html",
-            )
-            .setName(name),
+          context.proc.gmailAdapter.messageAsHtml(context.message.object, args),
           name,
           PatternUtil.substitute(context, args.description ?? ""),
         ),

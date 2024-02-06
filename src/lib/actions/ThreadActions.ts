@@ -152,14 +152,7 @@ export class ThreadActions implements ActionProvider<ThreadContext> {
       file: context.proc.gdriveAdapter.createFile(
         PatternUtil.substitute(context, args.location),
         new FileContent(
-          context.env.utilities
-            .newBlob(
-              context.proc.gmailAdapter.threadAsHtml(context.thread.object, {
-                includeHeader: !args.skipHeader ?? true,
-              }),
-              "text/html",
-            )
-            .setName(name),
+          context.proc.gmailAdapter.threadAsHtml(context.thread.object, args),
           name,
           PatternUtil.substitute(context, args.description ?? ""),
         ),

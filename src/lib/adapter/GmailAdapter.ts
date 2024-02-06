@@ -23,11 +23,15 @@ export class GmailAdapter extends BaseAdapter {
   public messageAsHtml(
     message: GoogleAppsScript.Gmail.GmailMessage,
     options: ExportOptionsType,
-  ): string {
+  ): GoogleAppsScript.Base.Blob {
     this.ctx.log.info(
       `Generating HTML code of message '${message.getSubject()}'`,
     )
-    return this.gmailExportAdapter.generateMessagesHtml([message], options)
+    const html = this.gmailExportAdapter.generateMessagesHtml(
+      [message],
+      options,
+    )
+    return this.ctx.env.utilities.newBlob(html, "text/html")
   }
 
   public messageAsPdf(
@@ -37,8 +41,8 @@ export class GmailAdapter extends BaseAdapter {
     this.ctx.log.info(
       `Exporting message '${message.getSubject()}' as PDF document ...`,
     )
-    const html = this.messageAsHtml(message, options)
-    return this.gmailExportAdapter.convertHtmlToPdf(html)
+    const blob = this.messageAsHtml(message, options)
+    return blob.getAs("application/pdf")
   }
 
   public messageForward(
@@ -120,12 +124,13 @@ export class GmailAdapter extends BaseAdapter {
   public threadAsHtml(
     thread: GoogleAppsScript.Gmail.GmailThread,
     options: ExportOptionsType,
-  ): string {
+  ): GoogleAppsScript.Base.Blob {
     this.ctx.log.info(
       `Generating HTML code of thread '${thread.getFirstMessageSubject()}'`,
     )
     const messages = thread.getMessages()
-    return this.gmailExportAdapter.generateMessagesHtml(messages, options)
+    const html = this.gmailExportAdapter.generateMessagesHtml(messages, options)
+    return this.ctx.env.utilities.newBlob(html, "text/html")
   }
 
   public threadAsPdf(
@@ -135,8 +140,8 @@ export class GmailAdapter extends BaseAdapter {
     this.ctx.log.info(
       `Exporting thread '${thread.getFirstMessageSubject()}' as PDF document ...`,
     )
-    const html = this.threadAsHtml(thread, options)
-    return this.gmailExportAdapter.convertHtmlToPdf(html)
+    const blob = this.threadAsHtml(thread, options)
+    return blob.getAs("application/pdf")
   }
 
   public threadMarkImportant(thread: GoogleAppsScript.Gmail.GmailThread) {

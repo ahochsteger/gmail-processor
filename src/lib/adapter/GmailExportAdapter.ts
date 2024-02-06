@@ -295,9 +295,4 @@ ${ind}<div class="email-attachments">\n`
 
     return html
   }
-
-  public convertHtmlToPdf(html: string): GoogleAppsScript.Base.Blob {
-    const htmlBlob = this.ctx.env.utilities.newBlob(html, "text/html")
-    return htmlBlob.getAs("application/pdf")
-  }
 }

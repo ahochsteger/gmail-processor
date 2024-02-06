@@ -32,6 +32,7 @@ export class FileData extends EntryData<GoogleAppsScript.Drive.File> {
     public blob: GoogleAppsScript.Base.Blob = mock<GoogleAppsScript.Base.Blob>(),
     public scope: EntryScope = EntryScope.EXISTING,
     public content = `Contents of blob ${name}`,
+    public contentType = "text/plain",
   ) {
     super(entry, id, name, scope, EntryType.FILE)
   }
