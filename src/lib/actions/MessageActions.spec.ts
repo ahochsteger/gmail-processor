@@ -2,6 +2,7 @@ import { ConfigMocks } from "../../test/mocks/ConfigMocks"
 import {
   E2E_BASE_FOLDER_NAME,
   NEW_FILE_NAME,
+  NEW_HTML_FILE_NAME,
   NEW_PDF_FILE_NAME,
 } from "../../test/mocks/GDriveMocks"
 import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
@@ -57,13 +58,32 @@ it("should not forward a message (dry-run)", () => {
   expect(dryRunMocks.message.forward).not.toBeCalled()
 })
 
+it("should export a message as HTML", () => {
+  const result = MessageActions.exportAsHtml(mocks.messageContext, {
+    location: `${E2E_BASE_FOLDER_NAME}/${NEW_HTML_FILE_NAME}`,
+    conflictStrategy: ConflictStrategy.KEEP,
+  })
+  expect(mocks.newHtmlBlob.getDataAsString()).toEqual("HTML Content")
+  expect(result.file).toBeDefined()
+})
+
+it("should export a message as PDF", () => {
+  const result = MessageActions.exportAsPdf(mocks.messageContext, {
+    location: `${E2E_BASE_FOLDER_NAME}/${NEW_PDF_FILE_NAME}`,
+    conflictStrategy: ConflictStrategy.KEEP,
+  })
+  expect(mocks.newHtmlBlob.getAs).toHaveBeenCalledWith("application/pdf")
+  expect(mocks.newPdfBlob.getDataAsString()).toEqual("PDF Content")
+  expect(result.file).toBeDefined()
+})
+
 it("should store a message as PDF", () => {
   const result = MessageActions.storePDF(mocks.messageContext, {
     location: `${E2E_BASE_FOLDER_NAME}/${NEW_PDF_FILE_NAME}`,
     conflictStrategy: ConflictStrategy.KEEP,
     skipHeader: false,
   })
-  expect(mocks.newPdfBlob.getAs).toBeCalledWith("application/pdf")
+  expect(mocks.newHtmlBlob.getAs).toHaveBeenCalledWith("application/pdf")
   expect(mocks.newPdfBlob.getDataAsString()).toEqual("PDF Content")
   expect(result.file).toBeDefined()
 })

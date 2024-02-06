@@ -31,18 +31,20 @@ export const NEW_FILE_ID = "created-file-id"
 export const NEW_FILE_NAME = "created-file.txt"
 export const NEW_FOLDER_ID = "created-folder-id"
 export const NEW_FOLDER_NAME = "created-folder"
+export const NEW_PDF_FILE_ID = "created-pdf-file-id"
+export const NEW_PDF_FILE_NAME = "created-pdf-file.pdf"
 export const NEW_NESTED_FILE_ID = "created-nested-file-id"
 export const NEW_NESTED_FILE_NAME = "created-nested-file.txt"
 export const NEW_NESTED_FOLDER_ID = "subject-1-id"
 export const NEW_NESTED_FOLDER_NAME = "Subject 1"
+export const NEW_HTML_FILE_ID = "created-html-file-id"
+export const NEW_HTML_FILE_NAME = "created-html-file.html"
 export const NO_FILE_ID = "no-file-id"
 export const NO_FILE_NAME = "no-file.txt"
 export const NO_FOLDER_ID = "no-folder-id"
 export const NO_FOLDER_NAME = "no-folder"
 export const ROOT_FOLDER_ID = "root-folder-id"
 export const ROOT_FOLDER_NAME = "root-folder"
-export const NEW_PDF_FILE_ID = "created-pdf-file-id"
-export const NEW_PDF_FILE_NAME = "created-pdf-file.pdf"
 
 export const genericNewFileNamePatterns = [
   "example",
@@ -66,6 +68,9 @@ export class GDriveMocks {
       .mockReturnValue(fileData.content)
       .mockName("getDataAsString")
     blob.getName.mockReturnValue(fileData.name).mockName("getName")
+    blob.getContentType
+      .mockReturnValue(fileData.contentType)
+      .mockName("getContentType")
     return blob
   }
 
@@ -369,12 +374,22 @@ export class GDriveMocks {
               mocks.logSpreadsheetBlob,
             ),
             new FileData(
+              mocks.newHtmlFile,
+              NEW_HTML_FILE_ID,
+              NEW_HTML_FILE_NAME,
+              mocks.newHtmlBlob,
+              EntryScope.CREATED,
+              "HTML Content",
+              "text/html",
+            ),
+            new FileData(
               mocks.newPdfFile,
               NEW_PDF_FILE_ID,
               NEW_PDF_FILE_NAME,
               mocks.newPdfBlob,
               EntryScope.CREATED,
               "PDF Content",
+              "application/pdf",
             ),
           ],
         ),
@@ -385,5 +400,7 @@ export class GDriveMocks {
   public static setupAllMocks(mocks: Mocks) {
     const driveSpec = this.getSampleDriveData(mocks)
     GDriveMocks.setupGDriveAppMocks(driveSpec, mocks.gdriveApp)
+    // Setup special mocks:
+    mocks.newHtmlBlob.getAs.mockReturnValue(mocks.newPdfBlob)
   }
 }

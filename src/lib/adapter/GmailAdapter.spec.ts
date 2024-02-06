@@ -2,29 +2,36 @@ import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
 import { GmailAdapter } from "./GmailAdapter"
 
 let mocks: Mocks
-let gmailAdapter: GmailAdapter
+let adapter: GmailAdapter
 
 beforeEach(() => {
   mocks = MockFactory.newMocks()
-  gmailAdapter = new GmailAdapter(
+  adapter = new GmailAdapter(
     mocks.envContext,
     mocks.processingContext.proc.config.settings,
   )
 })
 
-const emailHeader =
-  '<dt>From:</dt><dd class="strong"><a href="mailto:message-from@example.com">message-from@example.com</a></dd>'
-
-it("should generate a HTML message with header", () => {
-  const actual = gmailAdapter.messageAsHtml(mocks.message, {
-    includeHeader: true,
-  })
-  expect(actual).toContain(emailHeader)
+it("should export a message as HTML document", () => {
+  const actual = adapter.messageAsHtml(mocks.message, {})
+  expect(actual).toBeDefined()
+  expect(actual.getContentType()).toEqual("text/html")
 })
 
-it("should generate a HTML message without header", () => {
-  const actual = gmailAdapter.messageAsHtml(mocks.message, {
-    includeHeader: false,
-  })
-  expect(actual).not.toContain(emailHeader)
+it("should export a message as PDF document", () => {
+  const actual = adapter.messageAsPdf(mocks.message, {})
+  expect(actual).toBeDefined()
+  expect(actual.getContentType()).toEqual("application/pdf")
+})
+
+it("should export a thread as HTML document", () => {
+  const actual = adapter.threadAsHtml(mocks.thread, {})
+  expect(actual).toBeDefined()
+  expect(actual.getContentType()).toEqual("text/html")
+})
+
+it("should export a thread as PDF document", () => {
+  const actual = adapter.threadAsPdf(mocks.thread, {})
+  expect(actual).toBeDefined()
+  expect(actual.getContentType()).toEqual("application/pdf")
 })

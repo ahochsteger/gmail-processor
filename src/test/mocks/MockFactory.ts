@@ -1,4 +1,4 @@
-import { MockProxy, matches, mock } from "jest-mock-extended"
+import { MockProxy, any, matches, mock } from "jest-mock-extended"
 import {
   AttachmentContext,
   EnvContext,
@@ -43,6 +43,10 @@ class EnvMocks {
   public newBlob: MockProxy<GoogleAppsScript.Base.Blob> =
     mock<GoogleAppsScript.Base.Blob>()
   public newFile: MockProxy<GoogleAppsScript.Drive.File> =
+    mock<GoogleAppsScript.Drive.File>()
+  public newHtmlBlob: MockProxy<GoogleAppsScript.Base.Blob> =
+    mock<GoogleAppsScript.Base.Blob>()
+  public newHtmlFile: MockProxy<GoogleAppsScript.Drive.File> =
     mock<GoogleAppsScript.Drive.File>()
   public newNestedBlob: MockProxy<GoogleAppsScript.Base.Blob> =
     mock<GoogleAppsScript.Base.Blob>()
@@ -112,7 +116,30 @@ class EnvMocks {
     this.user.getEmail
       .mockReturnValue("my.email@gmail.com")
       .mockName("getEmail")
-    this.utilities.newBlob.mockReturnValue(this.newPdfBlob).mockName("newBlob")
+    this.utilities.newBlob
+      .calledWith(
+        any(),
+        matches((v) => v !== "text/html" && v !== "application/pdf"),
+        any(),
+      )
+      .mockReturnValue(this.newBlob)
+      .mockName("newBlob")
+    this.utilities.newBlob
+      .calledWith(
+        any(),
+        matches((v) => v === "text/html"),
+        any(),
+      )
+      .mockReturnValue(this.newHtmlBlob)
+      .mockName("newHtmlBlob")
+    this.utilities.newBlob
+      .calledWith(
+        any(),
+        matches((v) => v === "application/pdf"),
+        any(),
+      )
+      .mockReturnValue(this.newPdfBlob)
+      .mockName("newPdfBlob")
     this.session.getScriptTimeZone
       .mockReturnValue("UTC")
       .mockName("getScriptTimeZone")
