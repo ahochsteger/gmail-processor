@@ -188,8 +188,14 @@ Export a thread as HTML document and store it to a GDrive location.
 |-----------|------|-------------|
 | `conflictStrategy` | `ConflictStrategy` | The strategy to be used in case a file already exists at the desired location. See [Enum Type `ConflictStrategy`](enum-types.md#conflictstrategy) for valid values. |
 | `description` | `string` | The description to be attached to the Google Drive file.<br />Supports [placeholder](placeholder.md) substitution. |
+| `embedAttachments` | `boolean` | Embed attachments (default: `true`) |
+| `embedAvatar` | `boolean` | Embed an avatar (from Gravatar) of the sender (default: `true`) |
+| `embedInlineImages` | `boolean` | Embed inline images (default: `true`) |
+| `embedRemoteImages` | `boolean` | Embed remote images (default: `true`) |
+| `includeAttachments` | `boolean` | Include attachments (default: `true`) |
+| `includeHeader` | `boolean` | Include the message header (default: `true`) |
 | `location` | `string` | The location (path + filename) of the Google Drive file.<br />For shared folders or Team Drives prepend the location with the folder ID like `{id:<folderId>}/...`.<br />Supports [placeholder](placeholder.md) substitution. |
-| `skipHeader` | `boolean` | Skip the header if `true`. |
+| `width` | `number` | The width (in px) of the message (default: `700`) |
 
 ### `thread.exportAsPdf`
 
