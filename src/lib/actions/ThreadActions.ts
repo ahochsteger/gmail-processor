@@ -144,7 +144,7 @@ export class ThreadActions implements ActionProvider<ThreadContext> {
   @writingAction()
   public static exportAsHtml(
     context: ThreadContext,
-    args: ThreadActionArgsStorePDF,
+    args: ThreadActionExportArgs,
   ) {
     const name = `${context.thread.object.getFirstMessageSubject()}.html`
     return {
