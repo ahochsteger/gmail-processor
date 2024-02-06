@@ -1,5 +1,7 @@
 /* eslint-disable no-undef, @typescript-eslint/no-var-requires */
 const GasPlugin = require("gas-webpack-plugin")
+const NodePolyfillPlugin = require("node-polyfill-webpack-plugin")
+
 module.exports = {
   mode: "development",
   context: __dirname,
@@ -17,6 +19,7 @@ module.exports = {
       autoGlobalExportsFiles: ["./build/lib/index.js"],
       comment: true,
     }),
+    new NodePolyfillPlugin(),
   ],
   devtool: false,
 }

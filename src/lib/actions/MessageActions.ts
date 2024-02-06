@@ -1,4 +1,5 @@
 import { FileContent } from "../adapter/GDriveAdapter"
+import { ExportOptionsType } from "../adapter/GmailExportAdapter"
 import { ActionBaseConfig, StoreActionBaseArgs } from "../config/ActionConfig"
 import { MessageContext } from "../Context"
 import { destructiveAction, writingAction } from "../utils/Decorators"
@@ -28,6 +29,9 @@ export type MessageActionStorePDFArgs = StoreActionBaseArgs & {
 }
 type MessageActionConfigStorePDF<TName extends string = string> =
   ActionBaseConfig<TName, MessageActionStorePDFArgs>
+export type MessageActionExportArgs = StoreActionBaseArgs & ExportOptionsType
+type MessageActionConfigExport<TName extends string = string> =
+  ActionBaseConfig<TName, MessageActionExportArgs>
 export type MessageActionStoreFromUrlArgs = StoreActionBaseArgs & {
   /**
    * The URL of the document to be stored.
@@ -113,7 +117,57 @@ export class MessageActions implements ActionProvider<MessageContext> {
     }
   }
 
-  /** Generate a PDF document from the message and store it to GDrive. */
+  /** Export a message as HTML document and store it to a GDrive location. */
+  @writingAction()
+  public static exportAsHtml(
+    context: MessageContext,
+    args: MessageActionExportArgs,
+  ): FileReturnType {
+    const name = `${context.message.object.getSubject()}.html`
+    return {
+      file: context.proc.gdriveAdapter.createFile(
+        PatternUtil.substitute(context, args.location),
+        new FileContent(
+          context.env.utilities
+            .newBlob(
+              context.proc.gmailAdapter.messageAsHtml(
+                context.message.object,
+                args,
+              ),
+              "text/html",
+            )
+            .setName(name),
+          name,
+          PatternUtil.substitute(context, args.description ?? ""),
+        ),
+        args.conflictStrategy,
+      ),
+    }
+  }
+
+  /** Export a message as PDF document and store it to a GDrive location. */
+  @writingAction()
+  public static exportAsPdf(
+    context: MessageContext,
+    args: MessageActionExportArgs,
+  ): FileReturnType {
+    return {
+      file: context.proc.gdriveAdapter.createFile(
+        PatternUtil.substitute(context, args.location),
+        new FileContent(
+          context.proc.gmailAdapter.messageAsPdf(context.message.object, args),
+          `${context.message.object.getSubject()}.pdf`,
+          PatternUtil.substitute(context, args.description ?? ""),
+        ),
+        args.conflictStrategy,
+      ),
+    }
+  }
+
+  /**
+   * Generate a PDF document from the message and store it to GDrive.
+   */
+  // * @deprecated Use {@link exportAsPdf} instead.
   @writingAction()
   public static storePDF(
     context: MessageContext,
@@ -123,10 +177,9 @@ export class MessageActions implements ActionProvider<MessageContext> {
       file: context.proc.gdriveAdapter.createFile(
         PatternUtil.substitute(context, args.location),
         new FileContent(
-          context.proc.gmailAdapter.messageAsPdf(
-            context.message.object,
-            args.skipHeader,
-          ),
+          context.proc.gmailAdapter.messageAsPdf(context.message.object, {
+            includeHeader: !args?.skipHeader ?? true,
+          }),
           `${context.message.object.getSubject()}.pdf`,
           PatternUtil.substitute(context, args.description ?? ""),
         ),
@@ -175,6 +228,8 @@ export type MessageActionConfigType =
   | ActionBaseConfig<"message.noop">
   | MessageActionConfigForward<"message.forward">
   | MessageActionConfigStoreFromURL<"message.storeFromURL">
+  | MessageActionConfigExport<"message.exportAsHtml">
+  | MessageActionConfigExport<"message.exportAsPdf">
   | MessageActionConfigStorePDF<"message.storePDF">
   | ActionBaseConfig<"message.markRead">
   | ActionBaseConfig<"message.markUnread">
