@@ -199,15 +199,16 @@ export class GmailExportAdapter extends BaseAdapter {
     const to = this.addressesToHtml(addressparser(message.getTo()))
     const cc = this.addressesToHtml(addressparser(message.getCc()))
     const bcc = this.addressesToHtml(addressparser(message.getBcc()))
-    let avatar = null
     if (opts.includeHeader) {
+      let avatar = ""
+      let avatarBlob: GoogleAppsScript.Base.Blob | null = null
       if (
         opts.embedAvatar &&
-        (avatar = this.getAvatar(
+        (avatarBlob = this.getAvatar(
           addressparser(message.getFrom())[0],
         ) as GoogleAppsScript.Base.Blob)
       ) {
-        avatar = `<dd class="avatar"><img src="${this.getDataUri(avatar)}" /></dd>`
+        avatar = `<dd class="avatar"><img src="${this.getDataUri(avatarBlob)}" /></dd>`
       } else {
         avatar = ""
       }

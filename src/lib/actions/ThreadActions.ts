@@ -206,7 +206,7 @@ export class ThreadActions implements ActionProvider<ThreadContext> {
         PatternUtil.substitute(context, args.location),
         new FileContent(
           context.proc.gmailAdapter.threadAsPdf(context.thread.object, name, {
-            includeHeader: !args.skipHeader ?? true,
+            includeHeader: !(args.skipHeader ?? false),
           }),
           name,
           PatternUtil.substitute(context, args.description ?? ""),
