@@ -155,6 +155,7 @@ Store a document referenced by a URL contained in the message body to GDrive.
 ### `message.storePDF`
 
 Generate a PDF document from the message and store it to GDrive.
+**DEPRECATED**: Use `message.exportAsPdf` instead.
 
 | Arguments | Type | Description |
 |-----------|------|-------------|
@@ -272,6 +273,7 @@ Remove a label from the thread.
 ### `thread.storePDF`
 
 Generate a PDF document for the whole thread and store it to GDrive.
+**DEPRECATED**: Use `thread.exportAsPdf` instead.
 
 | Arguments | Type | Description |
 |-----------|------|-------------|
