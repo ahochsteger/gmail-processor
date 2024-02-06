@@ -1,4 +1,5 @@
 import { FileContent } from "../adapter/GDriveAdapter"
+import { ExportOptionsType } from "../adapter/GmailExportAdapter"
 import { ActionBaseConfig, StoreActionBaseArgs } from "../config/ActionConfig"
 import { ThreadContext } from "../Context"
 import { destructiveAction, writingAction } from "../utils/Decorators"
@@ -18,11 +19,17 @@ type ThreadActionConfigLabel<TName extends string = string> = ActionBaseConfig<
   TName,
   ThreadActionLabelArgs
 >
+
+export type ThreadActionExportArgs = StoreActionBaseArgs & ExportOptionsType
+type ThreadActionConfigExport<TName extends string = string> = ActionBaseConfig<
+  TName,
+  ThreadActionExportArgs
+>
+
 export type ThreadActionArgsStorePDF = StoreActionBaseArgs & {
   /** Skip the header if `true`. */
   skipHeader?: boolean
 }
-
 type ThreadActionConfigStorePDF<TName extends string = string> =
   ActionBaseConfig<TName, ThreadActionArgsStorePDF>
 
@@ -133,7 +140,58 @@ export class ThreadActions implements ActionProvider<ThreadContext> {
     }
   }
 
-  /** Generate a PDF document for the whole thread and store it to GDrive. */
+  /** Export a thread as HTML document and store it to a GDrive location. */
+  @writingAction()
+  public static exportAsHtml(
+    context: ThreadContext,
+    args: ThreadActionArgsStorePDF,
+  ) {
+    const name = `${context.thread.object.getFirstMessageSubject()}.html`
+    return {
+      ok: true,
+      file: context.proc.gdriveAdapter.createFile(
+        PatternUtil.substitute(context, args.location),
+        new FileContent(
+          context.env.utilities
+            .newBlob(
+              context.proc.gmailAdapter.threadAsHtml(context.thread.object, {
+                includeHeader: !args.skipHeader ?? true,
+              }),
+              "text/html",
+            )
+            .setName(name),
+          name,
+          PatternUtil.substitute(context, args.description ?? ""),
+        ),
+        args.conflictStrategy,
+      ),
+    }
+  }
+
+  /** Export a thread as PDF document and store it to a GDrive location. */
+  @writingAction()
+  public static exportAsPdf(
+    context: ThreadContext,
+    args: ThreadActionExportArgs,
+  ) {
+    return {
+      ok: true,
+      file: context.proc.gdriveAdapter.createFile(
+        PatternUtil.substitute(context, args.location),
+        new FileContent(
+          context.proc.gmailAdapter.threadAsPdf(context.thread.object, args),
+          `${context.thread.object.getFirstMessageSubject()}.pdf`,
+          PatternUtil.substitute(context, args.description ?? ""),
+        ),
+        args.conflictStrategy,
+      ),
+    }
+  }
+
+  /**
+   * Generate a PDF document for the whole thread and store it to GDrive.
+   */
+  // * @deprecated Use {@link exportAsPdf} instead.
   @writingAction()
   public static storePDF(
     context: ThreadContext,
@@ -144,10 +202,9 @@ export class ThreadActions implements ActionProvider<ThreadContext> {
       file: context.proc.gdriveAdapter.createFile(
         PatternUtil.substitute(context, args.location),
         new FileContent(
-          context.proc.gmailAdapter.threadAsPdf(
-            context.thread.object,
-            args?.skipHeader ?? false,
-          ),
+          context.proc.gmailAdapter.threadAsPdf(context.thread.object, {
+            includeHeader: !args.skipHeader ?? true,
+          }),
           `${context.thread.object.getFirstMessageSubject()}.pdf`,
           PatternUtil.substitute(context, args.description ?? ""),
         ),
@@ -160,6 +217,8 @@ export class ThreadActions implements ActionProvider<ThreadContext> {
 export type ThreadActionConfigType =
   | ActionBaseConfig<"thread.noop">
   | ThreadActionConfigLabel<"thread.addLabel">
+  | ThreadActionConfigExport<"thread.exportAsHtml">
+  | ThreadActionConfigExport<"thread.exportAsPdf">
   | ThreadActionConfigLabel<"thread.removeLabel">
   | ThreadActionConfigStorePDF<"thread.storePDF">
   | ActionBaseConfig<"thread.markImportant">

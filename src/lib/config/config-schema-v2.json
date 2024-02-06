@@ -426,6 +426,70 @@
                     "additionalProperties": false,
                     "properties": {
                         "args": {
+                            "$ref": "#/definitions/MessageActionExportArgs",
+                            "title": "args"
+                        },
+                        "description": {
+                            "title": "description",
+                            "type": "string"
+                        },
+                        "name": {
+                            "const": "message.exportAsHtml",
+                            "title": "name",
+                            "type": "string"
+                        },
+                        "processingStage": {
+                            "description": "The stage of action processing",
+                            "enum": [
+                                "main",
+                                "post-main",
+                                "pre-main"
+                            ],
+                            "title": "processingStage",
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "name"
+                    ],
+                    "type": "object"
+                },
+                {
+                    "additionalProperties": false,
+                    "properties": {
+                        "args": {
+                            "$ref": "#/definitions/MessageActionExportArgs",
+                            "title": "args"
+                        },
+                        "description": {
+                            "title": "description",
+                            "type": "string"
+                        },
+                        "name": {
+                            "const": "message.exportAsPdf",
+                            "title": "name",
+                            "type": "string"
+                        },
+                        "processingStage": {
+                            "description": "The stage of action processing",
+                            "enum": [
+                                "main",
+                                "post-main",
+                                "pre-main"
+                            ],
+                            "title": "processingStage",
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "name"
+                    ],
+                    "type": "object"
+                },
+                {
+                    "additionalProperties": false,
+                    "properties": {
+                        "args": {
                             "$ref": "#/definitions/MessageActionStorePDFArgs",
                             "title": "args"
                         },
@@ -664,6 +728,70 @@
                         },
                         "name": {
                             "const": "thread.addLabel",
+                            "title": "name",
+                            "type": "string"
+                        },
+                        "processingStage": {
+                            "description": "The stage of action processing",
+                            "enum": [
+                                "main",
+                                "post-main",
+                                "pre-main"
+                            ],
+                            "title": "processingStage",
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "name"
+                    ],
+                    "type": "object"
+                },
+                {
+                    "additionalProperties": false,
+                    "properties": {
+                        "args": {
+                            "$ref": "#/definitions/ThreadActionExportArgs",
+                            "title": "args"
+                        },
+                        "description": {
+                            "title": "description",
+                            "type": "string"
+                        },
+                        "name": {
+                            "const": "thread.exportAsHtml",
+                            "title": "name",
+                            "type": "string"
+                        },
+                        "processingStage": {
+                            "description": "The stage of action processing",
+                            "enum": [
+                                "main",
+                                "post-main",
+                                "pre-main"
+                            ],
+                            "title": "processingStage",
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "name"
+                    ],
+                    "type": "object"
+                },
+                {
+                    "additionalProperties": false,
+                    "properties": {
+                        "args": {
+                            "$ref": "#/definitions/ThreadActionExportArgs",
+                            "title": "args"
+                        },
+                        "description": {
+                            "title": "description",
+                            "type": "string"
+                        },
+                        "name": {
+                            "const": "thread.exportAsPdf",
                             "title": "name",
                             "type": "string"
                         },
@@ -1098,6 +1226,67 @@
             "title": "GlobalConfig",
             "type": "object"
         },
+        "MessageActionExportArgs": {
+            "additionalProperties": false,
+            "properties": {
+                "conflictStrategy": {
+                    "$ref": "#/definitions/ConflictStrategy",
+                    "description": "The strategy to be used in case a file already exists at the desired location.",
+                    "title": "conflictStrategy"
+                },
+                "description": {
+                    "description": "The description to be attached to the Google Drive file.\nSupports placeholder substitution.",
+                    "title": "description",
+                    "type": "string"
+                },
+                "embedAttachments": {
+                    "description": "Embed attachments (default: `true`)",
+                    "title": "embedAttachments",
+                    "type": "boolean"
+                },
+                "embedAvatar": {
+                    "description": "Embed an avatar (from Gravatar) of the sender (default: `true`)",
+                    "title": "embedAvatar",
+                    "type": "boolean"
+                },
+                "embedInlineImages": {
+                    "description": "Embed inline images (default: `true`)",
+                    "title": "embedInlineImages",
+                    "type": "boolean"
+                },
+                "embedRemoteImages": {
+                    "description": "Embed remote images (default: `true`)",
+                    "title": "embedRemoteImages",
+                    "type": "boolean"
+                },
+                "includeAttachments": {
+                    "description": "Include attachments (default: `true`)",
+                    "title": "includeAttachments",
+                    "type": "boolean"
+                },
+                "includeHeader": {
+                    "description": "Include the message header (default: `true`)",
+                    "title": "includeHeader",
+                    "type": "boolean"
+                },
+                "location": {
+                    "description": "The location (path + filename) of the Google Drive file.\nFor shared folders or Team Drives prepend the location with the folder ID like `{id:<folderId>}/...`.\nSupports placeholder substitution.",
+                    "title": "location",
+                    "type": "string"
+                },
+                "width": {
+                    "description": "The width (in px) of the message (default: `700`)",
+                    "title": "width",
+                    "type": "number"
+                }
+            },
+            "required": [
+                "conflictStrategy",
+                "location"
+            ],
+            "title": "MessageActionExportArgs",
+            "type": "object"
+        },
         "MessageActionStoreFromUrlArgs": {
             "additionalProperties": false,
             "properties": {
@@ -1514,6 +1703,70 @@
                     "additionalProperties": false,
                     "properties": {
                         "args": {
+                            "$ref": "#/definitions/MessageActionExportArgs",
+                            "title": "args"
+                        },
+                        "description": {
+                            "title": "description",
+                            "type": "string"
+                        },
+                        "name": {
+                            "const": "message.exportAsHtml",
+                            "title": "name",
+                            "type": "string"
+                        },
+                        "processingStage": {
+                            "description": "The stage of action processing",
+                            "enum": [
+                                "main",
+                                "post-main",
+                                "pre-main"
+                            ],
+                            "title": "processingStage",
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "name"
+                    ],
+                    "type": "object"
+                },
+                {
+                    "additionalProperties": false,
+                    "properties": {
+                        "args": {
+                            "$ref": "#/definitions/MessageActionExportArgs",
+                            "title": "args"
+                        },
+                        "description": {
+                            "title": "description",
+                            "type": "string"
+                        },
+                        "name": {
+                            "const": "message.exportAsPdf",
+                            "title": "name",
+                            "type": "string"
+                        },
+                        "processingStage": {
+                            "description": "The stage of action processing",
+                            "enum": [
+                                "main",
+                                "post-main",
+                                "pre-main"
+                            ],
+                            "title": "processingStage",
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "name"
+                    ],
+                    "type": "object"
+                },
+                {
+                    "additionalProperties": false,
+                    "properties": {
+                        "args": {
                             "$ref": "#/definitions/MessageActionStorePDFArgs",
                             "title": "args"
                         },
@@ -1752,6 +2005,70 @@
                         },
                         "name": {
                             "const": "thread.addLabel",
+                            "title": "name",
+                            "type": "string"
+                        },
+                        "processingStage": {
+                            "description": "The stage of action processing",
+                            "enum": [
+                                "main",
+                                "post-main",
+                                "pre-main"
+                            ],
+                            "title": "processingStage",
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "name"
+                    ],
+                    "type": "object"
+                },
+                {
+                    "additionalProperties": false,
+                    "properties": {
+                        "args": {
+                            "$ref": "#/definitions/ThreadActionExportArgs",
+                            "title": "args"
+                        },
+                        "description": {
+                            "title": "description",
+                            "type": "string"
+                        },
+                        "name": {
+                            "const": "thread.exportAsHtml",
+                            "title": "name",
+                            "type": "string"
+                        },
+                        "processingStage": {
+                            "description": "The stage of action processing",
+                            "enum": [
+                                "main",
+                                "post-main",
+                                "pre-main"
+                            ],
+                            "title": "processingStage",
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "name"
+                    ],
+                    "type": "object"
+                },
+                {
+                    "additionalProperties": false,
+                    "properties": {
+                        "args": {
+                            "$ref": "#/definitions/ThreadActionExportArgs",
+                            "title": "args"
+                        },
+                        "description": {
+                            "title": "description",
+                            "type": "string"
+                        },
+                        "name": {
+                            "const": "thread.exportAsPdf",
                             "title": "name",
                             "type": "string"
                         },
@@ -2269,6 +2586,67 @@
             "title": "ThreadActionArgsStorePDF",
             "type": "object"
         },
+        "ThreadActionExportArgs": {
+            "additionalProperties": false,
+            "properties": {
+                "conflictStrategy": {
+                    "$ref": "#/definitions/ConflictStrategy",
+                    "description": "The strategy to be used in case a file already exists at the desired location.",
+                    "title": "conflictStrategy"
+                },
+                "description": {
+                    "description": "The description to be attached to the Google Drive file.\nSupports placeholder substitution.",
+                    "title": "description",
+                    "type": "string"
+                },
+                "embedAttachments": {
+                    "description": "Embed attachments (default: `true`)",
+                    "title": "embedAttachments",
+                    "type": "boolean"
+                },
+                "embedAvatar": {
+                    "description": "Embed an avatar (from Gravatar) of the sender (default: `true`)",
+                    "title": "embedAvatar",
+                    "type": "boolean"
+                },
+                "embedInlineImages": {
+                    "description": "Embed inline images (default: `true`)",
+                    "title": "embedInlineImages",
+                    "type": "boolean"
+                },
+                "embedRemoteImages": {
+                    "description": "Embed remote images (default: `true`)",
+                    "title": "embedRemoteImages",
+                    "type": "boolean"
+                },
+                "includeAttachments": {
+                    "description": "Include attachments (default: `true`)",
+                    "title": "includeAttachments",
+                    "type": "boolean"
+                },
+                "includeHeader": {
+                    "description": "Include the message header (default: `true`)",
+                    "title": "includeHeader",
+                    "type": "boolean"
+                },
+                "location": {
+                    "description": "The location (path + filename) of the Google Drive file.\nFor shared folders or Team Drives prepend the location with the folder ID like `{id:<folderId>}/...`.\nSupports placeholder substitution.",
+                    "title": "location",
+                    "type": "string"
+                },
+                "width": {
+                    "description": "The width (in px) of the message (default: `700`)",
+                    "title": "width",
+                    "type": "number"
+                }
+            },
+            "required": [
+                "conflictStrategy",
+                "location"
+            ],
+            "title": "ThreadActionExportArgs",
+            "type": "object"
+        },
         "ThreadConfig": {
             "additionalProperties": false,
             "description": "Represents a config handle a certain GMail thread",
@@ -2571,6 +2949,70 @@
                         },
                         "name": {
                             "const": "thread.addLabel",
+                            "title": "name",
+                            "type": "string"
+                        },
+                        "processingStage": {
+                            "description": "The stage of action processing",
+                            "enum": [
+                                "main",
+                                "post-main",
+                                "pre-main"
+                            ],
+                            "title": "processingStage",
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "name"
+                    ],
+                    "type": "object"
+                },
+                {
+                    "additionalProperties": false,
+                    "properties": {
+                        "args": {
+                            "$ref": "#/definitions/ThreadActionExportArgs",
+                            "title": "args"
+                        },
+                        "description": {
+                            "title": "description",
+                            "type": "string"
+                        },
+                        "name": {
+                            "const": "thread.exportAsHtml",
+                            "title": "name",
+                            "type": "string"
+                        },
+                        "processingStage": {
+                            "description": "The stage of action processing",
+                            "enum": [
+                                "main",
+                                "post-main",
+                                "pre-main"
+                            ],
+                            "title": "processingStage",
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "name"
+                    ],
+                    "type": "object"
+                },
+                {
+                    "additionalProperties": false,
+                    "properties": {
+                        "args": {
+                            "$ref": "#/definitions/ThreadActionExportArgs",
+                            "title": "args"
+                        },
+                        "description": {
+                            "title": "description",
+                            "type": "string"
+                        },
+                        "name": {
+                            "const": "thread.exportAsPdf",
                             "title": "name",
                             "type": "string"
                         },

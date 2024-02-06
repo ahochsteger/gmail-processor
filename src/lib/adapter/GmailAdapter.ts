@@ -1,13 +1,16 @@
 import { EnvContext } from "../Context"
 import { SettingsConfig } from "../config/SettingsConfig"
 import { BaseAdapter } from "./BaseAdapter"
+import { ExportOptionsType, GmailExportAdapter } from "./GmailExportAdapter"
 
 export class GmailAdapter extends BaseAdapter {
+  private gmailExportAdapter: GmailExportAdapter
   constructor(
     public ctx: EnvContext,
     public settings: SettingsConfig,
   ) {
     super(ctx, settings)
+    this.gmailExportAdapter = new GmailExportAdapter(ctx, settings)
   }
 
   public search(
@@ -17,35 +20,25 @@ export class GmailAdapter extends BaseAdapter {
     return this.ctx.env.gmailApp.search(query, 0, max)
   }
 
-  public convertHtmlToPdf(html: string): GoogleAppsScript.Base.Blob {
-    const htmlBlob = this.ctx.env.utilities.newBlob(html, "text/html")
-    return htmlBlob.getAs("application/pdf")
-  }
-
   public messageAsHtml(
     message: GoogleAppsScript.Gmail.GmailMessage,
-    skipHeader = false,
+    options: ExportOptionsType,
   ): string {
-    let html = ""
-    if (!skipHeader) {
-      html += `From: ${message.getFrom()}<br />
-To: ${message.getTo()}<br />
-Date: ${message.getDate()}<br />
-Subject: ${message.getSubject()}<br />
-<hr />
-`
-    }
-    html += `${message.getBody()}
-<hr />
-`
-    return html
+    this.ctx.log.info(
+      `Generating HTML code of message '${message.getSubject()}'`,
+    )
+    return this.gmailExportAdapter.generateMessagesHtml([message], options)
   }
 
   public messageAsPdf(
     message: GoogleAppsScript.Gmail.GmailMessage,
-    skipHeader = false,
+    options: ExportOptionsType,
   ): GoogleAppsScript.Base.Blob {
-    return this.convertHtmlToPdf(this.messageAsHtml(message, skipHeader))
+    this.ctx.log.info(
+      `Exporting message '${message.getSubject()}' as PDF document ...`,
+    )
+    const html = this.messageAsHtml(message, options)
+    return this.gmailExportAdapter.convertHtmlToPdf(html)
   }
 
   public messageForward(
@@ -126,24 +119,24 @@ Subject: ${message.getSubject()}<br />
    */
   public threadAsHtml(
     thread: GoogleAppsScript.Gmail.GmailThread,
-    skipHeader = false,
+    options: ExportOptionsType,
   ): string {
     this.ctx.log.info(
       `Generating HTML code of thread '${thread.getFirstMessageSubject()}'`,
     )
     const messages = thread.getMessages()
-    let html = ""
-    for (const message of messages) {
-      html += this.messageAsHtml(message, skipHeader)
-    }
-    return html
+    return this.gmailExportAdapter.generateMessagesHtml(messages, options)
   }
 
   public threadAsPdf(
     thread: GoogleAppsScript.Gmail.GmailThread,
-    skipHeader = false,
+    options: ExportOptionsType,
   ): GoogleAppsScript.Base.Blob {
-    return this.convertHtmlToPdf(this.threadAsHtml(thread, skipHeader))
+    this.ctx.log.info(
+      `Exporting thread '${thread.getFirstMessageSubject()}' as PDF document ...`,
+    )
+    const html = this.threadAsHtml(thread, options)
+    return this.gmailExportAdapter.convertHtmlToPdf(html)
   }
 
   public threadMarkImportant(thread: GoogleAppsScript.Gmail.GmailThread) {

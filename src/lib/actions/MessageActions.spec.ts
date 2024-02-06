@@ -29,6 +29,8 @@ it("should provide actions in the action registry", () => {
     .filter((v) => v.startsWith("message."))
     .sort()
   expect(actionNames).toEqual([
+    "message.exportAsHtml",
+    "message.exportAsPdf",
     "message.forward",
     "message.markRead",
     "message.markUnread",

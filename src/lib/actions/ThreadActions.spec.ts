@@ -27,6 +27,8 @@ it("should provide actions in the action registry", () => {
     .sort()
   expect(actionNames).toEqual([
     "thread.addLabel",
+    "thread.exportAsHtml",
+    "thread.exportAsPdf",
     "thread.markImportant",
     "thread.markRead",
     "thread.markUnimportant",
@@ -56,10 +58,10 @@ it("should not mark a thread as important (dryRun)", () => {
 })
 
 it("should store a thread as PDF", () => {
-  const result = ThreadActions.storePDF(mocks.threadContext, {
+  const result = ThreadActions.exportAsPdf(mocks.threadContext, {
     location: `${E2E_BASE_FOLDER_NAME}/${NEW_PDF_FILE_NAME}`,
     conflictStrategy: ConflictStrategy.REPLACE,
-    skipHeader: false,
+    includeHeader: true,
   })
   expect(mocks.newPdfBlob.getAs).toBeCalledWith("application/pdf")
   expect(mocks.newPdfBlob.getDataAsString()).toEqual("PDF Content")
