@@ -44,6 +44,12 @@ export const e2eInitConfig = {
   ],
   mails: [
     {
+      name: "00-no-attachments",
+      subject: "Test with no attachments",
+      htmlBody: "Test email with no attachments.",
+      files: [],
+    },
+    {
       name: "01-single-attachment",
       subject: "Test with a single attachments",
       htmlBody: "Test email with a single attachment from the github repo.",
@@ -56,9 +62,10 @@ export const e2eInitConfig = {
       files: ["gmail-logo", "plaintext-drive", "plaintext-repo"],
     },
     {
-      name: "01-multiple",
-      subject: "Test with no attachments",
-      htmlBody: "Test email with no attachments.",
+      name: "00-no-attachments",
+      subject: "Test HTML image tag",
+      htmlBody:
+        'Test with HTML image tag:\n<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Gmail_icon_%282020%29.svg/320px-Gmail_icon_%282020%29.svg.png">',
       files: [],
     },
   ],
