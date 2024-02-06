@@ -1,4 +1,5 @@
 import addressparser, { EmailAddress } from "addressparser"
+import 'core-js/web/url'
 import crypto from "crypto"
 import { format } from "date-fns-tz"
 import { EnvContext } from "../Context"
@@ -124,7 +125,7 @@ export class GmailExportAdapter extends BaseAdapter {
    */
   protected processImageTags(html: string): string {
     return html.replace(
-      /(<img[^>]+src=)(["'])((?:(?!\2)[^\\]|\\.)*)\2/gi,
+      /(?<tag><img[^>]+src=)(?<q>["'])(?<src>(?:(?!\2)[^\\]|\\.)*)\2/gi,
       (_m, tag, q, src) => tag + q + (this.getDataUri(src) || src) + q,
     )
   }
@@ -134,10 +135,12 @@ export class GmailExportAdapter extends BaseAdapter {
    */
   protected processStyleAttributes(html: string): string {
     return html.replace(
-      /(<[^>]+style=)(["'])((?:(?!\2)[^\\]|\\.)*)\2/gi,
-      (_m, tag, q, style) => {
+      /(?<tag><\w+[^>]*?style\s*=\s*)(?:(?<dq>")(?<dqStyle>[^"]+)"|(?<sq>')(?<sqStyle>[^']+)')/gi,
+      (_m, tag, dq, dqStyle, _sq, sqStyle) => {
+        const q = dq ? '"' : "'"
+        let style = dq ? dqStyle : sqStyle
         style = style.replace(
-          /url\((\\?["']?)([^)]*)\1\)/gi,
+          /url\((?<q>\\?["']?)(?<url>[^)]*)\1\)/gi,
           (_m: string, q: string, url: string) =>
             "url(" + q + (this.getDataUri(url) || url) + q + ")",
         )
@@ -151,10 +154,10 @@ export class GmailExportAdapter extends BaseAdapter {
    */
   protected processStyleTags(html: string): string {
     return html.replace(
-      /(<style[^>]*>)(.*?)(<\/style>)/gi,
+      /(?<tag><style[^>]*>)(?<style>.*?)(?<end><\/style>)/gi,
       (_m, tag, style, end) => {
         style = style.replace(
-          /url\((["']?)([^)]*)\1\)/gi,
+          /url\((?<q>["']?)(?<url>[^)]*)\1\)/gi,
           (_m: unknown, q: string, url: string) =>
             "url(" + q + (this.getDataUri(url) || url) + q + ")",
         )
@@ -174,7 +177,7 @@ export class GmailExportAdapter extends BaseAdapter {
     )[],
   ): string {
     return html.replace(
-      /(<img[^>]+src=)(["'])(\?view=att(?:(?!\2)[^\\]|\\.)*)\2/gi,
+      /(?<tag><img[^>]+src=)(?<q>["'])(?<src>\?view=att(?:(?!\2)[^\\]|\\.)*)\2/gi,
       (_m, tag, q, src) =>
         tag + q + (this.getDataUri(images.shift()) || src) + q,
     )
