@@ -46,7 +46,7 @@ export class GmailExportAdapter extends BaseAdapter {
     const address = email?.address
     if (!address) return null
     const avatarUrl =
-      "http://www.gravatar.com/avatar/" +
+      "https://www.gravatar.com/avatar/" +
       crypto.createHash("md5").update(address).digest("hex") +
       "?s=128&d=404"
     this.ctx.log.debug(
