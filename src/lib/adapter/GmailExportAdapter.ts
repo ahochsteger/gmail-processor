@@ -1,5 +1,5 @@
 import addressparser, { EmailAddress } from "addressparser"
-import 'core-js/web/url'
+import "core-js/web/url"
 import crypto from "crypto"
 import { format } from "date-fns-tz"
 import { EnvContext } from "../Context"
@@ -48,7 +48,7 @@ export class GmailExportAdapter extends BaseAdapter {
     if (!address) return null
     const avatarUrl =
       "https://www.gravatar.com/avatar/" +
-      crypto.createHash("md5").update(address).digest("hex") +
+      crypto.createHash("sha256").update(address).digest("hex") +
       "?s=128&d=404"
     this.ctx.log.debug(
       `GMailExportAdapter.getAvatar(): fetching from ${avatarUrl} ...`,
@@ -135,7 +135,7 @@ export class GmailExportAdapter extends BaseAdapter {
    */
   protected processStyleAttributes(html: string): string {
     return html.replace(
-      /(?<tag><\w+[^>]*?style\s*=\s*)(?:(?<dq>")(?<dqStyle>[^"]+)"|(?<sq>')(?<sqStyle>[^']+)')/gi,
+      /(?<tag>\bstyle\s*=\s*)(?:(?<dq>")(?<dqStyle>[^"]+)"|(?<sq>')(?<sqStyle>[^']+)')/gi,
       (_m, tag, dq, dqStyle, _sq, sqStyle) => {
         const q = dq ? '"' : "'"
         let style = dq ? dqStyle : sqStyle
