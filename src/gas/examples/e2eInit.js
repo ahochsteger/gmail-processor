@@ -128,33 +128,3 @@ export const e2eInitConfig = {
 export function e2eInit(_evt, ctx) {
   return GmailProcessorLib.E2E.initAll(e2eInitConfig, ctx)
 }
-
-function testDriveApiV2FilesInsert(_evt, ctx) {
-  const fileId = "1GJl_CFhn8jcIbdNh5SPiCHMEzeJYlLPa"
-  const originalFile = DriveApp.getFileById(fileId)
-  const fileMetadata = {
-    title: "sample from xlsx",
-    description: "some description",
-    mimeType: "application/vnd.google-apps.spreadsheet",
-    parents: [{ id: "1dgZ3c4V8G3xzoUzAxOr4fsx8JMmrfUwm" }],
-  }
-  const file = Drive.Files.insert(fileMetadata, originalFile)
-  console.log(file.id)
-}
-
-function testDriveApiV2FilesCopy(_evt, ctx) {
-  const fileId = "1GJl_CFhn8jcIbdNh5SPiCHMEzeJYlLPa"
-  const originalFile = DriveApp.getFileById(fileId)
-  const fileMetadata = {
-    title: "sample from xlsx",
-    description: "some description",
-    mimeType: "application/vnd.google-apps.spreadsheet",
-    parents: [{ id: "1dgZ3c4V8G3xzoUzAxOr4fsx8JMmrfUwm" }],
-  }
-  //const file = Drive.Files.copy(fileMetadata, fileId, {convert: true, ocr: true});
-  const file = Drive.Files.copy(fileMetadata, fileId, {
-    convert: true,
-    ocr: true,
-  })
-  console.log(file.id)
-}

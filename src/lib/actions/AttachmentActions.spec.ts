@@ -1,5 +1,5 @@
 import { ConfigMocks } from "../../test/mocks/ConfigMocks"
-import { NEW_FILE_NAME } from "../../test/mocks/GDriveMocks"
+import { NEW_FILE_NAME, NEW_FILE_PATH } from "../../test/mocks/GDriveMocks"
 import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
 import { AttachmentContext, ProcessingContext, RunMode } from "../Context"
 import { ConflictStrategy } from "../adapter/GDriveAdapter"
@@ -53,23 +53,32 @@ it("should create a file without a leading slash location", () => {
   expect(mocks.rootFolder.createFile).toBeCalled()
 })
 
-it("should not create a file on dry-run", () => {
+it("should not create a file on dry-run mode", () => {
   const dryRunMocks = MockFactory.newMocks(
     ConfigMocks.newDefaultConfig(),
     RunMode.DRY_RUN,
   )
   AttachmentActions.store(dryRunMocks.attachmentContext, {
-    location: "/test-location",
+    location: NEW_FILE_PATH,
     conflictStrategy: ConflictStrategy.REPLACE,
     description: "automated test",
   })
-  expect(mocks.existingFolder.createFile).not.toBeCalled()
+  expect(mocks.rootFolder.createFile).not.toHaveBeenCalled()
+})
+
+it("should create a file on dangerous mode", () => {
+  AttachmentActions.store(mocks.attachmentContext, {
+    location: NEW_FILE_PATH,
+    conflictStrategy: ConflictStrategy.KEEP,
+    description: "automated test",
+  })
+  expect(mocks.rootFolder.createFile).toHaveBeenCalled()
 })
 
 it("should execute all actions using the action registry", () => {
   const ctx = mocks.attachmentContext
   actionRegistry.executeAction(ctx, "attachment.store", {
-    location: "/my-location",
+    location: NEW_FILE_PATH,
     conflictStrategy: ConflictStrategy.REPLACE,
     description: "my description",
   })

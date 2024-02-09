@@ -5,7 +5,7 @@ import {
   NEW_EXISTING_FILE_ID,
   NEW_EXISTING_FILE_NAME,
   NEW_FILE_ID,
-  NEW_FILE_NAME,
+  NEW_FILE_PATH,
   NEW_FOLDER_NAME,
   NEW_NESTED_FILE_ID,
   NEW_NESTED_FILE_NAME,
@@ -55,7 +55,7 @@ describe("createFile() strategy:ERROR", () => {
   it("should create a non-existing file in the root folder", () => {
     gdriveAdapter.ctx.env.runMode = RunMode.DANGEROUS
     const file = gdriveAdapter.createFile(
-      `/${NEW_FILE_NAME}`,
+      NEW_FILE_PATH,
       new FileContent(mocks.newBlob),
       ConflictStrategy.ERROR,
     )
@@ -152,7 +152,7 @@ describe("createFile() strategy:KEEP", () => {
       new FileContent(mocks.newExistingBlob),
       ConflictStrategy.KEEP,
     )
-    expect(createdFile).not.toBe(mocks.existingFile)
+    expect(createdFile?.getId()).not.toEqual(EXISTING_FILE_ID)
     expect(mocks.rootFolder.createFile).toBeCalled()
   })
 })
@@ -194,7 +194,7 @@ describe("createFile() with folderId", () => {
   })
 })
 describe("createFile() convert", () => {
-  it("should create a file and convert to Google format without keeping the original file", () => {
+  it("should create a file and convert to Google format", () => {
     gdriveAdapter.ctx.env.runMode = RunMode.SAFE_MODE
     const createdFile = gdriveAdapter.createFile(
       `/${NEW_EXISTING_FILE_NAME}`,
@@ -203,7 +203,6 @@ describe("createFile() convert", () => {
         NEW_EXISTING_FILE_NAME,
         "",
         "application/vnd.google-apps.spreadsheet",
-        false,
       ),
       ConflictStrategy.KEEP,
     )
@@ -220,35 +219,7 @@ describe("createFile() convert", () => {
         mocks.driveApi
           .Files as MockProxy<GoogleAppsScript.Drive.Collection.FilesCollection>
       ).insert,
-    ).toHaveBeenCalled()
-  })
-  it("should create a file and convert to Google format while keeping the original file", () => {
-    gdriveAdapter.ctx.env.runMode = RunMode.SAFE_MODE
-    const createdFile = gdriveAdapter.createFile(
-      `/${NEW_EXISTING_FILE_NAME}`,
-      new FileContent(
-        mocks.newExistingBlob,
-        NEW_EXISTING_FILE_NAME,
-        "",
-        "application/vnd.google-apps.spreadsheet",
-        true,
-      ),
-      ConflictStrategy.KEEP,
-    )
-    expect(createdFile).not.toBe(mocks.existingFile)
-    expect(mocks.rootFolder.createFile).toHaveBeenCalled()
-    expect(
-      (
-        mocks.driveApi
-          .Files as MockProxy<GoogleAppsScript.Drive.Collection.FilesCollection>
-      ).insert,
-    ).not.toHaveBeenCalled()
-    expect(
-      (
-        mocks.driveApi
-          .Files as MockProxy<GoogleAppsScript.Drive.Collection.FilesCollection>
-      ).copy,
-    ).toHaveBeenCalled()
+    ).toBeCalled()
   })
 })
 describe("DriveUtils.extractLocationInfo()", () => {
