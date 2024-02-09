@@ -47,6 +47,9 @@ jobs:
         if: ${{ !github.event.inputs.skip_tests }}
         name: Test
         run: npm run ci:test
+      - id: docs
+        name: Build docs
+        run: npm run ci:docs
       - id: coveralls
         if: ${{ !github.event.inputs.skip_coveralls }}
         name: Coveralls
