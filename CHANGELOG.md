@@ -1,5 +1,17 @@
 # Changelog
 
+# [2.6.0](https://github.com/ahochsteger/gmail-processor/compare/2.5.0...2.6.0) (2024-02-09)
+
+
+### Bug Fixes
+
+* wrong backslash escape handling ([fd39b72](https://github.com/ahochsteger/gmail-processor/commit/fd39b72aca7c9563afc0b16fa5adfcc794ea9321))
+
+
+### Features
+
+* add file conversion using drive v2 ([ce31693](https://github.com/ahochsteger/gmail-processor/commit/ce31693079a7092fcd98950917316dbf936e71c2))
+
 # [2.5.0](https://github.com/ahochsteger/gmail-processor/compare/2.4.2...2.5.0) (2024-02-06)
 
 
