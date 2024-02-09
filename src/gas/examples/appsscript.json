@@ -12,6 +12,18 @@
         "libraryId": "${CLASP_LIB_SCRIPT_ID}",
         "developmentMode": true
       }
+    ],
+    "enabledAdvancedServices": [
+      {
+        "userSymbol": "Drive",
+        "version": "v2",
+        "serviceId": "drive"
+      },
+      {
+        "userSymbol": "DriveAPIv3",
+        "version": "v3",
+        "serviceId": "drive"
+      }
     ]
   },
   "oauthScopes": [

@@ -80,24 +80,19 @@
                                     "description": "The strategy to be used in case a file already exists at the desired location.",
                                     "title": "conflictStrategy"
                                 },
-                                "convertToMimeType": {
-                                    "description": "Convert the file to the given mime type.\nUse one of the <a href=\"https://developers.google.com/drive/api/guides/mime-types?hl=en\">supported mime-types</a> by Google Drive.",
-                                    "title": "convertToMimeType",
-                                    "type": "string"
-                                },
                                 "description": {
                                     "description": "The description to be attached to the Google Drive file.\nSupports placeholder substitution.",
                                     "title": "description",
                                     "type": "string"
                                 },
-                                "keepOriginalFile": {
-                                    "description": "Keep the original (non-converted) file if it should be converted using.\nFor special Google Drive supported mime types see\n<a href=\"https://developers.google.com/drive/api/guides/mime-types?hl=en\">this page</a>.",
-                                    "title": "keepOriginalFile",
-                                    "type": "string"
-                                },
                                 "location": {
                                     "description": "The location (path + filename) of the Google Drive file.\nFor shared folders or Team Drives prepend the location with the folder ID like `{id:<folderId>}/...`.\nSupports placeholder substitution.",
                                     "title": "location",
+                                    "type": "string"
+                                },
+                                "toMimeType": {
+                                    "description": "Convert to a Google file type using one of the <a href=\"https://developers.google.com/drive/api/guides/mime-types?hl=en\">supported mime-types by Google Drive</a>, like:\n* `application/vnd.google-apps.document`: Google Docs\n* `application/vnd.google-apps.presentation`: Google Slides\n* `application/vnd.google-apps.spreadsheet`: Google Sheets",
+                                    "title": "toMimeType",
                                     "type": "string"
                                 }
                             },
@@ -1284,6 +1279,11 @@
                     "title": "location",
                     "type": "string"
                 },
+                "toMimeType": {
+                    "description": "Convert to a Google file type using one of the <a href=\"https://developers.google.com/drive/api/guides/mime-types?hl=en\">supported mime-types by Google Drive</a>, like:\n* `application/vnd.google-apps.document`: Google Docs\n* `application/vnd.google-apps.presentation`: Google Slides\n* `application/vnd.google-apps.spreadsheet`: Google Sheets",
+                    "title": "toMimeType",
+                    "type": "string"
+                },
                 "width": {
                     "description": "The width (in px) of the message (default: `700`)",
                     "title": "width",
@@ -1305,11 +1305,6 @@
                     "description": "The strategy to be used in case a file already exists at the desired location.",
                     "title": "conflictStrategy"
                 },
-                "convertToMimeType": {
-                    "description": "Convert the file to the given mime type.\nUse one of the <a href=\"https://developers.google.com/drive/api/guides/mime-types?hl=en\">supported mime-types</a> by Google Drive.",
-                    "title": "convertToMimeType",
-                    "type": "string"
-                },
                 "description": {
                     "description": "The description to be attached to the Google Drive file.\nSupports placeholder substitution.",
                     "title": "description",
@@ -1320,14 +1315,14 @@
                     "description": "The header to pass to the URL. May be used to pass an authentication token.\nSupports placeholder substitution.",
                     "title": "headers"
                 },
-                "keepOriginalFile": {
-                    "description": "Keep the original (non-converted) file if it should be converted using.\nFor special Google Drive supported mime types see\n<a href=\"https://developers.google.com/drive/api/guides/mime-types?hl=en\">this page</a>.",
-                    "title": "keepOriginalFile",
-                    "type": "string"
-                },
                 "location": {
                     "description": "The location (path + filename) of the Google Drive file.\nFor shared folders or Team Drives prepend the location with the folder ID like `{id:<folderId>}/...`.\nSupports placeholder substitution.",
                     "title": "location",
+                    "type": "string"
+                },
+                "toMimeType": {
+                    "description": "Convert to a Google file type using one of the <a href=\"https://developers.google.com/drive/api/guides/mime-types?hl=en\">supported mime-types by Google Drive</a>, like:\n* `application/vnd.google-apps.document`: Google Docs\n* `application/vnd.google-apps.presentation`: Google Slides\n* `application/vnd.google-apps.spreadsheet`: Google Sheets",
+                    "title": "toMimeType",
                     "type": "string"
                 },
                 "url": {
@@ -1352,19 +1347,9 @@
                     "description": "The strategy to be used in case a file already exists at the desired location.",
                     "title": "conflictStrategy"
                 },
-                "convertToMimeType": {
-                    "description": "Convert the file to the given mime type.\nUse one of the <a href=\"https://developers.google.com/drive/api/guides/mime-types?hl=en\">supported mime-types</a> by Google Drive.",
-                    "title": "convertToMimeType",
-                    "type": "string"
-                },
                 "description": {
                     "description": "The description to be attached to the Google Drive file.\nSupports placeholder substitution.",
                     "title": "description",
-                    "type": "string"
-                },
-                "keepOriginalFile": {
-                    "description": "Keep the original (non-converted) file if it should be converted using.\nFor special Google Drive supported mime types see\n<a href=\"https://developers.google.com/drive/api/guides/mime-types?hl=en\">this page</a>.",
-                    "title": "keepOriginalFile",
                     "type": "string"
                 },
                 "location": {
@@ -1376,6 +1361,11 @@
                     "description": "Skip the header if `true`.",
                     "title": "skipHeader",
                     "type": "boolean"
+                },
+                "toMimeType": {
+                    "description": "Convert to a Google file type using one of the <a href=\"https://developers.google.com/drive/api/guides/mime-types?hl=en\">supported mime-types by Google Drive</a>, like:\n* `application/vnd.google-apps.document`: Google Docs\n* `application/vnd.google-apps.presentation`: Google Slides\n* `application/vnd.google-apps.spreadsheet`: Google Sheets",
+                    "title": "toMimeType",
+                    "type": "string"
                 }
             },
             "required": [
@@ -2593,19 +2583,9 @@
                     "description": "The strategy to be used in case a file already exists at the desired location.",
                     "title": "conflictStrategy"
                 },
-                "convertToMimeType": {
-                    "description": "Convert the file to the given mime type.\nUse one of the <a href=\"https://developers.google.com/drive/api/guides/mime-types?hl=en\">supported mime-types</a> by Google Drive.",
-                    "title": "convertToMimeType",
-                    "type": "string"
-                },
                 "description": {
                     "description": "The description to be attached to the Google Drive file.\nSupports placeholder substitution.",
                     "title": "description",
-                    "type": "string"
-                },
-                "keepOriginalFile": {
-                    "description": "Keep the original (non-converted) file if it should be converted using.\nFor special Google Drive supported mime types see\n<a href=\"https://developers.google.com/drive/api/guides/mime-types?hl=en\">this page</a>.",
-                    "title": "keepOriginalFile",
                     "type": "string"
                 },
                 "location": {
@@ -2617,6 +2597,11 @@
                     "description": "Skip the header if `true`.",
                     "title": "skipHeader",
                     "type": "boolean"
+                },
+                "toMimeType": {
+                    "description": "Convert to a Google file type using one of the <a href=\"https://developers.google.com/drive/api/guides/mime-types?hl=en\">supported mime-types by Google Drive</a>, like:\n* `application/vnd.google-apps.document`: Google Docs\n* `application/vnd.google-apps.presentation`: Google Slides\n* `application/vnd.google-apps.spreadsheet`: Google Sheets",
+                    "title": "toMimeType",
+                    "type": "string"
                 }
             },
             "required": [
@@ -2672,6 +2657,11 @@
                 "location": {
                     "description": "The location (path + filename) of the Google Drive file.\nFor shared folders or Team Drives prepend the location with the folder ID like `{id:<folderId>}/...`.\nSupports placeholder substitution.",
                     "title": "location",
+                    "type": "string"
+                },
+                "toMimeType": {
+                    "description": "Convert to a Google file type using one of the <a href=\"https://developers.google.com/drive/api/guides/mime-types?hl=en\">supported mime-types by Google Drive</a>, like:\n* `application/vnd.google-apps.document`: Google Docs\n* `application/vnd.google-apps.presentation`: Google Slides\n* `application/vnd.google-apps.spreadsheet`: Google Sheets",
+                    "title": "toMimeType",
                     "type": "string"
                 },
                 "width": {

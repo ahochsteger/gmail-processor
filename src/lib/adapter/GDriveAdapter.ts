@@ -1,4 +1,5 @@
 import { EnvContext, RunMode } from "../Context"
+import { StoreActionBaseArgs } from "../config/ActionConfig"
 import { SettingsConfig } from "../config/SettingsConfig"
 import { BaseAdapter } from "./BaseAdapter"
 
@@ -32,8 +33,7 @@ export class FileContent {
     public blob: GoogleAppsScript.Base.BlobSource,
     public name: string = blob?.getBlob()?.getName() ?? "",
     public description = "",
-    public toMimeType: string = "",
-    public keepNonConvertedOriginal: boolean = true,
+    public toMimeType?: string,
   ) {}
 }
 
@@ -228,52 +228,31 @@ export class DriveUtils {
     ctx.log.info(
       `Creating file '${filename}' in folder '${parentFolder.getName()}' ...`,
     )
-
-    const fileMetadata: GoogleAppsScript.Drive.Schema.File = {
-      description: fileData.description,
-      mimeType: fileData.toMimeType,
-      parents: [{ id: parentFolder.getId() }],
-      title: filename,
-    }
-    let file: GoogleAppsScript.Drive.File | undefined
-    let convertedFile: GoogleAppsScript.Drive.Schema.File | undefined
-    if (!fileData.toMimeType || fileData.keepNonConvertedOriginal) {
-      file = parentFolder.createFile(fileData.blob)
+    if (!fileData.toMimeType) {
+      // Store original document
+      const file = parentFolder.createFile(fileData.blob)
       file.setName(filename)
       file.setDescription(fileData.description)
-      if (fileData.toMimeType) {
-        ctx.log.info(
-          `Converting file '${filename}' to '${fileData.toMimeType}' (keeping original) ...`,
-        )
-        // NOTE: See this link for various API methods: https://stackoverflow.com/a/49331989/236784
-        convertedFile = ctx.env.driveApi.Files?.copy(
-          fileMetadata,
-          file.getId(),
-          { convert: true, ocr: true },
-        )
-        if (!convertedFile?.id) {
-          throw new Error(
-            `Failed converting file '${filename}' to '${fileData.toMimeType}' (without keeping original) ...`,
-          )
-        }
-      }
+      return file
     } else {
-      ctx.log.info(
-        `Converting file '${filename}' to '${fileData.toMimeType}' (without keeping original) ...`,
-      )
-      convertedFile = ctx.env.driveApi.Files?.insert(
+      // Convert converted document
+      const fileMetadata: GoogleAppsScript.Drive.Schema.File = {
+        description: fileData.description,
+        mimeType: fileData.toMimeType,
+        parents: [{ id: parentFolder.getId() }],
+        title: filename,
+      }
+      const createdFile = ctx.env.driveApi.Files?.insert(
         fileMetadata,
         fileData.blob,
       )
-      if (!convertedFile?.id) {
+      if (!createdFile?.id) {
         throw new Error(
-          `Failed converting file '${filename}' to '${fileData.toMimeType}' (without keeping original) ...`,
+          `Failed creating file '${filename}' ${fileData.toMimeType ? " (using MimeType '" + fileData.toMimeType + "')" : ""}!`,
         )
       }
+      return ctx.env.gdriveApp.getFileById(createdFile.id)
     }
-    return convertedFile?.id
-      ? ctx.env.gdriveApp.getFileById(convertedFile.id)
-      : file
   }
 
   private static deleteFile(
@@ -329,28 +308,22 @@ export class GDriveAdapter extends BaseAdapter {
 
   public storeAttachment(
     attachment: GoogleAppsScript.Gmail.GmailAttachment,
-    location: string,
-    conflictStrategy: ConflictStrategy,
-    description: string,
-    convertToMimeType: string = "",
-    keepNonConvertedOriginal: boolean = true,
+    args: StoreActionBaseArgs,
   ): GoogleAppsScript.Drive.File | undefined {
-    // TODO: Consider using parameter with type StorageActionBaseArgs here
     this.ctx.log.info(
-      `Storing attachment '${attachment.getName()}' to '${location}' ...`,
+      `Storing attachment '${attachment.getName()}' to '${args.location}' ...`,
     )
     const fileData = new FileContent(
       attachment.copyBlob(),
       attachment.getName(),
-      description,
-      convertToMimeType,
-      keepNonConvertedOriginal,
+      args.description,
+      args.toMimeType,
     )
     const file = DriveUtils.createFile(
       this.ctx,
-      location,
+      args.location,
       fileData,
-      conflictStrategy,
+      args.conflictStrategy,
     )
     return file
   }

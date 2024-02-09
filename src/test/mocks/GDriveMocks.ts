@@ -14,6 +14,7 @@ export const E2E_TEST_FOLDER_ID = "e2e01-id"
 export const E2E_TEST_FOLDER_NAME = "e2e01"
 export const EXISTING_FILE_ID = "some-existing-file-id"
 export const EXISTING_FILE_NAME = "some-existing-file.txt"
+export const EXISTING_FILE_PATH = `/${EXISTING_FILE_NAME}`
 export const EXISTING_FOLDER_ID = "folder-1-id"
 export const EXISTING_FOLDER_NAME = "Folder 1"
 export const GENERIC_NEW_FILE_ID = "generic-created-file-id"
@@ -29,6 +30,7 @@ export const NEW_EXISTING_FILE_ID = "new-existing-file-id"
 export const NEW_EXISTING_FILE_NAME = EXISTING_FILE_NAME
 export const NEW_FILE_ID = "created-file-id"
 export const NEW_FILE_NAME = "created-file.txt"
+export const NEW_FILE_PATH = `/${NEW_FILE_NAME}`
 export const NEW_FOLDER_ID = "created-folder-id"
 export const NEW_FOLDER_NAME = "created-folder"
 export const NEW_PDF_FILE_ID = "created-pdf-file-id"
@@ -234,6 +236,7 @@ export class GDriveMocks {
   }
 
   public static setupDriveApiMocks(
+    driveSpec: GDriveData,
     driveApi: MockProxy<GoogleAppsScript.Drive>,
     genericNewFile: MockProxy<GoogleAppsScript.Drive.File>,
   ): MockProxy<GoogleAppsScript.Drive> {
@@ -243,7 +246,31 @@ export class GDriveMocks {
       .mockReturnValue({ id: genericNewFile.getId() })
       .mockName("copy-default")
     files.insert
-      .mockReturnValue({ id: genericNewFile.getId() })
+      .mockImplementation((resource) => {
+        let file: GoogleAppsScript.Drive.File | null = null
+        const fileName = resource.title
+        for (const p of genericNewFileNamePatterns) {
+          if (fileName && new RegExp(p).exec(fileName)) {
+            file = genericNewFile
+          }
+        }
+        driveSpec
+          .getNestedFiles()
+          .filter(
+            (spec) =>
+              spec.scope === EntryScope.CREATED && spec.name === fileName,
+          )
+          .forEach((spec) => {
+            file = spec.entry
+          })
+        if (file) {
+          return { id: file.getId() }
+        } else {
+          throw new Error(
+            `Cannot create file '${fileName}' - no mock data available!`,
+          )
+        }
+      })
       .mockName("insert-default")
     driveApi.Files = files
     return driveApi
@@ -430,7 +457,11 @@ export class GDriveMocks {
       mocks.genericNewFile,
       mocks.genericNewFolder,
     )
-    GDriveMocks.setupDriveApiMocks(mocks.driveApi, mocks.genericNewFile)
+    GDriveMocks.setupDriveApiMocks(
+      driveSpec,
+      mocks.driveApi,
+      mocks.genericNewFile,
+    )
     mocks.newHtmlBlob.getAs.mockReturnValue(mocks.newPdfBlob)
   }
 }
