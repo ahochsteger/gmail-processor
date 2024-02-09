@@ -9,7 +9,7 @@
     "build:docs": "scripts/build-docs.sh",
     "build:examples": "scripts/clasp.sh examples build",
     "build:lib": "scripts/clasp.sh lib build",
-    "ci": "npm run ci:build && npm run ci:test",
+    "ci": "npm run ci:build && npm run ci:test && npm run ci:docs",
     "ci:build": "npm run clean && npm ci && npm run build && npm run lint:code",
     "ci:docs": "npm run clean:docs && npm ci && ( cd docs && npm ci ) && npm run build:docs",
     "ci:test": "jest --ci --coverage",
