@@ -73,7 +73,7 @@ export abstract class BaseProcessor {
             MIT.STRING,
             result[i],
             'The matching regex group number as defined in the match config (e.g.: `"' +
-              value.replace("\\", "\\\\") +
+              value.replace("[\\]", "\\\\") +
               '"`).',
           )
         }
@@ -83,7 +83,7 @@ export abstract class BaseProcessor {
               MIT.STRING,
               groupValue,
               'The matching named regex group name as defined in the match config (e.g.: `"' +
-                value.replace("\\", "\\\\") +
+                value.replace("[\\]", "\\\\") +
                 '"`).',
             )
           })
