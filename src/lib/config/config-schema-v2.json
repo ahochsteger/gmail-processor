@@ -2513,6 +2513,18 @@
             "additionalProperties": false,
             "description": "Represents a settings config that affect the way GmailProcessor works.",
             "properties": {
+                "defaultArrayJoinSeparator": {
+                    "default": ",",
+                    "description": "Default separator to be used when joining arrays in string substitution.",
+                    "title": "defaultArrayJoinSeparator",
+                    "type": "string"
+                },
+                "defaultTimestampFormat": {
+                    "default": "yyyy-MM-dd HH:mm:ss",
+                    "description": "Default format string for timestamp formatting.\nSee [date-fns format strings](https://date-fns.org/docs/format).",
+                    "title": "defaultTimestampFormat",
+                    "type": "string"
+                },
                 "logSheetLocation": {
                     "default": "",
                     "description": "Path of the spreadsheet log file. Enables logging to a spreadsheet if not empty.\nExample: `GmailProcessor/logsheet-${date.now:format:yyyy-MM}`",

@@ -15,7 +15,6 @@ export const example02Config = {
     sleepTimeThreads: 100,
     sleepTimeMessages: 0,
     sleepTimeAttachments: 0,
-    timezone: "UTC",
   },
   global: {
     thread: {

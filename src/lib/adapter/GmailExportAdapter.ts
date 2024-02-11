@@ -198,9 +198,7 @@ export class GmailExportAdapter extends BaseAdapter {
     const ind = "    "
     const subject = message.getSubject()
     const date = message.getDate()
-      ? format(message.getDate().getTime(), "yyyy-MM-dd HH:mm:ss", {
-          timeZone: this.ctx.env.timezone,
-        })
+      ? format(message.getDate().getTime(), "yyyy-MM-dd HH:mm:ss")
       : ""
     const from = this.addressesToHtml(addressparser(message.getFrom()))
     const to = this.addressesToHtml(addressparser(message.getTo()))

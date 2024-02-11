@@ -7,8 +7,7 @@
     "maxRuntime": 280,
     "sleepTimeThreads": 100,
     "sleepTimeMessages": 0,
-    "sleepTimeAttachments": 0,
-    "timezone": "UTC"
+    "sleepTimeAttachments": 0
   },
   "global": {
     "thread": {

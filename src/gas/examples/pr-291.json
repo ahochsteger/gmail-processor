@@ -2,8 +2,7 @@
   "description": "End-to-end (E2E) test configuration",
   "settings": {
     "logSheetLocation": "/GmailProcessor-Tests/logsheet-${date.now:format:yyyy-MM}",
-    "markProcessedMethod": "mark-read",
-    "timezone": "UTC"
+    "markProcessedMethod": "mark-read"
   },
   "global": {
     "thread": {
