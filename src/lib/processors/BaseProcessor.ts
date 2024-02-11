@@ -72,9 +72,7 @@ export abstract class BaseProcessor {
           m[`${keyName}.match.${i}`] = mi(
             MIT.STRING,
             result[i],
-            'The matching regex group number as defined in the match config (e.g.: `"' +
-              value.replace("[\\]", "\\\\") +
-              '"`).',
+            `The matching regex group number as defined in the match config (e.g.: \`${JSON.stringify(value)}\`).`,
           )
         }
         if (result.groups) {
@@ -82,9 +80,7 @@ export abstract class BaseProcessor {
             m[`${keyName}.match.${group}`] = mi(
               MIT.STRING,
               groupValue,
-              'The matching named regex group name as defined in the match config (e.g.: `"' +
-                value.replace("[\\]", "\\\\") +
-                '"`).',
+              `The matching named regex group name as defined in the match config (e.g.: \`${JSON.stringify(value)}\`).`,
             )
           })
         }
