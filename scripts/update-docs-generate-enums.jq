@@ -1,10 +1,12 @@
+include "update-docs-generate-common";
+
 .[]
 | [
   "",
   # "<a id=\"" + $enumAnchor + "\">`" + .name + "`</a>",
   "## " + .name,
   "",
-  .description,
+  generateDescription,
   "",
   "| Value | Description |",
   "|-------|-------------|",
@@ -12,7 +14,7 @@
     .values[]
     | [
       "`" + (.value | tostring) + "`",
-      (.description | gsub("\n";"<br />"))
+      generateDescription
     ] | join(" | ")
     | "| " + . + " |"
   ] | join("\n"))
