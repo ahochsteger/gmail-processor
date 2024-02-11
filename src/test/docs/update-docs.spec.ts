@@ -30,6 +30,7 @@ function genMetaInfoDocs(contextType: ContextType, m: MetaInfo, position = "stan
     .sort()
     .forEach((k, idx, arr) => {
       const stringValue = PatternUtil.stringValue(ctx, k)
+      let deprInfo = m[k].deprecationInfo ?? ""
       let desc = m[k].description
       if (m[k].type === MetaInfoType.DATE) desc += ` ${dateInfo}`
       if (m[k].type === MetaInfoType.VARIABLE) desc += ` ${variableInfo}`
@@ -37,7 +38,7 @@ function genMetaInfoDocs(contextType: ContextType, m: MetaInfo, position = "stan
       if (idx < arr.length - 1) {
         condComma = ","
       }
-      write(`  {"key":"${k}", "type": "${m[k].type}", "scope": "${contextType}", "example": ${JSON.stringify(stringValue)}, "description": ${JSON.stringify(desc)}}${condComma}`)
+      write(`  {"key":"${k}", "type": "${m[k].type}", "scope": "${contextType}", "example": ${JSON.stringify(stringValue)}, "deprecated": ${!!deprInfo}, "deprecationInfo": ${JSON.stringify(deprInfo)}, "description": ${JSON.stringify(desc)}}${condComma}`)
     })
     let suffix = ","
     if (position === "last") {

@@ -1,3 +1,5 @@
+include "update-docs-generate-common";
+
 $enumList[0] as $enums
 | [
   .[]
@@ -12,11 +14,7 @@ $enumList[0] as $enums
         "",
         "### `" + .actionName + "`",
         "",
-        .description + (
-          if .deprecated then
-            "\n**DEPRECATED**: " + .deprecationInfo
-          else "" end
-        ),
+        generateDescription,
         "",
         ( if (.args and (.args|length>0)) then
             (

@@ -23,12 +23,15 @@ function extractAllDocs() {
 }
 
 function extractAllEnums() {
-  gojq -f "${scriptdir}/update-docs-extract-enums.jq"
+  gojq \
+   -L scripts \
+   -f "${scriptdir}/update-docs-extract-enums.jq"
 }
 
 function extractAllActions() {
   local inputFile="${1}"
   gojq -r \
+    -L scripts \
     -f "${scriptdir}/update-docs-extract-actions.jq" \
     <"${inputFile}"
 }
@@ -54,6 +57,7 @@ function generateActionDocs() {
   echo "* [\`message.*\`](#message-actions): Run in the context of a message (includes \`attachment\` context)."
   echo "* [\`attachment.*\`](#attachment-actions): Run in the context of an attachment."
   gojq -r \
+    -L scripts \
     --slurpfile enumList "${enumDataFile}" \
     -f "${scriptdir}/update-docs-generate-actions.jq" \
     <"${actionDataFile}"
@@ -65,6 +69,7 @@ function generatePlaceholderDocs {
   echo "The placeholder in the following table are available for substitution in strings, depending on the scope which are defined as follows:"
   echo ""
   gojq -r \
+    -L scripts \
     -f "${scriptdir}/update-docs-generate-placeholder.jq" \
     <"${placeholderDataFile}"
 }
@@ -74,6 +79,7 @@ function generateEnumDocs() {
   echo ""
   echo "These are the supported enum types and the possible values that can be used in the configuration."
   gojq -r \
+    -L scripts \
     -f "${scriptdir}/update-docs-generate-enums.jq" \
     <"${enumDataFile}"
 }

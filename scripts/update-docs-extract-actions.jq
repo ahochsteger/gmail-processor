@@ -1,3 +1,5 @@
+include "update-docs-extract-common";
+
 def flattenTypes: (
   ..
   | select(.id)
@@ -78,13 +80,10 @@ def propertiesFromType($list;$kinds): (
   | select(.flags.isStatic)
   | .signatures?[]
   | . as $signature
-  | {
+  | extractDescription + {
   #  class: $className,
     actionName: ($prefix + "." + .name),
     shortName: .name,
-    description: ([.comment?.summary?[]?.text]|join("")),
-    deprecated: ([.comment?.blockTags?[]?|select(.tag=="@deprecated")]|length>0),
-    deprecationInfo: ([.comment?.blockTags?[]?|select(.tag=="@deprecated")|.content?[]?.text]|join("")),
     prefix: $prefix,
     args: [
       select(.parameters?[]?.name=="args")
