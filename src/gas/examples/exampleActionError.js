@@ -10,7 +10,6 @@ export const exampleActionErrorConfig = {
   settings: {
     markProcessedMethod:
       GmailProcessorLib.MarkProcessedMethod.MARK_MESSAGE_READ,
-    timezone: "UTC",
   },
   global: {
     thread: {

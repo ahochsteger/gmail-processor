@@ -8,7 +8,6 @@ const pr291Config = {
     logSheetLocation:
       "/GmailProcessor-Tests/logsheet-${date.now:format:yyyy-MM}",
     markProcessedMethod: "mark-read",
-    timezone: "UTC",
   },
   global: {
     thread: {

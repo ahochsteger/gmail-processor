@@ -1,5 +1,6 @@
 import { ContextType, MetaInfo, MetaInfoType, RunMode } from "../../lib/Context"
-import { PatternUtil, defaultDateFormat } from "../../lib/utils/PatternUtil"
+import { defaultDateFormat } from "../../lib/utils/DateUtils"
+import { PatternUtil } from "../../lib/utils/PatternUtil"
 import { ConfigMocks } from "../mocks/ConfigMocks"
 import { GMailMocks } from "../mocks/GMailMocks"
 import { MockFactory } from "../mocks/MockFactory"

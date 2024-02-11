@@ -33,11 +33,6 @@ it("Schema-generated Config Types Test", () => {
   expect(cfg.settings?.maxRuntime).toBe(DEFAULT_SETTING_MAX_RUNTIME)
 })
 
-// it('Should use default values from JSON schema', () => {
-//     const defaultConfig = defaults(schema) as Config
-//     expect(defaultConfig.settings.timezone).toBe("UTC")
-// })
-
 describe("normalizeConfig", () => {
   it("should expand shorthand config", () => {
     const cfg = normalizeConfig({

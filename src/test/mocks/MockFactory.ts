@@ -15,8 +15,12 @@ import { GDriveMocks, LOGSHEET_FILE_ID } from "./GDriveMocks"
 import { GMailData, GMailMocks, IndexType } from "./GMailMocks"
 import { SpreadsheetMocks } from "./SpreadsheetMocks"
 
-export const fakedSystemDateTimeString = "2023-06-26 09:00:00"
-const fakedSystemDateTime = new Date(fakedSystemDateTimeString + "Z")
+export const fakedSystemDateString = "2023-06-26" // Automated tests rely on this date to be a monday!
+export const fakedSystemTimeString = "09:00:00" // TODO: Use "12:34:56.789" instead to better test date-fns functions
+export const fakedSystemDateTimeString = `${fakedSystemDateString} ${fakedSystemTimeString}`
+export const fakedSystemDateTime = new Date(
+  `${fakedSystemDateString}T${fakedSystemTimeString}`,
+)
 jest.useFakeTimers({ now: fakedSystemDateTime })
 
 class EnvMocks {

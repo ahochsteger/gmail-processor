@@ -1,28 +1,21 @@
-import { addMilliseconds } from "date-fns"
-import { format as formatDateTime, utcToZonedTime } from "date-fns-tz"
-import parse from "parse-duration"
 import {
   AttachmentContext,
   Context,
   MessageContext,
   MetaInfo,
+  ProcessingContext,
   ThreadContext,
 } from "../Context"
+import {
+  DatePlaceholderModifierType,
+  DateUtils,
+  defaultDateFormat,
+} from "./DateUtils"
 
 /**
  * The modifiers for placeholder expressions.
  */
-export enum PlaceholderModifierType {
-  /** No modifier */
-  NONE = "",
-  /**
-   * Use \`$\{<key>:format:<format>\}\` to format the date/time using a [date-fns format strings](https://date-fns.org/docs/format).
-   */
-  FORMAT = "format",
-  /**
-   * Use \`$\{<key>:offset-format:<offset>:<format>\}\` to calculate the date/time offset using a [parse-duration format string](https://github.com/jkroso/parse-duration#parsestr-formatms) and then format the resulting date/time using a [date-fns format strings](https://date-fns.org/docs/format).
-   */
-  OFFSET_FORMAT = "offset-format",
+export enum ArrayPlaceholderModifierType {
   /**
    * Use \`$\{<key>:join:<string>\}\` to join the values of an array (default: `,`).
    */
@@ -39,7 +32,7 @@ export enum PlaceholderType {
   THREAD = "thread",
 }
 
-type Placeholder = {
+export type Placeholder = {
   fullName: string
   type: string
   name: string
@@ -53,16 +46,21 @@ type Placeholder = {
 // See https://owasp.org/www-community/attacks/Regular_expression_Denial_of_Service_-_ReDoS
 const placeholderRegex =
   /\$\{(?<fullName>(?<type>[^\\.]{1,16})\.(?<name>[^:}]{1,32}))(:(?<modifier>[^:}]{1,16})(:(?<arg>[^}]{1,1000}))?)?\}/g
-export const defaultDateFormat = "yyyy-MM-dd HH:mm:ss"
 const defaultJoinSeparator = ","
 
 export class PatternUtil {
-  public static formatDate(date: Date, format: string, timezone = "UTC") {
-    // See https://stackoverflow.com/questions/43525786/momentjs-convert-from-utc-to-desired-timezone-not-just-local
-    const v = formatDateTime(utcToZonedTime(date, timezone), format)
-    return v
+  public static getDefaultDateFormat(ctx: Context) {
+    return (
+      (ctx as ProcessingContext).proc?.config.settings
+        .defaultArrayJoinSeparator ?? defaultJoinSeparator
+    )
   }
-
+  public static getDefaultArraySeparator(ctx: Context) {
+    return (
+      (ctx as ProcessingContext).proc?.config.settings.defaultTimestampFormat ??
+      defaultDateFormat
+    )
+  }
   public static nextPlaceholder(s: string): Placeholder | undefined {
     placeholderRegex.lastIndex = 0 // Reset lastIndex to always start from the beginning
     const match = placeholderRegex.exec(s)
@@ -146,9 +144,9 @@ export class PatternUtil {
       case "Array":
         if (Array.isArray(value)) {
           const separator =
-            p.modifier === PlaceholderModifierType.JOIN
+            p.modifier === ArrayPlaceholderModifierType.JOIN
               ? p.arg
-              : defaultJoinSeparator
+              : PatternUtil.getDefaultArraySeparator(ctx)
           stringValue = value.join(separator)
         } else {
           ctx.log.warn(
@@ -161,33 +159,17 @@ export class PatternUtil {
         }
         break
       case "Date": {
-        stringValue = PatternUtil.dateToString(ctx, p, value as Date)
+        stringValue = DateUtils.evaluate(
+          p.modifier as DatePlaceholderModifierType,
+          p.arg,
+          value as Date,
+        )
         break
       }
       default:
         stringValue = JSON.stringify(value)
         break
     }
-    return stringValue
-  }
-
-  private static dateToString(ctx: Context, p: Placeholder, value: Date) {
-    let format = defaultDateFormat
-    let dateTime = value
-    switch (p.modifier) {
-      case PlaceholderModifierType.FORMAT:
-        format = p.arg
-        break
-      case PlaceholderModifierType.OFFSET_FORMAT:
-        {
-          const args = p.arg.split(/:(.*)/s)
-          const offset = args[0] ?? ""
-          format = args[1] ?? defaultDateFormat
-          dateTime = addMilliseconds(value, parse(offset) ?? 0)
-        }
-        break
-    }
-    const stringValue = this.formatDate(dateTime, format, ctx.env.timezone)
     return stringValue
   }
 

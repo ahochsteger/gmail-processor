@@ -93,10 +93,18 @@ export class GmailProcessor {
   public static run(config: RequiredConfig, ctx: EnvContext) {
     ctx.log.info("Processing of GmailProcessor config started ...")
 
-    ctx.env.timezone =
-      config.settings.timezone && config.settings.timezone != "default"
-        ? config.settings.timezone
-        : ctx.env.timezone
+    if (
+      config.settings.timezone &&
+      config.settings.timezone != "default" &&
+      ctx.env.session.getScriptTimeZone() &&
+      config.settings.timezone &&
+      ctx.env.session.getScriptTimeZone()
+    ) {
+      ctx.log.error(
+        `Timezone of Gmail Processor config settings (${config.settings.timezone}) is inconsistent with Google Apps Script (${ctx.env.session.getScriptTimeZone()}). ` +
+          `Setting it in the config settings is deprecated. Make sure to have it set correctly in the Google Apps Script project settings or in 'appsscript.json'!`,
+      )
+    }
     const actionRegistry = GmailProcessor.setupActionRegistry(ctx)
     const processingContext = GmailProcessor.buildContext(ctx, {
       actionRegistry: actionRegistry,

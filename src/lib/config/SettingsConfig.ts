@@ -60,6 +60,15 @@ export enum MarkProcessedMethod {
  */
 export class SettingsConfig {
   /**
+   * Default format string for timestamp formatting.
+   * See [date-fns format strings](https://date-fns.org/docs/format).
+   */
+  defaultTimestampFormat? = "yyyy-MM-dd HH:mm:ss"
+  /**
+   * Default separator to be used when joining arrays in string substitution.
+   */
+  defaultArrayJoinSeparator? = ","
+  /**
    * Path of the spreadsheet log file. Enables logging to a spreadsheet if not empty.
    * Example: `GmailProcessor/logsheet-${date.now:format:yyyy-MM}`
    */
@@ -104,6 +113,7 @@ export class SettingsConfig {
   /**
    * The timezone to be used for date/time operations.
    * Value `default` uses the <a href="https://developers.google.com/apps-script/reference/base/session#getscripttimezone">script timezone</a>.
+   * @deprecated Timezone should be set in project settings or `appscript.json` of Google Apps Script instead. Will be removed in the future.
    */
   @Expose()
   timezone?: string = "default"
