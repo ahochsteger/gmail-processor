@@ -42,7 +42,7 @@ function extractAllPlaceholder() {
     --reporters default --watchAll=false \
     --testPathPattern 'docs/update-docs\.spec\.ts' \
     2>/dev/null \
-  | gojq .
+  | gojq -s .
 }
 
 function generateActionDocs() {
