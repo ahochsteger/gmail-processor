@@ -1,5 +1,5 @@
 import { ContextType, MetaInfo, MetaInfoType, RunMode } from "../../lib/Context"
-import { defaultDateFormat } from "../../lib/utils/DateUtils"
+import { DATE_EXPRESSIONS, ExprInfoType, defaultDateFormat } from "../../lib/utils/DateUtils"
 import { PatternUtil } from "../../lib/utils/PatternUtil"
 import { ConfigMocks } from "../mocks/ConfigMocks"
 import { GMailMocks } from "../mocks/GMailMocks"
@@ -51,6 +51,15 @@ function genMetaInfoDocs(contextType: ContextType, m: MetaInfo, position = "stan
     }
   }
 
+function genDateExpressionDocs(
+  dateFnsVersion: string,
+  key: string,
+  info: ExprInfoType,
+  isLast: boolean
+) {
+  write(`  {"key":"${key}", "type": "${info.type}", "description": "See function [${key}](https://date-fns.org/v${dateFnsVersion}/docs/${key}) of [date-fns](https://date-fns.org/)."}${isLast ? "" : ","}`)
+}
+
 describe("Generate Context Substitution Docs", () => {
   it("should generate environment context substitution docs", () => {
     genMetaInfoDocs(
@@ -83,5 +92,16 @@ describe("Generate Context Substitution Docs", () => {
       ctx.attachmentMeta,
       "last",
     )
+  })
+})
+describe("Generate Date Expression Substitution Docs", () => {
+  it("should generate date expression substitution docs", () => {
+    const dateFnsVersion = require("date-fns/package.json").version
+    write("[")
+    const expressions = Object.keys(DATE_EXPRESSIONS)
+    expressions.forEach((k) => {
+      genDateExpressionDocs(dateFnsVersion, k, DATE_EXPRESSIONS[k], k === expressions[expressions.length-1])
+    })
+    write("]")
   })
 })

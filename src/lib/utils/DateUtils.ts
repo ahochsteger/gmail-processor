@@ -51,7 +51,7 @@ import parse from "parse-duration"
 export const defaultDateFormat = "yyyy-MM-dd HH:mm:ss"
 type ModDateType = (d: Date) => Date
 type NewDateType = () => Date
-type ExprInfoType = {
+export type ExprInfoType = {
   type: "mod" | "new"
   fn: ModDateType | NewDateType
 }
