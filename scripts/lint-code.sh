@@ -1,12 +1,4 @@
 #!/bin/bash
 
-npx eslint -f scripts/eslint-json-relative.js . \
-| gojq -r '
-  .[]
-  | select(.errorCount>0)
-  | . as $f
-  | .messages[]
-  | (
-    $f.filePath + ":" + (.line|tostring) + ":" + (.column|tostring) + " " + .message
-  )
-'
+npx eslint -f scripts/eslint-json-relative.js . >build/eslint.json
+npx ts-node scripts/lint-code.ts build/eslint.json
