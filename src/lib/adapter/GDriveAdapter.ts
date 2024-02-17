@@ -269,9 +269,14 @@ export class DriveUtils {
     fileData: FileContent,
   ): GoogleAppsScript.Drive.File {
     ctx.log.info(`Updating existing file '${file.getName()}' ...`)
-    file = file
-      .setContent(fileData.blob.getDataAsString())
-      .setDescription(fileData.description)
+    ctx.env.driveApi.Files?.update(
+      {
+        mimeType: fileData.toMimeType ?? file.getMimeType(),
+        description: fileData.description,
+      },
+      file.getId(),
+      fileData.blob,
+    )
     return file
   }
 }
