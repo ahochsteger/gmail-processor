@@ -1,7 +1,7 @@
 import addressparser, { EmailAddress } from "addressparser"
 import "core-js/web/url"
 import crypto from "crypto"
-import { format } from "date-fns-tz"
+import { format } from "date-fns"
 import { EnvContext } from "../Context"
 import { SettingsConfig } from "../config/SettingsConfig"
 import { BaseAdapter } from "./BaseAdapter"
