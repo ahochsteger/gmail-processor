@@ -242,7 +242,7 @@ export class DriveUtils {
         parents: [{ id: parentFolder.getId() }],
         title: filename,
       }
-      const createdFile = ctx.env.driveApi.Files?.insert(
+      const createdFile = ctx.env.driveApi.Files!.insert(
         fileMetadata,
         fileData.blob,
       )
@@ -269,7 +269,7 @@ export class DriveUtils {
     fileData: FileContent,
   ): GoogleAppsScript.Drive.File {
     ctx.log.info(`Updating existing file '${file.getName()}' ...`)
-    ctx.env.driveApi.Files?.update(
+    ctx.env.driveApi.Files!.update(
       {
         mimeType: fileData.toMimeType ?? file.getMimeType(),
         description: fileData.description,

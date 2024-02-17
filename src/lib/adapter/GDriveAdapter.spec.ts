@@ -103,7 +103,23 @@ describe("createFile() strategy:UPDATE", () => {
     )
     expect(file).toBe(mocks.existingFile)
     expect(mocks.rootFolder.createFile).not.toHaveBeenCalled()
-    expect(mocks.driveApi.Files?.update).toHaveBeenCalled()
+    expect(mocks.driveApi.Files!.update).toHaveBeenCalled()
+  })
+  it("should update an existing file in replace mode with toMimeType", () => {
+    gdriveAdapter.ctx.env.runMode = RunMode.DANGEROUS
+    const file = gdriveAdapter.createFile(
+      `/${EXISTING_FILE_NAME}`,
+      new FileContent(
+        mocks.existingBlob,
+        "some-name",
+        "some-description",
+        "text/plain",
+      ),
+      ConflictStrategy.UPDATE,
+    )
+    expect(file).toBe(mocks.existingFile)
+    expect(mocks.rootFolder.createFile).not.toHaveBeenCalled()
+    expect(mocks.driveApi.Files!.update).toHaveBeenCalled()
   })
   it("should not update an existing file if in replace mode but running in dry-run mode", () => {
     gdriveAdapter.ctx.env.runMode = RunMode.DRY_RUN
