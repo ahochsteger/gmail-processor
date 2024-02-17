@@ -208,9 +208,11 @@ export class MessageActions implements ActionProvider<MessageContext> {
         error: new Error(msg),
       }
     }
-    const blob = context.env.urlFetchApp.fetch(url, {
-      headers: args.headers ?? {},
-    })
+    const blob = context.env.urlFetchApp
+      .fetch(url, {
+        headers: args.headers ?? {},
+      })
+      .getBlob()
     return {
       ok: true,
       file: context.proc.gdriveAdapter.createFile(
