@@ -6,14 +6,6 @@ sidebar_position: 32
 
 These are the supported enum types and the possible values that can be used in the configuration.
 
-## ArrayPlaceholderModifierType
-
-The modifiers for placeholder expressions.
-
-| Value | Description |
-|-------|-------------|
-| `join` | Use `${<key>:join:<string>}` to join the values of an array (default: `,`). |
-
 ## ConflictStrategy
 
 Strategy that defines how to deal in case of conflicts with already existing files at the desired location in Google Drive.
@@ -38,17 +30,6 @@ A type of context.
 | `message` | A context holding the message configuration and information about the currently processed message. |
 | `proc` | A context holding all processing information like the configuration, integration adapters, action registry and timer. |
 | `thread` | A context holding the thread configuration and information about the currently processed thread. |
-
-## DatePlaceholderModifierType
-
-The modifiers for placeholder expressions.
-
-| Value | Description |
-|-------|-------------|
-| `date-expr` | Use `${<key>:date-expr:<expr>:<format>}` for date/time calculation expressions using a supported [date-fns helper function keyword](https://date-fns.org/docs/format) (e.g. `lastDayOfMonth`) and/or a [parse-duration format string](https://github.com/jkroso/parse-duration#parsestr-formatms) and then format the resulting date/time using a [date-fns format string](https://date-fns.org/docs/format). |
-| `format` | Use `${<key>:format:<format>}` to format the date/time using a [date-fns format strings](https://date-fns.org/docs/format). |
-| `` | No modifier |
-| `offset-format` | Use `${<key>:offset-format:<offset>:<format>}` to calculate the date/time offset using a [parse-duration format string](https://github.com/jkroso/parse-duration#parsestr-formatms) and then format the resulting date/time using a [date-fns format strings](https://date-fns.org/docs/format).<br />**DEPRECATED**: Use `date-expr` instead. |
 
 ## LogLevel
 
@@ -93,6 +74,19 @@ The type of meta information used for context substitution placeholders.
 | `number` | A numeric data type. |
 | `string` | A string data type. |
 | `variable` | A custom configuration variable. |
+
+## PlaceholderModifierType
+
+The modifiers for placeholder expressions.
+
+| Value | Description |
+|-------|-------------|
+| `date` | Use `${<key>:date[:<expr>[:<format>]]}` to evaluate date/time calculation expressions using supported [date-fns helper function keywords](https://date-fns.org/docs/format) (e.g. `lastDayOfMonth`) and/or [parse-duration format strings](https://github.com/jkroso/parse-duration#parsestr-formatms).<br />Optionally format the resulting date/time using [date-fns format strings](https://date-fns.org/docs/format).<br />If no format is given the setting `defaultTimestampFormat` is used. |
+| `format` | Use `${<key>:format:<format>}` to format the date/time using a [date-fns format strings](https://date-fns.org/docs/format).<br />**DEPRECATED**: Use `${<key>:date::<format>}` instead. Note the double colon if no date modification expression is required. |
+| `join` | Use `${<key>:join[:<separator>]}` to join the values of an array into a string (default: `,`). |
+| `` | No modifier |
+| `offset-format` | Use `${<key>:offset-format:<offset>:<format>}` to calculate the date/time offset using a [parse-duration format string](https://github.com/jkroso/parse-duration#parsestr-formatms) and then format the resulting date/time using a [date-fns format strings](https://date-fns.org/docs/format).<br />**DEPRECATED**: Use `${<key>:date:<offset>[:<format>]}` instead. |
+| `unsupported` | Unsupported placeholder modifier type given. |
 
 ## PlaceholderType
 
