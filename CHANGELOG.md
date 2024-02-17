@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.6.1](https://github.com/ahochsteger/gmail-processor/compare/2.6.0...2.6.1) (2024-02-17)
+
+
+### Bug Fixes
+
+* broken file content in updateExistingFile() ([8704586](https://github.com/ahochsteger/gmail-processor/commit/870458690277273311fdbcfd2834286186bb1f46))
+* getBlob is not a function error ([056290d](https://github.com/ahochsteger/gmail-processor/commit/056290db806a0ae2d89cdafeb0213fe6908e8782))
+
 # [2.6.0](https://github.com/ahochsteger/gmail-processor/compare/2.5.0...2.6.0) (2024-02-09)
 
 
