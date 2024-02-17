@@ -102,9 +102,8 @@ describe("createFile() strategy:UPDATE", () => {
       ConflictStrategy.UPDATE,
     )
     expect(file).toBe(mocks.existingFile)
-    expect(mocks.rootFolder.createFile).not.toBeCalled()
-    expect(mocks.existingFile.setContent).toBeCalled()
-    expect(mocks.existingFile.setDescription).toBeCalled()
+    expect(mocks.rootFolder.createFile).not.toHaveBeenCalled()
+    expect(mocks.driveApi.Files?.update).toHaveBeenCalled()
   })
   it("should not update an existing file if in replace mode but running in dry-run mode", () => {
     gdriveAdapter.ctx.env.runMode = RunMode.DRY_RUN

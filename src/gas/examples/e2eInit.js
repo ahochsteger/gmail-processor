@@ -2,6 +2,8 @@ import { Session } from "google-apps-script"
 import EnvContext from "../../lib/Context"
 import * as GmailProcessorLib from "../../lib/index"
 
+const E2E_TESTS_BASE_PATH = "/GmailProcessor-Tests/e2e"
+
 /**
  * This is a special configuration used to initialize example emails for end-to-end testing.
  * @type {GmailProcessorLib.E2EConfig}
@@ -16,7 +18,7 @@ export const e2eInitConfig = {
   folders: [
     {
       name: "e2e",
-      location: "/GmailProcessor-Tests/e2e",
+      location: E2E_TESTS_BASE_PATH,
     },
   ],
   files: [

@@ -83,7 +83,11 @@ export class E2E {
     ctx.log.info("GMail initialization finished.")
   }
 
-  public static initDrive(ctx: EnvContext, config: E2EConfig) {
+  public static initDrive(
+    ctx: EnvContext,
+    config: E2EConfig,
+    conflictStrategy = ConflictStrategy.UPDATE,
+  ) {
     ctx.log.info("GDrive initialization started.")
     config.files
       .filter((file) => file.destFolder !== undefined)
@@ -100,7 +104,7 @@ export class E2E {
           ctx,
           `${folderLocation.location}/${file.filename}`,
           new FileContent(blob),
-          ConflictStrategy.REPLACE,
+          conflictStrategy,
         )
       })
     ctx.log.info("GDrive initialization finished.")
