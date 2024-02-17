@@ -41,22 +41,22 @@ export class E2E {
   public static getBlobFromFileEntry(
     config: E2EConfig,
     file: FileConfig,
-  ): GoogleAppsScript.Base.BlobSource | undefined {
-    let blob: GoogleAppsScript.Base.BlobSource | undefined
+  ): GoogleAppsScript.Base.Blob | undefined {
+    let blob: GoogleAppsScript.Base.Blob | undefined
     switch (file.type) {
       case "repo": {
         const url = `${config.globals.repoBaseUrl}/${file.ref}`
         console.log(`Fetching repo file from ${url} ...`)
-        blob = UrlFetchApp.fetch(url)
+        blob = UrlFetchApp.fetch(url).getBlob()
         break
       }
       case "url":
         console.log(`Fetching URL file from ${file.ref} ...`)
-        blob = UrlFetchApp.fetch(file.ref)
+        blob = UrlFetchApp.fetch(file.ref).getBlob()
         break
       case "gdrive":
         console.log(`Fetching GDrive file from ${file.ref} ...`)
-        blob = DriveApp.getFileById(file.ref)
+        blob = DriveApp.getFileById(file.ref).getBlob()
         break
     }
     return blob

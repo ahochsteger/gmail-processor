@@ -30,8 +30,8 @@ export type LocationInfo = {
 
 export class FileContent {
   constructor(
-    public blob: GoogleAppsScript.Base.BlobSource,
-    public name: string = blob?.getBlob()?.getName() ?? "",
+    public blob: GoogleAppsScript.Base.Blob,
+    public name: string = blob.getName() ?? "",
     public description = "",
     public toMimeType?: string,
   ) {}
@@ -270,7 +270,7 @@ export class DriveUtils {
   ): GoogleAppsScript.Drive.File {
     ctx.log.info(`Updating existing file '${file.getName()}' ...`)
     file = file
-      .setContent(fileData.blob.getBlob().getDataAsString())
+      .setContent(fileData.blob.getDataAsString())
       .setDescription(fileData.description)
     return file
   }
