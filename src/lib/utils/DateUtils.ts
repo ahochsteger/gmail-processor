@@ -47,6 +47,7 @@ import {
   startOfYesterday,
 } from "date-fns"
 import parse from "parse-duration"
+import { PlaceholderModifierType } from "./PatternUtil"
 
 export const defaultDateFormat = "yyyy-MM-dd HH:mm:ss"
 type ModDateType = (d: Date) => Date
@@ -102,41 +103,20 @@ export const DATE_EXPRESSIONS: Record<string, ExprInfoType> = {
   startOfYear: { type: "mod", fn: startOfYear },
 }
 
-/**
- * The modifiers for placeholder expressions.
- */
-export enum DatePlaceholderModifierType {
-  /** No modifier */
-  NONE = "",
-  /**
-   * Use \`$\{<key>:date-expr:<expr>:<format>\}\` for date/time calculation expressions using a supported [date-fns helper function keyword](https://date-fns.org/docs/format) (e.g. `lastDayOfMonth`) and/or a [parse-duration format string](https://github.com/jkroso/parse-duration#parsestr-formatms) and then format the resulting date/time using a [date-fns format string](https://date-fns.org/docs/format).
-   */
-  DATE_EXPR = "date-expr",
-  /**
-   * Use \`$\{<key>:format:<format>\}\` to format the date/time using a [date-fns format strings](https://date-fns.org/docs/format).
-   */
-  FORMAT = "format",
-  /**
-   * Use \`$\{<key>:offset-format:<offset>:<format>\}\` to calculate the date/time offset using a [parse-duration format string](https://github.com/jkroso/parse-duration#parsestr-formatms) and then format the resulting date/time using a [date-fns format strings](https://date-fns.org/docs/format).
-   * @deprecated Use `date-expr` instead.
-   */
-  OFFSET_FORMAT = "offset-format",
-}
-
 export class DateUtils {
   public static evaluate(
-    modifier: DatePlaceholderModifierType,
+    modifier: PlaceholderModifierType,
     arg: string,
     value: Date,
   ) {
     let formatStr = defaultDateFormat
     let dateTime = value
     switch (modifier) {
-      case DatePlaceholderModifierType.FORMAT:
+      case PlaceholderModifierType.FORMAT:
         formatStr = arg
         break
-      case DatePlaceholderModifierType.DATE_EXPR:
-      case DatePlaceholderModifierType.OFFSET_FORMAT:
+      case PlaceholderModifierType.DATE:
+      case PlaceholderModifierType.OFFSET_FORMAT:
         {
           const args = arg.split(/:(.*)/s)
           const offset = args[0] ?? ""

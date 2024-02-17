@@ -61,7 +61,7 @@ include "update-docs-generate-common";
     "",
     "## Date Expressions",
     "",
-    "These are the supported date expressions that can be used in `date-expr` substitutions like `${message.date:date-expr:lastDayOfMonth-2d:yyyy-MM-dd HH:mm:ss}`.",
+    "These are the supported date expressions that can be used in `date` substitutions like `${message.date:date:lastDayOfMonth-2d:yyyy-MM-dd HH:mm:ss}`.",
     "",
     "| Expression | Description |",
     "|------------|-------------|",
