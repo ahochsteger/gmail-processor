@@ -1,5 +1,5 @@
 import { ContextType, MetaInfo, MetaInfoType, RunMode } from "../../lib/Context"
-import { DATE_EXPRESSIONS, ExprInfoType, defaultDateFormat } from "../../lib/utils/DateUtils"
+import { DATE_FNS_FUNCTIONS, ExprInfoType, defaultDateFormat } from "../../lib/utils/DateUtils"
 import { PatternUtil } from "../../lib/utils/PatternUtil"
 import { ConfigMocks } from "../mocks/ConfigMocks"
 import { GMailMocks } from "../mocks/GMailMocks"
@@ -98,9 +98,9 @@ describe("Generate Date Expression Substitution Docs", () => {
   it("should generate date expression substitution docs", () => {
     const dateFnsVersion = require("date-fns/package.json").version
     write("[")
-    const expressions = Object.keys(DATE_EXPRESSIONS)
+    const expressions = Object.keys(DATE_FNS_FUNCTIONS)
     expressions.forEach((k) => {
-      genDateExpressionDocs(dateFnsVersion, k, DATE_EXPRESSIONS[k], k === expressions[expressions.length-1])
+      genDateExpressionDocs(dateFnsVersion, k, DATE_FNS_FUNCTIONS[k], k === expressions[expressions.length-1])
     })
     write("]")
   })
