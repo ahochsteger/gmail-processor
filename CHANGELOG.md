@@ -1,5 +1,18 @@
 # Changelog
 
+# [2.7.0](https://github.com/ahochsteger/gmail-processor/compare/2.6.1...2.7.0) (2024-02-18)
+
+
+### Bug Fixes
+
+* downgrade date-fns to 2.30.0 ([493254a](https://github.com/ahochsteger/gmail-processor/commit/493254a12288fd6613dc21b1df8a063f96735464))
+* wrong escape handling in generated docs ([6dc0777](https://github.com/ahochsteger/gmail-processor/commit/6dc0777627e5e37012ca72299b8b9a7ac568dc78))
+
+
+### Features
+
+* support date expressions in substitutions ([0ec7d1b](https://github.com/ahochsteger/gmail-processor/commit/0ec7d1b927ff6e3b93c778ad73713b660ebb2138))
+
 ## [2.6.1](https://github.com/ahochsteger/gmail-processor/compare/2.6.0...2.6.1) (2024-02-17)
 
 
