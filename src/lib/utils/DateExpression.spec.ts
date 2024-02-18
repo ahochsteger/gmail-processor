@@ -1,4 +1,4 @@
-import { DateUtils } from "./DateUtils"
+import { DateExpression } from "./DateExpression"
 import { PlaceholderModifierType } from "./PatternUtil"
 
 const dateFormat = "yyyy-MM-dd"
@@ -17,13 +17,17 @@ jest.useFakeTimers({ now: date })
 describe("Date Placeholder", () => {
   it("should format a date", () => {
     expect(
-      DateUtils.evaluate(PlaceholderModifierType.FORMAT, dateTimeFormat, date),
+      DateExpression.evaluate(
+        PlaceholderModifierType.FORMAT,
+        dateTimeFormat,
+        date,
+      ),
     ).toEqual(dateTimeStr)
   })
   it("should handle modifier 'offset-format' with relative offset expression", () => {
     const offset = "-2d"
     expect(
-      DateUtils.evaluate(
+      DateExpression.evaluate(
         PlaceholderModifierType.DATE,
         `${offset}:${dateTimeFormat}`,
         date,
@@ -33,7 +37,7 @@ describe("Date Placeholder", () => {
   it("should handle modifier 'offset-format' with lastDayOfMonth expression", () => {
     const offset = "lastDayOfMonth"
     expect(
-      DateUtils.evaluate(
+      DateExpression.evaluate(
         PlaceholderModifierType.DATE,
         `${offset}:${dateTimeFormat}`,
         date,
@@ -43,7 +47,7 @@ describe("Date Placeholder", () => {
   it("should handle modifier 'offset-format' with lastDayOfMonth and relative date expression", () => {
     const offset = "lastDayOfMonth-2d"
     expect(
-      DateUtils.evaluate(
+      DateExpression.evaluate(
         PlaceholderModifierType.DATE,
         `${offset}:${dateTimeFormat}`,
         date,
@@ -99,11 +103,12 @@ describe("Date Placeholder", () => {
     }
     const actual: Partial<typeof expected> = {}
     Object.keys(expected).forEach((k) => {
-      actual[k as keyof typeof expected] = DateUtils.evaluate(
-        PlaceholderModifierType.DATE,
-        `${k}:${dateTimeFormat}`,
-        date,
-      )
+      actual[k as keyof typeof expected] =
+        DateExpression.evaluate(
+          PlaceholderModifierType.DATE,
+          `${k}:${dateTimeFormat}`,
+          date,
+        ) ?? ""
     })
     expect(actual).toEqual(expected)
   })

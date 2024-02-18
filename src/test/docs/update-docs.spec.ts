@@ -1,11 +1,11 @@
 import { ContextType, MetaInfo, MetaInfoType, RunMode } from "../../lib/Context"
-import { DATE_FNS_FUNCTIONS, ExprInfoType, defaultDateFormat } from "../../lib/utils/DateUtils"
+import { DATE_FNS_FUNCTIONS, ExprInfoType, defaultDateFormat } from "../../lib/utils/DateExpression"
 import { PatternUtil } from "../../lib/utils/PatternUtil"
 import { ConfigMocks } from "../mocks/ConfigMocks"
 import { GMailMocks } from "../mocks/GMailMocks"
 import { MockFactory } from "../mocks/MockFactory"
 
-const dateInfo = `Use \`"\${<key>:format:<format>}"\` to format the date/time using a custom [date-fns format strings](https://date-fns.org/docs/format) (default: \`"${defaultDateFormat}"\`).`
+const dateInfo = `Use \`"\${<key>:date::<format>}"\` to format the date/time using a custom [date-fns format strings](https://date-fns.org/docs/format) (default: \`"${defaultDateFormat}"\`).`
 const variableInfo = `Custom variables defined at \`global.variables\` to better manage recurring substitution values.`
 const mocks = MockFactory.newCustomMocks(
   ConfigMocks.newComplexConfigJson(),

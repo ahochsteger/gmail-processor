@@ -9,7 +9,7 @@ export const e2eTest01Config = {
   description: "End-to-end (E2E) test configuration",
   settings: {
     logSheetLocation:
-      "/GmailProcessor-Tests/logsheet-${date.now:format:yyyy-MM}",
+      "/GmailProcessor-Tests/logsheet-${date.now:date::yyyy-MM}",
     markProcessedMethod:
       GmailProcessorLib.MarkProcessedMethod.MARK_MESSAGE_READ,
     maxBatchSize: 10,

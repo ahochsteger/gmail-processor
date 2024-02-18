@@ -37,7 +37,7 @@ export const config = {
               name: "thread.storePDF",
               args: {
                 location:
-                  "folder/${message.date:format:yyyy-MM-dd}/${thread.firstMessageSubject}.pdf",
+                  "folder/${message.date:date::yyyy-MM-dd}/${thread.firstMessageSubject}.pdf",
                 conflictStrategy: "keep",
               },
             },

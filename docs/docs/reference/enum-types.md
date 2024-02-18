@@ -70,7 +70,7 @@ The type of meta information used for context substitution placeholders.
 | Value | Description |
 |-------|-------------|
 | `boolean` | Boolean type substituted to `true` or `false`. |
-| `date` | Date/time type. For substitution a format string can be given using `${<placeholder>:format:<pattern>}`. |
+| `date` | Date/time type. For substitution a format string can be given using `${<placeholder>:date:<expression>:<format>}`. |
 | `number` | A numeric data type. |
 | `string` | A string data type. |
 | `variable` | A custom configuration variable. |
@@ -85,7 +85,7 @@ The modifiers for placeholder expressions.
 | `format` | Use `${<placeholder>:format:<format>}` to format the date/time using a [date-fns format string](https://date-fns.org/docs/format).<br />**DEPRECATED**: Use `${<placeholder>:date::<format>}` instead. Note the double colon if no date modification expression is required. |
 | `join` | Use `${<placeholder>:join[:<separator>]}` to join the values of an array into a string (default: `,`). |
 | `` | No modifier |
-| `offset-format` | Use `${<placeholder>:offset-format:<offset>:<format>}` to calculate the date/time offset using a [parse-duration format string](https://github.com/jkroso/parse-duration#parsestr-formatms) and then format the resulting date/time using a [date-fns format strings](https://date-fns.org/docs/format).<br />**DEPRECATED**: Use `${<placeholder>:date:<offset>[:<format>]}` instead. |
+| `offset-format` | Use `${<placeholder>:offset-format:<offset>[:<format>]}` to calculate the date/time offset using a [parse-duration format string](https://github.com/jkroso/parse-duration#parsestr-formatms) and then format the resulting date/time using a [date-fns format strings](https://date-fns.org/docs/format).<br />**DEPRECATED**: Use `${<placeholder>:date:<offset>[:<format>]}` instead. |
 | `unsupported` | Unsupported placeholder modifier type given. |
 
 ## PlaceholderType

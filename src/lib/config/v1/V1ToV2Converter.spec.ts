@@ -130,7 +130,7 @@ it("should convert rule with filter and folder containing a date format", () => 
   })
   expect(actualThread.messages[0].attachments[0].actions[0]).toMatchObject({
     args: {
-      location: "/Scans-${message.date:format:yyyy-MM-dd}/${attachment.name}",
+      location: "/Scans-${message.date:date::yyyy-MM-dd}/${attachment.name}",
     },
     name: "attachment.store",
   })
@@ -188,7 +188,7 @@ it("should convert rule with filter, folder, filenameTo and archive", () => {
   const expectedAttachmentActionConfig: AttachmentActionConfig = {
     args: {
       location:
-        "/Examples/example3ab/file-${message.date:format:yyyy-MM-dd-}${message.subject}.txt",
+        "/Examples/example3ab/file-${message.date:date::yyyy-MM-dd-}${message.subject}.txt",
       conflictStrategy: ConflictStrategy.KEEP,
     },
     name: "attachment.store",
@@ -261,7 +261,7 @@ it("should convert rule with filter, folder, filenameTo and archive", () => {
     {
       args: {
         location:
-          "/Examples/example3ab/file-${message.date:format:yyyy-MM-dd-}${message.subject}.txt",
+          "/Examples/example3ab/file-${message.date:date::yyyy-MM-dd-}${message.subject}.txt",
       },
       name: "attachment.store",
     },
@@ -377,7 +377,7 @@ it("should convert rule with filter, saveThreadPDF, folder and filenameTo", () =
           {
             args: {
               location:
-                "/PDF Emails/file-${message.date:format:yyyy-MM-dd-}${message.subject}",
+                "/PDF Emails/file-${message.date:date::yyyy-MM-dd-}${message.subject}",
               conflictStrategy: ConflictStrategy.KEEP,
             },
             name: "thread.storePDF",
@@ -422,7 +422,7 @@ it("should convert rule with filter, folder filenameFrom and filenameTo", () => 
     {
       args: {
         location:
-          "/Examples/example4/file-${message.date:format:yyyy-MM-dd-}${message.subject}.txt",
+          "/Examples/example4/file-${message.date:date::yyyy-MM-dd-}${message.subject}.txt",
       },
       name: "attachment.store",
     },
@@ -515,12 +515,12 @@ describe("V1 Format Conversion", () => {
         "'file-'yyyy-MM-dd-'%s.txt'",
         "message.date",
       ),
-    ).toBe("file-${message.date:format:yyyy-MM-dd-}${message.subject}.txt")
+    ).toBe("file-${message.date:date::yyyy-MM-dd-}${message.subject}.txt")
   })
   it("should support old filename pattern (type: 'string'format)", () => {
     expect(
       V1ToV2Converter.convertFromV1Pattern("'file-'yyyy-MM-dd", "message.date"),
-    ).toBe("file-${message.date:format:yyyy-MM-dd}")
+    ).toBe("file-${message.date:date::yyyy-MM-dd}")
   })
   it("should support old filename pattern (type: format'string')", () => {
     expect(
@@ -528,12 +528,12 @@ describe("V1 Format Conversion", () => {
         "yyyy-MM-dd'-%s.txt'",
         "message.date",
       ),
-    ).toBe("${message.date:format:yyyy-MM-dd}-${message.subject}.txt")
+    ).toBe("${message.date:date::yyyy-MM-dd}-${message.subject}.txt")
   })
   it("should support old filename pattern (type: format)", () => {
     expect(
       V1ToV2Converter.convertFromV1Pattern("yyyy-MM-dd", "message.date"),
-    ).toBe("${message.date:format:yyyy-MM-dd}")
+    ).toBe("${message.date:date::yyyy-MM-dd}")
   })
   it("should support old filename pattern (type: 'string')", () => {
     expect(
@@ -550,7 +550,7 @@ describe("V1 Format Conversion", () => {
         true,
       ),
     ).toBe(
-      "/${message.subject},${attachment.name},${attachment.name},${message.subject},${attachment.name},${message.date:format:yyyy-MM-dd}",
+      "/${message.subject},${attachment.name},${attachment.name},${message.subject},${attachment.name},${message.date:date::yyyy-MM-dd}",
     )
   })
 })

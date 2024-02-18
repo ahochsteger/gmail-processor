@@ -39,7 +39,7 @@ describe("v1 config compatibility", () => {
                       description:
                         "Mail title: ${message.subject}\nMail date: ${message.date}\nMail link: https://mail.google.com/mail/u/0/#inbox/${message.id}",
                       location:
-                        "/Scans${message.date:format:-yyyy-MM-dd}/${attachment.name}",
+                        "/Scans${message.date:date::-yyyy-MM-dd}/${attachment.name}",
                     },
                     name: "attachment.store",
                   },
@@ -120,7 +120,7 @@ describe("v1 config compatibility", () => {
                       description:
                         "Mail title: ${message.subject}\nMail date: ${message.date}\nMail link: https://mail.google.com/mail/u/0/#inbox/${message.id}",
                       location:
-                        "/Examples/example3ab/file-${message.date:format:yyyy-MM-dd-}${message.subject}.txt",
+                        "/Examples/example3ab/file-${message.date:date::yyyy-MM-dd-}${message.subject}.txt",
                     },
                     name: "attachment.store",
                   },
@@ -177,7 +177,7 @@ describe("v1 config compatibility", () => {
                       description:
                         "Mail title: ${message.subject}\nMail date: ${message.date}\nMail link: https://mail.google.com/mail/u/0/#inbox/${message.id}",
                       location:
-                        "/Examples/example4/file-${message.date:format:yyyy-MM-dd-}${message.subject}.txt",
+                        "/Examples/example4/file-${message.date:date::yyyy-MM-dd-}${message.subject}.txt",
                     },
                     name: "attachment.store",
                   },
