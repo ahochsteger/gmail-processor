@@ -13,7 +13,7 @@ These placeholder are valid globally and can also be used for internal purposes 
 
 | Key | Description | Example |
 |-----|-------------|---------|
-| <a id="placeholder.date.now">`date.now`</a> | The current timestamp. Use `"${<key>:format:<format>}"` to format the date/time using a custom [date-fns format strings](https://date-fns.org/docs/format) (default: `"yyyy-MM-dd HH:mm:ss"`). | `2023-06-26 09:00:00` |
+| <a id="placeholder.date.now">`date.now`</a> | The current timestamp. Use `"${<key>:date::<format>}"` to format the date/time using a custom [date-fns format strings](https://date-fns.org/docs/format) (default: `"yyyy-MM-dd HH:mm:ss"`). | `2023-06-26 09:00:00` |
 | <a id="placeholder.env.runMode">`env.runMode`</a> | The runMode used for processing. | `safe-mode` |
 | <a id="placeholder.env.timezone">`env.timezone`</a> | The timezone used for processing. | `UTC` |
 | <a id="placeholder.user.email">`user.email`</a> | The email address of the active user. | `my.email@gmail.com` |
@@ -24,7 +24,7 @@ These placeholder are valid globally during any processing phase.
 
 | Key | Description | Example |
 |-----|-------------|---------|
-| <a id="placeholder.timer.startTime">`timer.startTime`</a> | The start timestamp of the processing script. Use `"${<key>:format:<format>}"` to format the date/time using a custom [date-fns format strings](https://date-fns.org/docs/format) (default: `"yyyy-MM-dd HH:mm:ss"`). | `2023-06-26 09:00:00` |
+| <a id="placeholder.timer.startTime">`timer.startTime`</a> | The start timestamp of the processing script. Use `"${<key>:date::<format>}"` to format the date/time using a custom [date-fns format strings](https://date-fns.org/docs/format) (default: `"yyyy-MM-dd HH:mm:ss"`). | `2023-06-26 09:00:00` |
 | <a id="placeholder.variables.customVar">`variables.customVar`</a> | A custom defined variable. Custom variables defined at `global.variables` to better manage recurring substitution values. | `Custom value` |
 
 ## Thread Placeholder
@@ -45,7 +45,7 @@ These placeholder are valid during processing a GMail thread and matching messag
 | <a id="placeholder.thread.isInTrash">`thread.isInTrash`</a> | `true` if the thread is marked as spam. See [GmailThread.isInTrash()](https://developers.google.com/apps-script/reference/gmail/gmail-thread#isInTrash\(\)) reference docs. | `false` |
 | <a id="placeholder.thread.isUnread">`thread.isUnread`</a> | `true` if the thread has any unread messages. See [GmailThread.isUnread()](https://developers.google.com/apps-script/reference/gmail/gmail-thread#isUnread\(\)) reference docs. | `true` |
 | <a id="placeholder.thread.labels">`thread.labels`</a> | The user-created labels on the thread. See [GmailThread.getLabels()](https://developers.google.com/apps-script/reference/gmail/gmail-thread#getLabels\(\)) reference docs. |  |
-| <a id="placeholder.thread.lastMessageDate">`thread.lastMessageDate`</a> | The date of the thread's most recent message. See [GmailThread.getLastMessageDate()](https://developers.google.com/apps-script/reference/gmail/gmail-thread#getLastMessageDate\(\)) reference docs. Use `"${<key>:format:<format>}"` to format the date/time using a custom [date-fns format strings](https://date-fns.org/docs/format) (default: `"yyyy-MM-dd HH:mm:ss"`). | `2019-05-02 09:15:28` |
+| <a id="placeholder.thread.lastMessageDate">`thread.lastMessageDate`</a> | The date of the thread's most recent message. See [GmailThread.getLastMessageDate()](https://developers.google.com/apps-script/reference/gmail/gmail-thread#getLastMessageDate\(\)) reference docs. Use `"${<key>:date::<format>}"` to format the date/time using a custom [date-fns format strings](https://date-fns.org/docs/format) (default: `"yyyy-MM-dd HH:mm:ss"`). | `2019-05-02 09:15:28` |
 | <a id="placeholder.thread.matched">`thread.matched`</a> | The overall matching result for all conditions in the match config. | `true` |
 | <a id="placeholder.thread.messageCount">`thread.messageCount`</a> | The number of messages in the thread. See [GmailThread.getMessageCount()](https://developers.google.com/apps-script/reference/gmail/gmail-thread#getMessageCount\(\)) reference docs. | `2` |
 | <a id="placeholder.thread.permalink">`thread.permalink`</a> | The permalink for the thread. See [GmailThread.getPermalink()](https://developers.google.com/apps-script/reference/gmail/gmail-thread#getPermalink\(\)) reference docs. | `some-permalink-url` |
@@ -65,7 +65,7 @@ These placeholder are valid during processing a GMail message and matching attac
 | <a id="placeholder.message.body.match.filename">`message.body.match.filename`</a> | The matching named regex group name as defined in the match config (e.g.: `"(?<url>https://raw\\.githubusercontent\\.com/ahochsteger/gmail-processor/main/src/e2e-test/files/(?<filename>[0-9A-Za-z_-]+\\.txt))"`). | `plain-text-from-repo.txt` |
 | <a id="placeholder.message.body.match.url">`message.body.match.url`</a> | The matching named regex group name as defined in the match config (e.g.: `"(?<url>https://raw\\.githubusercontent\\.com/ahochsteger/gmail-processor/main/src/e2e-test/files/(?<filename>[0-9A-Za-z_-]+\\.txt))"`). | `https://raw.githubusercontent.co...` |
 | <a id="placeholder.message.cc">`message.cc`</a> | The comma-separated recipients cc'd on the message. See [GmailMessage.getCc()](https://developers.google.com/apps-script/reference/gmail/gmail-message#getCc\(\)) reference docs. | `message-cc@example.com` |
-| <a id="placeholder.message.date">`message.date`</a> | The date and time of the message. See [GmailMessage.getDate()](https://developers.google.com/apps-script/reference/gmail/gmail-message#getDate\(\)) reference docs. Use `"${<key>:format:<format>}"` to format the date/time using a custom [date-fns format strings](https://date-fns.org/docs/format) (default: `"yyyy-MM-dd HH:mm:ss"`). | `2019-05-02 09:15:28` |
+| <a id="placeholder.message.date">`message.date`</a> | The date and time of the message. See [GmailMessage.getDate()](https://developers.google.com/apps-script/reference/gmail/gmail-message#getDate\(\)) reference docs. Use `"${<key>:date::<format>}"` to format the date/time using a custom [date-fns format strings](https://date-fns.org/docs/format) (default: `"yyyy-MM-dd HH:mm:ss"`). | `2019-05-02 09:15:28` |
 | <a id="placeholder.message.from">`message.from`</a> | The sender of the message. See [GmailMessage.getFrom()](https://developers.google.com/apps-script/reference/gmail/gmail-message#getFrom\(\)) reference docs. | `message-from@example.com` |
 | <a id="placeholder.message.from.domain">`message.from.domain`</a> | The sender domain of the message. See [GmailMessage.getFrom()](https://developers.google.com/apps-script/reference/gmail/gmail-message#getFrom\(\)) reference docs. | `example.com` |
 | <a id="placeholder.message.from.match.1">`message.from.match.1`</a> | The matching regex group number as defined in the match config (e.g.: `"(.+)@example.com"`). | `message-from` |

@@ -57,7 +57,7 @@ export class V1ToV2Converter {
       for (const match of matches) {
         if (match.length > 1) {
           const convertedFormat = this.convertDateFormat(match[1])
-          s = s.replace(/:oldDateFormat:[^}]+}/g, `:format:${convertedFormat}}`)
+          s = s.replace(/:oldDateFormat:[^}]+}/g, `:date::${convertedFormat}}`)
         }
       }
     } else {

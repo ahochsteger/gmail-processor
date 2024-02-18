@@ -33,7 +33,7 @@ export enum RunMode {
 export enum MetaInfoType {
   /** Boolean type substituted to `true` or `false`. */
   BOOLEAN = "boolean",
-  /** Date/time type. For substitution a format string can be given using `${<placeholder>:format:<pattern>}`. */
+  /** Date/time type. For substitution a format string can be given using `${<placeholder>:date:<expression>:<format>}`. */
   DATE = "date",
   /** A numeric data type. */
   NUMBER = "number",

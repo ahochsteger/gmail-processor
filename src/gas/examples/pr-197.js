@@ -66,14 +66,14 @@ const pr197Config = {
   description: "Test for PR #197 - convert to Google file formats",
   settings: {
     logSheetLocation:
-      "/GmailProcessor-Tests/logsheet-${date.now:format:yyyy-MM}",
+      "/GmailProcessor-Tests/logsheet-${date.now:date::yyyy-MM}",
     markProcessedMethod: "mark-read",
   },
   global: {
     thread: {
       match: {
         query:
-          "has:attachment -in:trash -in:drafts -in:spam after:${date.now:format:yyyy-MM-dd}",
+          "has:attachment -in:trash -in:drafts -in:spam after:${date.now:date::yyyy-MM-dd}",
         maxMessageCount: -1,
         minMessageCount: 1,
       },

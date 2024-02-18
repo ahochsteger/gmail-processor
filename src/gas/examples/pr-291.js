@@ -6,7 +6,7 @@ const pr291Config = {
   description: "End-to-end (E2E) test configuration",
   settings: {
     logSheetLocation:
-      "/GmailProcessor-Tests/logsheet-${date.now:format:yyyy-MM}",
+      "/GmailProcessor-Tests/logsheet-${date.now:date::yyyy-MM}",
     markProcessedMethod: "mark-read",
   },
   global: {

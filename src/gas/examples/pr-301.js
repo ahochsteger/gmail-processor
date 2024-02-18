@@ -59,7 +59,7 @@ const pr301Config = {
     "Test for PR #301 - fix getBlob error on conflict strategy 'update'",
   settings: {
     logSheetLocation:
-      "/GmailProcessor-Tests/logsheet-${date.now:format:yyyy-MM}",
+      "/GmailProcessor-Tests/logsheet-${date.now:date::yyyy-MM}",
     markProcessedMethod: "mark-read",
     timezone: "UTC",
   },
@@ -67,7 +67,7 @@ const pr301Config = {
     thread: {
       match: {
         query:
-          "has:attachment -in:trash -in:drafts -in:spam after:${date.now:format:yyyy-MM-dd}",
+          "has:attachment -in:trash -in:drafts -in:spam after:${date.now:date::yyyy-MM-dd}",
         maxMessageCount: -1,
         minMessageCount: 1,
       },

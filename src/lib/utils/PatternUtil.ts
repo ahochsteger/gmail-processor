@@ -6,7 +6,7 @@ import {
   ProcessingContext,
   ThreadContext,
 } from "../Context"
-import { DateUtils, defaultDateFormat } from "./DateUtils"
+import { DateExpression, defaultDateFormat } from "./DateExpression"
 
 /**
  * The modifiers for placeholder expressions.
@@ -38,7 +38,7 @@ export enum PlaceholderModifierType {
   /** No modifier */
   NONE = "",
   /**
-   * Use `${<placeholder>:offset-format:<offset>:<format>}` to calculate the date/time offset using a [parse-duration format string](https://github.com/jkroso/parse-duration#parsestr-formatms) and then format the resulting date/time using a [date-fns format strings](https://date-fns.org/docs/format).
+   * Use `${<placeholder>:offset-format:<offset>[:<format>]}` to calculate the date/time offset using a [parse-duration format string](https://github.com/jkroso/parse-duration#parsestr-formatms) and then format the resulting date/time using a [date-fns format strings](https://date-fns.org/docs/format).
    * @deprecated Use `${<placeholder>:date:<offset>[:<format>]}` instead.
    */
   OFFSET_FORMAT = "offset-format",
@@ -231,7 +231,8 @@ export class PatternUtil {
         }
         break
       case "Date": {
-        stringValue = DateUtils.evaluate(p.modifier, p.arg, value as Date)
+        stringValue =
+          DateExpression.evaluate(p.modifier, p.arg, value as Date) ?? p.raw
         break
       }
       default:

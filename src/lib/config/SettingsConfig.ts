@@ -70,7 +70,7 @@ export class SettingsConfig {
   defaultArrayJoinSeparator? = ","
   /**
    * Path of the spreadsheet log file. Enables logging to a spreadsheet if not empty.
-   * Example: `GmailProcessor/logsheet-${date.now:format:yyyy-MM}`
+   * Example: `GmailProcessor/logsheet-${date.now:date::yyyy-MM}`
    */
   @Expose()
   logSheetLocation? = ""

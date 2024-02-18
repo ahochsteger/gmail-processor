@@ -103,30 +103,49 @@ export const DATE_FNS_FUNCTIONS: Record<string, ExprInfoType> = {
   startOfYear: { type: "mod", fn: startOfYear },
 }
 
-export class DateUtils {
+export class DateExpression {
   public static evaluate(
-    modifier: PlaceholderModifierType,
-    arg: string,
+    origModifier: PlaceholderModifierType,
+    origArg: string,
     value: Date,
   ) {
     let formatStr = defaultDateFormat
     let dateTime = value
-    switch (modifier) {
-      case PlaceholderModifierType.FORMAT:
-        formatStr = arg
-        break
-      case PlaceholderModifierType.DATE:
-      case PlaceholderModifierType.OFFSET_FORMAT:
-        {
-          const args = arg.split(/:(.*)/s)
-          const offset = args[0] ?? ""
-          formatStr = args[1] ?? defaultDateFormat
-          dateTime = DateUtils.parseExpression(value, offset)
-        }
-        break
+    const { modifier, arg } = this.normalizeExpression(origModifier, origArg)
+    if (
+      modifier !== PlaceholderModifierType.NONE &&
+      modifier !== PlaceholderModifierType.DATE
+    ) {
+      return null
     }
+    const args = arg.split(/:(.*)/s)
+    const expression = args[0] ?? ""
+    formatStr = args[1] ?? defaultDateFormat
+    dateTime = DateExpression.parseExpression(value, expression)
     const stringValue = format(dateTime, formatStr)
     return stringValue
+  }
+
+  public static normalizeExpression(
+    modifier: PlaceholderModifierType,
+    arg: string,
+  ): {
+    modifier: PlaceholderModifierType
+    arg: string
+  } {
+    switch (modifier) {
+      case PlaceholderModifierType.FORMAT:
+        modifier = PlaceholderModifierType.DATE
+        arg = `:${arg}`
+        break
+      case PlaceholderModifierType.OFFSET_FORMAT:
+        modifier = PlaceholderModifierType.DATE
+        break
+    }
+    return {
+      modifier,
+      arg,
+    }
   }
 
   public static parseExpression(value: Date, expr: string): Date {
