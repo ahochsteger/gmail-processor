@@ -56,7 +56,7 @@ export type ExprInfoType = {
   type: "mod" | "new"
   fn: ModDateType | NewDateType
 }
-export const DATE_EXPRESSIONS: Record<string, ExprInfoType> = {
+export const DATE_FNS_FUNCTIONS: Record<string, ExprInfoType> = {
   endOfToday: { type: "new", fn: endOfToday },
   endOfTomorrow: { type: "new", fn: endOfTomorrow },
   endOfYesterday: { type: "new", fn: endOfYesterday },
@@ -130,12 +130,12 @@ export class DateUtils {
   }
 
   public static parseExpression(value: Date, expr: string): Date {
-    const baseExpr = Object.keys(DATE_EXPRESSIONS).reduce(
+    const baseExpr = Object.keys(DATE_FNS_FUNCTIONS).reduce(
       (prev, k) => (expr.startsWith(k) ? k : prev),
       "",
     )
     if (baseExpr !== "") {
-      const exprInfo = DATE_EXPRESSIONS[baseExpr]
+      const exprInfo = DATE_FNS_FUNCTIONS[baseExpr]
       switch (exprInfo.type) {
         case "mod":
           value = (exprInfo.fn as ModDateType)(value)
