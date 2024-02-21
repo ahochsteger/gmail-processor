@@ -85,7 +85,7 @@
     "@semantic-release/git": "10.0.1",
     "@types/addressparser": "1.0.3",
     "@types/core-js": "2.5.8",
-    "@types/google-apps-script": "1.0.81",
+    "@types/google-apps-script": "1.0.82",
     "@types/jest": "29.5.12",
     "@types/node": "20.11.19",
     "@types/sha1": "1.1.5",
