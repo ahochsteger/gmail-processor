@@ -87,7 +87,7 @@
     "@types/core-js": "2.5.8",
     "@types/google-apps-script": "1.0.82",
     "@types/jest": "29.5.12",
-    "@types/node": "20.11.22",
+    "@types/node": "20.11.24",
     "@types/sha1": "1.1.5",
     "@typescript-eslint/eslint-plugin": "6.21.0",
     "@typescript-eslint/parser": "6.21.0",
