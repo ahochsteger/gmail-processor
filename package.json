@@ -111,7 +111,7 @@
     "sonarqube-scanner": "3.3.0",
     "ts-jest": "29.1.2",
     "ts-prune": "0.10.3",
-    "type-fest": "4.11.0",
+    "type-fest": "4.11.1",
     "typedoc": "0.25.10",
     "typedoc-plugin-markdown": "3.17.1",
     "typescript": "5.3.3",
