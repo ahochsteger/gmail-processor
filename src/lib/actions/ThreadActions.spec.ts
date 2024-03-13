@@ -1,7 +1,9 @@
 import { ConfigMocks } from "../../test/mocks/ConfigMocks"
 import {
   E2E_BASE_FOLDER_NAME,
+  NEW_HTML_FILE_CONTENT,
   NEW_HTML_FILE_NAME,
+  NEW_PDF_FILE_CONTENT,
   NEW_PDF_FILE_NAME,
 } from "../../test/mocks/GDriveMocks"
 import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
@@ -63,7 +65,7 @@ it("should export a thread as HTML", () => {
     location: `${E2E_BASE_FOLDER_NAME}/${NEW_HTML_FILE_NAME}`,
     conflictStrategy: ConflictStrategy.REPLACE,
   })
-  expect(mocks.newHtmlBlob.getDataAsString()).toEqual("HTML Content")
+  expect(mocks.newHtmlBlob.getDataAsString()).toEqual(NEW_HTML_FILE_CONTENT)
   expect(result.file).toBeDefined()
 })
 
@@ -73,7 +75,7 @@ it("should export a thread as PDF", () => {
     conflictStrategy: ConflictStrategy.REPLACE,
   })
   expect(mocks.newHtmlBlob.getAs).toHaveBeenCalledWith("application/pdf")
-  expect(mocks.newPdfBlob.getDataAsString()).toEqual("PDF Content")
+  expect(mocks.newPdfBlob.getDataAsString()).toEqual(NEW_PDF_FILE_CONTENT)
   expect(result.file).toBeDefined()
 })
 
@@ -84,7 +86,7 @@ it("should store a thread as PDF", () => {
     skipHeader: false,
   })
   expect(mocks.newHtmlBlob.getAs).toHaveBeenCalledWith("application/pdf")
-  expect(mocks.newPdfBlob.getDataAsString()).toEqual("PDF Content")
+  expect(mocks.newPdfBlob.getDataAsString()).toEqual(NEW_PDF_FILE_CONTENT)
   expect(result.file).toBeDefined()
 })
 

@@ -1,5 +1,8 @@
 import { EnvContext, RunMode } from "../Context"
-import { StoreActionBaseArgs } from "../config/ActionConfig"
+import {
+  AttachmentExtractTextArgs,
+  StoreActionBaseArgs,
+} from "../config/ActionConfig"
 import { SettingsConfig } from "../config/SettingsConfig"
 import { BaseAdapter } from "./BaseAdapter"
 
@@ -309,6 +312,52 @@ export class GDriveAdapter extends BaseAdapter {
       conflictStrategy,
     )
     return file
+  }
+
+  public extractAttachmentText(
+    attachment: GoogleAppsScript.Gmail.GmailAttachment,
+    args: AttachmentExtractTextArgs,
+  ): {
+    text: string | null
+    file?: GoogleAppsScript.Drive.File
+  } {
+    const blob = attachment.copyBlob()
+
+    // Use OCR to convert PDF to a temporary Google Document
+    // Restrict the response to include file Id and Title fields only
+    const docsFileLocation = args.docsFileLocation
+      ? args.docsFileLocation
+      : attachment.getName().replace(/\.pdf$/, "")
+    const { id } = this.ctx.env.driveApi.Files!.insert(
+      {
+        title: docsFileLocation,
+        mimeType: attachment.getContentType(),
+      },
+      blob,
+      {
+        ocr: true,
+        ocrLanguage: args.language ?? "en",
+        fields: "id,title",
+      },
+    )
+    if (!id) return { text: null }
+    const file = this.ctx.env.gdriveApp.getFileById(id)
+
+    // Use the Document API to extract text from the Google Document
+    const textContent = this.ctx.env.documentApp
+      .openById(id)
+      .getBody()
+      .getText()
+
+    // Delete the temporary Google Document since it is no longer needed
+    if (!args.docsFileLocation) {
+      this.ctx.env.gdriveApp.getFileById(id).setTrashed(true)
+    }
+
+    return {
+      text: textContent,
+      file: file,
+    }
   }
 
   public storeAttachment(

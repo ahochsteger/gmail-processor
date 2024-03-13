@@ -6,3 +6,4 @@ node_modules/
 **/config-schema-*.*
 docs/
 CHANGELOG.md
+src/e2e-test/files/

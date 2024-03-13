@@ -30,6 +30,8 @@ class EnvMocks {
     mock<GoogleAppsScript.Cache.Cache>()
   public cacheService: MockProxy<GoogleAppsScript.Cache.CacheService> =
     mock<GoogleAppsScript.Cache.CacheService>()
+  public documentApp: MockProxy<GoogleAppsScript.Document.DocumentApp> =
+    mock<GoogleAppsScript.Document.DocumentApp>()
   public driveApi: MockProxy<GoogleAppsScript.Drive> =
     mock<GoogleAppsScript.Drive>()
   public existingBlob: MockProxy<GoogleAppsScript.Base.Blob> =
@@ -42,6 +44,10 @@ class EnvMocks {
     mock<GoogleAppsScript.Drive.File>()
   public genericNewFolder: MockProxy<GoogleAppsScript.Drive.Folder> =
     mock<GoogleAppsScript.Drive.Folder>()
+  public newDocsBlob: MockProxy<GoogleAppsScript.Base.Blob> =
+    mock<GoogleAppsScript.Base.Blob>()
+  public newDocsFile: MockProxy<GoogleAppsScript.Drive.File> =
+    mock<GoogleAppsScript.Drive.File>()
   public newExistingBlob: MockProxy<GoogleAppsScript.Base.Blob> =
     mock<GoogleAppsScript.Base.Blob>()
   public newExistingFile: MockProxy<GoogleAppsScript.Drive.File> =

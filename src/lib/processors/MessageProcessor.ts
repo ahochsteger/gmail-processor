@@ -34,12 +34,7 @@ export class MessageProcessor extends BaseProcessor {
       messageMeta: {},
     }
     messageContext.messageMeta = this.buildMetaInfo(messageContext)
-    messageContext.meta = {
-      ...messageContext.envMeta,
-      ...messageContext.procMeta,
-      ...messageContext.threadMeta,
-      ...messageContext.messageMeta,
-    }
+    this.updateContextMeta(messageContext)
     return messageContext
   }
 

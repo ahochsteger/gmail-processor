@@ -49,96 +49,6 @@
                             "type": "string"
                         },
                         "name": {
-                            "const": "attachment.noop",
-                            "title": "name",
-                            "type": "string"
-                        },
-                        "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "name"
-                    ],
-                    "type": "object"
-                },
-                {
-                    "additionalProperties": false,
-                    "properties": {
-                        "args": {
-                            "additionalProperties": false,
-                            "properties": {
-                                "conflictStrategy": {
-                                    "$ref": "#/definitions/ConflictStrategy",
-                                    "description": "The strategy to be used in case a file already exists at the desired location.",
-                                    "title": "conflictStrategy"
-                                },
-                                "description": {
-                                    "description": "The description to be attached to the Google Drive file.\nSupports placeholder substitution.",
-                                    "title": "description",
-                                    "type": "string"
-                                },
-                                "location": {
-                                    "description": "The location (path + filename) of the Google Drive file.\nFor shared folders or Team Drives prepend the location with the folder ID like `{id:<folderId>}/...`.\nSupports placeholder substitution.",
-                                    "title": "location",
-                                    "type": "string"
-                                },
-                                "toMimeType": {
-                                    "description": "Convert to a Google file type using one of the <a href=\"https://developers.google.com/drive/api/guides/mime-types?hl=en\">supported mime-types by Google Drive</a>, like:\n* `application/vnd.google-apps.document`: Google Docs\n* `application/vnd.google-apps.presentation`: Google Slides\n* `application/vnd.google-apps.spreadsheet`: Google Sheets",
-                                    "title": "toMimeType",
-                                    "type": "string"
-                                }
-                            },
-                            "required": [
-                                "conflictStrategy",
-                                "location"
-                            ],
-                            "title": "args",
-                            "type": "object"
-                        },
-                        "description": {
-                            "title": "description",
-                            "type": "string"
-                        },
-                        "name": {
-                            "const": "attachment.store",
-                            "title": "name",
-                            "type": "string"
-                        },
-                        "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "name"
-                    ],
-                    "type": "object"
-                },
-                {
-                    "additionalProperties": false,
-                    "properties": {
-                        "args": {
-                            "title": "args"
-                        },
-                        "description": {
-                            "title": "description",
-                            "type": "string"
-                        },
-                        "name": {
                             "const": "global.noop",
                             "title": "name",
                             "type": "string"
@@ -302,363 +212,6 @@
                         },
                         "name": {
                             "const": "global.sheetLog",
-                            "title": "name",
-                            "type": "string"
-                        },
-                        "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "name"
-                    ],
-                    "type": "object"
-                },
-                {
-                    "additionalProperties": false,
-                    "properties": {
-                        "args": {
-                            "title": "args"
-                        },
-                        "description": {
-                            "title": "description",
-                            "type": "string"
-                        },
-                        "name": {
-                            "const": "message.noop",
-                            "title": "name",
-                            "type": "string"
-                        },
-                        "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "name"
-                    ],
-                    "type": "object"
-                },
-                {
-                    "additionalProperties": false,
-                    "properties": {
-                        "args": {
-                            "additionalProperties": false,
-                            "properties": {
-                                "to": {
-                                    "description": "The recipient of the forwarded message.",
-                                    "title": "to",
-                                    "type": "string"
-                                }
-                            },
-                            "required": [
-                                "to"
-                            ],
-                            "title": "args",
-                            "type": "object"
-                        },
-                        "description": {
-                            "title": "description",
-                            "type": "string"
-                        },
-                        "name": {
-                            "const": "message.forward",
-                            "title": "name",
-                            "type": "string"
-                        },
-                        "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "name"
-                    ],
-                    "type": "object"
-                },
-                {
-                    "additionalProperties": false,
-                    "properties": {
-                        "args": {
-                            "$ref": "#/definitions/MessageActionStoreFromUrlArgs",
-                            "title": "args"
-                        },
-                        "description": {
-                            "title": "description",
-                            "type": "string"
-                        },
-                        "name": {
-                            "const": "message.storeFromURL",
-                            "title": "name",
-                            "type": "string"
-                        },
-                        "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "name"
-                    ],
-                    "type": "object"
-                },
-                {
-                    "additionalProperties": false,
-                    "properties": {
-                        "args": {
-                            "$ref": "#/definitions/MessageActionExportArgs",
-                            "title": "args"
-                        },
-                        "description": {
-                            "title": "description",
-                            "type": "string"
-                        },
-                        "name": {
-                            "const": "message.exportAsHtml",
-                            "title": "name",
-                            "type": "string"
-                        },
-                        "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "name"
-                    ],
-                    "type": "object"
-                },
-                {
-                    "additionalProperties": false,
-                    "properties": {
-                        "args": {
-                            "$ref": "#/definitions/MessageActionExportArgs",
-                            "title": "args"
-                        },
-                        "description": {
-                            "title": "description",
-                            "type": "string"
-                        },
-                        "name": {
-                            "const": "message.exportAsPdf",
-                            "title": "name",
-                            "type": "string"
-                        },
-                        "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "name"
-                    ],
-                    "type": "object"
-                },
-                {
-                    "additionalProperties": false,
-                    "properties": {
-                        "args": {
-                            "$ref": "#/definitions/MessageActionStorePDFArgs",
-                            "title": "args"
-                        },
-                        "description": {
-                            "title": "description",
-                            "type": "string"
-                        },
-                        "name": {
-                            "const": "message.storePDF",
-                            "title": "name",
-                            "type": "string"
-                        },
-                        "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "name"
-                    ],
-                    "type": "object"
-                },
-                {
-                    "additionalProperties": false,
-                    "properties": {
-                        "args": {
-                            "title": "args"
-                        },
-                        "description": {
-                            "title": "description",
-                            "type": "string"
-                        },
-                        "name": {
-                            "const": "message.markRead",
-                            "title": "name",
-                            "type": "string"
-                        },
-                        "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "name"
-                    ],
-                    "type": "object"
-                },
-                {
-                    "additionalProperties": false,
-                    "properties": {
-                        "args": {
-                            "title": "args"
-                        },
-                        "description": {
-                            "title": "description",
-                            "type": "string"
-                        },
-                        "name": {
-                            "const": "message.markUnread",
-                            "title": "name",
-                            "type": "string"
-                        },
-                        "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "name"
-                    ],
-                    "type": "object"
-                },
-                {
-                    "additionalProperties": false,
-                    "properties": {
-                        "args": {
-                            "title": "args"
-                        },
-                        "description": {
-                            "title": "description",
-                            "type": "string"
-                        },
-                        "name": {
-                            "const": "message.moveToTrash",
-                            "title": "name",
-                            "type": "string"
-                        },
-                        "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "name"
-                    ],
-                    "type": "object"
-                },
-                {
-                    "additionalProperties": false,
-                    "properties": {
-                        "args": {
-                            "title": "args"
-                        },
-                        "description": {
-                            "title": "description",
-                            "type": "string"
-                        },
-                        "name": {
-                            "const": "message.star",
-                            "title": "name",
-                            "type": "string"
-                        },
-                        "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "name"
-                    ],
-                    "type": "object"
-                },
-                {
-                    "additionalProperties": false,
-                    "properties": {
-                        "args": {
-                            "title": "args"
-                        },
-                        "description": {
-                            "title": "description",
-                            "type": "string"
-                        },
-                        "name": {
-                            "const": "message.unstar",
                             "title": "name",
                             "type": "string"
                         },
@@ -1120,6 +673,503 @@
                         },
                         "name": {
                             "const": "thread.moveToTrash",
+                            "title": "name",
+                            "type": "string"
+                        },
+                        "processingStage": {
+                            "description": "The stage of action processing",
+                            "enum": [
+                                "main",
+                                "post-main",
+                                "pre-main"
+                            ],
+                            "title": "processingStage",
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "name"
+                    ],
+                    "type": "object"
+                },
+                {
+                    "additionalProperties": false,
+                    "properties": {
+                        "args": {
+                            "title": "args"
+                        },
+                        "description": {
+                            "title": "description",
+                            "type": "string"
+                        },
+                        "name": {
+                            "const": "message.noop",
+                            "title": "name",
+                            "type": "string"
+                        },
+                        "processingStage": {
+                            "description": "The stage of action processing",
+                            "enum": [
+                                "main",
+                                "post-main",
+                                "pre-main"
+                            ],
+                            "title": "processingStage",
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "name"
+                    ],
+                    "type": "object"
+                },
+                {
+                    "additionalProperties": false,
+                    "properties": {
+                        "args": {
+                            "additionalProperties": false,
+                            "properties": {
+                                "to": {
+                                    "description": "The recipient of the forwarded message.",
+                                    "title": "to",
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "to"
+                            ],
+                            "title": "args",
+                            "type": "object"
+                        },
+                        "description": {
+                            "title": "description",
+                            "type": "string"
+                        },
+                        "name": {
+                            "const": "message.forward",
+                            "title": "name",
+                            "type": "string"
+                        },
+                        "processingStage": {
+                            "description": "The stage of action processing",
+                            "enum": [
+                                "main",
+                                "post-main",
+                                "pre-main"
+                            ],
+                            "title": "processingStage",
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "name"
+                    ],
+                    "type": "object"
+                },
+                {
+                    "additionalProperties": false,
+                    "properties": {
+                        "args": {
+                            "$ref": "#/definitions/MessageActionStoreFromUrlArgs",
+                            "title": "args"
+                        },
+                        "description": {
+                            "title": "description",
+                            "type": "string"
+                        },
+                        "name": {
+                            "const": "message.storeFromURL",
+                            "title": "name",
+                            "type": "string"
+                        },
+                        "processingStage": {
+                            "description": "The stage of action processing",
+                            "enum": [
+                                "main",
+                                "post-main",
+                                "pre-main"
+                            ],
+                            "title": "processingStage",
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "name"
+                    ],
+                    "type": "object"
+                },
+                {
+                    "additionalProperties": false,
+                    "properties": {
+                        "args": {
+                            "$ref": "#/definitions/MessageActionExportArgs",
+                            "title": "args"
+                        },
+                        "description": {
+                            "title": "description",
+                            "type": "string"
+                        },
+                        "name": {
+                            "const": "message.exportAsHtml",
+                            "title": "name",
+                            "type": "string"
+                        },
+                        "processingStage": {
+                            "description": "The stage of action processing",
+                            "enum": [
+                                "main",
+                                "post-main",
+                                "pre-main"
+                            ],
+                            "title": "processingStage",
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "name"
+                    ],
+                    "type": "object"
+                },
+                {
+                    "additionalProperties": false,
+                    "properties": {
+                        "args": {
+                            "$ref": "#/definitions/MessageActionExportArgs",
+                            "title": "args"
+                        },
+                        "description": {
+                            "title": "description",
+                            "type": "string"
+                        },
+                        "name": {
+                            "const": "message.exportAsPdf",
+                            "title": "name",
+                            "type": "string"
+                        },
+                        "processingStage": {
+                            "description": "The stage of action processing",
+                            "enum": [
+                                "main",
+                                "post-main",
+                                "pre-main"
+                            ],
+                            "title": "processingStage",
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "name"
+                    ],
+                    "type": "object"
+                },
+                {
+                    "additionalProperties": false,
+                    "properties": {
+                        "args": {
+                            "$ref": "#/definitions/MessageActionStorePDFArgs",
+                            "title": "args"
+                        },
+                        "description": {
+                            "title": "description",
+                            "type": "string"
+                        },
+                        "name": {
+                            "const": "message.storePDF",
+                            "title": "name",
+                            "type": "string"
+                        },
+                        "processingStage": {
+                            "description": "The stage of action processing",
+                            "enum": [
+                                "main",
+                                "post-main",
+                                "pre-main"
+                            ],
+                            "title": "processingStage",
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "name"
+                    ],
+                    "type": "object"
+                },
+                {
+                    "additionalProperties": false,
+                    "properties": {
+                        "args": {
+                            "title": "args"
+                        },
+                        "description": {
+                            "title": "description",
+                            "type": "string"
+                        },
+                        "name": {
+                            "const": "message.markRead",
+                            "title": "name",
+                            "type": "string"
+                        },
+                        "processingStage": {
+                            "description": "The stage of action processing",
+                            "enum": [
+                                "main",
+                                "post-main",
+                                "pre-main"
+                            ],
+                            "title": "processingStage",
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "name"
+                    ],
+                    "type": "object"
+                },
+                {
+                    "additionalProperties": false,
+                    "properties": {
+                        "args": {
+                            "title": "args"
+                        },
+                        "description": {
+                            "title": "description",
+                            "type": "string"
+                        },
+                        "name": {
+                            "const": "message.markUnread",
+                            "title": "name",
+                            "type": "string"
+                        },
+                        "processingStage": {
+                            "description": "The stage of action processing",
+                            "enum": [
+                                "main",
+                                "post-main",
+                                "pre-main"
+                            ],
+                            "title": "processingStage",
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "name"
+                    ],
+                    "type": "object"
+                },
+                {
+                    "additionalProperties": false,
+                    "properties": {
+                        "args": {
+                            "title": "args"
+                        },
+                        "description": {
+                            "title": "description",
+                            "type": "string"
+                        },
+                        "name": {
+                            "const": "message.moveToTrash",
+                            "title": "name",
+                            "type": "string"
+                        },
+                        "processingStage": {
+                            "description": "The stage of action processing",
+                            "enum": [
+                                "main",
+                                "post-main",
+                                "pre-main"
+                            ],
+                            "title": "processingStage",
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "name"
+                    ],
+                    "type": "object"
+                },
+                {
+                    "additionalProperties": false,
+                    "properties": {
+                        "args": {
+                            "title": "args"
+                        },
+                        "description": {
+                            "title": "description",
+                            "type": "string"
+                        },
+                        "name": {
+                            "const": "message.star",
+                            "title": "name",
+                            "type": "string"
+                        },
+                        "processingStage": {
+                            "description": "The stage of action processing",
+                            "enum": [
+                                "main",
+                                "post-main",
+                                "pre-main"
+                            ],
+                            "title": "processingStage",
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "name"
+                    ],
+                    "type": "object"
+                },
+                {
+                    "additionalProperties": false,
+                    "properties": {
+                        "args": {
+                            "title": "args"
+                        },
+                        "description": {
+                            "title": "description",
+                            "type": "string"
+                        },
+                        "name": {
+                            "const": "message.unstar",
+                            "title": "name",
+                            "type": "string"
+                        },
+                        "processingStage": {
+                            "description": "The stage of action processing",
+                            "enum": [
+                                "main",
+                                "post-main",
+                                "pre-main"
+                            ],
+                            "title": "processingStage",
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "name"
+                    ],
+                    "type": "object"
+                },
+                {
+                    "additionalProperties": false,
+                    "properties": {
+                        "args": {
+                            "title": "args"
+                        },
+                        "description": {
+                            "title": "description",
+                            "type": "string"
+                        },
+                        "name": {
+                            "const": "attachment.noop",
+                            "title": "name",
+                            "type": "string"
+                        },
+                        "processingStage": {
+                            "description": "The stage of action processing",
+                            "enum": [
+                                "main",
+                                "post-main",
+                                "pre-main"
+                            ],
+                            "title": "processingStage",
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "name"
+                    ],
+                    "type": "object"
+                },
+                {
+                    "additionalProperties": false,
+                    "properties": {
+                        "args": {
+                            "additionalProperties": false,
+                            "properties": {
+                                "docsFileLocation": {
+                                    "description": "The location of the (temporary) Google Docs file containing the extracted OCR text, in case it should be stored in addition to further processing.\nSupports placeholder substitution.\nDefault: (unset)",
+                                    "title": "docsFileLocation",
+                                    "type": "string"
+                                },
+                                "extract": {
+                                    "description": "A regular expressions that define extracted values.\nIt is recommended to use the named group syntax `(?<name>...)` to reference the extracted values using names like `${attachment.extracted.name}`.",
+                                    "title": "extract",
+                                    "type": "string"
+                                },
+                                "language": {
+                                    "description": "Hints at the language to use for OCR. Valid values are BCP 47 codes.\nDefault: (unset, auto-detects the language)",
+                                    "title": "language",
+                                    "type": "string"
+                                }
+                            },
+                            "title": "args",
+                            "type": "object"
+                        },
+                        "description": {
+                            "title": "description",
+                            "type": "string"
+                        },
+                        "name": {
+                            "const": "attachment.extractText",
+                            "title": "name",
+                            "type": "string"
+                        },
+                        "processingStage": {
+                            "description": "The stage of action processing",
+                            "enum": [
+                                "main",
+                                "post-main",
+                                "pre-main"
+                            ],
+                            "title": "processingStage",
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "name"
+                    ],
+                    "type": "object"
+                },
+                {
+                    "additionalProperties": false,
+                    "properties": {
+                        "args": {
+                            "additionalProperties": false,
+                            "properties": {
+                                "conflictStrategy": {
+                                    "$ref": "#/definitions/ConflictStrategy",
+                                    "description": "The strategy to be used in case a file already exists at the desired location.",
+                                    "title": "conflictStrategy"
+                                },
+                                "description": {
+                                    "description": "The description to be attached to the Google Drive file.\nSupports placeholder substitution.",
+                                    "title": "description",
+                                    "type": "string"
+                                },
+                                "location": {
+                                    "description": "The location (path + filename) of the Google Drive file.\nFor shared folders or Team Drives prepend the location with the folder ID like `{id:<folderId>}/...`.\nSupports placeholder substitution.",
+                                    "title": "location",
+                                    "type": "string"
+                                },
+                                "toMimeType": {
+                                    "description": "Convert to a Google file type using one of the <a href=\"https://developers.google.com/drive/api/guides/mime-types?hl=en\">supported mime-types by Google Drive</a>, like:\n* `application/vnd.google-apps.document`: Google Docs\n* `application/vnd.google-apps.presentation`: Google Slides\n* `application/vnd.google-apps.spreadsheet`: Google Sheets",
+                                    "title": "toMimeType",
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "conflictStrategy",
+                                "location"
+                            ],
+                            "title": "args",
+                            "type": "object"
+                        },
+                        "description": {
+                            "title": "description",
+                            "type": "string"
+                        },
+                        "name": {
+                            "const": "attachment.store",
                             "title": "name",
                             "type": "string"
                         },
@@ -1624,363 +1674,6 @@
                             "type": "string"
                         },
                         "name": {
-                            "const": "message.noop",
-                            "title": "name",
-                            "type": "string"
-                        },
-                        "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "name"
-                    ],
-                    "type": "object"
-                },
-                {
-                    "additionalProperties": false,
-                    "properties": {
-                        "args": {
-                            "additionalProperties": false,
-                            "properties": {
-                                "to": {
-                                    "description": "The recipient of the forwarded message.",
-                                    "title": "to",
-                                    "type": "string"
-                                }
-                            },
-                            "required": [
-                                "to"
-                            ],
-                            "title": "args",
-                            "type": "object"
-                        },
-                        "description": {
-                            "title": "description",
-                            "type": "string"
-                        },
-                        "name": {
-                            "const": "message.forward",
-                            "title": "name",
-                            "type": "string"
-                        },
-                        "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "name"
-                    ],
-                    "type": "object"
-                },
-                {
-                    "additionalProperties": false,
-                    "properties": {
-                        "args": {
-                            "$ref": "#/definitions/MessageActionStoreFromUrlArgs",
-                            "title": "args"
-                        },
-                        "description": {
-                            "title": "description",
-                            "type": "string"
-                        },
-                        "name": {
-                            "const": "message.storeFromURL",
-                            "title": "name",
-                            "type": "string"
-                        },
-                        "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "name"
-                    ],
-                    "type": "object"
-                },
-                {
-                    "additionalProperties": false,
-                    "properties": {
-                        "args": {
-                            "$ref": "#/definitions/MessageActionExportArgs",
-                            "title": "args"
-                        },
-                        "description": {
-                            "title": "description",
-                            "type": "string"
-                        },
-                        "name": {
-                            "const": "message.exportAsHtml",
-                            "title": "name",
-                            "type": "string"
-                        },
-                        "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "name"
-                    ],
-                    "type": "object"
-                },
-                {
-                    "additionalProperties": false,
-                    "properties": {
-                        "args": {
-                            "$ref": "#/definitions/MessageActionExportArgs",
-                            "title": "args"
-                        },
-                        "description": {
-                            "title": "description",
-                            "type": "string"
-                        },
-                        "name": {
-                            "const": "message.exportAsPdf",
-                            "title": "name",
-                            "type": "string"
-                        },
-                        "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "name"
-                    ],
-                    "type": "object"
-                },
-                {
-                    "additionalProperties": false,
-                    "properties": {
-                        "args": {
-                            "$ref": "#/definitions/MessageActionStorePDFArgs",
-                            "title": "args"
-                        },
-                        "description": {
-                            "title": "description",
-                            "type": "string"
-                        },
-                        "name": {
-                            "const": "message.storePDF",
-                            "title": "name",
-                            "type": "string"
-                        },
-                        "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "name"
-                    ],
-                    "type": "object"
-                },
-                {
-                    "additionalProperties": false,
-                    "properties": {
-                        "args": {
-                            "title": "args"
-                        },
-                        "description": {
-                            "title": "description",
-                            "type": "string"
-                        },
-                        "name": {
-                            "const": "message.markRead",
-                            "title": "name",
-                            "type": "string"
-                        },
-                        "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "name"
-                    ],
-                    "type": "object"
-                },
-                {
-                    "additionalProperties": false,
-                    "properties": {
-                        "args": {
-                            "title": "args"
-                        },
-                        "description": {
-                            "title": "description",
-                            "type": "string"
-                        },
-                        "name": {
-                            "const": "message.markUnread",
-                            "title": "name",
-                            "type": "string"
-                        },
-                        "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "name"
-                    ],
-                    "type": "object"
-                },
-                {
-                    "additionalProperties": false,
-                    "properties": {
-                        "args": {
-                            "title": "args"
-                        },
-                        "description": {
-                            "title": "description",
-                            "type": "string"
-                        },
-                        "name": {
-                            "const": "message.moveToTrash",
-                            "title": "name",
-                            "type": "string"
-                        },
-                        "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "name"
-                    ],
-                    "type": "object"
-                },
-                {
-                    "additionalProperties": false,
-                    "properties": {
-                        "args": {
-                            "title": "args"
-                        },
-                        "description": {
-                            "title": "description",
-                            "type": "string"
-                        },
-                        "name": {
-                            "const": "message.star",
-                            "title": "name",
-                            "type": "string"
-                        },
-                        "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "name"
-                    ],
-                    "type": "object"
-                },
-                {
-                    "additionalProperties": false,
-                    "properties": {
-                        "args": {
-                            "title": "args"
-                        },
-                        "description": {
-                            "title": "description",
-                            "type": "string"
-                        },
-                        "name": {
-                            "const": "message.unstar",
-                            "title": "name",
-                            "type": "string"
-                        },
-                        "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "name"
-                    ],
-                    "type": "object"
-                },
-                {
-                    "additionalProperties": false,
-                    "properties": {
-                        "args": {
-                            "title": "args"
-                        },
-                        "description": {
-                            "title": "description",
-                            "type": "string"
-                        },
-                        "name": {
                             "const": "thread.noop",
                             "title": "name",
                             "type": "string"
@@ -2412,6 +2105,363 @@
                         },
                         "name": {
                             "const": "thread.moveToTrash",
+                            "title": "name",
+                            "type": "string"
+                        },
+                        "processingStage": {
+                            "description": "The stage of action processing",
+                            "enum": [
+                                "main",
+                                "post-main",
+                                "pre-main"
+                            ],
+                            "title": "processingStage",
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "name"
+                    ],
+                    "type": "object"
+                },
+                {
+                    "additionalProperties": false,
+                    "properties": {
+                        "args": {
+                            "title": "args"
+                        },
+                        "description": {
+                            "title": "description",
+                            "type": "string"
+                        },
+                        "name": {
+                            "const": "message.noop",
+                            "title": "name",
+                            "type": "string"
+                        },
+                        "processingStage": {
+                            "description": "The stage of action processing",
+                            "enum": [
+                                "main",
+                                "post-main",
+                                "pre-main"
+                            ],
+                            "title": "processingStage",
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "name"
+                    ],
+                    "type": "object"
+                },
+                {
+                    "additionalProperties": false,
+                    "properties": {
+                        "args": {
+                            "additionalProperties": false,
+                            "properties": {
+                                "to": {
+                                    "description": "The recipient of the forwarded message.",
+                                    "title": "to",
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "to"
+                            ],
+                            "title": "args",
+                            "type": "object"
+                        },
+                        "description": {
+                            "title": "description",
+                            "type": "string"
+                        },
+                        "name": {
+                            "const": "message.forward",
+                            "title": "name",
+                            "type": "string"
+                        },
+                        "processingStage": {
+                            "description": "The stage of action processing",
+                            "enum": [
+                                "main",
+                                "post-main",
+                                "pre-main"
+                            ],
+                            "title": "processingStage",
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "name"
+                    ],
+                    "type": "object"
+                },
+                {
+                    "additionalProperties": false,
+                    "properties": {
+                        "args": {
+                            "$ref": "#/definitions/MessageActionStoreFromUrlArgs",
+                            "title": "args"
+                        },
+                        "description": {
+                            "title": "description",
+                            "type": "string"
+                        },
+                        "name": {
+                            "const": "message.storeFromURL",
+                            "title": "name",
+                            "type": "string"
+                        },
+                        "processingStage": {
+                            "description": "The stage of action processing",
+                            "enum": [
+                                "main",
+                                "post-main",
+                                "pre-main"
+                            ],
+                            "title": "processingStage",
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "name"
+                    ],
+                    "type": "object"
+                },
+                {
+                    "additionalProperties": false,
+                    "properties": {
+                        "args": {
+                            "$ref": "#/definitions/MessageActionExportArgs",
+                            "title": "args"
+                        },
+                        "description": {
+                            "title": "description",
+                            "type": "string"
+                        },
+                        "name": {
+                            "const": "message.exportAsHtml",
+                            "title": "name",
+                            "type": "string"
+                        },
+                        "processingStage": {
+                            "description": "The stage of action processing",
+                            "enum": [
+                                "main",
+                                "post-main",
+                                "pre-main"
+                            ],
+                            "title": "processingStage",
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "name"
+                    ],
+                    "type": "object"
+                },
+                {
+                    "additionalProperties": false,
+                    "properties": {
+                        "args": {
+                            "$ref": "#/definitions/MessageActionExportArgs",
+                            "title": "args"
+                        },
+                        "description": {
+                            "title": "description",
+                            "type": "string"
+                        },
+                        "name": {
+                            "const": "message.exportAsPdf",
+                            "title": "name",
+                            "type": "string"
+                        },
+                        "processingStage": {
+                            "description": "The stage of action processing",
+                            "enum": [
+                                "main",
+                                "post-main",
+                                "pre-main"
+                            ],
+                            "title": "processingStage",
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "name"
+                    ],
+                    "type": "object"
+                },
+                {
+                    "additionalProperties": false,
+                    "properties": {
+                        "args": {
+                            "$ref": "#/definitions/MessageActionStorePDFArgs",
+                            "title": "args"
+                        },
+                        "description": {
+                            "title": "description",
+                            "type": "string"
+                        },
+                        "name": {
+                            "const": "message.storePDF",
+                            "title": "name",
+                            "type": "string"
+                        },
+                        "processingStage": {
+                            "description": "The stage of action processing",
+                            "enum": [
+                                "main",
+                                "post-main",
+                                "pre-main"
+                            ],
+                            "title": "processingStage",
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "name"
+                    ],
+                    "type": "object"
+                },
+                {
+                    "additionalProperties": false,
+                    "properties": {
+                        "args": {
+                            "title": "args"
+                        },
+                        "description": {
+                            "title": "description",
+                            "type": "string"
+                        },
+                        "name": {
+                            "const": "message.markRead",
+                            "title": "name",
+                            "type": "string"
+                        },
+                        "processingStage": {
+                            "description": "The stage of action processing",
+                            "enum": [
+                                "main",
+                                "post-main",
+                                "pre-main"
+                            ],
+                            "title": "processingStage",
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "name"
+                    ],
+                    "type": "object"
+                },
+                {
+                    "additionalProperties": false,
+                    "properties": {
+                        "args": {
+                            "title": "args"
+                        },
+                        "description": {
+                            "title": "description",
+                            "type": "string"
+                        },
+                        "name": {
+                            "const": "message.markUnread",
+                            "title": "name",
+                            "type": "string"
+                        },
+                        "processingStage": {
+                            "description": "The stage of action processing",
+                            "enum": [
+                                "main",
+                                "post-main",
+                                "pre-main"
+                            ],
+                            "title": "processingStage",
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "name"
+                    ],
+                    "type": "object"
+                },
+                {
+                    "additionalProperties": false,
+                    "properties": {
+                        "args": {
+                            "title": "args"
+                        },
+                        "description": {
+                            "title": "description",
+                            "type": "string"
+                        },
+                        "name": {
+                            "const": "message.moveToTrash",
+                            "title": "name",
+                            "type": "string"
+                        },
+                        "processingStage": {
+                            "description": "The stage of action processing",
+                            "enum": [
+                                "main",
+                                "post-main",
+                                "pre-main"
+                            ],
+                            "title": "processingStage",
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "name"
+                    ],
+                    "type": "object"
+                },
+                {
+                    "additionalProperties": false,
+                    "properties": {
+                        "args": {
+                            "title": "args"
+                        },
+                        "description": {
+                            "title": "description",
+                            "type": "string"
+                        },
+                        "name": {
+                            "const": "message.star",
+                            "title": "name",
+                            "type": "string"
+                        },
+                        "processingStage": {
+                            "description": "The stage of action processing",
+                            "enum": [
+                                "main",
+                                "post-main",
+                                "pre-main"
+                            ],
+                            "title": "processingStage",
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "name"
+                    ],
+                    "type": "object"
+                },
+                {
+                    "additionalProperties": false,
+                    "properties": {
+                        "args": {
+                            "title": "args"
+                        },
+                        "description": {
+                            "title": "description",
+                            "type": "string"
+                        },
+                        "name": {
+                            "const": "message.unstar",
                             "title": "name",
                             "type": "string"
                         },

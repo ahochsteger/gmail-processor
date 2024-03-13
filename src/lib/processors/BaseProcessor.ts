@@ -1,7 +1,9 @@
 import {
   AttachmentContext,
   AttachmentInfo,
+  Context,
   ContextType,
+  EnvContext,
   MetaInfoType as MIT,
   MessageContext,
   MessageInfo,
@@ -20,6 +22,7 @@ import { AttachmentMatchConfig } from "../config/AttachmentMatchConfig"
 import { MessageMatchConfig } from "../config/MessageMatchConfig"
 import { ThreadMatchConfig } from "../config/ThreadMatchConfig"
 import { PatternUtil } from "../utils/PatternUtil"
+import { RegexUtils } from "../utils/RegexUtils"
 
 type TraceEntry = {
   configIndex: number
@@ -56,6 +59,7 @@ export abstract class BaseProcessor {
     m: MetaInfo,
     keyPrefix: string,
     regexMap: Map<string, string>,
+    overallMatch: boolean = true,
   ): MetaInfo {
     ctx.log.debug(`Testing regex matches for key prefix ${keyPrefix} ...`)
     let matchesAll = true
@@ -91,14 +95,61 @@ export abstract class BaseProcessor {
         matchesAll = false
       }
     })
-    const matchedKey = `${keyPrefix}.matched`
-    ctx.log.debug(`... result for ${matchedKey}: ${matchesAll}`)
-    m[matchedKey] = mi(
-      MIT.BOOLEAN,
-      matchesAll,
-      "The overall matching result for all conditions in the match config.",
-    )
+    if (overallMatch) {
+      const matchedKey = `${keyPrefix}.matched`
+      ctx.log.debug(`... result for ${matchedKey}: ${matchesAll}`)
+      m[matchedKey] = mi(
+        MIT.BOOLEAN,
+        matchesAll,
+        "The overall matching result for all conditions in the match config.",
+      )
+    }
     return m
+  }
+
+  public static updateContextMeta(ctx: Context, addMeta: MetaInfo = {}) {
+    switch (ctx.type) {
+      case ContextType.ENV:
+        ctx.meta = {
+          ...(ctx as EnvContext).envMeta,
+          ...addMeta,
+        }
+        break
+      case ContextType.PROCESSING:
+        ctx.meta = {
+          ...(ctx as EnvContext).envMeta,
+          ...(ctx as ProcessingContext).procMeta,
+          ...addMeta,
+        }
+        break
+      case ContextType.THREAD:
+        ctx.meta = {
+          ...(ctx as EnvContext).envMeta,
+          ...(ctx as ProcessingContext).procMeta,
+          ...(ctx as ThreadContext).threadMeta,
+          ...addMeta,
+        }
+        break
+      case ContextType.MESSAGE:
+        ctx.meta = {
+          ...(ctx as EnvContext).envMeta,
+          ...(ctx as ProcessingContext).procMeta,
+          ...(ctx as ThreadContext).threadMeta,
+          ...(ctx as MessageContext).messageMeta,
+          ...addMeta,
+        }
+        break
+      case ContextType.ATTACHMENT:
+        ctx.meta = {
+          ...(ctx as EnvContext).envMeta,
+          ...(ctx as ProcessingContext).procMeta,
+          ...(ctx as ThreadContext).threadMeta,
+          ...(ctx as MessageContext).messageMeta,
+          ...(ctx as AttachmentContext).attachmentMeta,
+          ...addMeta,
+        }
+        break
+    }
   }
 
   protected static describeThread(thread: GoogleAppsScript.Gmail.GmailThread): {
@@ -233,6 +284,9 @@ export abstract class BaseProcessor {
               action.name,
               action.args as unknown as ActionArgsType,
             )
+            if (actionResult.actionMeta) {
+              this.updateContextMeta(ctx, actionResult.actionMeta)
+            }
           } catch (err) {
             actionResult = {
               ok: false,
@@ -258,27 +312,28 @@ export abstract class BaseProcessor {
     return true
   }
 
+  /**
+   * @deprecated Use `RegexUtils.matchRegExp` instead.
+   */
   protected static matchRegExp(regex: string, str: string, flags = "") {
-    const inlineModifierRegExp = /^\(\?(?<flags>[gimsuy]+)\)/
-    const res = inlineModifierRegExp.exec(regex)
-    if (res) {
-      const len = res[0].length
-      regex = regex.slice(len)
-    }
-    return RegExp(regex, flags + (res?.groups?.flags ?? "")).exec(str)
+    return RegexUtils.matchRegExp(regex, str, flags)
   }
 
+  /**
+   * @deprecated Use `RegexUtils.matchError` instead.
+   */
   protected static matchError(
     ctx: ProcessingContext,
     message: string,
   ): boolean {
-    ctx.log.warn(`MATCH ERROR: ${message}`)
-    return false
+    return RegexUtils.matchError(ctx, message)
   }
 
+  /**
+   * @deprecated Use `RegexUtils.noMatch` instead.
+   */
   protected static noMatch(ctx: ProcessingContext, message: string): boolean {
-    ctx.log.debug(`NO MATCH: ${message}`)
-    return false
+    return RegexUtils.noMatch(ctx, message)
   }
 
   protected static isSet(

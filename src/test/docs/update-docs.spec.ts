@@ -1,7 +1,9 @@
 import { ContextType, MetaInfo, MetaInfoType, RunMode } from "../../lib/Context"
+import { AttachmentActions } from "../../lib/actions/AttachmentActions"
 import { DATE_FNS_FUNCTIONS, ExprInfoType, defaultDateFormat } from "../../lib/utils/DateExpression"
 import { PatternUtil } from "../../lib/utils/PatternUtil"
 import { ConfigMocks } from "../mocks/ConfigMocks"
+import { NEW_DOCS_FILE_NAME } from "../mocks/GDriveMocks"
 import { GMailMocks } from "../mocks/GMailMocks"
 import { MockFactory } from "../mocks/MockFactory"
 
@@ -22,7 +24,12 @@ function write(s: string) {
   }
 }
 
-function genMetaInfoDocs(contextType: ContextType, m: MetaInfo, position = "standard") {
+enum ActionContextType {
+  ACTION = "action"
+}
+type PlaceholderContextType = ContextType | ActionContextType
+
+function genMetaInfoDocs(contextType: PlaceholderContextType, m: MetaInfo, position = "standard") {
   if (position === "first") {
     write("[")
   }
@@ -30,7 +37,7 @@ function genMetaInfoDocs(contextType: ContextType, m: MetaInfo, position = "stan
   Object.keys(m)
     .sort()
     .forEach((k, idx, arr) => {
-      const stringValue = PatternUtil.stringValue(ctx, k)
+      const stringValue = PatternUtil.stringValue(ctx, k, m)
       let deprInfo = m[k].deprecationInfo ?? ""
       let desc = m[k].description
       if (m[k].type === MetaInfoType.DATE) desc += ` ${dateInfo}`
@@ -90,8 +97,21 @@ describe("Generate Context Substitution Docs", () => {
     genMetaInfoDocs(
       ContextType.ATTACHMENT,
       ctx.attachmentMeta,
-      "last",
     )
+  })
+  it("should generate attachment action context substitution docs", () => {
+    const result = AttachmentActions.extractText(ctx, {
+      docsFileLocation: NEW_DOCS_FILE_NAME,
+      extract:
+        "Invoice date:\\s*(?<invoiceDate>[0-9-]+)\\s*Invoice number:\\s*(?<invoiceNumber>[0-9]+)",
+    })
+    if (result.actionMeta) {
+      genMetaInfoDocs(
+        ActionContextType.ACTION,
+        result.actionMeta,
+        "last",
+      )
+    }
   })
 })
 describe("Generate Date Expression Substitution Docs", () => {
