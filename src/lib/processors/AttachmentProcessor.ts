@@ -17,6 +17,7 @@ import {
   ProcessingResult,
 } from "../Context"
 import { PatternUtil } from "../utils/PatternUtil"
+import { RegexUtils } from "../utils/RegexUtils"
 import { BaseProcessor } from "./BaseProcessor"
 
 export class AttachmentProcessor extends BaseProcessor {
@@ -41,16 +42,19 @@ export class AttachmentProcessor extends BaseProcessor {
   ) {
     try {
       if (
-        !this.matchRegExp(matchConfig.contentType, attachment.getContentType())
+        !RegexUtils.matchRegExp(
+          matchConfig.contentType,
+          attachment.getContentType(),
+        )
       )
-        return this.noMatch(
+        return RegexUtils.noMatch(
           ctx,
           `contentType '${attachment.getContentType()}' does not match '${
             matchConfig.contentType
           }'`,
         )
-      if (!this.matchRegExp(matchConfig.name, attachment.getName()))
-        return this.noMatch(
+      if (!RegexUtils.matchRegExp(matchConfig.name, attachment.getName()))
+        return RegexUtils.noMatch(
           ctx,
           `name '${attachment.getName()}' does not match '${matchConfig.name}'`,
         )
@@ -58,7 +62,7 @@ export class AttachmentProcessor extends BaseProcessor {
         matchConfig.largerThan != -1 &&
         attachment.getSize() <= matchConfig.largerThan
       )
-        return this.noMatch(
+        return RegexUtils.noMatch(
           ctx,
           `size ${attachment.getSize()} not larger than ${
             matchConfig.largerThan
@@ -68,14 +72,14 @@ export class AttachmentProcessor extends BaseProcessor {
         matchConfig.smallerThan != -1 &&
         attachment.getSize() >= matchConfig.smallerThan
       )
-        return this.noMatch(
+        return RegexUtils.noMatch(
           ctx,
           `size ${attachment.getSize()} not smaller than ${
             matchConfig.smallerThan
           }`,
         )
     } catch (e) {
-      return this.matchError(
+      return RegexUtils.matchError(
         ctx,
         `Skipping attachment (name:${attachment.getName()}, hash:${attachment.getHash()}) due to error during match check: ${e} (matchConfig: ${JSON.stringify(
           matchConfig,

@@ -17,6 +17,7 @@ import {
   ThreadMatchConfig,
 } from "../config/ThreadMatchConfig"
 import { PatternUtil } from "../utils/PatternUtil"
+import { RegexUtils } from "../utils/RegexUtils"
 import { BaseProcessor } from "./BaseProcessor"
 import { MessageProcessor } from "./MessageProcessor"
 
@@ -253,12 +254,12 @@ export class ThreadProcessor extends BaseProcessor {
   ): boolean {
     try {
       if (
-        !this.matchRegExp(
+        !RegexUtils.matchRegExp(
           matchConfig.firstMessageSubject,
           thread.getFirstMessageSubject() ?? "",
         )
       )
-        return this.noMatch(
+        return RegexUtils.noMatch(
           ctx,
           `firstMessageSubject '${thread.getFirstMessageSubject()}' does not match '${
             matchConfig.firstMessageSubject
@@ -268,7 +269,7 @@ export class ThreadProcessor extends BaseProcessor {
         matchConfig.minMessageCount != -1 &&
         thread.getMessageCount() < matchConfig.minMessageCount
       )
-        return this.noMatch(
+        return RegexUtils.noMatch(
           ctx,
           `messageCount ${thread.getMessageCount()} < minMessageCount ${
             matchConfig.minMessageCount
@@ -278,7 +279,7 @@ export class ThreadProcessor extends BaseProcessor {
         matchConfig.maxMessageCount != -1 &&
         thread.getMessageCount() > matchConfig.maxMessageCount
       )
-        return this.noMatch(
+        return RegexUtils.noMatch(
           ctx,
           `messageCount ${thread.getMessageCount()} > maxMessageCount ${
             matchConfig.maxMessageCount
@@ -295,12 +296,12 @@ export class ThreadProcessor extends BaseProcessor {
             thread.getLabels().map((l) => l.getName() == matchLabel),
           )
       )
-        return this.noMatch(
+        return RegexUtils.noMatch(
           ctx,
           `labels '${threadLabels}' do not contain all of '${matchConfig.labels}'`,
         )
     } catch (e) {
-      return this.matchError(
+      return RegexUtils.matchError(
         ctx,
         `Skipping thread (id:${JSON.stringify(
           thread.getId(),
