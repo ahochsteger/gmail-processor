@@ -69,7 +69,7 @@ export abstract class BaseProcessor {
       const keyName = `${keyPrefix}.${k}`
       let hasAtLeastOneMatch = false
       const stringValue = PatternUtil.stringValue(ctx, keyName, m)
-      if ((result = this.matchRegExp(value, stringValue)) !== null) {
+      if ((result = RegexUtils.matchRegExp(value, stringValue)) !== null) {
         ctx.log.debug(`... matches`)
         hasAtLeastOneMatch = true
         for (let i = 1; i < result.length; i++) {
@@ -310,30 +310,6 @@ export abstract class BaseProcessor {
       return isNewer ? matchTime < compareTime : matchTime >= compareTime
     }
     return true
-  }
-
-  /**
-   * @deprecated Use `RegexUtils.matchRegExp` instead.
-   */
-  protected static matchRegExp(regex: string, str: string, flags = "") {
-    return RegexUtils.matchRegExp(regex, str, flags)
-  }
-
-  /**
-   * @deprecated Use `RegexUtils.matchError` instead.
-   */
-  protected static matchError(
-    ctx: ProcessingContext,
-    message: string,
-  ): boolean {
-    return RegexUtils.matchError(ctx, message)
-  }
-
-  /**
-   * @deprecated Use `RegexUtils.noMatch` instead.
-   */
-  protected static noMatch(ctx: ProcessingContext, message: string): boolean {
-    return RegexUtils.noMatch(ctx, message)
   }
 
   protected static isSet(

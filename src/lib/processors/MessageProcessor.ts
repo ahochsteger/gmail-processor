@@ -20,6 +20,7 @@ import {
 import { MarkProcessedMethod } from "../config/SettingsConfig"
 import { AttachmentProcessor } from "../processors/AttachmentProcessor"
 import { PatternUtil } from "../utils/PatternUtil"
+import { RegexUtils } from "../utils/RegexUtils"
 import { BaseProcessor } from "./BaseProcessor"
 
 export class MessageProcessor extends BaseProcessor {
@@ -44,46 +45,50 @@ export class MessageProcessor extends BaseProcessor {
     message: GoogleAppsScript.Gmail.GmailMessage,
   ) {
     try {
-      if (!this.matchRegExp(matchConfig.body, message.getBody()))
-        return this.noMatch(
+      if (!RegexUtils.matchRegExp(matchConfig.body, message.getBody()))
+        return RegexUtils.noMatch(
           ctx,
           `body '${message.getBody().slice(0, 32)}...' does not match '${
             matchConfig.body
           }'`,
         )
-      if (!this.matchRegExp(matchConfig.from, message.getFrom()))
-        return this.noMatch(
+      if (!RegexUtils.matchRegExp(matchConfig.from, message.getFrom()))
+        return RegexUtils.noMatch(
           ctx,
           `from '${message.getFrom()}' does not match '${matchConfig.from}'`,
         )
-      if (!this.matchRegExp(matchConfig.plainBody, message.getPlainBody()))
-        return this.noMatch(
+      if (
+        !RegexUtils.matchRegExp(matchConfig.plainBody, message.getPlainBody())
+      )
+        return RegexUtils.noMatch(
           ctx,
           `plainBody '${message
             .getPlainBody()
             .slice(0, 32)}...' does not match '${matchConfig.plainBody}'`,
         )
-      if (!this.matchRegExp(matchConfig.to, message.getTo()))
-        return this.noMatch(
+      if (!RegexUtils.matchRegExp(matchConfig.to, message.getTo()))
+        return RegexUtils.noMatch(
           ctx,
           `to '${message.getTo()}' does not match '${matchConfig.to}'`,
         )
-      if (!this.matchRegExp(matchConfig.subject, message.getSubject() ?? ""))
-        return this.noMatch(
+      if (
+        !RegexUtils.matchRegExp(matchConfig.subject, message.getSubject() ?? "")
+      )
+        return RegexUtils.noMatch(
           ctx,
           `subject '${message.getSubject()}' does not match '${
             matchConfig.subject
           }'`,
         )
       if (!this.matchTimestamp(matchConfig.newerThan, message.getDate(), true))
-        return this.noMatch(
+        return RegexUtils.noMatch(
           ctx,
           `date '${message.getDate()}' not newer than '${
             matchConfig.newerThan
           }'`,
         )
       if (!this.matchTimestamp(matchConfig.olderThan, message.getDate(), false))
-        return this.noMatch(
+        return RegexUtils.noMatch(
           ctx,
           `date '${message.getDate()}' not older than '${
             matchConfig.olderThan
@@ -93,23 +98,24 @@ export class MessageProcessor extends BaseProcessor {
         switch (flag) {
           case MessageFlag.READ:
             if (message.isUnread())
-              return this.noMatch(ctx, `message is not read`)
+              return RegexUtils.noMatch(ctx, `message is not read`)
             break
           case MessageFlag.UNREAD:
-            if (!message.isUnread()) return this.noMatch(ctx, `message is read`)
+            if (!message.isUnread())
+              return RegexUtils.noMatch(ctx, `message is read`)
             break
           case MessageFlag.STARRED:
             if (!message.isStarred())
-              return this.noMatch(ctx, `message is not starred`)
+              return RegexUtils.noMatch(ctx, `message is not starred`)
             break
           case MessageFlag.UNSTARRED:
             if (message.isStarred())
-              return this.noMatch(ctx, `message is starred`)
+              return RegexUtils.noMatch(ctx, `message is starred`)
             break
         }
       }
     } catch (e) {
-      return this.matchError(
+      return RegexUtils.matchError(
         ctx,
         `Skipping message (id:${message.getId()}) due to error during match check: ${e} (matchConfig: ${JSON.stringify(
           matchConfig,

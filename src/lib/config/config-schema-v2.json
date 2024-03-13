@@ -1092,7 +1092,7 @@
                                     "type": "string"
                                 },
                                 "extract": {
-                                    "description": "A regular expressions that define extracted values.\nIt is recommended to use the named group syntax `(?<name>...)` to reference the extracted values using names like `${attachment.extracted.name}`.",
+                                    "description": "A regular expression that defines which values should be extracted.\nIt is recommended to use the named group syntax `(?<name>...)` to reference the extracted values using names like `${attachment.extracted.name}`.",
                                     "title": "extract",
                                     "type": "string"
                                 },
