@@ -1,33 +1,6 @@
 include "update-docs-extract-common";
 
-def flattenTypes: (
-  ..
-  | select(.id)
-  | walk(if type=="object" and .children then (.|del(.children)) else . end)
-);
-def resolveArgsType($list): (
-    . as $type
-    | if $type.type == "reference" then (
-      $list[]
-      | select(.id==$type.target)
-      | .type
-      | resolveArgsType($list)
-    ) elif $type.type == "intersection" then (
-      $type.types[]
-      | resolveArgsType($list)
-    ) else $type end
-);
-def propertiesFromType($list;$kinds): (
-  .declaration?.children?[]?
-  | select(.kind==$kinds["Property"])
-  | {
-    name,
-    type: (.type?.name // .), #(.type | resolveArgsType($list)),
-    description: ([.comment?.summary?[]?.text]|join("")),
-  }
-);
-. as $tree
-| {
+{
     Project: 1, # 0x1
     Module: 2, # 0x2
     Namespace: 4, # 0x4
@@ -52,17 +25,18 @@ def propertiesFromType($list;$kinds): (
     TypeAlias: 2097152, # 0x200000
     Reference: 4194304, # 0x400000
 } as $kinds
+
 | {
   GlobalActions: "global",
   MessageActions: "message",
   ThreadActions: "thread",
   AttachmentActions: "attachment"
 } as $typeMap
-| $tree
+
 | [
   ..
   | select(type=="object" and .id)
-  #| del(.symbolIdMap,.sources,.groups)
+  | del(.symbolIdMap,.sources,.groups)
  ] as $list
 
 # Iterate over action classes:
@@ -72,25 +46,24 @@ def propertiesFromType($list;$kinds): (
   | .key as $className
   | .value as $prefix
   | $list[]
-  | select($kinds["Class"] and .name==$className)
+  | select(.kind==$kinds["Class"] and .name==$className)
   | .id as $id
 
-  # Get methods, args + types
+  # Get methods, args, properties, types
   | .children?[]
   | select(.flags.isStatic)
   | .signatures?[]
   | . as $signature
-  | extractDescription + {
-  #  class: $className,
-    actionName: ($prefix + "." + .name),
-    shortName: .name,
+  | .name as $shortActionName
+  | ($prefix + "." + .name) as $fullActionName
+  | extractDescription * {
+    class: $className,
+    actionName: $fullActionName,
+    shortName: $shortActionName,
     prefix: $prefix,
     args: [
-      select(.parameters?[]?.name=="args")
-      | .parameters?[]?
+      .parameters[]
       | select(.name=="args")
-      | .type
-      | resolveArgsType($list)
       | propertiesFromType($list;$kinds)
     ]
     | sort_by(.name)

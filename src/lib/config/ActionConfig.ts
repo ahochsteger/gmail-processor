@@ -80,6 +80,25 @@ export type StoreActionBaseArgs = {
   toMimeType?: string
 }
 
+export type AttachmentExtractTextArgs = {
+  /**
+   * Hints at the language to use for OCR. Valid values are BCP 47 codes.
+   * Default: (unset, auto-detects the language)
+   */
+  language?: string
+  /**
+   * The location of the (temporary) Google Docs file containing the extracted OCR text, in case it should be stored in addition to further processing.
+   * Supports placeholder substitution.
+   * Default: (unset)
+   */
+  docsFileLocation?: string
+  /**
+   * A regular expression that defines which values should be extracted.
+   * It is recommended to use the named group syntax `(?<name>...)` to reference the extracted values using names like `${attachment.extracted.name}`.
+   */
+  extract?: string
+}
+
 type ProcessingContextActionConfigType = GlobalActionConfigType
 export type ThreadContextActionConfigType =
   | ProcessingContextActionConfigType

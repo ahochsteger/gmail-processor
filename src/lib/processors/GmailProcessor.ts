@@ -26,9 +26,10 @@ import {
 } from "../config/Config"
 import { VariableEntry } from "../config/GlobalConfig"
 import { Timer } from "../utils/Timer"
+import { BaseProcessor } from "./BaseProcessor"
 import { ThreadProcessor } from "./ThreadProcessor"
 
-export class GmailProcessor {
+export class GmailProcessor extends BaseProcessor {
   public static buildContext(
     ctx: EnvContext,
     info: ProcessingInfo,
@@ -40,10 +41,7 @@ export class GmailProcessor {
       procMeta: {},
     }
     processingContext.procMeta = this.buildMetaInfo(processingContext)
-    processingContext.meta = {
-      ...processingContext.envMeta,
-      ...processingContext.procMeta,
-    }
+    this.updateContextMeta(processingContext)
     return processingContext
   }
 
@@ -90,7 +88,7 @@ export class GmailProcessor {
     return actionRegistry
   }
 
-  public static run(config: RequiredConfig, ctx: EnvContext) {
+  public static run(config: RequiredConfig, ctx: EnvContext): ProcessingResult {
     ctx.log.info("Processing of GmailProcessor config started ...")
 
     if (

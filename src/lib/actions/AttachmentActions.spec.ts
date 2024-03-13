@@ -1,5 +1,9 @@
 import { ConfigMocks } from "../../test/mocks/ConfigMocks"
-import { NEW_FILE_NAME, NEW_FILE_PATH } from "../../test/mocks/GDriveMocks"
+import {
+  NEW_DOCS_FILE_NAME,
+  NEW_FILE_NAME,
+  NEW_FILE_PATH,
+} from "../../test/mocks/GDriveMocks"
 import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
 import { AttachmentContext, ProcessingContext, RunMode } from "../Context"
 import { ConflictStrategy } from "../adapter/GDriveAdapter"
@@ -24,7 +28,11 @@ it("should provide actions in the action registry", () => {
   const actionNames = Array.from(actionRegistry.getActions().keys())
     .filter((v) => v.startsWith("attachment."))
     .sort()
-  expect(actionNames).toEqual(["attachment.noop", "attachment.store"])
+  expect(actionNames).toEqual([
+    "attachment.extractText",
+    "attachment.noop",
+    "attachment.store",
+  ])
 })
 
 it("should provide attachment.store in the action registry", () => {
@@ -82,4 +90,21 @@ it("should execute all actions using the action registry", () => {
     conflictStrategy: ConflictStrategy.REPLACE,
     description: "my description",
   })
+})
+
+it("should extract matched regex from the attachment using OCR", () => {
+  const result = AttachmentActions.extractText(mocks.attachmentContext, {
+    docsFileLocation: NEW_DOCS_FILE_NAME,
+    extract:
+      "Invoice date:\\s*(?<invoiceDate>[0-9-]+)\\s*Invoice number:\\s*(?<invoiceNumber>[0-9]+)",
+  })
+  const invoiceDate = "2024-03-13"
+  const invoiceNumber = "12345678"
+  expect(result.ok).toBeTruthy()
+  expect(
+    result.actionMeta!["attachment.extracted.match.invoiceDate"].value,
+  ).toEqual(invoiceDate)
+  expect(
+    result.actionMeta!["attachment.extracted.match.invoiceNumber"].value,
+  ).toEqual(invoiceNumber)
 })

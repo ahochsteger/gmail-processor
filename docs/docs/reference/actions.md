@@ -15,6 +15,16 @@ The actions can be only be triggered in valid processing scopes:
 
 ## Attachment Actions
 
+### `attachment.extractText`
+
+Extract text from an attachment into a Google Docs file or for further processing.<br />Supported file types: GIF, JPEG, PDF, PNG
+
+| Arguments | Type | Description |
+|-----------|------|-------------|
+| `docsFileLocation` | `string` | The location of the (temporary) Google Docs file containing the extracted OCR text, in case it should be stored in addition to further processing.<br />Supports [placeholder](placeholder.md) substitution.<br />Default: (unset) |
+| `extract` | `string` | A regular expression that defines which values should be extracted.<br />It is recommended to use the named group syntax `(?<name>...)` to reference the extracted values using names like `${attachment.extracted.name}`. |
+| `language` | `string` | Hints at the language to use for OCR. Valid values are BCP 47 codes.<br />Default: (unset, auto-detects the language) |
+
 ### `attachment.noop`
 
 Do nothing (no operation). Used for testing.
@@ -151,7 +161,7 @@ Store a document referenced by a URL contained in the message body to GDrive.
 |-----------|------|-------------|
 | `conflictStrategy` | `ConflictStrategy` | The strategy to be used in case a file already exists at the desired location. See [Enum Type `ConflictStrategy`](enum-types.md#conflictstrategy) for valid values. |
 | `description` | `string` | The description to be attached to the Google Drive file.<br />Supports [placeholder](placeholder.md) substitution. |
-| `headers` | `Record` | The header to pass to the URL. May be used to pass an authentication token.<br />Supports [placeholder](placeholder.md) substitution. |
+| `headers` | `Record<string,string>` | The header to pass to the URL. May be used to pass an authentication token.<br />Supports [placeholder](placeholder.md) substitution. |
 | `location` | `string` | The location (path + filename) of the Google Drive file.<br />For shared folders or Team Drives prepend the location with the folder ID like `{id:<folderId>}/...`.<br />Supports [placeholder](placeholder.md) substitution. |
 | `toMimeType` | `string` | Convert to a Google file type using one of the <a href="https://developers.google.com/drive/api/guides/mime-types?hl=en">supported mime-types by Google Drive</a>, like:<br />* `application/vnd.google-apps.document`: Google Docs<br />* `application/vnd.google-apps.presentation`: Google Slides<br />* `application/vnd.google-apps.spreadsheet`: Google Sheets |
 | `url` | `string` | The URL of the document to be stored.<br />To extract the URL from the message body use a message body matcher like `"(?<url>https://...)"` and `"${message.body.match.url}"` as the URL value.<br />NOTE: Take care to narrow down the regex as good as possible to extract valid URLs.<br />Use tools like [regex101.com](https://regex101.com) for testing on example messages. |

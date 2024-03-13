@@ -107,6 +107,18 @@ These placeholder are valid during processing a GMail attachment.
 | <a id="placeholder.attachment.size">`attachment.size`</a> | The size of the attachment. See [GmailAttachment.getSize()](https://developers.google.com/apps-script/reference/gmail/gmail-attachment#getSize\(\)) reference docs. | `18` |
 | <a id="placeholder.attachmentConfig.index">`attachmentConfig.index`</a> | The index number (0-based) of the attachment config. | `0` |
 
+## Action Placeholder
+
+These placeholder are valid after certain actions have been executed.
+
+| Key | Description | Example |
+|-----|-------------|---------|
+| <a id="placeholder.attachment.extracted">`attachment.extracted`</a> | Extracted text from the attachment using the action `attachment.extractText` | `...<br>Invoice date: 2024-03-13<br>Inv...` |
+| <a id="placeholder.attachment.extracted.match.1">`attachment.extracted.match.1`</a> | The matching regex group number as defined in the match config (e.g.: `"Invoice date:\\s*(?<invoiceDate>[0-9-]+)\\s*Invoice number:\\s*(?<invoiceNumber>[0-9]+)"`). | `2024-03-13` |
+| <a id="placeholder.attachment.extracted.match.2">`attachment.extracted.match.2`</a> | The matching regex group number as defined in the match config (e.g.: `"Invoice date:\\s*(?<invoiceDate>[0-9-]+)\\s*Invoice number:\\s*(?<invoiceNumber>[0-9]+)"`). | `12345678` |
+| <a id="placeholder.attachment.extracted.match.invoiceDate">`attachment.extracted.match.invoiceDate`</a> | The matching named regex group name as defined in the match config (e.g.: `"Invoice date:\\s*(?<invoiceDate>[0-9-]+)\\s*Invoice number:\\s*(?<invoiceNumber>[0-9]+)"`). | `2024-03-13` |
+| <a id="placeholder.attachment.extracted.match.invoiceNumber">`attachment.extracted.match.invoiceNumber`</a> | The matching named regex group name as defined in the match config (e.g.: `"Invoice date:\\s*(?<invoiceDate>[0-9-]+)\\s*Invoice number:\\s*(?<invoiceNumber>[0-9]+)"`). | `12345678` |
+
 ## Date Expressions
 
 These are the supported date expressions that can be used in `date` substitutions like `${message.date:date:lastDayOfMonth-2d:yyyy-MM-dd HH:mm:ss}`.

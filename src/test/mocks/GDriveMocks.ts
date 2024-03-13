@@ -26,6 +26,10 @@ export const LOGSHEET_FILE_NAME = "logsheet-${date.now:date::yyyy-MM}"
 export const LOGSHEET_FILE_PATH = `/${E2E_BASE_FOLDER_NAME}/${LOGSHEET_FILE_NAME}`
 export const MESSAGE_PDF_FILE_ID = "created-message-pdf-file-id"
 export const MESSAGE_PDF_FILE_NAME = "created-message-pdf-file.pdf"
+export const NEW_DOCS_FILE_CONTENT =
+  "...\nInvoice date: 2024-03-13\nInvoice number: 12345678\n..."
+export const NEW_DOCS_FILE_ID = "created-docs-file-id"
+export const NEW_DOCS_FILE_NAME = "created-docs-file"
 export const NEW_EXISTING_FILE_ID = "new-existing-file-id"
 export const NEW_EXISTING_FILE_NAME = EXISTING_FILE_NAME
 export const NEW_FILE_ID = "created-file-id"
@@ -33,12 +37,14 @@ export const NEW_FILE_NAME = "created-file.txt"
 export const NEW_FILE_PATH = `/${NEW_FILE_NAME}`
 export const NEW_FOLDER_ID = "created-folder-id"
 export const NEW_FOLDER_NAME = "created-folder"
+export const NEW_PDF_FILE_CONTENT = "PDF Content"
 export const NEW_PDF_FILE_ID = "created-pdf-file-id"
 export const NEW_PDF_FILE_NAME = "created-pdf-file.pdf"
 export const NEW_NESTED_FILE_ID = "created-nested-file-id"
 export const NEW_NESTED_FILE_NAME = "created-nested-file.txt"
 export const NEW_NESTED_FOLDER_ID = "subject-1-id"
 export const NEW_NESTED_FOLDER_NAME = "Subject 1"
+export const NEW_HTML_FILE_CONTENT = "HTML Content"
 export const NEW_HTML_FILE_ID = "created-html-file-id"
 export const NEW_HTML_FILE_NAME = "created-html-file.html"
 export const NO_FILE_ID = "no-file-id"
@@ -235,6 +241,19 @@ export class GDriveMocks {
     return iterator
   }
 
+  public static setupDocumentAppMocks(
+    _driveSpec: GDriveData,
+    documentApp: MockProxy<GoogleAppsScript.Document.DocumentApp>,
+  ): MockProxy<GoogleAppsScript.Document.DocumentApp> {
+    // Mocks for GDriveAdapter.extractAttachmentText()
+    const body = mock<GoogleAppsScript.Document.Body>()
+    body.getText.mockReturnValue(NEW_DOCS_FILE_CONTENT)
+    const document = mock<GoogleAppsScript.Document.Document>()
+    documentApp.openById.mockReturnValue(document)
+    document.getBody.mockReturnValue(body)
+    return documentApp
+  }
+
   public static setupDriveApiMocks(
     driveSpec: GDriveData,
     driveApi: MockProxy<GoogleAppsScript.Drive>,
@@ -422,7 +441,7 @@ export class GDriveMocks {
               NEW_HTML_FILE_NAME,
               mocks.newHtmlBlob,
               EntryScope.CREATED,
-              "HTML Content",
+              NEW_HTML_FILE_CONTENT,
               "text/html",
             ),
             new FileData(
@@ -431,8 +450,17 @@ export class GDriveMocks {
               NEW_PDF_FILE_NAME,
               mocks.newPdfBlob,
               EntryScope.CREATED,
-              "PDF Content",
+              NEW_PDF_FILE_CONTENT,
               "application/pdf",
+            ),
+            new FileData(
+              mocks.newDocsFile,
+              NEW_DOCS_FILE_ID,
+              NEW_DOCS_FILE_NAME,
+              mocks.newDocsBlob,
+              EntryScope.CREATED,
+              NEW_DOCS_FILE_CONTENT,
+              "application/vnd.google-apps.document",
             ),
           ],
         ),
@@ -462,6 +490,7 @@ export class GDriveMocks {
       mocks.driveApi,
       mocks.genericNewFile,
     )
+    GDriveMocks.setupDocumentAppMocks(driveSpec, mocks.documentApp)
     mocks.newHtmlBlob.getAs.mockReturnValue(mocks.newPdfBlob)
   }
 }

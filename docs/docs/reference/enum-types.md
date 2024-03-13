@@ -31,6 +31,17 @@ A type of context.
 | `proc` | A context holding all processing information like the configuration, integration adapters, action registry and timer. |
 | `thread` | A context holding the thread configuration and information about the currently processed thread. |
 
+## E2EStatus
+
+Status of end-to-end tests
+
+| Value | Description |
+|-------|-------------|
+| `error` | An end-to-end test produced an error while executing. |
+| `failed` | The end-to-end test failed. |
+| `skipped` | The end-to-end test has been skipped. |
+| `success` | The end-to-end test was successful. |
+
 ## LogLevel
 
 Levels of log messages used for marking and filtering.

@@ -2,23 +2,27 @@ import { Session } from "google-apps-script"
 import EnvContext from "../../lib/Context"
 import * as GmailProcessorLib from "../../lib/index"
 
-const E2E_TESTS_BASE_PATH = "/GmailProcessor-Tests/e2e"
+const E2E_REPO_FILES_SRC_PATH = "src/e2e-test/files"
+const E2E_DRIVE_TESTS_BASE_PATH = "/GmailProcessor-Tests/e2e"
+const E2E_GLOBAL_CONFIG = {
+  repoBaseUrl: "https://raw.githubusercontent.com/ahochsteger/gmail-processor",
+  repoBranch: "main",
+  repoBasePath: E2E_REPO_FILES_SRC_PATH,
+  subjectPrefix: "[GmailProcessor-Test] ",
+  to: Session.getActiveUser().getEmail(),
+  driveBasePath: E2E_DRIVE_TESTS_BASE_PATH,
+}
 
 /**
  * This is a special configuration used to initialize example emails for end-to-end testing.
  * @type {GmailProcessorLib.E2EConfig}
  */
 export const e2eInitConfig = {
-  globals: {
-    repoBaseUrl:
-      "https://raw.githubusercontent.com/ahochsteger/gmail-processor/main/src/e2e-test/files",
-    subjectPrefix: "[GmailProcessor-Test] ",
-    to: Session.getActiveUser().getEmail(),
-  },
+  globals: E2E_GLOBAL_CONFIG,
   folders: [
     {
       name: "e2e",
-      location: E2E_TESTS_BASE_PATH,
+      location: E2E_DRIVE_TESTS_BASE_PATH,
     },
   ],
   files: [

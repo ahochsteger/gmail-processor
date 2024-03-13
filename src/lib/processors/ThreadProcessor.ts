@@ -32,11 +32,7 @@ export class ThreadProcessor extends BaseProcessor {
       threadMeta: {},
     }
     threadContext.threadMeta = this.buildMetaInfo(threadContext)
-    threadContext.meta = {
-      ...threadContext.envMeta,
-      ...threadContext.procMeta,
-      ...threadContext.threadMeta,
-    }
+    this.updateContextMeta(threadContext)
     return threadContext
   }
 

@@ -24,6 +24,10 @@ include "update-docs-generate-common";
   "attachment": {
     "title": "Attachment",
     "description": "These placeholder are valid during processing a GMail attachment."
+  },
+  "action": {
+    "title": "Action",
+    "description": "These placeholder are valid after certain actions have been executed."
   }
 } as $map
 | [

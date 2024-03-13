@@ -1,5 +1,15 @@
-import { ActionBaseConfig, StoreActionBaseArgs } from "../config/ActionConfig"
-import { AttachmentContext } from "../Context"
+import {
+  ActionBaseConfig,
+  AttachmentExtractTextArgs,
+  StoreActionBaseArgs,
+} from "../config/ActionConfig"
+import {
+  AttachmentContext,
+  MetaInfo,
+  MetaInfoType,
+  newMetaInfo,
+} from "../Context"
+import { BaseProcessor } from "../processors/BaseProcessor"
 import { writingAction } from "../utils/Decorators"
 import { PatternUtil } from "../utils/PatternUtil"
 import {
@@ -14,6 +24,52 @@ export class AttachmentActions implements ActionProvider<AttachmentContext> {
   /** Do nothing (no operation). Used for testing. */
   public static noop(context: AttachmentContext) {
     context.log.info("NOOP: Do nothing.")
+  }
+
+  /**
+   * Extract text from an attachment into a Google Docs file or for further processing.
+   * Supported file types: GIF, JPEG, PDF, PNG
+   */
+  @writingAction<AttachmentContext>()
+  public static extractText(
+    context: AttachmentContext,
+    args: AttachmentExtractTextArgs,
+  ): ActionReturnType & { file?: GoogleAppsScript.Drive.File } {
+    const result = context.proc.gdriveAdapter.extractAttachmentText(
+      context.attachment.object,
+      {
+        ...args,
+        docsFileLocation: PatternUtil.substitute(
+          context,
+          args.docsFileLocation ?? "",
+        ),
+      },
+    )
+    const actionMeta: MetaInfo = {}
+    if (result.text) {
+      const keyPrefix = "attachment"
+      actionMeta["attachment.extracted"] = newMetaInfo(
+        MetaInfoType.STRING,
+        result.text,
+        "Extracted text from the attachment using the action `attachment.extractText`",
+      )
+      if (args.extract) {
+        const regexMap: Map<string, string> = new Map()
+        regexMap.set("extracted", args.extract)
+        BaseProcessor.buildRegExpSubstitutionMap(
+          context,
+          actionMeta,
+          keyPrefix,
+          regexMap,
+          false,
+        )
+      }
+    }
+    return {
+      ok: true,
+      actionMeta: actionMeta,
+      ...result,
+    }
   }
 
   /** Store an attachment to a Google Drive location. */
@@ -39,4 +95,5 @@ export class AttachmentActions implements ActionProvider<AttachmentContext> {
 
 export type AttachmentActionConfigType =
   | ActionBaseConfig<"attachment.noop">
+  | ActionBaseConfig<"attachment.extractText", AttachmentExtractTextArgs>
   | ActionBaseConfig<"attachment.store", StoreActionBaseArgs>

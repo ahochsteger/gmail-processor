@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ProcessingContext } from "../Context"
+import { MetaInfo, ProcessingContext } from "../Context"
 
 type JsonPrimitive = number | string | boolean | null
 type JsonObject = { [key in string]?: JsonValue }
@@ -9,6 +9,7 @@ export type ActionArgsType = Record<string, JsonValue>
 export type ActionReturnType = {
   ok?: boolean
   error?: Error
+  actionMeta?: MetaInfo
   [k: string]: unknown
 }
 

@@ -31,13 +31,7 @@ export class AttachmentProcessor extends BaseProcessor {
       attachmentMeta: {},
     }
     attachmentContext.attachmentMeta = this.buildMetaInfo(attachmentContext)
-    attachmentContext.meta = {
-      ...attachmentContext.envMeta,
-      ...attachmentContext.procMeta,
-      ...attachmentContext.threadMeta,
-      ...attachmentContext.messageMeta,
-      ...attachmentContext.attachmentMeta,
-    }
+    this.updateContextMeta(attachmentContext)
     return attachmentContext
   }
   public static matches(
