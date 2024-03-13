@@ -1,4 +1,3 @@
-import { run } from ".."
 import {
   EnvContext,
   ProcessingResult,
@@ -12,6 +11,7 @@ import {
   FileContent,
 } from "../adapter/GDriveAdapter"
 import { Config } from "../config/Config"
+import { GmailProcessor } from "../processors/GmailProcessor"
 
 type FileConfig = {
   name: string
@@ -328,7 +328,10 @@ export class E2E {
       success: 0,
     }
     try {
-      const processingResult = run(testConfig.runConfig, runMode, ctx)
+      const processingResult = GmailProcessor.runWithJson(
+        testConfig.runConfig,
+        ctx,
+      )
       if (processingResult.status === ProcessingStatus.ERROR) {
         statusMap[E2EStatus.ERROR]++
         error = processingResult.error
