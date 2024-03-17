@@ -27,7 +27,7 @@ export type E2EGlobalConfig = {
   repoBasePath: string
   subjectPrefix: string
   to: string
-  waitTime: number
+  sleepTimeMs: number
 }
 
 export class E2EConfig {
@@ -37,7 +37,7 @@ export class E2EConfig {
     repoBasePath: "",
     subjectPrefix: "",
     to: "",
-    waitTime: 1,
+    sleepTimeMs: 1,
   }
   public folders: {
     name: string
@@ -137,34 +137,38 @@ export class E2E {
       error,
       message: assertion.message,
     }
-    switch (status) {
+    switch (
+      status // TODO: Move logging out of there - do at the end of all tests!
+    ) {
       case E2EStatus.ERROR:
-        console.error(`❌ Error: ${assertion.message} (${error})`)
+        ctx.log.error(`❌ Error: ${assertion.message} (${error})`)
         break
       case E2EStatus.FAILED:
-        console.error(`👎 Failed: ${assertion.message}`)
+        ctx.log.error(`👎 Failed: ${assertion.message}`)
         break
       case E2EStatus.SKIPPED:
-        console.warn(`⏩ Skipped: ${assertion.message}`)
+        ctx.log.warn(`⏩ Skipped: ${assertion.message}`)
         break
       case E2EStatus.SUCCESS:
-        console.info(`✅ Success: ${assertion.message}`)
+        ctx.log.info(`✅ Success: ${assertion.message}`)
         break
     }
     return result
   }
 
   public static getBlobSourceFromFilePath(
+    ctx: EnvContext,
     globals: E2EGlobalConfig,
     path: string,
   ): GoogleAppsScript.Base.BlobSource {
     const url = `${globals.repoBaseUrl ?? "https://raw.githubusercontent.com/ahochsteger/gmail-processor"}/${globals.repoBranch ?? "main"}/${globals.repoBasePath ?? "src/e2e-test/files"}/${path}`
-    console.log(`Fetching '${url}' ...`)
+    ctx.log.debug(`Fetching '${url}' ...`)
     const blob = UrlFetchApp.fetch(url)
-    console.log(`Fetching '${url}' done.`)
+    ctx.log.debug(`Fetching '${url}' done.`)
     return blob
   }
   public static getBlobFromFileEntry(
+    ctx: EnvContext,
     config: E2EConfig,
     file: FileConfig,
   ): GoogleAppsScript.Base.Blob | undefined {
@@ -172,17 +176,18 @@ export class E2E {
     switch (file.type) {
       case "repo": {
         blob = this.getBlobSourceFromFilePath(
+          ctx,
           config.globals,
           file.ref,
         ).getBlob()
         break
       }
       case "url":
-        console.log(`Fetching URL file from ${file.ref} ...`)
+        ctx.log.debug(`Fetching URL file from ${file.ref} ...`)
         blob = UrlFetchApp.fetch(file.ref).getBlob()
         break
       case "gdrive":
-        console.log(`Fetching GDrive file from ${file.ref} ...`)
+        ctx.log.debug(`Fetching GDrive file from ${file.ref} ...`)
         blob = DriveApp.getFileById(file.ref).getBlob()
         break
     }
@@ -197,7 +202,7 @@ export class E2E {
         const file = config.files.reduce((prev, curr) =>
           name === curr.name ? curr : prev,
         )
-        return this.getBlobFromFileEntry(config, file)
+        return this.getBlobFromFileEntry(ctx, config, file)
       }) as GoogleAppsScript.Base.Blob[]
       ctx.log.info(`Sending email '${mail.name}' ...`)
       ctx.env.mailApp.sendEmail({
@@ -219,7 +224,7 @@ export class E2E {
     config.files
       .filter((file) => file.destFolder !== undefined)
       .forEach((file) => {
-        const blob = this.getBlobFromFileEntry(config, file)
+        const blob = this.getBlobFromFileEntry(ctx, config, file)
         if (!blob) return
         const folderLocation = config.folders.reduce((prev, current) =>
           current.name === file.destFolder ? current : prev,
@@ -265,6 +270,7 @@ export class E2E {
     processingResult: ProcessingResult,
     ctx: EnvContext = EnvProvider.defaultContext(),
   ) {
+    ctx.log.info(`E2E.runTest(): Running test '${test.message}' ...`)
     const results: E2EResult[] = []
     const statusMap: Record<E2EStatus, number> = {
       error: 0,
@@ -293,6 +299,7 @@ export class E2E {
       results,
     }
 
+    ctx.log.info(`E2E.runTest(): Finished.`)
     return result
   }
 
@@ -304,18 +311,26 @@ export class E2E {
   ): E2EResult {
     // Send test mails
     if (!skipInit) {
+      ctx.log.info(`E2E.runTests(): Initializing test data ...`)
       testConfig.initConfig.mails.forEach((mail) => {
         ctx.env.mailApp.sendEmail({
           to: testConfig.globals.to,
           subject: `${testConfig.globals.subjectPrefix}${mail.subject ?? testConfig.initConfig.name}`,
           htmlBody: mail.body,
           attachments: mail.attachments?.map((path) =>
-            this.getBlobSourceFromFilePath(testConfig.globals, path),
+            this.getBlobSourceFromFilePath(ctx, testConfig.globals, path),
           ),
         })
       })
       // Wait for emails to become available
-      ctx.env.utilities.sleep(testConfig.globals.waitTime ?? 1)
+      const sleepTimeMs = testConfig.globals.sleepTimeMs ?? 5000 // NOTE: In tests 2000 is too less, 3000 worked, but might not reliable enough.
+      ctx.log.debug(
+        `E2E.runTests(): Waiting ${sleepTimeMs}ms for emails to be sent ...`,
+      )
+      ctx.env.utilities.sleep(sleepTimeMs)
+      ctx.log.debug(`E2E.runTests(): Finished waiting.`)
+    } else {
+      ctx.log.info(`E2E.runTests(): SKIPPED: Initializing test data ...`)
     }
 
     // Run tests
@@ -328,6 +343,7 @@ export class E2E {
       success: 0,
     }
     try {
+      ctx.log.info(`E2E.runTests(): Executing GmailProcessor ...`)
       const processingResult = GmailProcessor.runWithJson(
         testConfig.runConfig,
         ctx,
@@ -336,6 +352,7 @@ export class E2E {
         statusMap[E2EStatus.ERROR]++
         error = processingResult.error
       } else {
+        ctx.log.info(`E2E.runTests(): Testing assertions ...`)
         testConfig.tests.forEach((test) => {
           const testResult = this.runTest(
             test,
@@ -357,35 +374,7 @@ export class E2E {
       status,
       results,
     }
-    return result
-  }
-
-  public static runTestSuite(
-    suiteName: string,
-    testConfigs: E2ETestConfig[],
-    skipInit = false,
-    runMode = RunMode.DANGEROUS,
-    ctx: EnvContext = EnvProvider.defaultContext(runMode),
-  ): E2EResult {
-    console.info(`Test suite '${suiteName}' started ...`)
-    const results: E2EResult[] = []
-    const statusMap: Record<E2EStatus, number> = {
-      error: 0,
-      failed: 0,
-      skipped: 0,
-      success: 0,
-    }
-    testConfigs.forEach((t) => {
-      const testResult = this.runTests(t, skipInit, runMode, ctx)
-      results.push(testResult)
-    })
-    const status = this.overallStatus(statusMap)
-    const result: E2EResult = {
-      message: suiteName,
-      status,
-      results: results,
-    }
-    console.info(`Test suite '${suiteName}' finished.`)
+    ctx.log.info(`E2E.runTests(): Finished.`)
     return result
   }
 }

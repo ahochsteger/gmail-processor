@@ -1,6 +1,6 @@
 /**
  * TODOs:
- * * Move E2E_GLOBAL_CONFIG to e2eInit.js
+ * * Generate E2E Json Schema
  * * Provide an e2e init function that can be parameterized with a unique name.
  * * Name e2e tests after features and not PRs (features will be kept, but their original PRs may not be valid forever)
  *
@@ -19,114 +19,58 @@ const featAttachmentOcrExtractionTestConfig = {
   globals: E2E_GLOBAL_CONFIG,
   initConfig: {
     name: "featAttachmentOcrExtraction",
-    // branch: "main",
     mails: [
       {
-        // subject: "featAttachmentOcrExtraction",
-        // body: "featAttachmentOcrExtraction",
-        attachments: [`${E2E_FILES_SRC_PATH}/invoice.pdf`],
+        attachments: [`invoice.pdf`],
       },
     ],
   },
   runConfig: {
     description:
-      "Test for PR #304 - fix getBlob error on conflict strategy 'update'",
-    settings: {
-      logSheetLocation:
-        "/GmailProcessor-Tests/logsheet-${date.now:date::yyyy-MM}",
-      markProcessedMethod: "mark-read",
-      timezone: "UTC",
-    },
+      "This example demonstrates the use of the action `attachment.extractText` to extract matching text from the attachment body for use in later actions (e.g. `attachment.store`).",
     global: {
       thread: {
         match: {
           query:
-            "has:attachment -in:trash -in:drafts -in:spam after:${date.now:date::yyyy-MM-dd}",
-          maxMessageCount: -1,
-          minMessageCount: 1,
+            "has:attachment -in:trash -in:drafts -in:spam from:${user.email} to:${user.email} after:${date.now:date:-5m:yyyy-MM-dd}",
         },
       },
+    },
+    settings: {
+      markProcessedMethod: "mark-read",
     },
     threads: [
       {
         match: {
-          query:
-            "from:${user.email} to:${user.email} subject:'Test with office attachments'",
+          query: "subject:([GmailProcessor-Test] featAttachmentOcrExtraction)",
         },
         attachments: [
           {
-            description: "Process *.docx attachment files",
+            description: "Process all attachments named 'invoice*.pdf'",
             match: {
-              name: "(?<basename>.+)\\.docx$",
+              name: "(?<basename>invoice.*)\\.pdf$",
             },
             actions: [
               {
-                description: "Store original docx file",
-                name: "attachment.store",
+                description:
+                  "Extract the text from the body of the PDF attachment using language auto-detection.",
+                name: "attachment.extractText",
                 args: {
-                  conflictStrategy: GmailProcessorLib.ConflictStrategy.REPLACE,
-                  location: `${E2E_TESTS_BASE_PATH}/\${attachment.name}`,
+                  docsFileLocation: `${E2E_DRIVE_TESTS_BASE_PATH}/featAttachmentOcrExtraction/\${attachment.name.match.basename} (Google Docs)`,
+                  extract:
+                    "Invoice date:\\s*(?<invoiceDate>[A-Za-z]{3} [0-9]{1,2}, [0-9]{4})\\s*Invoice number:\\s*(?<invoiceNumber>[0-9]+)\\s*Payment due:\\s(?<paymentDueDays>[0-9]+)\\sdays after invoice date",
                 },
-              },
-              {
-                description: "Store docx file converted to Google Docs format",
-                name: "attachment.store",
-                args: {
-                  conflictStrategy: GmailProcessorLib.ConflictStrategy.REPLACE,
-                  location: `${E2E_TESTS_BASE_PATH}/\${attachment.name.match.basename}`,
-                  toMimeType: "application/vnd.google-apps.document",
-                },
-              },
-            ],
-          },
-          {
-            description: "Process *.pptx attachment files",
-            match: {
-              name: "(?<basename>.+)\\.pptx$",
-            },
-            actions: [
-              {
-                description: "Store original pptx file",
-                name: "attachment.store",
-                args: {
-                  conflictStrategy: GmailProcessorLib.ConflictStrategy.REPLACE,
-                  location: `${E2E_TESTS_BASE_PATH}/\${attachment.name}`,
-                },
+                processingStage: "pre-main",
               },
               {
                 description:
-                  "Store pptx file converted to Google Presentations format",
+                  "Store the attachment using extracted values for `invoiceNumber` and `invoiceDate`",
                 name: "attachment.store",
                 args: {
-                  conflictStrategy: GmailProcessorLib.ConflictStrategy.REPLACE,
-                  location: `${E2E_TESTS_BASE_PATH}/\${attachment.name.match.basename}`,
-                  toMimeType: "application/vnd.google-apps.presentation",
-                },
-              },
-            ],
-          },
-          {
-            description: "Process *.xlsx attachment files",
-            match: {
-              name: "(?<basename>.+)\\.xlsx$",
-            },
-            actions: [
-              {
-                description: "Store original xlsx file",
-                name: "attachment.store",
-                args: {
-                  conflictStrategy: GmailProcessorLib.ConflictStrategy.REPLACE,
-                  location: `${E2E_TESTS_BASE_PATH}/\${attachment.name}`,
-                },
-              },
-              {
-                description:
-                  "Store xlsx file converted to Google Spreadsheet format",
-                name: "attachment.store",
-                args: {
-                  conflictStrategy: GmailProcessorLib.ConflictStrategy.REPLACE,
-                  location: `${E2E_TESTS_BASE_PATH}/\${attachment.name.match.basename}`,
-                  toMimeType: "application/vnd.google-apps.spreadsheet",
+                  conflictStrategy: "update",
+                  location: `${E2E_DRIVE_TESTS_BASE_PATH}/featAttachmentOcrExtraction/\${attachment.name.match.basename}-number-\${attachment.extracted.match.invoiceNumber}-date-\${attachment.extracted.match.invoiceDate:date::yyyy-MM-dd}-due-\${attachment.extracted.match.paymentDueDays}-days.pdf`,
+                  description:
+                    "Invoice number: ${attachment.extracted.match.invoiceNumber}\nInvoice date: ${attachment.extracted.match.invoiceDate:date::yyyy-MM-dd}\nPayment due: ${attachment.extracted.match.paymentDueDays} days",
                 },
               },
             ],
@@ -135,11 +79,71 @@ const featAttachmentOcrExtractionTestConfig = {
       },
     ],
   },
-  assertions: [
+  tests: [
     {
-      assert: (testConfig, result) => {
-        return { status: "success" }
-      },
+      message: "Successful execution",
+      assertions: [
+        {
+          message: "One thread config should have been processed",
+          assertFn: (_testConfig, procResult) =>
+            procResult.processedThreadConfigs == 1,
+        },
+        {
+          message: "At least one thread should have been processed",
+          assertFn: (_testConfig, procResult) =>
+            procResult.processedThreads >= 1,
+        },
+        {
+          message: "At least one message should have been processed",
+          assertFn: (_testConfig, procResult) =>
+            procResult.processedMessages >= 1,
+        },
+        {
+          message: "Correct number of actions should have been executed",
+          assertFn: (_testConfig, procResult) =>
+            procResult.executedActions.length ==
+            procResult.processedMessages + procResult.processedAttachments * 2,
+        },
+      ],
+    },
+    {
+      message: "No failures",
+      assertions: [
+        {
+          message: "Processing status should not be ERROR",
+          assertFn: (_testConfig, procResult) => procResult.status !== "error",
+        },
+        {
+          message: "No error should have occurred",
+          assertFn: (_testConfig, procResult) => procResult.error === undefined,
+        },
+        {
+          message: "No action should have failed",
+          assertFn: (_testConfig, procResult) =>
+            procResult.failedAction === undefined,
+        },
+      ],
+    },
+    {
+      message: "Skipped tests",
+      assertions: [
+        {
+          message: "Processing status should not be ERROR",
+          assertFn: (_testConfig, procResult) => procResult.status !== "error",
+          skip: true,
+        },
+        {
+          message: "No error should have occurred",
+          assertFn: (_testConfig, procResult) => procResult.error === undefined,
+          skip: true,
+        },
+        {
+          message: "No action should have failed",
+          assertFn: (_testConfig, procResult) =>
+            procResult.failedAction === undefined,
+          skip: true,
+        },
+      ],
     },
   ],
 }
@@ -151,10 +155,9 @@ const featAttachmentOcrExtractionTestConfig = {
  * @returns {GmailProcessorLib.ProcessingResult} Processing result
  */
 function testFeatAttachmentOcrExtraction(_evt, ctx) {
-  return GmailProcessorLib.run(
-    featAttachmentOcrExtractionTestConfig.runConfig,
-    globalTestConfig,
-    featAttachmentOcrExtractionTestConfig.assertions,
+  return GmailProcessorLib.E2E.runTests(
+    featAttachmentOcrExtractionTestConfig,
+    false,
     GmailProcessorLib.RunMode.DANGEROUS,
     ctx,
   )
