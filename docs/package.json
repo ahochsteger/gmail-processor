@@ -15,15 +15,15 @@
     "typecheck": "tsc"
   },
   "dependencies": {
-    "@babel/plugin-proposal-decorators": "^7.23.5",
+    "@babel/plugin-proposal-decorators": "^7.24.0",
     "@babel/plugin-transform-class-properties": "^7.23.3",
     "@docusaurus/core": "^3.0.0",
-    "@docusaurus/preset-classic": "^3.0.1",
+    "@docusaurus/preset-classic": "^3.1.1",
     "@iconify/react": "^4.1.1",
-    "@mdx-js/react": "^3.0.0",
-    "clsx": "^2.0.0",
-    "docusaurus-json-schema-plugin": "^1.7.0",
-    "prism-react-renderer": "^2.3.0",
+    "@mdx-js/react": "^3.0.1",
+    "clsx": "^2.1.0",
+    "docusaurus-json-schema-plugin": "^1.11.0",
+    "prism-react-renderer": "^2.3.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-toastify": "^9.1.3"
