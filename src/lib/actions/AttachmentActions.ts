@@ -35,6 +35,9 @@ export class AttachmentActions implements ActionProvider<AttachmentContext> {
     context: AttachmentContext,
     args: AttachmentExtractTextArgs,
   ): ActionReturnType & { file?: GoogleAppsScript.Drive.File } {
+    context.log.debug(
+      `AttachmentActions.extractText(): args={${JSON.stringify(args)}}`,
+    )
     const result = context.proc.gdriveAdapter.extractAttachmentText(
       context.attachment.object,
       {
