@@ -119,7 +119,7 @@ function buildExamples() {
   done
 
   # Create data file
-  local currentBranch=$(git branch --show-current)
+  local currentBranch; currentBranch=$(git branch --show-current)
   echo "const E2E_REPO_BRANCH = \"${currentBranch}\"" \
   >"${CLASP_DIR}/_data.js"
 
@@ -181,7 +181,7 @@ function checkGuardedAction() {
   # Check if running on a valid environment
   if [[ "${GITHUB_ACTIONS:-}" != "true" ]] && [[ "${DEPLOYMENT_ENV:-}" == "${guardedEnv}" ]]; then
     echo "ATTENTION: You're going to perform the guarded action '${action}' on the environment '${guardedEnv}'!"
-    read -p "Press CTRL+C to exit or ENTER to continue: "
+    read -r -p "Press CTRL+C to exit or ENTER to continue: "
   else
     echo "NOTE: Allowing guarded action '${action}' on the environment '${guardedEnv}'."
   fi

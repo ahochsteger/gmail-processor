@@ -4,7 +4,9 @@ import * as GmailProcessorLib from "../../lib/index"
 
 const E2E_REPO_FILES_SRC_PATH = "src/e2e-test/files"
 const E2E_DRIVE_TESTS_BASE_PATH = "/GmailProcessor-Tests/e2e"
-/** @type {import GmailProcessor.E2EGlobalConfig} */
+/**
+ * @type {import GmailProcessor.E2EGlobalConfig}
+ */
 const E2E_GLOBAL_CONFIG = {
   repoBaseUrl: "https://raw.githubusercontent.com/ahochsteger/gmail-processor",
   repoBranch: E2E_REPO_BRANCH ?? "main",
