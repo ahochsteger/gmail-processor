@@ -12,7 +12,7 @@ const pr197e2eInitConfig = {
   folders: [
     {
       name: "e2e",
-      location: `${E2E_TESTS_BASE_PATH}/pr-197`,
+      location: `${E2E_DRIVE_TESTS_BASE_PATH}/pr-197`,
     },
   ],
   files: [
@@ -97,7 +97,7 @@ const pr197Config = {
               name: "attachment.store",
               args: {
                 conflictStrategy: GmailProcessorLib.ConflictStrategy.REPLACE,
-                location: `${E2E_TESTS_BASE_PATH}/\${attachment.name}`,
+                location: `${E2E_DRIVE_TESTS_BASE_PATH}/\${attachment.name}`,
               },
             },
             {
@@ -105,7 +105,7 @@ const pr197Config = {
               name: "attachment.store",
               args: {
                 conflictStrategy: GmailProcessorLib.ConflictStrategy.REPLACE,
-                location: `${E2E_TESTS_BASE_PATH}/\${attachment.name.match.basename}`,
+                location: `${E2E_DRIVE_TESTS_BASE_PATH}/\${attachment.name.match.basename}`,
                 toMimeType: "application/vnd.google-apps.document",
               },
             },
@@ -122,7 +122,7 @@ const pr197Config = {
               name: "attachment.store",
               args: {
                 conflictStrategy: GmailProcessorLib.ConflictStrategy.REPLACE,
-                location: `${E2E_TESTS_BASE_PATH}/\${attachment.name}`,
+                location: `${E2E_DRIVE_TESTS_BASE_PATH}/\${attachment.name}`,
               },
             },
             {
@@ -131,7 +131,7 @@ const pr197Config = {
               name: "attachment.store",
               args: {
                 conflictStrategy: GmailProcessorLib.ConflictStrategy.REPLACE,
-                location: `${E2E_TESTS_BASE_PATH}/\${attachment.name.match.basename}`,
+                location: `${E2E_DRIVE_TESTS_BASE_PATH}/\${attachment.name.match.basename}`,
                 toMimeType: "application/vnd.google-apps.presentation",
               },
             },
@@ -148,7 +148,7 @@ const pr197Config = {
               name: "attachment.store",
               args: {
                 conflictStrategy: GmailProcessorLib.ConflictStrategy.REPLACE,
-                location: `${E2E_TESTS_BASE_PATH}/\${attachment.name}`,
+                location: `${E2E_DRIVE_TESTS_BASE_PATH}/\${attachment.name}`,
               },
             },
             {
@@ -157,7 +157,7 @@ const pr197Config = {
               name: "attachment.store",
               args: {
                 conflictStrategy: GmailProcessorLib.ConflictStrategy.REPLACE,
-                location: `${E2E_TESTS_BASE_PATH}/\${attachment.name.match.basename}`,
+                location: `${E2E_DRIVE_TESTS_BASE_PATH}/\${attachment.name.match.basename}`,
                 toMimeType: "application/vnd.google-apps.spreadsheet",
               },
             },

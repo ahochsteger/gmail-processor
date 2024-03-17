@@ -118,6 +118,11 @@ function buildExamples() {
       >"${CLASP_DIR}/${f##*/}"
   done
 
+  # Create data file
+  local currentBranch=$(git branch --show-current)
+  echo "const E2E_REPO_BRANCH = \"${currentBranch}\"" \
+  >"${CLASP_DIR}/_data.js"
+
   # Format example files:
   npx prettier -w \
     "${CLASP_DIR}"/*.js
