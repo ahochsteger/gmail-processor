@@ -321,6 +321,9 @@ export class GDriveAdapter extends BaseAdapter {
     text: string | null
     file?: GoogleAppsScript.Drive.File
   } {
+    this.ctx.log.debug(
+      `GDriveAdapter.extractAttachmentText(): attachment={name:${attachment.getName()},hash:${attachment.getHash()},contentType:${attachment.getContentType()}}, args=${JSON.stringify(args)}`,
+    )
     const blob = attachment.copyBlob()
 
     // Use OCR to convert PDF to a temporary Google Document
@@ -328,30 +331,58 @@ export class GDriveAdapter extends BaseAdapter {
     const docsFileLocation = args.docsFileLocation
       ? args.docsFileLocation
       : attachment.getName().replace(/\.pdf$/, "")
-    const { id } = this.ctx.env.driveApi.Files!.insert(
-      {
-        title: docsFileLocation,
-        mimeType: attachment.getContentType(),
-      },
-      blob,
-      {
-        ocr: true,
-        ocrLanguage: args.language ?? "en",
-        fields: "id,title",
-      },
+    const insertResource = {
+      title: docsFileLocation, // TODO: Location contains path but this is not allowed here!
+      mimeType: attachment.getContentType(), // TODO: Allow overriding content type
+    }
+    const insertOptionalArgs = {
+      ocr: true,
+      ocrLanguage: args.language ?? "en",
+      fields: "id,title",
+    }
+    this.ctx.log.debug(
+      `GDriveAdapter.extractAttachmentText(): inserting file resource=${JSON.stringify(insertResource)}, optionalArgs=${JSON.stringify(insertOptionalArgs)} ...`,
     )
+    const docsFile = this.ctx.env.driveApi.Files!.insert(
+      insertResource,
+      blob,
+      insertOptionalArgs,
+    )
+    this.ctx.log.debug(
+      `GDriveAdapter.extractAttachmentText(): -> ${JSON.stringify(docsFile)}`,
+    )
+    const id = docsFile?.id
     if (!id) return { text: null }
     const file = this.ctx.env.gdriveApp.getFileById(id)
 
     // Use the Document API to extract text from the Google Document
-    const textContent = this.ctx.env.documentApp
-      .openById(id)
-      .getBody()
-      .getText()
+    this.ctx.log.debug(
+      `GDriveAdapter.extractAttachmentText(): getting document by ID ${id} ...`,
+    )
+    const document = this.ctx.env.documentApp.openById(id) // TODO: Full exception message is not reported back!
+    // Exception: You do not have permission to call DocumentApp.openById. Required permissions: https://www.googleapis.com/auth/documents
+    this.ctx.log.debug(
+      `GDriveAdapter.extractAttachmentText(): documentApp.openById(): {id:${document.getId()},name:${document.getName()},language:${document.getLanguage()},...}`,
+    )
+    const body = document.getBody()
+    this.ctx.log.debug(
+      `GDriveAdapter.extractAttachmentText(): body.getBody(): {type:${body.getType()},attributes:${JSON.stringify(body.getAttributes())},...}`,
+    )
+    const textContent = body.getText()
+    this.ctx.log.debug(
+      `GDriveAdapter.extractAttachmentText(): body.getText(): ${textContent}`,
+    )
 
     // Delete the temporary Google Document since it is no longer needed
     if (!args.docsFileLocation) {
+      this.ctx.log.debug(
+        `GDriveAdapter.extractAttachmentText(): Removing temporary docs file with ID ${id} from location ${docsFileLocation} ...`,
+      )
       this.ctx.env.gdriveApp.getFileById(id).setTrashed(true)
+    } else {
+      this.ctx.log.debug(
+        `GDriveAdapter.extractAttachmentText(): Keeping docs file with ID ${id} at location ${docsFileLocation}`,
+      )
     }
 
     return {

@@ -118,7 +118,7 @@ export class ActionRegistry {
         ok: false,
         error: e,
       }
-      context.log.error(`Action ${name} caused an error: ${JSON.stringify(e)}`)
+      context.log.error(`Action ${name} caused an error: ${e}`)
     }
     context.log.info(`Action result: ${JSON.stringify(result)}`)
     return result

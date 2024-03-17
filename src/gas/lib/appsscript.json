@@ -3,6 +3,7 @@
   "runtimeVersion": "V8",
   "oauthScopes": [
     "https://mail.google.com/",
+    "https://www.googleapis.com/auth/documents",
     "https://www.googleapis.com/auth/drive",
     "https://www.googleapis.com/auth/script.external_request",
     "https://www.googleapis.com/auth/script.send_mail",
