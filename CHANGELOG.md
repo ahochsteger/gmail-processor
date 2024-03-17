@@ -1,5 +1,18 @@
 # Changelog
 
+# [2.8.0](https://github.com/ahochsteger/gmail-processor/compare/2.7.0...2.8.0) (2024-03-17)
+
+
+### Bug Fixes
+
+* add missing documents permission + improved logging ([a34bcdb](https://github.com/ahochsteger/gmail-processor/commit/a34bcdba38ee26485dbcb23a0917de724deb2e47))
+* broken run method when deployed to GAS ([459a201](https://github.com/ahochsteger/gmail-processor/commit/459a2016efe58d113ac94205c39970e403c36bfa))
+
+
+### Features
+
+* add action attachment.extractText ([209023b](https://github.com/ahochsteger/gmail-processor/commit/209023bd600b3988085883748294992963298b2c))
+
 # [2.7.0](https://github.com/ahochsteger/gmail-processor/compare/2.6.1...2.7.0) (2024-02-18)
 
 
