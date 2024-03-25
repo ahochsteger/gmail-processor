@@ -108,14 +108,38 @@ function showLastGASVersion() {
 }
 
 function buildExamples() {
+  # TODO: This conflicts with code from update-examples.sh
   rm -rf "${CLASP_DIR}"
   mkdir -p "${CLASP_DIR}"
 
+  # JavaScript files:
   for f in "${CLASP_SRC_DIR}"/*.js; do
     sed -z -r 's#(import [^\n]+\n\n?)*##g' \
       <"${f}" \
     | sed -r 's#^export (const|function) #\1 #g' \
       >"${CLASP_DIR}/${f##*/}"
+  done
+  # TypeScript files:
+  for f in "${CLASP_SRC_DIR}"/test*.ts; do
+    bn=$(basename "${f}" .ts)
+    {
+      sed -r 's#^export (const|function) #\1 #g' \
+        <"${f}" \
+      | awk -v bn="${bn}" '
+        BEGIN {inFn=false}
+        /^const/ && inFn!=1 { {inFn=1; print "function "bn"() {"}}
+        {if(inFn==1) {printf "  "}; print $0}
+      '
+      echo "
+  return GmailProcessorLib.E2E.runTests(
+    testConfig,
+    false,
+    GmailProcessorLib.RunMode.DANGEROUS,
+  )
+}"
+    } \
+    | sed -re "s/__E2E_TEST_FILE_BASENAME__/${bn}/g" \
+    >"${CLASP_DIR}/${f##*/}"
   done
 
   # Create data file

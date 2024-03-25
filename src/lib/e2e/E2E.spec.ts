@@ -1,5 +1,5 @@
 import { mock } from "jest-mock-extended"
-import { MockFactory } from "../../test/mocks/MockFactory"
+import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
 import {
   EnvContext,
   ProcessingResult,
@@ -11,17 +11,22 @@ import { MarkProcessedMethod } from "../config/SettingsConfig"
 import {
   E2E,
   E2EAssertion,
+  E2EGlobalConfig,
+  E2EInfo,
   E2EInitConfig,
   E2EResult,
   E2EStatus,
   E2ETest,
   E2ETestConfig,
+  newE2EGlobalConfig,
 } from "./E2E"
 
 let ctx: EnvContext
+let mocks: Mocks
 
 beforeAll(() => {
-  ctx = MockFactory.newMocks().envContext
+  mocks = MockFactory.newMocks()
+  ctx = mocks.envContext
 })
 
 describe("assert", () => {
@@ -268,31 +273,43 @@ describe("runTests", () => {
       ],
     },
   ]
-  const mockTestConfig: E2ETestConfig = {
-    globals: {},
-    initConfig: {
-      mails: [{}],
-      name: "test",
-    } as E2EInitConfig,
-    runConfig: {
-      settings: {
-        markProcessedMethod: MarkProcessedMethod.MARK_MESSAGE_READ,
-      },
-      threads: [
-        {
-          match: {
-            query: "some-query",
-          },
-          actions: [
-            {
-              name: "global.noop",
-            },
-          ],
+  const info: E2EInfo = {
+    name: "test",
+    title: "Test",
+    description: "Test description",
+  }
+  const initConfig: E2EInitConfig = {
+    mails: [{}],
+  }
+  const runConfig: Config = {
+    settings: {
+      markProcessedMethod: MarkProcessedMethod.MARK_MESSAGE_READ,
+    },
+    threads: [
+      {
+        match: {
+          query: "some-query",
         },
-      ],
-    } as Config,
-    tests: mockTests,
-  } as E2ETestConfig
+        actions: [
+          {
+            name: "global.noop",
+          },
+        ],
+      },
+    ],
+  }
+  let globals: E2EGlobalConfig
+  let mockTestConfig: E2ETestConfig
+  beforeAll(() => {
+    globals = newE2EGlobalConfig(ctx)
+    mockTestConfig = {
+      info,
+      globals,
+      initConfig,
+      runConfig,
+      tests: mockTests,
+    } as E2ETestConfig
+  })
 
   beforeEach(() => {
     jest.clearAllMocks()
@@ -311,13 +328,13 @@ describe("runTests", () => {
   })
 
   it("should send test emails and run tests", () => {
-    mockTestConfig.initConfig.mails = [{ subject: "Test mail" }]
+    initConfig.mails = [{ subject: "Test mail" }]
 
     const result = E2E.runTests(mockTestConfig, false, RunMode.DANGEROUS, ctx)
 
     expect(ctx.env.mailApp.sendEmail).toHaveBeenCalledWith({
-      to: mockTestConfig.globals.to,
-      subject: `${mockTestConfig.globals.subjectPrefix}Test mail`,
+      to: globals.to,
+      subject: `${globals.subjectPrefix}Test mail`,
       htmlBody: undefined,
       attachments: undefined,
     })

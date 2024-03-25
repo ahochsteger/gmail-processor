@@ -12,7 +12,7 @@ const pr301InitConfig = {
   folders: [
     {
       name: "e2e",
-      location: `${E2E_DRIVE_TESTS_BASE_PATH}/pr-301`,
+      location: `${GmailProcessorLib.E2E_DEFAULT_DRIVE_TESTS_BASE_PATH}/pr-301`,
     },
   ],
   files: [
@@ -91,7 +91,7 @@ const pr301Config = {
               name: "attachment.store",
               args: {
                 conflictStrategy: GmailProcessorLib.ConflictStrategy.REPLACE,
-                location: `${E2E_DRIVE_TESTS_BASE_PATH}/\${attachment.name}`,
+                location: `${GmailProcessorLib.E2E_DEFAULT_DRIVE_TESTS_BASE_PATH}/\${attachment.name}`,
               },
             },
             {
@@ -99,7 +99,7 @@ const pr301Config = {
               name: "attachment.store",
               args: {
                 conflictStrategy: GmailProcessorLib.ConflictStrategy.REPLACE,
-                location: `${E2E_DRIVE_TESTS_BASE_PATH}/\${attachment.name.match.basename}`,
+                location: `${GmailProcessorLib.E2E_DEFAULT_DRIVE_TESTS_BASE_PATH}/\${attachment.name.match.basename}`,
                 toMimeType: "application/vnd.google-apps.document",
               },
             },
@@ -116,7 +116,7 @@ const pr301Config = {
               name: "attachment.store",
               args: {
                 conflictStrategy: GmailProcessorLib.ConflictStrategy.REPLACE,
-                location: `${E2E_DRIVE_TESTS_BASE_PATH}/\${attachment.name}`,
+                location: `${GmailProcessorLib.E2E_DEFAULT_DRIVE_TESTS_BASE_PATH}/\${attachment.name}`,
               },
             },
             {
@@ -125,7 +125,7 @@ const pr301Config = {
               name: "attachment.store",
               args: {
                 conflictStrategy: GmailProcessorLib.ConflictStrategy.REPLACE,
-                location: `${E2E_DRIVE_TESTS_BASE_PATH}/\${attachment.name.match.basename}`,
+                location: `${GmailProcessorLib.E2E_DEFAULT_DRIVE_TESTS_BASE_PATH}/\${attachment.name.match.basename}`,
                 toMimeType: "application/vnd.google-apps.presentation",
               },
             },
@@ -142,7 +142,7 @@ const pr301Config = {
               name: "attachment.store",
               args: {
                 conflictStrategy: GmailProcessorLib.ConflictStrategy.REPLACE,
-                location: `${E2E_DRIVE_TESTS_BASE_PATH}/\${attachment.name}`,
+                location: `${GmailProcessorLib.E2E_DEFAULT_DRIVE_TESTS_BASE_PATH}/\${attachment.name}`,
               },
             },
             {
@@ -151,7 +151,7 @@ const pr301Config = {
               name: "attachment.store",
               args: {
                 conflictStrategy: GmailProcessorLib.ConflictStrategy.REPLACE,
-                location: `${E2E_DRIVE_TESTS_BASE_PATH}/\${attachment.name.match.basename}`,
+                location: `${GmailProcessorLib.E2E_DEFAULT_DRIVE_TESTS_BASE_PATH}/\${attachment.name.match.basename}`,
                 toMimeType: "application/vnd.google-apps.spreadsheet",
               },
             },

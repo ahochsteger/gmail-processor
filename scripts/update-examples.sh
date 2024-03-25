@@ -7,20 +7,31 @@ dest_basedir="build/gas/examples"
 docs_basedir="docs/docs/examples"
 
 function generateExamplesGas() {
+  # TODO: This conflicts with code from buildExamples in clasp.sh
   local src_dir="${1}"
   local dest_dir="${2}"
   rm -rf "${dest_dir}"
   mkdir -p "${dest_dir}"
+  # JavaScript files:
   for f in "${src_dir}"/*.js; do
     sed -z -r 's#(import [^\n]+\n\n?)*##g' \
       <"${f}" \
     | sed -r 's#^export (const|function) #\1 #g' \
       >"${dest_dir}/${f##*/}"
   done
+  # TypeScript files:
+  for f in "${src_dir}"/test*.ts; do
+    bn=$(basename ${f} .ts)
+    {
+      echo "function ${bn}() {"
+      sed -re 's/^/  /g' <"${f}"
+      echo "}"
+    } >"${dest_dir}/${f##*/}"
+  done
 
   # Format example files:
   npx prettier -w \
-    "${dest_dir}"/*.js
+    "${dest_dir}"/*.{js,ts}
 }
 
 function generateExampleDocs() {

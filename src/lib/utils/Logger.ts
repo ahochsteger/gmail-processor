@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   AttachmentContext,
   EnvContext,
@@ -96,5 +97,35 @@ export class Logger {
       },
     }
     this.debug(`AttachmentContext: ${JSON.stringify(logObj, null, 2)}`, level)
+  }
+  toValues<T = unknown>(arg: T, fields: string[] = []): unknown {
+    let val: unknown
+    if (typeof arg === "function") {
+      arg = arg()
+    }
+    if (Array.isArray(arg)) {
+      val = arg.map((e) => this.toValues(e, fields))
+    } else if (typeof arg === "object") {
+      val = {}
+      Object.keys(arg as object).forEach((key) => {
+        const directFields: string[] = []
+        const nestedFields: string[] = []
+        fields
+          .filter((f) => f.length > 0)
+          .map((f) => {
+            const fieldParts = f.split(".")
+            directFields.push(fieldParts[0])
+            if (fieldParts.length > 1) {
+              nestedFields.push(fieldParts.splice(1).join("."))
+            }
+          })
+        if (directFields.includes(key)) {
+          ;(val as any)[key] = this.toValues((arg as any)[key], nestedFields)
+        }
+      })
+    } else {
+      val = arg
+    }
+    return val
   }
 }

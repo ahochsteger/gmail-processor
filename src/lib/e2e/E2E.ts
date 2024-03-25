@@ -22,6 +22,7 @@ type FileConfig = {
 }
 
 export type E2EGlobalConfig = {
+  driveBasePath: string
   repoBaseUrl: string
   repoBranch: string
   repoBasePath: string
@@ -31,13 +32,16 @@ export type E2EGlobalConfig = {
 }
 
 export class E2EConfig {
+  // TODO: Eliminate E2EConfig, merge with type E2ETestConfig.
   public globals: E2EGlobalConfig = {
-    repoBaseUrl: "",
-    repoBranch: "main",
-    repoBasePath: "",
-    subjectPrefix: "",
-    to: "",
-    sleepTimeMs: 1,
+    // TODO: Use newE2EGlobalConfig here - solve context dependency!
+    driveBasePath: E2E_DEFAULT_DRIVE_TESTS_BASE_PATH,
+    repoBaseUrl: E2E_DEFAULT_GIT_REPO_BASE_URL,
+    repoBranch: E2E_DEFAULT_GIT_REPO_BRANCH,
+    repoBasePath: E2E_DEFAULT_GIT_REPO_TEST_FILES_PATH,
+    subjectPrefix: E2E_DEFAULT_EMAIL_SUBJECT_PREFIX,
+    to: "", // TODO: Find a better default
+    sleepTimeMs: E2E_DEFAULT_EMAIL_SLEEP_TIME_MS,
   }
   public folders: {
     name: string
@@ -45,7 +49,6 @@ export class E2EConfig {
   }[] = []
   public files: FileConfig[] = []
   public mails: {
-    name: string
     subject: string
     htmlBody: string
     files: string[]
@@ -53,7 +56,6 @@ export class E2EConfig {
 }
 
 export type E2EInitConfig = {
-  name: string
   branch?: string
   mails: [
     {
@@ -83,10 +85,19 @@ export type E2ETest = {
 }
 
 export type E2ETestConfig = {
-  globals: E2EGlobalConfig
-  initConfig: E2EInitConfig
+  info: E2EInfo
+  globals?: E2EGlobalConfig
+  initConfig?: E2EInitConfig
   runConfig: Config
-  tests: E2ETest[]
+  tests?: E2ETest[]
+}
+
+export type E2EInfo = {
+  name: string
+  title: string
+  description: string
+  issues?: string[]
+  tags?: string[]
 }
 
 /**
@@ -110,6 +121,29 @@ export type E2EResult = {
   results?: E2EResult[]
 }
 
+export const E2E_DEFAULT_DRIVE_TESTS_BASE_PATH = "/GmailProcessor-Tests/e2e"
+export const E2E_DEFAULT_EMAIL_SLEEP_TIME_MS = 5000 // NOTE: In tests 2000 is too less, 3000 worked, but might not reliable enough.
+export const E2E_DEFAULT_EMAIL_SUBJECT_PREFIX = "[GmailProcessor-Test] "
+export const E2E_DEFAULT_GIT_REPO_BASE_URL =
+  "https://raw.githubusercontent.com/ahochsteger/gmail-processor"
+export const E2E_DEFAULT_GIT_REPO_BRANCH = "main"
+export const E2E_DEFAULT_GIT_REPO_TEST_FILES_PATH = "src/e2e-test/files"
+
+export function newE2EGlobalConfig(
+  ctx: EnvContext,
+  testGlobals?: E2EGlobalConfig,
+): E2EGlobalConfig {
+  return {
+    driveBasePath: E2E_DEFAULT_DRIVE_TESTS_BASE_PATH,
+    repoBasePath: E2E_DEFAULT_GIT_REPO_TEST_FILES_PATH,
+    repoBaseUrl: E2E_DEFAULT_GIT_REPO_BASE_URL,
+    repoBranch: E2E_DEFAULT_GIT_REPO_BRANCH,
+    sleepTimeMs: E2E_DEFAULT_EMAIL_SLEEP_TIME_MS,
+    subjectPrefix: E2E_DEFAULT_EMAIL_SUBJECT_PREFIX,
+    to: ctx.env.session.getActiveUser().getEmail(),
+    ...testGlobals,
+  }
+}
 export class E2E {
   public static assert(
     testConfig: E2ETestConfig,
@@ -147,7 +181,7 @@ export class E2E {
         ctx.log.error(`👎 Failed: ${assertion.message}`)
         break
       case E2EStatus.SKIPPED:
-        ctx.log.warn(`⏩ Skipped: ${assertion.message}`)
+        ctx.log.info(`⏩ Skipped: ${assertion.message}`)
         break
       case E2EStatus.SUCCESS:
         ctx.log.info(`✅ Success: ${assertion.message}`)
@@ -204,7 +238,7 @@ export class E2E {
         )
         return this.getBlobFromFileEntry(ctx, config, file)
       }) as GoogleAppsScript.Base.Blob[]
-      ctx.log.info(`Sending email '${mail.name}' ...`)
+      ctx.log.info(`Sending email '${mail.subject}' ...`)
       ctx.env.mailApp.sendEmail({
         to: config.globals.to,
         subject: `${config.globals.subjectPrefix}${mail.subject}`,
@@ -312,22 +346,22 @@ export class E2E {
     // Send test mails
     if (!skipInit) {
       ctx.log.info(`E2E.runTests(): Initializing test data ...`)
-      testConfig.initConfig.mails.forEach((mail) => {
+      const globals = newE2EGlobalConfig(ctx, testConfig.globals)
+      testConfig.initConfig?.mails.forEach((mail) => {
         ctx.env.mailApp.sendEmail({
-          to: testConfig.globals.to,
-          subject: `${testConfig.globals.subjectPrefix}${mail.subject ?? testConfig.initConfig.name}`,
+          to: globals.to,
+          subject: `${globals.subjectPrefix}${mail.subject ?? testConfig.info.name}`,
           htmlBody: mail.body,
           attachments: mail.attachments?.map((path) =>
-            this.getBlobSourceFromFilePath(ctx, testConfig.globals, path),
+            this.getBlobSourceFromFilePath(ctx, globals, path),
           ),
         })
       })
       // Wait for emails to become available
-      const sleepTimeMs = testConfig.globals.sleepTimeMs ?? 5000 // NOTE: In tests 2000 is too less, 3000 worked, but might not reliable enough.
       ctx.log.debug(
-        `E2E.runTests(): Waiting ${sleepTimeMs}ms for emails to be sent ...`,
+        `E2E.runTests(): Waiting ${globals.sleepTimeMs}ms for emails to be sent ...`,
       )
-      ctx.env.utilities.sleep(sleepTimeMs)
+      ctx.env.utilities.sleep(globals.sleepTimeMs)
       ctx.log.debug(`E2E.runTests(): Finished waiting.`)
     } else {
       ctx.log.info(`E2E.runTests(): SKIPPED: Initializing test data ...`)
@@ -353,7 +387,7 @@ export class E2E {
         error = processingResult.error
       } else {
         ctx.log.info(`E2E.runTests(): Testing assertions ...`)
-        testConfig.tests.forEach((test) => {
+        testConfig.tests?.forEach((test) => {
           const testResult = this.runTest(
             test,
             testConfig,
