@@ -76,6 +76,15 @@ export const tests: E2ETest[] = [
         assertFn: (_testConfig, procResult) =>
           procResult.status === GmailProcessorLib.ProcessingStatus.OK,
       },
+      {
+        message: "At least one thread should have been processed",
+        assertFn: (_testConfig, procResult) => procResult.processedThreads >= 1,
+      },
+      {
+        message: "Expected number of actions should have been executed",
+        assertFn: (_testConfig, procResult) =>
+          procResult.executedActions.length === procResult.processedThreads * 4,
+      },
     ],
   },
 ]
