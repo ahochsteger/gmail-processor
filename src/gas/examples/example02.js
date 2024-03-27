@@ -51,7 +51,7 @@ export const example02Config = {
       },
       actions: [
         {
-          name: "thread.storePDF",
+          name: "attachment.store",
           args: {
             location: "GmailProcessor-Tests/${thread.firstMessageSubject}.pdf",
             conflictStrategy: "keep",
