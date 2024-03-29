@@ -3,7 +3,7 @@ exports.id = 839;
 exports.ids = [839];
 exports.modules = {
 
-/***/ 44839:
+/***/ 4839:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -29,7 +29,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   toRange: () => (/* binding */ toRange),
 /* harmony export */   toTextEdit: () => (/* binding */ toTextEdit)
 /* harmony export */ });
-/* harmony import */ var _editor_editor_api_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(18047);
+/* harmony import */ var _editor_editor_api_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(8047);
 /*!-----------------------------------------------------------------------------
  * Copyright (c) Microsoft Corporation. All rights reserved.
  * Version: 0.44.0(3e047efd345ff102c8c61b5398fb30845aaac166)
