@@ -2,8 +2,15 @@ import { useContext, createContext } from "react"
 
 // Type I need for useRef
 import type { MonacoEditorTypes } from "@theme/MonacoEditor"
+import { Example } from "../../../src/examples/Example"
 
 export type State = {
+  // The selected example
+  example?: Example
+  // Name of the selected example
+  exampleName?: string
+  // Indicates, if the example content has been chaged
+  exampleDirty: boolean
   // The full schema
   // We might need to scope it with a JSON Pointer
   fullSchema: unknown
@@ -33,6 +40,7 @@ export type Playground = {
 
 export const PlaygroundContext = createContext<Playground>({
   state: {
+    exampleName: null,
     fullSchema: {},
     userSchema: {},
     jsonPointer: "",
@@ -41,6 +49,7 @@ export const PlaygroundContext = createContext<Playground>({
     editorRef: undefined,
     schemaErrors: [],
     dataErrors: [],
+    exampleDirty: false,
   },
   updateState: () => {},
 })

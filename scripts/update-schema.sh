@@ -32,5 +32,5 @@ function genSchema() {
   #   >"docs/config-schema-${schemaName}.md"
 }
 
-genSchema V1Config v1 "Config (v1)"
-genSchema Config v2 "Config (v2)"
+genSchema V1Config v1 "GMail2GDrive Config (v1)"
+genSchema Config v2 "Gmail Processor Config (v2)"

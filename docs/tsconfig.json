@@ -1,14 +1,18 @@
 {
-  "extends": "@tsconfig/docusaurus/tsconfig.json",
+  "extends": "@docusaurus/tsconfig",
   "compilerOptions": {
     "jsx": "react",
     "baseUrl": ".",
     "emitDecoratorMetadata": true,
+    "esModuleInterop": true,
     "experimentalDecorators": true,
+    "paths": {
+      "@lib/*": ["../src/lib/*" ],
+      "@site/*": ["./*" ],
+    },
     "resolveJsonModule": true,
     // Extending "@tsconfig/docusaurus/tsconfig.json".types with "docusaurus-json-schema-plugin"
     "types": [
-      "raw-loader.d.ts",
       "node",
       "@docusaurus/module-type-aliases",
       "@docusaurus/theme-classic",

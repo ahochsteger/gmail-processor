@@ -277,6 +277,8 @@ describe("runTests", () => {
     name: "test",
     title: "Test",
     description: "Test description",
+    category: "basics",
+    schemaVersion: "v2",
   }
   const initConfig: E2EInitConfig = {
     mails: [{}],
@@ -319,7 +321,13 @@ describe("runTests", () => {
 
   it("should return aggregated results from individual tests", () => {
     // NOTE: For some unknown reason this test fails if moved to the last it() within describe()
-    const result = E2E.runTests(mockTestConfig, true, RunMode.DANGEROUS, ctx)
+    const result = E2E.runTests(
+      mockTestConfig,
+      true,
+      "main",
+      RunMode.DANGEROUS,
+      ctx,
+    )
 
     const results = result.results ?? []
     expect(results.length).toEqual(2)
@@ -330,7 +338,13 @@ describe("runTests", () => {
   it("should send test emails and run tests", () => {
     initConfig.mails = [{ subject: "Test mail" }]
 
-    const result = E2E.runTests(mockTestConfig, false, RunMode.DANGEROUS, ctx)
+    const result = E2E.runTests(
+      mockTestConfig,
+      false,
+      "main",
+      RunMode.DANGEROUS,
+      ctx,
+    )
 
     expect(ctx.env.mailApp.sendEmail).toHaveBeenCalledWith({
       to: globals.to,
@@ -343,12 +357,13 @@ describe("runTests", () => {
   })
 
   it("should skip sending emails if skipInit is true", () => {
-    E2E.runTests(mockTestConfig, true, RunMode.DANGEROUS, ctx)
+    E2E.runTests(mockTestConfig, true, undefined, RunMode.DANGEROUS, ctx)
 
     expect(ctx.env.mailApp.sendEmail).not.toHaveBeenCalled()
   })
 
   it("should handle errors during test execution", () => {
+    mockTestConfig.runConfig = mockTestConfig.runConfig ?? {}
     mockTestConfig.runConfig.threads = [
       {
         actions: [
@@ -362,7 +377,13 @@ describe("runTests", () => {
       },
     ]
 
-    const result = E2E.runTests(mockTestConfig, true, RunMode.DANGEROUS, ctx)
+    const result = E2E.runTests(
+      mockTestConfig,
+      true,
+      "main",
+      RunMode.DANGEROUS,
+      ctx,
+    )
 
     expect(result.status).toBe(E2EStatus.ERROR)
     expect((result.error as Error)?.message).toContain("A forced exeption")

@@ -23,8 +23,8 @@ Follow these steps:
 4. Press "Look up" and select the desired release number as **version** (recommended for stability) or "HEAD (Development Mode)" (recommended for automatically staying up-to-date with the potential risk of broken updates).
    - See the [Gmail Processor Release Notes](https://github.com/ahochsteger/gmail-processor/releases) for their corresponding Google Apps Script library version.
    - Or use this URL to verify the release version of a Google Apps Script Library: [https://script.google.com/macros/library/d/1Qvk0v7ggfW-TJ84dlYPlDzJG8y-Dif-j9kdA1aWv4wzxE_IOkeV2juLB/\{libVersion\}](https://script.google.com/macros/library/d/1Qvk0v7ggfW-TJ84dlYPlDzJG8y-Dif-j9kdA1aWv4wzxE_IOkeV2juLB/\{libVersion\}) (replace `{libVersion}` with the number from the drop-down in Google Apps Script).
-5. Set the **identifier** to `GmailProcessorLib` (any name will do, but we will use this identifier as a reference in all [examples](examples/index.md) and documentation)
-6. Replace the contents of the initially created file `Code.gs` with the following code, take the config from the [Getting Started Example](examples/gettingStarted.mdx) and save the changes:
+5. Set the **identifier** to `GmailProcessorLib` (any name will do, but we will use this identifier as a reference in all [examples](examples/index.mdx) and documentation)
+6. Replace the contents of the initially created file `Code.gs` with the following code, take the config from the [Simple Example](examples/basics/simple.mdx) and save the changes:
   ```javascript
   var config = {
     settings: {

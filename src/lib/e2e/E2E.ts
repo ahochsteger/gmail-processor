@@ -1,8 +1,10 @@
+import { ExampleInfo } from "../../examples/Example"
 import {
   EnvContext,
   ProcessingResult,
   ProcessingStatus,
   RunMode,
+  newProcessingResult,
 } from "../Context"
 import { EnvProvider } from "../EnvProvider"
 import {
@@ -11,7 +13,10 @@ import {
   FileContent,
 } from "../adapter/GDriveAdapter"
 import { Config } from "../config/Config"
+import { V1Config } from "../config/v1/V1Config"
+import { V1ToV2Converter } from "../config/v1/V1ToV2Converter"
 import { GmailProcessor } from "../processors/GmailProcessor"
+import { E2EDefaults } from "./E2EDefaults"
 
 type FileConfig = {
   name: string
@@ -35,13 +40,13 @@ export class E2EConfig {
   // TODO: Eliminate E2EConfig, merge with type E2ETestConfig.
   public globals: E2EGlobalConfig = {
     // TODO: Use newE2EGlobalConfig here - solve context dependency!
-    driveBasePath: E2E_DEFAULT_DRIVE_TESTS_BASE_PATH,
-    repoBaseUrl: E2E_DEFAULT_GIT_REPO_BASE_URL,
-    repoBranch: E2E_DEFAULT_GIT_REPO_BRANCH,
-    repoBasePath: E2E_DEFAULT_GIT_REPO_TEST_FILES_PATH,
-    subjectPrefix: E2E_DEFAULT_EMAIL_SUBJECT_PREFIX,
+    driveBasePath: E2EDefaults.DRIVE_TESTS_BASE_PATH,
+    repoBaseUrl: E2EDefaults.GIT_REPO_BASE_URL,
+    repoBranch: E2EDefaults.GIT_REPO_BRANCH,
+    repoBasePath: E2EDefaults.GIT_REPO_TEST_FILES_PATH,
+    subjectPrefix: E2EDefaults.EMAIL_SUBJECT_PREFIX,
     to: "", // TODO: Find a better default
-    sleepTimeMs: E2E_DEFAULT_EMAIL_SLEEP_TIME_MS,
+    sleepTimeMs: E2EDefaults.EMAIL_SLEEP_TIME_MS,
   }
   public folders: {
     name: string
@@ -55,15 +60,14 @@ export class E2EConfig {
   }[] = []
 }
 
+export type E2EMail = {
+  subject?: string
+  body?: string
+  attachments?: string[]
+}
 export type E2EInitConfig = {
   branch?: string
-  mails: [
-    {
-      subject?: string
-      body?: string
-      attachments?: string[]
-    },
-  ]
+  mails: E2EMail[]
 }
 
 export type E2EAssertFn = (
@@ -88,17 +92,12 @@ export type E2ETestConfig = {
   info: E2EInfo
   globals?: E2EGlobalConfig
   initConfig?: E2EInitConfig
-  runConfig: Config
+  migrationConfig?: V1Config
+  runConfig?: Config
   tests?: E2ETest[]
 }
 
-export type E2EInfo = {
-  name: string
-  title: string
-  description: string
-  issues?: string[]
-  tags?: string[]
-}
+export type E2EInfo = ExampleInfo
 
 /**
  * Status of end-to-end tests
@@ -121,25 +120,18 @@ export type E2EResult = {
   results?: E2EResult[]
 }
 
-export const E2E_DEFAULT_DRIVE_TESTS_BASE_PATH = "/GmailProcessor-Tests/e2e"
-export const E2E_DEFAULT_EMAIL_SLEEP_TIME_MS = 5000 // NOTE: In tests 2000 is too less, 3000 worked, but might not reliable enough.
-export const E2E_DEFAULT_EMAIL_SUBJECT_PREFIX = "[GmailProcessor-Test] "
-export const E2E_DEFAULT_GIT_REPO_BASE_URL =
-  "https://raw.githubusercontent.com/ahochsteger/gmail-processor"
-export const E2E_DEFAULT_GIT_REPO_BRANCH = "main"
-export const E2E_DEFAULT_GIT_REPO_TEST_FILES_PATH = "src/e2e-test/files"
-
 export function newE2EGlobalConfig(
   ctx: EnvContext,
   testGlobals?: E2EGlobalConfig,
+  branch?: string,
 ): E2EGlobalConfig {
   return {
-    driveBasePath: E2E_DEFAULT_DRIVE_TESTS_BASE_PATH,
-    repoBasePath: E2E_DEFAULT_GIT_REPO_TEST_FILES_PATH,
-    repoBaseUrl: E2E_DEFAULT_GIT_REPO_BASE_URL,
-    repoBranch: E2E_DEFAULT_GIT_REPO_BRANCH,
-    sleepTimeMs: E2E_DEFAULT_EMAIL_SLEEP_TIME_MS,
-    subjectPrefix: E2E_DEFAULT_EMAIL_SUBJECT_PREFIX,
+    driveBasePath: E2EDefaults.DRIVE_TESTS_BASE_PATH,
+    repoBasePath: E2EDefaults.GIT_REPO_TEST_FILES_PATH,
+    repoBaseUrl: E2EDefaults.GIT_REPO_BASE_URL,
+    repoBranch: branch ?? E2EDefaults.GIT_REPO_BRANCH,
+    sleepTimeMs: E2EDefaults.EMAIL_SLEEP_TIME_MS,
+    subjectPrefix: E2EDefaults.EMAIL_SUBJECT_PREFIX,
     to: ctx.env.session.getActiveUser().getEmail(),
     ...testGlobals,
   }
@@ -340,13 +332,14 @@ export class E2E {
   public static runTests(
     testConfig: E2ETestConfig,
     skipInit = false,
+    branch = "main",
     runMode = RunMode.DANGEROUS,
     ctx: EnvContext = EnvProvider.defaultContext(runMode),
   ): E2EResult {
     // Send test mails
     if (!skipInit) {
       ctx.log.info(`E2E.runTests(): Initializing test data ...`)
-      const globals = newE2EGlobalConfig(ctx, testConfig.globals)
+      const globals = newE2EGlobalConfig(ctx, testConfig.globals, branch)
       testConfig.initConfig?.mails.forEach((mail) => {
         ctx.env.mailApp.sendEmail({
           to: globals.to,
@@ -377,11 +370,25 @@ export class E2E {
       success: 0,
     }
     try {
-      ctx.log.info(`E2E.runTests(): Executing GmailProcessor ...`)
-      const processingResult = GmailProcessor.runWithJson(
-        testConfig.runConfig,
-        ctx,
-      )
+      let processingResult: ProcessingResult
+      if (testConfig.migrationConfig) {
+        ctx.log.info(`E2E.runTests(): Executing GmailProcessor ...`)
+        const convertedConfig = GmailProcessor.getEssentialConfig(
+          V1ToV2Converter.v1ConfigToV2ConfigJson(testConfig.migrationConfig),
+        )
+        processingResult = newProcessingResult()
+        if (!convertedConfig) {
+          processingResult.status = ProcessingStatus.ERROR
+          processingResult.error = new Error(
+            "Converted v1 config with no result!",
+          )
+        }
+      } else if (testConfig.runConfig) {
+        ctx.log.info(`E2E.runTests(): Executing GmailProcessor.runWithJson ...`)
+        processingResult = GmailProcessor.runWithJson(testConfig.runConfig, ctx)
+      } else {
+        throw new Error("No processing configuration given!")
+      }
       if (processingResult.status === ProcessingStatus.ERROR) {
         statusMap[E2EStatus.ERROR]++
         error = processingResult.error
