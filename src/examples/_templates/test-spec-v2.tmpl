@@ -1,0 +1,27 @@
+// NOTE: Do not edit this auto-generated file!
+// Template: ${__E2E_TEMPLATE_FILE_PATH__}
+// Source: ${__E2E_TEST_FILE_PATH__}
+
+import { ProcessingStatus } from "../${__E2E_TEST_FILE_DIR_UP__}/lib"
+import { GmailProcessor } from "../${__E2E_TEST_FILE_DIR_UP__}/lib/processors/GmailProcessor"
+import { MockFactory, Mocks } from "../${__E2E_TEST_FILE_DIR_UP__}/test/mocks/MockFactory"
+import { validateConfig } from "./../${__E2E_TEST_FILE_DIR_UP__}/lib/config/Validate"
+import { info, runConfig } from "./${__E2E_TEST_FILE_BASENAME__}"
+
+let mocks: Mocks
+
+beforeAll(() => {
+  mocks = MockFactory.newMocks()
+})
+
+describe(`Example ${info.name}`, () => {
+  it(`should successfully run example ${info.name}`, () => {
+    const result = GmailProcessor.runWithJson(runConfig, mocks.envContext)
+    expect(result.status).toEqual(ProcessingStatus.OK)
+    expect(result.processedThreadConfigs).toEqual(runConfig.threads?.length)
+  })
+  it(`should successfully validate example ${info.name}`, () => {
+    validateConfig(runConfig)
+    expect(validateConfig.errors).toBeNull()
+  })
+})

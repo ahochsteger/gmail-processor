@@ -8,7 +8,7 @@ dist-examples/
 node_modules/
 .env
 *.env
-*.bak
+*.bak*
 !.vscode/settings.json
 debug.json
 docs/docs/community/CHANGELOG.md

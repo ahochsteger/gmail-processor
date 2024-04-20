@@ -1,7 +1,0 @@
-{
-  "description": "This is a minimal configuration example, just with the required information. It just processes files without doing anything, but they will still be marked as processed! It can be used if you want to start your config from scratch.",
-  "settings": {
-    "markProcessedMethod": "mark-read"
-  },
-  "threads": [{}]
-}

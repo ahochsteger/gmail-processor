@@ -171,18 +171,19 @@ export class ProcessingError extends Error {
   }
 }
 
-export type ProcessingResult = {
+export class ProcessingResult {
   error?: Error
   failedAction?: ActionConfig
-  executedActions: ActionConfig[]
-  processedAttachmentConfigs: number
-  processedAttachments: number
-  processedMessageConfigs: number
-  processedMessages: number
-  processedThreadConfigs: number
-  processedThreads: number
-  status: ProcessingStatus
+  executedActions: ActionConfig[] = []
+  processedAttachmentConfigs: number = 0
+  processedAttachments: number = 0
+  processedMessageConfigs: number = 0
+  processedMessages: number = 0
+  processedThreadConfigs: number = 0
+  processedThreads: number = 0
+  status: ProcessingStatus = ProcessingStatus.OK
 }
+
 export function newProcessingResult(): ProcessingResult {
   return {
     executedActions: [],

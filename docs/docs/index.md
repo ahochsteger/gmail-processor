@@ -41,5 +41,5 @@ The following pages provide all required information to successfully use Gmail P
 
 * The **[Getting Started Guide](getting-started.md)** shows how to setup Gmail Processor in Google Apps Script and quickly get it up and running.
 * The **[Config Reference](reference/index.md)** provides detailed information about the Gmail Processor configuration.
-* The **[Examples](examples/index.md)** show different ways of using Gmail Processor.
+* The **[Examples](examples/index.mdx)** show different ways of using Gmail Processor.
 * The **[Playground](/playground)** helps to create the configuration in a schema-aware online editor with a visual schema guide on the side.
