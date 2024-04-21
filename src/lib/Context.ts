@@ -185,16 +185,7 @@ export class ProcessingResult {
 }
 
 export function newProcessingResult(): ProcessingResult {
-  return {
-    executedActions: [],
-    processedAttachmentConfigs: 0,
-    processedAttachments: 0,
-    processedMessageConfigs: 0,
-    processedMessages: 0,
-    processedThreadConfigs: 0,
-    processedThreads: 0,
-    status: ProcessingStatus.OK,
-  }
+  return new ProcessingResult()
 }
 
 export type Context =
