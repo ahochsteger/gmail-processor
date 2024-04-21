@@ -32,7 +32,7 @@ export const runConfig: Config = {
     thread: {
       match: {
         query:
-          "has:attachment -in:trash -in:drafts -in:spam from:${user.email} to:${user.email} after:${date.now:date:-5m:yyyy-MM-dd}",
+          "has:attachment -in:trash -in:drafts -in:spam from:${user.email} to:${user.email} after:${date.now:date::yyyy-MM-dd}",
       },
     },
   },
