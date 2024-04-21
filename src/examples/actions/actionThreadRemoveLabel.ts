@@ -1,16 +1,11 @@
-import {
-  E2EInfo,
-  E2EInitConfig,
-  E2ETest,
-  E2ETestConfig,
-} from "../../lib/e2e/E2E"
-import { Example } from "../Example"
+import { E2EInitConfig, E2ETest, E2ETestConfig } from "../../lib/e2e/E2E"
+import { Example, ExampleInfo } from "../Example"
 import { ProcessingStatus } from "./../../lib/Context"
 import { ProcessingStage } from "./../../lib/config/ActionConfig"
 import { Config } from "./../../lib/config/Config"
 import { MarkProcessedMethod } from "./../../lib/config/SettingsConfig"
 
-export const info: E2EInfo = {
+export const info: ExampleInfo = {
   name: "actionThreadRemoveLabel",
   title: "thread.removeLabel",
   description:
