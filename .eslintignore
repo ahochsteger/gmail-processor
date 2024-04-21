@@ -4,3 +4,4 @@ docs/
 dist/
 gas/
 node_modules/
+*.bak*
