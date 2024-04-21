@@ -32,7 +32,8 @@ function actionExportTest() {
     global: {
       thread: {
         match: {
-          query: "-in:trash -in:drafts -in:spam after:2024-02-06",
+          query:
+            "-in:trash -in:drafts -in:spam after:${date.now:date::yyyy-MM-dd}",
           maxMessageCount: -1,
           minMessageCount: 1,
         },

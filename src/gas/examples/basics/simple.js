@@ -36,6 +36,12 @@ function simpleTest() {
     },
     global: {
       // Place global thread, message or attachment configuration here
+      thread: {
+        match: {
+          query:
+            "has:attachment -in:trash -in:drafts -in:spam after:${date.now:date::yyyy-MM-dd}",
+        },
+      },
     },
     threads: [
       // Place thread processing config here
