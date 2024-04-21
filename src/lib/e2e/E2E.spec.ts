@@ -90,46 +90,46 @@ describe("assert", () => {
 describe("overallStatus", () => {
   it("should decide to skipped", () => {
     expect(
-      E2E.overallStatus({ error: 0, failed: 0, skipped: 1, success: 0 }),
+      E2E._overallStatus({ error: 0, failed: 0, skipped: 1, success: 0 }),
     ).toEqual(E2EStatus.SKIPPED)
   })
   it("should decide to success", () => {
     expect(
-      E2E.overallStatus({ error: 0, failed: 0, skipped: 0, success: 1 }),
+      E2E._overallStatus({ error: 0, failed: 0, skipped: 0, success: 1 }),
     ).toEqual(E2EStatus.SUCCESS)
     expect(
-      E2E.overallStatus({ error: 0, failed: 0, skipped: 1, success: 1 }),
+      E2E._overallStatus({ error: 0, failed: 0, skipped: 1, success: 1 }),
     ).toEqual(E2EStatus.SUCCESS)
     expect(
-      E2E.overallStatus({ error: 0, failed: 0, skipped: 0, success: 0 }),
+      E2E._overallStatus({ error: 0, failed: 0, skipped: 0, success: 0 }),
     ).toEqual(E2EStatus.SUCCESS)
   })
   it("should decide to failed", () => {
     expect(
-      E2E.overallStatus({ error: 0, failed: 1, skipped: 0, success: 1 }),
+      E2E._overallStatus({ error: 0, failed: 1, skipped: 0, success: 1 }),
     ).toEqual(E2EStatus.FAILED)
     expect(
-      E2E.overallStatus({ error: 0, failed: 1, skipped: 1, success: 1 }),
+      E2E._overallStatus({ error: 0, failed: 1, skipped: 1, success: 1 }),
     ).toEqual(E2EStatus.FAILED)
     expect(
-      E2E.overallStatus({ error: 0, failed: 1, skipped: 0, success: 0 }),
+      E2E._overallStatus({ error: 0, failed: 1, skipped: 0, success: 0 }),
     ).toEqual(E2EStatus.FAILED)
     expect(
-      E2E.overallStatus({ error: 0, failed: 1, skipped: 1, success: 0 }),
+      E2E._overallStatus({ error: 0, failed: 1, skipped: 1, success: 0 }),
     ).toEqual(E2EStatus.FAILED)
   })
   it("should decide to error", () => {
     expect(
-      E2E.overallStatus({ error: 1, failed: 1, skipped: 0, success: 1 }),
+      E2E._overallStatus({ error: 1, failed: 1, skipped: 0, success: 1 }),
     ).toEqual(E2EStatus.ERROR)
     expect(
-      E2E.overallStatus({ error: 1, failed: 1, skipped: 1, success: 1 }),
+      E2E._overallStatus({ error: 1, failed: 1, skipped: 1, success: 1 }),
     ).toEqual(E2EStatus.ERROR)
     expect(
-      E2E.overallStatus({ error: 1, failed: 1, skipped: 0, success: 0 }),
+      E2E._overallStatus({ error: 1, failed: 1, skipped: 0, success: 0 }),
     ).toEqual(E2EStatus.ERROR)
     expect(
-      E2E.overallStatus({ error: 1, failed: 1, skipped: 1, success: 0 }),
+      E2E._overallStatus({ error: 1, failed: 1, skipped: 1, success: 0 }),
     ).toEqual(E2EStatus.ERROR)
   })
 })
@@ -149,7 +149,7 @@ describe("runTest", () => {
     mockAssertion.assertFn.mockReturnValue(true)
     const mockTest: E2ETest = { assertions: [mockAssertion] }
 
-    const result = E2E.runTest(
+    const result = E2E._runTest(
       mockTest,
       mockTestConfig,
       mockProcessingResult,
@@ -167,7 +167,7 @@ describe("runTest", () => {
     mockAssertion.assertFn.mockReturnValue(false)
     const mockTest: E2ETest = { assertions: [mockAssertion] }
 
-    const result = E2E.runTest(
+    const result = E2E._runTest(
       mockTest,
       mockTestConfig,
       mockProcessingResult,
@@ -188,7 +188,7 @@ describe("runTest", () => {
       skip: true,
     }
 
-    const result = E2E.runTest(
+    const result = E2E._runTest(
       mockTest,
       mockTestConfig,
       mockProcessingResult,
@@ -207,7 +207,7 @@ describe("runTest", () => {
     })
     const mockTest: E2ETest = { assertions: [mockAssertion] }
 
-    const result = E2E.runTest(
+    const result = E2E._runTest(
       mockTest,
       mockTestConfig,
       mockProcessingResult,

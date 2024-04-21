@@ -113,23 +113,13 @@ export class V1ToV2Converter {
     attachmentConfig.match = {}
     attachmentConfig.actions = []
 
-    // Old processing logic:
-    // var gSearchExp  = config.globalFilter + " " + rule.filter + " -label:" + config.processedLabel;
     if (rule.filter) {
       threadConfig.match.query = rule.filter
     }
-    // Old processing logic:
-    // if (newerThan != "") {
-    //   gSearchExp += " newer_than:" + config.newerThan;
-    // }
     if (rule.newerThan && rule.newerThan != "") {
       threadConfig.match.query =
         (threadConfig.match.query ?? "") + ` newer_than:${rule.newerThan}`
     }
-    // Old processing logic:
-    // iterate threads:
-    // if (rule.saveMessagePDF) {
-    //   processMessageToPdf(message, rule, config);
     if (rule.saveMessagePDF) {
       messageConfig.actions.push({
         name: "message.storePDF",
@@ -141,49 +131,15 @@ export class V1ToV2Converter {
       })
       threadConfig.messages.push(messageConfig)
     } else {
-      // Old processing logic:
-      // } else {
-      //   processMessage(message, rule, config);
-
-      //     if (rule.filenameFromRegexp) {
-      //       var re = new RegExp(rule.filenameFromRegexp);
-      //       match = (attachment.getName()).match(re);
-      //     }
-      //     if (!match) {
-      //       Logger.log("INFO:           Rejecting file '" + attachment.getName() + " not matching" + rule.filenameFromRegexp);
-      //       continue;
-      //     }
-      // Handle filename filtering:
       if (rule.filenameFromRegexp) {
         attachmentConfig.match.name = rule.filenameFromRegexp
       }
-      // Old processing logic:
-      //     var folderName = Utilities.formatDate(messageDate, config.timezone, rule.folder.replace('%s', message.getSubject()));
-      //     folderName = folderName.replace(':', '');
-      //     Logger.log("Saving to folder" + folderName);
-      //     var folder = getOrCreateFolder(folderName, rule.parentFolderId);
-      //     var file = folder.createFile(attachment);
-      //     var original_attachment_name = file.getName();
-      //     var new_filename = rule.filenameTo.replace('%s',message.getSubject()).replace("%d", String(rule_counter++)).replace('%o', original_attachment_name)
-      //     if (rule.filenameFrom && rule.filenameTo && rule.filenameFrom == file.getName()) {
-      //       var final_attachment_name = Utilities.formatDate(messageDate, config.timezone, new_filename);
-      //       Logger.log("INFO:           Renaming matched file '" + file.getName() + "' -> '" + final_attachment_name + "'");
-      //       file.setName(final_attachment_name);
-      //     }
       if (rule.filenameFrom && rule.filenameTo) {
         attachmentConfig.match.name = String(rule.filenameFrom).replace(
           /[\\^$*+?.()|[\]{}]/g,
           "\\$&",
         ) // TODO: Validate this regex!
-        // Old processing logic:
-        //     else if (rule.filenameTo) {
-        //       var final_attachment_name = Utilities.formatDate(messageDate, config.timezone, new_filename);
-        //       Logger.log("INFO:           Renaming '" + file.getName() + "' -> '" + final_attachment_name + "'");
-        //       file.setName(final_attachment_name);
-        //     }
       }
-      // Old processing logic:
-      //     file.setDescription("Mail title: " + message.getSubject() + "\nMail date: " + message.getDate() + "\nMail link: https://mail.google.com/mail/u/0/#inbox/" + message.getId());
       attachmentConfig.actions.push({
         name: "attachment.store",
         args: {
@@ -195,11 +151,6 @@ export class V1ToV2Converter {
       })
       threadConfig.attachments.push(attachmentConfig)
     }
-    // Old processing logic:
-    // }
-    // if (doPDF) { // Generate a PDF document of a thread:
-    //   processThreadToPdf(thread, rule, config);
-    // }
     if (rule.saveThreadPDF) {
       threadConfig.actions.push({
         name: "thread.storePDF",
@@ -212,11 +163,6 @@ export class V1ToV2Converter {
         },
       })
     }
-    // Old processing logic:
-    // if(rule.ruleLabel) {
-    //   thread.addLabel(getOrCreateLabel(rule.ruleLabel));
-    // }
-    // thread.addLabel(label);
     if (rule.ruleLabel && rule.ruleLabel != "") {
       threadConfig.actions.push({
         name: "thread.addLabel",
@@ -225,11 +171,6 @@ export class V1ToV2Converter {
         },
       })
     }
-    // Old processing logic:
-    // if (doArchive) { // Archive a thread if required
-    //   Logger.log("INFO:     Archiving thread '" + thread.getFirstMessageSubject() + "' ...");
-    //   thread.moveToArchive();
-    // }
     if (rule.archive) {
       threadConfig.actions.push({
         name: "thread.moveToArchive",

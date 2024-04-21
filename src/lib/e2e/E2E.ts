@@ -7,11 +7,6 @@ import {
   newProcessingResult,
 } from "../Context"
 import { EnvProvider } from "../EnvProvider"
-import {
-  ConflictStrategy,
-  DriveUtils,
-  FileContent,
-} from "../adapter/GDriveAdapter"
 import { Config } from "../config/Config"
 import { V1Config } from "../config/v1/V1Config"
 import { V1ToV2Converter } from "../config/v1/V1ToV2Converter"
@@ -182,7 +177,7 @@ export class E2E {
     return result
   }
 
-  public static getBlobSourceFromFilePath(
+  private static _getBlobSourceFromFilePath(
     ctx: EnvContext,
     globals: E2EGlobalConfig,
     path: string,
@@ -193,92 +188,10 @@ export class E2E {
     ctx.log.debug(`Fetching '${url}' done.`)
     return blob
   }
-  public static getBlobFromFileEntry(
-    ctx: EnvContext,
-    config: E2EConfig,
-    file: FileConfig,
-  ): GoogleAppsScript.Base.Blob | undefined {
-    let blob: GoogleAppsScript.Base.Blob | undefined
-    switch (file.type) {
-      case "repo": {
-        blob = this.getBlobSourceFromFilePath(
-          ctx,
-          config.globals,
-          file.ref,
-        ).getBlob()
-        break
-      }
-      case "url":
-        ctx.log.debug(`Fetching URL file from ${file.ref} ...`)
-        blob = UrlFetchApp.fetch(file.ref).getBlob()
-        break
-      case "gdrive":
-        ctx.log.debug(`Fetching GDrive file from ${file.ref} ...`)
-        blob = DriveApp.getFileById(file.ref).getBlob()
-        break
-    }
-    return blob
-  }
 
-  public static initMails(ctx: EnvContext, config: E2EConfig) {
-    ctx.log.info("GMail initialization started.")
-    config.mails.forEach((mail) => {
-      const files: string[] = mail.files ?? []
-      const attachments: GoogleAppsScript.Base.Blob[] = files.map((name) => {
-        const file = config.files.reduce((prev, curr) =>
-          name === curr.name ? curr : prev,
-        )
-        return this.getBlobFromFileEntry(ctx, config, file)
-      }) as GoogleAppsScript.Base.Blob[]
-      ctx.log.info(`Sending email '${mail.subject}' ...`)
-      ctx.env.mailApp.sendEmail({
-        to: config.globals.to,
-        subject: `${config.globals.subjectPrefix}${mail.subject}`,
-        htmlBody: mail.htmlBody,
-        attachments: attachments,
-      })
-    })
-    ctx.log.info("GMail initialization finished.")
-  }
-
-  public static initDrive(
-    ctx: EnvContext,
-    config: E2EConfig,
-    conflictStrategy = ConflictStrategy.UPDATE,
-  ) {
-    ctx.log.info("GDrive initialization started.")
-    config.files
-      .filter((file) => file.destFolder !== undefined)
-      .forEach((file) => {
-        const blob = this.getBlobFromFileEntry(ctx, config, file)
-        if (!blob) return
-        const folderLocation = config.folders.reduce((prev, current) =>
-          current.name === file.destFolder ? current : prev,
-        )
-        ctx.log.info(
-          `Creating file '${folderLocation.location}/${file.filename}' ...`,
-        )
-        DriveUtils.createFile(
-          ctx,
-          `${folderLocation.location}/${file.filename}`,
-          new FileContent(blob),
-          conflictStrategy,
-        )
-      })
-    ctx.log.info("GDrive initialization finished.")
-  }
-
-  public static initAll(
-    config: E2EConfig,
-    ctx: EnvContext = EnvProvider.defaultContext(RunMode.DANGEROUS),
-  ) {
-    ctx.log.info("E2E initialization started.")
-    this.initDrive(ctx, config)
-    this.initMails(ctx, config)
-    ctx.log.info("E2E initialization finished.")
-  }
-
-  public static overallStatus(statusMap: Record<E2EStatus, number>): E2EStatus {
+  public static _overallStatus(
+    statusMap: Record<E2EStatus, number>,
+  ): E2EStatus {
     if (statusMap.error > 0) {
       return E2EStatus.ERROR
     } else if (statusMap.failed > 0) {
@@ -290,7 +203,7 @@ export class E2E {
     }
   }
 
-  public static runTest(
+  public static _runTest(
     test: E2ETest,
     testConfig: E2ETestConfig,
     processingResult: ProcessingResult,
@@ -318,7 +231,7 @@ export class E2E {
         statusMap[assertionResult.status]++
       })
     }
-    const status = this.overallStatus(statusMap)
+    const status = this._overallStatus(statusMap)
     const result: E2EResult = {
       message: test.message,
       status,
@@ -346,7 +259,7 @@ export class E2E {
           subject: `${globals.subjectPrefix}${mail.subject ?? testConfig.info.name}`,
           htmlBody: mail.body,
           attachments: mail.attachments?.map((path) =>
-            this.getBlobSourceFromFilePath(ctx, globals, path),
+            this._getBlobSourceFromFilePath(ctx, globals, path),
           ),
         })
       })
@@ -395,7 +308,7 @@ export class E2E {
       } else {
         ctx.log.info(`E2E.runTests(): Testing assertions ...`)
         testConfig.tests?.forEach((test) => {
-          const testResult = this.runTest(
+          const testResult = this._runTest(
             test,
             testConfig,
             processingResult,
@@ -409,7 +322,7 @@ export class E2E {
       statusMap[E2EStatus.ERROR]++
       error = e
     }
-    const status = this.overallStatus(statusMap)
+    const status = this._overallStatus(statusMap)
     const result: E2EResult = {
       error,
       status,
