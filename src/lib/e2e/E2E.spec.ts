@@ -1,4 +1,5 @@
 import { mock } from "jest-mock-extended"
+import { ExampleInfo } from "../../examples/Example"
 import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
 import {
   EnvContext,
@@ -12,7 +13,6 @@ import {
   E2E,
   E2EAssertion,
   E2EGlobalConfig,
-  E2EInfo,
   E2EInitConfig,
   E2EResult,
   E2EStatus,
@@ -273,7 +273,7 @@ describe("runTests", () => {
       ],
     },
   ]
-  const info: E2EInfo = {
+  const info: ExampleInfo = {
     name: "test",
     title: "Test",
     description: "Test description",

@@ -13,7 +13,7 @@ import { MessageFlag } from "./config/MessageFlag"
 import { MarkProcessedMethod } from "./config/SettingsConfig"
 import { V1Config } from "./config/v1/V1Config"
 import { V1ToV2Converter } from "./config/v1/V1ToV2Converter"
-import { E2E, E2EConfig, newE2EGlobalConfig } from "./e2e/E2E"
+import { E2E, newE2EGlobalConfig } from "./e2e/E2E"
 import { E2EDefaults } from "./e2e/E2EDefaults"
 import { GmailProcessor } from "./processors/GmailProcessor"
 import { LogLevel } from "./utils/Logger"
@@ -23,7 +23,6 @@ export {
   Config,
   ConflictStrategy,
   E2E,
-  E2EConfig,
   E2EDefaults,
   EnvProvider,
   LogLevel,
@@ -66,7 +65,6 @@ export function convertV1Config(v1config: V1Config): Config {
 // Re-export classes that should be accessible in Google Apps Script:
 ;(globalThis as any).Config = Config
 ;(globalThis as any).ConflictStrategy = ConflictStrategy
-;(globalThis as any).E2EConfig = E2EConfig
 ;(globalThis as any).E2E = E2E
 ;(globalThis as any).E2EDefaults = E2EDefaults
 ;(globalThis as any).EnvProvider = EnvProvider

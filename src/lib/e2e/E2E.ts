@@ -13,14 +13,6 @@ import { V1ToV2Converter } from "../config/v1/V1ToV2Converter"
 import { GmailProcessor } from "../processors/GmailProcessor"
 import { E2EDefaults } from "./E2EDefaults"
 
-type FileConfig = {
-  name: string
-  type: string
-  filename: string
-  ref: string
-  destFolder: string
-}
-
 export type E2EGlobalConfig = {
   driveBasePath: string
   repoBaseUrl: string
@@ -31,41 +23,18 @@ export type E2EGlobalConfig = {
   sleepTimeMs: number
 }
 
-export class E2EConfig {
-  // TODO: Eliminate E2EConfig, merge with type E2ETestConfig.
-  public globals: E2EGlobalConfig = {
-    // TODO: Use newE2EGlobalConfig here - solve context dependency!
-    driveBasePath: E2EDefaults.DRIVE_TESTS_BASE_PATH,
-    repoBaseUrl: E2EDefaults.GIT_REPO_BASE_URL,
-    repoBranch: E2EDefaults.GIT_REPO_BRANCH,
-    repoBasePath: E2EDefaults.GIT_REPO_TEST_FILES_PATH,
-    subjectPrefix: E2EDefaults.EMAIL_SUBJECT_PREFIX,
-    to: "", // TODO: Find a better default
-    sleepTimeMs: E2EDefaults.EMAIL_SLEEP_TIME_MS,
-  }
-  public folders: {
-    name: string
-    location: string
-  }[] = []
-  public files: FileConfig[] = []
-  public mails: {
-    subject: string
-    htmlBody: string
-    files: string[]
-  }[] = []
-}
-
-export type E2EMail = {
+type E2EMail = {
   subject?: string
   body?: string
   attachments?: string[]
 }
+
 export type E2EInitConfig = {
   branch?: string
   mails: E2EMail[]
 }
 
-export type E2EAssertFn = (
+type E2EAssertFn = (
   testConfig: E2ETestConfig,
   procResult: ProcessingResult,
   ctx: EnvContext,
@@ -84,15 +53,13 @@ export type E2ETest = {
 }
 
 export type E2ETestConfig = {
-  info: E2EInfo
+  info: ExampleInfo
   globals?: E2EGlobalConfig
   initConfig?: E2EInitConfig
   migrationConfig?: V1Config
   runConfig?: Config
   tests?: E2ETest[]
 }
-
-export type E2EInfo = ExampleInfo
 
 /**
  * Status of end-to-end tests
