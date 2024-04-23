@@ -26,10 +26,10 @@ $enumList[0] as $enums
               | [
                 "`" + $arg.name + "`",
                 "`" + $arg.type.name + "`",
-                (.description | gsub("\n";"<br />") | gsub("placeholder";"[placeholder](placeholder.md)")) +
+                (.description | gsub("\n";"<br />") | gsub("placeholder";"[placeholder](placeholder.mdx)")) +
                 (
                     if ([$enums[]|select(.name==$arg.type.ref)]|length>0) then
-                      (" See [Enum Type `" + $arg.type.ref + "`](enum-types.md#" + ($arg.type.ref|ascii_downcase) + ") for valid values.")
+                      (" See [Enum Type `" + $arg.type.ref + "`](enum-types.mdx#" + ($arg.type.ref|ascii_downcase) + ") for valid values.")
                     else "" end
                 )
               ]

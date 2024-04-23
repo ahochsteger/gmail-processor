@@ -106,9 +106,9 @@ extractAllActions "${allDataFile}" >"${actionDataFile}"
 extractAllEnums <"${allDataFile}" >"${enumDataFile}"
 extractAllPlaceholder >"${placeholderDataFile}"
 
-generateEnumDocs | saveToDocs enum-types 32 "${refdocs_outpath}/enum-types.md"
-generateActionDocs | saveToDocs actions 33 "${refdocs_outpath}/actions.md"
-generatePlaceholderDocs | saveToDocs placeholder 34 "${refdocs_outpath}/placeholder.md"
+generateEnumDocs | saveToDocs enum-types 32 "${refdocs_outpath}/enum-types.mdx"
+generateActionDocs | saveToDocs actions 33 "${refdocs_outpath}/actions.mdx"
+generatePlaceholderDocs | saveToDocs placeholder 34 "${refdocs_outpath}/placeholder.mdx"
 
 # Copy community files:
 cat CONTRIBUTING.md | saveToDocs contributing 71 "${docs_outpath}/community/CONTRIBUTING.md"

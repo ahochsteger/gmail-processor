@@ -14,8 +14,8 @@ import ConfigSchemaV1 from "../../../src/lib/config/v1/config-schema-v1.json";
 import JSONSchemaViewer from "@theme/JSONSchemaViewer";
 
 import {
-    PlaygroundContextProvider,
-    usePlaygroundContext,
+  PlaygroundContextProvider,
+  usePlaygroundContext,
 } from "@site/src/contexts/PlaygroundContext";
 
 // Type I need for useRef
@@ -26,9 +26,9 @@ import ConfigToolbar from "@site/src/components/ConfigToolbar";
 import { toast } from "react-toastify";
 import { allExamples, defaultExample } from "../../../src/examples";
 
-import Actions from "@site/docs/reference/actions.md";
-import EnumTypes from "@site/docs/reference/enum-types.md";
-import Placeholder from "@site/docs/reference/placeholder.md";
+import Actions from "@site/docs/reference/actions.mdx";
+import EnumTypes from "@site/docs/reference/enum-types.mdx";
+import Placeholder from "@site/docs/reference/placeholder.mdx";
 import { Example } from "../../../src/examples/Example";
 
 const DEBUG = false
