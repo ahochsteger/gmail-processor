@@ -1,10 +1,10 @@
 {
   "$schema": "https://raw.githubusercontent.com/jetpack-io/devbox/0.10.3/.schema/devbox.schema.json",
-  "packages": ["nodejs@20", "gojq@0", "gh@2", "gomplate@3"],
+  "packages": ["nodejs@20", "gojq@0", "gh@2", "gomplate@3", "gettext@0"],
   "shell": {
-    "init_hook": ["echo 'Welcome to devbox!' > /dev/null"],
+    "init_hook": ["echo 'Welcome to gmail-processor devbox!' > /dev/null"],
     "scripts": {
-      "test": ["echo \"Error: no test specified\" && exit 1"]
+      "npm": ["npm run \"${@}\""]
     }
   }
 }

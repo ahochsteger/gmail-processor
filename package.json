@@ -20,6 +20,8 @@
     "deploy": "concurrently 'npm:deploy:*'",
     "deploy:examples": "scripts/clasp.sh examples deploy",
     "deploy:lib": "scripts/clasp.sh lib deploy",
+    "devbox:update": "devbox generate devcontainer --force && docker build -t gmail-processor-devbox .",
+    "devbox:shell": "docker run -it --rm -v $(pwd):/code/ws -w /code/ws docker.io/library/gmail-processor-devbox",
     "lint": "concurrently 'npm:lint:*(!lint:fix)'",
     "lint:code": "scripts/lint-code.sh",
     "lint:cpd": "jscpd src/lib",
