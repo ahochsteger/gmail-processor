@@ -60,7 +60,7 @@ function simpleTest() {
                 },
                 actions: [
                   {
-                    name: "thread.storePDF",
+                    name: "attachment.store",
                     args: {
                       location:
                         "folder/${message.date:date::yyyy-MM-dd}/${message.subject}-${attachment.name.match.fileid}.pdf",

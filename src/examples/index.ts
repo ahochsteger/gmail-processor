@@ -2,11 +2,11 @@ import { Example } from "./Example"
 import { actionAttachmentExtractTextExample } from "./actions/actionAttachmentExtractText"
 import { actionExportExample } from "./actions/actionExport"
 import { actionThreadRemoveLabelExample } from "./actions/actionThreadRemoveLabel"
-import { simpleExample } from "./basics/simple"
 import { convertToGoogleExample } from "./features/convertToGoogle"
+import { issue301Example } from "./regressions/issue301"
 import { migrationAdvancedExample } from "./migrations/migrationAdvanced"
 import { migrationMinExample } from "./migrations/migrationMin"
-import { issue301Example } from "./regressions/issue301"
+import { simpleExample } from "./basics/simple"
 
 export const defaultExample = simpleExample
 export const allExamples: Example[] = [
