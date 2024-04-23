@@ -100,8 +100,16 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/407650?v=4",
       "profile": "https://gregorynicholas.com/",
       "contributions": ["example"]
+    },
+    {
+      "login": "gabrielhesposito",
+      "name": "Gabriel Esposito",
+      "avatar_url": "https://avatars.githubusercontent.com/u/9630328?v=4",
+      "profile": "https://github.com/gabrielhesposito",
+      "contributions": ["doc"]
     }
   ],
   "contributorsPerLine": 7,
   "linkToUsage": true
 }
+
