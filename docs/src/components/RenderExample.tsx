@@ -5,15 +5,40 @@ import Tabs from '@theme/Tabs';
 import React from 'react';
 import { Example } from '../../../src/examples/Example';
 
-const exampleConfigBaseUrl = "https://github.com/ahochsteger/gmail-processor/blob/main/src/examples/"
+const examplesBasePath = "src/examples"
+const exampleConfigBaseUrl = `https://github.com/ahochsteger/gmail-processor/blob/main/${examplesBasePath}`
+const githubIssuesBaseUrl = "https://github.com/ahochsteger/gmail-processor/issues"
+const githubPRsBaseUrl = "https://github.com/ahochsteger/gmail-processor/pull"
 
 type ExampleConfigProps = {
   example: Example
 }
+
+function getIssueLinks(title: string, baseUrl: string, issues?: number[]): React.JSX.Element[] {
+  let elements: React.JSX.Element[] = []
+  if (issues && issues.length>0) {
+    elements = [
+      <span key={`${title}-0`}> ({title}: </span>,
+    ].concat(
+      issues?.map((nr,i,arr) => (
+        <span key={nr}>
+          <a href={`${baseUrl}/${nr}`}>#{nr}</a>{(i<arr.length-1) ? "," : ""}
+        </span>
+      ))
+    )
+    elements.push(<span>)</span>)
+  }
+  return elements
+  // const issueLinks = issues.map(nr => <a key={nr} href={`${baseUrl}/${nr}`}>#{nr}</a>).join(", ")
+  // return <span>, {title}: {issueLinks}</span>
+}
+
 export default function RenderExample({example}: ExampleConfigProps) {
   const info = example.info
+  const relPath = `${example.info.category}/${example.info.name}.ts`
   const config = example.config
   const sourceFile = `${info.name}.ts`
+
   return (
     <>
       <p>{info.description}</p>
@@ -44,9 +69,11 @@ export default function RenderExample({example}: ExampleConfigProps) {
 </CodeBlock>
         </TabItem>
       </Tabs>
-      <p>Source: <a href={`${exampleConfigBaseUrl}/${sourceFile}`}>{sourceFile}</a></p>
-      <p>Issues: {example.info.issues?.map(nr => <a key={nr} href={`https://github.com/ahochsteger/gmail-processor/issues/${nr}`}>#{nr}</a>).join(", ")}</p>
-      <p>PRs: {example.info.pullRequests?.map(nr => <a key={nr} href={`https://github.com/ahochsteger/gmail-processor/pull/${nr}`}>#{nr}</a>).join(", ")}</p>
+      <p>
+        Source: <a href={`${exampleConfigBaseUrl}/${relPath}`}>{sourceFile}</a>
+        {getIssueLinks("Issues", githubIssuesBaseUrl, example.info.issues)}
+        {getIssueLinks("PRs", githubPRsBaseUrl, example.info.pullRequests)}
+      </p>
     </>
   )
 }
