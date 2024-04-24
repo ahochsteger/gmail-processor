@@ -202,12 +202,12 @@ function run() {
     window.history.replaceState(null, window.document.title, url)
   }
 
-  function handleRepairJson() {
-    dbg(`handleRepairJson()`)
+  function handleTidyJson() {
+    dbg(`handleCleanJson()`)
     const json = editorRef.getModel().getValue()
-    const repairedJson = jsonrepair(json)
-    handleUpdateConfig(repairedJson)
-    toast.success(`Config repaired.`)
+    const cleanedJson = JSON.stringify(JSON.parse(jsonrepair(json)), null, 2)
+    handleUpdateConfig(cleanedJson)
+    toast.success(`Config tidied.`)
   }
 
   return (
@@ -223,7 +223,7 @@ function run() {
             onDetectSchema={handleDetectSchema}
             onExampleSelected={handleExampleSelected}
             onPaste={handlePaste}
-            onRepairJson={handleRepairJson}
+            onTidyJson={handleTidyJson}
           />
           <JSONSchemaEditor
             // See https://github.com/react-monaco-editor/react-monaco-editor
