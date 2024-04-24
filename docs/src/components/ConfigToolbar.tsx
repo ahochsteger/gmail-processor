@@ -11,9 +11,10 @@ type Params = {
   onExampleSelected: (string) => void
   onPaste: () => void
   onDetectSchema: () => void
+  onRepairJson: () => void
 }
 
-const ConfigToolbar = ({ examples, selectedExample, onConvert, onCopyConfig, onCopyCode, onDetectSchema, onExampleSelected, onPaste }: Params) => {
+const ConfigToolbar = ({ examples, selectedExample, onConvert, onCopyConfig, onCopyCode, onDetectSchema, onExampleSelected, onPaste, onRepairJson }: Params) => {
   const styles = {
     toolbar: {
       display: "flex",
@@ -62,6 +63,11 @@ const ConfigToolbar = ({ examples, selectedExample, onConvert, onCopyConfig, onC
         onClick={onPaste}
         title="Paste config from clipboard"
       ><Icon icon="mdi:content-paste" /></button>
+      <button
+        style={styles.icon}
+        onClick={onRepairJson}
+        title="Repair JSON config"
+      ><Icon icon="mdi:auto-fix" /></button>
       <button
         style={styles.icon}
         onClick={onConvert}

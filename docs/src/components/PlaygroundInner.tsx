@@ -29,6 +29,7 @@ import { allExamples, defaultExample } from "../../../src/examples";
 import Actions from "@site/docs/reference/actions.mdx";
 import EnumTypes from "@site/docs/reference/enum-types.mdx";
 import Placeholder from "@site/docs/reference/placeholder.mdx";
+import { jsonrepair } from "jsonrepair";
 import { Example } from "../../../src/examples/Example";
 
 const DEBUG = false
@@ -201,6 +202,14 @@ function run() {
     window.history.replaceState(null, window.document.title, url)
   }
 
+  function handleRepairJson() {
+    dbg(`handleRepairJson()`)
+    const json = editorRef.getModel().getValue()
+    const repairedJson = jsonrepair(json)
+    handleUpdateConfig(repairedJson)
+    toast.success(`Config repaired.`)
+  }
+
   return (
     <div style={{display:"flex"}}>
       <div style={{ flex: "50%" }}>
@@ -214,6 +223,7 @@ function run() {
             onDetectSchema={handleDetectSchema}
             onExampleSelected={handleExampleSelected}
             onPaste={handlePaste}
+            onRepairJson={handleRepairJson}
           />
           <JSONSchemaEditor
             // See https://github.com/react-monaco-editor/react-monaco-editor
