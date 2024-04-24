@@ -4,7 +4,7 @@ import ErrorBoundary from "@docusaurus/ErrorBoundary"
 import Layout from "@theme/Layout"
 import React from "react"
 
-import { ToastContainer, toast } from "react-toastify"
+import { ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.min.css"
 
 function PlaygroundComponent(): JSX.Element {
@@ -37,7 +37,7 @@ export default function Playground(): JSX.Element {
       description="Playground of docusaurus-json-schema-plugin"
     >
       <PlaygroundComponent />
-      <ToastContainer theme="dark" position={toast.POSITION.BOTTOM_RIGHT} autoClose={3000} />
+      <ToastContainer theme="dark" position={"bottom-right"} autoClose={3000} />
     </Layout>
   )
 }
