@@ -1,7 +1,3 @@
-import {
-  NEW_HTML_FILE_NAME,
-  NEW_PDF_FILE_NAME,
-} from "../../test/mocks/GDriveMocks"
 import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
 import { GmailAdapter } from "./GmailAdapter"
 
@@ -17,25 +13,25 @@ beforeEach(() => {
 })
 
 it("should export a message as HTML document", () => {
-  const actual = adapter.messageAsHtml(mocks.message, NEW_HTML_FILE_NAME, {})
+  const actual = adapter.messageAsHtml(mocks.message, {})
   expect(actual).toBeDefined()
   expect(actual.getContentType()).toEqual("text/html")
 })
 
 it("should export a message as PDF document", () => {
-  const actual = adapter.messageAsPdf(mocks.message, NEW_PDF_FILE_NAME, {})
+  const actual = adapter.messageAsPdf(mocks.message, {})
   expect(actual).toBeDefined()
   expect(actual.getContentType()).toEqual("application/pdf")
 })
 
 it("should export a thread as HTML document", () => {
-  const actual = adapter.threadAsHtml(mocks.thread, NEW_HTML_FILE_NAME, {})
+  const actual = adapter.threadAsHtml(mocks.thread, {})
   expect(actual).toBeDefined()
   expect(actual.getContentType()).toEqual("text/html")
 })
 
 it("should export a thread as PDF document", () => {
-  const actual = adapter.threadAsPdf(mocks.thread, NEW_PDF_FILE_NAME, {})
+  const actual = adapter.threadAsPdf(mocks.thread, {})
   expect(actual).toBeDefined()
   expect(actual.getContentType()).toEqual("application/pdf")
 })

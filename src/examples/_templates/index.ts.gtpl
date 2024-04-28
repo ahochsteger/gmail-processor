@@ -1,6 +1,7 @@
-{{- $examples:=.|data.JSONArray -}}
+{{- $imports:=.|data.JSONArray|coll.Sort "path" -}}
+{{- $examples:=.|data.JSONArray|coll.Sort "name" -}}
 import { Example } from "./Example"
-{{- range $examples }}
+{{- range $imports }}
 import { {{ .name }}Example } from "./{{ .path }}"
 {{- end }}
 

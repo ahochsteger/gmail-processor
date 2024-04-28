@@ -224,7 +224,7 @@ export class E2E {
         ctx.env.mailApp.sendEmail({
           to: globals.to,
           subject: `${globals.subjectPrefix}${mail.subject ?? testConfig.info.name}`,
-          htmlBody: mail.body,
+          htmlBody: mail.body ?? testConfig.info.description,
           attachments: mail.attachments?.map((path) =>
             this._getBlobSourceFromFilePath(ctx, globals, path),
           ),

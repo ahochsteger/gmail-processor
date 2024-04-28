@@ -113,7 +113,11 @@ These placeholder are valid after certain actions have been executed.
 
 | Key | Description | Example |
 |-----|-------------|---------|
-| <a id="placeholder.attachment.extracted">`attachment.extracted`</a> | Extracted text from the attachment using the action `attachment.extractText` | `...<br>Invoice date: 2024-03-13<br>Inv...` |
+| <a id="placeholder.attachment.docsFile.stored.downloadUrl">`attachment.docsFile.stored.downloadUrl`</a> | The download URL of the stored OCR docs file (using action `attachment.extractText`) |  |
+| <a id="placeholder.attachment.docsFile.stored.id">`attachment.docsFile.stored.id`</a> | The ID of the stored OCR docs file (using action `attachment.extractText`) | `created-docs-file-id` |
+| <a id="placeholder.attachment.docsFile.stored.location">`attachment.docsFile.stored.location`</a> | The location of the stored OCR docs file (using action `attachment.extractText`) | `created-docs-file` |
+| <a id="placeholder.attachment.docsFile.stored.url">`attachment.docsFile.stored.url`</a> | The URL of the stored OCR docs file (using action `attachment.extractText`) |  |
+| <a id="placeholder.attachment.extracted">`attachment.extracted`</a> | The extracted text from the attachment (using action `attachment.extractText`) | `...<br>Invoice date: 2024-03-13<br>Inv...` |
 | <a id="placeholder.attachment.extracted.match.1">`attachment.extracted.match.1`</a> | The matching regex group number as defined in the match config (e.g.: `"Invoice date:\\s*(?<invoiceDate>[0-9-]+)\\s*Invoice number:\\s*(?<invoiceNumber>[0-9]+)"`). | `2024-03-13` |
 | <a id="placeholder.attachment.extracted.match.2">`attachment.extracted.match.2`</a> | The matching regex group number as defined in the match config (e.g.: `"Invoice date:\\s*(?<invoiceDate>[0-9-]+)\\s*Invoice number:\\s*(?<invoiceNumber>[0-9]+)"`). | `12345678` |
 | <a id="placeholder.attachment.extracted.match.invoiceDate">`attachment.extracted.match.invoiceDate`</a> | The matching named regex group name as defined in the match config (e.g.: `"Invoice date:\\s*(?<invoiceDate>[0-9-]+)\\s*Invoice number:\\s*(?<invoiceNumber>[0-9]+)"`). | `2024-03-13` |

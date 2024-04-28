@@ -2,6 +2,7 @@ import { ConflictStrategy } from "../../lib/adapter/GDriveAdapter"
 import { Config } from "../../lib/config/Config"
 import { MarkProcessedMethod } from "../../lib/config/SettingsConfig"
 import { E2EInitConfig, E2ETest, E2ETestConfig } from "../../lib/e2e/E2E"
+import { E2EDefaults } from "../../lib/e2e/E2EDefaults"
 import { Example, ExampleInfo } from "../Example"
 
 export const info: ExampleInfo = {
@@ -32,8 +33,7 @@ export const runConfig: Config = {
   global: {
     thread: {
       match: {
-        query:
-          "-in:trash -in:drafts -in:spam after:${date.now:date::yyyy-MM-dd}",
+        query: `-in:trash -in:drafts -in:spam after:\${date.now:date::yyyy-MM-dd} subject:'${E2EDefaults.EMAIL_SUBJECT_PREFIX}${info.name}'`,
         maxMessageCount: -1,
         minMessageCount: 1,
       },

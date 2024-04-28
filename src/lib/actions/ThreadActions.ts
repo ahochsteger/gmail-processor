@@ -1,9 +1,7 @@
-import { FileContent } from "../adapter/GDriveAdapter"
 import { ExportOptionsType } from "../adapter/GmailExportAdapter"
 import { ActionBaseConfig, StoreActionBaseArgs } from "../config/ActionConfig"
 import { ThreadContext } from "../Context"
 import { destructiveAction, writingAction } from "../utils/Decorators"
-import { PatternUtil } from "../utils/PatternUtil"
 import {
   ActionFunction,
   ActionProvider,
@@ -146,23 +144,16 @@ export class ThreadActions implements ActionProvider<ThreadContext> {
     context: ThreadContext,
     args: ThreadActionExportArgs,
   ) {
-    const name = `${context.thread.object.getFirstMessageSubject()}.html`
-    return {
-      ok: true,
-      file: context.proc.gdriveAdapter.createFile(
-        PatternUtil.substitute(context, args.location),
-        new FileContent(
-          context.proc.gmailAdapter.threadAsHtml(
-            context.thread.object,
-            name,
-            args,
-          ),
-          name,
-          PatternUtil.substitute(context, args.description ?? ""),
-        ),
-        args.conflictStrategy,
-      ),
-    }
+    return context.proc.gdriveAdapter.createFileFromAction(
+      context,
+      args.location,
+      context.proc.gmailAdapter.threadAsHtml(context.thread.object, args),
+      args.conflictStrategy,
+      args.description,
+      "exported thread HTML file",
+      "thread",
+      "thread.exportAsHtml",
+    )
   }
 
   /** Export a thread as PDF document and store it to a GDrive location. */
@@ -171,23 +162,16 @@ export class ThreadActions implements ActionProvider<ThreadContext> {
     context: ThreadContext,
     args: ThreadActionExportArgs,
   ) {
-    const name = `${context.thread.object.getFirstMessageSubject()}.pdf`
-    return {
-      ok: true,
-      file: context.proc.gdriveAdapter.createFile(
-        PatternUtil.substitute(context, args.location),
-        new FileContent(
-          context.proc.gmailAdapter.threadAsPdf(
-            context.thread.object,
-            name,
-            args,
-          ),
-          name,
-          PatternUtil.substitute(context, args.description ?? ""),
-        ),
-        args.conflictStrategy,
-      ),
-    }
+    return context.proc.gdriveAdapter.createFileFromAction(
+      context,
+      args.location,
+      context.proc.gmailAdapter.threadAsPdf(context.thread.object, args),
+      args.conflictStrategy,
+      args.description,
+      "exported thread PDF file",
+      "thread",
+      "thread.exportAsPdf",
+    )
   }
 
   /**
@@ -199,21 +183,18 @@ export class ThreadActions implements ActionProvider<ThreadContext> {
     context: ThreadContext,
     args: ThreadActionArgsStorePDF,
   ) {
-    const name = `${context.thread.object.getFirstMessageSubject()}.pdf`
-    return {
-      ok: true,
-      file: context.proc.gdriveAdapter.createFile(
-        PatternUtil.substitute(context, args.location),
-        new FileContent(
-          context.proc.gmailAdapter.threadAsPdf(context.thread.object, name, {
-            includeHeader: !(args.skipHeader ?? false),
-          }),
-          name,
-          PatternUtil.substitute(context, args.description ?? ""),
-        ),
-        args.conflictStrategy,
-      ),
-    }
+    return context.proc.gdriveAdapter.createFileFromAction(
+      context,
+      args.location,
+      context.proc.gmailAdapter.threadAsPdf(context.thread.object, {
+        includeHeader: !(args.skipHeader ?? false),
+      }),
+      args.conflictStrategy,
+      args.description,
+      "exported thread PDF file",
+      "thread",
+      "thread.storePDF",
+    )
   }
 }
 

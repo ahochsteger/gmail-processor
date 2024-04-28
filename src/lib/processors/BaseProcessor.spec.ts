@@ -16,6 +16,7 @@ import {
   ActionReturnType,
 } from "../actions/ActionRegistry"
 import { ActionConfig, ProcessingStage } from "../config/ActionConfig"
+import { PatternUtil } from "../utils/PatternUtil"
 import { BaseProcessor } from "./BaseProcessor"
 
 class TestProcessor extends BaseProcessor {
@@ -28,6 +29,9 @@ class TestProcessor extends BaseProcessor {
     return this.executeActions(ctx, stage, result, actionSets)
   }
 }
+
+const TEST_CONTEXT_KEY = "some.key"
+const TEST_CONTEXT_VALUE = "some value"
 
 class TestActionProvider implements ActionProvider {
   [key: string]: ActionFunction
@@ -45,14 +49,30 @@ class TestActionProvider implements ActionProvider {
     _args: ActionArgsType = {},
   ): ActionReturnType {
     const m: MetaInfo = {}
-    m["someKey"] = newMetaInfo(
+    m[TEST_CONTEXT_KEY] = newMetaInfo(
       MetaInfoType.STRING,
-      "someValue",
+      TEST_CONTEXT_VALUE,
       "Some description",
     )
     return {
-      ok: true,
       actionMeta: m,
+    }
+  }
+
+  public static metaContextVerifyingMethod(
+    ctx: ProcessingContext,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _args: ActionArgsType = {},
+  ): ActionReturnType {
+    const data = []
+    if (ctx.procMeta[TEST_CONTEXT_KEY]?.value !== TEST_CONTEXT_VALUE) {
+      data.push(`ctx.procMeta: ${ctx.procMeta[TEST_CONTEXT_KEY]?.value}`)
+    }
+    if (ctx.meta[TEST_CONTEXT_KEY]?.value !== TEST_CONTEXT_VALUE) {
+      data.push(`ctx.meta: ${ctx.meta[TEST_CONTEXT_KEY]?.value}`)
+    }
+    return {
+      data,
     }
   }
 }
@@ -74,7 +94,7 @@ it("should handle error throwing actions", () => {
         },
       ],
     )
-  }).toThrowError()
+  }).toThrow()
 })
 
 it("should update meta context if actions return actionMeta", () => {
@@ -83,17 +103,75 @@ it("should update meta context if actions return actionMeta", () => {
   actionRegistry.registerActionProvider("test", new TestActionProvider())
   mocks.processingContext.proc.actionRegistry = actionRegistry
   let result = newProcessingResult()
+  const actionSet = [
+    {
+      name: "test.metaContextModifyingMethod",
+      processingStage: ProcessingStage.PRE_MAIN,
+    },
+    {
+      name: "test.metaContextVerifyingMethod",
+      processingStage: ProcessingStage.PRE_MAIN,
+    },
+    {
+      name: "test.metaContextVerifyingMethod",
+      processingStage: ProcessingStage.MAIN,
+    },
+    {
+      name: "test.metaContextVerifyingMethod",
+      processingStage: ProcessingStage.POST_MAIN,
+    },
+  ]
+  expect(mocks.processingContext.meta[TEST_CONTEXT_KEY]).toBeUndefined()
+  expect(mocks.processingContext.procMeta[TEST_CONTEXT_KEY]).toBeUndefined()
+  expect(
+    PatternUtil.substitute(mocks.processingContext, `\${${TEST_CONTEXT_KEY}}`),
+  ).toEqual("")
+  result = TestProcessor.execute(
+    mocks.processingContext,
+    ProcessingStage.PRE_MAIN,
+    result,
+    actionSet,
+  )
+  expect(result.status).toEqual(ProcessingStatus.OK)
+  expect(mocks.processingContext.meta[TEST_CONTEXT_KEY]).toMatchObject({
+    value: TEST_CONTEXT_VALUE,
+  })
+  expect(mocks.processingContext.procMeta[TEST_CONTEXT_KEY]).toMatchObject({
+    value: TEST_CONTEXT_VALUE,
+  })
+  expect(
+    PatternUtil.substitute(mocks.processingContext, `\${${TEST_CONTEXT_KEY}}`),
+  ).toEqual(TEST_CONTEXT_VALUE)
   result = TestProcessor.execute(
     mocks.processingContext,
     ProcessingStage.MAIN,
     result,
-    [
-      {
-        name: "test.metaContextModifyingMethod",
-        processingStage: ProcessingStage.MAIN,
-      },
-    ],
+    actionSet,
   )
   expect(result.status).toEqual(ProcessingStatus.OK)
-  expect(mocks.processingContext.meta["someKey"].value).toEqual("someValue")
+  expect(mocks.processingContext.meta[TEST_CONTEXT_KEY]).toMatchObject({
+    value: TEST_CONTEXT_VALUE,
+  })
+  expect(mocks.processingContext.procMeta[TEST_CONTEXT_KEY]).toMatchObject({
+    value: TEST_CONTEXT_VALUE,
+  })
+  expect(
+    PatternUtil.substitute(mocks.processingContext, `\${${TEST_CONTEXT_KEY}}`),
+  ).toEqual(TEST_CONTEXT_VALUE)
+  result = TestProcessor.execute(
+    mocks.processingContext,
+    ProcessingStage.POST_MAIN,
+    result,
+    actionSet,
+  )
+  expect(result.status).toEqual(ProcessingStatus.OK)
+  expect(mocks.processingContext.meta[TEST_CONTEXT_KEY]).toMatchObject({
+    value: TEST_CONTEXT_VALUE,
+  })
+  expect(mocks.processingContext.procMeta[TEST_CONTEXT_KEY]).toMatchObject({
+    value: TEST_CONTEXT_VALUE,
+  })
+  expect(
+    PatternUtil.substitute(mocks.processingContext, `\${${TEST_CONTEXT_KEY}}`),
+  ).toEqual(TEST_CONTEXT_VALUE)
 })

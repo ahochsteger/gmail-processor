@@ -4,6 +4,7 @@ import { Config } from "../../lib/config/Config"
 import { MarkProcessedMethod } from "../../lib/config/SettingsConfig"
 import { E2EInitConfig, E2ETest, E2ETestConfig } from "../../lib/e2e/E2E"
 import { Example, ExampleInfo } from "../Example"
+import { E2EDefaults } from "./../../lib/e2e/E2EDefaults"
 
 export const info: ExampleInfo = {
   name: "simple",
@@ -39,8 +40,7 @@ export const runConfig: Config = {
     // Place global thread, message or attachment configuration here
     thread: {
       match: {
-        query:
-          "has:attachment -in:trash -in:drafts -in:spam after:${date.now:date::yyyy-MM-dd}",
+        query: `has:attachment -in:trash -in:drafts -in:spam after:\${date.now:date::yyyy-MM-dd} subject:'${E2EDefaults.EMAIL_SUBJECT_PREFIX}${info.name}'`,
       },
     },
   },
@@ -48,7 +48,7 @@ export const runConfig: Config = {
     // Place thread processing config here
     {
       match: {
-        query: "from:some.email@gmail.com",
+        query: "from:${user.email}",
       },
       messages: [
         // Place message processing config here
@@ -63,8 +63,7 @@ export const runConfig: Config = {
                 {
                   name: "attachment.store",
                   args: {
-                    location:
-                      "folder/${message.date:date::yyyy-MM-dd}/${message.subject}-${attachment.name.match.fileid}.pdf",
+                    location: `${E2EDefaults.DRIVE_TESTS_BASE_PATH}/${info.name}/\${message.date:date::yyyy-MM-dd}/\${message.subject}-\${attachment.name.match.fileid}.pdf`,
                     conflictStrategy: ConflictStrategy.KEEP,
                   },
                 },
@@ -98,7 +97,8 @@ export const tests: E2ETest[] = [
       {
         message: "Expected number of actions should have been executed",
         assertFn: (_testConfig, procResult) =>
-          procResult.executedActions.length === procResult.processedThreads * 4,
+          procResult.executedActions.length ===
+          procResult.processedThreads + procResult.processedAttachments,
       },
     ],
   },

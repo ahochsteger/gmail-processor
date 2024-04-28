@@ -97,7 +97,6 @@ it("should store a document from a static URL", () => {
     conflictStrategy: ConflictStrategy.KEEP,
   })
   expect(mocks.urlFetchApp.fetch).toBeCalled()
-  expect(result.ok).toBeTruthy()
   expect(result.file).toBeDefined()
 })
 
@@ -109,7 +108,6 @@ it("should store a document from an extracted URL", () => {
     conflictStrategy: ConflictStrategy.KEEP,
   })
   expect(mocks.urlFetchApp.fetch).toBeCalled()
-  expect(result.ok).toBeTruthy()
   expect(result.file).toBeDefined()
 })
 
