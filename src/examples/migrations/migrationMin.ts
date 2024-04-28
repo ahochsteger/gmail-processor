@@ -1,6 +1,6 @@
-import { V1Config } from "../../lib"
 import { E2EInitConfig, E2ETest, E2ETestConfig } from "../../lib/e2e/E2E"
 import { Example, ExampleInfo } from "../Example"
+import { V1Config } from "./../../lib/config/v1/V1Config"
 
 export const info: ExampleInfo = {
   name: "migrationMin",
@@ -13,7 +13,7 @@ export const info: ExampleInfo = {
 }
 
 export const initConfig: E2EInitConfig = {
-  mails: [{ subject: info.name }],
+  mails: [{}],
 }
 
 export const migrationConfig: V1Config = {

@@ -31,8 +31,7 @@ export const runConfig: Config = {
   global: {
     thread: {
       match: {
-        query:
-          "has:attachment -in:trash -in:drafts -in:spam from:${user.email} to:${user.email} after:${date.now:date::yyyy-MM-dd}",
+        query: `has:attachment -in:trash -in:drafts -in:spam from:\${user.email} to:\${user.email} after:\${date.now:date::yyyy-MM-dd} subject:'${E2EDefaults.EMAIL_SUBJECT_PREFIX}${info.name}'`,
       },
     },
   },

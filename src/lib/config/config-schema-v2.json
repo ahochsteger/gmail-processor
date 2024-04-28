@@ -1281,6 +1281,63 @@
             "title": "GlobalConfig",
             "type": "object"
         },
+        "LogFieldConfig": {
+            "additionalProperties": false,
+            "properties": {
+                "context": {
+                    "$ref": "#/definitions/LogFieldContextConfig",
+                    "title": "context"
+                },
+                "key": {
+                    "default": "",
+                    "title": "key",
+                    "type": "string"
+                },
+                "title": {
+                    "default": "",
+                    "title": "title",
+                    "type": "string"
+                },
+                "value": {
+                    "default": "",
+                    "title": "value",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "key",
+                "title"
+            ],
+            "title": "LogFieldConfig",
+            "type": "object"
+        },
+        "LogFieldContextConfig": {
+            "additionalProperties": false,
+            "properties": {
+                "attachment": {
+                    "title": "attachment",
+                    "type": "string"
+                },
+                "env": {
+                    "title": "env",
+                    "type": "string"
+                },
+                "message": {
+                    "title": "message",
+                    "type": "string"
+                },
+                "proc": {
+                    "title": "proc",
+                    "type": "string"
+                },
+                "thread": {
+                    "title": "thread",
+                    "type": "string"
+                }
+            },
+            "title": "LogFieldContextConfig",
+            "type": "object"
+        },
         "MessageActionExportArgs": {
             "additionalProperties": false,
             "properties": {
@@ -2577,7 +2634,7 @@
                 },
                 "logSheetLocation": {
                     "default": "",
-                    "description": "Path of the spreadsheet log file. Enables logging to a spreadsheet if not empty.\nExample: `GmailProcessor/logsheet-${date.now:date::yyyy-MM}`",
+                    "description": "Location of the spreadsheet log file. Enables rich logging to a spreadsheet if not empty.\nExample: `GmailProcessor/logsheet-${date.now:date::yyyy-MM}`",
                     "title": "logSheetLocation",
                     "type": "string"
                 },
@@ -2608,6 +2665,23 @@
                     "description": "The maximum runtime in seconds for a single run to respect Google processing limits",
                     "title": "maxRuntime",
                     "type": "number"
+                },
+                "richLogConfig": {
+                    "default": [],
+                    "description": "Defines the list fields available for rich logging.",
+                    "items": {
+                        "$ref": "#/definitions/LogFieldConfig"
+                    },
+                    "title": "richLogConfig",
+                    "type": "array"
+                },
+                "richLogFields": {
+                    "description": "Specifies the list fields to be used for rich logging.",
+                    "items": {
+                        "type": "string"
+                    },
+                    "title": "richLogFields",
+                    "type": "array"
                 },
                 "sleepTimeAttachments": {
                     "default": 0,

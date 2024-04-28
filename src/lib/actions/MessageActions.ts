@@ -123,22 +123,16 @@ export class MessageActions implements ActionProvider<MessageContext> {
     context: MessageContext,
     args: MessageActionExportArgs,
   ): FileReturnType {
-    const name = `${context.message.object.getSubject()}.html`
-    return {
-      file: context.proc.gdriveAdapter.createFile(
-        PatternUtil.substitute(context, args.location),
-        new FileContent(
-          context.proc.gmailAdapter.messageAsHtml(
-            context.message.object,
-            name,
-            args,
-          ),
-          name,
-          PatternUtil.substitute(context, args.description ?? ""),
-        ),
-        args.conflictStrategy,
-      ),
-    }
+    return context.proc.gdriveAdapter.createFileFromAction(
+      context,
+      args.location,
+      context.proc.gmailAdapter.messageAsHtml(context.message.object, args),
+      args.conflictStrategy,
+      args.description,
+      "exported message HTML file",
+      "message",
+      "message.exportAsHtml",
+    )
   }
 
   /** Export a message as PDF document and store it to a GDrive location. */
@@ -147,22 +141,16 @@ export class MessageActions implements ActionProvider<MessageContext> {
     context: MessageContext,
     args: MessageActionExportArgs,
   ): FileReturnType {
-    const name = `${context.message.object.getSubject()}.pdf`
-    return {
-      file: context.proc.gdriveAdapter.createFile(
-        PatternUtil.substitute(context, args.location),
-        new FileContent(
-          context.proc.gmailAdapter.messageAsPdf(
-            context.message.object,
-            name,
-            args,
-          ),
-          name,
-          PatternUtil.substitute(context, args.description ?? ""),
-        ),
-        args.conflictStrategy,
-      ),
-    }
+    return context.proc.gdriveAdapter.createFileFromAction(
+      context,
+      args.location,
+      context.proc.gmailAdapter.messageAsPdf(context.message.object, args),
+      args.conflictStrategy,
+      args.description,
+      "exported message PDF file",
+      "message",
+      "message.exportAsPdf",
+    )
   }
 
   /**
@@ -174,20 +162,18 @@ export class MessageActions implements ActionProvider<MessageContext> {
     context: MessageContext,
     args: MessageActionStorePDFArgs,
   ): FileReturnType {
-    const name = `${context.message.object.getSubject()}.pdf`
-    return {
-      file: context.proc.gdriveAdapter.createFile(
-        PatternUtil.substitute(context, args.location),
-        new FileContent(
-          context.proc.gmailAdapter.messageAsPdf(context.message.object, name, {
-            includeHeader: !(args.skipHeader ?? false),
-          }),
-          name,
-          PatternUtil.substitute(context, args.description ?? ""),
-        ),
-        args.conflictStrategy,
-      ),
-    }
+    return context.proc.gdriveAdapter.createFileFromAction(
+      context,
+      args.location,
+      context.proc.gmailAdapter.messageAsPdf(context.message.object, {
+        includeHeader: !(args.skipHeader ?? false),
+      }),
+      args.conflictStrategy,
+      args.description,
+      "exported message PDF file",
+      "message",
+      "message.storePDF",
+    )
   }
 
   /** Store a document referenced by a URL contained in the message body to GDrive. */
@@ -213,17 +199,26 @@ export class MessageActions implements ActionProvider<MessageContext> {
         headers: args.headers ?? {},
       })
       .getBlob()
-    return {
-      ok: true,
-      file: context.proc.gdriveAdapter.createFile(
-        PatternUtil.substitute(context, args.location),
-        new FileContent(
-          blob,
-          url.slice(url.lastIndexOf("/") + 1),
-          PatternUtil.substitute(context, args.description ?? ""),
-        ),
-        args.conflictStrategy,
+    const location = PatternUtil.substitute(context, args.location)
+    const file = context.proc.gdriveAdapter.createFile(
+      location,
+      new FileContent(
+        blob,
+        url.slice(url.lastIndexOf("/") + 1),
+        PatternUtil.substitute(context, args.description ?? ""),
       ),
+      args.conflictStrategy,
+    )
+    const actionMeta = context.proc.gdriveAdapter.getActionMeta(
+      file,
+      location,
+      "message",
+      "message",
+      "message.storeFromURL",
+    )
+    return {
+      file,
+      actionMeta,
     }
   }
 }

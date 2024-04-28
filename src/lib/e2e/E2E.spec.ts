@@ -350,7 +350,7 @@ describe("runTests", () => {
     expect(ctx.env.mailApp.sendEmail).toHaveBeenCalledWith({
       to: globals.to,
       subject: `${globals.subjectPrefix}Test mail`,
-      htmlBody: undefined,
+      htmlBody: info.description,
       attachments: undefined,
     })
     expect(result.status).toEqual(E2EStatus.SUCCESS)

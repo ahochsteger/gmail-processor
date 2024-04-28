@@ -10,6 +10,7 @@ import { LogLevel } from "../utils/Logger"
 import { PatternUtil } from "../utils/PatternUtil"
 import { BaseAdapter } from "./BaseAdapter"
 import { DriveUtils } from "./GDriveAdapter"
+import { RichLogAdapter } from "./RichLogAdapter"
 
 export const SCRIPT_CACHE_LOGSHEET_ID_KEY = "GmailProcessor.logSheetId"
 
@@ -20,46 +21,13 @@ export class SpreadsheetAdapter extends BaseAdapter {
   private logSheetId: string | null = null
   private logSpreadsheet: GoogleAppsScript.Spreadsheet.Spreadsheet | null = null
   private logSheet: GoogleAppsScript.Spreadsheet.Sheet | null = null
-  private logFieldsMap = {
-    header: [
-      "Mail title",
-      "Mail date",
-      "Mail id",
-      "Mail link",
-      "Source",
-      "File Location",
-      "File Link",
-      "Message",
-    ],
-    attachment: [
-      "message.subject",
-      "message.date",
-      "message.id",
-      "message.url",
-      "context.type",
-    ],
-    env: ["", "", "", "", "context.type"],
-    message: [
-      "message.subject",
-      "message.date",
-      "message.id",
-      "message.url",
-      "context.type",
-    ],
-    proc: ["", "", "", "", "context.type"],
-    thread: [
-      "thread.firstMessageSubject",
-      "thread.lastMessageDate",
-      "thread.id",
-      "thread.url",
-      "context.type",
-    ],
-  }
   constructor(
     public ctx: EnvContext,
     public settings: SettingsConfig,
+    public logAdapter: RichLogAdapter,
   ) {
     super(ctx, settings)
+    this.logAdapter = logAdapter
     this.spreadsheetApp = ctx.env.spreadsheetApp
     this.driveApp = ctx.env.gdriveApp
     this.cacheService = ctx.env.cacheService
@@ -92,7 +60,7 @@ export class SpreadsheetAdapter extends BaseAdapter {
       logSheetFile = this.driveApp.getFileById(this.logSheetId)
       logSheetFile.moveTo(folder)
       this.ctx.log.info(`Created new logSheet at: ${logSheetFile.getUrl()}`)
-      this.appendToLogSheet(...this.logFieldsMap.header)
+      this.appendToLogSheet(...this.logAdapter.getLogHeaders())
     }
     this.cacheService
       .getScriptCache()
@@ -137,54 +105,6 @@ export class SpreadsheetAdapter extends BaseAdapter {
     }
   }
 
-  public logAttachmentStored(
-    ctx: AttachmentContext,
-    location: string,
-    file: GoogleAppsScript.Drive.File,
-  ) {
-    if (!this.logSheetEnabled()) {
-      this.ctx.log.info(
-        `Skipping spreadsheet log entry for stored attachment '${ctx.attachment.object.getName()}' of message '${ctx.message.object.getSubject()}' stored to ${location} (${file.getName()}) ...`,
-      )
-      return
-    }
-    this.ctx.log.info(
-      `Creating spreadsheet log entry for stored attachment '${ctx.attachment.object.getName()}' of message '${ctx.message.object.getSubject()}' stored to ${location} (${file.getName()}) ...`,
-    )
-    this.appendToLogSheet(
-      ...this.logFieldsMap.attachment.map((k) =>
-        PatternUtil.stringValue(ctx, k),
-      ),
-      file.getName(),
-      file.getUrl(),
-      "Attachment stored.",
-    )
-  }
-
-  public logAttachmentInfo(
-    ctx: AttachmentContext,
-    location: string,
-    logMessage: string,
-  ) {
-    if (!this.logSheetEnabled()) {
-      this.ctx.log.info(
-        `Skipping spreadsheet log entry for attachment '${ctx.attachment.object.getName()}' of message '${ctx.message.object.getSubject()}' stored to ${location} ...`,
-      )
-      return
-    }
-    this.ctx.log.info(
-      `Creating spreadsheet log entry for attachment '${ctx.attachment.object.getName()}' of message '${ctx.message.object.getSubject()}' stored to ${location} ...`,
-    )
-    this.appendToLogSheet(
-      ...this.logFieldsMap.attachment.map((k) =>
-        PatternUtil.stringValue(ctx, k),
-      ),
-      ctx.attachment.object.getName(),
-      "",
-      logMessage,
-    )
-  }
-
   public log(
     ctx: ProcessingContext | ThreadContext | MessageContext | AttachmentContext,
     message: string,
@@ -195,51 +115,7 @@ export class SpreadsheetAdapter extends BaseAdapter {
       return
     }
     ctx.log.log(`Logsheet: ${message}`, level)
-    const logValues = this.logFieldsMap[ctx.type].map((k) =>
-      PatternUtil.stringValue(ctx, k),
-    )
-    this.appendToLogSheet(...logValues, "", "", message)
-  }
-
-  public logMessagePdf(
-    ctx: MessageContext,
-    location: string,
-    pdf: GoogleAppsScript.Drive.File,
-  ) {
-    if (!this.logSheetEnabled()) {
-      this.ctx.log.info(
-        `Skipped spreadsheet log entry for PDF export of message '${ctx.message.object.getSubject()}' stored to ${location} ...`,
-      )
-      return
-    }
-    this.ctx.log.info(
-      `Creating spreadsheet log entry for PDF export of message '${ctx.message.object.getSubject()}' stored to ${location} ...`,
-    )
-    this.appendToLogSheet(
-      ...this.logFieldsMap.message.map((k) => PatternUtil.stringValue(ctx, k)),
-      pdf.getName(),
-      pdf.getUrl(),
-    )
-  }
-
-  public logThreadPdf(
-    ctx: ThreadContext,
-    location: string,
-    pdf: GoogleAppsScript.Drive.File,
-  ) {
-    if (!this.logSheetEnabled()) {
-      this.ctx.log.info(
-        `Skipped spreadsheet log entry for PDF export of thread '${ctx.thread.object.getFirstMessageSubject()}' stored to ${location} ...`,
-      )
-      return
-    }
-    this.ctx.log.info(
-      `Creating spreadsheet log entry for PDF export of thread '${ctx.thread.object.getFirstMessageSubject()}' stored to ${location} ...`,
-    )
-    this.appendToLogSheet(
-      ...this.logFieldsMap.thread.map((k) => PatternUtil.stringValue(ctx, k)),
-      pdf.getName(),
-      pdf.getUrl(),
-    )
+    const logValues = this.logAdapter.getLogValues(ctx, message)
+    this.appendToLogSheet(...logValues)
   }
 }

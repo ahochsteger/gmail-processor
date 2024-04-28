@@ -32,8 +32,7 @@ function actionExportTest() {
     global: {
       thread: {
         match: {
-          query:
-            "-in:trash -in:drafts -in:spam after:${date.now:date::yyyy-MM-dd}",
+          query: `-in:trash -in:drafts -in:spam after:\${date.now:date::yyyy-MM-dd} subject:'${GmailProcessorLib.E2EDefaults.EMAIL_SUBJECT_PREFIX}${info.name}'`,
           maxMessageCount: -1,
           minMessageCount: 1,
         },

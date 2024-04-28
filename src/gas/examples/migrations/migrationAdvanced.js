@@ -14,7 +14,7 @@ function migrationAdvancedTest() {
   }
 
   const initConfig = {
-    mails: [{ subject: info.name }],
+    mails: [{}],
   }
 
   const migrationConfig = {

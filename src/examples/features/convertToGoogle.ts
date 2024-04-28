@@ -19,8 +19,6 @@ export const info: ExampleInfo = {
 export const initConfig: E2EInitConfig = {
   mails: [
     {
-      subject: "Test with office attachments",
-      body: "Test email with multiple office attachments.",
       attachments: ["sample.docx", "sample.pptx", "sample.xlsx"],
     },
   ],
@@ -36,8 +34,7 @@ export const runConfig: Config = {
   global: {
     thread: {
       match: {
-        query:
-          "has:attachment -in:trash -in:drafts -in:spam after:${date.now:date::yyyy-MM-dd}",
+        query: `has:attachment -in:trash -in:drafts -in:spam after:\${date.now:date::yyyy-MM-dd}  subject:'${E2EDefaults.EMAIL_SUBJECT_PREFIX}${info.name}'`,
         maxMessageCount: -1,
         minMessageCount: 1,
       },

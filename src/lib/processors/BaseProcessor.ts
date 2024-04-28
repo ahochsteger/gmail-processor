@@ -15,6 +15,7 @@ import {
   ThreadContext,
   ThreadInfo,
   newMetaInfo as mi,
+  newMetaInfo,
 } from "../Context"
 import { ActionArgsType, ActionReturnType } from "../actions/ActionRegistry"
 import { ActionConfig, ProcessingStage } from "../config/ActionConfig"
@@ -107,48 +108,91 @@ export abstract class BaseProcessor {
     return m
   }
 
+  private static updateEnvContextMeta(
+    ctx: EnvContext,
+    addMeta: MetaInfo = {},
+  ): MetaInfo {
+    ctx.envMeta = { ...ctx.envMeta, ...addMeta }
+    return ctx.envMeta
+  }
+
+  private static updateProcessingContextMeta(
+    ctx: ProcessingContext,
+    addMeta: MetaInfo = {},
+  ): MetaInfo {
+    ctx.procMeta = { ...ctx.procMeta, ...addMeta }
+    return {
+      ...ctx.envMeta,
+      ...ctx.procMeta,
+    }
+  }
+
+  private static updateThreadContextMeta(
+    ctx: ThreadContext,
+    addMeta: MetaInfo = {},
+  ): MetaInfo {
+    ctx.threadMeta = { ...ctx.threadMeta, ...addMeta }
+    return {
+      ...ctx.envMeta,
+      ...ctx.procMeta,
+      ...ctx.threadMeta,
+    }
+  }
+
+  private static updateMessageContextMeta(
+    ctx: MessageContext,
+    addMeta: MetaInfo = {},
+  ): MetaInfo {
+    ctx.messageMeta = { ...ctx.messageMeta, ...addMeta }
+    return {
+      ...ctx.envMeta,
+      ...ctx.procMeta,
+      ...ctx.threadMeta,
+      ...ctx.messageMeta,
+    }
+  }
+
+  private static updateAttachmentContextMeta(
+    ctx: AttachmentContext,
+    addMeta: MetaInfo = {},
+  ): MetaInfo {
+    ctx.attachmentMeta = { ...ctx.attachmentMeta, ...addMeta }
+    return {
+      ...ctx.envMeta,
+      ...ctx.procMeta,
+      ...ctx.threadMeta,
+      ...ctx.messageMeta,
+      ...ctx.attachmentMeta,
+    }
+  }
+
   public static updateContextMeta(ctx: Context, addMeta: MetaInfo = {}) {
     switch (ctx.type) {
       case ContextType.ENV:
-        ctx.meta = {
-          ...(ctx as EnvContext).envMeta,
-          ...addMeta,
-        }
+        ctx.meta = this.updateEnvContextMeta(ctx as EnvContext, addMeta)
         break
       case ContextType.PROCESSING:
-        ctx.meta = {
-          ...(ctx as EnvContext).envMeta,
-          ...(ctx as ProcessingContext).procMeta,
-          ...addMeta,
-        }
+        ctx.meta = this.updateProcessingContextMeta(
+          ctx as ProcessingContext,
+          addMeta,
+        )
         break
       case ContextType.THREAD:
-        ctx.meta = {
-          ...(ctx as EnvContext).envMeta,
-          ...(ctx as ProcessingContext).procMeta,
-          ...(ctx as ThreadContext).threadMeta,
-          ...addMeta,
-        }
+        ctx.meta = this.updateThreadContextMeta(ctx as ThreadContext, addMeta)
         break
       case ContextType.MESSAGE:
-        ctx.meta = {
-          ...(ctx as EnvContext).envMeta,
-          ...(ctx as ProcessingContext).procMeta,
-          ...(ctx as ThreadContext).threadMeta,
-          ...(ctx as MessageContext).messageMeta,
-          ...addMeta,
-        }
+        ctx.meta = this.updateMessageContextMeta(ctx as MessageContext, addMeta)
         break
       case ContextType.ATTACHMENT:
-        ctx.meta = {
-          ...(ctx as EnvContext).envMeta,
-          ...(ctx as ProcessingContext).procMeta,
-          ...(ctx as ThreadContext).threadMeta,
-          ...(ctx as MessageContext).messageMeta,
-          ...(ctx as AttachmentContext).attachmentMeta,
-          ...addMeta,
-        }
+        ctx.meta = this.updateAttachmentContextMeta(
+          ctx as AttachmentContext,
+          addMeta,
+        )
         break
+    }
+    ctx.meta = {
+      ...ctx.meta,
+      "context.type": newMetaInfo(MIT.STRING, ctx.type, "Context type"),
     }
   }
 
@@ -251,6 +295,7 @@ export abstract class BaseProcessor {
     action: ActionConfig,
     actionResult: ActionReturnType,
   ): ProcessingResult {
+    // result.executedActions.push({config:action, result:actionResult}) // TODO: Include action result here!
     result.executedActions.push(action)
     if (!actionResult.ok) {
       result.status = ProcessingStatus.ERROR

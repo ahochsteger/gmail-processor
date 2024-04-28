@@ -38,8 +38,7 @@ function simpleTest() {
       // Place global thread, message or attachment configuration here
       thread: {
         match: {
-          query:
-            "has:attachment -in:trash -in:drafts -in:spam after:${date.now:date::yyyy-MM-dd}",
+          query: `has:attachment -in:trash -in:drafts -in:spam after:\${date.now:date::yyyy-MM-dd} subject:'${GmailProcessorLib.E2EDefaults.EMAIL_SUBJECT_PREFIX}${info.name}'`,
         },
       },
     },
@@ -47,7 +46,7 @@ function simpleTest() {
       // Place thread processing config here
       {
         match: {
-          query: "from:some.email@gmail.com",
+          query: "from:${user.email}",
         },
         messages: [
           // Place message processing config here
@@ -62,8 +61,7 @@ function simpleTest() {
                   {
                     name: "attachment.store",
                     args: {
-                      location:
-                        "folder/${message.date:date::yyyy-MM-dd}/${message.subject}-${attachment.name.match.fileid}.pdf",
+                      location: `${GmailProcessorLib.E2EDefaults.DRIVE_TESTS_BASE_PATH}/${info.name}/\${message.date:date::yyyy-MM-dd}/\${message.subject}-\${attachment.name.match.fileid}.pdf`,
                       conflictStrategy: GmailProcessorLib.ConflictStrategy.KEEP,
                     },
                   },
@@ -99,7 +97,7 @@ function simpleTest() {
           message: "Expected number of actions should have been executed",
           assertFn: (_testConfig, procResult) =>
             procResult.executedActions.length ===
-            procResult.processedThreads * 4,
+            procResult.processedThreads + procResult.processedAttachments,
         },
       ],
     },

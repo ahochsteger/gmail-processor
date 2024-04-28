@@ -1,4 +1,4 @@
-import { Expose, plainToInstance } from "class-transformer"
+import { Expose, Type, plainToInstance } from "class-transformer"
 import "reflect-metadata"
 import { essentialObject } from "../utils/ConfigUtils"
 import { RequiredDeep } from "../utils/UtilityTypes"
@@ -55,6 +55,21 @@ export enum MarkProcessedMethod {
   // ADD_LABEL_METADATA = "add-label-metadata",
 }
 
+export class LogFieldContextConfig {
+  attachment?: string
+  env?: string
+  message?: string
+  proc?: string
+  thread?: string
+}
+
+export class LogFieldConfig {
+  key: string = ""
+  title: string = ""
+  value?: string = ""
+  context?: LogFieldContextConfig = {}
+}
+
 /**
  * Represents a settings config that affect the way GmailProcessor works.
  */
@@ -69,11 +84,22 @@ export class SettingsConfig {
    */
   defaultArrayJoinSeparator? = ","
   /**
-   * Path of the spreadsheet log file. Enables logging to a spreadsheet if not empty.
+   * Location of the spreadsheet log file. Enables rich logging to a spreadsheet if not empty.
    * Example: `GmailProcessor/logsheet-${date.now:date::yyyy-MM}`
    */
   @Expose()
   logSheetLocation? = ""
+  /**
+   * Specifies the list fields to be used for rich logging.
+   */
+  @Expose()
+  richLogFields?: string[]
+  /**
+   * Defines the list fields available for rich logging.
+   */
+  @Expose()
+  @Type(() => LogFieldConfig)
+  richLogConfig?: LogFieldConfig[] = []
   /**
    * The maximum batch size of threads to process in a single run to respect Google processing limits
    */

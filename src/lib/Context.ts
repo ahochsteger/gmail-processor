@@ -1,6 +1,7 @@
 import { ActionRegistry } from "./actions/ActionRegistry"
 import { GDriveAdapter } from "./adapter/GDriveAdapter"
 import { GmailAdapter } from "./adapter/GmailAdapter"
+import { RichLogAdapter } from "./adapter/RichLogAdapter"
 import { SpreadsheetAdapter } from "./adapter/SpreadsheetAdapter"
 import { ActionConfig } from "./config/ActionConfig"
 import { RequiredAttachmentConfig } from "./config/AttachmentConfig"
@@ -91,6 +92,7 @@ export type ProcessingInfo = {
   config: RequiredConfig
   gdriveAdapter: GDriveAdapter
   gmailAdapter: GmailAdapter
+  logAdapter: RichLogAdapter
   spreadsheetAdapter: SpreadsheetAdapter
   timer: Timer
 }

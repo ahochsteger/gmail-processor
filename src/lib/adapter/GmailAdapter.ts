@@ -22,7 +22,6 @@ export class GmailAdapter extends BaseAdapter {
 
   public messageAsHtml(
     message: GoogleAppsScript.Gmail.GmailMessage,
-    name: string,
     options: ExportOptionsType,
   ): GoogleAppsScript.Base.Blob {
     this.ctx.log.info(
@@ -32,18 +31,17 @@ export class GmailAdapter extends BaseAdapter {
       [message],
       options,
     )
-    return this.ctx.env.utilities.newBlob(html, "text/html", name)
+    return this.ctx.env.utilities.newBlob(html, "text/html")
   }
 
   public messageAsPdf(
     message: GoogleAppsScript.Gmail.GmailMessage,
-    name: string,
     options: ExportOptionsType,
   ): GoogleAppsScript.Base.Blob {
     this.ctx.log.info(
       `Exporting message '${message.getSubject()}' as PDF document ...`,
     )
-    const blob = this.messageAsHtml(message, name, options)
+    const blob = this.messageAsHtml(message, options)
     return blob.getAs("application/pdf")
   }
 
@@ -125,7 +123,6 @@ export class GmailAdapter extends BaseAdapter {
    */
   public threadAsHtml(
     thread: GoogleAppsScript.Gmail.GmailThread,
-    name: string,
     options: ExportOptionsType,
   ): GoogleAppsScript.Base.Blob {
     this.ctx.log.info(
@@ -133,18 +130,17 @@ export class GmailAdapter extends BaseAdapter {
     )
     const messages = thread.getMessages()
     const html = this.gmailExportAdapter.generateMessagesHtml(messages, options)
-    return this.ctx.env.utilities.newBlob(html, "text/html", name)
+    return this.ctx.env.utilities.newBlob(html, "text/html")
   }
 
   public threadAsPdf(
     thread: GoogleAppsScript.Gmail.GmailThread,
-    name: string,
     options: ExportOptionsType,
   ): GoogleAppsScript.Base.Blob {
     this.ctx.log.info(
       `Exporting thread '${thread.getFirstMessageSubject()}' as PDF document ...`,
     )
-    const blob = this.threadAsHtml(thread, name, options)
+    const blob = this.threadAsHtml(thread, options)
     return blob.getAs("application/pdf")
   }
 

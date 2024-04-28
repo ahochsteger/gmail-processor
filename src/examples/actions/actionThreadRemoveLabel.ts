@@ -1,4 +1,5 @@
 import { E2EInitConfig, E2ETest, E2ETestConfig } from "../../lib/e2e/E2E"
+import { E2EDefaults } from "../../lib/e2e/E2EDefaults"
 import { Example, ExampleInfo } from "../Example"
 import { ProcessingStatus } from "./../../lib/Context"
 import { ProcessingStage } from "./../../lib/config/ActionConfig"
@@ -17,7 +18,7 @@ export const info: ExampleInfo = {
 }
 
 export const initConfig: E2EInitConfig = {
-  mails: [{ subject: info.name }],
+  mails: [{}],
 }
 
 export const runConfig: Config = {
@@ -25,8 +26,7 @@ export const runConfig: Config = {
   global: {
     thread: {
       match: {
-        query:
-          "from:${user.email} to:${user.email} after:${date.now:date::yyyy-MM-dd}",
+        query: `from:\${user.email} to:\${user.email} after:\${date.now:date::yyyy-MM-dd} subject:'${E2EDefaults.EMAIL_SUBJECT_PREFIX}${info.name}'`,
       },
     },
   },

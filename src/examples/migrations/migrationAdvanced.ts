@@ -13,7 +13,7 @@ export const info: ExampleInfo = {
 }
 
 export const initConfig: E2EInitConfig = {
-  mails: [{ subject: info.name }],
+  mails: [{}],
 }
 
 export const migrationConfig: GmailProcessorLib.V1Config = {

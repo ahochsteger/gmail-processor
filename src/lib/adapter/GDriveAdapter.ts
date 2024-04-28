@@ -1,9 +1,17 @@
-import { EnvContext, RunMode } from "../Context"
+import {
+  Context,
+  EnvContext,
+  MetaInfo,
+  MetaInfoType,
+  RunMode,
+  newMetaInfo,
+} from "../Context"
 import {
   AttachmentExtractTextArgs,
   StoreActionBaseArgs,
 } from "../config/ActionConfig"
 import { SettingsConfig } from "../config/SettingsConfig"
+import { PatternUtil } from "../utils/PatternUtil"
 import { BaseAdapter } from "./BaseAdapter"
 
 /** Strategy that defines how to deal in case of conflicts with already existing files at the desired location in Google Drive. */
@@ -314,6 +322,37 @@ export class GDriveAdapter extends BaseAdapter {
     return file
   }
 
+  public createFileFromAction(
+    ctx: Context,
+    location: string,
+    blob: GoogleAppsScript.Base.Blob,
+    conflictStrategy: ConflictStrategy,
+    description: string = "",
+    entity: string,
+    keyPrefix: string,
+    actionName: string,
+  ) {
+    location = PatternUtil.substitute(ctx, location)
+    const name = location.slice(location.lastIndexOf("/") + 1)
+    blob.setName(name)
+    const file = this.createFile(
+      location,
+      new FileContent(blob, name, PatternUtil.substitute(ctx, description)),
+      conflictStrategy,
+    )
+    const actionMeta = this.getActionMeta(
+      file,
+      location,
+      entity,
+      keyPrefix,
+      actionName,
+    )
+    return {
+      file,
+      actionMeta,
+    }
+  }
+
   public extractAttachmentText(
     attachment: GoogleAppsScript.Gmail.GmailAttachment,
     args: AttachmentExtractTextArgs,
@@ -411,5 +450,39 @@ export class GDriveAdapter extends BaseAdapter {
       args.conflictStrategy,
     )
     return file
+  }
+
+  public getActionMeta(
+    file: GoogleAppsScript.Drive.File | undefined,
+    location: string,
+    entity: string,
+    keyPrefix: string,
+    actionName: string,
+    actionMeta: MetaInfo = {},
+  ): MetaInfo {
+    if (file) {
+      const desc = `of the stored ${entity} (using action \`${actionName}\`)`
+      actionMeta[`${keyPrefix}.stored.location`] = newMetaInfo(
+        MetaInfoType.STRING,
+        location,
+        `The location ${desc}`,
+      )
+      actionMeta[`${keyPrefix}.stored.id`] = newMetaInfo(
+        MetaInfoType.STRING,
+        file.getId(),
+        `The ID ${desc}`,
+      )
+      actionMeta[`${keyPrefix}.stored.url`] = newMetaInfo(
+        MetaInfoType.STRING,
+        file.getUrl(),
+        `The URL ${desc}`,
+      )
+      actionMeta[`${keyPrefix}.stored.downloadUrl`] = newMetaInfo(
+        MetaInfoType.STRING,
+        file.getDownloadUrl(),
+        `The download URL ${desc}`,
+      )
+    }
+    return actionMeta
   }
 }

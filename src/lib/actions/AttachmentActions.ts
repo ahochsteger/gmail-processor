@@ -38,23 +38,24 @@ export class AttachmentActions implements ActionProvider<AttachmentContext> {
     context.log.debug(
       `AttachmentActions.extractText(): args={${JSON.stringify(args)}}`,
     )
+    const docsFileLocation = PatternUtil.substitute(
+      context,
+      args.docsFileLocation ?? "",
+    )
     const result = context.proc.gdriveAdapter.extractAttachmentText(
       context.attachment.object,
       {
         ...args,
-        docsFileLocation: PatternUtil.substitute(
-          context,
-          args.docsFileLocation ?? "",
-        ),
+        docsFileLocation,
       },
     )
-    const actionMeta: MetaInfo = {}
+    let actionMeta: MetaInfo = {}
     if (result.text) {
       const keyPrefix = "attachment"
       actionMeta["attachment.extracted"] = newMetaInfo(
         MetaInfoType.STRING,
         result.text,
-        "Extracted text from the attachment using the action `attachment.extractText`",
+        "The extracted text from the attachment (using action `attachment.extractText`)",
       )
       if (args.extract) {
         const regexMap: Map<string, string> = new Map()
@@ -67,10 +68,19 @@ export class AttachmentActions implements ActionProvider<AttachmentContext> {
           false,
         )
       }
+      if (result.file) {
+        actionMeta = context.proc.gdriveAdapter.getActionMeta(
+          result.file,
+          docsFileLocation,
+          "OCR docs file",
+          "attachment.docsFile",
+          "attachment.extractText",
+          actionMeta,
+        )
+      }
     }
     return {
-      ok: true,
-      actionMeta: actionMeta,
+      actionMeta,
       ...result,
     }
   }
@@ -81,17 +91,26 @@ export class AttachmentActions implements ActionProvider<AttachmentContext> {
     context: AttachmentContext,
     args: StoreActionBaseArgs,
   ): ActionReturnType & { file?: GoogleAppsScript.Drive.File } {
+    const location = PatternUtil.substitute(context, args.location)
     const file = context.proc.gdriveAdapter.storeAttachment(
       context.attachment.object,
       {
         ...args,
-        location: PatternUtil.substitute(context, args.location),
+        location: location,
         description: PatternUtil.substitute(context, args.description ?? ""),
       },
     )
+    const actionMeta = context.proc.gdriveAdapter.getActionMeta(
+      file,
+      location,
+      "attachment",
+      "attachment",
+      "attachment.store",
+    )
     return {
       ok: true,
-      file: file,
+      file,
+      actionMeta,
     }
   }
 }

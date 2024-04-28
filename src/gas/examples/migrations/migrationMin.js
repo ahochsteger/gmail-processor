@@ -14,7 +14,7 @@ function migrationMinTest() {
   }
 
   const initConfig = {
-    mails: [{ subject: info.name }],
+    mails: [{}],
   }
 
   const migrationConfig = {

@@ -2,6 +2,10 @@
 
 set -euo pipefail
 
+export EXAMPLE_SRC_BASEDIR="${EXAMPLE_SRC_BASEDIR:-src/examples}"
+export EXAMPLE_GAS_BASEDIR="${EXAMPLE_GAS_BASEDIR:-src/gas/examples}"
+export EXAMPLE_DOCS_BASEDIR="${EXAMPLE_DOCS_BASEDIR:-docs/docs/examples}"
+
 function skipImports() {
   envsubst \
   | awk '
@@ -42,12 +46,44 @@ function getInfo() {
   | gojq -r --yaml-input "${filter}"
 }
 
+function validateExample() {
+  local file="${1}"
+
+  # Check example name:
+  local infoName; infoName=$(getInfo "${file}" ".name")
+  if [[ "${infoName}" != "${baseName}" ]]; then
+    echo -e "\nERROR: The example file '${file}' does not match with the info name '${infoName}'!"
+    exit 1 
+  fi
+  # Check for existing example export:
+  if ! grep -E -q "export const ${infoName}Example: Example" <"${file}"; then
+    echo -e "\nERROR: The example file '${file}' does not export an example named '${infoName}Example'!"
+    exit 1 
+  fi
+  # Check example category:
+  local category; category=$(basename ${filedir})
+  local infoCategory; infoCategory=$(getInfo "${EXAMPLE_SRC_BASEDIR}/${f}" ".category")
+  if [[ "${infoCategory}" != "${category}" ]]; then
+    echo -e "\nERROR: The path of the example file '${file}' does not match with the info category '${infoCategory}'!"
+    exit 1 
+  fi
+  local categoryIndexFile="${EXAMPLE_DOCS_BASEDIR}/${category}/index.mdx"
+  if [[ ! -f "${categoryIndexFile}" ]]; then
+    echo -e "\nERROR: The category of the example file '${file}' misses an index file at '${categoryIndexFile}'!"
+    exit 1 
+  fi
+  # Scan for full lib import (causes problems with Docusaurus site):
+  if grep -E -q "from \"../../lib\"" <"${file}"; then
+    echo -e "\nERROR: The example file '${file}' imports the full lib which causes problems with Docusaurus!"
+    exit 1 
+  fi
+}
+
 function generateFromTemplate() {
-  local src_base_dir="${1}"
-  local file_filter="${2}"
-  local type="${3}"
-  local dest_base_dir="${4}"
-  local dest_ext="${5}"
+  local file_filter="${1}"
+  local type="${2}"
+  local dest_base_dir="${3}"
+  local dest_ext="${4}"
 
   echo -n "Generating files to '${dest_base_dir}': "
   local generated_files=()
@@ -57,36 +93,27 @@ function generateFromTemplate() {
     local filedir; filedir="$(dirname "${f}")"
     local dest_file="${dest_base_dir}/${filedir}/${baseName}.${dest_ext}"
 
-    local infoName; infoName=$(getInfo "${src_base_dir}/${f}" ".name")
-    if [ "${infoName}" != "${baseName}" ]; then
-      echo -e "\nERROR: The File basename (${baseName}) and info name (${infoName}) do not match in file ${f}!"
-      exit 1 
-    fi
+    validateExample "${EXAMPLE_SRC_BASEDIR}/${f}"
 
-    local category; category=$(basename ${filedir})
-    local infoCategory; infoCategory=$(getInfo "${src_base_dir}/${f}" ".category")
-    if [ "${infoCategory}" != "${category}" ]; then
-      echo -e "\nERROR: The category directory (${category}) and info category (${infoCategory}) do not match in file ${f}!"
-      exit 1 
-    fi
-    local generate; generate=$(getInfo "${src_base_dir}/${f}" "if (.generate|index(\"${type}\")) then \"true\" else \"false\" end")
+    local generate; generate=$(getInfo "${EXAMPLE_SRC_BASEDIR}/${f}" "if (.generate|index(\"${type}\")) then \"true\" else \"false\" end")
     if [[ "${generate}" == "false" ]]; then
       if [[ -f "${dest_file}" ]]; then
-        echo -e "\nWARNING: ${dest_file} exists but should not be generated!"
+        echo -e "\nWARNING: Removing ${dest_file} since it should not be generated!"
+        rm -f "${dest_file}"
       fi
       continue
     fi
     echo -n "${baseName} "
     local lib_exports_regex; lib_exports_regex=$(getLibExportsAsRegex)
-    local template_file_path="${src_base_dir}/_templates/${type}.tmpl"
-    local schemaVersion; schemaVersion=$(getInfo "${src_base_dir}/${f}" ".schemaVersion")
-    if [[ -f "${src_base_dir}/_templates/${type}-${schemaVersion}.tmpl" ]]; then
-      template_file_path="${src_base_dir}/_templates/${type}-${schemaVersion}.tmpl"
+    local template_file_path="${EXAMPLE_SRC_BASEDIR}/_templates/${type}.tmpl"
+    local schemaVersion; schemaVersion=$(getInfo "${EXAMPLE_SRC_BASEDIR}/${f}" ".schemaVersion")
+    if [[ -f "${EXAMPLE_SRC_BASEDIR}/_templates/${type}-${schemaVersion}.tmpl" ]]; then
+      template_file_path="${EXAMPLE_SRC_BASEDIR}/_templates/${type}-${schemaVersion}.tmpl"
     fi
     mkdir -p "${dest_base_dir}/${filedir}"
     {
       export __E2E_TEST_CODE__; __E2E_TEST_CODE__=$(
-        skipImports <"${src_base_dir}/${f}" \
+        skipImports <"${EXAMPLE_SRC_BASEDIR}/${f}" \
         | sed -re "
           s/^export const ([^:]+):.*=/const \\1 =/g;
           s/^/  /g;
@@ -98,20 +125,20 @@ function generateFromTemplate() {
       # * Merge MIGRATION_CONFIG + CONFIG and split by schema version
       # * Check if FILE_DIR_UP can be eliminated using @src imports
       export __E2E_TEMPLATE_FILE_PATH__; __E2E_TEMPLATE_FILE_PATH__="${template_file_path}"
-      export __E2E_TEST_FILE_PATH__="${src_basedir}/${f}"
+      export __E2E_TEST_FILE_PATH__="${EXAMPLE_SRC_BASEDIR}/${f}"
       export __E2E_TEST_FILE_DIR__="${filedir}"
       export __E2E_TEST_FILE_BASENAME__="${baseName}"
-      export __E2E_TEST_INFO__; __E2E_TEST_INFO__=$(getInfo "${src_base_dir}/${f}")
-      export __E2E_TEST_TITLE__; __E2E_TEST_TITLE__=$(getInfo "${src_base_dir}/${f}" ".title")
-      export __E2E_TEST_CONFIG__; __E2E_TEST_CONFIG__=$(extractJsonConstant "runConfig" <"${src_base_dir}/${f}")
-      export __E2E_TEST_MIGRATION_CONFIG__; __E2E_TEST_MIGRATION_CONFIG__=$(extractJsonConstant "migrationConfig" <"${src_base_dir}/${f}")
+      export __E2E_TEST_INFO__; __E2E_TEST_INFO__=$(getInfo "${EXAMPLE_SRC_BASEDIR}/${f}")
+      export __E2E_TEST_TITLE__; __E2E_TEST_TITLE__=$(getInfo "${EXAMPLE_SRC_BASEDIR}/${f}" ".title")
+      export __E2E_TEST_CONFIG__; __E2E_TEST_CONFIG__=$(extractJsonConstant "runConfig" <"${EXAMPLE_SRC_BASEDIR}/${f}")
+      export __E2E_TEST_MIGRATION_CONFIG__; __E2E_TEST_MIGRATION_CONFIG__=$(extractJsonConstant "migrationConfig" <"${EXAMPLE_SRC_BASEDIR}/${f}")
       export __E2E_TEST_FILE_DIR_UP__; __E2E_TEST_FILE_DIR_UP__=$(echo "${filedir}" | sed -re 's#[^/]+#..#g')
       envsubst <"${template_file_path}"
     } >"${dest_file}"
     generated_files+=("${dest_file}")
     allExamples+=("${baseName}")
   done < <(
-    find "${src_base_dir}" -type f -path "${file_filter}" -printf "%P\n" \
+    find "${EXAMPLE_SRC_BASEDIR}" -type f -path "${file_filter}" -printf "%P\n" \
     | grep -v '\.spec.ts$' \
     || true
   )
@@ -124,25 +151,21 @@ function generateFromTemplate() {
   fi
 }
 
-src_basedir="src/examples"
-gas_basedir="src/gas/examples"
-docs_basedir="docs/docs/examples"
-
 # Generate example GAS files:
-generateFromTemplate "${src_basedir}" "${src_basedir}/**/*.ts" "test-e2e" "${gas_basedir}" "js"
+generateFromTemplate "${EXAMPLE_SRC_BASEDIR}/**/*.ts" "test-e2e" "${EXAMPLE_GAS_BASEDIR}" "js"
 
 # Generate example test specs:
-generateFromTemplate "${src_basedir}" "${src_basedir}/**/*.ts" "test-spec" "${src_basedir}" "spec.ts"
+generateFromTemplate "${EXAMPLE_SRC_BASEDIR}/**/*.ts" "test-spec" "${EXAMPLE_SRC_BASEDIR}" "spec.ts"
 
 # Generate example docs:
-generateFromTemplate "${src_basedir}" "${src_basedir}/**/*.ts" "docs" "${docs_basedir}" "mdx"
+generateFromTemplate "${EXAMPLE_SRC_BASEDIR}/**/*.ts" "docs" "${EXAMPLE_DOCS_BASEDIR}" "mdx"
 
 # Generate all examples file:
 find src/examples -type f -name '*.ts' -printf "%P\n" \
 | grep -E '^[a-z]+/[0-9A-Za-z]+\.ts$' \
 | sed -re 's/^(([a-z]+)\/([0-9A-Za-z]+))\.ts$/{"path": "\1", "category": "\2", "name": "\3"}/g' \
-| gojq -s 'sort_by(.name)' \
+| gojq -s \
 | gomplate \
   -c .=stdin: \
-  -f "${src_basedir}/_templates/index.ts.gtpl" \
->"${src_basedir}/index.ts"
+  -f "${EXAMPLE_SRC_BASEDIR}/_templates/index.ts.gtpl" \
+>"${EXAMPLE_SRC_BASEDIR}/index.ts"
