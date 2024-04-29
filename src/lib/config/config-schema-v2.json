@@ -1283,29 +1283,34 @@
         },
         "LogFieldConfig": {
             "additionalProperties": false,
+            "description": "Represents a log field configuration.",
             "properties": {
-                "context": {
+                "contextValue": {
                     "$ref": "#/definitions/LogFieldContextConfig",
-                    "title": "context"
+                    "description": "The context-dependent value. It allows different values depending on the context type.",
+                    "title": "contextValue"
                 },
-                "key": {
+                "name": {
                     "default": "",
-                    "title": "key",
+                    "description": "The name of the log field that can be referenced from the list of log fields.",
+                    "title": "name",
                     "type": "string"
                 },
                 "title": {
                     "default": "",
+                    "description": "The title of the log field that is used as the headline of the log sheet.",
                     "title": "title",
                     "type": "string"
                 },
                 "value": {
                     "default": "",
+                    "description": "The value of the log field. Supports placeholder substitution.",
                     "title": "value",
                     "type": "string"
                 }
             },
             "required": [
-                "key",
+                "name",
                 "title"
             ],
             "title": "LogFieldConfig",
@@ -1313,24 +1318,30 @@
         },
         "LogFieldContextConfig": {
             "additionalProperties": false,
+            "description": "Represents the context-dependant value mapping.",
             "properties": {
                 "attachment": {
+                    "description": "The value to be used for attachment context. Supports placeholder substitution.",
                     "title": "attachment",
                     "type": "string"
                 },
                 "env": {
+                    "description": "The value to be used for environment context. Supports placeholder substitution.",
                     "title": "env",
                     "type": "string"
                 },
                 "message": {
+                    "description": "The value to be used for message context. Supports placeholder substitution.",
                     "title": "message",
                     "type": "string"
                 },
                 "proc": {
+                    "description": "The value to be used for processing context. Supports placeholder substitution.",
                     "title": "proc",
                     "type": "string"
                 },
                 "thread": {
+                    "description": "The value to be used for thread context. Supports placeholder substitution.",
                     "title": "thread",
                     "type": "string"
                 }
@@ -2632,9 +2643,26 @@
                     "title": "defaultTimestampFormat",
                     "type": "string"
                 },
+                "logConfig": {
+                    "default": [],
+                    "description": "Defines additional fields that can be used in addition to the built-in ones for log sheet logging.",
+                    "items": {
+                        "$ref": "#/definitions/LogFieldConfig"
+                    },
+                    "title": "logConfig",
+                    "type": "array"
+                },
+                "logFields": {
+                    "description": "The list of field names to be used for log sheet logging.\nAll context placeholder names can be referenced as well as special fields defined for logging.",
+                    "items": {
+                        "type": "string"
+                    },
+                    "title": "logFields",
+                    "type": "array"
+                },
                 "logSheetLocation": {
                     "default": "",
-                    "description": "Location of the spreadsheet log file. Enables rich logging to a spreadsheet if not empty.\nExample: `GmailProcessor/logsheet-${date.now:date::yyyy-MM}`",
+                    "description": "Location of the spreadsheet log file. Enables logging to a spreadsheet if not empty.\nExample: `GmailProcessor/logsheet-${date.now:date::yyyy-MM}`",
                     "title": "logSheetLocation",
                     "type": "string"
                 },
@@ -2665,23 +2693,6 @@
                     "description": "The maximum runtime in seconds for a single run to respect Google processing limits",
                     "title": "maxRuntime",
                     "type": "number"
-                },
-                "richLogConfig": {
-                    "default": [],
-                    "description": "Defines the list fields available for rich logging.",
-                    "items": {
-                        "$ref": "#/definitions/LogFieldConfig"
-                    },
-                    "title": "richLogConfig",
-                    "type": "array"
-                },
-                "richLogFields": {
-                    "description": "Specifies the list fields to be used for rich logging.",
-                    "items": {
-                        "type": "string"
-                    },
-                    "title": "richLogFields",
-                    "type": "array"
                 },
                 "sleepTimeAttachments": {
                     "default": 0,

@@ -10,7 +10,7 @@ import { LogLevel } from "../utils/Logger"
 import { PatternUtil } from "../utils/PatternUtil"
 import { BaseAdapter } from "./BaseAdapter"
 import { DriveUtils } from "./GDriveAdapter"
-import { RichLogAdapter } from "./RichLogAdapter"
+import { LogAdapter } from "./LogAdapter"
 
 export const SCRIPT_CACHE_LOGSHEET_ID_KEY = "GmailProcessor.logSheetId"
 
@@ -24,7 +24,7 @@ export class SpreadsheetAdapter extends BaseAdapter {
   constructor(
     public ctx: EnvContext,
     public settings: SettingsConfig,
-    public logAdapter: RichLogAdapter,
+    public logAdapter: LogAdapter,
   ) {
     super(ctx, settings)
     this.logAdapter = logAdapter
@@ -60,7 +60,7 @@ export class SpreadsheetAdapter extends BaseAdapter {
       logSheetFile = this.driveApp.getFileById(this.logSheetId)
       logSheetFile.moveTo(folder)
       this.ctx.log.info(`Created new logSheet at: ${logSheetFile.getUrl()}`)
-      this.appendToLogSheet(...this.logAdapter.getLogHeaders())
+      this.appendToLogSheet(...this.logAdapter.getLogHeaders(this.ctx))
     }
     this.cacheService
       .getScriptCache()

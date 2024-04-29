@@ -55,19 +55,34 @@ export enum MarkProcessedMethod {
   // ADD_LABEL_METADATA = "add-label-metadata",
 }
 
+/**
+ * Represents the context-dependant value mapping.
+ */
 export class LogFieldContextConfig {
+  /** The value to be used for attachment context. Supports placeholder substitution. */
   attachment?: string
+  /** The value to be used for environment context. Supports placeholder substitution. */
   env?: string
+  /** The value to be used for message context. Supports placeholder substitution. */
   message?: string
+  /** The value to be used for processing context. Supports placeholder substitution. */
   proc?: string
+  /** The value to be used for thread context. Supports placeholder substitution. */
   thread?: string
 }
 
+/**
+ * Represents a log field configuration.
+ */
 export class LogFieldConfig {
-  key: string = ""
+  /** The name of the log field that can be referenced from the list of log fields. */
+  name: string = ""
+  /** The title of the log field that is used as the headline of the log sheet. */
   title: string = ""
+  /** The value of the log field. Supports placeholder substitution. */
   value?: string = ""
-  context?: LogFieldContextConfig = {}
+  /** The context-dependent value. It allows different values depending on the context type. */
+  contextValue?: LogFieldContextConfig = {}
 }
 
 /**
@@ -84,22 +99,23 @@ export class SettingsConfig {
    */
   defaultArrayJoinSeparator? = ","
   /**
-   * Location of the spreadsheet log file. Enables rich logging to a spreadsheet if not empty.
+   * Location of the spreadsheet log file. Enables logging to a spreadsheet if not empty.
    * Example: `GmailProcessor/logsheet-${date.now:date::yyyy-MM}`
    */
   @Expose()
   logSheetLocation? = ""
   /**
-   * Specifies the list fields to be used for rich logging.
+   * The list of field names to be used for log sheet logging.
+   * All context placeholder names can be referenced as well as special fields defined for logging.
    */
   @Expose()
-  richLogFields?: string[]
+  logFields?: string[]
   /**
-   * Defines the list fields available for rich logging.
+   * Defines additional fields that can be used in addition to the built-in ones for log sheet logging.
    */
   @Expose()
   @Type(() => LogFieldConfig)
-  richLogConfig?: LogFieldConfig[] = []
+  logConfig?: LogFieldConfig[] = []
   /**
    * The maximum batch size of threads to process in a single run to respect Google processing limits
    */
