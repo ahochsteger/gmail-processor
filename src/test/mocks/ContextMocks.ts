@@ -11,7 +11,7 @@ import {
 import { EnvProvider } from "../../lib/EnvProvider"
 import { GDriveAdapter } from "../../lib/adapter/GDriveAdapter"
 import { GmailAdapter } from "../../lib/adapter/GmailAdapter"
-import { RichLogAdapter } from "../../lib/adapter/RichLogAdapter"
+import { LogAdapter } from "../../lib/adapter/LogAdapter"
 import { SpreadsheetAdapter } from "../../lib/adapter/SpreadsheetAdapter"
 import { newAttachmentConfig } from "../../lib/config/AttachmentConfig"
 import { newMessageConfig } from "../../lib/config/MessageConfig"
@@ -60,7 +60,7 @@ export class ContextMocks {
     config = ConfigMocks.newDefaultConfig(),
   ): ProcessingContext {
     const actionRegistry = GmailProcessor.setupActionRegistry(envContext)
-    const logAdapter = new RichLogAdapter(envContext, config.settings)
+    const logAdapter = new LogAdapter(envContext, config.settings)
     return GmailProcessor.buildContext(envContext, {
       gdriveAdapter: new GDriveAdapter(envContext, config.settings),
       gmailAdapter: new GmailAdapter(envContext, config.settings),

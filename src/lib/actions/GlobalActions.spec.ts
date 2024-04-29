@@ -4,7 +4,7 @@ import {
   Mocks,
   fakedSystemDateTimeString,
 } from "../../test/mocks/MockFactory"
-import { LOG_MESSAGE_KEY } from "../adapter/RichLogAdapter"
+import { LOG_MESSAGE_NAME } from "../adapter/LogAdapter"
 import { Config } from "../config/Config"
 import { LogLevel } from "../utils/Logger"
 import { ConfigMocks } from "./../../test/mocks/ConfigMocks"
@@ -20,10 +20,10 @@ beforeAll(() => {
     settings: {
       ...ConfigMocks.newDefaultSettingsConfigJson(),
       logSheetLocation: LOGSHEET_FILE_PATH,
-      richLogFields: ["log.timestamp", "field1", "field2", "log.message"],
-      richLogConfig: [
-        { key: "field1", title: "Field 1", value: "static value" },
-        { key: "field2", title: "Field 2", value: "${context.type}" },
+      logFields: ["log.timestamp", "field.1", "field.2", "log.message"],
+      logConfig: [
+        { name: "field.1", title: "Field 1", value: "static value" },
+        { name: "field.2", title: "Field 2", value: "${context.type}" },
       ],
     },
   }
@@ -68,7 +68,7 @@ it("should log with a certain log level to a logSheet", () => {
   })
   // TODO: Test should not depend on the action implementation
   const i = mocks.processingContext.proc.logAdapter
-    .getLogFieldKeys()
-    .indexOf(LOG_MESSAGE_KEY)
+    .getLogFieldNames()
+    .indexOf(LOG_MESSAGE_NAME)
   expect(mocks.logSheet.appendRow.mock.calls[0][0][i]).toEqual("Log message")
 })

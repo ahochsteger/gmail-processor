@@ -6,9 +6,9 @@ import {
 } from "../../test/mocks/MockFactory"
 import { Config } from "../config/Config"
 import { LogLevel } from "../utils/Logger"
-import { RichLogAdapter } from "./RichLogAdapter"
+import { LogAdapter } from "./LogAdapter"
 
-let richLogAdapter: RichLogAdapter
+let richLogAdapter: LogAdapter
 let mocks: Mocks
 let config: Config
 beforeEach(() => {
@@ -16,16 +16,17 @@ beforeEach(() => {
     ...ConfigMocks.newDefaultConfigJson(),
     settings: {
       ...ConfigMocks.newDefaultSettingsConfigJson(),
-      richLogFields: [
+      logFields: [
         "log.timestamp",
         "log.level",
         "log.message",
-        "field1",
-        "field2",
+        "field.1",
+        "field.2",
+        "env.runMode",
       ],
-      richLogConfig: [
-        { key: "field1", title: "Field 1", value: "static value" },
-        { key: "field2", title: "Field 2", value: "${context.type}" },
+      logConfig: [
+        { name: "field.1", title: "Field 1", value: "static value" },
+        { name: "field.2", title: "Field 2", value: "${context.type}" },
       ],
     },
   }
@@ -43,7 +44,8 @@ it("should create a field config compliant log array", () => {
     LogLevel.INFO,
     "Log message",
     "static value",
-    "proc",
+    mocks.processingContext.type,
+    mocks.processingContext.env.runMode,
   ])
 })
 
@@ -53,7 +55,8 @@ it("should create a field config compliant JSON log object", () => {
     "log.timestamp": `${fakedSystemDateTimeString}.000`,
     "log.level": LogLevel.INFO,
     "log.message": "Log message",
-    field1: "static value",
-    field2: "proc",
+    "field.1": "static value",
+    "field.2": mocks.processingContext.type,
+    "env.runMode": mocks.processingContext.env.runMode,
   })
 })

@@ -13,10 +13,10 @@ beforeEach(() => {
     settings: {
       ...ConfigMocks.newDefaultSettingsConfigJson(),
       logSheetLocation: LOGSHEET_FILE_PATH,
-      richLogFields: ["log.timestamp", "field1", "field2", "log.message"],
-      richLogConfig: [
-        { key: "field1", title: "Field 1", value: "static value" },
-        { key: "field2", title: "Field 2", value: "${context.type}" },
+      logFields: ["log.timestamp", "field.1", "field.2", "log.message"],
+      logConfig: [
+        { name: "field.1", title: "Field 1", value: "static value" },
+        { name: "field.2", title: "Field 2", value: "${context.type}" },
       ],
     },
   }

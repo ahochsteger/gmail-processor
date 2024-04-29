@@ -28,16 +28,19 @@ function logSheetLoggingTest() {
       logSheetLocation:
         "/GmailProcessor-Tests/logsheet-${date.now:date::yyyy-MM}",
 
-      richLogFields: [
+      logFields: [
         "log.timestamp",
+        "entity.date",
+        "entity.subject",
+        "entity.from",
+        "entity.url",
+        "attachment.name",
+        "attachment.size",
+        "attachment.contentType",
+        "stored.location",
+        "stored.url",
+        "stored.downloadUrl",
         "context.type",
-        "gmailUrl",
-        "date",
-        "subject",
-        "from",
-        "gdriveLocation",
-        "gdriveUrl",
-        "gdriveDownloadUrl",
         "log.message",
       ],
     },

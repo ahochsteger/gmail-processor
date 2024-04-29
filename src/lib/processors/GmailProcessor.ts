@@ -17,7 +17,7 @@ import { MessageActions } from "../actions/MessageActions"
 import { ThreadActions } from "../actions/ThreadActions"
 import { GDriveAdapter } from "../adapter/GDriveAdapter"
 import { GmailAdapter } from "../adapter/GmailAdapter"
-import { RichLogAdapter } from "../adapter/RichLogAdapter"
+import { LogAdapter } from "../adapter/LogAdapter"
 import { SpreadsheetAdapter } from "../adapter/SpreadsheetAdapter"
 import {
   Config,
@@ -105,7 +105,7 @@ export class GmailProcessor extends BaseProcessor {
       )
     }
     const actionRegistry = GmailProcessor.setupActionRegistry(ctx)
-    const logAdapter = new RichLogAdapter(ctx, config.settings)
+    const logAdapter = new LogAdapter(ctx, config.settings)
     const processingContext = GmailProcessor.buildContext(ctx, {
       actionRegistry: actionRegistry,
       config: config,
