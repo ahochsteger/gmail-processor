@@ -34,6 +34,8 @@ export const runConfig: Config = {
 
     logFields: [
       "log.timestamp",
+      "log.level",
+      "log.message",
       "entity.date",
       "entity.subject",
       "entity.from",
@@ -45,7 +47,6 @@ export const runConfig: Config = {
       "stored.url",
       "stored.downloadUrl",
       "context.type",
-      "log.message",
     ],
   },
   threads: [

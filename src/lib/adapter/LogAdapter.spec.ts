@@ -5,6 +5,7 @@ import {
   fakedSystemDateTimeString,
 } from "../../test/mocks/MockFactory"
 import { Config } from "../config/Config"
+import { newSettingsConfig } from "../config/SettingsConfig"
 import { LogLevel } from "../utils/Logger"
 import { LogAdapter } from "./LogAdapter"
 
@@ -12,10 +13,16 @@ let richLogAdapter: LogAdapter
 let mocks: Mocks
 let config: Config
 beforeEach(() => {
+  const logConfig = [
+    ...newSettingsConfig({}).logConfig,
+    { name: "field.1", title: "Field 1", value: "static value" },
+    { name: "field.2", title: "Field 2", value: "${context.type}" },
+  ]
   config = {
     ...ConfigMocks.newDefaultConfigJson(),
     settings: {
       ...ConfigMocks.newDefaultSettingsConfigJson(),
+      logConfig,
       logFields: [
         "log.timestamp",
         "log.level",
@@ -23,10 +30,6 @@ beforeEach(() => {
         "field.1",
         "field.2",
         "env.runMode",
-      ],
-      logConfig: [
-        { name: "field.1", title: "Field 1", value: "static value" },
-        { name: "field.2", title: "Field 2", value: "${context.type}" },
       ],
     },
   }

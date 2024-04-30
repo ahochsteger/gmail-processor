@@ -4,14 +4,14 @@ sidebar_position: 35
 ---
 # Logging
 
-import { defaultLogConfig, defaultLogFields } from '../../../src/lib/adapter/LogAdapter';
+import { newSettingsConfig } from '../../../src/lib/config/SettingsConfig';
 
 ## Default Log Fields
 
 Unlise otherwise configured using `logFields` in the `settings` configuration the following fields are used for logging to a log sheet:
 
 <ul>
-  {defaultLogFields.map(f => <li key={f}><tt>{f}</tt></li>)}
+  {newSettingsConfig({}).logFields.map(f => <li key={f}><tt>{f}</tt></li>)}
 </ul>
 
 ## Default Log Config
@@ -27,7 +27,7 @@ Additional custom fields can be added using `logConfig` in the `settings` config
   </thead>
   <tbody>
     {
-      defaultLogConfig.map(f => {
+      newSettingsConfig({}).logConfig.sort((a,b)=>a.name.localeCompare(b.name)).map(f => {
         f.value = !f.value && !f.ctxValues ? `\${${f.name}}` : f.value
         return <tr key={f.name}>
           <td><tt>{f.name}</tt></td>

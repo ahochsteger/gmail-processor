@@ -2644,7 +2644,6 @@
                     "type": "string"
                 },
                 "logConfig": {
-                    "default": [],
                     "description": "Defines additional fields that can be used in addition to the built-in ones for log sheet logging.",
                     "items": {
                         "$ref": "#/definitions/LogFieldConfig"
@@ -2653,6 +2652,21 @@
                     "type": "array"
                 },
                 "logFields": {
+                    "default": [
+                        "log.timestamp",
+                        "log.level",
+                        "log.message",
+                        "entity.date",
+                        "entity.subject",
+                        "entity.from",
+                        "entity.url",
+                        "attachment.name",
+                        "attachment.size",
+                        "attachment.contentType",
+                        "stored.location",
+                        "stored.url",
+                        "stored.downloadUrl"
+                    ],
                     "description": "The list of field names to be used for log sheet logging.\nAll context placeholder names can be referenced as well as special fields defined for logging.",
                     "items": {
                         "type": "string"

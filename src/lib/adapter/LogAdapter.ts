@@ -6,116 +6,16 @@ import {
   ProcessingContext,
   ThreadContext,
 } from "../Context"
-import { LogFieldConfig, SettingsConfig } from "../config/SettingsConfig"
+import {
+  LOG_LEVEL_NAME,
+  LOG_MESSAGE_NAME,
+  LogFieldConfig,
+  SettingsConfig,
+  newSettingsConfig,
+} from "../config/SettingsConfig"
 import { LogLevel } from "../utils/Logger"
 import { PatternUtil } from "../utils/PatternUtil"
 import { BaseAdapter } from "./BaseAdapter"
-
-export const LOG_MESSAGE_NAME = "log.message"
-export const LOG_LEVEL_NAME = "log.level"
-export const defaultLogFields = [
-  "log.timestamp",
-  "entity.date",
-  "entity.subject",
-  "entity.from",
-  "entity.url",
-  "attachment.name",
-  "attachment.size",
-  "attachment.contentType",
-  "stored.location",
-  "stored.url",
-  "stored.downloadUrl",
-  "log.message",
-]
-export const defaultLogConfig: LogFieldConfig[] = [
-  {
-    name: "log.timestamp",
-    title: "Timestamp",
-    value: "${date.now:date::yyyy-MM-dd HH:mm:ss.SSS}",
-  },
-  {
-    name: LOG_LEVEL_NAME,
-    title: "Log Level",
-  },
-  {
-    // Special entry that represents the log message
-    name: LOG_MESSAGE_NAME,
-    title: "Log Message",
-  },
-  // TODO: Move title to meta info and use from there.
-  { name: "context.type", title: "Context Type", value: "${context.type}" },
-  {
-    name: "entity.id",
-    title: "ID",
-    ctxValues: {
-      attachment: "${attachment.hash}",
-      message: "${message.id}",
-      thread: "${thread.id}",
-    },
-  },
-  {
-    name: "entity.url",
-    title: "GMail URL",
-    ctxValues: {
-      attachment: "${message.url}",
-      message: "${message.url}",
-      thread: "${thread.url}",
-    },
-  },
-  {
-    name: "entity.date",
-    title: "Message Date",
-    ctxValues: {
-      attachment: "${message.date}",
-      message: "${message.date}",
-      thread: "${thread.lastMessageDate}",
-    },
-  },
-  {
-    name: "entity.subject",
-    title: "Subject",
-    ctxValues: {
-      attachment: "${message.subject}",
-      message: "${message.subject}",
-      thread: "${thread.firstMessageSubject}",
-    },
-  },
-  {
-    name: "entity.from",
-    title: "From",
-    ctxValues: {
-      attachment: "${message.from}",
-      message: "${message.from}",
-    },
-  },
-  {
-    name: "attachment.name",
-    title: "Attachment Name",
-  },
-  {
-    name: "attachment.contentType",
-    title: "Content Type",
-  },
-  {
-    name: "attachment.size",
-    title: "Attachment Size",
-  },
-  {
-    name: "stored.location",
-    title: "Stored Location",
-    ctxValues: { attachment: "${attachment.stored.location}" },
-  },
-  {
-    name: "stored.url",
-    title: "Stored URL",
-    ctxValues: { attachment: "${attachment.stored.url}" },
-  },
-  {
-    name: "stored.downloadUrl",
-    title: "Download URL",
-    ctxValues: { attachment: "${attachment.stored.downloadUrl}" },
-  },
-]
 
 export class LogAdapter extends BaseAdapter {
   constructor(
@@ -126,11 +26,11 @@ export class LogAdapter extends BaseAdapter {
   }
 
   public getLogConfig(): LogFieldConfig[] {
-    return defaultLogConfig.concat(this.settings.logConfig ?? [])
+    return newSettingsConfig(this.settings).logConfig
   }
 
   public getLogFieldNames(): string[] {
-    return this.settings.logFields ?? defaultLogFields
+    return newSettingsConfig(this.settings).logFields
   }
 
   public getField(
