@@ -111,11 +111,11 @@ export class SpreadsheetAdapter extends BaseAdapter {
     level: LogLevel = LogLevel.INFO,
   ) {
     if (!this.logSheetEnabled()) {
-      this.ctx.log.info(`Skipping Logsheet: ${message}`, level)
+      this.ctx.log.warn(`Skipping Logsheet: ${message}`, level)
       return
     }
     ctx.log.log(`Logsheet: ${message}`, level)
-    const logValues = this.logAdapter.getLogValues(ctx, message)
+    const logValues = this.logAdapter.getLogValues(ctx, message, level)
     this.appendToLogSheet(...logValues)
   }
 }

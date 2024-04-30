@@ -4,8 +4,8 @@ import {
   Mocks,
   fakedSystemDateTimeString,
 } from "../../test/mocks/MockFactory"
-import { LOG_MESSAGE_NAME } from "../adapter/LogAdapter"
 import { Config } from "../config/Config"
+import { LOG_LEVEL_NAME, LOG_MESSAGE_NAME } from "../config/SettingsConfig"
 import { LogLevel } from "../utils/Logger"
 import { ConfigMocks } from "./../../test/mocks/ConfigMocks"
 import { GlobalActions } from "./GlobalActions"
@@ -20,11 +20,6 @@ beforeAll(() => {
     settings: {
       ...ConfigMocks.newDefaultSettingsConfigJson(),
       logSheetLocation: LOGSHEET_FILE_PATH,
-      logFields: ["log.timestamp", "field.1", "field.2", "log.message"],
-      logConfig: [
-        { name: "field.1", title: "Field 1", value: "static value" },
-        { name: "field.2", title: "Field 2", value: "${context.type}" },
-      ],
     },
   }
   mocks = MockFactory.newMocks(config)
@@ -50,25 +45,42 @@ it("should with a certain log level to console", () => {
   expect(spy.mock.calls[0][0]).toMatch(/^\[[^\]]+\] WARN: Log message/)
 })
 
-it("should log with default level to a logSheet", () => {
-  GlobalActions.sheetLog(mocks.processingContext, { message: "Log message" })
+it("should log with default level (info) to a logSheet", () => {
+  GlobalActions.sheetLog(mocks.attachmentContext, { message: "Log message" })
   // TODO: Test should not depend on the action implementation
   expect(mocks.logSheet.appendRow.mock.calls[0][0]).toEqual([
     `${fakedSystemDateTimeString}.000`,
-    "static value",
-    "proc",
+    LogLevel.INFO,
     "Log message",
+    "2019-05-02 09:15:28",
+    "Message Subject 1",
+    "message-from@example.com",
+    "https://mail.google.com/mail/u/0/#inbox/message-id",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
   ])
 })
 
-it("should log with a certain log level to a logSheet", () => {
-  GlobalActions.sheetLog(mocks.processingContext, {
-    level: LogLevel.WARN,
-    message: "Log message",
+it("should log with a certain log level (warn) to a logSheet", () => {
+  const message = "Test log message"
+  const level = LogLevel.WARN
+  GlobalActions.sheetLog(mocks.attachmentContext, {
+    level,
+    message,
   })
   // TODO: Test should not depend on the action implementation
-  const i = mocks.processingContext.proc.logAdapter
+  const levelIndex = mocks.attachmentContext.proc.logAdapter
+    .getLogFieldNames()
+    .indexOf(LOG_LEVEL_NAME)
+  const messageIndex = mocks.attachmentContext.proc.logAdapter
     .getLogFieldNames()
     .indexOf(LOG_MESSAGE_NAME)
-  expect(mocks.logSheet.appendRow.mock.calls[0][0][i]).toEqual("Log message")
+  expect(mocks.logSheet.appendRow.mock.calls[0][0][levelIndex]).toEqual(level)
+  expect(mocks.logSheet.appendRow.mock.calls[0][0][messageIndex]).toEqual(
+    message,
+  )
 })

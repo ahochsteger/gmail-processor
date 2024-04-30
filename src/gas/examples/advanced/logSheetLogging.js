@@ -30,6 +30,8 @@ function logSheetLoggingTest() {
 
       logFields: [
         "log.timestamp",
+        "log.level",
+        "log.message",
         "entity.date",
         "entity.subject",
         "entity.from",
@@ -41,7 +43,6 @@ function logSheetLoggingTest() {
         "stored.url",
         "stored.downloadUrl",
         "context.type",
-        "log.message",
       ],
     },
     threads: [
