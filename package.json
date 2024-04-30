@@ -54,7 +54,7 @@
     "secrets:sync": "scripts/github-secrets.sh sync all",
     "sonar:local": "npx sonar-scanner -Dsonar.branch.name=local -Dsonar.branch.target=main -Dsonar.projectVersion=''",
     "start:docs": "npm run build:docs && cd docs && npm start",
-    "test": "jest --reporters=summary --silent",
+    "test": "TZ=UTC jest --reporters=summary --silent",
     "test:examples": "jest --reporters=summary --silent --testPathPattern src/examples",
     "test:verbose": "jest --detectOpenHandles --reporters='default' --runInBand --verbose",
     "update": "concurrently 'npm:update:*'",
