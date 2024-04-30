@@ -1285,10 +1285,10 @@
             "additionalProperties": false,
             "description": "Represents a log field configuration.",
             "properties": {
-                "contextValue": {
+                "ctxValues": {
                     "$ref": "#/definitions/LogFieldContextConfig",
-                    "description": "The context-dependent value. It allows different values depending on the context type.",
-                    "title": "contextValue"
+                    "description": "The context-dependent values. It allows different values depending on the context type.",
+                    "title": "ctxValues"
                 },
                 "name": {
                     "default": "",

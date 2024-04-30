@@ -1,0 +1,48 @@
+---
+id: logging
+sidebar_position: 35
+---
+# Logging
+
+import { defaultLogConfig, defaultLogFields } from '../../../src/lib/adapter/LogAdapter';
+
+## Default Log Fields
+
+Unlise otherwise configured using `logFields` in the `settings` configuration the following fields are used for logging to a log sheet:
+
+<ul>
+  {defaultLogFields.map(f => <li key={f}><tt>{f}</tt></li>)}
+</ul>
+
+## Default Log Config
+
+This table shows the log fields that are available by default.
+Additional custom fields can be added using `logConfig` in the `settings` configuration.
+
+<table>
+  <thead>
+    <th>Name</th>
+    <th>Title</th>
+    <th>Value</th>
+  </thead>
+  <tbody>
+    {
+      defaultLogConfig.map(f => {
+        f.value = !f.value && !f.ctxValues ? `\${${f.name}}` : f.value
+        return <tr key={f.name}>
+          <td><tt>{f.name}</tt></td>
+          <td>{f.title}</td>
+          <td>
+            {
+              f.ctxValues ?
+                <ul>{
+                  Object.entries(f.ctxValues).map(cv => <li key={cv[0]}>{cv[0]}: <tt>{cv[1]}</tt></li>)
+                }</ul>
+                : <tt>{f.value}</tt>
+            }
+          </td>
+        </tr>
+      })
+    }
+  </tbody>
+</table>

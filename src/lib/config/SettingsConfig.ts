@@ -81,8 +81,8 @@ export class LogFieldConfig {
   title: string = ""
   /** The value of the log field. Supports placeholder substitution. */
   value?: string = ""
-  /** The context-dependent value. It allows different values depending on the context type. */
-  contextValue?: LogFieldContextConfig = {}
+  /** The context-dependent values. It allows different values depending on the context type. */
+  ctxValues?: LogFieldContextConfig = {}
 }
 
 /**
