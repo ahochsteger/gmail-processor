@@ -52,7 +52,7 @@ it("should log with default level (info) to a logSheet", () => {
     `${fakedSystemDateTimeString}.000`,
     LogLevel.INFO,
     "Log message",
-    "2019-05-02 09:15:28",
+    "2019-05-02 07:15:28",
     "Message Subject 1",
     "message-from@example.com",
     "https://mail.google.com/mail/u/0/#inbox/message-id",
