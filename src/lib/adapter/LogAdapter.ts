@@ -13,7 +13,7 @@ import { BaseAdapter } from "./BaseAdapter"
 
 export const LOG_MESSAGE_NAME = "log.message"
 export const LOG_LEVEL_NAME = "log.level"
-const defaultLogFields = [
+export const defaultLogFields = [
   "log.timestamp",
   "entity.date",
   "entity.subject",
@@ -27,7 +27,7 @@ const defaultLogFields = [
   "stored.downloadUrl",
   "log.message",
 ]
-const defaultLogConfig: LogFieldConfig[] = [
+export const defaultLogConfig: LogFieldConfig[] = [
   {
     name: "log.timestamp",
     title: "Timestamp",
@@ -47,7 +47,7 @@ const defaultLogConfig: LogFieldConfig[] = [
   {
     name: "entity.id",
     title: "ID",
-    contextValue: {
+    ctxValues: {
       attachment: "${attachment.hash}",
       message: "${message.id}",
       thread: "${thread.id}",
@@ -56,7 +56,7 @@ const defaultLogConfig: LogFieldConfig[] = [
   {
     name: "entity.url",
     title: "GMail URL",
-    contextValue: {
+    ctxValues: {
       attachment: "${message.url}",
       message: "${message.url}",
       thread: "${thread.url}",
@@ -65,7 +65,7 @@ const defaultLogConfig: LogFieldConfig[] = [
   {
     name: "entity.date",
     title: "Message Date",
-    contextValue: {
+    ctxValues: {
       attachment: "${message.date}",
       message: "${message.date}",
       thread: "${thread.lastMessageDate}",
@@ -74,7 +74,7 @@ const defaultLogConfig: LogFieldConfig[] = [
   {
     name: "entity.subject",
     title: "Subject",
-    contextValue: {
+    ctxValues: {
       attachment: "${message.subject}",
       message: "${message.subject}",
       thread: "${thread.firstMessageSubject}",
@@ -83,7 +83,7 @@ const defaultLogConfig: LogFieldConfig[] = [
   {
     name: "entity.from",
     title: "From",
-    contextValue: {
+    ctxValues: {
       attachment: "${message.from}",
       message: "${message.from}",
     },
@@ -103,17 +103,17 @@ const defaultLogConfig: LogFieldConfig[] = [
   {
     name: "stored.location",
     title: "Stored Location",
-    contextValue: { attachment: "${attachment.stored.location}" },
+    ctxValues: { attachment: "${attachment.stored.location}" },
   },
   {
     name: "stored.url",
     title: "Stored URL",
-    contextValue: { attachment: "${attachment.stored.url}" },
+    ctxValues: { attachment: "${attachment.stored.url}" },
   },
   {
     name: "stored.downloadUrl",
     title: "Download URL",
-    contextValue: { attachment: "${attachment.stored.downloadUrl}" },
+    ctxValues: { attachment: "${attachment.stored.downloadUrl}" },
   },
 ]
 
@@ -148,7 +148,7 @@ export class LogAdapter extends BaseAdapter {
         field = {
           name: name,
           title: name,
-          value: PatternUtil.substitute(ctx, `\${${name}}`),
+          value: `\${${name}}`,
         } as LogFieldConfig
       }
     }
@@ -183,8 +183,8 @@ export class LogAdapter extends BaseAdapter {
       value = message
     } else if (field.name === LOG_LEVEL_NAME) {
       value = level
-    } else if (field.contextValue && field.contextValue[ctx.type]) {
-      value = field.contextValue[ctx.type] as string
+    } else if (field.ctxValues && field.ctxValues[ctx.type]) {
+      value = field.ctxValues[ctx.type] as string
     } else if (field.value !== undefined) {
       value = field.value ?? ""
     }
