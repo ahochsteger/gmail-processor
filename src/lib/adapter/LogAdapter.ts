@@ -48,8 +48,7 @@ export class LogAdapter extends BaseAdapter {
       value:
         logConfigField?.ctxValues?.[ctx.type] ??
         logConfigField?.value ??
-        `\${${name}}` ??
-        "",
+        `\${${name}}`,
     }
     return field
   }
