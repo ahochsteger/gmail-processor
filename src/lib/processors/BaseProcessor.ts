@@ -77,6 +77,7 @@ export abstract class BaseProcessor {
           m[`${keyName}.match.${i}`] = mi(
             MIT.STRING,
             result[i],
+            `${keyName} Regex Match Group ${i}`,
             `The matching regex group number as defined in the match config (e.g.: \`${JSON.stringify(value)}\`).`,
           )
         }
@@ -85,6 +86,7 @@ export abstract class BaseProcessor {
             m[`${keyName}.match.${group}`] = mi(
               MIT.STRING,
               groupValue,
+              `${keyName} Regex Match Group ${group}`,
               `The matching named regex group name as defined in the match config (e.g.: \`${JSON.stringify(value)}\`).`,
             )
           })
@@ -102,6 +104,7 @@ export abstract class BaseProcessor {
       m[matchedKey] = mi(
         MIT.BOOLEAN,
         matchesAll,
+        `${keyPrefix} Regex Matches`,
         "The overall matching result for all conditions in the match config.",
       )
     }
@@ -192,7 +195,12 @@ export abstract class BaseProcessor {
     }
     ctx.meta = {
       ...ctx.meta,
-      "context.type": newMetaInfo(MIT.STRING, ctx.type, "Context type"),
+      "context.type": newMetaInfo(
+        MIT.STRING,
+        ctx.type,
+        "Context Type",
+        "The type of context.",
+      ),
     }
   }
 

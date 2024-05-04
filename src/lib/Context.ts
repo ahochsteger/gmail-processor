@@ -52,18 +52,21 @@ type MetaInfoValueType =
 type MetaInfoEntry = {
   deprecationInfo?: string
   description: string
+  title: string
   type: MetaInfoType
   value: MetaInfoValueType
 }
 export function newMetaInfo(
   type: MetaInfoType,
   value: MetaInfoValueType,
+  title: string,
   description: string,
   deprecationInfo?: string,
 ): MetaInfoEntry {
   return {
     deprecationInfo,
     description,
+    title,
     type,
     value,
   }

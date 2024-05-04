@@ -11,20 +11,28 @@ import { Logger as Log } from "./utils/Logger"
 export class EnvProvider {
   public static buildMetaInfo(ctx: EnvContext) {
     const m: MetaInfo = {
-      "date.now": mi(MIT.DATE, () => new Date(), "The current timestamp."),
+      "date.now": mi(
+        MIT.DATE,
+        () => new Date(),
+        "Current Timestamp",
+        "The current timestamp.",
+      ),
       "env.runMode": mi(
         MIT.STRING,
         () => ctx.env.runMode,
+        "Runmode",
         "The runMode used for processing.",
       ),
       "env.timezone": mi(
         MIT.STRING,
         () => ctx.env.timezone,
+        "Timezone",
         "The timezone used for processing.",
       ),
       "user.email": mi(
         MIT.STRING,
         () => ctx.env.session.getActiveUser().getEmail(),
+        "User Email",
         "The email address of the active user.",
       ),
     }

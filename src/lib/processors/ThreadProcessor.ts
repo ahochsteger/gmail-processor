@@ -102,6 +102,7 @@ export class ThreadProcessor extends BaseProcessor {
       [`${keyPrefix}.firstMessageSubject`]: mi(
         MIT.STRING,
         (t: Thread) => t.getFirstMessageSubject(),
+        "Thread Subject",
         this.getRefDocs(
           keyPrefix,
           "getFirstMessageSubject",
@@ -111,6 +112,7 @@ export class ThreadProcessor extends BaseProcessor {
       [`${keyPrefix}.hasStarredMessages`]: mi(
         MIT.BOOLEAN,
         (t: Thread) => t.hasStarredMessages(),
+        "Starred Messages",
         this.getRefDocs(
           keyPrefix,
           "hasStarredMessages",
@@ -120,11 +122,13 @@ export class ThreadProcessor extends BaseProcessor {
       [`${keyPrefix}.id`]: mi(
         MIT.STRING,
         (t: Thread) => t.getId(),
+        "Thread ID",
         this.getRefDocs(keyPrefix, "getId", "The ID of the thread."),
       ),
       [`${keyPrefix}.isImportant`]: mi(
         MIT.STRING,
         (t: Thread) => t.isImportant(),
+        "Important Thread",
         this.getRefDocs(
           keyPrefix,
           "isImportant",
@@ -134,6 +138,7 @@ export class ThreadProcessor extends BaseProcessor {
       [`${keyPrefix}.isInChats`]: mi(
         MIT.STRING,
         (t: Thread) => t.isInChats(),
+        "Chat Thread",
         this.getRefDocs(
           keyPrefix,
           "isInChats",
@@ -143,6 +148,7 @@ export class ThreadProcessor extends BaseProcessor {
       [`${keyPrefix}.isInInbox`]: mi(
         MIT.STRING,
         (t: Thread) => t.isInInbox(),
+        "Inbox Thread",
         this.getRefDocs(
           keyPrefix,
           "isInInbox",
@@ -152,6 +158,7 @@ export class ThreadProcessor extends BaseProcessor {
       [`${keyPrefix}.isInPriorityInbox`]: mi(
         MIT.STRING,
         (t: Thread) => t.isInPriorityInbox(),
+        "Priority Inbox Thread",
         this.getRefDocs(
           keyPrefix,
           "isInPriorityInbox",
@@ -161,6 +168,7 @@ export class ThreadProcessor extends BaseProcessor {
       [`${keyPrefix}.isInSpam`]: mi(
         MIT.STRING,
         (t: Thread) => t.isInSpam(),
+        "Spam Thread",
         this.getRefDocs(
           keyPrefix,
           "isInSpam",
@@ -170,6 +178,7 @@ export class ThreadProcessor extends BaseProcessor {
       [`${keyPrefix}.isInTrash`]: mi(
         MIT.STRING,
         (t: Thread) => t.isInTrash(),
+        "Trash Thread",
         this.getRefDocs(
           keyPrefix,
           "isInTrash",
@@ -179,6 +188,7 @@ export class ThreadProcessor extends BaseProcessor {
       [`${keyPrefix}.isUnread`]: mi(
         MIT.STRING,
         (t: Thread) => t.isUnread(),
+        "Unread Thread",
         this.getRefDocs(
           keyPrefix,
           "isUnread",
@@ -188,6 +198,7 @@ export class ThreadProcessor extends BaseProcessor {
       [`${keyPrefix}.labels`]: mi(
         MIT.STRING,
         (t: Thread) => t.getLabels().map((l) => l.getName()),
+        "Thread Labels",
         this.getRefDocs(
           keyPrefix,
           "getLabels",
@@ -197,6 +208,7 @@ export class ThreadProcessor extends BaseProcessor {
       [`${keyPrefix}.lastMessageDate`]: mi(
         MIT.DATE,
         (t: Thread) => t.getLastMessageDate(),
+        "Thread Date",
         this.getRefDocs(
           keyPrefix,
           "getLastMessageDate",
@@ -206,6 +218,7 @@ export class ThreadProcessor extends BaseProcessor {
       [`${keyPrefix}.messageCount`]: mi(
         MIT.NUMBER,
         (t: Thread) => t.getMessageCount(),
+        "Thread Message Count",
         this.getRefDocs(
           keyPrefix,
           "getMessageCount",
@@ -215,6 +228,7 @@ export class ThreadProcessor extends BaseProcessor {
       [`${keyPrefix}.permalink`]: mi(
         MIT.STRING,
         (t: Thread) => t.getPermalink(),
+        "Thread Permalink",
         this.getRefDocs(
           keyPrefix,
           "getPermalink",
@@ -224,16 +238,19 @@ export class ThreadProcessor extends BaseProcessor {
       [`${keyPrefix}.index`]: mi(
         MIT.NUMBER,
         ctx.thread.index,
+        "Thread Index",
         "The index number (0-based) of the thread.",
       ),
       [`${keyPrefix}.url`]: mi(
         MIT.STRING,
         (t: Thread) => `https://mail.google.com/mail/u/0/#inbox/${t.getId()}`,
+        "Thread URL",
         "The URL of the thread.",
       ),
       "threadConfig.index": mi(
         MIT.NUMBER,
         ctx.thread.configIndex,
+        "Thread Config Index",
         "The index number (0-based) of the thead config.",
       ),
     }

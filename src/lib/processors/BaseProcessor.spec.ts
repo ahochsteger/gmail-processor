@@ -52,6 +52,7 @@ class TestActionProvider implements ActionProvider {
     m[TEST_CONTEXT_KEY] = newMetaInfo(
       MetaInfoType.STRING,
       TEST_CONTEXT_VALUE,
+      "Some Title",
       "Some description",
     )
     return {
