@@ -39,8 +39,8 @@ include "update-docs-generate-common";
     "",
     $map[.contextType].description,
     "",
-    "| Key | Description | Example |",
-    "|-----|-------------|---------|",
+    "| Key | Title | Description | Example |",
+    "|-----|-------|-------------|---------|",
     (
       .placeholder
       | sort_by(.key)
@@ -48,6 +48,7 @@ include "update-docs-generate-common";
       | ("placeholder." + .key) as $placeholderAnchor
       | [
         "<a id=\"" + $placeholderAnchor + "\">`" + .key + "`</a>",
+        .title,
         generateDescription,
         (if (.example|length==0) then "" else "`" + (if (.example|length>32) then (.example[0:32]+"...") else .example end) + "`" end)
       ]

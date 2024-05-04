@@ -46,7 +46,7 @@ function genMetaInfoDocs(contextType: PlaceholderContextType, m: MetaInfo, posit
       if (idx < arr.length - 1) {
         condComma = ","
       }
-      write(`  {"key":"${k}", "type": "${m[k].type}", "scope": "${contextType}", "example": ${JSON.stringify(stringValue)}, "deprecated": ${!!deprInfo}, "deprecationInfo": ${JSON.stringify(deprInfo)}, "description": ${JSON.stringify(desc)}}${condComma}`)
+      write(`  {"key":"${k}", "title":"${m[k].title}", "type": "${m[k].type}", "scope": "${contextType}", "example": ${JSON.stringify(stringValue)}, "deprecated": ${!!deprInfo}, "deprecationInfo": ${JSON.stringify(deprInfo)}, "description": ${JSON.stringify(desc)}}${condComma}`)
     })
     let suffix = ","
     if (position === "last") {

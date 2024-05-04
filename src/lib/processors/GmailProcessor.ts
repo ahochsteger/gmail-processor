@@ -51,6 +51,7 @@ export class GmailProcessor extends BaseProcessor {
       "timer.startTime": mi(
         MIT.DATE,
         ctx.proc.timer.getStartTime(),
+        "Timer Start Time",
         "The start timestamp of the processing script.",
       ),
     }
@@ -59,6 +60,7 @@ export class GmailProcessor extends BaseProcessor {
         (m[`variables.${entry.key}`] = mi(
           MIT.VARIABLE,
           entry.value,
+          `Variable ${entry.key}`,
           "A custom defined variable.",
         )),
     )

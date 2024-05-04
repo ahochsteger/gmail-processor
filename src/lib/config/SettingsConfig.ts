@@ -5,10 +5,10 @@ import { RequiredDeep } from "../utils/UtilityTypes"
 
 // TODO: Use these constants in SettingsConfig below, when typescript-json-schema bug is resolved.
 // See https://github.com/YousefED/typescript-json-schema/issues/336#issuecomment-1528969616
+// PR: https://github.com/YousefED/typescript-json-schema/pull/600
 export const DEFAULT_SETTING_MAX_BATCH_SIZE = 10
 export const DEFAULT_SETTING_MAX_RUNTIME = 280
 export const DEFAULT_SETTING_SLEEP_TIME_THREADS = 100
-
 export const LOG_MESSAGE_NAME = "log.message"
 export const LOG_LEVEL_NAME = "log.level"
 
@@ -83,7 +83,7 @@ export class LogFieldConfig {
   /** The title of the log field that is used as the headline of the log sheet. */
   title: string = ""
   /** The value of the log field. Supports placeholder substitution. */
-  value?: string = ""
+  value?: string = undefined
   /** The context-dependent values. It allows different values depending on the context type. */
   ctxValues?: LogFieldContextConfig = {}
 }
@@ -116,10 +116,11 @@ export class SettingsConfig {
     "log.timestamp",
     "log.level",
     "log.message",
-    "entity.date",
-    "entity.subject",
-    "entity.from",
-    "entity.url",
+    "object.id",
+    "object.date",
+    "object.subject",
+    "object.from",
+    "object.url",
     "attachment.name",
     "attachment.size",
     "attachment.contentType",
@@ -139,18 +140,19 @@ export class SettingsConfig {
       value: "${date.now:date::yyyy-MM-dd HH:mm:ss.SSS}",
     },
     {
-      name: LOG_LEVEL_NAME,
+      name: "log.level",
       title: "Log Level",
     },
     {
-      // Special entry that represents the log message
-      name: LOG_MESSAGE_NAME,
+      name: "log.message",
       title: "Log Message",
     },
-    // TODO: Move title to meta info and use from there.
-    { name: "context.type", title: "Context Type", value: "${context.type}" },
     {
-      name: "entity.id",
+      name: "context.type",
+      title: "Context Type",
+    },
+    {
+      name: "object.id",
       title: "ID",
       ctxValues: {
         attachment: "${attachment.hash}",
@@ -159,7 +161,7 @@ export class SettingsConfig {
       },
     },
     {
-      name: "entity.url",
+      name: "object.url",
       title: "GMail URL",
       ctxValues: {
         attachment: "${message.url}",
@@ -168,7 +170,7 @@ export class SettingsConfig {
       },
     },
     {
-      name: "entity.date",
+      name: "object.date",
       title: "Message Date",
       ctxValues: {
         attachment: "${message.date}",
@@ -177,7 +179,7 @@ export class SettingsConfig {
       },
     },
     {
-      name: "entity.subject",
+      name: "object.subject",
       title: "Subject",
       ctxValues: {
         attachment: "${message.subject}",
@@ -186,7 +188,7 @@ export class SettingsConfig {
       },
     },
     {
-      name: "entity.from",
+      name: "object.from",
       title: "From",
       ctxValues: {
         attachment: "${message.from}",
@@ -208,17 +210,23 @@ export class SettingsConfig {
     {
       name: "stored.location",
       title: "Stored Location",
-      ctxValues: { attachment: "${attachment.stored.location}" },
+      ctxValues: {
+        attachment: "${attachment.stored.location}",
+      },
     },
     {
       name: "stored.url",
       title: "Stored URL",
-      ctxValues: { attachment: "${attachment.stored.url}" },
+      ctxValues: {
+        attachment: "${attachment.stored.url}",
+      },
     },
     {
       name: "stored.downloadUrl",
       title: "Download URL",
-      ctxValues: { attachment: "${attachment.stored.downloadUrl}" },
+      ctxValues: {
+        attachment: "${attachment.stored.downloadUrl}",
+      },
     },
   ]
   /**

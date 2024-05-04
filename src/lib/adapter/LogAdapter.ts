@@ -38,19 +38,16 @@ export class LogAdapter extends BaseAdapter {
     fieldConfig: LogFieldConfig[],
     name: string,
   ): LogFieldConfig | undefined {
-    let field: LogFieldConfig | undefined
     const logConfigField = fieldConfig.find((f) => f.name == name)
-    if (logConfigField) {
-      field = logConfigField
-    } else {
-      const contextField = ctx.meta[name]?.value
-      if (contextField) {
-        field = {
-          name: name,
-          title: name,
-          value: `\${${name}}`,
-        } as LogFieldConfig
-      }
+    const contextField = ctx.meta[name]
+    const field: LogFieldConfig = {
+      name: name,
+      title: logConfigField?.title ?? contextField?.title ?? name,
+      value:
+        logConfigField?.ctxValues?.[ctx.type] ??
+        logConfigField?.value ??
+        `\${${name}}` ??
+        "",
     }
     return field
   }
@@ -83,7 +80,7 @@ export class LogAdapter extends BaseAdapter {
       value = message
     } else if (field.name === LOG_LEVEL_NAME) {
       value = level
-    } else if (field.ctxValues && field.ctxValues[ctx.type]) {
+    } else if (field?.ctxValues?.[ctx.type]) {
       value = field.ctxValues[ctx.type] as string
     } else if (field.value !== undefined) {
       value = field.value ?? ""

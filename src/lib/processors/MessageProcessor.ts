@@ -179,6 +179,7 @@ export class MessageProcessor extends BaseProcessor {
       [`${keyPrefix}.bcc`]: mi(
         MIT.STRING,
         (msg: Message) => msg.getBcc(),
+        "Message BCC",
         this.getRefDocs(
           keyPrefix,
           "getBcc",
@@ -188,11 +189,13 @@ export class MessageProcessor extends BaseProcessor {
       [`${keyPrefix}.body`]: mi(
         MIT.STRING,
         (msg: Message) => msg.getBody(),
+        "Message Body",
         this.getRefDocs(keyPrefix, "getBody", "The body of the message."),
       ),
       [`${keyPrefix}.cc`]: mi(
         MIT.STRING,
         (msg: Message) => msg.getCc(),
+        "Message CC",
         this.getRefDocs(
           keyPrefix,
           "getCc",
@@ -202,6 +205,7 @@ export class MessageProcessor extends BaseProcessor {
       [`${keyPrefix}.date`]: mi(
         MIT.DATE,
         (msg: Message) => msg.getDate(),
+        "Message Date",
         this.getRefDocs(
           keyPrefix,
           "getDate",
@@ -211,11 +215,13 @@ export class MessageProcessor extends BaseProcessor {
       [`${keyPrefix}.from`]: mi(
         MIT.STRING,
         (msg: Message) => msg.getFrom(),
+        "Sender",
         this.getRefDocs(keyPrefix, "getFrom", "The sender of the message."),
       ),
       "message.from.domain": mi(
         MIT.STRING,
         (msg: Message) => msg.getFrom().split("@")[1],
+        "Sender Domain",
         this.getRefDocs(
           keyPrefix,
           "getFrom",
@@ -225,11 +231,13 @@ export class MessageProcessor extends BaseProcessor {
       [`${keyPrefix}.id`]: mi(
         MIT.STRING,
         (msg: Message) => msg.getId(),
+        "Message ID",
         this.getRefDocs(keyPrefix, "getId", "The ID of the message."),
       ),
       [`${keyPrefix}.isDraft`]: mi(
         MIT.BOOLEAN,
         (msg: Message) => msg.isDraft(),
+        "Draft Message",
         this.getRefDocs(
           keyPrefix,
           "isDraft",
@@ -239,6 +247,7 @@ export class MessageProcessor extends BaseProcessor {
       [`${keyPrefix}.isInChats`]: mi(
         MIT.BOOLEAN,
         (msg: Message) => msg.isInChats(),
+        "Chat Message",
         this.getRefDocs(
           keyPrefix,
           "isInChats",
@@ -248,6 +257,7 @@ export class MessageProcessor extends BaseProcessor {
       [`${keyPrefix}.isInInbox`]: mi(
         MIT.BOOLEAN,
         (msg: Message) => msg.isInInbox(),
+        "Inbox Message",
         this.getRefDocs(
           keyPrefix,
           "isInInbox",
@@ -257,6 +267,7 @@ export class MessageProcessor extends BaseProcessor {
       [`${keyPrefix}.isInPriorityInbox`]: mi(
         MIT.BOOLEAN,
         (msg: Message) => msg.isInPriorityInbox(),
+        "Priority Inbox Message",
         this.getRefDocs(
           keyPrefix,
           "isInPriorityInbox",
@@ -266,6 +277,7 @@ export class MessageProcessor extends BaseProcessor {
       [`${keyPrefix}.isInTrash`]: mi(
         MIT.BOOLEAN,
         (msg: Message) => msg.isInTrash(),
+        "Trash Message",
         this.getRefDocs(
           keyPrefix,
           "isInTrash",
@@ -275,6 +287,7 @@ export class MessageProcessor extends BaseProcessor {
       [`${keyPrefix}.isStarred`]: mi(
         MIT.BOOLEAN,
         (msg: Message) => msg.isStarred(),
+        "Starred Message",
         this.getRefDocs(
           keyPrefix,
           "isStarred",
@@ -284,6 +297,7 @@ export class MessageProcessor extends BaseProcessor {
       [`${keyPrefix}.isUnread`]: mi(
         MIT.BOOLEAN,
         (msg: Message) => msg.isUnread(),
+        "Unread Message",
         this.getRefDocs(
           keyPrefix,
           "isUnread",
@@ -293,6 +307,7 @@ export class MessageProcessor extends BaseProcessor {
       [`${keyPrefix}.plainBody`]: mi(
         MIT.STRING,
         (msg: Message) => msg.getPlainBody(),
+        "Message Plain Body",
         this.getRefDocs(
           keyPrefix,
           "getPlainBody",
@@ -302,6 +317,7 @@ export class MessageProcessor extends BaseProcessor {
       [`${keyPrefix}.replyTo`]: mi(
         MIT.STRING,
         (msg: Message) => msg.getReplyTo(),
+        "Message Reply To",
         this.getRefDocs(
           keyPrefix,
           "getReplyTo",
@@ -311,11 +327,13 @@ export class MessageProcessor extends BaseProcessor {
       [`${keyPrefix}.subject`]: mi(
         MIT.STRING,
         (msg: Message) => msg.getSubject(),
+        "Message Subject",
         this.getRefDocs(keyPrefix, "getSubject", "The subject of the message."),
       ),
       [`${keyPrefix}.to`]: mi(
         MIT.STRING,
         (msg: Message) => msg.getTo(),
+        "Message To",
         this.getRefDocs(
           keyPrefix,
           "getTo",
@@ -326,16 +344,19 @@ export class MessageProcessor extends BaseProcessor {
         MIT.STRING,
         (msg: Message) =>
           `https://mail.google.com/mail/u/0/#inbox/${msg.getId()}`,
+        "Message URL",
         "The URL of the message.",
       ),
       [`${keyPrefix}.index`]: mi(
         MIT.NUMBER,
         ctx.message.index,
+        "Message Index",
         "The index number (0-based) of the message.",
       ),
       "messageConfig.index": mi(
         MIT.NUMBER,
         ctx.message.configIndex,
+        "Message Config Index",
         "The index number (0-based) of the message config.",
       ),
     }

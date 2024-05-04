@@ -465,21 +465,25 @@ export class GDriveAdapter extends BaseAdapter {
       actionMeta[`${keyPrefix}.stored.location`] = newMetaInfo(
         MetaInfoType.STRING,
         location,
+        "Stored Location",
         `The location ${desc}`,
       )
       actionMeta[`${keyPrefix}.stored.id`] = newMetaInfo(
         MetaInfoType.STRING,
         file.getId(),
+        "Stored ID",
         `The ID ${desc}`,
       )
       actionMeta[`${keyPrefix}.stored.url`] = newMetaInfo(
         MetaInfoType.STRING,
         file.getUrl(),
+        "Stored URL",
         `The URL ${desc}`,
       )
       actionMeta[`${keyPrefix}.stored.downloadUrl`] = newMetaInfo(
         MetaInfoType.STRING,
         file.getDownloadUrl(),
+        "Stored Download URL",
         `The download URL ${desc}`,
       )
     }

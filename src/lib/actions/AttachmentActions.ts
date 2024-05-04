@@ -55,6 +55,7 @@ export class AttachmentActions implements ActionProvider<AttachmentContext> {
       actionMeta["attachment.extracted"] = newMetaInfo(
         MetaInfoType.STRING,
         result.text,
+        "Extracted Text",
         "The extracted text from the attachment (using action `attachment.extractText`)",
       )
       if (args.extract) {

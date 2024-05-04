@@ -140,6 +140,7 @@ export class AttachmentProcessor extends BaseProcessor {
       [`${keyPrefix}.contentType`]: mi(
         MIT.STRING,
         (att: Attachment) => att.getContentType(),
+        "Attachment Content Type",
         this.getRefDocs(
           keyPrefix,
           "getContentType",
@@ -149,6 +150,7 @@ export class AttachmentProcessor extends BaseProcessor {
       [`${keyPrefix}.hash`]: mi(
         MIT.STRING,
         (att: Attachment) => att.getHash(),
+        "Attachment Hash",
         this.getRefDocs(
           keyPrefix,
           "getHash",
@@ -158,6 +160,7 @@ export class AttachmentProcessor extends BaseProcessor {
       [`${keyPrefix}.isGoogleType`]: mi(
         MIT.STRING,
         (att: Attachment) => att.isGoogleType(),
+        "Google Type Attachment",
         this.getRefDocs(
           keyPrefix,
           "isGoogleType",
@@ -167,21 +170,25 @@ export class AttachmentProcessor extends BaseProcessor {
       [`${keyPrefix}.name`]: mi(
         MIT.STRING,
         (att: Attachment) => att.getName(),
+        "Attachment Name",
         this.getRefDocs(keyPrefix, "getName", "The name of the attachment."),
       ),
       [`${keyPrefix}.size`]: mi(
         MIT.STRING,
         (att: Attachment) => att.getSize(),
+        "Attachment Size",
         this.getRefDocs(keyPrefix, "getSize", "The size of the attachment."),
       ),
       [`${keyPrefix}.index`]: mi(
         MIT.STRING,
         ctx.attachment.index,
+        "Attachment Index",
         "The index number (0-based) of the attachment.",
       ),
       "attachmentConfig.index": mi(
         MIT.STRING,
         ctx.attachment.configIndex,
+        "Attachment Config Index",
         "The index number (0-based) of the attachment config.",
       ),
     }

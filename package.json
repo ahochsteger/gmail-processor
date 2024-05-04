@@ -55,13 +55,13 @@
     "sonar:local": "npx sonar-scanner -Dsonar.branch.name=local -Dsonar.branch.target=main -Dsonar.projectVersion=''",
     "start:docs": "npm run build:docs && cd docs && npm start",
     "test": "TZ=UTC jest --reporters=summary --silent",
-    "test:examples": "jest --reporters=summary --silent --testPathPattern src/examples",
-    "test:verbose": "jest --detectOpenHandles --reporters='default' --runInBand --verbose",
-    "update": "concurrently 'npm:update:*'",
+    "test:examples": "TZ=UTC jest --reporters=summary --silent --testPathPattern src/examples",
+    "test:verbose": "TZ=UTC jest --detectOpenHandles --reporters='default' --runInBand --verbose",
+    "update": "TZ=UTC concurrently 'npm:update:*'",
     "update:contributors": "npx all-contributors generate",
-    "update:docs": "scripts/update-docs.sh",
-    "update:examples": "scripts/update-examples.sh",
-    "update:schema": "scripts/update-schema.sh"
+    "update:docs": "TZ=UTC scripts/update-docs.sh",
+    "update:examples": "TZ=UTC scripts/update-examples.sh",
+    "update:schema": "TZ=UTC scripts/update-schema.sh"
   },
   "repository": {
     "type": "git",
