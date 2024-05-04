@@ -51,6 +51,7 @@ Create a log entry.
 | Arguments | Type | Description |
 |-----------|------|-------------|
 | `level` | `LogLevel` | The level of the log message (default: `info`). See [Enum Type `LogLevel`](enum-types.mdx#loglevel) for valid values. |
+| `location` | `string` | The location of the log message |
 | `message` | `string` | The message to be logged. |
 
 ### `global.noop`
@@ -66,6 +67,7 @@ Terminate processing due to an error.
 | Arguments | Type | Description |
 |-----------|------|-------------|
 | `level` | `LogLevel` | The level of the log message (default: `info`). See [Enum Type `LogLevel`](enum-types.mdx#loglevel) for valid values. |
+| `location` | `string` | The location of the log message |
 | `message` | `string` | The message to be logged. |
 
 ### `global.sheetLog`
@@ -75,6 +77,7 @@ Create a log entry in the log spreadsheet.
 | Arguments | Type | Description |
 |-----------|------|-------------|
 | `level` | `LogLevel` | The level of the log message (default: `info`). See [Enum Type `LogLevel`](enum-types.mdx#loglevel) for valid values. |
+| `location` | `string` | The location of the log message |
 | `message` | `string` | The message to be logged. |
 
 ## Message Actions
