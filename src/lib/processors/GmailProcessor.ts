@@ -91,9 +91,7 @@ export class GmailProcessor extends BaseProcessor {
     return actionRegistry
   }
 
-  public static run(config: RequiredConfig, ctx: EnvContext): ProcessingResult {
-    ctx.log.info("Processing of GmailProcessor config started ...")
-
+  private static checkTimezone(ctx: EnvContext, config: RequiredConfig) {
     if (
       config.settings.timezone &&
       config.settings.timezone != "default" &&
@@ -106,27 +104,17 @@ export class GmailProcessor extends BaseProcessor {
           `Setting it in the config settings is deprecated. Make sure to have it set correctly in the Google Apps Script project settings or in 'appsscript.json'!`,
       )
     }
-    const actionRegistry = GmailProcessor.setupActionRegistry(ctx)
-    const logAdapter = new LogAdapter(ctx, config.settings)
-    const processingContext = GmailProcessor.buildContext(ctx, {
-      actionRegistry: actionRegistry,
-      config: config,
-      gdriveAdapter: new GDriveAdapter(ctx, config.settings),
-      gmailAdapter: new GmailAdapter(ctx, config.settings),
-      logAdapter,
-      spreadsheetAdapter: new SpreadsheetAdapter(
-        ctx,
-        config.settings,
-        logAdapter,
-      ),
-      timer: new Timer(config.settings.maxRuntime),
-    })
-    ctx.log.logProcessingContext(processingContext)
-    const result = ThreadProcessor.processConfigs(
-      processingContext,
-      config.threads,
-      newProcessingResult(),
-    )
+  }
+
+  private static reportResults(
+    ctx: EnvContext,
+    result: ProcessingResult,
+    reportFormat: string,
+  ) {
+    if (reportFormat == "json") {
+      ctx.log.info(JSON.stringify(result, null, 2))
+      return
+    }
     if (result.status !== ProcessingStatus.OK) {
       ctx.log.error(`There have been errors during processing:`)
       ctx.log.error(
@@ -134,7 +122,7 @@ export class GmailProcessor extends BaseProcessor {
       )
       ctx.log.error(` - Error: ${JSON.stringify(result.error ?? "-")}`)
     }
-    ctx.log.info("Processing of GmailProcessor config finished.")
+    ctx.log.info("Processing GmailProcessor config finished.")
     ctx.log.info(`Processing summary:`)
     ctx.log.info(
       ` - Processed thread configs: ${result.processedThreadConfigs}`,
@@ -150,6 +138,44 @@ export class GmailProcessor extends BaseProcessor {
     ctx.log.info(` - Processed attachments: ${result.processedAttachments}`)
     ctx.log.info(` - Executed actions: ${result.executedActions.length}`)
     ctx.log.info(` - Result status: ${result.status}`)
+  }
+
+  public static run(
+    config: RequiredConfig,
+    ctx: EnvContext,
+    reportFormat = "text",
+  ): ProcessingResult {
+    ctx.log.info("Processing GmailProcessor config started ...")
+    this.checkTimezone(ctx, config)
+    const actionRegistry = GmailProcessor.setupActionRegistry(ctx)
+    const logAdapter = new LogAdapter(ctx, config.settings)
+    const processingContext = GmailProcessor.buildContext(ctx, {
+      actionRegistry: actionRegistry,
+      config: config,
+      gdriveAdapter: new GDriveAdapter(ctx, config.settings),
+      gmailAdapter: new GmailAdapter(ctx, config.settings),
+      logAdapter,
+      spreadsheetAdapter: new SpreadsheetAdapter(
+        ctx,
+        config.settings,
+        logAdapter,
+      ),
+      timer: new Timer(config.settings.maxRuntime),
+    })
+    ctx.log.trace(processingContext, {
+      location: "GmailProcessor.run()",
+      message: "GmailProcessor started ...",
+    })
+    const result = ThreadProcessor.processConfigs(
+      processingContext,
+      config.threads,
+      newProcessingResult(),
+    )
+    this.reportResults(ctx, result, reportFormat)
+    ctx.log.trace(processingContext, {
+      location: "GmailProcessor.run()",
+      message: "GmailProcessor finished.",
+    })
     return result
   }
 

@@ -5,8 +5,8 @@ import {
   ProcessingContext,
   ThreadContext,
 } from "../Context"
+import { GlobalActionLoggingBase } from "../actions/GlobalActions"
 import { SettingsConfig } from "../config/SettingsConfig"
-import { LogLevel } from "../utils/Logger"
 import { PatternUtil } from "../utils/PatternUtil"
 import { BaseAdapter } from "./BaseAdapter"
 import { DriveUtils } from "./GDriveAdapter"
@@ -107,15 +107,16 @@ export class SpreadsheetAdapter extends BaseAdapter {
 
   public log(
     ctx: ProcessingContext | ThreadContext | MessageContext | AttachmentContext,
-    message: string,
-    level: LogLevel = LogLevel.INFO,
+    args: GlobalActionLoggingBase,
   ) {
     if (!this.logSheetEnabled()) {
-      this.ctx.log.warn(`Skipping Logsheet: ${message}`, level)
+      this.ctx.log.log(
+        `Skipping logsheet log: [${args.location}] ${args.message}`,
+        args.level,
+      )
       return
     }
-    ctx.log.log(`Logsheet: ${message}`, level)
-    const logValues = this.logAdapter.getLogValues(ctx, message, level)
+    const logValues = this.logAdapter.getLogValues(ctx, args)
     this.appendToLogSheet(...logValues)
   }
 }

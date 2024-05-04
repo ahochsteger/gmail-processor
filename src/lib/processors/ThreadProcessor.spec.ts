@@ -1,7 +1,7 @@
 import { ConfigMocks } from "../../test/mocks/ConfigMocks"
 import { ContextMocks } from "../../test/mocks/ContextMocks"
 import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
-import { ProcessingStatus, RunMode } from "../Context"
+import { ProcessingStatus } from "../Context"
 import { newConfig } from "../config/Config"
 import { MarkProcessedMethod } from "../config/SettingsConfig"
 import { newThreadConfig } from "../config/ThreadConfig"
@@ -42,7 +42,7 @@ it("should construct a GMail search query with globals (query, newerThan) and pr
     ctx.proc.config.global.thread.match,
     threadConfig.match,
   )
-  const actualQuery = ThreadProcessor.buildQuery(ctx, matchConfig)
+  const actualQuery = ThreadProcessor.buildQuery(matchConfig)
   expect(actualQuery).toEqual(
     "some-global-query newer_than:3m -label:some-label some-thread-specific-query newer_than:2m",
   )
@@ -61,11 +61,7 @@ it("should construct a GMail search query without globals and no processedLabel"
       },
     ],
   })
-  const customMocks = MockFactory.newMocks(config, RunMode.DANGEROUS)
-  const actualQuery = ThreadProcessor.buildQuery(
-    customMocks.processingContext,
-    config.threads[0].match,
-  )
+  const actualQuery = ThreadProcessor.buildQuery(config.threads[0].match)
   expect(actualQuery).toEqual("some-thread-specific-query")
 })
 

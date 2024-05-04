@@ -49,6 +49,7 @@ describe("run", () => {
       name: "global.panic",
       args: {
         level: LogLevel.INFO,
+        location: "GmailProcessor.spec",
         message: "Intended failing",
       },
       description: "Failing action",

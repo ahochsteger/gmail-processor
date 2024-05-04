@@ -6,8 +6,10 @@ import {
   ProcessingContext,
   ThreadContext,
 } from "../Context"
+import { GlobalActionLoggingBase } from "../actions/GlobalActions"
 import {
   LOG_LEVEL_NAME,
+  LOG_LOCATION_NAME,
   LOG_MESSAGE_NAME,
   LogFieldConfig,
   SettingsConfig,
@@ -72,14 +74,15 @@ export class LogAdapter extends BaseAdapter {
   public getLogFieldValue(
     ctx: Context,
     field: LogFieldConfig,
-    message: string,
-    level: LogLevel = LogLevel.INFO,
+    args: GlobalActionLoggingBase,
   ): string {
     let value = ""
     if (field.name === LOG_MESSAGE_NAME) {
-      value = message
+      value = args.message
     } else if (field.name === LOG_LEVEL_NAME) {
-      value = level
+      value = args.level ?? LogLevel.INFO
+    } else if (field.name === LOG_LOCATION_NAME) {
+      value = args.location ?? ""
     } else if (field?.ctxValues?.[ctx.type]) {
       value = field.ctxValues[ctx.type] as string
     } else if (field.value !== undefined) {
@@ -90,33 +93,27 @@ export class LogAdapter extends BaseAdapter {
 
   public getLogObject(
     ctx: Context,
-    message: string,
-    level: LogLevel = LogLevel.INFO,
+    args: GlobalActionLoggingBase,
   ): Record<string, string> {
     const data: Record<string, string> = {}
     this.getLogFields(ctx).map(
-      (f) => (data[f.name] = this.getLogFieldValue(ctx, f, message, level)),
+      (f) => (data[f.name] = this.getLogFieldValue(ctx, f, args)),
     )
     return data
   }
 
-  public getLogValues(
-    ctx: Context,
-    message: string,
-    level: LogLevel = LogLevel.INFO,
-  ): string[] {
+  public getLogValues(ctx: Context, args: GlobalActionLoggingBase): string[] {
     return this.getLogFields(ctx).map((f) =>
-      this.getLogFieldValue(ctx, f, message, level),
+      this.getLogFieldValue(ctx, f, args),
     )
   }
 
   public logJSON(
     ctx: ProcessingContext | ThreadContext | MessageContext | AttachmentContext,
-    message: string,
-    level: LogLevel = LogLevel.INFO,
+    args: GlobalActionLoggingBase,
   ): Record<string, string> {
-    const logObject = this.getLogObject(ctx, message, level)
-    ctx.log.log(`JSON: ${JSON.stringify(logObject)}`, level)
+    const logObject = this.getLogObject(ctx, args)
+    ctx.log.log(`JSON: ${JSON.stringify(logObject)}`, args.level)
     return logObject
   }
 }

@@ -81,9 +81,15 @@
                                         "debug",
                                         "error",
                                         "info",
+                                        "trace",
                                         "warn"
                                     ],
                                     "title": "level",
+                                    "type": "string"
+                                },
+                                "location": {
+                                    "description": "The location of the log message",
+                                    "title": "location",
                                     "type": "string"
                                 },
                                 "message": {
@@ -135,9 +141,15 @@
                                         "debug",
                                         "error",
                                         "info",
+                                        "trace",
                                         "warn"
                                     ],
                                     "title": "level",
+                                    "type": "string"
+                                },
+                                "location": {
+                                    "description": "The location of the log message",
+                                    "title": "location",
                                     "type": "string"
                                 },
                                 "message": {
@@ -189,9 +201,15 @@
                                         "debug",
                                         "error",
                                         "info",
+                                        "trace",
                                         "warn"
                                     ],
                                     "title": "level",
+                                    "type": "string"
+                                },
+                                "location": {
+                                    "description": "The location of the log message",
+                                    "title": "location",
                                     "type": "string"
                                 },
                                 "message": {
@@ -1580,9 +1598,15 @@
                                         "debug",
                                         "error",
                                         "info",
+                                        "trace",
                                         "warn"
                                     ],
                                     "title": "level",
+                                    "type": "string"
+                                },
+                                "location": {
+                                    "description": "The location of the log message",
+                                    "title": "location",
                                     "type": "string"
                                 },
                                 "message": {
@@ -1634,9 +1658,15 @@
                                         "debug",
                                         "error",
                                         "info",
+                                        "trace",
                                         "warn"
                                     ],
                                     "title": "level",
+                                    "type": "string"
+                                },
+                                "location": {
+                                    "description": "The location of the log message",
+                                    "title": "location",
                                     "type": "string"
                                 },
                                 "message": {
@@ -1688,9 +1718,15 @@
                                         "debug",
                                         "error",
                                         "info",
+                                        "trace",
                                         "warn"
                                     ],
                                     "title": "level",
+                                    "type": "string"
+                                },
+                                "location": {
+                                    "description": "The location of the log message",
+                                    "title": "location",
                                     "type": "string"
                                 },
                                 "message": {
@@ -2750,6 +2786,7 @@
                     "default": [
                         "log.timestamp",
                         "log.level",
+                        "log.location",
                         "log.message",
                         "object.id",
                         "object.date",
@@ -2770,11 +2807,39 @@
                     "title": "logFields",
                     "type": "array"
                 },
+                "logLevel": {
+                    "description": "Filter logs to given level or higher.",
+                    "enum": [
+                        "debug",
+                        "error",
+                        "info",
+                        "trace",
+                        "warn"
+                    ],
+                    "title": "logLevel",
+                    "type": "string"
+                },
+                "logSensitiveRedactionMode": {
+                    "description": "Specifies how sensitive information should be redacted for logging.",
+                    "enum": [
+                        "all",
+                        "auto",
+                        "none"
+                    ],
+                    "title": "logSensitiveRedactionMode",
+                    "type": "string"
+                },
                 "logSheetLocation": {
                     "default": "",
                     "description": "Location of the spreadsheet log file. Enables logging to a spreadsheet if not empty.\nExample: `GmailProcessor/logsheet-${date.now:date::yyyy-MM}`",
                     "title": "logSheetLocation",
                     "type": "string"
+                },
+                "logSheetTracing": {
+                    "default": false,
+                    "description": "Enables trace logging into the logsheet.\nThis automatically loggs useful information for debugging without placing `global.sheetLog`",
+                    "title": "logSheetTracing",
+                    "type": "boolean"
                 },
                 "markProcessedLabel": {
                     "default": "",
@@ -3031,9 +3096,15 @@
                                         "debug",
                                         "error",
                                         "info",
+                                        "trace",
                                         "warn"
                                     ],
                                     "title": "level",
+                                    "type": "string"
+                                },
+                                "location": {
+                                    "description": "The location of the log message",
+                                    "title": "location",
                                     "type": "string"
                                 },
                                 "message": {
@@ -3085,9 +3156,15 @@
                                         "debug",
                                         "error",
                                         "info",
+                                        "trace",
                                         "warn"
                                     ],
                                     "title": "level",
+                                    "type": "string"
+                                },
+                                "location": {
+                                    "description": "The location of the log message",
+                                    "title": "location",
                                     "type": "string"
                                 },
                                 "message": {
@@ -3139,9 +3216,15 @@
                                         "debug",
                                         "error",
                                         "info",
+                                        "trace",
                                         "warn"
                                     ],
                                     "title": "level",
+                                    "type": "string"
+                                },
+                                "location": {
+                                    "description": "The location of the log message",
+                                    "title": "location",
                                     "type": "string"
                                 },
                                 "message": {

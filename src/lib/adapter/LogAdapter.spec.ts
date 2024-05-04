@@ -26,6 +26,7 @@ beforeEach(() => {
       logFields: [
         "log.timestamp",
         "log.level",
+        "log.location",
         "log.message",
         "field.1",
         "field.2",
@@ -38,13 +39,14 @@ beforeEach(() => {
 })
 
 it("should create a field config compliant log array", () => {
-  const actual = richLogAdapter.getLogValues(
-    mocks.processingContext,
-    "Log message",
-  )
+  const actual = richLogAdapter.getLogValues(mocks.processingContext, {
+    location: "LogAdapter.spec",
+    message: "Log message",
+  })
   expect(actual).toEqual([
     `${fakedSystemDateTimeString}.000`,
     LogLevel.INFO,
+    "LogAdapter.spec",
     "Log message",
     "static value",
     mocks.processingContext.type,
@@ -53,10 +55,14 @@ it("should create a field config compliant log array", () => {
 })
 
 it("should create a field config compliant JSON log object", () => {
-  const actual = richLogAdapter.logJSON(mocks.processingContext, "Log message")
+  const actual = richLogAdapter.logJSON(mocks.processingContext, {
+    location: "LogAdapter.spec",
+    message: "Log message",
+  })
   expect(actual).toEqual({
     "log.timestamp": `${fakedSystemDateTimeString}.000`,
     "log.level": LogLevel.INFO,
+    "log.location": "LogAdapter.spec",
     "log.message": "Log message",
     "field.1": "static value",
     "field.2": mocks.processingContext.type,

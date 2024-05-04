@@ -33,7 +33,7 @@ afterEach(() => {
 it("should log with default level to console", () => {
   spy = jest.spyOn(console, "log").mockImplementation()
   GlobalActions.log(mocks.processingContext, { message: "Log message" })
-  expect(spy.mock.calls[0][0]).toMatch(/^\[[^\]]+\] INFO: Log message/)
+  expect(spy.mock.calls[0][0]).toMatch(/^[^ ]+ INFO Log message/)
 })
 
 it("should with a certain log level to console", () => {
@@ -42,15 +42,19 @@ it("should with a certain log level to console", () => {
     level: LogLevel.WARN,
     message: "Log message",
   })
-  expect(spy.mock.calls[0][0]).toMatch(/^\[[^\]]+\] WARN: Log message/)
+  expect(spy.mock.calls[0][0]).toMatch(/^[^ ]+ WARN Log message/)
 })
 
 it("should log with default level (info) to a logSheet", () => {
-  GlobalActions.sheetLog(mocks.attachmentContext, { message: "Log message" })
+  GlobalActions.sheetLog(mocks.attachmentContext, {
+    location: "GlobalAction.spec",
+    message: "Log message",
+  })
   // TODO: Test should not depend on the action implementation
   expect(mocks.logSheet.appendRow.mock.calls[0][0]).toEqual([
     `${fakedSystemDateTimeString}.000`,
     LogLevel.INFO,
+    "GlobalAction.spec",
     "Log message",
     "aa0b8cc192a5d8d5b5d8ecda24fd0961b10ae283",
     "2019-05-02 07:15:28",
