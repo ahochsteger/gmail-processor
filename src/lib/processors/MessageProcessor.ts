@@ -370,47 +370,76 @@ export class MessageProcessor extends BaseProcessor {
     return m
   }
 
+  public static processConfig(
+    ctx: ThreadContext,
+    config: RequiredMessageConfig,
+    configIndex: number,
+    result: ProcessingResult,
+  ): ProcessingResult {
+    ctx.log.trace(ctx, {
+      location: "MessageProcessor.processConfig()",
+      message: `Processing message config '${configIndex}' started ...`,
+    })
+    const messages = ctx.thread.object.getMessages()
+    const matchConfig = this.buildMatchConfig(
+      ctx,
+      ctx.proc.config.global.message.match,
+      config.match,
+    )
+    for (let index = 0; index < messages.length; index++) {
+      if (
+        ctx.proc.config.settings.markProcessedMethod ===
+        MarkProcessedMethod.MARK_MESSAGE_READ
+      ) {
+        ctx.proc.timer.checkMaxRuntimeReached()
+      }
+      // TODO: Move everything from here on into processEntity()
+      const message = messages[index]
+      if (!this.matches(ctx, matchConfig, message)) {
+        ctx.log.info(
+          `Skipping non-matching message id '${ctx.log.redact(ctx, message.getId())}' (date:'${message
+            .getDate()
+            .toISOString()}',  subject:'${ctx.log.redact(ctx, message.getSubject())}', from:${ctx.log.redact(ctx, message.getFrom())}).`,
+        )
+        continue
+      }
+      const messageContext = this.buildContext(ctx, {
+        object: message,
+        config: config,
+        configIndex: configIndex,
+        index: index,
+      })
+      result = this.processEntity(messageContext, result)
+    }
+    result.processedMessageConfigs += 1
+    ctx.log.trace(ctx, {
+      location: "MessageProcessor.processConfig()",
+      message: `Processing message config '${configIndex}' finished.`,
+    })
+    return result
+  }
+
   public static processConfigs(
     ctx: ThreadContext,
     configs: RequiredMessageConfig[],
     result: ProcessingResult = newProcessingResult(),
   ): ProcessingResult {
+    ctx.log.trace(ctx, {
+      location: "MessageProcessor.processConfigs()",
+      message: "Processing message configs started ...",
+    })
     for (let configIndex = 0; configIndex < configs.length; configIndex++) {
-      const config = configs[configIndex]
-      ctx.log.info(`Processing of message config '${config.name}' started ...`)
-      const messages = ctx.thread.object.getMessages()
-      const matchConfig = this.buildMatchConfig(
+      result = this.processConfig(
         ctx,
-        ctx.proc.config.global.message.match,
-        config.match,
+        configs[configIndex],
+        configIndex,
+        result,
       )
-      for (let index = 0; index < messages.length; index++) {
-        if (
-          ctx.proc.config.settings.markProcessedMethod ===
-          MarkProcessedMethod.MARK_MESSAGE_READ
-        ) {
-          ctx.proc.timer.checkMaxRuntimeReached()
-        }
-        const message = messages[index]
-        if (!this.matches(ctx, matchConfig, message)) {
-          ctx.log.debug(
-            `Skipping non-matching message id ${message.getId()} (date:'${message
-              .getDate()
-              .toISOString()}',  subject:'${message.getSubject()}', from:${message.getFrom()}).`,
-          )
-          continue
-        }
-        const messageContext = this.buildContext(ctx, {
-          object: message,
-          config: config,
-          configIndex: configIndex,
-          index: index,
-        })
-        result = this.processEntity(messageContext, result)
-      }
-      result.processedMessageConfigs += 1
-      ctx.log.info(`Processing of message config '${config.name}' finished.`)
     }
+    ctx.log.trace(ctx, {
+      location: "MessageProcessor.processConfigs()",
+      message: "Processing message configs finished.",
+    })
     return result
   }
 
@@ -426,11 +455,12 @@ export class MessageProcessor extends BaseProcessor {
   ): ProcessingResult {
     const config = ctx.message.config
     const message = ctx.message.object
-    ctx.log.info(
-      `Processing of message id ${message.getId()} (date:'${message
+    ctx.log.trace(ctx, {
+      location: "MessageProcessor.processEntity()",
+      message: `Processing message id '${ctx.log.redact(ctx, message.getId())}' (date:'${message
         .getDate()
-        .toISOString()}',  subject:'${message.getSubject()}', from:${message.getFrom()}) started ...`,
-    )
+        .toISOString()}',  subject:'${ctx.log.redact(ctx, message.getSubject())}', from:${ctx.log.redact(ctx, message.getFrom())}) started ...`,
+    })
     // Execute pre-main actions:
     result = this.executeActions(
       ctx,
@@ -459,7 +489,10 @@ export class MessageProcessor extends BaseProcessor {
       ctx.proc.config.global.message.actions,
     )
     result.processedMessages += 1
-    ctx.log.info(`Processing of message id ${message.getId()} finished.`)
+    ctx.log.trace(ctx, {
+      location: "MessageProcessor.processEntity()",
+      message: `Processing message id '${ctx.log.redact(ctx, message.getId())}' finished.`,
+    })
     return result
   }
 }

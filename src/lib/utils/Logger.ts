@@ -1,14 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {
-  AttachmentContext,
-  EnvContext,
-  MessageContext,
-  ProcessingContext,
-  ThreadContext,
-} from "../Context"
+import { ProcessingContext } from "../Context"
+import { GlobalActionLoggingBase } from "../actions/GlobalActions"
+import { LogRedactionMode } from "../config/SettingsConfig"
 
 /** Levels of log messages used for marking and filtering. */
 export enum LogLevel {
+  /** Log level for execution tracing */
+  TRACE = "trace",
   /** Log level for debugging messages. */
   DEBUG = "debug",
   /** Log level for info messages. */
@@ -18,16 +16,29 @@ export enum LogLevel {
   /** Log level for error messages. */
   ERROR = "error",
 }
+const levels = Object.values(LogLevel)
+
+function levelIndex(level: LogLevel): number {
+  return levels.indexOf(level)
+}
 
 export class Logger {
+  logLevelIndex: number
+  constructor(public logLevel: LogLevel = LogLevel.TRACE) {
+    this.logLevelIndex = levelIndex(logLevel)
+  }
+  shouldLog(level: LogLevel): boolean {
+    return this.logLevelIndex <= levelIndex(level)
+  }
   getMessage(message?: unknown, level: LogLevel = LogLevel.INFO) {
-    return `[${new Date().toISOString()}] ${level.toUpperCase()}: ${message}`
+    return `${new Date().toISOString()} ${level.toUpperCase()} ${message}`
   }
   log(
     message?: unknown,
     level: LogLevel = LogLevel.INFO,
     ...optionalParams: unknown[]
   ) {
+    if (!this.shouldLog(level)) return
     if ([LogLevel.WARN, LogLevel.ERROR].includes(level)) {
       console.error(this.getMessage(message, level), ...optionalParams)
     } else {
@@ -46,86 +57,26 @@ export class Logger {
   error(message?: unknown, ...optionalParams: unknown[]) {
     this.log(message, LogLevel.ERROR, ...optionalParams)
   }
-  logEnvContext(ctx: EnvContext, level: LogLevel = LogLevel.DEBUG) {
-    const logObj = {
-      runMode: ctx.env.runMode,
-      timezone: ctx.env.timezone,
+  trace(ctx: ProcessingContext, args: GlobalActionLoggingBase) {
+    const { logSheetTracing, logSheetLocation } = ctx.proc.config.settings
+    ctx.log.log(`[${args.location}] ${args.message}`, LogLevel.TRACE)
+    if (logSheetTracing === true && logSheetLocation) {
+      ctx.proc.spreadsheetAdapter.log(ctx, args)
     }
-    this.debug(`EnvContext: ${JSON.stringify(logObj, null, 2)}`, level)
   }
-  logProcessingContext(
-    ctx: ProcessingContext,
-    level: LogLevel = LogLevel.DEBUG,
-  ) {
-    const logObj = {
-      config: ctx.proc.config,
-    }
-    this.debug(`ProcessingContext: ${JSON.stringify(logObj, null, 2)}`, level)
-  }
-  logThreadContext(ctx: ThreadContext, level: LogLevel = LogLevel.DEBUG) {
-    const logObj = {
-      config: ctx.thread.config,
-      object: {
-        id: ctx.thread.object.getId(),
-        firstMessageSubject: ctx.thread.object.getFirstMessageSubject(),
-      },
-    }
-    this.debug(`ThreadContext: ${JSON.stringify(logObj, null, 2)}`, level)
-  }
-  logMessageContext(ctx: MessageContext, level: LogLevel = LogLevel.DEBUG) {
-    const logObj = {
-      config: ctx.message.config,
-      object: {
-        from: ctx.message.object.getFrom(),
-        id: ctx.message.object.getId(),
-        subject: ctx.message.object.getSubject(),
-        to: ctx.message.object.getTo(),
-      },
-    }
-    this.debug(`MessageContext: ${JSON.stringify(logObj, null, 2)}`, level)
-  }
-  logAttachmentContext(
-    ctx: AttachmentContext,
-    level: LogLevel = LogLevel.DEBUG,
-  ) {
-    const logObj = {
-      config: ctx.attachment.config,
-      object: {
-        contentType: ctx.attachment.object.getContentType(),
-        name: ctx.attachment.object.getName(),
-        size: ctx.attachment.object.getSize(),
-      },
-    }
-    this.debug(`AttachmentContext: ${JSON.stringify(logObj, null, 2)}`, level)
-  }
-  toValues<T = unknown>(arg: T, fields: string[] = []): unknown {
-    let val: unknown
-    if (typeof arg === "function") {
-      arg = arg()
-    }
-    if (Array.isArray(arg)) {
-      val = arg.map((e) => this.toValues(e, fields))
-    } else if (typeof arg === "object") {
-      val = {}
-      Object.keys(arg as object).forEach((key) => {
-        const directFields: string[] = []
-        const nestedFields: string[] = []
-        fields
-          .filter((f) => f.length > 0)
-          .map((f) => {
-            const fieldParts = f.split(".")
-            directFields.push(fieldParts[0])
-            if (fieldParts.length > 1) {
-              nestedFields.push(fieldParts.splice(1).join("."))
-            }
-          })
-        if (directFields.includes(key)) {
-          ;(val as any)[key] = this.toValues((arg as any)[key], nestedFields)
+  redact(ctx: ProcessingContext, value: string): string {
+    switch (ctx.proc.config.settings.logSensitiveRedactionMode) {
+      case LogRedactionMode.ALL:
+        value = "(redacted)"
+        break
+      case LogRedactionMode.AUTO:
+        if (value.length < 8) {
+          value = "(redacted)"
+        } else {
+          value = `${value.slice(0, 3)}...${value.slice(-3)}`
         }
-      })
-    } else {
-      val = arg
+        break
     }
-    return val
+    return value
   }
 }

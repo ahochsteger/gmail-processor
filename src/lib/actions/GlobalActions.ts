@@ -15,6 +15,10 @@ export type GlobalActionLoggingBase = {
    */
   level?: LogLevel
   /**
+   * The location of the log message
+   */
+  location?: string
+  /**
    * The message to be logged.
    */
   message: string
@@ -24,26 +28,26 @@ export class GlobalActions implements ActionProvider<ProcessingContext> {
   [key: string]: ActionFunction<ProcessingContext>
 
   /** Do nothing (no operation). Used for testing. */
-  public static noop(context: ProcessingContext) {
-    context.log.info("NOOP: Do nothing.")
+  public static noop(ctx: ProcessingContext) {
+    ctx.log.info("NOOP: Do nothing.")
   }
 
   /** Terminate processing due to an error. */
   public static panic(
-    context: ProcessingContext,
+    ctx: ProcessingContext,
     args: GlobalActionLoggingBase,
   ): ActionReturnType {
-    const msg = PatternUtil.substitute(context, args.message)
-    context.log.error(msg)
+    const msg = PatternUtil.substitute(ctx, args.message)
+    ctx.log.error(msg)
     throw new Error(msg)
   }
 
   /** Create a log entry. */
   public static log(
-    context: ProcessingContext,
+    ctx: ProcessingContext,
     args: GlobalActionLoggingBase,
   ): ActionReturnType {
-    context.log.log(PatternUtil.substitute(context, args.message), args.level)
+    ctx.log.log(PatternUtil.substitute(ctx, args.message), args.level)
     return {
       ok: true,
     }
@@ -52,14 +56,13 @@ export class GlobalActions implements ActionProvider<ProcessingContext> {
   /** Create a log entry in the log spreadsheet. */
   @writingAction<ProcessingContext>()
   public static sheetLog(
-    context: ProcessingContext,
+    ctx: ProcessingContext,
     args: GlobalActionLoggingBase,
   ): ActionReturnType {
-    context.proc.spreadsheetAdapter.log(
-      context,
-      PatternUtil.substitute(context, args.message),
-      args.level,
-    )
+    ctx.proc.spreadsheetAdapter.log(ctx, {
+      ...args,
+      message: PatternUtil.substitute(ctx, args.message),
+    })
     return {
       ok: true,
     }

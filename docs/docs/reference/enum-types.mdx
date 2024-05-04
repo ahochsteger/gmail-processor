@@ -51,7 +51,18 @@ Levels of log messages used for marking and filtering.
 | `debug` | Log level for debugging messages. |
 | `error` | Log level for error messages. |
 | `info` | Log level for info messages. |
+| `trace` | Log level for execution tracing |
 | `warn` | Log level for warning messages. |
+
+## LogRedactionMode
+
+Specifies how sensitive data should be redacted for logging.
+
+| Value | Description |
+|-------|-------------|
+| `all` | Redact all possibly sensitive data |
+| `auto` | Automatically detect sensitive data to be redacted |
+| `none` | Do not redact sensitive data at all. |
 
 ## MarkProcessedMethod
 

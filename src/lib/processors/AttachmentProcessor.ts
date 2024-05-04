@@ -207,40 +207,66 @@ export class AttachmentProcessor extends BaseProcessor {
     configs: RequiredAttachmentConfig[],
     result: ProcessingResult = newProcessingResult(),
   ): ProcessingResult {
+    ctx.log.trace(ctx, {
+      location: "AttachmentProcessor.processConfigs()",
+      message: "Processing attachment configs started ...",
+    })
     for (let configIndex = 0; configIndex < configs.length; configIndex++) {
-      const config = configs[configIndex]
-      ctx.log.info(
-        `Processing of attachment config '${config.name}' started ...`,
-      )
-      const matchConfig = this.buildMatchConfig(
+      result = this.processConfig(
         ctx,
-        ctx.proc.config.global.attachment.match,
-        config.match,
+        configs[configIndex],
+        configIndex,
+        result,
       )
-      const opts: GoogleAppsScript.Gmail.GmailAttachmentOptions = {
-        includeAttachments: matchConfig.includeAttachments,
-        includeInlineImages: matchConfig.includeInlineImages,
-      }
-      const attachments = ctx.message.object.getAttachments(opts)
-      for (let index = 0; index < attachments.length; index++) {
-        const attachment = attachments[index]
-        if (!this.matches(ctx, matchConfig, attachment)) {
-          ctx.log.debug(
-            `Skipping non-matching attachment hash '${attachment.getHash()}' (name:'${attachment.getName()}', type:${attachment.getContentType()}, size:${attachment.getSize()}) started ...`,
-          )
-          continue
-        }
-        const attachmentContext = this.buildContext(ctx, {
-          config: config,
-          configIndex: configIndex,
-          index: index,
-          object: attachment,
-        })
-        result = this.processEntity(attachmentContext, result)
-      }
-      result.processedAttachmentConfigs += 1
-      ctx.log.info(`Processing of attachment config '${config.name}' finished.`)
     }
+    ctx.log.trace(ctx, {
+      location: "AttachmentProcessor.processConfigs()",
+      message: "Processing attachment configs finished.",
+    })
+    return result
+  }
+
+  public static processConfig(
+    ctx: MessageContext,
+    config: RequiredAttachmentConfig,
+    configIndex: number,
+    result: ProcessingResult,
+  ): ProcessingResult {
+    ctx.log.trace(ctx, {
+      location: "AttachmentProcessor.processConfig()",
+      message: `Processing attachment config '${configIndex}' started ...`,
+    })
+    const matchConfig = this.buildMatchConfig(
+      ctx,
+      ctx.proc.config.global.attachment.match,
+      config.match,
+    )
+    const opts: GoogleAppsScript.Gmail.GmailAttachmentOptions = {
+      includeAttachments: matchConfig.includeAttachments,
+      includeInlineImages: matchConfig.includeInlineImages,
+    }
+    const attachments = ctx.message.object.getAttachments(opts)
+    for (let index = 0; index < attachments.length; index++) {
+      const attachment = attachments[index]
+      if (!this.matches(ctx, matchConfig, attachment)) {
+        ctx.log.info(
+          `Skipping non-matching attachment hash '${ctx.log.redact(ctx, attachment.getHash())}' (name:'${ctx.log.redact(ctx, attachment.getName())}', type:${attachment.getContentType()}, size:${attachment.getSize()}) started ...`,
+        )
+        continue
+      }
+      const attachmentContext = this.buildContext(ctx, {
+        config: config,
+        configIndex: configIndex,
+        index: index,
+        object: attachment,
+      })
+      result = this.processEntity(attachmentContext, result)
+    }
+    result.processedAttachmentConfigs += 1
+    ctx.log.trace(ctx, {
+      location: "AttachmentProcessor.processConfig()",
+      message: `Processing attachment config '${configIndex}' finished.`,
+    })
     return result
   }
 
@@ -249,9 +275,10 @@ export class AttachmentProcessor extends BaseProcessor {
     result: ProcessingResult = newProcessingResult(),
   ): ProcessingResult {
     const attachment = ctx.attachment.object
-    ctx.log.info(
-      `Processing of attachment hash '${attachment.getHash()}' (name:'${attachment.getName()}', type:${attachment.getContentType()}, size:${attachment.getSize()}) started ...`,
-    )
+    ctx.log.trace(ctx, {
+      location: "AttachmentProcessor.processEntity()",
+      message: `Processing attachment hash '${ctx.log.redact(ctx, attachment.getHash())}' (name:'${ctx.log.redact(ctx, attachment.getName())}', type:${attachment.getContentType()}, size:${attachment.getSize()}) started ...`,
+    })
     // Execute pre-main actions:
     result = this.executeActions(
       ctx,
@@ -279,9 +306,10 @@ export class AttachmentProcessor extends BaseProcessor {
       ctx.proc.config.global.attachment.actions,
     )
     result.processedAttachments += 1
-    ctx.log.info(
-      `Processing of attachment hash '${attachment.getHash()}' finished.`,
-    )
+    ctx.log.trace(ctx, {
+      location: "AttachmentProcessor.processEntity()",
+      message: `Processing attachment hash '${ctx.log.redact(ctx, attachment.getHash())}' finished.`,
+    })
     return result
   }
 }

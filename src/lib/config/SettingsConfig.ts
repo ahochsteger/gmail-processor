@@ -1,6 +1,7 @@
 import { Expose, Type, plainToInstance } from "class-transformer"
 import "reflect-metadata"
 import { essentialObject } from "../utils/ConfigUtils"
+import { LogLevel } from "../utils/Logger"
 import { RequiredDeep } from "../utils/UtilityTypes"
 
 // TODO: Use these constants in SettingsConfig below, when typescript-json-schema bug is resolved.
@@ -11,6 +12,7 @@ export const DEFAULT_SETTING_MAX_RUNTIME = 280
 export const DEFAULT_SETTING_SLEEP_TIME_THREADS = 100
 export const LOG_MESSAGE_NAME = "log.message"
 export const LOG_LEVEL_NAME = "log.level"
+export const LOG_LOCATION_NAME = "log.location"
 
 /**
  * The method to mark processed threads/messages/attachments.
@@ -89,6 +91,18 @@ export class LogFieldConfig {
 }
 
 /**
+ * Specifies how sensitive data should be redacted for logging.
+ */
+export enum LogRedactionMode {
+  /** Do not redact sensitive data at all. */
+  NONE = "none",
+  /** Automatically detect sensitive data to be redacted */
+  AUTO = "auto",
+  /** Redact all possibly sensitive data */
+  ALL = "all",
+}
+
+/**
  * Represents a settings config that affect the way GmailProcessor works.
  */
 export class SettingsConfig {
@@ -115,6 +129,7 @@ export class SettingsConfig {
   logFields?: string[] = [
     "log.timestamp",
     "log.level",
+    "log.location",
     "log.message",
     "object.id",
     "object.date",
@@ -229,6 +244,19 @@ export class SettingsConfig {
       },
     },
   ]
+  /**
+   * Filter logs to given level or higher.
+   */
+  logLevel? = LogLevel.INFO
+  /**
+   * Specifies how sensitive information should be redacted for logging.
+   */
+  logSensitiveRedactionMode? = LogRedactionMode.AUTO
+  /**
+   * Enables trace logging into the logsheet.
+   * This automatically loggs useful information for debugging without placing `global.sheetLog`
+   */
+  logSheetTracing?: boolean = false
   /**
    * The maximum batch size of threads to process in a single run to respect Google processing limits
    */

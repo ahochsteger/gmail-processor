@@ -33,7 +33,10 @@ it("should initialize a new logsheet", () => {
 it("should log to an existing logsheet", () => {
   mocks.spreadsheetApp.create.mockReset()
   mocks.logSheet.appendRow.mockReset()
-  spreadsheetAdapter.log(mocks.attachmentContext, "some log message")
+  spreadsheetAdapter.log(mocks.attachmentContext, {
+    location: "SpreadsheetAdapter.spec",
+    message: "some log message",
+  })
   expect(mocks.spreadsheetApp.create).not.toHaveBeenCalled()
   expect(mocks.logSheet.appendRow).toHaveBeenCalled()
 })
