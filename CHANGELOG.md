@@ -1,5 +1,19 @@
 # Changelog
 
+# [2.9.0](https://github.com/ahochsteger/gmail-processor/compare/2.8.0...2.9.0) (2024-05-04)
+
+
+### Bug Fixes
+
+* linter errors + docs ([488696e](https://github.com/ahochsteger/gmail-processor/commit/488696e925a51403f63133708ef140a7c73ab3db))
+
+
+### Features
+
+* add log tracing + major log refactoring ([e44f7d0](https://github.com/ahochsteger/gmail-processor/commit/e44f7d002f36f793d868db994664b61c25136c82))
+* advanced log sheet logging + example updates ([31d8c46](https://github.com/ahochsteger/gmail-processor/commit/31d8c46dbc47c8f31a9ca1990ed02a31ab565e35))
+* enable context meta as field names + refactoring + docs ([17f9959](https://github.com/ahochsteger/gmail-processor/commit/17f9959fd066b8f6dd85118693ef4cc039b61a84))
+
 # [2.8.0](https://github.com/ahochsteger/gmail-processor/compare/2.7.0...2.8.0) (2024-03-17)
 
 
