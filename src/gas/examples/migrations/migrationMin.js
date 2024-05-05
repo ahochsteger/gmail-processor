@@ -3,6 +3,9 @@
 // Source: src/examples/migrations/migrationMin.ts
 
 function migrationMinTest() {
+  /**
+   * This is a minimal Gmail2GDrive v1.x configuration example to demonstrate the conversion to the Gmail Processor v2.x config format.
+   */
   const info = {
     name: "migrationMin",
     title: "Minimal Migration",

@@ -11,6 +11,7 @@ import { Config } from "../config/Config"
 import { V1Config } from "../config/v1/V1Config"
 import { V1ToV2Converter } from "../config/v1/V1ToV2Converter"
 import { GmailProcessor } from "../processors/GmailProcessor"
+import { PatternUtil } from "../utils/PatternUtil"
 import { E2EDefaults } from "./E2EDefaults"
 
 export type E2EGlobalConfig = {
@@ -222,9 +223,15 @@ export class E2E {
       const globals = newE2EGlobalConfig(ctx, testConfig.globals, branch)
       testConfig.initConfig?.mails.forEach((mail) => {
         ctx.env.mailApp.sendEmail({
-          to: globals.to,
-          subject: `${globals.subjectPrefix}${mail.subject ?? testConfig.info.name}`,
-          htmlBody: mail.body ?? testConfig.info.description,
+          to: PatternUtil.substitute(ctx, globals.to),
+          subject: PatternUtil.substitute(
+            ctx,
+            `${globals.subjectPrefix}${mail.subject ?? testConfig.info.name}`,
+          ),
+          htmlBody: PatternUtil.substitute(
+            ctx,
+            mail.body ?? testConfig.info.description,
+          ),
           attachments: mail.attachments?.map((path) =>
             this._getBlobSourceFromFilePath(ctx, globals, path),
           ),

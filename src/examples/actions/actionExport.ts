@@ -5,6 +5,14 @@ import { E2EInitConfig, E2ETest, E2ETestConfig } from "../../lib/e2e/E2E"
 import { E2EDefaults } from "../../lib/e2e/E2EDefaults"
 import { Example, ExampleInfo } from "../Example"
 
+/**
+ * This example demonstrates how to export messages or threads to HTML or PDF documents.
+ *
+ * * `message.exportAsHtml`: Exports a message to an HTML document.
+ * * `message.exportAsPdf`: Exports a message to a PDF document.
+ * * `thread.exportAsHtml`: Exports a thread to an HTML document.
+ * * `thread.exportAsPdf`: Exports a thread to a PDF document.
+ */
 export const info: ExampleInfo = {
   name: "actionExport",
   title: "Export Thread/Message",

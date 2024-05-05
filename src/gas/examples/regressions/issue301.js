@@ -3,13 +3,16 @@
 // Source: src/examples/regressions/issue301.ts
 
 function issue301Test() {
+  /**
+   * This example is a test for PR #301 to fix `getBlob` error on conflict strategy `update`.
+   */
   const info = {
     name: "issue301",
     title: "Issue #301",
     description:
       "This example is a test for PR #301 to fix `getBlob` error on conflict strategy `update`.",
     category: "regressions",
-    generate: ["docs", "test-e2e", "test-spec"],
+    generate: ["test-e2e", "test-spec"],
     issues: [300],
     pullRequests: [301],
     schemaVersion: "v2",

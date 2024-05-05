@@ -3,6 +3,7 @@ import { actionAttachmentExtractTextExample } from "./actions/actionAttachmentEx
 import { actionExportExample } from "./actions/actionExport"
 import { actionThreadRemoveLabelExample } from "./actions/actionThreadRemoveLabel"
 import { logSheetLoggingExample } from "./advanced/logSheetLogging"
+import { regularExpressionsExample } from "./advanced/regularExpressions"
 import { simpleExample } from "./basics/simple"
 import { convertToGoogleExample } from "./features/convertToGoogle"
 import { migrationAdvancedExample } from "./migrations/migrationAdvanced"
@@ -19,5 +20,6 @@ export const allExamples: Example[] = [
   logSheetLoggingExample,
   migrationAdvancedExample,
   migrationMinExample,
+  regularExpressionsExample,
   simpleExample,
 ]

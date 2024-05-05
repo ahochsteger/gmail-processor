@@ -8,6 +8,16 @@ import { ConflictStrategy } from "./../../lib/adapter/GDriveAdapter"
 import { ProcessingStage } from "./../../lib/config/ActionConfig"
 import { E2EDefaults } from "./../../lib/e2e/E2EDefaults"
 
+/**
+ * This example demonstrates the advanced logging possibilities to a Google Spreadsheet.
+ *
+ * The following `settings` are used to configure the logging behafior:
+ * * `logSheetLocation`: The location of the spreadsheet document to be logged into.
+ * * `logFields`: The list of log fields which are used to log into a separate column in the given order.
+ * * `logSheetTracing`: Logs additional tracing logs into the log sheet.
+ *
+ * The action `global.sheetLog` is then used to log certain messages into the logsheet at the given `processingStage`s.
+ */
 export const info: ExampleInfo = {
   name: "logSheetLogging",
   title: "LogSheet Logging",
@@ -31,10 +41,11 @@ export const runConfig: Config = {
     markProcessedMethod: MarkProcessedMethod.MARK_MESSAGE_READ,
     logSheetLocation:
       "/GmailProcessor-Tests/logsheet-${date.now:date::yyyy-MM}",
-
+    logSheetTracing: true,
     logFields: [
       "log.timestamp",
       "log.level",
+      "log.location",
       "log.message",
       "object.id",
       "object.date",

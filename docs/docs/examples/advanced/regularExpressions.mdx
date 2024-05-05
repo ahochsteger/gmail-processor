@@ -1,0 +1,26 @@
+---
+id: regularExpressions
+title: Regular Expressions
+---
+<!--
+  NOTE: Do not edit this auto-generated file!
+  Template: src/examples/_templates/docs.tmpl
+  Source: src/examples/advanced/regularExpressions.ts
+-->
+
+import { regularExpressionsExample } from "../../../../src/examples/advanced/regularExpressions.ts"
+import RenderExample from "/src/components/RenderExample.tsx"
+
+This example demonstrates how to use regular expressions in the configuration.
+
+It does to following with the message subject:
+* Ignores a common subject prefix
+* Captures the school name using the capture group `(?<school>...)`
+* Captures the report type using the capture group `(?<reportType>...)`
+* Captures the report sub type using the capture group `(?<reportSubType>...)`
+* Capture the date as the final part of the subject using the capture group `(?<date>...)`
+
+The extracted data is finally used to dynamically define the location of the attachment to be stored using:
+`.../Reports/${message.subject.match.school}/All Reports/${message.subject.match.reportType}/${message.subject.match.reportSubType}/${message.subject.match.date}-${attachment.name}`
+
+<RenderExample path="src/examples/advanced/regularExpressions.ts" example={regularExpressionsExample} />

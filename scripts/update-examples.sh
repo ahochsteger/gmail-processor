@@ -87,7 +87,6 @@ function generateFromTemplate() {
 
   echo -n "Generating files to '${dest_base_dir}': "
   local generated_files=()
-  local allExamples=()
   while read -r f; do
     local baseName; baseName="$(basename "${f}" .ts)"
     local filedir; filedir="$(dirname "${f}")"
@@ -130,13 +129,14 @@ function generateFromTemplate() {
       export __E2E_TEST_FILE_BASENAME__="${baseName}"
       export __E2E_TEST_INFO__; __E2E_TEST_INFO__=$(getInfo "${EXAMPLE_SRC_BASEDIR}/${f}")
       export __E2E_TEST_TITLE__; __E2E_TEST_TITLE__=$(getInfo "${EXAMPLE_SRC_BASEDIR}/${f}" ".title")
+      export __E2E_TEST_DESCRIPTION__; __E2E_TEST_DESCRIPTION__=$(gojq -r <"build/typedoc/examples.json" --arg name "${baseName}" '.[]|select(.name==$name)?.description')
+      #echo -e "Description:\n${__E2E_TEST_DESCRIPTION__}"
       export __E2E_TEST_CONFIG__; __E2E_TEST_CONFIG__=$(extractJsonConstant "runConfig" <"${EXAMPLE_SRC_BASEDIR}/${f}")
       export __E2E_TEST_MIGRATION_CONFIG__; __E2E_TEST_MIGRATION_CONFIG__=$(extractJsonConstant "migrationConfig" <"${EXAMPLE_SRC_BASEDIR}/${f}")
       export __E2E_TEST_FILE_DIR_UP__; __E2E_TEST_FILE_DIR_UP__=$(echo "${filedir}" | sed -re 's#[^/]+#..#g')
       envsubst <"${template_file_path}"
     } >"${dest_file}"
     generated_files+=("${dest_file}")
-    allExamples+=("${baseName}")
   done < <(
     find "${EXAMPLE_SRC_BASEDIR}" -type f -path "${file_filter}" -printf "%P\n" \
     | grep -v '\.spec.ts$' \
@@ -144,12 +144,21 @@ function generateFromTemplate() {
   )
   echo "."
   if [ "${generated_files[*]}" ]; then
-    echo "All examples: ${allExamples[*]}"
     # Format generated file:
     echo "Formatting generated files ..."
     npx prettier -w "${generated_files[@]}"
   fi
 }
+
+# Extract example description:
+npx typedoc \
+  --tsconfig "tsconfig-examples.json" \
+  --json "build/typedoc/all-examples.json" \
+  --readme none \
+  "src/examples/**/*.ts"
+gojq -f scripts/update-examples-extract.jq \
+  <"build/typedoc/all-examples.json" \
+  >"build/typedoc/examples.json"
 
 # Generate example GAS files:
 generateFromTemplate "${EXAMPLE_SRC_BASEDIR}/**/*.ts" "test-e2e" "${EXAMPLE_GAS_BASEDIR}" "js"

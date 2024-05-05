@@ -3,11 +3,14 @@
 // Source: src/examples/actions/actionThreadRemoveLabel.ts
 
 function actionThreadRemoveLabelTest() {
+  /**
+   * This example demonstrates the usage of the action `thread.removeLabel`.
+   * It is also used to test a possible behavioral change for certain characters in label names (e.g. `-` vs. `/`).
+   */
   const info = {
     name: "actionThreadRemoveLabel",
     title: "thread.removeLabel",
-    description:
-      "Demonstrates the usage of the action `thread.removeLabel` and is used to test a possible behavioral change for label names (e.g. `-` vs. `/`).",
+    description: "Demonstrates the usage of the action `thread.removeLabel`.",
     category: "actions",
     generate: ["docs", "test-e2e", "test-spec"],
     issues: [303],

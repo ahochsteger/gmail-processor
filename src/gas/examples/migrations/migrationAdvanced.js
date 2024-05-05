@@ -3,6 +3,9 @@
 // Source: src/examples/migrations/migrationAdvanced.ts
 
 function migrationAdvancedTest() {
+  /**
+   * This Gmail2GDrive v1.x configuration example demonstrates the conversion to the Gmail Processor v2.x config format.
+   */
   const info = {
     name: "migrationAdvanced",
     title: "Advanced Migration",

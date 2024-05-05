@@ -5,13 +5,16 @@ import { E2EInitConfig, E2ETest, E2ETestConfig } from "../../lib/e2e/E2E"
 import { E2EDefaults } from "../../lib/e2e/E2EDefaults"
 import { Example, ExampleInfo } from "../Example"
 
+/**
+ * This example is a test for PR #301 to fix `getBlob` error on conflict strategy `update`.
+ */
 export const info: ExampleInfo = {
   name: "issue301",
   title: "Issue #301",
   description:
     "This example is a test for PR #301 to fix `getBlob` error on conflict strategy `update`.",
   category: "regressions",
-  generate: ["docs", "test-e2e", "test-spec"],
+  generate: ["test-e2e", "test-spec"],
   issues: [300],
   pullRequests: [301],
   schemaVersion: "v2",

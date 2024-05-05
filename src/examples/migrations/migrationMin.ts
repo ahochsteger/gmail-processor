@@ -2,6 +2,9 @@ import { E2EInitConfig, E2ETest, E2ETestConfig } from "../../lib/e2e/E2E"
 import { Example, ExampleInfo } from "../Example"
 import { V1Config } from "./../../lib/config/v1/V1Config"
 
+/**
+ * This is a minimal Gmail2GDrive v1.x configuration example to demonstrate the conversion to the Gmail Processor v2.x config format.
+ */
 export const info: ExampleInfo = {
   name: "migrationMin",
   title: "Minimal Migration",

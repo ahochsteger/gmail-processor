@@ -41,7 +41,6 @@ export default function RenderExample({example}: ExampleConfigProps) {
 
   return (
     <>
-      <p>{info.description}</p>
       <p>👉 Edit this example in the <Link href={`/playground?example=${info.name}`}>playground</Link>{ info.schemaVersion === "v1" ? " and automatically migrate it to the v2 format using the convert button" : ""}.</p>
       <Tabs>
         <TabItem value="config" label="Config" default>

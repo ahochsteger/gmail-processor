@@ -2,6 +2,9 @@ import { E2EInitConfig, E2ETest, E2ETestConfig } from "../../lib/e2e/E2E"
 import * as GmailProcessorLib from "../../lib/index"
 import { Example, ExampleInfo } from "../Example"
 
+/**
+ * This Gmail2GDrive v1.x configuration example demonstrates the conversion to the Gmail Processor v2.x config format.
+ */
 export const info: ExampleInfo = {
   name: "migrationAdvanced",
   title: "Advanced Migration",

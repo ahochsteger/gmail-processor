@@ -5,6 +5,11 @@ import { E2EInitConfig, E2ETest, E2ETestConfig } from "../../lib/e2e/E2E"
 import { E2EDefaults } from "../../lib/e2e/E2EDefaults"
 import { Example, ExampleInfo } from "../Example"
 
+/**
+ * This example shows how to convert MS Office attachments into Google formats.
+ *
+ * Use the argument `toMimeType` of the action `attachment.store` to convert the document into one of the supported formats.
+ */
 export const info: ExampleInfo = {
   name: "convertToGoogle",
   title: "Convert to Google",

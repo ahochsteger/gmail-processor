@@ -7,11 +7,14 @@ import { ProcessingStage } from "./../../lib/config/ActionConfig"
 import { Config } from "./../../lib/config/Config"
 import { MarkProcessedMethod } from "./../../lib/config/SettingsConfig"
 
+/**
+ * This example demonstrates the use of the action `attachment.extractText` to extract matching text from the content of an attachment for use in later actions (e.g. use as part of the filename for `attachment.store`).
+ */
 export const info: ExampleInfo = {
   name: "actionAttachmentExtractText",
   title: "attachment.extractText",
   description:
-    "This example demonstrates the use of the action `attachment.extractText` to extract matching text from the content of an attachment for use in later actions (e.g. use as part of the filename for `attachment.store`).",
+    "This example demonstrates the use of the action `attachment.extractText` to extract text from attachments.",
   category: "actions",
   generate: ["docs", "test-e2e", "test-spec"],
   pullRequests: [319],

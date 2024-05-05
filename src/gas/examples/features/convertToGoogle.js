@@ -3,6 +3,11 @@
 // Source: src/examples/features/convertToGoogle.ts
 
 function convertToGoogleTest() {
+  /**
+   * This example shows how to convert MS Office attachments into Google formats.
+   *
+   * Use the argument `toMimeType` of the action `attachment.store` to convert the document into one of the supported formats.
+   */
   const info = {
     name: "convertToGoogle",
     title: "Convert to Google",

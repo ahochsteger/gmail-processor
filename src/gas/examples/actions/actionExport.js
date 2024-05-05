@@ -3,6 +3,14 @@
 // Source: src/examples/actions/actionExport.ts
 
 function actionExportTest() {
+  /**
+   * This example demonstrates how to export messages or threads to HTML or PDF documents.
+   *
+   * * `message.exportAsHtml`: Exports a message to an HTML document.
+   * * `message.exportAsPdf`: Exports a message to a PDF document.
+   * * `thread.exportAsHtml`: Exports a thread to an HTML document.
+   * * `thread.exportAsPdf`: Exports a thread to a PDF document.
+   */
   const info = {
     name: "actionExport",
     title: "Export Thread/Message",

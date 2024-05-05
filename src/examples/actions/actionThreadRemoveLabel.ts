@@ -6,11 +6,14 @@ import { ProcessingStage } from "./../../lib/config/ActionConfig"
 import { Config } from "./../../lib/config/Config"
 import { MarkProcessedMethod } from "./../../lib/config/SettingsConfig"
 
+/**
+ * This example demonstrates the usage of the action `thread.removeLabel`.
+ * It is also used to test a possible behavioral change for certain characters in label names (e.g. `-` vs. `/`).
+ */
 export const info: ExampleInfo = {
   name: "actionThreadRemoveLabel",
   title: "thread.removeLabel",
-  description:
-    "Demonstrates the usage of the action `thread.removeLabel` and is used to test a possible behavioral change for label names (e.g. `-` vs. `/`).",
+  description: "Demonstrates the usage of the action `thread.removeLabel`.",
   category: "actions",
   generate: ["docs", "test-e2e", "test-spec"],
   issues: [303],

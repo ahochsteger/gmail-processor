@@ -11,4 +11,13 @@ title: LogSheet Logging
 import { logSheetLoggingExample } from "../../../../src/examples/advanced/logSheetLogging.ts"
 import RenderExample from "/src/components/RenderExample.tsx"
 
+This example demonstrates the advanced logging possibilities to a Google Spreadsheet.
+
+The following `settings` are used to configure the logging behafior:
+* `logSheetLocation`: The location of the spreadsheet document to be logged into.
+* `logFields`: The list of log fields which are used to log into a separate column in the given order.
+* `logSheetTracing`: Logs additional tracing logs into the log sheet.
+
+The action `global.sheetLog` is then used to log certain messages into the logsheet at the given `processingStage`s.
+
 <RenderExample path="src/examples/advanced/logSheetLogging.ts" example={logSheetLoggingExample} />
