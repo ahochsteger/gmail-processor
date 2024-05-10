@@ -225,12 +225,14 @@ export class GMailMocks {
       isInTrash: data.isInTrash ?? false,
       isUnread: data.isUnread ?? true,
       labels: data.labels ?? [],
-      lastMessageDate: messages.reduce((lastMessage, currentMessage) =>
-        lastMessage.date.getMilliseconds() <
-        currentMessage.date.getMilliseconds()
-          ? currentMessage
-          : lastMessage,
-      ).date,
+      lastMessageDate:
+        data.lastMessageDate ??
+        messages.reduce((lastMessage, currentMessage) =>
+          lastMessage.date.getMilliseconds() <
+          currentMessage.date.getMilliseconds()
+            ? currentMessage
+            : lastMessage,
+        ).date,
       messageCount: messages.length,
       messages: messages,
       permalink: data.permalink ?? "some-permalink-url",
@@ -296,9 +298,11 @@ export class GMailMocks {
     const sampleContent = data.content ?? "Sample text content"
     const sampleData: RequiredAttachmentData = {
       contentType: data.contentType ?? "text/plain",
-      hash: crypto.createHash("sha1").update(sampleContent).digest("hex"),
+      hash:
+        data.hash ??
+        crypto.createHash("sha1").update(sampleContent).digest("hex"),
       name: data.name ?? "attachment.txt",
-      size: this.lengthInUtf8Bytes(sampleContent),
+      size: data.size ?? this.lengthInUtf8Bytes(sampleContent),
       isGoogleType: data.isGoogleType ?? false,
       content: sampleContent,
     }

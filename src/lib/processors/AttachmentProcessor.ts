@@ -1,9 +1,13 @@
 import { ProcessingStage } from "../config/ActionConfig"
-import { RequiredAttachmentConfig } from "../config/AttachmentConfig"
+import {
+  AttachmentOrderField,
+  RequiredAttachmentConfig,
+} from "../config/AttachmentConfig"
 import {
   AttachmentMatchConfig,
   RequiredAttachmentMatchConfig,
 } from "../config/AttachmentMatchConfig"
+import { OrderableEntityConfig, OrderDirection } from "../config/CommonConfig"
 import {
   Attachment,
   AttachmentContext,
@@ -226,6 +230,22 @@ export class AttachmentProcessor extends BaseProcessor {
     return result
   }
 
+  public static orderRules(
+    a: GoogleAppsScript.Gmail.GmailAttachment,
+    b: GoogleAppsScript.Gmail.GmailAttachment,
+    config: OrderableEntityConfig<AttachmentOrderField>,
+  ): number {
+    return (
+      {
+        [AttachmentOrderField.CONTENT_TYPE]: a
+          .getContentType()
+          .localeCompare(b.getContentType()),
+        [AttachmentOrderField.HASH]: a.getHash().localeCompare(b.getHash()),
+        [AttachmentOrderField.NAME]: a.getName().localeCompare(b.getName()),
+      }[config.orderBy] * (config.orderDirection == OrderDirection.ASC ? 1 : -1)
+    )
+  }
+
   public static processConfig(
     ctx: MessageContext,
     config: RequiredAttachmentConfig,
@@ -245,7 +265,11 @@ export class AttachmentProcessor extends BaseProcessor {
       includeAttachments: matchConfig.includeAttachments,
       includeInlineImages: matchConfig.includeInlineImages,
     }
-    const attachments = ctx.message.object.getAttachments(opts)
+    const attachments = this.ordered(
+      ctx.message.object.getAttachments(opts),
+      config,
+      this.orderRules,
+    )
     for (let index = 0; index < attachments.length; index++) {
       const attachment = attachments[index]
       if (!this.matches(ctx, matchConfig, attachment)) {

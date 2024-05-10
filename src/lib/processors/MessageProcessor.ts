@@ -11,7 +11,11 @@ import {
   newProcessingResult,
 } from "../Context"
 import { ProcessingStage } from "../config/ActionConfig"
-import { RequiredMessageConfig } from "../config/MessageConfig"
+import { OrderDirection, OrderableEntityConfig } from "../config/CommonConfig"
+import {
+  MessageOrderField,
+  RequiredMessageConfig,
+} from "../config/MessageConfig"
 import { MessageFlag } from "../config/MessageFlag"
 import {
   MessageMatchConfig,
@@ -370,6 +374,23 @@ export class MessageProcessor extends BaseProcessor {
     return m
   }
 
+  public static orderRules(
+    a: GoogleAppsScript.Gmail.GmailMessage,
+    b: GoogleAppsScript.Gmail.GmailMessage,
+    config: OrderableEntityConfig<MessageOrderField>,
+  ): number {
+    return (
+      {
+        [MessageOrderField.DATE]: a.getDate().getTime() - b.getDate().getTime(),
+        [MessageOrderField.FROM]: a.getFrom().localeCompare(b.getFrom()),
+        [MessageOrderField.ID]: a.getId().localeCompare(b.getId()),
+        [MessageOrderField.SUBJECT]: a
+          .getSubject()
+          .localeCompare(b.getSubject()),
+      }[config.orderBy] * (config.orderDirection == OrderDirection.ASC ? 1 : -1)
+    )
+  }
+
   public static processConfig(
     ctx: ThreadContext,
     config: RequiredMessageConfig,
@@ -380,7 +401,11 @@ export class MessageProcessor extends BaseProcessor {
       location: "MessageProcessor.processConfig()",
       message: `Processing message config '${configIndex}' started ...`,
     })
-    const messages = ctx.thread.object.getMessages()
+    const messages = this.ordered(
+      ctx.thread.object.getMessages(),
+      config,
+      this.orderRules,
+    )
     const matchConfig = this.buildMatchConfig(
       ctx,
       ctx.proc.config.global.message.match,

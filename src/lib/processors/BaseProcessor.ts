@@ -20,6 +20,7 @@ import {
 import { ActionArgsType, ActionReturnType } from "../actions/ActionRegistry"
 import { ActionConfig, ProcessingStage } from "../config/ActionConfig"
 import { AttachmentMatchConfig } from "../config/AttachmentMatchConfig"
+import { OrderableEntityConfig } from "../config/CommonConfig"
 import { MessageMatchConfig } from "../config/MessageMatchConfig"
 import { ThreadMatchConfig } from "../config/ThreadMatchConfig"
 import { PatternUtil } from "../utils/PatternUtil"
@@ -441,32 +442,14 @@ export abstract class BaseProcessor {
     return `${description}See [${title}](https://developers.google.com/apps-script/reference/gmail/gmail-${type}#${method}\\(\\)) reference docs.`
   }
 
-  protected static getConfigName(
-    // TODO: Remove, is obsolete now.
-    ctx: ThreadContext | MessageContext | AttachmentContext,
-    namePrefix = "",
-  ) {
-    let threadName = ""
-    let messageName = ""
-    let attachmentName = ""
-    if ((ctx as ThreadContext).thread) {
-      const threadCtx = ctx as ThreadContext
-      threadName =
-        threadCtx.thread.config.name ??
-        `${threadCtx.thread.config.name}-${threadCtx.thread.configIndex}`
+  public static ordered<T, C extends string>(
+    entities: T[],
+    config: OrderableEntityConfig<C>,
+    orderRulesFn: (a: T, b: T, config: OrderableEntityConfig<C>) => number,
+  ): T[] {
+    if (config.orderBy && config.orderDirection) {
+      entities = entities.sort((a: T, b: T) => orderRulesFn(a, b, config))
     }
-    if ((ctx as MessageContext).message) {
-      const messageCtx = ctx as MessageContext
-      messageName =
-        messageCtx.message.config.name ??
-        `-${messageCtx.message.config.name}-${messageCtx.message.configIndex}`
-    }
-    if ((ctx as AttachmentContext).message) {
-      const attachmentCtx = ctx as AttachmentContext
-      attachmentName =
-        attachmentCtx.attachment.config.name ??
-        `-${attachmentCtx.attachment.config.name}-${attachmentCtx.attachment.configIndex}`
-    }
-    return `${namePrefix}${threadName}${messageName}${attachmentName}`
+    return entities
   }
 }
