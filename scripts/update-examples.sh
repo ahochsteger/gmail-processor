@@ -68,7 +68,8 @@ function validateExample() {
     exit 1 
   fi
   local categoryIndexFile="${EXAMPLE_DOCS_BASEDIR}/${category}/index.mdx"
-  if [[ ! -f "${categoryIndexFile}" ]]; then
+  local generate; generate=$(getInfo "${EXAMPLE_SRC_BASEDIR}/${f}" "if (.generate|index(\"docs\")) then \"true\" else \"false\" end")
+  if [[ "${generate}" == "true" ]] && [[ ! -f "${categoryIndexFile}" ]]; then
     echo -e "\nERROR: The category of the example file '${file}' misses an index file at '${categoryIndexFile}'!"
     exit 1 
   fi
