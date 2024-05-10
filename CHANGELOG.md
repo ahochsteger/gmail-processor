@@ -1,5 +1,12 @@
 # Changelog
 
+# [2.10.0](https://github.com/ahochsteger/gmail-processor/compare/2.9.0...2.10.0) (2024-05-10)
+
+
+### Features
+
+* add ordering of threads/messages/attachments ([3dfbdbb](https://github.com/ahochsteger/gmail-processor/commit/3dfbdbbcd989e96da1b2e6c008c4b04f124e43e9))
+
 # [2.9.0](https://github.com/ahochsteger/gmail-processor/compare/2.8.0...2.9.0) (2024-05-04)
 
 
