@@ -1,6 +1,7 @@
 import { GMailMocks } from "../../test/mocks/GMailMocks"
 import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
-import { newMessageConfig } from "../config/MessageConfig"
+import { OrderDirection } from "../config/CommonConfig"
+import { MessageOrderField, newMessageConfig } from "../config/MessageConfig"
 import { MessageFlag } from "../config/MessageFlag"
 import { MessageMatchConfig } from "../config/MessageMatchConfig"
 import { MessageProcessor } from "./MessageProcessor"
@@ -129,5 +130,38 @@ describe("processEntity()", () => {
   it("should process a message config", () => {
     const ctx = mocks.messageContext
     MessageProcessor.processEntity(ctx)
+  })
+})
+
+describe("order messages", () => {
+  let messages = [
+    GMailMocks.newMessageMock({
+      id: "m1",
+      date: new Date(2024, 5, 10),
+    }),
+    GMailMocks.newMessageMock({
+      id: "m2",
+      date: new Date(2024, 5, 9),
+    }),
+    GMailMocks.newMessageMock({
+      id: "m3",
+      date: new Date(2024, 5, 11),
+    }),
+  ]
+  it("should order threads ascending", () => {
+    messages = MessageProcessor.ordered(
+      messages,
+      { orderBy: MessageOrderField.DATE, orderDirection: OrderDirection.ASC },
+      MessageProcessor.orderRules,
+    )
+    expect(messages.map((t) => t.getId())).toEqual(["m2", "m1", "m3"])
+  })
+  it("should order threads ascending", () => {
+    messages = MessageProcessor.ordered(
+      messages,
+      { orderBy: MessageOrderField.DATE, orderDirection: OrderDirection.DESC },
+      MessageProcessor.orderRules,
+    )
+    expect(messages.map((t) => t.getId())).toEqual(["m3", "m1", "m2"])
   })
 })

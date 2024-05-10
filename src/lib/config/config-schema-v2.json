@@ -31,6 +31,25 @@
                     "description": "The unique name of the attachment config (will be generated if not set)",
                     "title": "name",
                     "type": "string"
+                },
+                "orderBy": {
+                    "description": "The field to order attachments by for processing.",
+                    "enum": [
+                        "contentType",
+                        "hash",
+                        "name"
+                    ],
+                    "title": "orderBy",
+                    "type": "string"
+                },
+                "orderDirection": {
+                    "description": "The direction to order attachments for processing.",
+                    "enum": [
+                        "asc",
+                        "desc"
+                    ],
+                    "title": "orderDirection",
+                    "type": "string"
                 }
             },
             "title": "AttachmentConfig",
@@ -1548,6 +1567,26 @@
                     "description": "The unique name of the message config (will be generated if not set)",
                     "title": "name",
                     "type": "string"
+                },
+                "orderBy": {
+                    "description": "The field to order messages by for processing.",
+                    "enum": [
+                        "date",
+                        "from",
+                        "id",
+                        "subject"
+                    ],
+                    "title": "orderBy",
+                    "type": "string"
+                },
+                "orderDirection": {
+                    "description": "The direction to order messages for processing.",
+                    "enum": [
+                        "asc",
+                        "desc"
+                    ],
+                    "title": "orderDirection",
+                    "type": "string"
                 }
             },
             "title": "MessageConfig",
@@ -3045,6 +3084,25 @@
                     "default": "",
                     "description": "The unique name of the thread config (will be generated if not set)",
                     "title": "name",
+                    "type": "string"
+                },
+                "orderBy": {
+                    "description": "The field to order threads by for processing.",
+                    "enum": [
+                        "firstMessageSubject",
+                        "id",
+                        "lastMessageDate"
+                    ],
+                    "title": "orderBy",
+                    "type": "string"
+                },
+                "orderDirection": {
+                    "description": "The direction to order threads for processing.",
+                    "enum": [
+                        "asc",
+                        "desc"
+                    ],
+                    "title": "orderDirection",
                     "type": "string"
                 }
             },

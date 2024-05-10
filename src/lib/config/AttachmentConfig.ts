@@ -12,6 +12,25 @@ import {
   essentialAttachmentMatchConfig,
   newAttachmentMatchConfig,
 } from "./AttachmentMatchConfig"
+import { OrderDirection } from "./CommonConfig"
+
+/**
+ * Represents an attachment field to be ordered by for processing.
+ */
+export enum AttachmentOrderField {
+  /**
+   * Order by the content type of the attachment.
+   */
+  CONTENT_TYPE = "contentType",
+  /**
+   * Order by the hash of the attachment.
+   */
+  HASH = "hash",
+  /**
+   * Order by the name of the attachment.
+   */
+  NAME = "name",
+}
 
 /**
  * Represents a config to handle a certain GMail attachment
@@ -39,6 +58,16 @@ export class AttachmentConfig {
    */
   @Expose()
   name? = ""
+  /**
+   * The field to order attachments by for processing.
+   */
+  @Expose()
+  orderBy?: AttachmentOrderField = undefined
+  /**
+   * The direction to order attachments for processing.
+   */
+  @Expose()
+  orderDirection?: OrderDirection = undefined
 }
 
 export type RequiredAttachmentConfig = RequiredDeep<AttachmentConfig>

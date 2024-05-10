@@ -1,10 +1,12 @@
 import { ConfigMocks } from "../../test/mocks/ConfigMocks"
 import { ContextMocks } from "../../test/mocks/ContextMocks"
+import { GMailMocks } from "../../test/mocks/GMailMocks"
 import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
 import { ProcessingStatus } from "../Context"
+import { OrderDirection } from "../config/CommonConfig"
 import { newConfig } from "../config/Config"
 import { MarkProcessedMethod } from "../config/SettingsConfig"
-import { newThreadConfig } from "../config/ThreadConfig"
+import { ThreadOrderField, newThreadConfig } from "../config/ThreadConfig"
 import { ThreadProcessor } from "./ThreadProcessor"
 
 let mocks: Mocks
@@ -106,5 +108,42 @@ it("should process an thread entity", () => {
   const result = ThreadProcessor.processEntity(mocks.threadContext)
   expect(result).toMatchObject({
     status: ProcessingStatus.OK,
+  })
+})
+
+describe("order threads", () => {
+  let threads: GoogleAppsScript.Gmail.GmailThread[]
+  beforeAll(() => {
+    jest.useRealTimers()
+    threads = [
+      GMailMocks.newThreadMock({
+        id: "t1",
+        lastMessageDate: new Date(2024, 5, 10),
+      }),
+      GMailMocks.newThreadMock({
+        id: "t2",
+        lastMessageDate: new Date(2024, 5, 9),
+      }),
+      GMailMocks.newThreadMock({
+        id: "t3",
+        lastMessageDate: new Date(2024, 5, 11),
+      }),
+    ]
+  })
+  it("should order threads ascending", () => {
+    threads = ThreadProcessor.ordered(
+      threads,
+      { orderBy: ThreadOrderField.DATE, orderDirection: OrderDirection.ASC },
+      ThreadProcessor.orderRules,
+    )
+    expect(threads.map((t) => t.getId())).toEqual(["t2", "t1", "t3"])
+  })
+  it("should order threads ascending", () => {
+    threads = ThreadProcessor.ordered(
+      threads,
+      { orderBy: ThreadOrderField.DATE, orderDirection: OrderDirection.DESC },
+      ThreadProcessor.orderRules,
+    )
+    expect(threads.map((t) => t.getId())).toEqual(["t3", "t1", "t2"])
   })
 })

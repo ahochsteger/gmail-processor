@@ -11,6 +11,7 @@ import {
   newProcessingResult,
 } from "../Context"
 import { ProcessingStage } from "../config/ActionConfig"
+import { OrderDirection, OrderableEntityConfig } from "../config/CommonConfig"
 import { RequiredThreadConfig } from "../config/ThreadConfig"
 import {
   RequiredThreadMatchConfig,
@@ -18,6 +19,7 @@ import {
 } from "../config/ThreadMatchConfig"
 import { PatternUtil } from "../utils/PatternUtil"
 import { RegexUtils } from "../utils/RegexUtils"
+import { ThreadOrderField } from "./../config/ThreadConfig"
 import { BaseProcessor } from "./BaseProcessor"
 import { MessageProcessor } from "./MessageProcessor"
 
@@ -350,6 +352,23 @@ export class ThreadProcessor extends BaseProcessor {
     return result
   }
 
+  public static orderRules(
+    a: GoogleAppsScript.Gmail.GmailThread,
+    b: GoogleAppsScript.Gmail.GmailThread,
+    config: OrderableEntityConfig<ThreadOrderField>,
+  ): number {
+    return (
+      {
+        [ThreadOrderField.DATE]:
+          a.getLastMessageDate().getTime() - b.getLastMessageDate().getTime(),
+        [ThreadOrderField.ID]: a.getId().localeCompare(b.getId()),
+        [ThreadOrderField.SUBJECT]: a
+          .getFirstMessageSubject()
+          .localeCompare(b.getFirstMessageSubject()),
+      }[config.orderBy] * (config.orderDirection == OrderDirection.ASC ? 1 : -1)
+    )
+  }
+
   public static processConfig(
     ctx: ProcessingContext,
     config: RequiredThreadConfig,
@@ -368,9 +387,13 @@ export class ThreadProcessor extends BaseProcessor {
     const query = PatternUtil.substitute(ctx, this.buildQuery(matchConfig))
     ctx.log.info(`GMail search query: ${query}`)
     // Process all threads matching the search expression:
-    const threads = ctx.proc.gmailAdapter.search(
-      query,
-      ctx.proc.config.settings.maxBatchSize,
+    const threads = this.ordered(
+      ctx.proc.gmailAdapter.search(
+        query,
+        ctx.proc.config.settings.maxBatchSize,
+      ),
+      config,
+      this.orderRules,
     )
     ctx.log.info(`-> got ${threads.length} threads`)
     for (let threadIndex = 0; threadIndex < threads.length; threadIndex++) {

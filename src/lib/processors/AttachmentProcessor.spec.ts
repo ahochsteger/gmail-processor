@@ -1,12 +1,16 @@
 import { GMailMocks } from "../../test/mocks/GMailMocks"
 import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
 import { ProcessingStatus } from "../Context"
-import { newAttachmentConfig } from "../config/AttachmentConfig"
+import {
+  AttachmentOrderField,
+  newAttachmentConfig,
+} from "../config/AttachmentConfig"
 import {
   AttachmentMatchConfig,
   RequiredAttachmentMatchConfig,
   newAttachmentMatchConfig,
 } from "../config/AttachmentMatchConfig"
+import { OrderDirection } from "../config/CommonConfig"
 import { AttachmentProcessor } from "./AttachmentProcessor"
 
 let mocks: Mocks
@@ -185,5 +189,44 @@ it("should process an attachment entity", () => {
   const result = AttachmentProcessor.processEntity(mocks.attachmentContext)
   expect(result).toMatchObject({
     status: ProcessingStatus.OK,
+  })
+})
+
+describe("order attachments", () => {
+  let attachments = [
+    GMailMocks.newAttachmentMock({
+      hash: "a1",
+      name: "2",
+    }),
+    GMailMocks.newAttachmentMock({
+      hash: "a2",
+      name: "1",
+    }),
+    GMailMocks.newAttachmentMock({
+      hash: "a3",
+      name: "3",
+    }),
+  ]
+  it("should order threads ascending", () => {
+    attachments = AttachmentProcessor.ordered(
+      attachments,
+      {
+        orderBy: AttachmentOrderField.NAME,
+        orderDirection: OrderDirection.ASC,
+      },
+      AttachmentProcessor.orderRules,
+    )
+    expect(attachments.map((t) => t.getHash())).toEqual(["a2", "a1", "a3"])
+  })
+  it("should order threads ascending", () => {
+    attachments = AttachmentProcessor.ordered(
+      attachments,
+      {
+        orderBy: AttachmentOrderField.NAME,
+        orderDirection: OrderDirection.DESC,
+      },
+      AttachmentProcessor.orderRules,
+    )
+    expect(attachments.map((t) => t.getHash())).toEqual(["a3", "a1", "a2"])
   })
 })

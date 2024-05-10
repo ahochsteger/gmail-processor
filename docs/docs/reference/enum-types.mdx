@@ -6,6 +6,16 @@ sidebar_position: 32
 
 These are the supported enum types and the possible values that can be used in the configuration.
 
+## AttachmentOrderField
+
+Represents an attachment field to be ordered by for processing.
+
+| Value | Description |
+|-------|-------------|
+| `contentType` | Order by the content type of the attachment. |
+| `hash` | Order by the hash of the attachment. |
+| `name` | Order by the name of the attachment. |
+
 ## ConflictStrategy
 
 Strategy that defines how to deal in case of conflicts with already existing files at the desired location in Google Drive.
@@ -85,6 +95,17 @@ A flag to match messages with certain properties.
 | `unread` | Matches unread messages. |
 | `unstarred` | Matches un-starred messages. |
 
+## MessageOrderField
+
+Represents a message field to be ordered by for processing.
+
+| Value | Description |
+|-------|-------------|
+| `date` | Order by the date of the message. |
+| `from` | Order by the sender of the message. |
+| `id` | Order by the ID of the message. |
+| `subject` | Order by the subject of the message. |
+
 ## MetaInfoType
 
 The type of meta information used for context substitution placeholders.
@@ -96,6 +117,15 @@ The type of meta information used for context substitution placeholders.
 | `number` | A numeric data type. |
 | `string` | A string data type. |
 | `variable` | A custom configuration variable. |
+
+## OrderDirection
+
+Represents the direction a list should be ordered.
+
+| Value | Description |
+|-------|-------------|
+| `asc` | Order ascending. |
+| `desc` | Order descending. |
 
 ## PlaceholderModifierType
 
@@ -148,3 +178,13 @@ The runtime mode in which processing takes place.
 | `dangerous` | This run-mode will execute all configured actions including possibly destructive actions like overwriting files or removing threads or messages.<br />ATTENTION: Use this only if you know exactly what you're doing and won't complain if something goes wrong! |
 | `dry-run` | This run-mode skips execution of writing actions. Use this for testing config changes or library upgrades. |
 | `safe-mode` | This run-mode can be used for normal operation but will skip possibly destructive actions like overwriting files or removing threads or messages. |
+
+## ThreadOrderField
+
+Represents a thread field to be ordered by for processing.
+
+| Value | Description |
+|-------|-------------|
+| `lastMessageDate` | Order by the date of the last message in the thread. |
+| `id` | Order by the ID of the thread. |
+| `firstMessageSubject` | Order by the subject of the first message in the thread. |

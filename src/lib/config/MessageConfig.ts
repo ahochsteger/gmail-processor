@@ -12,11 +12,34 @@ import {
   essentialAttachmentConfig,
   normalizeAttachmentConfigs,
 } from "./AttachmentConfig"
+import { OrderDirection } from "./CommonConfig"
 import {
   MessageMatchConfig,
   essentialMessageMatchConfig,
   newMessageMatchConfig,
 } from "./MessageMatchConfig"
+
+/**
+ * Represents a message field to be ordered by for processing.
+ */
+export enum MessageOrderField {
+  /**
+   * Order by the date of the message.
+   */
+  DATE = "date",
+  /**
+   * Order by the sender of the message.
+   */
+  FROM = "from",
+  /**
+   * Order by the ID of the message.
+   */
+  ID = "id",
+  /**
+   * Order by the subject of the message.
+   */
+  SUBJECT = "subject",
+}
 
 /**
  * Represents a config to handle a certain GMail message
@@ -50,6 +73,16 @@ export class MessageConfig {
    */
   @Expose()
   name? = ""
+  /**
+   * The field to order messages by for processing.
+   */
+  @Expose()
+  orderBy?: MessageOrderField = undefined
+  /**
+   * The direction to order messages for processing.
+   */
+  @Expose()
+  orderDirection?: OrderDirection = undefined
 }
 
 export type RequiredMessageConfig = RequiredDeep<MessageConfig>

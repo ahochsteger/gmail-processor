@@ -8,6 +8,7 @@ import {
   essentialThreadActionConfig,
 } from "./ActionConfig"
 import { AttachmentConfig, essentialAttachmentConfig } from "./AttachmentConfig"
+import { OrderDirection } from "./CommonConfig"
 import {
   MessageConfig,
   essentialMessageConfig,
@@ -18,6 +19,24 @@ import {
   essentialThreadMatchConfig,
   newThreadMatchConfig,
 } from "./ThreadMatchConfig"
+
+/**
+ * Represents a thread field to be ordered by for processing.
+ */
+export enum ThreadOrderField {
+  /**
+   * Order by the date of the last message in the thread.
+   */
+  DATE = "lastMessageDate",
+  /**
+   * Order by the ID of the thread.
+   */
+  ID = "id",
+  /**
+   * Order by the subject of the first message in the thread.
+   */
+  SUBJECT = "firstMessageSubject",
+}
 
 /**
  * Represents a config handle a certain GMail thread
@@ -57,6 +76,16 @@ export class ThreadConfig {
    */
   @Expose()
   name? = ""
+  /**
+   * The field to order threads by for processing.
+   */
+  @Expose()
+  orderBy?: ThreadOrderField = undefined
+  /**
+   * The direction to order threads for processing.
+   */
+  @Expose()
+  orderDirection?: OrderDirection = undefined
 }
 
 export type RequiredThreadConfig = RequiredDeep<ThreadConfig>
