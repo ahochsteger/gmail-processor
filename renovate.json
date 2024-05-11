@@ -1,7 +1,7 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:best-practices"],
-  "schedule": ["on friday"],
+  "schedule": ["on thursday"],
   "packageRules": [
     {
       "description": "Github workflow dependencies",

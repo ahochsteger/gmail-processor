@@ -85,6 +85,7 @@
     "@qiwi/semantic-release-gh-pages-plugin": "5.2.12",
     "@semantic-release/changelog": "6.0.3",
     "@semantic-release/git": "10.0.1",
+    "@semantic-release/github": "10.0.3",
     "@types/addressparser": "1.0.3",
     "@types/core-js": "2.5.8",
     "@types/google-apps-script": "1.0.83",
