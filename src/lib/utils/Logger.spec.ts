@@ -103,3 +103,21 @@ it("should trace to console and logsheet", () => {
   )
   expect(sheetSpy).toHaveBeenCalled()
 })
+
+describe("redact", () => {
+  it("should show beginning and end of longer sensible information", () => {
+    const actual = logger.redact(
+      mocks.processingContext,
+      "abcdefghijklmnopqrstuvwxyz",
+    )
+    expect(actual).toEqual("abc...xyz")
+  })
+  it("should show (redacted) for shorter sensible information", () => {
+    const actual = logger.redact(mocks.processingContext, "abcdef")
+    expect(actual).toEqual("(redacted)")
+  })
+  it("should gracefully handle null and undefined values", () => {
+    const actual = logger.redact(mocks.processingContext, null)
+    expect(actual).toEqual("")
+  })
+})
