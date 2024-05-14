@@ -1,5 +1,7 @@
 import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
+import { ProcessingContext } from "../Context"
 import { ConfigMocks } from "./../../test/mocks/ConfigMocks"
+import { LogRedactionMode } from "./../config/SettingsConfig"
 import { LogLevel, Logger } from "./Logger"
 
 let logger: Logger
@@ -105,16 +107,34 @@ it("should trace to console and logsheet", () => {
 })
 
 describe("redact", () => {
-  it("should show beginning and end of longer sensible information", () => {
+  let ctx: ProcessingContext
+  beforeEach(() => {
+    ctx = mocks.processingContext
+    ctx.proc.config.settings.logSensitiveRedactionMode = LogRedactionMode.AUTO
+  })
+  it("should show beginning and end of longer sensible information in AUTO mode", () => {
     const actual = logger.redact(
       mocks.processingContext,
       "abcdefghijklmnopqrstuvwxyz",
     )
     expect(actual).toEqual("abc...xyz")
   })
-  it("should show (redacted) for shorter sensible information", () => {
+  it("should show '(redacted)' for longer sensible information in ALL mode", () => {
+    ctx.proc.config.settings.logSensitiveRedactionMode = LogRedactionMode.ALL
+    const actual = logger.redact(
+      mocks.processingContext,
+      "abcdefghijklmnopqrstuvwxyz",
+    )
+    expect(actual).toEqual("(redacted)")
+  })
+  it("should show '(redacted)' for shorter sensible information in AUTO mode", () => {
     const actual = logger.redact(mocks.processingContext, "abcdef")
     expect(actual).toEqual("(redacted)")
+  })
+  it("should show not redact anything in NONE mode", () => {
+    ctx.proc.config.settings.logSensitiveRedactionMode = LogRedactionMode.NONE
+    const actual = logger.redact(mocks.processingContext, "abcdef")
+    expect(actual).toEqual("abcdef")
   })
   it("should gracefully handle null and undefined values", () => {
     const actual = logger.redact(mocks.processingContext, null)
