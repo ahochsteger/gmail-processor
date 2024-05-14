@@ -136,8 +136,12 @@ describe("redact", () => {
     const actual = logger.redact(mocks.processingContext, "abcdef")
     expect(actual).toEqual("abcdef")
   })
-  it("should gracefully handle null and undefined values", () => {
+  it("should gracefully handle null values", () => {
     const actual = logger.redact(mocks.processingContext, null)
+    expect(actual).toEqual("")
+  })
+  it("should gracefully handle undefined values", () => {
+    const actual = logger.redact(mocks.processingContext)
     expect(actual).toEqual("")
   })
 })
