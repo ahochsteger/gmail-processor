@@ -77,7 +77,7 @@ jobs:
       - id: release-status
         if: ${{ !github.event.inputs.skip_release }}
         name: Release Status
-        uses: cycjimmy/semantic-release-action@v3
+        uses: cycjimmy/semantic-release-action@cb425203a562475bca039ba4dbf90c7f9ac790f4 # v4
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -89,7 +89,7 @@ jobs:
       - id: sonarcloud
         if: ${{ !github.event.inputs.skip_sonarcloud }}
         name: SonarCloud Scan
-        uses: sonarsource/sonarcloud-github-action@master
+        uses: sonarsource/sonarcloud-github-action@49e6cd3b187936a73b8280d59ffd9da69df63ec9 # v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -103,7 +103,7 @@ jobs:
       - id: release
         if: ${{ !github.event.inputs.skip_release }}
         name: Release
-        uses: cycjimmy/semantic-release-action@v3
+        uses: cycjimmy/semantic-release-action@cb425203a562475bca039ba4dbf90c7f9ac790f4 # v4
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - id: deploy-lib
