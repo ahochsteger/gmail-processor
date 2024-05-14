@@ -64,7 +64,10 @@ export class Logger {
       ctx.proc.spreadsheetAdapter.log(ctx, args)
     }
   }
-  redact(ctx: ProcessingContext, value: string): string {
+  redact(ctx: ProcessingContext, value?: string | null): string {
+    if (value === null || value === undefined) {
+      return ""
+    }
     switch (ctx.proc.config.settings.logSensitiveRedactionMode) {
       case LogRedactionMode.ALL:
         value = "(redacted)"
