@@ -65,9 +65,7 @@ export class Logger {
     }
   }
   redact(ctx: ProcessingContext, value?: string | null): string {
-    if (value === null || value === undefined) {
-      return ""
-    }
+    if (!value) return ""
     switch (ctx.proc.config.settings.logSensitiveRedactionMode) {
       case LogRedactionMode.ALL:
         value = "(redacted)"
