@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.10.1](https://github.com/ahochsteger/gmail-processor/compare/2.10.0...2.10.1) (2024-05-16)
+
+
+### Bug Fixes
+
+* null dereference in redact() ([0c6f80c](https://github.com/ahochsteger/gmail-processor/commit/0c6f80c2585b354563cfc3677298662483eb57a6))
+
 # [2.10.0](https://github.com/ahochsteger/gmail-processor/compare/2.9.0...2.10.0) (2024-05-10)
 
 
