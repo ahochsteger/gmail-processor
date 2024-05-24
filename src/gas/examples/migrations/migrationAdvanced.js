@@ -1,26 +1,5 @@
-// NOTE: Do not edit this auto-generated file!
-// Template: src/examples/_templates/test-e2e.tmpl
-// Source: src/examples/migrations/migrationAdvanced.ts
-
-function migrationAdvancedTest() {
-  /**
-   * This Gmail2GDrive v1.x configuration example demonstrates the conversion to the Gmail Processor v2.x config format.
-   */
-  const info = {
-    name: "migrationAdvanced",
-    title: "Advanced Migration",
-    description:
-      "This Gmail2GDrive v1.x configuration example demonstrates the conversion to the Gmail Processor v2.x config format.",
-    category: "migrations",
-    generate: ["docs", "test-e2e", "test-spec"],
-    schemaVersion: "v1",
-  }
-
-  const initConfig = {
-    mails: [{}],
-  }
-
-  const migrationConfig = {
+function migrationAdvancedConvert() {
+  const oldConfig = {
     globalFilter: "has:attachment -in:trash -in:drafts -in:spam",
     processedLabel: "gmail2gdrive/client-test",
     sleepTime: 100,
@@ -61,23 +40,6 @@ function migrationAdvancedTest() {
     ],
   }
 
-  const migrationAdvancedExample = {
-    info,
-    config: migrationConfig,
-  }
-
-  const tests = []
-
-  const testConfig = {
-    info,
-    initConfig,
-    migrationConfig,
-    tests,
-  }
-  GmailProcessorLib.E2E.runTests(
-    testConfig,
-    false,
-    E2E_REPO_BRANCH,
-    GmailProcessorLib.RunMode.DANGEROUS,
-  )
+  const migratedConfig = GmailProcessorLib.convertV1Config(oldConfig)
+  console.log(JSON.stringify(migratedConfig, null, 2))
 }

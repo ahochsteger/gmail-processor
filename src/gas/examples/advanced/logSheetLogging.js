@@ -1,40 +1,8 @@
-// NOTE: Do not edit this auto-generated file!
-// Template: src/examples/_templates/test-e2e.tmpl
-// Source: src/examples/advanced/logSheetLogging.ts
-
-function logSheetLoggingTest() {
-  /**
-   * This example demonstrates the advanced logging possibilities to a Google Spreadsheet.
-   *
-   * The following `settings` are used to configure the logging behafior:
-   * * `logSheetLocation`: The location of the spreadsheet document to be logged into.
-   * * `logFields`: The list of log fields which are used to log into a separate column in the given order.
-   * * `logSheetTracing`: Logs additional tracing logs into the log sheet.
-   *
-   * The action `global.sheetLog` is then used to log certain messages into the logsheet at the given `processingStage`s.
-   */
-  const info = {
-    name: "logSheetLogging",
-    title: "LogSheet Logging",
-    description: "Demonstrates logging to a Google Spreadsheet.",
-    category: "advanced",
-    generate: ["docs", "test-e2e"],
-    schemaVersion: "v2",
-  }
-
-  const initConfig = {
-    mails: [
-      {
-        attachments: ["invoice.pdf", "sample.docx"],
-      },
-    ],
-  }
-
-  const runConfig = {
-    description: info.description,
+function logSheetLoggingRun() {
+  const config = {
+    description: "Logs data to a Google Spreadsheet.",
     settings: {
-      markProcessedMethod:
-        GmailProcessorLib.MarkProcessedMethod.MARK_MESSAGE_READ,
+      markProcessedMethod: "mark-read",
       logSheetLocation:
         "/GmailProcessor-Tests/logsheet-${date.now:date::yyyy-MM}",
       logSheetTracing: true,
@@ -58,35 +26,35 @@ function logSheetLoggingTest() {
       ],
     },
     threads: [
-      // Place thread processing config here
       {
         match: {
-          query: `from:\${user.email} subject:'${GmailProcessorLib.E2EDefaults.EMAIL_SUBJECT_PREFIX}${info.name}'`,
+          query:
+            "from:${user.email} subject:'[GmailProcessor-Test] logSheetLogging'",
         },
         actions: [
           {
             name: "global.sheetLog",
             args: {
-              level: GmailProcessorLib.LogLevel.INFO,
+              level: "info",
               message: "Thread log (pre-main): ${thread.id}",
             },
-            processingStage: GmailProcessorLib.ProcessingStage.PRE_MAIN,
+            processingStage: "pre-main",
           },
           {
             name: "global.sheetLog",
             args: {
-              level: GmailProcessorLib.LogLevel.INFO,
+              level: "info",
               message: "Thread log (main): ${thread.id}",
             },
-            processingStage: GmailProcessorLib.ProcessingStage.MAIN,
+            processingStage: "main",
           },
           {
             name: "global.sheetLog",
             args: {
-              level: GmailProcessorLib.LogLevel.INFO,
+              level: "info",
               message: "Thread log (post-main): ${thread.id}",
             },
-            processingStage: GmailProcessorLib.ProcessingStage.POST_MAIN,
+            processingStage: "post-main",
           },
         ],
         messages: [
@@ -95,26 +63,26 @@ function logSheetLoggingTest() {
               {
                 name: "global.sheetLog",
                 args: {
-                  level: GmailProcessorLib.LogLevel.WARN,
+                  level: "warn",
                   message: "Message log (pre-main): ${message.id}",
                 },
-                processingStage: GmailProcessorLib.ProcessingStage.PRE_MAIN,
+                processingStage: "pre-main",
               },
               {
                 name: "global.sheetLog",
                 args: {
-                  level: GmailProcessorLib.LogLevel.WARN,
+                  level: "warn",
                   message: "Message log (main): ${message.id}",
                 },
-                processingStage: GmailProcessorLib.ProcessingStage.MAIN,
+                processingStage: "main",
               },
               {
                 name: "global.sheetLog",
                 args: {
-                  level: GmailProcessorLib.LogLevel.WARN,
+                  level: "warn",
                   message: "Message log (post-main): ${message.id}",
                 },
-                processingStage: GmailProcessorLib.ProcessingStage.POST_MAIN,
+                processingStage: "post-main",
               },
             ],
             attachments: [
@@ -123,27 +91,26 @@ function logSheetLoggingTest() {
                   {
                     name: "global.sheetLog",
                     args: {
-                      level: GmailProcessorLib.LogLevel.ERROR,
+                      level: "error",
                       message: "Attachment log (pre-main): ${attachment.hash}",
                     },
-                    processingStage: GmailProcessorLib.ProcessingStage.PRE_MAIN,
+                    processingStage: "pre-main",
                   },
                   {
                     name: "attachment.store",
                     args: {
-                      conflictStrategy:
-                        GmailProcessorLib.ConflictStrategy.UPDATE,
-                      location: `${GmailProcessorLib.E2EDefaults.DRIVE_TESTS_BASE_PATH}/${info.name}/\${attachment.name}`,
+                      conflictStrategy: "update",
+                      location:
+                        "/GmailProcessor-Tests/e2e/logSheetLogging/${attachment.name}",
                     },
                   },
                   {
                     name: "global.sheetLog",
                     args: {
-                      level: GmailProcessorLib.LogLevel.ERROR,
+                      level: "error",
                       message: "Attachment log (post-main): ${attachment.hash}",
                     },
-                    processingStage:
-                      GmailProcessorLib.ProcessingStage.POST_MAIN,
+                    processingStage: "post-main",
                   },
                 ],
               },
@@ -154,47 +121,5 @@ function logSheetLoggingTest() {
     ],
   }
 
-  const logSheetLoggingExample = {
-    info,
-    config: runConfig,
-  }
-
-  const tests = [
-    {
-      message: "No failures",
-      assertions: [
-        {
-          message: "Processing status should be OK",
-          assertFn: (_testConfig, procResult) =>
-            procResult.status === GmailProcessorLib.ProcessingStatus.OK,
-        },
-        {
-          message: "At least one thread should have been processed",
-          assertFn: (_testConfig, procResult) =>
-            procResult.processedThreads >= 1,
-        },
-        {
-          message: "Expected number of actions should have been executed",
-          assertFn: (_testConfig, procResult) =>
-            procResult.executedActions.length ===
-            procResult.processedThreads * 2 +
-              procResult.processedMessages * 3 +
-              procResult.processedAttachments * 3,
-        },
-      ],
-    },
-  ]
-
-  const testConfig = {
-    info,
-    initConfig,
-    runConfig,
-    tests,
-  }
-  GmailProcessorLib.E2E.runTests(
-    testConfig,
-    false,
-    E2E_REPO_BRANCH,
-    GmailProcessorLib.RunMode.DANGEROUS,
-  )
+  GmailProcessorLib.run(config, "dry-run")
 }

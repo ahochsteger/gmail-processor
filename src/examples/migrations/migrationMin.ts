@@ -1,5 +1,10 @@
 import { E2EInitConfig, E2ETest, E2ETestConfig } from "../../lib/e2e/E2E"
-import { Example, ExampleInfo } from "../Example"
+import {
+  ExampleCategory,
+  ExampleInfo,
+  ExampleVariant,
+  V1Example,
+} from "../Example"
 import { V1Config } from "./../../lib/config/v1/V1Config"
 
 /**
@@ -9,10 +14,9 @@ export const info: ExampleInfo = {
   name: "migrationMin",
   title: "Minimal Migration",
   description:
-    "This is a minimal Gmail2GDrive v1.x configuration example to demonstrate the conversion to the Gmail Processor v2.x config format.",
-  category: "migrations",
-  generate: ["docs", "test-e2e", "test-spec"],
-  schemaVersion: "v1",
+    "Migrate a minimal Gmail2GDrive v1.x configuration to the new Gmail Processor v2.x config format.",
+  category: ExampleCategory.MIGRATIONS,
+  variant: ExampleVariant.MIGRATION_V1,
 }
 
 export const initConfig: E2EInitConfig = {
@@ -33,14 +37,15 @@ export const migrationConfig: V1Config = {
   ],
 }
 
-export const migrationMinExample: Example = {
+export const example: V1Example = {
   info,
-  config: migrationConfig,
+  migrationConfig,
 }
 
 export const tests: E2ETest[] = []
 
 export const testConfig: E2ETestConfig = {
+  example,
   info,
   initConfig,
   migrationConfig,

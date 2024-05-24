@@ -1,0 +1,13 @@
+---
+id: <%~ it.example.info.name %>
+title: <%~ it.example.info.title %>
+description: <%= it.example.info.description %>
+---
+import RenderExample from "/src/components/RenderExample.tsx"
+import config from '!!raw-loader!../../../../src/examples/<%= it.example.info.category %>/<%= it.example.info.name %>.json';
+import script from '!!raw-loader!../../../../src/gas/examples/<%= it.example.info.category %>/<%= it.example.info.name %>.js';
+import { info } from "../../../../src/examples/<%= it.example.info.category %>/<%= it.example.info.name %>.ts"
+
+<%~ it.docs %>
+
+<RenderExample info={info} config={config} script={script} />

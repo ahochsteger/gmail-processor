@@ -1,9 +1,12 @@
 ---
 id: regularExpressions
 title: Regular Expressions
+description: Regular expressions allow to define patterns and extract values to simplify the configuration.
 ---
-import { regularExpressionsExample } from "../../../../src/examples/advanced/regularExpressions.ts"
 import RenderExample from "/src/components/RenderExample.tsx"
+import config from '!!raw-loader!../../../../src/examples/advanced/regularExpressions.json';
+import script from '!!raw-loader!../../../../src/gas/examples/advanced/regularExpressions.js';
+import { info } from "../../../../src/examples/advanced/regularExpressions.ts"
 
 This example demonstrates how to use regular expressions in the configuration.
 
@@ -17,4 +20,4 @@ It does to following with the message subject:
 The extracted data is finally used to dynamically define the location of the attachment to be stored using:
 `.../Reports/${message.subject.match.school}/All Reports/${message.subject.match.reportType}/${message.subject.match.reportSubType}/${message.subject.match.date}-${attachment.name}`
 
-<RenderExample path="src/examples/advanced/regularExpressions.ts" example={regularExpressionsExample} />
+<RenderExample info={info} config={config} script={script} />

@@ -1,6 +1,6 @@
 import { E2EDefaults } from "../../../src/lib/e2e/E2EDefaults"
 import { E2EInitConfig, E2ETest, E2ETestConfig } from "../../lib/e2e/E2E"
-import { Example, ExampleInfo } from "../Example"
+import { Example, ExampleCategory, ExampleInfo } from "../Example"
 import { ProcessingStatus } from "./../../lib/Context"
 import { ConflictStrategy } from "./../../lib/adapter/GDriveAdapter"
 import { ProcessingStage } from "./../../lib/config/ActionConfig"
@@ -12,13 +12,11 @@ import { MarkProcessedMethod } from "./../../lib/config/SettingsConfig"
  */
 export const info: ExampleInfo = {
   name: "actionAttachmentExtractText",
-  title: "attachment.extractText",
+  title: "Extract Attachment Text",
   description:
-    "This example demonstrates the use of the action `attachment.extractText` to extract text from attachments.",
-  category: "actions",
-  generate: ["docs", "test-e2e", "test-spec"],
+    "The action `attachment.extractText` extracts text from attachments.",
+  category: ExampleCategory.ACTIONS,
   pullRequests: [319],
-  schemaVersion: "v2",
 }
 
 export const initConfig: E2EInitConfig = {
@@ -82,7 +80,7 @@ export const runConfig: Config = {
   ],
 }
 
-export const actionAttachmentExtractTextExample: Example = {
+export const example: Example = {
   info,
   config: runConfig,
 }
@@ -157,6 +155,7 @@ export const tests: E2ETest[] = [
 ]
 
 export const testConfig: E2ETestConfig = {
+  example,
   info,
   initConfig,
   runConfig,

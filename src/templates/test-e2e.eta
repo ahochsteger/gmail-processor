@@ -1,0 +1,13 @@
+// NOTE: Do not edit this auto-generated file!
+// Template: <%= it.templateFilePath %>
+// Source: <%= it.exampleSourcePath %>
+
+function <%= it.example.info.name %>Test() {
+<%~ it.indent(it.genE2eTestCode(it.exampleSourcePath)) %>
+  GmailProcessorLib.E2E.runTests(
+    testConfig,
+    false,
+    E2E_REPO_BRANCH,
+    GmailProcessorLib.RunMode.DANGEROUS,
+  )
+}

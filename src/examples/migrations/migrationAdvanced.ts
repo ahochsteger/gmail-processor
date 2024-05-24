@@ -1,6 +1,11 @@
 import { E2EInitConfig, E2ETest, E2ETestConfig } from "../../lib/e2e/E2E"
 import * as GmailProcessorLib from "../../lib/index"
-import { Example, ExampleInfo } from "../Example"
+import {
+  ExampleCategory,
+  ExampleInfo,
+  ExampleVariant,
+  V1Example,
+} from "../Example"
 
 /**
  * This Gmail2GDrive v1.x configuration example demonstrates the conversion to the Gmail Processor v2.x config format.
@@ -9,10 +14,9 @@ export const info: ExampleInfo = {
   name: "migrationAdvanced",
   title: "Advanced Migration",
   description:
-    "This Gmail2GDrive v1.x configuration example demonstrates the conversion to the Gmail Processor v2.x config format.",
-  category: "migrations",
-  generate: ["docs", "test-e2e", "test-spec"],
-  schemaVersion: "v1",
+    "Migrate a complex Gmail2GDrive v1.x configuration to the new Gmail Processor v2.x config format.",
+  category: ExampleCategory.MIGRATIONS,
+  variant: ExampleVariant.MIGRATION_V1,
 }
 
 export const initConfig: E2EInitConfig = {
@@ -60,14 +64,15 @@ export const migrationConfig: GmailProcessorLib.V1Config = {
   ],
 }
 
-export const migrationAdvancedExample: Example = {
+export const example: V1Example = {
   info,
-  config: migrationConfig,
+  migrationConfig,
 }
 
 export const tests: E2ETest[] = []
 
 export const testConfig: E2ETestConfig = {
+  example,
   info,
   initConfig,
   migrationConfig,

@@ -1,4 +1,4 @@
-import { ExampleInfo } from "../../examples/Example"
+import { Example, ExampleInfo, V1Example } from "../../examples/Example"
 import {
   EnvContext,
   ProcessingResult,
@@ -54,6 +54,7 @@ export type E2ETest = {
 }
 
 export type E2ETestConfig = {
+  example: Example | V1Example
   info: ExampleInfo
   globals?: E2EGlobalConfig
   initConfig?: E2EInitConfig

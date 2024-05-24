@@ -1,0 +1,4 @@
+function <%= it.example.info.name %>Run() {
+  const config = <%~ it.indent(JSON.stringify(it.example.config,null,2)) %>
+  GmailProcessorLib.run(config, "dry-run")
+}

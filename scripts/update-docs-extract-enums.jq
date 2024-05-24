@@ -9,6 +9,7 @@ include "update-docs-extract-common";
       [
         .children[]
         | extractDescription + {
+          key: .name,
           value: .type.value,
         }
       ]

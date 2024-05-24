@@ -30,7 +30,7 @@ import Actions from "@site/docs/reference/actions.mdx";
 import EnumTypes from "@site/docs/reference/enum-types.mdx";
 import Placeholder from "@site/docs/reference/placeholder.mdx";
 import { jsonrepair } from "jsonrepair";
-import { Example } from "../../../src/examples/Example";
+import { Example, ExampleVariant } from "../../../src/examples/Example";
 
 const DEBUG = false
 
@@ -83,7 +83,7 @@ function getConfigJsonFromExample(example: Example): string {
 
 function getSchemaFromExample(example: Example): object {
   dbg(`getSchemaFromExample(${example.info.name})`)
-  return example.info.schemaVersion === "v1" ? ConfigSchemaV1 : ConfigSchemaV2
+  return example.info.variant===ExampleVariant.MIGRATION_V1 ? ConfigSchemaV1 : ConfigSchemaV2
 }
 
 function PlaygroundInner(): JSX.Element {

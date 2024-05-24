@@ -4,7 +4,12 @@ import { Config } from "../../lib/config/Config"
 import { MarkProcessedMethod } from "../../lib/config/SettingsConfig"
 import { E2EInitConfig, E2ETest, E2ETestConfig } from "../../lib/e2e/E2E"
 import { E2EDefaults } from "../../lib/e2e/E2EDefaults"
-import { Example, ExampleInfo } from "../Example"
+import {
+  Example,
+  ExampleCategory,
+  ExampleInfo,
+  ExampleTemplateType,
+} from "../Example"
 
 /**
  * This example demonstrates how to use regular expressions in the configuration.
@@ -23,10 +28,9 @@ export const info: ExampleInfo = {
   name: "regularExpressions",
   title: "Regular Expressions",
   description:
-    "This example demonstrates how to use regular expressions in the configuration.",
-  category: "advanced",
-  generate: ["docs", "test-e2e"],
-  schemaVersion: "v2",
+    "Regular expressions allow to define patterns and extract values to simplify the configuration.",
+  category: ExampleCategory.ADVANCED,
+  skipGenerate: [ExampleTemplateType.TEST_SPEC],
 }
 
 export const initConfig: E2EInitConfig = {
@@ -83,7 +87,7 @@ export const runConfig: Config = {
   ],
 }
 
-export const regularExpressionsExample: Example = {
+export const example: Example = {
   info,
   config: runConfig,
 }
@@ -112,6 +116,7 @@ export const tests: E2ETest[] = [
 ]
 
 export const testConfig: E2ETestConfig = {
+  example,
   info,
   initConfig,
   runConfig,

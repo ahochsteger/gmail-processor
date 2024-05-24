@@ -1,40 +1,11 @@
-// NOTE: Do not edit this auto-generated file!
-// Template: src/examples/_templates/test-e2e.tmpl
-// Source: src/examples/regressions/issue301.ts
-
-function issue301Test() {
-  /**
-   * This example is a test for PR #301 to fix `getBlob` error on conflict strategy `update`.
-   */
-  const info = {
-    name: "issue301",
-    title: "Issue #301",
+function issue301Run() {
+  const config = {
     description:
-      "This example is a test for PR #301 to fix `getBlob` error on conflict strategy `update`.",
-    category: "regressions",
-    generate: ["test-e2e", "test-spec"],
-    issues: [300],
-    pullRequests: [301],
-    schemaVersion: "v2",
-  }
-
-  const initConfig = {
-    mails: [
-      {
-        subject: "Test for PR #301",
-        body: "Test email for PR #301.",
-        attachments: ["sample.xlsx"],
-      },
-    ],
-  }
-
-  const runConfig = {
-    description: info.description,
+      "Tests a fix for `getBlob` error on conflict strategy `update`.",
     settings: {
       logSheetLocation:
         "/GmailProcessor-Tests/logsheet-${date.now:date::yyyy-MM}",
-      markProcessedMethod:
-        GmailProcessorLib.MarkProcessedMethod.MARK_MESSAGE_READ,
+      markProcessedMethod: "mark-read",
       timezone: "UTC",
     },
     global: {
@@ -64,16 +35,17 @@ function issue301Test() {
                 description: "Store original docx file",
                 name: "attachment.store",
                 args: {
-                  conflictStrategy: GmailProcessorLib.ConflictStrategy.REPLACE,
-                  location: `${GmailProcessorLib.E2EDefaults.DRIVE_TESTS_BASE_PATH}/\${attachment.name}`,
+                  conflictStrategy: "replace",
+                  location: "/GmailProcessor-Tests/e2e/${attachment.name}",
                 },
               },
               {
                 description: "Store docx file converted to Google Docs format",
                 name: "attachment.store",
                 args: {
-                  conflictStrategy: GmailProcessorLib.ConflictStrategy.REPLACE,
-                  location: `${GmailProcessorLib.E2EDefaults.DRIVE_TESTS_BASE_PATH}/\${attachment.name.match.basename}`,
+                  conflictStrategy: "replace",
+                  location:
+                    "/GmailProcessor-Tests/e2e/${attachment.name.match.basename}",
                   toMimeType: "application/vnd.google-apps.document",
                 },
               },
@@ -89,8 +61,8 @@ function issue301Test() {
                 description: "Store original pptx file",
                 name: "attachment.store",
                 args: {
-                  conflictStrategy: GmailProcessorLib.ConflictStrategy.REPLACE,
-                  location: `${GmailProcessorLib.E2EDefaults.DRIVE_TESTS_BASE_PATH}/\${attachment.name}`,
+                  conflictStrategy: "replace",
+                  location: "/GmailProcessor-Tests/e2e/${attachment.name}",
                 },
               },
               {
@@ -98,8 +70,9 @@ function issue301Test() {
                   "Store pptx file converted to Google Presentations format",
                 name: "attachment.store",
                 args: {
-                  conflictStrategy: GmailProcessorLib.ConflictStrategy.REPLACE,
-                  location: `${GmailProcessorLib.E2EDefaults.DRIVE_TESTS_BASE_PATH}/\${attachment.name.match.basename}`,
+                  conflictStrategy: "replace",
+                  location:
+                    "/GmailProcessor-Tests/e2e/${attachment.name.match.basename}",
                   toMimeType: "application/vnd.google-apps.presentation",
                 },
               },
@@ -115,8 +88,8 @@ function issue301Test() {
                 description: "Store original xlsx file",
                 name: "attachment.store",
                 args: {
-                  conflictStrategy: GmailProcessorLib.ConflictStrategy.REPLACE,
-                  location: `${GmailProcessorLib.E2EDefaults.DRIVE_TESTS_BASE_PATH}/\${attachment.name}`,
+                  conflictStrategy: "replace",
+                  location: "/GmailProcessor-Tests/e2e/${attachment.name}",
                 },
               },
               {
@@ -124,8 +97,9 @@ function issue301Test() {
                   "Store xlsx file converted to Google Spreadsheet format",
                 name: "attachment.store",
                 args: {
-                  conflictStrategy: GmailProcessorLib.ConflictStrategy.REPLACE,
-                  location: `${GmailProcessorLib.E2EDefaults.DRIVE_TESTS_BASE_PATH}/\${attachment.name.match.basename}`,
+                  conflictStrategy: "replace",
+                  location:
+                    "/GmailProcessor-Tests/e2e/${attachment.name.match.basename}",
                   toMimeType: "application/vnd.google-apps.spreadsheet",
                 },
               },
@@ -136,23 +110,5 @@ function issue301Test() {
     ],
   }
 
-  const issue301Example = {
-    info,
-    config: runConfig,
-  }
-
-  const tests = []
-
-  const testConfig = {
-    info,
-    initConfig,
-    runConfig,
-    tests,
-  }
-  GmailProcessorLib.E2E.runTests(
-    testConfig,
-    false,
-    E2E_REPO_BRANCH,
-    GmailProcessorLib.RunMode.DANGEROUS,
-  )
+  GmailProcessorLib.run(config, "dry-run")
 }

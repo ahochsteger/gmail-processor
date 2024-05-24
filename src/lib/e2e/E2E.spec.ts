@@ -1,5 +1,9 @@
 import { mock } from "jest-mock-extended"
-import { ExampleInfo } from "../../examples/Example"
+import {
+  ExampleCategory,
+  ExampleInfo,
+  ExampleVariant,
+} from "../../examples/Example"
 import { ConfigMocks } from "../../test/mocks/ConfigMocks"
 import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
 import {
@@ -278,8 +282,7 @@ describe("runTests", () => {
     name: "test",
     title: "Test",
     description: "Test description",
-    category: "basics",
-    schemaVersion: "v2",
+    category: ExampleCategory.BASICS,
   }
   const initConfig: E2EInitConfig = {
     mails: [{}],
@@ -401,8 +404,8 @@ describe("runTests with migrationConfig", () => {
       name: "test-v1",
       title: "Test v1 config",
       description: "Test v1 config description",
-      category: "basics",
-      schemaVersion: "v1",
+      category: ExampleCategory.BASICS,
+      variant: ExampleVariant.MIGRATION_V1,
     }
     const initConfig: E2EInitConfig = {
       mails: [{}],

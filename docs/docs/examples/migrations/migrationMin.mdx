@@ -1,10 +1,13 @@
 ---
 id: migrationMin
 title: Minimal Migration
+description: Migrate a minimal Gmail2GDrive v1.x configuration to the new Gmail Processor v2.x config format.
 ---
-import { migrationMinExample } from "../../../../src/examples/migrations/migrationMin.ts"
 import RenderExample from "/src/components/RenderExample.tsx"
+import config from '!!raw-loader!../../../../src/examples/migrations/migrationMin.json';
+import script from '!!raw-loader!../../../../src/gas/examples/migrations/migrationMin.js';
+import { info } from "../../../../src/examples/migrations/migrationMin.ts"
 
 This is a minimal Gmail2GDrive v1.x configuration example to demonstrate the conversion to the Gmail Processor v2.x config format.
 
-<RenderExample path="src/examples/migrations/migrationMin.ts" example={migrationMinExample} />
+<RenderExample info={info} config={config} script={script} />

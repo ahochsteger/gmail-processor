@@ -1,9 +1,12 @@
 ---
 id: logSheetLogging
 title: LogSheet Logging
+description: Logs data to a Google Spreadsheet.
 ---
-import { logSheetLoggingExample } from "../../../../src/examples/advanced/logSheetLogging.ts"
 import RenderExample from "/src/components/RenderExample.tsx"
+import config from '!!raw-loader!../../../../src/examples/advanced/logSheetLogging.json';
+import script from '!!raw-loader!../../../../src/gas/examples/advanced/logSheetLogging.js';
+import { info } from "../../../../src/examples/advanced/logSheetLogging.ts"
 
 This example demonstrates the advanced logging possibilities to a Google Spreadsheet.
 
@@ -14,4 +17,4 @@ The following `settings` are used to configure the logging behafior:
 
 The action `global.sheetLog` is then used to log certain messages into the logsheet at the given `processingStage`s.
 
-<RenderExample path="src/examples/advanced/logSheetLogging.ts" example={logSheetLoggingExample} />
+<RenderExample info={info} config={config} script={script} />

@@ -77,7 +77,7 @@ function generatePlaceholderDocs {
 function generateEnumDocs() {
   echo "# Enum Types"
   echo ""
-  echo "These are the supported enum types and the possible values that can be used in the configuration."
+  echo "These are the supported enum types with their keys (only used for development) and values that can be used in the configuration."
   gojq -r \
     -L scripts \
     -f "${scriptdir}/update-docs-generate-enums.jq" \

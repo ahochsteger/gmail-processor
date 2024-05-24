@@ -1,65 +1,45 @@
-// NOTE: Do not edit this auto-generated file!
-// Template: src/examples/_templates/test-e2e.tmpl
-// Source: src/examples/actions/actionThreadRemoveLabel.ts
-
-function actionThreadRemoveLabelTest() {
-  /**
-   * This example demonstrates the usage of the action `thread.removeLabel`.
-   * It is also used to test a possible behavioral change for certain characters in label names (e.g. `-` vs. `/`).
-   */
-  const info = {
-    name: "actionThreadRemoveLabel",
-    title: "thread.removeLabel",
-    description: "Demonstrates the usage of the action `thread.removeLabel`.",
-    category: "actions",
-    generate: ["docs", "test-e2e", "test-spec"],
-    issues: [303],
-    schemaVersion: "v2",
-  }
-
-  const initConfig = {
-    mails: [{}],
-  }
-
-  const runConfig = {
-    description: info.description,
+function actionThreadRemoveLabelRun() {
+  const config = {
+    description:
+      "The action `thread.removeLabel` removes a label from a thread.",
     global: {
       thread: {
         match: {
-          query: `from:\${user.email} to:\${user.email} after:\${date.now:date::yyyy-MM-dd} subject:'${GmailProcessorLib.E2EDefaults.EMAIL_SUBJECT_PREFIX}${info.name}'`,
+          query:
+            "from:${user.email} to:${user.email} after:${date.now:date::yyyy-MM-dd} subject:'[GmailProcessor-Test] actionThreadRemoveLabel'",
         },
       },
     },
     settings: {
-      markProcessedMethod: GmailProcessorLib.MarkProcessedMethod.CUSTOM,
+      markProcessedMethod: "custom",
     },
     threads: [
       {
         match: {
-          query: `subject:([GmailProcessor-Test] ${info.name})`,
+          query: "subject:([GmailProcessor-Test] actionThreadRemoveLabel)",
         },
         actions: [
           {
             name: "thread.addLabel",
-            processingStage: GmailProcessorLib.ProcessingStage.PRE_MAIN,
+            processingStage: "pre-main",
             args: {
               name: "accounting-process",
             },
           },
           {
             name: "thread.markRead",
-            processingStage: GmailProcessorLib.ProcessingStage.POST_MAIN,
+            processingStage: "post-main",
           },
           {
             name: "thread.removeLabel",
-            processingStage: GmailProcessorLib.ProcessingStage.POST_MAIN,
+            processingStage: "post-main",
             args: {
               name: "accounting-process",
             },
           },
           {
             name: "thread.addLabel",
-            processingStage: GmailProcessorLib.ProcessingStage.POST_MAIN,
+            processingStage: "post-main",
             args: {
               name: "accounting-autoinvoice",
             },
@@ -69,45 +49,5 @@ function actionThreadRemoveLabelTest() {
     ],
   }
 
-  const actionThreadRemoveLabelExample = {
-    info,
-    config: runConfig,
-  }
-
-  const tests = [
-    {
-      message: "No failures",
-      assertions: [
-        {
-          message: "Processing status should be OK",
-          assertFn: (_testConfig, procResult) =>
-            procResult.status === GmailProcessorLib.ProcessingStatus.OK,
-        },
-        {
-          message: "At least one thread should have been processed",
-          assertFn: (_testConfig, procResult) =>
-            procResult.processedThreads >= 1,
-        },
-        {
-          message: "Expected number of actions should have been executed",
-          assertFn: (_testConfig, procResult) =>
-            procResult.executedActions.length ===
-            procResult.processedThreads * 4,
-        },
-      ],
-    },
-  ]
-
-  const testConfig = {
-    info,
-    initConfig,
-    runConfig,
-    tests,
-  }
-  GmailProcessorLib.E2E.runTests(
-    testConfig,
-    false,
-    E2E_REPO_BRANCH,
-    GmailProcessorLib.RunMode.DANGEROUS,
-  )
+  GmailProcessorLib.run(config, "dry-run")
 }

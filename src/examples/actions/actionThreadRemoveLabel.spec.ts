@@ -1,5 +1,5 @@
 // NOTE: Do not edit this auto-generated file!
-// Template: src/examples/_templates/test-spec-v2.tmpl
+// Template: src/templates/test-spec.eta
 // Source: src/examples/actions/actionThreadRemoveLabel.ts
 
 import { ProcessingStatus } from "../../lib"
@@ -16,7 +16,7 @@ beforeAll(() => {
 
 describe(`Example ${info.name}`, () => {
   it(`should successfully run example ${info.name}`, () => {
-    const result = GmailProcessor.runWithJson(runConfig, mocks.envContext)
+    const result = GmailProcessor.runWithJson(runConfig, [], mocks.envContext)
     expect(result.status).toEqual(ProcessingStatus.OK)
     expect(result.processedThreadConfigs).toEqual(runConfig.threads?.length)
   })
