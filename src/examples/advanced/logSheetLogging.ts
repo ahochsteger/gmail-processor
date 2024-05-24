@@ -3,7 +3,12 @@ import { Config } from "../../lib/config/Config"
 import { MarkProcessedMethod } from "../../lib/config/SettingsConfig"
 import { E2EInitConfig, E2ETest, E2ETestConfig } from "../../lib/e2e/E2E"
 import { LogLevel } from "../../lib/utils/Logger"
-import { Example, ExampleInfo } from "../Example"
+import {
+  Example,
+  ExampleCategory,
+  ExampleInfo,
+  ExampleTemplateType,
+} from "../Example"
 import { ConflictStrategy } from "./../../lib/adapter/GDriveAdapter"
 import { ProcessingStage } from "./../../lib/config/ActionConfig"
 import { E2EDefaults } from "./../../lib/e2e/E2EDefaults"
@@ -21,10 +26,9 @@ import { E2EDefaults } from "./../../lib/e2e/E2EDefaults"
 export const info: ExampleInfo = {
   name: "logSheetLogging",
   title: "LogSheet Logging",
-  description: "Demonstrates logging to a Google Spreadsheet.",
-  category: "advanced",
-  generate: ["docs", "test-e2e"],
-  schemaVersion: "v2",
+  description: "Logs data to a Google Spreadsheet.",
+  category: ExampleCategory.ADVANCED,
+  skipGenerate: [ExampleTemplateType.TEST_SPEC],
 }
 
 export const initConfig: E2EInitConfig = {
@@ -156,7 +160,7 @@ export const runConfig: Config = {
   ],
 }
 
-export const logSheetLoggingExample: Example = {
+export const example: Example = {
   info,
   config: runConfig,
 }
@@ -187,6 +191,7 @@ export const tests: E2ETest[] = [
 ]
 
 export const testConfig: E2ETestConfig = {
+  example,
   info,
   initConfig,
   runConfig,

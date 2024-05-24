@@ -1,0 +1,1 @@
+<%~ it.indent(JSON.stringify(it.example.config ?? it.example.migrationConfig,null,2)) %>

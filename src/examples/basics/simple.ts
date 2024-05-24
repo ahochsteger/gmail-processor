@@ -3,7 +3,7 @@ import { ConflictStrategy } from "../../lib/adapter/GDriveAdapter"
 import { Config } from "../../lib/config/Config"
 import { MarkProcessedMethod } from "../../lib/config/SettingsConfig"
 import { E2EInitConfig, E2ETest, E2ETestConfig } from "../../lib/e2e/E2E"
-import { Example, ExampleInfo } from "../Example"
+import { Example, ExampleCategory, ExampleInfo } from "../Example"
 import { E2EDefaults } from "./../../lib/e2e/E2EDefaults"
 
 /**
@@ -51,11 +51,10 @@ import { E2EDefaults } from "./../../lib/e2e/E2EDefaults"
  */
 export const info: ExampleInfo = {
   name: "simple",
-  title: "Simple",
-  description: "This is a simple example to start with Gmail Processor.",
-  category: "basics",
-  generate: ["docs", "test-e2e", "test-spec"],
-  schemaVersion: "v2",
+  title: "Store Attachment",
+  description:
+    "Use this to get started with Gmail Processor. It stores an attachment to Google Drive.",
+  category: ExampleCategory.BASICS,
 }
 
 export const initConfig: E2EInitConfig = {
@@ -113,7 +112,7 @@ export const runConfig: Config = {
   ],
 }
 
-export const simpleExample: Example = {
+export const example: Example = {
   info,
   config: runConfig,
 }
@@ -142,6 +141,7 @@ export const tests: E2ETest[] = [
 ]
 
 export const testConfig: E2ETestConfig = {
+  example,
   info,
   initConfig,
   runConfig,

@@ -3,7 +3,12 @@ import { Config } from "../../lib/config/Config"
 import { MarkProcessedMethod } from "../../lib/config/SettingsConfig"
 import { E2EInitConfig, E2ETest, E2ETestConfig } from "../../lib/e2e/E2E"
 import { E2EDefaults } from "../../lib/e2e/E2EDefaults"
-import { Example, ExampleInfo } from "../Example"
+import {
+  Example,
+  ExampleCategory,
+  ExampleInfo,
+  ExampleTemplateType,
+} from "../Example"
 
 /**
  * This example demonstrates how to export messages or threads to HTML or PDF documents.
@@ -16,11 +21,10 @@ import { Example, ExampleInfo } from "../Example"
 export const info: ExampleInfo = {
   name: "actionExport",
   title: "Export Thread/Message",
-  description: "This is a simple example to start with Gmail Processor.",
-  category: "actions",
-  generate: ["docs", "test-e2e"], // TODO: Fix missing mock data for folder and enable test-spec again!
+  description: "Export a thread or message as HTML or PDF.",
+  category: ExampleCategory.ACTIONS,
+  skipGenerate: [ExampleTemplateType.TEST_SPEC],
   pullRequests: [291],
-  schemaVersion: "v2",
 }
 
 export const initConfig: E2EInitConfig = {
@@ -95,7 +99,7 @@ export const runConfig: Config = {
   ],
 }
 
-export const actionExportExample: Example = {
+export const example: Example = {
   info,
   config: runConfig,
 }
@@ -103,6 +107,7 @@ export const actionExportExample: Example = {
 export const tests: E2ETest[] = []
 
 export const testConfig: E2ETestConfig = {
+  example,
   info,
   initConfig,
   runConfig,

@@ -1,6 +1,6 @@
 import { Icon } from '@iconify/react';
 import React from "react";
-import { Example } from '../../../src/examples/Example';
+import { Example, ExampleVariant } from '../../../src/examples/Example';
 
 type Params = {
   examples: Example[]
@@ -47,9 +47,9 @@ const ConfigToolbar = ({ examples, selectedExample, onConvert, onCopyConfig, onC
       <select name='example' style={{fontSize:"20px"}} onChange={e => onExampleSelected(e.target.value)} value={selectedExample}>
         <option style={{fontWeight:"bold", textAlign: 'center'}} key="" value="">Select an example</option>
         <option disabled style={{fontWeight:"bold", textAlign: 'center'}}>⎼⎼⎼⎼ Gmail Processor ⎼⎼⎼⎼</option>
-        {examples.filter(e=>e.info.schemaVersion!=="v1").map(ex => <option  key={ex.info.name} value={ex.info.name}>{ex.info.name}</option>)}
+        {examples.filter(e=>e.info.variant!==ExampleVariant.MIGRATION_V1).map(ex => <option  key={ex.info.name} value={ex.info.name}>{ex.info.name}</option>)}
         <option disabled style={{fontWeight:"bold", textAlign: 'center'}}>⎼⎼⎼⎼ GMail2GDrive (Migration) ⎼⎼⎼⎼</option>
-        {examples.filter(e=>e.info.schemaVersion==="v1").map(ex => <option  key={ex.info.name} value={ex.info.name}>{ex.info.name}</option>)}
+        {examples.filter(e=>e.info.variant===ExampleVariant.MIGRATION_V1).map(ex => <option  key={ex.info.name} value={ex.info.name}>{ex.info.name}</option>)}
       </select>
       &nbsp;<span title={examples.find(e=>e.info.name===selectedExample)?.info?.description}><Icon icon="mdi:info" /></span>
       <div style={{ flex: 1 }} />

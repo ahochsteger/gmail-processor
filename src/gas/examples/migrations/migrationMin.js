@@ -1,26 +1,5 @@
-// NOTE: Do not edit this auto-generated file!
-// Template: src/examples/_templates/test-e2e.tmpl
-// Source: src/examples/migrations/migrationMin.ts
-
-function migrationMinTest() {
-  /**
-   * This is a minimal Gmail2GDrive v1.x configuration example to demonstrate the conversion to the Gmail Processor v2.x config format.
-   */
-  const info = {
-    name: "migrationMin",
-    title: "Minimal Migration",
-    description:
-      "This is a minimal Gmail2GDrive v1.x configuration example to demonstrate the conversion to the Gmail Processor v2.x config format.",
-    category: "migrations",
-    generate: ["docs", "test-e2e", "test-spec"],
-    schemaVersion: "v1",
-  }
-
-  const initConfig = {
-    mails: [{}],
-  }
-
-  const migrationConfig = {
+function migrationMinConvert() {
+  const oldConfig = {
     processedLabel: "gmail2gdrive/client-test",
     sleepTime: 100,
     maxRuntime: 280,
@@ -34,23 +13,6 @@ function migrationMinTest() {
     ],
   }
 
-  const migrationMinExample = {
-    info,
-    config: migrationConfig,
-  }
-
-  const tests = []
-
-  const testConfig = {
-    info,
-    initConfig,
-    migrationConfig,
-    tests,
-  }
-  GmailProcessorLib.E2E.runTests(
-    testConfig,
-    false,
-    E2E_REPO_BRANCH,
-    GmailProcessorLib.RunMode.DANGEROUS,
-  )
+  const migratedConfig = GmailProcessorLib.convertV1Config(oldConfig)
+  console.log(JSON.stringify(migratedConfig, null, 2))
 }

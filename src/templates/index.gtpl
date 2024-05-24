@@ -1,12 +1,12 @@
 {{- $imports:=.|data.JSONArray|coll.Sort "path" -}}
 {{- $examples:=.|data.JSONArray|coll.Sort "name" -}}
-import { Example } from "./Example"
+import { Example, V1Example } from "./Example"
 {{- range $imports }}
-import { {{ .name }}Example } from "./{{ .path }}"
+import { example as {{ .name }}Example } from "./{{ .path }}"
 {{- end }}
 
 export const defaultExample = simpleExample
-export const allExamples: Example[] = [
+export const allExamples: (Example | V1Example)[] = [
 {{- range $examples }}
   {{ .name }}Example,
 {{- end }}

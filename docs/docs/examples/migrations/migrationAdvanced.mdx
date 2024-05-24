@@ -1,10 +1,13 @@
 ---
 id: migrationAdvanced
 title: Advanced Migration
+description: Migrate a complex Gmail2GDrive v1.x configuration to the new Gmail Processor v2.x config format.
 ---
-import { migrationAdvancedExample } from "../../../../src/examples/migrations/migrationAdvanced.ts"
 import RenderExample from "/src/components/RenderExample.tsx"
+import config from '!!raw-loader!../../../../src/examples/migrations/migrationAdvanced.json';
+import script from '!!raw-loader!../../../../src/gas/examples/migrations/migrationAdvanced.js';
+import { info } from "../../../../src/examples/migrations/migrationAdvanced.ts"
 
 This Gmail2GDrive v1.x configuration example demonstrates the conversion to the Gmail Processor v2.x config format.
 
-<RenderExample path="src/examples/migrations/migrationAdvanced.ts" example={migrationAdvancedExample} />
+<RenderExample info={info} config={config} script={script} />

@@ -3,21 +3,24 @@ import { Config } from "../../lib/config/Config"
 import { MarkProcessedMethod } from "../../lib/config/SettingsConfig"
 import { E2EInitConfig, E2ETest, E2ETestConfig } from "../../lib/e2e/E2E"
 import { E2EDefaults } from "../../lib/e2e/E2EDefaults"
-import { Example, ExampleInfo } from "../Example"
+import {
+  Example,
+  ExampleCategory,
+  ExampleInfo,
+  ExampleTemplateType,
+} from "../Example"
 
 /**
  * This example is a test for PR #301 to fix `getBlob` error on conflict strategy `update`.
  */
 export const info: ExampleInfo = {
   name: "issue301",
-  title: "Issue #301",
-  description:
-    "This example is a test for PR #301 to fix `getBlob` error on conflict strategy `update`.",
-  category: "regressions",
-  generate: ["test-e2e", "test-spec"],
+  title: "getBlob Issue",
+  description: "Tests a fix for `getBlob` error on conflict strategy `update`.",
+  category: ExampleCategory.REGRESSIONS,
+  skipGenerate: [ExampleTemplateType.TEST_SPEC],
   issues: [300],
   pullRequests: [301],
-  schemaVersion: "v2",
 }
 
 export const initConfig: E2EInitConfig = {
@@ -137,7 +140,7 @@ export const runConfig: Config = {
   ],
 }
 
-export const issue301Example: Example = {
+export const example: Example = {
   info,
   config: runConfig,
 }
@@ -145,6 +148,7 @@ export const issue301Example: Example = {
 export const tests: E2ETest[] = []
 
 export const testConfig: E2ETestConfig = {
+  example,
   info,
   initConfig,
   runConfig,

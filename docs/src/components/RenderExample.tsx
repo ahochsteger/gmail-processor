@@ -3,75 +3,52 @@ import CodeBlock from '@theme/CodeBlock';
 import TabItem from '@theme/TabItem';
 import Tabs from '@theme/Tabs';
 import React from 'react';
-import { Example } from '../../../src/examples/Example';
+import { ExampleInfo, ExampleVariant } from '../../../src/examples/Example';
 
 const examplesBasePath = "src/examples"
-const exampleConfigBaseUrl = `https://github.com/ahochsteger/gmail-processor/blob/main/${examplesBasePath}`
+const examplesBaseUrl = `https://github.com/ahochsteger/gmail-processor/blob/main/${examplesBasePath}`
 const githubIssuesBaseUrl = "https://github.com/ahochsteger/gmail-processor/issues"
 const githubPRsBaseUrl = "https://github.com/ahochsteger/gmail-processor/pull"
 
 type ExampleConfigProps = {
-  example: Example
+  info: ExampleInfo
+  config: string
+  script: string
 }
 
-function getIssueLinks(title: string, baseUrl: string, issues?: number[]): React.JSX.Element[] {
+export function getIssueLinks(title: string, baseUrl: string, issues?: number[]): React.JSX.Element[] {
   let elements: React.JSX.Element[] = []
-  if (issues && issues.length>0) {
+  if (issues && issues.length > 0) {
     elements = [
-      <span key={`${title}-0`}> ({title}: </span>,
+      <span key={`${title}-0`}> | {title}: </span>,
     ].concat(
-      issues?.map((nr,i,arr) => (
+      issues?.map((nr, i, arr) => (
         <span key={nr}>
-          <a href={`${baseUrl}/${nr}`}>#{nr}</a>{(i<arr.length-1) ? "," : ""}
+          <a href={`${baseUrl}/${nr}`}>#{nr}</a>{(i < arr.length - 1) ? " " : ""}
         </span>
       ))
     )
-    elements.push(<span>)</span>)
+    elements.push(<span></span>)
   }
   return elements
-  // const issueLinks = issues.map(nr => <a key={nr} href={`${baseUrl}/${nr}`}>#{nr}</a>).join(", ")
-  // return <span>, {title}: {issueLinks}</span>
 }
 
-export default function RenderExample({example}: ExampleConfigProps) {
-  const info = example.info
-  const relPath = `${example.info.category}/${example.info.name}.ts`
-  const config = example.config
-  const sourceFile = `${info.name}.ts`
-
+export default function RenderExample({ info, config, script }: ExampleConfigProps) {
   return (
     <>
-      <p>👉 Edit this example in the <Link href={`/playground?example=${info.name}`}>playground</Link>{ info.schemaVersion === "v1" ? " and automatically migrate it to the v2 format using the convert button" : ""}.</p>
+      <p>👉 Edit this example in the <Link href={`/playground?example=${info.name}`}>playground</Link>{info.variant===ExampleVariant.MIGRATION_V1 ? " and automatically migrate it to the v2 format using the convert button" : ""}.</p>
       <Tabs>
         <TabItem value="config" label="Config" default>
-          <CodeBlock
-            language="jsx"
-            showLineNumbers
-          >{JSON.stringify(config,null,2)}</CodeBlock>
+          <CodeBlock language="js" showLineNumbers>{config}</CodeBlock>
         </TabItem>
         <TabItem value="script" label="Script">
-          <CodeBlock
-            language="jsx"
-            showLineNumbers
-          >{ (info.schemaVersion === "v1") ?
-`function migrateConfig() {"{"}
-  const oldConfig = {JSON.stringify(config,null,2)}
-  const migratedConfig = GmailProcessorLib.convertV1Config(oldConfig)
-  console.log(JSON.stringify(migratedConfig, null, 2))
-}`
-:
-`function run() {
-  const config = ${JSON.stringify(config,null,2).split("\n").map(l=>`  ${l}`).join("\n").trim()}
-  GmailProcessorLib.run(config, GmailProcessorLib.RunMode.DRY_RUN)
-}`
-}
-</CodeBlock>
+          <CodeBlock language="js" showLineNumbers>{script}</CodeBlock>
         </TabItem>
       </Tabs>
       <p>
-        Source: <a href={`${exampleConfigBaseUrl}/${relPath}`}>{sourceFile}</a>
-        {getIssueLinks("Issues", githubIssuesBaseUrl, example.info.issues)}
-        {getIssueLinks("PRs", githubPRsBaseUrl, example.info.pullRequests)}
+        <span>Source: <a href={`${examplesBaseUrl}/${info.category}/${info.name}`}>{info.name}.ts</a></span>
+        {getIssueLinks("Issues", githubIssuesBaseUrl, info.issues)}
+        {getIssueLinks("PRs", githubPRsBaseUrl, info.pullRequests)}
       </p>
     </>
   )

@@ -1,0 +1,118 @@
+{
+  "description": "Logs data to a Google Spreadsheet.",
+  "settings": {
+    "markProcessedMethod": "mark-read",
+    "logSheetLocation": "/GmailProcessor-Tests/logsheet-${date.now:date::yyyy-MM}",
+    "logSheetTracing": true,
+    "logFields": [
+      "log.timestamp",
+      "log.level",
+      "log.location",
+      "log.message",
+      "object.id",
+      "object.date",
+      "object.subject",
+      "object.from",
+      "object.url",
+      "attachment.name",
+      "attachment.size",
+      "attachment.contentType",
+      "stored.location",
+      "stored.url",
+      "stored.downloadUrl",
+      "context.type"
+    ]
+  },
+  "threads": [
+    {
+      "match": {
+        "query": "from:${user.email} subject:'[GmailProcessor-Test] logSheetLogging'"
+      },
+      "actions": [
+        {
+          "name": "global.sheetLog",
+          "args": {
+            "level": "info",
+            "message": "Thread log (pre-main): ${thread.id}"
+          },
+          "processingStage": "pre-main"
+        },
+        {
+          "name": "global.sheetLog",
+          "args": {
+            "level": "info",
+            "message": "Thread log (main): ${thread.id}"
+          },
+          "processingStage": "main"
+        },
+        {
+          "name": "global.sheetLog",
+          "args": {
+            "level": "info",
+            "message": "Thread log (post-main): ${thread.id}"
+          },
+          "processingStage": "post-main"
+        }
+      ],
+      "messages": [
+        {
+          "actions": [
+            {
+              "name": "global.sheetLog",
+              "args": {
+                "level": "warn",
+                "message": "Message log (pre-main): ${message.id}"
+              },
+              "processingStage": "pre-main"
+            },
+            {
+              "name": "global.sheetLog",
+              "args": {
+                "level": "warn",
+                "message": "Message log (main): ${message.id}"
+              },
+              "processingStage": "main"
+            },
+            {
+              "name": "global.sheetLog",
+              "args": {
+                "level": "warn",
+                "message": "Message log (post-main): ${message.id}"
+              },
+              "processingStage": "post-main"
+            }
+          ],
+          "attachments": [
+            {
+              "actions": [
+                {
+                  "name": "global.sheetLog",
+                  "args": {
+                    "level": "error",
+                    "message": "Attachment log (pre-main): ${attachment.hash}"
+                  },
+                  "processingStage": "pre-main"
+                },
+                {
+                  "name": "attachment.store",
+                  "args": {
+                    "conflictStrategy": "update",
+                    "location": "/GmailProcessor-Tests/e2e/logSheetLogging/${attachment.name}"
+                  }
+                },
+                {
+                  "name": "global.sheetLog",
+                  "args": {
+                    "level": "error",
+                    "message": "Attachment log (post-main): ${attachment.hash}"
+                  },
+                  "processingStage": "post-main"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

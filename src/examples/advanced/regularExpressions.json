@@ -1,0 +1,44 @@
+{
+  "description": "Regular expressions allow to define patterns and extract values to simplify the configuration.",
+  "settings": {
+    "markProcessedMethod": "mark-read"
+  },
+  "global": {
+    "thread": {
+      "match": {
+        "query": "has:attachment -in:trash -in:drafts -in:spam after:${date.now:date::yyyy-MM-dd} subject:'[GmailProcessor-Test] regularExpressions'"
+      }
+    }
+  },
+  "threads": [
+    {
+      "match": {
+        "query": "from:${user.email}"
+      },
+      "messages": [
+        {
+          "name": "extract-message-fields-from-subject",
+          "match": {
+            "subject": "regularExpressions (?<school>[^-]+)-(?<reportType>[^-]+)-(?<reportSubType>[^-]+)-(?<date>[0-9-]+)"
+          },
+          "attachments": [
+            {
+              "match": {
+                "name": "^sample\\.docx$"
+              },
+              "actions": [
+                {
+                  "name": "attachment.store",
+                  "args": {
+                    "location": "/GmailProcessor-Tests/e2e/regularExpressions/Reports/${message.subject.match.school}/All Reports/${message.subject.match.reportType}/${message.subject.match.reportSubType}/${message.subject.match.date}-${attachment.name}",
+                    "conflictStrategy": "update"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

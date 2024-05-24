@@ -1,0 +1,11 @@
+---
+id: <%~ it.category.name %>
+description: <%~ it.category.description %>
+---
+import DocCardList from '@theme/DocCardList';
+
+# <%~ it.category.title %>
+
+<%~ it.category.description %>
+
+<DocCardList />

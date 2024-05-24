@@ -4,187 +4,187 @@ sidebar_position: 32
 ---
 # Enum Types
 
-These are the supported enum types and the possible values that can be used in the configuration.
+These are the supported enum types with their keys (only used for development) and values that can be used in the configuration.
 
 ## AttachmentOrderField
 
 Represents an attachment field to be ordered by for processing.
 
-| Value | Description |
-|-------|-------------|
-| `contentType` | Order by the content type of the attachment. |
-| `hash` | Order by the hash of the attachment. |
-| `name` | Order by the name of the attachment. |
+| Key | Value | Description |
+|-----|-------|-------------|
+| `CONTENT_TYPE` | `contentType` | Order by the content type of the attachment. |
+| `HASH` | `hash` | Order by the hash of the attachment. |
+| `NAME` | `name` | Order by the name of the attachment. |
 
 ## ConflictStrategy
 
 Strategy that defines how to deal in case of conflicts with already existing files at the desired location in Google Drive.
 
-| Value | Description |
-|-------|-------------|
-| `backup` | Create a backup of the existing file by renaming it. |
-| `error` | Terminate processing with an error. |
-| `keep` | Keep the existing file and create the new one with the same name. |
-| `replace` | Replace the existing file with the new one. |
-| `skip` | Skip creating the new file and keep the existing one. |
-| `update` | Update the existing file with the contents of the new one (keep it's file ID). |
+| Key | Value | Description |
+|-----|-------|-------------|
+| `BACKUP` | `backup` | Create a backup of the existing file by renaming it. |
+| `ERROR` | `error` | Terminate processing with an error. |
+| `KEEP` | `keep` | Keep the existing file and create the new one with the same name. |
+| `REPLACE` | `replace` | Replace the existing file with the new one. |
+| `SKIP` | `skip` | Skip creating the new file and keep the existing one. |
+| `UPDATE` | `update` | Update the existing file with the contents of the new one (keep it's file ID). |
 
 ## ContextType
 
 A type of context.
 
-| Value | Description |
-|-------|-------------|
-| `attachment` | A context holding the attachment configuration and information about the currently processed attachment. |
-| `env` | A context holding all environment information and references to environment objects. |
-| `message` | A context holding the message configuration and information about the currently processed message. |
-| `proc` | A context holding all processing information like the configuration, integration adapters, action registry and timer. |
-| `thread` | A context holding the thread configuration and information about the currently processed thread. |
+| Key | Value | Description |
+|-----|-------|-------------|
+| `ATTACHMENT` | `attachment` | A context holding the attachment configuration and information about the currently processed attachment. |
+| `ENV` | `env` | A context holding all environment information and references to environment objects. |
+| `MESSAGE` | `message` | A context holding the message configuration and information about the currently processed message. |
+| `PROCESSING` | `proc` | A context holding all processing information like the configuration, integration adapters, action registry and timer. |
+| `THREAD` | `thread` | A context holding the thread configuration and information about the currently processed thread. |
 
 ## E2EStatus
 
 Status of end-to-end tests
 
-| Value | Description |
-|-------|-------------|
-| `error` | An end-to-end test produced an error while executing. |
-| `failed` | The end-to-end test failed. |
-| `skipped` | The end-to-end test has been skipped. |
-| `success` | The end-to-end test was successful. |
+| Key | Value | Description |
+|-----|-------|-------------|
+| `ERROR` | `error` | An end-to-end test produced an error while executing. |
+| `FAILED` | `failed` | The end-to-end test failed. |
+| `SKIPPED` | `skipped` | The end-to-end test has been skipped. |
+| `SUCCESS` | `success` | The end-to-end test was successful. |
 
 ## LogLevel
 
 Levels of log messages used for marking and filtering.
 
-| Value | Description |
-|-------|-------------|
-| `debug` | Log level for debugging messages. |
-| `error` | Log level for error messages. |
-| `info` | Log level for info messages. |
-| `trace` | Log level for execution tracing |
-| `warn` | Log level for warning messages. |
+| Key | Value | Description |
+|-----|-------|-------------|
+| `DEBUG` | `debug` | Log level for debugging messages. |
+| `ERROR` | `error` | Log level for error messages. |
+| `INFO` | `info` | Log level for info messages. |
+| `TRACE` | `trace` | Log level for execution tracing |
+| `WARN` | `warn` | Log level for warning messages. |
 
 ## LogRedactionMode
 
 Specifies how sensitive data should be redacted for logging.
 
-| Value | Description |
-|-------|-------------|
-| `all` | Redact all possibly sensitive data |
-| `auto` | Automatically detect sensitive data to be redacted |
-| `none` | Do not redact sensitive data at all. |
+| Key | Value | Description |
+|-----|-------|-------------|
+| `ALL` | `all` | Redact all possibly sensitive data |
+| `AUTO` | `auto` | Automatically detect sensitive data to be redacted |
+| `NONE` | `none` | Do not redact sensitive data at all. |
 
 ## MarkProcessedMethod
 
 The method to mark processed threads/messages/attachments.
 
-| Value | Description |
-|-------|-------------|
-| `add-label` | Adds the label defined in the setting `markProcessedLabel` to each processed thread.<br /><br />**NOTE:**<br />- Automatically appends the action `thread.addLabel` to the list of global thread actions<br />- Automatically appends `-label:<markProcessedLabel>` to the global thread match query config<br /><br />**Limitations:**<br />- It cannot handle multiple messages per thread properly. |
-| `custom` | Doesn't do anything to mark threads, messages or attachments as processed and leaves this task to the user.<br /><br />**NOTE:**<br />- Use actions on the desired level (threads, messages or attachments) to mark them as processed.<br />- Take care to exclude them from queries in the thread match config, to prevent re-processing over and over again.<br /><br />**Limitations:**<br />- Is more complex since you have to take care to |
-| `mark-read` | Marks processed messages as read, which is more flexible than adding a thread label.<br />But it comes at the cost of marking messages as read, which may not be expected.<br /><br />**NOTE:**<br />- Automatically appends the action `message.markRead` to the list of global message actions<br />- Automatically appends `-is:read` to the global thread match query config<br />- Automatically adds `is: ["unread"]` to the global message match config<br /><br />**Limitations:**<br />- Since it marks messages as read it may not be applicable in all cases. |
+| Key | Value | Description |
+|-----|-------|-------------|
+| `ADD_THREAD_LABEL` | `add-label` | Adds the label defined in the setting `markProcessedLabel` to each processed thread.<br /><br />**NOTE:**<br />- Automatically appends the action `thread.addLabel` to the list of global thread actions<br />- Automatically appends `-label:<markProcessedLabel>` to the global thread match query config<br /><br />**Limitations:**<br />- It cannot handle multiple messages per thread properly. |
+| `CUSTOM` | `custom` | Doesn't do anything to mark threads, messages or attachments as processed and leaves this task to the user.<br /><br />**NOTE:**<br />- Use actions on the desired level (threads, messages or attachments) to mark them as processed.<br />- Take care to exclude them from queries in the thread match config, to prevent re-processing over and over again.<br /><br />**Limitations:**<br />- Is more complex since you have to take care to |
+| `MARK_MESSAGE_READ` | `mark-read` | Marks processed messages as read, which is more flexible than adding a thread label.<br />But it comes at the cost of marking messages as read, which may not be expected.<br /><br />**NOTE:**<br />- Automatically appends the action `message.markRead` to the list of global message actions<br />- Automatically appends `-is:read` to the global thread match query config<br />- Automatically adds `is: ["unread"]` to the global message match config<br /><br />**Limitations:**<br />- Since it marks messages as read it may not be applicable in all cases. |
 
 ## MessageFlag
 
 A flag to match messages with certain properties.
 
-| Value | Description |
-|-------|-------------|
-| `read` | Matches read messages. |
-| `starred` | Matches starred messages. |
-| `unread` | Matches unread messages. |
-| `unstarred` | Matches un-starred messages. |
+| Key | Value | Description |
+|-----|-------|-------------|
+| `READ` | `read` | Matches read messages. |
+| `STARRED` | `starred` | Matches starred messages. |
+| `UNREAD` | `unread` | Matches unread messages. |
+| `UNSTARRED` | `unstarred` | Matches un-starred messages. |
 
 ## MessageOrderField
 
 Represents a message field to be ordered by for processing.
 
-| Value | Description |
-|-------|-------------|
-| `date` | Order by the date of the message. |
-| `from` | Order by the sender of the message. |
-| `id` | Order by the ID of the message. |
-| `subject` | Order by the subject of the message. |
+| Key | Value | Description |
+|-----|-------|-------------|
+| `DATE` | `date` | Order by the date of the message. |
+| `FROM` | `from` | Order by the sender of the message. |
+| `ID` | `id` | Order by the ID of the message. |
+| `SUBJECT` | `subject` | Order by the subject of the message. |
 
 ## MetaInfoType
 
 The type of meta information used for context substitution placeholders.
 
-| Value | Description |
-|-------|-------------|
-| `boolean` | Boolean type substituted to `true` or `false`. |
-| `date` | Date/time type. For substitution a format string can be given using `${<placeholder>:date:<expression>:<format>}`. |
-| `number` | A numeric data type. |
-| `string` | A string data type. |
-| `variable` | A custom configuration variable. |
+| Key | Value | Description |
+|-----|-------|-------------|
+| `BOOLEAN` | `boolean` | Boolean type substituted to `true` or `false`. |
+| `DATE` | `date` | Date/time type. For substitution a format string can be given using `${<placeholder>:date:<expression>:<format>}`. |
+| `NUMBER` | `number` | A numeric data type. |
+| `STRING` | `string` | A string data type. |
+| `VARIABLE` | `variable` | A custom configuration variable. |
 
 ## OrderDirection
 
 Represents the direction a list should be ordered.
 
-| Value | Description |
-|-------|-------------|
-| `asc` | Order ascending. |
-| `desc` | Order descending. |
+| Key | Value | Description |
+|-----|-------|-------------|
+| `ASC` | `asc` | Order ascending. |
+| `DESC` | `desc` | Order descending. |
 
 ## PlaceholderModifierType
 
 The modifiers for placeholder expressions.
 
-| Value | Description |
-|-------|-------------|
-| `date` | The `date` placeholder modifier converts the value of the given placeholder to a `Date` and allows date/time calculations on it.<br /><br />Syntax: `${<placeholder>:date:[[<date-expression>][:<format>]]}`<br />* `<date-expression> = [<date-fns-function>][<+/-><parse-duration>]`: If no expression is given, the date of the placeholder is used unmodified.<br />* `<date-fns-function>`: a supported [`date-fns` function](https://date-fns.org/docs/format) as defined by the constant [`DATE_FNS_FUNCTIONS` in DateUtils.ts](https://github.com/ahochsteger/gmail-processor/blob/main/src/lib/utils/DateUtils.ts)<br />* `<parse-duration>`: a relative duration in the form of a [parse-duration format string](https://github.com/jkroso/parse-duration#api)<br />* `<format>`: Format the resulting date/time using a [date-fns format string](https://date-fns.org/docs/format). If no format is given the setting `defaultTimestampFormat` is used.<br /><br />Examples:<br />* `${message.date:date:lastDayOfMonth-1d:yyyy-MM-DD}`: evaluates to the 2nd last day of the month in which the message has been sent.<br />* `${message.body.match.invoiceDate:date:startOfMonth+4d+1month:yyyy-MM-DD}`: evaluates to the 5th day of the month following the invoice date (extracted using a regex from the message body) |
-| `format` | Use `${<placeholder>:format:<format>}` to format the date/time using a [date-fns format string](https://date-fns.org/docs/format).<br />**DEPRECATED**: Use `${<placeholder>:date::<format>}` instead. Note the double colon if no date modification expression is required. |
-| `join` | Use `${<placeholder>:join[:<separator>]}` to join the values of an array into a string (default: `,`). |
-| `` | No modifier |
-| `offset-format` | Use `${<placeholder>:offset-format:<offset>[:<format>]}` to calculate the date/time offset using a [parse-duration format string](https://github.com/jkroso/parse-duration#parsestr-formatms) and then format the resulting date/time using a [date-fns format strings](https://date-fns.org/docs/format).<br />**DEPRECATED**: Use `${<placeholder>:date:<offset>[:<format>]}` instead. |
-| `unsupported` | Unsupported placeholder modifier type given. |
+| Key | Value | Description |
+|-----|-------|-------------|
+| `DATE` | `date` | The `date` placeholder modifier converts the value of the given placeholder to a `Date` and allows date/time calculations on it.<br /><br />Syntax: `${<placeholder>:date:[[<date-expression>][:<format>]]}`<br />* `<date-expression> = [<date-fns-function>][<+/-><parse-duration>]`: If no expression is given, the date of the placeholder is used unmodified.<br />* `<date-fns-function>`: a supported [`date-fns` function](https://date-fns.org/docs/format) as defined by the constant [`DATE_FNS_FUNCTIONS` in DateUtils.ts](https://github.com/ahochsteger/gmail-processor/blob/main/src/lib/utils/DateUtils.ts)<br />* `<parse-duration>`: a relative duration in the form of a [parse-duration format string](https://github.com/jkroso/parse-duration#api)<br />* `<format>`: Format the resulting date/time using a [date-fns format string](https://date-fns.org/docs/format). If no format is given the setting `defaultTimestampFormat` is used.<br /><br />Examples:<br />* `${message.date:date:lastDayOfMonth-1d:yyyy-MM-DD}`: evaluates to the 2nd last day of the month in which the message has been sent.<br />* `${message.body.match.invoiceDate:date:startOfMonth+4d+1month:yyyy-MM-DD}`: evaluates to the 5th day of the month following the invoice date (extracted using a regex from the message body) |
+| `FORMAT` | `format` | Use `${<placeholder>:format:<format>}` to format the date/time using a [date-fns format string](https://date-fns.org/docs/format).<br />**DEPRECATED**: Use `${<placeholder>:date::<format>}` instead. Note the double colon if no date modification expression is required. |
+| `JOIN` | `join` | Use `${<placeholder>:join[:<separator>]}` to join the values of an array into a string (default: `,`). |
+| `NONE` | `` | No modifier |
+| `OFFSET_FORMAT` | `offset-format` | Use `${<placeholder>:offset-format:<offset>[:<format>]}` to calculate the date/time offset using a [parse-duration format string](https://github.com/jkroso/parse-duration#parsestr-formatms) and then format the resulting date/time using a [date-fns format strings](https://date-fns.org/docs/format).<br />**DEPRECATED**: Use `${<placeholder>:date:<offset>[:<format>]}` instead. |
+| `UNSUPPORTED` | `unsupported` | Unsupported placeholder modifier type given. |
 
 ## PlaceholderType
 
 The type of a placeholder.
 
-| Value | Description |
-|-------|-------------|
-| `attachment` | An attachment placeholder type. |
-| `message` | A message placeholder type. |
-| `thread` | A thread placeholder type. |
+| Key | Value | Description |
+|-----|-------|-------------|
+| `ATTACHMENT` | `attachment` | An attachment placeholder type. |
+| `MESSAGE` | `message` | A message placeholder type. |
+| `THREAD` | `thread` | A thread placeholder type. |
 
 ## ProcessingStage
 
 The stage of action processing
 
-| Value | Description |
-|-------|-------------|
-| `main` | The stage during processing the main object (thread, message, attachment) |
-| `post-main` | The stage after processing the main object (thread, message, attachment) |
-| `pre-main` | The stage before processing the main object (thread, message, attachment) |
+| Key | Value | Description |
+|-----|-------|-------------|
+| `MAIN` | `main` | The stage during processing the main object (thread, message, attachment) |
+| `POST_MAIN` | `post-main` | The stage after processing the main object (thread, message, attachment) |
+| `PRE_MAIN` | `pre-main` | The stage before processing the main object (thread, message, attachment) |
 
 ## ProcessingStatus
 
 The result status of processing a config or an action.
 
-| Value | Description |
-|-------|-------------|
-| `error` | An error has occurred. |
-| `ok` | The processing was successful. |
+| Key | Value | Description |
+|-----|-------|-------------|
+| `ERROR` | `error` | An error has occurred. |
+| `OK` | `ok` | The processing was successful. |
 
 ## RunMode
 
 The runtime mode in which processing takes place.
 
-| Value | Description |
-|-------|-------------|
-| `dangerous` | This run-mode will execute all configured actions including possibly destructive actions like overwriting files or removing threads or messages.<br />ATTENTION: Use this only if you know exactly what you're doing and won't complain if something goes wrong! |
-| `dry-run` | This run-mode skips execution of writing actions. Use this for testing config changes or library upgrades. |
-| `safe-mode` | This run-mode can be used for normal operation but will skip possibly destructive actions like overwriting files or removing threads or messages. |
+| Key | Value | Description |
+|-----|-------|-------------|
+| `DANGEROUS` | `dangerous` | This run-mode will execute all configured actions including possibly destructive actions like overwriting files or removing threads or messages.<br />ATTENTION: Use this only if you know exactly what you're doing and won't complain if something goes wrong! |
+| `DRY_RUN` | `dry-run` | This run-mode skips execution of writing actions. Use this for testing config changes or library upgrades. |
+| `SAFE_MODE` | `safe-mode` | This run-mode can be used for normal operation but will skip possibly destructive actions like overwriting files or removing threads or messages. |
 
 ## ThreadOrderField
 
 Represents a thread field to be ordered by for processing.
 
-| Value | Description |
-|-------|-------------|
-| `lastMessageDate` | Order by the date of the last message in the thread. |
-| `id` | Order by the ID of the thread. |
-| `firstMessageSubject` | Order by the subject of the first message in the thread. |
+| Key | Value | Description |
+|-----|-------|-------------|
+| `DATE` | `lastMessageDate` | Order by the date of the last message in the thread. |
+| `ID` | `id` | Order by the ID of the thread. |
+| `SUBJECT` | `firstMessageSubject` | Order by the subject of the first message in the thread. |

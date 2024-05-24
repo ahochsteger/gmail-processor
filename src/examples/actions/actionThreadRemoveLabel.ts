@@ -1,6 +1,6 @@
 import { E2EInitConfig, E2ETest, E2ETestConfig } from "../../lib/e2e/E2E"
 import { E2EDefaults } from "../../lib/e2e/E2EDefaults"
-import { Example, ExampleInfo } from "../Example"
+import { Example, ExampleCategory, ExampleInfo } from "../Example"
 import { ProcessingStatus } from "./../../lib/Context"
 import { ProcessingStage } from "./../../lib/config/ActionConfig"
 import { Config } from "./../../lib/config/Config"
@@ -12,12 +12,10 @@ import { MarkProcessedMethod } from "./../../lib/config/SettingsConfig"
  */
 export const info: ExampleInfo = {
   name: "actionThreadRemoveLabel",
-  title: "thread.removeLabel",
-  description: "Demonstrates the usage of the action `thread.removeLabel`.",
-  category: "actions",
-  generate: ["docs", "test-e2e", "test-spec"],
+  title: "Remove Thread Label",
+  description: "The action `thread.removeLabel` removes a label from a thread.",
+  category: ExampleCategory.ACTIONS,
   issues: [303],
-  schemaVersion: "v2",
 }
 
 export const initConfig: E2EInitConfig = {
@@ -72,7 +70,7 @@ export const runConfig: Config = {
   ],
 }
 
-export const actionThreadRemoveLabelExample: Example = {
+export const example: Example = {
   info,
   config: runConfig,
 }
@@ -100,6 +98,7 @@ export const tests: E2ETest[] = [
 ]
 
 export const testConfig: E2ETestConfig = {
+  example,
   info,
   initConfig,
   runConfig,

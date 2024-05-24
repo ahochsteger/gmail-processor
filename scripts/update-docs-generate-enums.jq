@@ -8,11 +8,12 @@ include "update-docs-generate-common";
   "",
   generateDescription,
   "",
-  "| Value | Description |",
-  "|-------|-------------|",
+  "| Key | Value | Description |",
+  "|-----|-------|-------------|",
   ([
     .values[]
     | [
+      "`" + (.key | tostring) + "`",
       "`" + (.value | tostring) + "`",
       generateDescription
     ] | join(" | ")

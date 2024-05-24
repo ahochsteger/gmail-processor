@@ -1,9 +1,12 @@
 ---
 id: actionExport
 title: Export Thread/Message
+description: Export a thread or message as HTML or PDF.
 ---
-import { actionExportExample } from "../../../../src/examples/actions/actionExport.ts"
 import RenderExample from "/src/components/RenderExample.tsx"
+import config from '!!raw-loader!../../../../src/examples/actions/actionExport.json';
+import script from '!!raw-loader!../../../../src/gas/examples/actions/actionExport.js';
+import { info } from "../../../../src/examples/actions/actionExport.ts"
 
 This example demonstrates how to export messages or threads to HTML or PDF documents.
 
@@ -12,4 +15,4 @@ This example demonstrates how to export messages or threads to HTML or PDF docum
 * `thread.exportAsHtml`: Exports a thread to an HTML document.
 * `thread.exportAsPdf`: Exports a thread to a PDF document.
 
-<RenderExample path="src/examples/actions/actionExport.ts" example={actionExportExample} />
+<RenderExample info={info} config={config} script={script} />

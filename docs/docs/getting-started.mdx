@@ -1,8 +1,9 @@
 ---
 sidebar_position: 20
 ---
-import { simpleExample } from "../../src/examples/basics/simple.ts"
-import RenderExample from "/src/components/RenderExample.tsx"
+import script from '!!raw-loader!../../src/gas/examples/basics/simple.js';
+import CodeBlock from '@theme/CodeBlock';
+import { info } from "../../src/examples/basics/simple.ts";
 
 # Getting Started
 
@@ -30,7 +31,7 @@ Follow these steps:
 6. Replace the contents of the initially created file `Code.gs` with the following code, take the config from the [Simple Example](examples/basics/simple.mdx) and save the changes:
   <details>
     <summary>Expand example</summary>
-    <RenderExample path="src/examples/basics/simple.ts" example={simpleExample} />
+    <CodeBlock language="js" showLineNumbers>{script.replace(/^function simpleRun\b/,"function run")}</CodeBlock>
   </details>
 7. Perform an initial execution of the function `run` to grant all required permissions (see [Required API Permissions](#required-api-permissions) for more details):
    1. Select your account you want to grant access for

@@ -1,12 +1,12 @@
 // NOTE: Do not edit this auto-generated file!
-// Template: src/examples/_templates/test-spec-v2.tmpl
-// Source: src/examples/regressions/issue301.ts
+// Template: <%= it.templateFilePath %>
+// Source: <%= it.exampleSourcePath %>
 
 import { ProcessingStatus } from "../../lib"
 import { GmailProcessor } from "../../lib/processors/GmailProcessor"
 import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
 import { validateConfig } from "./../../lib/config/Validate"
-import { info, runConfig } from "./issue301"
+import { example, info, runConfig } from "./<%= it.example.info.name %>"
 
 let mocks: Mocks
 
@@ -16,7 +16,11 @@ beforeAll(() => {
 
 describe(`Example ${info.name}`, () => {
   it(`should successfully run example ${info.name}`, () => {
-    const result = GmailProcessor.runWithJson(runConfig, mocks.envContext)
+    const result = GmailProcessor.runWithJson(
+      runConfig,
+      example.customActions ?? [],
+      mocks.envContext,
+    )
     expect(result.status).toEqual(ProcessingStatus.OK)
     expect(result.processedThreadConfigs).toEqual(runConfig.threads?.length)
   })
