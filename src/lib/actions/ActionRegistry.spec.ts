@@ -250,6 +250,41 @@ describe("ActionRegistry.invokeAction()", () => {
   })
 })
 
+describe("ActionRegistry.registerCustomActions", () => {
+  const actionName = "mylog"
+  const fullActionName = `custom.${actionName}`
+  beforeEach(() => {
+    actionRegistry.registerCustomActions([
+      {
+        name: actionName,
+        action: (ctx, args) => {
+          return {
+            ...args,
+            contextType: ctx.type,
+          }
+        },
+      },
+    ])
+  })
+  it("should register custom actions", () => {
+    const actual = actionRegistry.getAction(fullActionName)
+    expect(actual).toBeDefined()
+  })
+  it("should execute custom actions", () => {
+    const args = { key1: "val1", key2: "val2" }
+    const actual = actionRegistry.executeAction(
+      mocks.processingContext,
+      fullActionName,
+      args,
+    )
+    expect(actual).toEqual({
+      ...args,
+      ok: true,
+      contextType: "proc",
+    })
+  })
+})
+
 describe("ActionProvider", () => {
   it("should execute an action with correct arguments", () => {
     const result = myThreadActionProvider.instanceThreadMethodWithArgs(

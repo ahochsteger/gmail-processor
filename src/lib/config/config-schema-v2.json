@@ -68,6 +68,37 @@
                             "type": "string"
                         },
                         "name": {
+                            "pattern": "^custom..*$",
+                            "title": "name",
+                            "type": "string"
+                        },
+                        "processingStage": {
+                            "description": "The stage of action processing",
+                            "enum": [
+                                "main",
+                                "post-main",
+                                "pre-main"
+                            ],
+                            "title": "processingStage",
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "name"
+                    ],
+                    "type": "object"
+                },
+                {
+                    "additionalProperties": false,
+                    "properties": {
+                        "args": {
+                            "title": "args"
+                        },
+                        "description": {
+                            "title": "description",
+                            "type": "string"
+                        },
+                        "name": {
                             "const": "global.noop",
                             "title": "name",
                             "type": "string"
@@ -1605,6 +1636,37 @@
                             "type": "string"
                         },
                         "name": {
+                            "pattern": "^custom..*$",
+                            "title": "name",
+                            "type": "string"
+                        },
+                        "processingStage": {
+                            "description": "The stage of action processing",
+                            "enum": [
+                                "main",
+                                "post-main",
+                                "pre-main"
+                            ],
+                            "title": "processingStage",
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "name"
+                    ],
+                    "type": "object"
+                },
+                {
+                    "additionalProperties": false,
+                    "properties": {
+                        "args": {
+                            "title": "args"
+                        },
+                        "description": {
+                            "title": "description",
+                            "type": "string"
+                        },
+                        "name": {
                             "const": "global.noop",
                             "title": "name",
                             "type": "string"
@@ -3111,6 +3173,37 @@
         },
         "ThreadContextActionConfigType": {
             "anyOf": [
+                {
+                    "additionalProperties": false,
+                    "properties": {
+                        "args": {
+                            "title": "args"
+                        },
+                        "description": {
+                            "title": "description",
+                            "type": "string"
+                        },
+                        "name": {
+                            "pattern": "^custom..*$",
+                            "title": "name",
+                            "type": "string"
+                        },
+                        "processingStage": {
+                            "description": "The stage of action processing",
+                            "enum": [
+                                "main",
+                                "post-main",
+                                "pre-main"
+                            ],
+                            "title": "processingStage",
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "name"
+                    ],
+                    "type": "object"
+                },
                 {
                     "additionalProperties": false,
                     "properties": {

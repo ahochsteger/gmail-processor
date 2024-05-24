@@ -25,7 +25,7 @@ describe("run", () => {
     [0, 0, 0],
   )
   it("should process a v2 config object", () => {
-    const result = GmailProcessor.run(config, mocks.envContext)
+    const result = GmailProcessor.run(config, [], mocks.envContext)
     expect(mocks.envContext.env.gmailApp.search).toHaveBeenCalledTimes(
       config.threads.length,
     )
@@ -55,7 +55,7 @@ describe("run", () => {
       description: "Failing action",
       processingStage: ProcessingStage.PRE_MAIN,
     })
-    expect(() => GmailProcessor.run(config, mocks.envContext)).toThrow(
+    expect(() => GmailProcessor.run(config, [], mocks.envContext)).toThrow(
       "Error in action 'global.panic'",
     )
   })

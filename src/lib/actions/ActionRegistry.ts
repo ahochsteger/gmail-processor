@@ -26,6 +26,11 @@ export interface ActionProvider<
   [key: string]: ActionFunction<TContext>
 }
 
+export type ActionRegistration = {
+  name: string
+  action: ActionFunction<ProcessingContext, ActionArgsType, ActionReturnType>
+}
+
 export function typedArgs<T>(args: ActionArgsType): T {
   // TODO: Add runtime type checking and throw Error on invalid types.
   // Maybe possible with ts-runtime-checks or io-ts, but initial tests failed to reliably detect non-conformant args.
@@ -52,6 +57,13 @@ export class ActionRegistry {
       .sort()
   }
 
+  public registerAction(
+    fullActionName: string,
+    action: ActionFunction<ProcessingContext, ActionArgsType, ActionReturnType>,
+  ) {
+    this.actions.set(fullActionName, action)
+  }
+
   public registerActionProvider(
     providerName: string,
     provider: ActionProvider,
@@ -69,7 +81,21 @@ export class ActionRegistry {
         Object.getPrototypeOf(provider).constructor[
           actionName as keyof typeof provider
         ]
-      this.actions.set(fullActionName, action)
+      this.registerAction(fullActionName, action)
+    })
+  }
+
+  public registerCustomActions(actions: ActionRegistration[]) {
+    const nameRegex = "[a-zA-Z0-9]+"
+    const regex = new RegExp(nameRegex)
+    actions.forEach((customAction) => {
+      if (regex.test(customAction.name)) {
+        this.registerAction(`custom.${customAction.name}`, customAction.action)
+      } else {
+        throw new Error(
+          `Custom action name does not match regex '${nameRegex}': ${customAction.name}`,
+        )
+      }
     })
   }
 

@@ -14,7 +14,7 @@ beforeEach(() => {
 
 describe("run", () => {
   it("test", () => {
-    const result = run(configJson, RunMode.DANGEROUS, mocks.envContext)
+    const result = run(configJson, RunMode.DANGEROUS, [], mocks.envContext)
     expect(result).toMatchObject({
       status: ProcessingStatus.OK,
     })

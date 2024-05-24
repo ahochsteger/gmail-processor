@@ -2,6 +2,7 @@ import { Example, V1Example } from "./Example"
 import { example as actionAttachmentExtractTextExample } from "./actions/actionAttachmentExtractText"
 import { example as actionExportExample } from "./actions/actionExport"
 import { example as actionThreadRemoveLabelExample } from "./actions/actionThreadRemoveLabel"
+import { example as customActionsExample } from "./advanced/customActions"
 import { example as logSheetLoggingExample } from "./advanced/logSheetLogging"
 import { example as regularExpressionsExample } from "./advanced/regularExpressions"
 import { example as simpleExample } from "./basics/simple"
@@ -16,6 +17,7 @@ export const allExamples: (Example | V1Example)[] = [
   actionExportExample,
   actionThreadRemoveLabelExample,
   convertToGoogleExample,
+  customActionsExample,
   issue301Example,
   logSheetLoggingExample,
   migrationAdvancedExample,

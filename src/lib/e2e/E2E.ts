@@ -273,7 +273,11 @@ export class E2E {
         }
       } else if (testConfig.runConfig) {
         ctx.log.info(`E2E.runTests(): Executing GmailProcessor.runWithJson ...`)
-        processingResult = GmailProcessor.runWithJson(testConfig.runConfig, ctx)
+        processingResult = GmailProcessor.runWithJson(
+          testConfig.runConfig,
+          (testConfig.example as Example)?.customActions ?? [],
+          ctx,
+        )
       } else {
         throw new Error("No processing configuration given!")
       }

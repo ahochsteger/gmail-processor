@@ -6,6 +6,7 @@ import {
   RunMode,
 } from "./Context"
 import { EnvProvider } from "./EnvProvider"
+import { ActionRegistration } from "./actions/ActionRegistry"
 import { ConflictStrategy } from "./adapter/GDriveAdapter"
 import { ProcessingStage } from "./config/ActionConfig"
 import { Config } from "./config/Config"
@@ -46,9 +47,10 @@ export {
 export function run(
   config: Config,
   runMode: string = RunMode.SAFE_MODE,
+  customActions: ActionRegistration[] = [],
   ctx: EnvContext = EnvProvider.defaultContext(runMode as RunMode),
 ): ProcessingResult {
-  return GmailProcessor.runWithJson(config, ctx)
+  return GmailProcessor.runWithJson(config, customActions, ctx)
 }
 
 /**
