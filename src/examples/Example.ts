@@ -29,6 +29,7 @@ export enum ExampleTemplateType {
 }
 
 export enum ExampleVariant {
+  CUSTOM_ACTIONS = "custom-actions",
   MIGRATION_V1 = "migration-v1",
 }
 

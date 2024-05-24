@@ -16,7 +16,11 @@ function customActionsTest() {
   }
 
   const initConfig = {
-    mails: [{}],
+    mails: [
+      {
+        attachments: [`invoice.pdf`],
+      },
+    ],
   }
 
   const runConfig = {

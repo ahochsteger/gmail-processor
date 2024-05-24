@@ -1,0 +1,13 @@
+---
+id: customActions
+title: Custom Actions
+description: Define custom logic as actions that can be executed during processing.
+---
+import RenderExample from "/src/components/RenderExample.tsx"
+import config from '!!raw-loader!../../../../src/examples/advanced/customActions.json';
+import script from '!!raw-loader!../../../../src/gas/examples/advanced/customActions.js';
+import { info } from "../../../../src/examples/advanced/customActions.ts"
+
+This is an example to demonstrate custom actions.
+
+<RenderExample info={info} config={config} script={script} />

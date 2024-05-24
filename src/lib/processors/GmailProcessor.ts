@@ -10,7 +10,11 @@ import {
   newMetaInfo as mi,
   newProcessingResult,
 } from "../Context"
-import { ActionProvider, ActionRegistry } from "../actions/ActionRegistry"
+import {
+  ActionProvider,
+  ActionRegistration,
+  ActionRegistry,
+} from "../actions/ActionRegistry"
 import { AttachmentActions } from "../actions/AttachmentActions"
 import { GlobalActions } from "../actions/GlobalActions"
 import { MessageActions } from "../actions/MessageActions"
@@ -142,12 +146,14 @@ export class GmailProcessor extends BaseProcessor {
 
   public static run(
     config: RequiredConfig,
+    customActions: ActionRegistration[],
     ctx: EnvContext,
     reportFormat = "text",
   ): ProcessingResult {
     ctx.log.info("Processing GmailProcessor config started ...")
     this.checkTimezone(ctx, config)
     const actionRegistry = GmailProcessor.setupActionRegistry(ctx)
+    actionRegistry.registerCustomActions(customActions)
     const logAdapter = new LogAdapter(ctx, config.settings)
     const processingContext = GmailProcessor.buildContext(ctx, {
       actionRegistry: actionRegistry,
@@ -181,10 +187,11 @@ export class GmailProcessor extends BaseProcessor {
 
   public static runWithJson(
     configJson: Config,
+    customActions: ActionRegistration[],
     ctx: EnvContext,
   ): ProcessingResult {
     const config = GmailProcessor.getEffectiveConfig(configJson)
-    return this.run(config, ctx)
+    return this.run(config, customActions, ctx)
   }
 
   public static getEffectiveConfig(configJson: Config): RequiredConfig {
