@@ -54,7 +54,7 @@ export class ExampleHandler {
       const [baseDir, suffix] = spec.file.split(baseSplit)
       const catsRegex = Object.values(ExampleCategory).join("|")
       const exampleFileRegex = new RegExp(
-        `^(${catsRegex})/[a-z][A-Za-z0-9]+${suffix.replace("\\.", "\\.")}$`,
+        `^(${catsRegex})/[a-z][A-Za-z0-9]+${suffix.replace(".", "\\.")}$`,
       )
       files = files.concat(
         readdirSync(baseDir, {
