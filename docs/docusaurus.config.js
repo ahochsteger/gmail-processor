@@ -6,6 +6,8 @@ const darkCodeTheme = themes.vsDark;
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
+  // plugins: ['docusaurus-node-polyfills'],
+  // plugins: [['docusaurus-node-polyfills', { includeAliases: ['fs', 'path'] }]],
   themes: [
     'docusaurus-json-schema-plugin'
   ],
@@ -81,7 +83,7 @@ const config = {
             label: 'Docs',
           },
           // {to: '/blog', label: 'Blog', position: 'left'},
-          {to: '/playground', label: 'Playground', position: 'left'},
+          { to: '/playground', label: 'Playground', position: 'left' },
           {
             href: 'https://github.com/ahochsteger/gmail-processor',
             position: 'right',
@@ -142,30 +144,30 @@ const config = {
       algolia: {
         // The application ID provided by Algolia
         appId: '99BPL130HU',
-      
+
         // Public API key: it is safe to commit it
         apiKey: '7e30d3d1c2592af9255ab489d6710dad',
-      
+
         indexName: 'gmail-processor',
-      
+
         // Optional: see doc section below
         contextualSearch: true,
-      
+
         // Optional: Specify domains where the navigation should occur through window.location instead on history.push. Useful when our Algolia config crawls multiple documentation sites and we want to navigate with window.location.href to them.
         externalUrlRegex: 'ahochsteger\\.github\\.io/gmail-processor',
-      
+
         // Optional: Replace parts of the item URLs from Algolia. Useful when using the same search index for multiple deployments using a different baseUrl. You can use regexp or string in the `from` param. For example: localhost:3000 vs myCompany.com/docs
         replaceSearchResultPathname: {
           from: '/docs/', // or as RegExp: /\/docs\//
           to: '/',
         },
-      
+
         // Optional: Algolia search parameters
         searchParameters: {},
-      
+
         // Optional: path for search page that enabled by default (`false` to disable it)
         searchPagePath: 'search',
-      
+
         //... other Algolia params
       },
     }),
