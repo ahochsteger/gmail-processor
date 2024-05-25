@@ -30,6 +30,7 @@ import {
   newConfig,
 } from "../config/Config"
 import { VariableEntry } from "../config/GlobalConfig"
+import { PatternUtil } from "../utils/PatternUtil"
 import { Timer } from "../utils/Timer"
 import { BaseProcessor } from "./BaseProcessor"
 import { ThreadProcessor } from "./ThreadProcessor"
@@ -150,7 +151,10 @@ export class GmailProcessor extends BaseProcessor {
     ctx: EnvContext,
     reportFormat = "text",
   ): ProcessingResult {
-    ctx.log.info("Processing GmailProcessor config started ...")
+    const version = PatternUtil.stringValue(ctx, "lib.version")
+    ctx.log.info(
+      `Processing config started using Gmail Processor v${version} ...`,
+    )
     this.checkTimezone(ctx, config)
     const actionRegistry = GmailProcessor.setupActionRegistry(ctx)
     actionRegistry.registerCustomActions(customActions)

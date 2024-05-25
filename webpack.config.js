@@ -1,6 +1,8 @@
 /* eslint-disable no-undef, @typescript-eslint/no-var-requires */
 const GasPlugin = require("gas-webpack-plugin")
 const NodePolyfillPlugin = require("node-polyfill-webpack-plugin")
+const __PACKAGE_JSON__ = require("./package.json")
+const { DefinePlugin } = require("webpack")
 
 module.exports = {
   mode: "development",
@@ -20,6 +22,7 @@ module.exports = {
       comment: true,
     }),
     new NodePolyfillPlugin(),
+    new DefinePlugin({ __PACKAGE_JSON__: JSON.stringify(__PACKAGE_JSON__) }),
   ],
   devtool: false,
 }
