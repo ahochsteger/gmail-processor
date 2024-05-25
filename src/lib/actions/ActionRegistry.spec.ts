@@ -283,6 +283,16 @@ describe("ActionRegistry.registerCustomActions", () => {
       contextType: "proc",
     })
   })
+  it("should ensure proper action naming", () => {
+    expect(() => {
+      actionRegistry.registerCustomActions([
+        {
+          name: "my log",
+          action: (_ctx, args) => args,
+        },
+      ])
+    }).toThrow()
+  })
 })
 
 describe("ActionProvider", () => {

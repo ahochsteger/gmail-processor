@@ -86,7 +86,7 @@ export class ActionRegistry {
   }
 
   public registerCustomActions(actions: ActionRegistration[]) {
-    const nameRegex = "[a-zA-Z0-9]+"
+    const nameRegex = "^[a-zA-Z0-9]+$"
     const regex = new RegExp(nameRegex)
     actions.forEach((customAction) => {
       if (regex.test(customAction.name)) {
