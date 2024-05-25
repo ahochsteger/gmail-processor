@@ -1,6 +1,7 @@
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
 import { themes } from 'prism-react-renderer';
+import { version } from "../package.json"
 const lightCodeTheme = themes.vsLight;
 const darkCodeTheme = themes.vsDark;
 
@@ -84,6 +85,11 @@ const config = {
           },
           // {to: '/blog', label: 'Blog', position: 'left'},
           { to: '/playground', label: 'Playground', position: 'left' },
+          {
+            href: `https://github.com/ahochsteger/gmail-processor/releases/${version}`,
+            position: 'right',
+            label: `Latest Release: ${version}`,
+          },
           {
             href: 'https://github.com/ahochsteger/gmail-processor',
             position: 'right',
