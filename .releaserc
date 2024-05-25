@@ -32,7 +32,7 @@
       "@semantic-release/github",
       {
         "assets": "build/gas/lib/GmailProcessorLib.js",
-        "draftRelease": true,
+        "draftRelease": false,
         "successComment": false,
         "failTitle": false
       }
