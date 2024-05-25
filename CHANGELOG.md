@@ -1,5 +1,20 @@
 # Changelog
 
+# [2.11.0](https://github.com/ahochsteger/gmail-processor/compare/2.10.1...2.11.0) (2024-05-25)
+
+
+### Bug Fixes
+
+* custom action name regex + add test ([0ec5b5c](https://github.com/ahochsteger/gmail-processor/commit/0ec5b5cdc67c8d8d1da5bbb958ab30c124587e5b))
+* pug security vulnerability ([ee0031d](https://github.com/ahochsteger/gmail-processor/commit/ee0031db57cc3fc098ed363bc8aea4589801df34))
+* wrong regex replacement ([3eb0809](https://github.com/ahochsteger/gmail-processor/commit/3eb08094a75500409310ee703c1145a75d1e9859))
+
+
+### Features
+
+* add custom actions ([e044e22](https://github.com/ahochsteger/gmail-processor/commit/e044e22be2dd4d0b6ae01240567802f1b9009af6))
+* add version info lib, logs and docs ([5470741](https://github.com/ahochsteger/gmail-processor/commit/54707419224ca69adc1b94240830c52931884218))
+
 ## [2.10.1](https://github.com/ahochsteger/gmail-processor/compare/2.10.0...2.10.1) (2024-05-16)
 
 
