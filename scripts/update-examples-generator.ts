@@ -36,13 +36,10 @@ export class ExampleHandler {
   }
 
   public static indent(code: string, ind = 2): string {
-    return (
-      code
-        .split("\n")
-        .map((l) => `${" ".repeat(ind)}${l}`)
-        .join("\n")
-        .trimStart() + "\n"
-    )
+    return code
+      .split("\n")
+      .map((l) => (l !== "" ? `${" ".repeat(ind)}${l}` : ""))
+      .join("\n")
   }
 
   public static getGeneratedFiles(
@@ -152,6 +149,7 @@ export class ExampleHandler {
         }
         return out
       }, "")
+      .trim()
     this.enums.forEach((e) =>
       e.values.forEach((v) => {
         content = content.replace(`${e.name}.${v.key}`, `"${v.value}"`)

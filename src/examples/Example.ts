@@ -21,10 +21,10 @@ export enum ExampleCategory {
 
 export enum ExampleTemplateType {
   CONFIG = "config",
-  GAS_CODE = "gas-code",
   DOCS = "docs",
   DOCS_INDEX = "docs-index",
-  TEST_E2E = "test-e2e",
+  GAS_CODE = "gas-code",
+  GAS_TEST = "gas-test",
   TEST_SPEC = "test-spec",
 }
 

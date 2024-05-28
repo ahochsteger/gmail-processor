@@ -1,5 +1,5 @@
 // NOTE: Do not edit this auto-generated file!
-// Template: src/templates/test-e2e.eta
+// Template: src/templates/gas-test.eta
 // Source: src/examples/features/convertToGoogle.ts
 
 function convertToGoogleTest() {

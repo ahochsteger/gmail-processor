@@ -1,0 +1,11 @@
+import { Example, V1Example } from "./Example"
+<% it.sort((a,b)=>`${a.category}/${a.name}`.localeCompare(`${b.category}/${b.name}`)).forEach(e => { %>
+import { example as <%= e.name %>Example } from "./<%= e.category %>/<%= e.name %>"
+<% }) %>
+
+export const defaultExample = simpleExample
+export const allExamples: (Example | V1Example)[] = [
+<% it.sort((a,b)=>a.name.localeCompare(b.name)).forEach(e => { %>
+  <%= e.name %>Example,
+<% }) %>
+]

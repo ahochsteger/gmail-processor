@@ -4,6 +4,7 @@
 
 function <%= it.example.info.name %>Test() {
 <%~ it.indent(it.genE2eTestCode(it.exampleSourcePath)) %>
+
   GmailProcessorLib.E2E.runTests(
     testConfig,
     false,

@@ -7,7 +7,6 @@ import { validateV1Config } from "../../lib/config/v1/V1Validate"
 import { validateConfig } from "./../../lib/config/Validate"
 import { info, migrationConfig } from "./<%= it.example.info.name %>"
 
-
 describe(`Example ${info.name}`, () => {
   it(`should successfully validate migration example config ${info.name}`, () => {
     validateV1Config(migrationConfig)

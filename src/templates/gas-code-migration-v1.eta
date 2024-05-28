@@ -1,5 +1,6 @@
 function <%= it.example.info.name %>Convert() {
   const oldConfig = <%~ it.indent(JSON.stringify(it.example.migrationConfig,null,2)) %>
+
   const migratedConfig = GmailProcessorLib.convertV1Config(oldConfig)
   console.log(JSON.stringify(migratedConfig, null, 2))
 }

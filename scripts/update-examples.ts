@@ -74,7 +74,7 @@ const exampleGenSpecs: GenSpec[] = [
   },
   {
     file: "src/gas/examples/${category}/${name}-test.js",
-    type: ExampleTemplateType.TEST_E2E,
+    type: ExampleTemplateType.GAS_TEST,
   },
 ]
 

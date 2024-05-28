@@ -6,7 +6,7 @@ import { ProcessingStatus } from "../../lib"
 import { GmailProcessor } from "../../lib/processors/GmailProcessor"
 import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
 import { validateConfig } from "./../../lib/config/Validate"
-import { info, runConfig, testConfig } from "./<%= it.example.info.name %>"
+import { info, runConfig } from "./<%= it.example.info.name %>"
 
 let mocks: Mocks
 
