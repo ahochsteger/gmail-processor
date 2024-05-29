@@ -73,7 +73,7 @@ export class GmailExportAdapter extends BaseAdapter {
       const response = this.ctx.env.urlFetchApp.fetch(url, {
         muteHttpExceptions: true,
       })
-      return response.getResponseCode() == 200 ? response.getBlob() : null
+      return response.getResponseCode() === 200 ? response.getBlob() : null
     } catch (e) {
       return null
     }
@@ -86,7 +86,7 @@ export class GmailExportAdapter extends BaseAdapter {
       | GoogleAppsScript.Base.Blob,
   ): string | null {
     let imageBlob: GoogleAppsScript.Base.Blob | null = null
-    if (typeof image == "string" && URL.canParse(image)) {
+    if (typeof image === "string" && URL.canParse(image)) {
       imageBlob = this.fetchRemoteFile(image)
     } else if (typeof image === "object") {
       imageBlob = image as GoogleAppsScript.Base.Blob // Note: GmailAttachment has all methods of Blob
@@ -97,7 +97,7 @@ export class GmailExportAdapter extends BaseAdapter {
     if (imageBlob.getContentType()) {
       const type = imageBlob.getContentType()?.toLowerCase()
       const data = Utilities.base64Encode(imageBlob.getBytes())
-      if (type?.indexOf("image") == 0) {
+      if (type?.indexOf("image") === 0) {
         const dataUrl = "data:" + type + ";base64," + data
         return dataUrl
       }

@@ -308,7 +308,7 @@ export class ThreadProcessor extends BaseProcessor {
         !matchConfig.labels
           .split(",")
           .every((matchLabel) =>
-            thread.getLabels().map((l) => l.getName() == matchLabel),
+            thread.getLabels().map((l) => l.getName() === matchLabel),
           )
       )
         return RegexUtils.noMatch(
@@ -365,7 +365,8 @@ export class ThreadProcessor extends BaseProcessor {
         [ThreadOrderField.SUBJECT]: a
           .getFirstMessageSubject()
           .localeCompare(b.getFirstMessageSubject()),
-      }[config.orderBy] * (config.orderDirection == OrderDirection.ASC ? 1 : -1)
+      }[config.orderBy] *
+      (config.orderDirection === OrderDirection.ASC ? 1 : -1)
     )
   }
 

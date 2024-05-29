@@ -242,7 +242,8 @@ export class AttachmentProcessor extends BaseProcessor {
           .localeCompare(b.getContentType()),
         [AttachmentOrderField.HASH]: a.getHash().localeCompare(b.getHash()),
         [AttachmentOrderField.NAME]: a.getName().localeCompare(b.getName()),
-      }[config.orderBy] * (config.orderDirection == OrderDirection.ASC ? 1 : -1)
+      }[config.orderBy] *
+      (config.orderDirection === OrderDirection.ASC ? 1 : -1)
     )
   }
 

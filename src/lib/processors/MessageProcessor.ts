@@ -387,7 +387,8 @@ export class MessageProcessor extends BaseProcessor {
         [MessageOrderField.SUBJECT]: a
           .getSubject()
           .localeCompare(b.getSubject()),
-      }[config.orderBy] * (config.orderDirection == OrderDirection.ASC ? 1 : -1)
+      }[config.orderBy] *
+      (config.orderDirection === OrderDirection.ASC ? 1 : -1)
     )
   }
 

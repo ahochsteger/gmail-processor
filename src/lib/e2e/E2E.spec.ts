@@ -244,17 +244,17 @@ describe("runTests", () => {
         {
           message: "One thread config should have been processed",
           assertFn: (_testConfig, procResult) =>
-            procResult.processedThreadConfigs == 1,
+            procResult.processedThreadConfigs === 1,
         },
         {
           message: "One thread should have been processed",
           assertFn: (_testConfig, procResult) =>
-            procResult.processedThreads == 1,
+            procResult.processedThreads === 1,
         },
         {
           message: "One action should have been executed",
           assertFn: (_testConfig, procResult) =>
-            procResult.executedActions.length == 1,
+            procResult.executedActions.length === 1,
         },
       ],
     },

@@ -116,7 +116,7 @@ export class GmailProcessor extends BaseProcessor {
     result: ProcessingResult,
     reportFormat: string,
   ) {
-    if (reportFormat == "json") {
+    if (reportFormat === "json") {
       ctx.log.info(JSON.stringify(result, null, 2))
       return
     }

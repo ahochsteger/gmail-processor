@@ -40,7 +40,7 @@ export class LogAdapter extends BaseAdapter {
     fieldConfig: LogFieldConfig[],
     name: string,
   ): LogFieldConfig | undefined {
-    const logConfigField = fieldConfig.find((f) => f.name == name)
+    const logConfigField = fieldConfig.find((f) => f.name === name)
     const contextField = ctx.meta[name]
     const field: LogFieldConfig = {
       name: name,
