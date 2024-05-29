@@ -359,10 +359,10 @@ export class ThreadProcessor extends BaseProcessor {
   ): number {
     return (
       {
-        [ThreadOrderField.DATE]:
+        [ThreadOrderField.LAST_MESSAGE_DATE]:
           a.getLastMessageDate().getTime() - b.getLastMessageDate().getTime(),
         [ThreadOrderField.ID]: a.getId().localeCompare(b.getId()),
-        [ThreadOrderField.SUBJECT]: a
+        [ThreadOrderField.FIRST_MESSAGE_SUBJECT]: a
           .getFirstMessageSubject()
           .localeCompare(b.getFirstMessageSubject()),
       }[config.orderBy] *
@@ -433,7 +433,7 @@ export class ThreadProcessor extends BaseProcessor {
     const config: RequiredThreadConfig = ctx.thread.config
     ctx.log.trace(ctx, {
       location: "ThreadProcessor.processEntity()",
-      message: `Processing thread id '${ctx.log.redact(ctx, thread.getId())}' (subject:'${ctx.log.redact(ctx, thread.getFirstMessageSubject())}') started ...`,
+      message: `Processing thread id '${ctx.log.redact(ctx, thread.getId())}' (lastMessageDate:${thread.getLastMessageDate().toISOString()}, subject:'${ctx.log.redact(ctx, thread.getFirstMessageSubject())}') started ...`,
     })
     // Execute pre-main actions:
     result = this.executeActions(

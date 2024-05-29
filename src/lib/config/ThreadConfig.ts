@@ -27,7 +27,7 @@ export enum ThreadOrderField {
   /**
    * Order by the date of the last message in the thread.
    */
-  DATE = "lastMessageDate",
+  LAST_MESSAGE_DATE = "lastMessageDate",
   /**
    * Order by the ID of the thread.
    */
@@ -35,7 +35,7 @@ export enum ThreadOrderField {
   /**
    * Order by the subject of the first message in the thread.
    */
-  SUBJECT = "firstMessageSubject",
+  FIRST_MESSAGE_SUBJECT = "firstMessageSubject",
 }
 
 /**

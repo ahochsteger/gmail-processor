@@ -133,7 +133,10 @@ describe("order threads", () => {
   it("should order threads ascending", () => {
     threads = ThreadProcessor.ordered(
       threads,
-      { orderBy: ThreadOrderField.DATE, orderDirection: OrderDirection.ASC },
+      {
+        orderBy: ThreadOrderField.LAST_MESSAGE_DATE,
+        orderDirection: OrderDirection.ASC,
+      },
       ThreadProcessor.orderRules,
     )
     expect(threads.map((t) => t.getId())).toEqual(["t2", "t1", "t3"])
@@ -141,7 +144,10 @@ describe("order threads", () => {
   it("should order threads ascending", () => {
     threads = ThreadProcessor.ordered(
       threads,
-      { orderBy: ThreadOrderField.DATE, orderDirection: OrderDirection.DESC },
+      {
+        orderBy: ThreadOrderField.LAST_MESSAGE_DATE,
+        orderDirection: OrderDirection.DESC,
+      },
       ThreadProcessor.orderRules,
     )
     expect(threads.map((t) => t.getId())).toEqual(["t3", "t1", "t2"])
