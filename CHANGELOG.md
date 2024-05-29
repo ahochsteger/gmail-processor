@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.11.1](https://github.com/ahochsteger/gmail-processor/compare/2.11.0...2.11.1) (2024-05-29)
+
+
+### Bug Fixes
+
+* thread order constant names + log date on threads ([cb6624c](https://github.com/ahochsteger/gmail-processor/commit/cb6624c1f8c8cc620b5ffc7cd27a3c954399cddd))
+
 # [2.11.0](https://github.com/ahochsteger/gmail-processor/compare/2.10.1...2.11.0) (2024-05-25)
 
 
