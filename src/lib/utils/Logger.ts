@@ -1,21 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ProcessingContext } from "../Context"
 import { GlobalActionLoggingBase } from "../actions/GlobalActions"
-import { LogRedactionMode } from "../config/SettingsConfig"
+import { LogLevel, LogRedactionMode } from "../config/SettingsConfig"
 
-/** Levels of log messages used for marking and filtering. */
-export enum LogLevel {
-  /** Log level for execution tracing */
-  TRACE = "trace",
-  /** Log level for debugging messages. */
-  DEBUG = "debug",
-  /** Log level for info messages. */
-  INFO = "info",
-  /** Log level for warning messages. */
-  WARN = "warn",
-  /** Log level for error messages. */
-  ERROR = "error",
-}
 const levels = Object.values(LogLevel)
 
 function levelIndex(level: LogLevel): number {

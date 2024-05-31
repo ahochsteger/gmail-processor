@@ -47,7 +47,7 @@ import {
   startOfYesterday,
 } from "date-fns"
 import parse from "parse-duration"
-import { PlaceholderModifierType } from "./PatternUtil"
+import { PlaceholderModifierType } from "./PlaceholderModifierType"
 
 export const defaultDateFormat = "yyyy-MM-dd HH:mm:ss"
 type ModDateType = (d: Date) => Date

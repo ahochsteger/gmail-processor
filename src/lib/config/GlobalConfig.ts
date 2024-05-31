@@ -18,11 +18,6 @@ import {
   normalizeThreadConfig,
 } from "./ThreadConfig"
 
-export const DEFAULT_GLOBAL_QUERY_PREFIX =
-  "has:attachment -in:trash -in:drafts -in:spam"
-export const DEFAULT_GLOBAL_QUERY_NEWER_THAN = "1d"
-export const DEFAULT_GLOBAL_QUERY = `${DEFAULT_GLOBAL_QUERY_PREFIX} newer_than:${DEFAULT_GLOBAL_QUERY_NEWER_THAN}`
-
 /**
  * A variable entry available for string substitution (using `${variables.<varName>}`)
  */

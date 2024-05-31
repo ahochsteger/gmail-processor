@@ -4,9 +4,8 @@ import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
 import { ProcessingStatus } from "../Context"
 import { ProcessingStage } from "../config/ActionConfig"
 import { Config, RequiredConfig } from "../config/Config"
-import { DEFAULT_GLOBAL_QUERY } from "../config/GlobalConfig"
-import { MarkProcessedMethod } from "../config/SettingsConfig"
-import { LogLevel } from "../utils/Logger"
+import { LogLevel, MarkProcessedMethod } from "../config/SettingsConfig"
+import { DEFAULT_GLOBAL_QUERY } from "../config/ThreadMatchConfig"
 import { GmailProcessor } from "./GmailProcessor"
 
 let config: RequiredConfig

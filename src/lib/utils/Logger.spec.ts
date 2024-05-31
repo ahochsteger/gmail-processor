@@ -1,8 +1,8 @@
 import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
 import { ProcessingContext } from "../Context"
 import { ConfigMocks } from "./../../test/mocks/ConfigMocks"
-import { LogRedactionMode } from "./../config/SettingsConfig"
-import { LogLevel, Logger } from "./Logger"
+import { LogLevel, LogRedactionMode } from "./../config/SettingsConfig"
+import { Logger } from "./Logger"
 
 let logger: Logger
 let mocks: Mocks

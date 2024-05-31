@@ -1,5 +1,5 @@
 import { DateExpression } from "./DateExpression"
-import { PlaceholderModifierType } from "./PatternUtil"
+import { PlaceholderModifierType } from "./PlaceholderModifierType"
 
 const dateFormat = "yyyy-MM-dd"
 const timeFormat = "HH:mm:ss.SSS"

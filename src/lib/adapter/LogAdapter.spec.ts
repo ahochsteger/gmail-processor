@@ -5,8 +5,7 @@ import {
   fakedSystemDateTimeString,
 } from "../../test/mocks/MockFactory"
 import { Config } from "../config/Config"
-import { newSettingsConfig } from "../config/SettingsConfig"
-import { LogLevel } from "../utils/Logger"
+import { LogLevel, newSettingsConfig } from "../config/SettingsConfig"
 import { LogAdapter } from "./LogAdapter"
 
 let richLogAdapter: LogAdapter
