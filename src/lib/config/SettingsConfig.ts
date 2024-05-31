@@ -1,7 +1,6 @@
 import { Expose, Type, plainToInstance } from "class-transformer"
 import "reflect-metadata"
 import { essentialObject } from "../utils/ConfigUtils"
-import { LogLevel } from "../utils/Logger"
 import { RequiredDeep } from "../utils/UtilityTypes"
 
 // TODO: Use these constants in SettingsConfig below, when typescript-json-schema bug is resolved.
@@ -13,6 +12,20 @@ export const DEFAULT_SETTING_SLEEP_TIME_THREADS = 100
 export const LOG_MESSAGE_NAME = "log.message"
 export const LOG_LEVEL_NAME = "log.level"
 export const LOG_LOCATION_NAME = "log.location"
+
+/** Levels of log messages used for marking and filtering. */
+export enum LogLevel {
+  /** Log level for execution tracing */
+  TRACE = "trace",
+  /** Log level for debugging messages. */
+  DEBUG = "debug",
+  /** Log level for info messages. */
+  INFO = "info",
+  /** Log level for warning messages. */
+  WARN = "warn",
+  /** Log level for error messages. */
+  ERROR = "error",
+}
 
 /**
  * The method to mark processed threads/messages/attachments.

@@ -12,10 +12,10 @@ import {
   LOG_LOCATION_NAME,
   LOG_MESSAGE_NAME,
   LogFieldConfig,
+  LogLevel,
   SettingsConfig,
   newSettingsConfig,
 } from "../config/SettingsConfig"
-import { LogLevel } from "../utils/Logger"
 import { PatternUtil } from "../utils/PatternUtil"
 import { BaseAdapter } from "./BaseAdapter"
 

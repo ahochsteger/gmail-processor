@@ -11,13 +11,12 @@ import { ConflictStrategy } from "./adapter/GDriveAdapter"
 import { ProcessingStage } from "./config/ActionConfig"
 import { Config } from "./config/Config"
 import { MessageFlag } from "./config/MessageFlag"
-import { MarkProcessedMethod } from "./config/SettingsConfig"
+import { LogLevel, MarkProcessedMethod } from "./config/SettingsConfig"
 import { V1Config } from "./config/v1/V1Config"
 import { V1ToV2Converter } from "./config/v1/V1ToV2Converter"
 import { E2E, newE2EGlobalConfig } from "./e2e/E2E"
 import { E2EDefaults } from "./e2e/E2EDefaults"
 import { GmailProcessor } from "./processors/GmailProcessor"
-import { LogLevel } from "./utils/Logger"
 
 // Re-export everything that should be accessible from the lib
 export {

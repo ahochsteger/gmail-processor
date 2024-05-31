@@ -5,8 +5,11 @@ import {
   fakedSystemDateTimeString,
 } from "../../test/mocks/MockFactory"
 import { Config } from "../config/Config"
-import { LOG_LEVEL_NAME, LOG_MESSAGE_NAME } from "../config/SettingsConfig"
-import { LogLevel } from "../utils/Logger"
+import {
+  LOG_LEVEL_NAME,
+  LOG_MESSAGE_NAME,
+  LogLevel,
+} from "../config/SettingsConfig"
 import { ConfigMocks } from "./../../test/mocks/ConfigMocks"
 import { GlobalActions } from "./GlobalActions"
 

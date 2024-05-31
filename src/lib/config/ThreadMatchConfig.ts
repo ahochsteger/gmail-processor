@@ -2,7 +2,11 @@ import { Expose, plainToInstance } from "class-transformer"
 import "reflect-metadata"
 import { essentialObject } from "../utils/ConfigUtils"
 import { RequiredDeep } from "../utils/UtilityTypes"
-import { DEFAULT_GLOBAL_QUERY } from "./GlobalConfig"
+
+export const DEFAULT_GLOBAL_QUERY_PREFIX =
+  "has:attachment -in:trash -in:drafts -in:spam"
+export const DEFAULT_GLOBAL_QUERY_NEWER_THAN = "1d"
+export const DEFAULT_GLOBAL_QUERY = `${DEFAULT_GLOBAL_QUERY_PREFIX} newer_than:${DEFAULT_GLOBAL_QUERY_NEWER_THAN}`
 
 /**
  * Represents a config to match a certain GMail thread

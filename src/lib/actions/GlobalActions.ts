@@ -1,7 +1,7 @@
 import { ProcessingContext } from "../Context"
 import { ActionBaseConfig } from "../config/ActionConfig"
+import { LogLevel } from "../config/SettingsConfig"
 import { writingAction } from "../utils/Decorators"
-import { LogLevel } from "../utils/Logger"
 import { PatternUtil } from "../utils/PatternUtil"
 import {
   ActionFunction,

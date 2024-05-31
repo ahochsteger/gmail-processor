@@ -1,8 +1,7 @@
 import { ProcessingStatus } from "../../lib/Context"
 import { Config } from "../../lib/config/Config"
-import { MarkProcessedMethod } from "../../lib/config/SettingsConfig"
+import { LogLevel, MarkProcessedMethod } from "../../lib/config/SettingsConfig"
 import { E2EInitConfig, E2ETest, E2ETestConfig } from "../../lib/e2e/E2E"
-import { LogLevel } from "../../lib/utils/Logger"
 import {
   Example,
   ExampleCategory,

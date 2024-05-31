@@ -1,10 +1,6 @@
 import { ConflictStrategy } from "../../adapter/GDriveAdapter"
 import { AttachmentConfig } from "../AttachmentConfig"
 import { Config, RequiredConfig, newConfig } from "../Config"
-import {
-  DEFAULT_GLOBAL_QUERY_NEWER_THAN,
-  DEFAULT_GLOBAL_QUERY_PREFIX,
-} from "../GlobalConfig"
 import { MessageConfig } from "../MessageConfig"
 import { MarkProcessedMethod } from "../SettingsConfig"
 import {
@@ -12,6 +8,10 @@ import {
   ThreadConfig,
   newThreadConfig,
 } from "../ThreadConfig"
+import {
+  DEFAULT_GLOBAL_QUERY_NEWER_THAN,
+  DEFAULT_GLOBAL_QUERY_PREFIX,
+} from "../ThreadMatchConfig"
 import { V1Config, newV1Config } from "./V1Config"
 import { RequiredV1Rule } from "./V1Rule"
 
