@@ -8,7 +8,7 @@ import {
   ExampleTemplateType,
   GenSpec,
 } from "../src/examples/Example"
-import { allExamples } from "./../src/examples/index"
+import { allExamples } from "../src/examples/index"
 import { ExampleHandler } from "./update-examples-generator"
 
 export const allExampleCategories: ExampleCategoryInfo[] = [

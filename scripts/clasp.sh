@@ -131,7 +131,7 @@ function buildLib() {
     "${CLASP_SRC_DIR}"/*.json package.json \
     "${CLASP_DIR}/"
   npx tsc
-  npx webpack
+  npx rollup -c
 }
 
 function build() {
