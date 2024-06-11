@@ -19,7 +19,7 @@
     "@babel/plugin-transform-class-properties": "^7.23.3",
     "@docusaurus/core": "^3.2.1",
     "@docusaurus/preset-classic": "^3.2.1",
-    "@iconify/react": "^5.0.0",
+    "@iconify/react": "^5.0.1",
     "@mdx-js/react": "^3.0.1",
     "clsx": "^2.1.1",
     "docusaurus-json-schema-plugin": "^1.11.0",
