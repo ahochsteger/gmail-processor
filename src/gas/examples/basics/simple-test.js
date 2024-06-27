@@ -2,7 +2,7 @@
 // Template: src/templates/gas-test.eta
 // Source: src/examples/basics/simple.ts
 
-function simpleTest() {
+function simpleTestConfig() {
   /**
    * This is a simple example to start with Gmail Processor.
    *
@@ -146,7 +146,11 @@ function simpleTest() {
     runConfig,
     tests,
   }
+  return testConfig
+}
 
+function simpleTest() {
+  const testConfig = simpleTestConfig
   GmailProcessorLib.E2E.runTests(
     testConfig,
     false,

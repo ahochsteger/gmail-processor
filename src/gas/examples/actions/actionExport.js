@@ -19,7 +19,7 @@ function actionExportRun() {
             name: "thread.exportAsHtml",
             args: {
               location:
-                "/GmailProcessor-Tests/pr-291/thread-${thread.id}-${thread.firstMessageSubject}.html",
+                "/GmailProcessor-Tests/actions/actionExport/thread-${thread.id}-${thread.firstMessageSubject}.html",
               conflictStrategy: "replace",
             },
           },

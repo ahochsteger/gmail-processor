@@ -2,7 +2,7 @@
 // Template: src/templates/gas-test.eta
 // Source: src/examples/actions/actionAttachmentExtractText.ts
 
-function actionAttachmentExtractTextTest() {
+function actionAttachmentExtractTextTestConfig() {
   /**
    * This example demonstrates the use of the action `attachment.extractText` to extract matching text from the content of an attachment for use in later actions (e.g. use as part of the filename for `attachment.store`).
    */
@@ -159,7 +159,11 @@ function actionAttachmentExtractTextTest() {
     runConfig,
     tests,
   }
+  return testConfig
+}
 
+function actionAttachmentExtractTextTest() {
+  const testConfig = actionAttachmentExtractTextTestConfig
   GmailProcessorLib.E2E.runTests(
     testConfig,
     false,

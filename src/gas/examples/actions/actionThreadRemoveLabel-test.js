@@ -2,7 +2,7 @@
 // Template: src/templates/gas-test.eta
 // Source: src/examples/actions/actionThreadRemoveLabel.ts
 
-function actionThreadRemoveLabelTest() {
+function actionThreadRemoveLabelTestConfig() {
   /**
    * This example demonstrates the usage of the action `thread.removeLabel`.
    * It is also used to test a possible behavioral change for certain characters in label names (e.g. `-` vs. `/`).
@@ -104,7 +104,11 @@ function actionThreadRemoveLabelTest() {
     runConfig,
     tests,
   }
+  return testConfig
+}
 
+function actionThreadRemoveLabelTest() {
+  const testConfig = actionThreadRemoveLabelTestConfig
   GmailProcessorLib.E2E.runTests(
     testConfig,
     false,

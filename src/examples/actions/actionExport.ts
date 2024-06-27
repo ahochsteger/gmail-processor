@@ -30,7 +30,7 @@ export const info: ExampleInfo = {
 export const initConfig: E2EInitConfig = {
   mails: [
     {
-      attachments: [`invoice.pdf`],
+      attachments: [`image.png`],
     },
   ],
 }
@@ -53,8 +53,7 @@ export const runConfig: Config = {
         {
           name: "thread.exportAsHtml",
           args: {
-            location:
-              "/GmailProcessor-Tests/pr-291/thread-${thread.id}-${thread.firstMessageSubject}.html",
+            location: `/GmailProcessor-Tests/${info.category}/${info.name}/thread-\${thread.id}-\${thread.firstMessageSubject}.html`,
             conflictStrategy: ConflictStrategy.REPLACE,
           },
         },

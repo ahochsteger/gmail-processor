@@ -2,9 +2,13 @@
 // Template: <%= it.templateFilePath %>
 // Source: <%= it.exampleSourcePath %>
 
-function <%= it.example.info.name %>Test() {
+function <%= it.example.info.name %>TestConfig() {
 <%~ it.indent(it.genE2eTestCode(it.exampleSourcePath)) %>
+  return testConfig
+}
 
+function <%= it.example.info.name %>Test() {
+  const testConfig = <%= it.example.info.name %>TestConfig
   GmailProcessorLib.E2E.runTests(
     testConfig,
     false,

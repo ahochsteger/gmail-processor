@@ -2,7 +2,7 @@
 // Template: src/templates/gas-test.eta
 // Source: src/examples/features/convertToGoogle.ts
 
-function convertToGoogleTest() {
+function convertToGoogleTestConfig() {
   /**
    * This example shows how to convert MS Office attachments into Google formats.
    *
@@ -144,7 +144,11 @@ function convertToGoogleTest() {
     runConfig,
     tests,
   }
+  return testConfig
+}
 
+function convertToGoogleTest() {
+  const testConfig = convertToGoogleTestConfig
   GmailProcessorLib.E2E.runTests(
     testConfig,
     false,

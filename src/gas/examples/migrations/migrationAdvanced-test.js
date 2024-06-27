@@ -2,7 +2,7 @@
 // Template: src/templates/gas-test.eta
 // Source: src/examples/migrations/migrationAdvanced.ts
 
-function migrationAdvancedTest() {
+function migrationAdvancedTestConfig() {
   /**
    * This Gmail2GDrive v1.x configuration example demonstrates the conversion to the Gmail Processor v2.x config format.
    */
@@ -74,7 +74,11 @@ function migrationAdvancedTest() {
     migrationConfig,
     tests,
   }
+  return testConfig
+}
 
+function migrationAdvancedTest() {
+  const testConfig = migrationAdvancedTestConfig
   GmailProcessorLib.E2E.runTests(
     testConfig,
     false,

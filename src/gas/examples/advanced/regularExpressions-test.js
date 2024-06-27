@@ -2,7 +2,7 @@
 // Template: src/templates/gas-test.eta
 // Source: src/examples/advanced/regularExpressions.ts
 
-function regularExpressionsTest() {
+function regularExpressionsTestConfig() {
   /**
    * This example demonstrates how to use regular expressions in the configuration.
    *
@@ -117,7 +117,11 @@ function regularExpressionsTest() {
     runConfig,
     tests,
   }
+  return testConfig
+}
 
+function regularExpressionsTest() {
+  const testConfig = regularExpressionsTestConfig
   GmailProcessorLib.E2E.runTests(
     testConfig,
     false,

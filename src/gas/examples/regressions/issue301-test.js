@@ -2,7 +2,7 @@
 // Template: src/templates/gas-test.eta
 // Source: src/examples/regressions/issue301.ts
 
-function issue301Test() {
+function issue301TestConfig() {
   /**
    * This example is a test for PR #301 to fix `getBlob` error on conflict strategy `update`.
    */
@@ -149,7 +149,11 @@ function issue301Test() {
     runConfig,
     tests,
   }
+  return testConfig
+}
 
+function issue301Test() {
+  const testConfig = issue301TestConfig
   GmailProcessorLib.E2E.runTests(
     testConfig,
     false,

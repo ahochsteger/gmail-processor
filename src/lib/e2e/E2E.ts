@@ -211,6 +211,34 @@ export class E2E {
     return result
   }
 
+  public static initTests(
+    testConfig: E2ETestConfig,
+    branch = "main",
+    runMode = RunMode.DANGEROUS,
+    ctx: EnvContext = EnvProvider.defaultContext(runMode),
+  ) {
+    ctx.log.info(
+      `E2E.runTests(): Initializing test ${testConfig.info.category}/${testConfig.info.name} ...`,
+    )
+    const globals = newE2EGlobalConfig(ctx, testConfig.globals, branch)
+    testConfig.initConfig?.mails.forEach((mail) => {
+      ctx.env.mailApp.sendEmail({
+        to: PatternUtil.substitute(ctx, globals.to),
+        subject: PatternUtil.substitute(
+          ctx,
+          `${globals.subjectPrefix}${mail.subject ?? testConfig.info.name}`,
+        ),
+        htmlBody: PatternUtil.substitute(
+          ctx,
+          mail.body ?? testConfig.info.description,
+        ),
+        attachments: mail.attachments?.map((path) =>
+          this._getBlobSourceFromFilePath(ctx, globals, path),
+        ),
+      })
+    })
+  }
+
   public static runTests(
     testConfig: E2ETestConfig,
     skipInit = false,
@@ -220,24 +248,8 @@ export class E2E {
   ): E2EResult {
     // Send test mails
     if (!skipInit) {
-      ctx.log.info(`E2E.runTests(): Initializing test data ...`)
       const globals = newE2EGlobalConfig(ctx, testConfig.globals, branch)
-      testConfig.initConfig?.mails.forEach((mail) => {
-        ctx.env.mailApp.sendEmail({
-          to: PatternUtil.substitute(ctx, globals.to),
-          subject: PatternUtil.substitute(
-            ctx,
-            `${globals.subjectPrefix}${mail.subject ?? testConfig.info.name}`,
-          ),
-          htmlBody: PatternUtil.substitute(
-            ctx,
-            mail.body ?? testConfig.info.description,
-          ),
-          attachments: mail.attachments?.map((path) =>
-            this._getBlobSourceFromFilePath(ctx, globals, path),
-          ),
-        })
-      })
+      this.initTests(testConfig, branch, runMode, ctx)
       // Wait for emails to become available
       ctx.log.debug(
         `E2E.runTests(): Waiting ${globals.sleepTimeMs}ms for emails to be sent ...`,
@@ -248,6 +260,9 @@ export class E2E {
       ctx.log.info(`E2E.runTests(): SKIPPED: Initializing test data ...`)
     }
 
+    ctx.log.info(
+      `E2E.runTests(): Running test ${testConfig.info.category}/${testConfig.info.name} ...`,
+    )
     // Run tests
     let error: unknown
     const results: E2EResult[] = []
@@ -309,5 +324,29 @@ export class E2E {
     }
     ctx.log.info(`E2E.runTests(): Finished.`)
     return result
+  }
+
+  public static initAllTests(
+    testConfigs: E2ETestConfig[],
+    branch = "main",
+    runMode = RunMode.DANGEROUS,
+    ctx: EnvContext = EnvProvider.defaultContext(runMode),
+  ) {
+    testConfigs.forEach((testConfig) => {
+      ctx.log.info()
+      this.initTests(testConfig, branch, runMode, ctx)
+    })
+  }
+
+  public static runAllTests(
+    testConfigs: E2ETestConfig[],
+    skipInit = false,
+    branch = "main",
+    runMode = RunMode.DANGEROUS,
+    ctx: EnvContext = EnvProvider.defaultContext(runMode),
+  ): E2EResult[] {
+    return testConfigs.map((testConfig) =>
+      this.runTests(testConfig, skipInit, branch, runMode, ctx),
+    )
   }
 }

@@ -1,3 +1,4 @@
+// NOTE: Do not edit this auto-generated file!
 import { Example, V1Example } from "./Example"
 <% it.sort((a,b)=>`${a.category}/${a.name}`.localeCompare(`${b.category}/${b.name}`)).forEach(e => { %>
 import { example as <%= e.name %>Example } from "./<%= e.category %>/<%= e.name %>"

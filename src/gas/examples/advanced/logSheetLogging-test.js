@@ -2,7 +2,7 @@
 // Template: src/templates/gas-test.eta
 // Source: src/examples/advanced/logSheetLogging.ts
 
-function logSheetLoggingTest() {
+function logSheetLoggingTestConfig() {
   /**
    * This example demonstrates the advanced logging possibilities to a Google Spreadsheet.
    *
@@ -191,7 +191,11 @@ function logSheetLoggingTest() {
     runConfig,
     tests,
   }
+  return testConfig
+}
 
+function logSheetLoggingTest() {
+  const testConfig = logSheetLoggingTestConfig
   GmailProcessorLib.E2E.runTests(
     testConfig,
     false,

@@ -2,7 +2,7 @@
 // Template: src/templates/gas-test.eta
 // Source: src/examples/advanced/customActions.ts
 
-function customActionsTest() {
+function customActionsTestConfig() {
   /**
    * This is an example to demonstrate custom actions.
    */
@@ -101,7 +101,11 @@ function customActionsTest() {
     runConfig,
     tests,
   }
+  return testConfig
+}
 
+function customActionsTest() {
+  const testConfig = customActionsTestConfig
   GmailProcessorLib.E2E.runTests(
     testConfig,
     false,

@@ -2,7 +2,7 @@
 // Template: src/templates/gas-test.eta
 // Source: src/examples/migrations/migrationMin.ts
 
-function migrationMinTest() {
+function migrationMinTestConfig() {
   /**
    * This is a minimal Gmail2GDrive v1.x configuration example to demonstrate the conversion to the Gmail Processor v2.x config format.
    */
@@ -47,7 +47,11 @@ function migrationMinTest() {
     migrationConfig,
     tests,
   }
+  return testConfig
+}
 
+function migrationMinTest() {
+  const testConfig = migrationMinTestConfig
   GmailProcessorLib.E2E.runTests(
     testConfig,
     false,

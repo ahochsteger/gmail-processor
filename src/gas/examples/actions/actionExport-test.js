@@ -2,7 +2,7 @@
 // Template: src/templates/gas-test.eta
 // Source: src/examples/actions/actionExport.ts
 
-function actionExportTest() {
+function actionExportTestConfig() {
   /**
    * This example demonstrates how to export messages or threads to HTML or PDF documents.
    *
@@ -23,7 +23,7 @@ function actionExportTest() {
   const initConfig = {
     mails: [
       {
-        attachments: [`invoice.pdf`],
+        attachments: [`image.png`],
       },
     ],
   }
@@ -47,8 +47,7 @@ function actionExportTest() {
           {
             name: "thread.exportAsHtml",
             args: {
-              location:
-                "/GmailProcessor-Tests/pr-291/thread-${thread.id}-${thread.firstMessageSubject}.html",
+              location: `/GmailProcessor-Tests/${info.category}/${info.name}/thread-\${thread.id}-\${thread.firstMessageSubject}.html`,
               conflictStrategy: GmailProcessorLib.ConflictStrategy.REPLACE,
             },
           },
@@ -107,7 +106,11 @@ function actionExportTest() {
     runConfig,
     tests,
   }
+  return testConfig
+}
 
+function actionExportTest() {
+  const testConfig = actionExportTestConfig
   GmailProcessorLib.E2E.runTests(
     testConfig,
     false,
