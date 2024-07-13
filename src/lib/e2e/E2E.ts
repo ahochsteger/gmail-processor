@@ -42,12 +42,14 @@ type E2EAssertFn = (
 ) => boolean
 
 export type E2EAssertion = {
+  name?: string
   assertFn: E2EAssertFn
   message: string
   skip?: boolean
 }
 
 export type E2ETest = {
+  name?: string
   message?: string
   assertions: E2EAssertion[]
   skip?: boolean
@@ -80,14 +82,16 @@ export enum E2EStatus {
 export type E2EResult = {
   error?: unknown
   message?: string
+  name?: string
+  level: "assertion" | "test" | "suite" | "summary"
   status: E2EStatus
   results?: E2EResult[]
 }
 
 export function newE2EGlobalConfig(
   ctx: EnvContext,
-  testGlobals?: E2EGlobalConfig,
   branch?: string,
+  testGlobals?: E2EGlobalConfig,
 ): E2EGlobalConfig {
   return {
     driveBasePath: E2EDefaults.DRIVE_TESTS_BASE_PATH,
@@ -123,25 +127,11 @@ export class E2E {
       }
     }
     const result: E2EResult = {
+      name: assertion.name,
+      level: "assertion",
       status,
       error,
       message: assertion.message,
-    }
-    switch (
-      status // TODO: Move logging out of there - do at the end of all tests!
-    ) {
-      case E2EStatus.ERROR:
-        ctx.log.error(`❌ Error: ${assertion.message} (${error})`)
-        break
-      case E2EStatus.FAILED:
-        ctx.log.error(`👎 Failed: ${assertion.message}`)
-        break
-      case E2EStatus.SKIPPED:
-        ctx.log.info(`⏩ Skipped: ${assertion.message}`)
-        break
-      case E2EStatus.SUCCESS:
-        ctx.log.info(`✅ Success: ${assertion.message}`)
-        break
     }
     return result
   }
@@ -158,6 +148,21 @@ export class E2E {
     return blob
   }
 
+  public static statusMapFromResults(
+    results: E2EResult[],
+  ): Record<E2EStatus, number> {
+    const statusMap: Record<E2EStatus, number> = {
+      error: 0,
+      failed: 0,
+      skipped: 0,
+      success: 0,
+    }
+    results.forEach((r) => {
+      statusMap[r.status]++
+    })
+    return statusMap
+  }
+
   public static _overallStatus(
     statusMap: Record<E2EStatus, number>,
   ): E2EStatus {
@@ -169,6 +174,35 @@ export class E2E {
       return E2EStatus.SKIPPED
     } else {
       return E2EStatus.SUCCESS
+    }
+  }
+
+  public static logResults(
+    ctx: EnvContext,
+    result: E2EResult,
+    showNested = false,
+    nestingLevel = 0,
+  ) {
+    // TODO: Move logging out of there - do at the end of all tests!
+    const indent = "  ".repeat(nestingLevel)
+    switch (result.status) {
+      case E2EStatus.ERROR:
+        ctx.log.error(`${indent}❌ Error: ${result.message} (${result.error})`)
+        break
+      case E2EStatus.FAILED:
+        ctx.log.error(`${indent}👎 Failed: ${result.message}`)
+        break
+      case E2EStatus.SKIPPED:
+        ctx.log.info(`${indent}⏩ Skipped: ${result.message}`)
+        break
+      case E2EStatus.SUCCESS:
+        ctx.log.info(`${indent}✅ Success: ${result.message}`)
+        break
+    }
+    if (showNested && result.results) {
+      result.results.forEach((nestedResult) =>
+        this.logResults(ctx, nestedResult, showNested, nestingLevel + 1),
+      )
     }
   }
 
@@ -196,12 +230,15 @@ export class E2E {
           assertion,
           ctx,
         )
+        this.logResults(ctx, assertionResult)
         results.push(assertionResult)
         statusMap[assertionResult.status]++
       })
     }
     const status = this._overallStatus(statusMap)
     const result: E2EResult = {
+      level: "test",
+      name: test.name,
       message: test.message,
       status,
       results,
@@ -218,9 +255,9 @@ export class E2E {
     ctx: EnvContext = EnvProvider.defaultContext(runMode),
   ) {
     ctx.log.info(
-      `E2E.runTests(): Initializing test ${testConfig.info.category}/${testConfig.info.name} ...`,
+      `E2E.runTests(): [${testConfig.info.category}/${testConfig.info.name}] Initializing test ...`,
     )
-    const globals = newE2EGlobalConfig(ctx, testConfig.globals, branch)
+    const globals = newE2EGlobalConfig(ctx, branch, testConfig.globals)
     testConfig.initConfig?.mails.forEach((mail) => {
       ctx.env.mailApp.sendEmail({
         to: PatternUtil.substitute(ctx, globals.to),
@@ -237,6 +274,22 @@ export class E2E {
         ),
       })
     })
+    ctx.log.info(
+      `E2E.runTests(): [${testConfig.info.category}/${testConfig.info.name}] Finished initializing test.`,
+    )
+  }
+
+  public static initWait(
+    globals: E2EGlobalConfig,
+    runMode = RunMode.DANGEROUS,
+    ctx: EnvContext = EnvProvider.defaultContext(runMode),
+  ) {
+    // Wait for emails to become available
+    ctx.log.debug(
+      `E2E.runTests(): Waiting ${globals.sleepTimeMs}ms for emails to be sent ...`,
+    )
+    ctx.env.utilities.sleep(globals.sleepTimeMs)
+    ctx.log.debug(`E2E.runTests(): Finished waiting.`)
   }
 
   public static runTests(
@@ -248,20 +301,17 @@ export class E2E {
   ): E2EResult {
     // Send test mails
     if (!skipInit) {
-      const globals = newE2EGlobalConfig(ctx, testConfig.globals, branch)
       this.initTests(testConfig, branch, runMode, ctx)
-      // Wait for emails to become available
-      ctx.log.debug(
-        `E2E.runTests(): Waiting ${globals.sleepTimeMs}ms for emails to be sent ...`,
-      )
-      ctx.env.utilities.sleep(globals.sleepTimeMs)
-      ctx.log.debug(`E2E.runTests(): Finished waiting.`)
+      const globals = newE2EGlobalConfig(ctx, branch, testConfig.globals)
+      this.initWait(globals, runMode, ctx)
     } else {
-      ctx.log.info(`E2E.runTests(): SKIPPED: Initializing test data ...`)
+      ctx.log.info(
+        `E2E.runTests(): [${testConfig.info.category}/${testConfig.info.name}] SKIPPED: Initializing test data ...`,
+      )
     }
 
     ctx.log.info(
-      `E2E.runTests(): Running test ${testConfig.info.category}/${testConfig.info.name} ...`,
+      `E2E.runTests(): [${testConfig.info.category}/${testConfig.info.name}] Running test ...`,
     )
     // Run tests
     let error: unknown
@@ -318,11 +368,16 @@ export class E2E {
     }
     const status = this._overallStatus(statusMap)
     const result: E2EResult = {
+      level: "suite",
+      name: `${testConfig.info.category}/${testConfig.info.name}`,
       error,
+      message: `${testConfig.info.category}/${testConfig.info.name}`,
       status,
       results,
     }
-    ctx.log.info(`E2E.runTests(): Finished.`)
+    ctx.log.info(
+      `E2E.runTests(): [${testConfig.info.category}/${testConfig.info.name}] Finished running test.`,
+    )
     return result
   }
 
@@ -332,10 +387,13 @@ export class E2E {
     runMode = RunMode.DANGEROUS,
     ctx: EnvContext = EnvProvider.defaultContext(runMode),
   ) {
+    ctx.log.info(`E2E.initAllTests(): Started.`)
     testConfigs.forEach((testConfig) => {
-      ctx.log.info()
       this.initTests(testConfig, branch, runMode, ctx)
     })
+    const globals = newE2EGlobalConfig(ctx, branch)
+    this.initWait(globals, runMode, ctx)
+    ctx.log.info(`E2E.initAllTests(): Finished.`)
   }
 
   public static runAllTests(
@@ -344,9 +402,23 @@ export class E2E {
     branch = "main",
     runMode = RunMode.DANGEROUS,
     ctx: EnvContext = EnvProvider.defaultContext(runMode),
-  ): E2EResult[] {
-    return testConfigs.map((testConfig) =>
+  ): E2EResult {
+    ctx.log.info(`E2E.runAllTests(): Started.`)
+    const results = testConfigs.map((testConfig) =>
       this.runTests(testConfig, skipInit, branch, runMode, ctx),
     )
+    const statusMap = this.statusMapFromResults(results)
+    const status = this._overallStatus(statusMap)
+    const result: E2EResult = {
+      level: "summary",
+      name: "all-tests",
+      message: "All Tests",
+      status,
+      results,
+    }
+    this.logResults(ctx, result, true)
+    ctx.log.info(`E2E.runAllTests(): JSON Result: ${JSON.stringify(result)}`)
+    ctx.log.info(`E2E.runAllTests(): Finished.`)
+    return result
   }
 }
