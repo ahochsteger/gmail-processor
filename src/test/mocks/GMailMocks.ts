@@ -1,5 +1,5 @@
-import crypto from "crypto"
 import { MockProxy, mock } from "jest-mock-extended"
+import { sha1Hex } from "../../lib/utils/Converter"
 import { RequiredDeep } from "../../lib/utils/UtilityTypes"
 import { Mocks } from "./MockFactory"
 
@@ -298,9 +298,7 @@ export class GMailMocks {
     const sampleContent = data.content ?? "Sample text content"
     const sampleData: RequiredAttachmentData = {
       contentType: data.contentType ?? "text/plain",
-      hash:
-        data.hash ??
-        crypto.createHash("sha1").update(sampleContent).digest("hex"),
+      hash: data.hash ?? sha1Hex(sampleContent),
       name: data.name ?? "attachment.txt",
       size: data.size ?? this.lengthInUtf8Bytes(sampleContent),
       isGoogleType: data.isGoogleType ?? false,

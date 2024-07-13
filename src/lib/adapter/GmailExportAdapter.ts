@@ -1,9 +1,8 @@
 import addressparser, { EmailAddress } from "addressparser"
-import "core-js/web/url"
-import crypto from "crypto"
 import { format } from "date-fns"
 import { EnvContext } from "../Context"
 import { SettingsConfig } from "../config/SettingsConfig"
+import { sha256Hex } from "../utils/Converter"
 import { BaseAdapter } from "./BaseAdapter"
 
 export type ExportOptionsType = {
@@ -54,9 +53,7 @@ export class GmailExportAdapter extends BaseAdapter {
     const address = email?.address
     if (!address) return null
     const avatarUrl =
-      "https://www.gravatar.com/avatar/" +
-      crypto.createHash("sha256").update(address).digest("hex") +
-      "?s=128&d=404"
+      "https://www.gravatar.com/avatar/" + sha256Hex(address) + "?s=128&d=404"
     this.ctx.log.debug(
       `GMailExportAdapter.getAvatar(): fetching from ${avatarUrl} ...`,
     )
