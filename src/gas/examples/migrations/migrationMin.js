@@ -15,4 +15,5 @@ function migrationMinConvert() {
 
   const migratedConfig = GmailProcessorLib.convertV1Config(oldConfig)
   console.log(JSON.stringify(migratedConfig, null, 2))
+  return migratedConfig
 }

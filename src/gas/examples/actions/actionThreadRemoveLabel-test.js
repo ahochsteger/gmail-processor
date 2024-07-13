@@ -108,8 +108,8 @@ function actionThreadRemoveLabelTestConfig() {
 }
 
 function actionThreadRemoveLabelTest() {
-  const testConfig = actionThreadRemoveLabelTestConfig
-  GmailProcessorLib.E2E.runTests(
+  const testConfig = actionThreadRemoveLabelTestConfig()
+  return GmailProcessorLib.E2E.runTests(
     testConfig,
     false,
     E2E_REPO_BRANCH,

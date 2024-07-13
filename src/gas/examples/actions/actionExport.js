@@ -10,7 +10,7 @@ function actionExportRun() {
       thread: {
         match: {
           query:
-            "-in:trash -in:drafts -in:spam after:${date.now:date::yyyy-MM-dd} subject:'[GmailProcessor-Test] actionExport'",
+            '-in:trash -in:drafts -in:spam after:${date.now:date::yyyy-MM-dd} is:unread subject:"[GmailProcessor-Test] actionExport"',
           maxMessageCount: -1,
           minMessageCount: 1,
         },
@@ -64,5 +64,5 @@ function actionExportRun() {
     ],
   }
 
-  GmailProcessorLib.run(config, "dry-run")
+  return GmailProcessorLib.run(config, "dry-run")
 }

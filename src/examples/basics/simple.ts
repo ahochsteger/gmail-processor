@@ -76,7 +76,7 @@ export const runConfig: Config = {
     // Place global thread, message or attachment configuration here
     thread: {
       match: {
-        query: `has:attachment -in:trash -in:drafts -in:spam after:\${date.now:date::yyyy-MM-dd} subject:'${E2EDefaults.EMAIL_SUBJECT_PREFIX}${info.name}'`,
+        query: `has:attachment -in:trash -in:drafts -in:spam after:\${date.now:date::yyyy-MM-dd} is:unread subject:"${E2EDefaults.EMAIL_SUBJECT_PREFIX}${info.name}"`,
       },
     },
   },

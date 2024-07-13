@@ -74,7 +74,7 @@ function simpleTestConfig() {
       // Place global thread, message or attachment configuration here
       thread: {
         match: {
-          query: `has:attachment -in:trash -in:drafts -in:spam after:\${date.now:date::yyyy-MM-dd} subject:'${GmailProcessorLib.E2EDefaults.EMAIL_SUBJECT_PREFIX}${info.name}'`,
+          query: `has:attachment -in:trash -in:drafts -in:spam after:\${date.now:date::yyyy-MM-dd} is:unread subject:"${GmailProcessorLib.E2EDefaults.EMAIL_SUBJECT_PREFIX}${info.name}"`,
         },
       },
     },
@@ -150,8 +150,8 @@ function simpleTestConfig() {
 }
 
 function simpleTest() {
-  const testConfig = simpleTestConfig
-  GmailProcessorLib.E2E.runTests(
+  const testConfig = simpleTestConfig()
+  return GmailProcessorLib.E2E.runTests(
     testConfig,
     false,
     E2E_REPO_BRANCH,

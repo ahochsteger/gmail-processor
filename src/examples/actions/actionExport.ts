@@ -45,7 +45,7 @@ export const runConfig: Config = {
   global: {
     thread: {
       match: {
-        query: `-in:trash -in:drafts -in:spam after:\${date.now:date::yyyy-MM-dd} subject:'${E2EDefaults.EMAIL_SUBJECT_PREFIX}${info.name}'`,
+        query: `-in:trash -in:drafts -in:spam after:\${date.now:date::yyyy-MM-dd} is:unread subject:"${E2EDefaults.EMAIL_SUBJECT_PREFIX}${info.name}"`,
         maxMessageCount: -1,
         minMessageCount: 1,
       },

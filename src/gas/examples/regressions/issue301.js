@@ -6,13 +6,13 @@ function issue301Run() {
       logSheetLocation:
         "/GmailProcessor-Tests/logsheet-${date.now:date::yyyy-MM}",
       markProcessedMethod: "mark-read",
-      timezone: "UTC",
+      timezone: "Etc/UTC",
     },
     global: {
       thread: {
         match: {
           query:
-            "has:attachment -in:trash -in:drafts -in:spam after:${date.now:date::yyyy-MM-dd}",
+            'has:attachment -in:trash -in:drafts -in:spam after:${date.now:date::yyyy-MM-dd} is:unread subject:"[GmailProcessor-Test] issue301"',
           maxMessageCount: -1,
           minMessageCount: 1,
         },
@@ -110,5 +110,5 @@ function issue301Run() {
     ],
   }
 
-  GmailProcessorLib.run(config, "dry-run")
+  return GmailProcessorLib.run(config, "dry-run")
 }

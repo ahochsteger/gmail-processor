@@ -9,7 +9,7 @@ function customActionsRun() {
       thread: {
         match: {
           query:
-            "has:attachment -in:trash -in:drafts -in:spam after:${date.now:date::yyyy-MM-dd} subject:'[GmailProcessor-Test] customActions'",
+            'has:attachment -in:trash -in:drafts -in:spam after:${date.now:date::yyyy-MM-dd} is:unread subject:"[GmailProcessor-Test] customActions"',
         },
       },
     },
@@ -42,6 +42,5 @@ function customActionsRun() {
         ctx.log.info(`Called with args '${JSON.stringify(args)}' ...`),
     },
   ]
-
-  GmailProcessorLib.run(config, "dry-run", customActions)
+  return GmailProcessorLib.run(config, "dry-run", customActions)
 }

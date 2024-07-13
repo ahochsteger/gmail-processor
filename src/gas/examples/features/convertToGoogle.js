@@ -10,7 +10,7 @@ function convertToGoogleRun() {
       thread: {
         match: {
           query:
-            "has:attachment -in:trash -in:drafts -in:spam after:${date.now:date::yyyy-MM-dd}  subject:'[GmailProcessor-Test] convertToGoogle'",
+            'has:attachment -in:trash -in:drafts -in:spam after:${date.now:date::yyyy-MM-dd} is:unread subject:"[GmailProcessor-Test] convertToGoogle"',
           maxMessageCount: -1,
           minMessageCount: 1,
         },
@@ -108,5 +108,5 @@ function convertToGoogleRun() {
     ],
   }
 
-  GmailProcessorLib.run(config, "dry-run")
+  return GmailProcessorLib.run(config, "dry-run")
 }

@@ -28,7 +28,7 @@ function actionAttachmentExtractTextTestConfig() {
     global: {
       thread: {
         match: {
-          query: `has:attachment -in:trash -in:drafts -in:spam from:\${user.email} to:\${user.email} after:\${date.now:date::yyyy-MM-dd} subject:'${GmailProcessorLib.E2EDefaults.EMAIL_SUBJECT_PREFIX}${info.name}'`,
+          query: `has:attachment -in:trash -in:drafts -in:spam from:\${user.email} to:\${user.email} after:\${date.now:date::yyyy-MM-dd} is:unread subject:"${GmailProcessorLib.E2EDefaults.EMAIL_SUBJECT_PREFIX}${info.name}"`,
         },
       },
     },
@@ -163,8 +163,8 @@ function actionAttachmentExtractTextTestConfig() {
 }
 
 function actionAttachmentExtractTextTest() {
-  const testConfig = actionAttachmentExtractTextTestConfig
-  GmailProcessorLib.E2E.runTests(
+  const testConfig = actionAttachmentExtractTextTestConfig()
+  return GmailProcessorLib.E2E.runTests(
     testConfig,
     false,
     E2E_REPO_BRANCH,

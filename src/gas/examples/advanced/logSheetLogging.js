@@ -29,7 +29,7 @@ function logSheetLoggingRun() {
       {
         match: {
           query:
-            "from:${user.email} subject:'[GmailProcessor-Test] logSheetLogging'",
+            '-in:trash -in:drafts -in:spam after:${date.now:date::yyyy-MM-dd} from:${user.email} is:unread subject:"[GmailProcessor-Test] logSheetLogging"',
         },
         actions: [
           {
@@ -121,5 +121,5 @@ function logSheetLoggingRun() {
     ],
   }
 
-  GmailProcessorLib.run(config, "dry-run")
+  return GmailProcessorLib.run(config, "dry-run")
 }

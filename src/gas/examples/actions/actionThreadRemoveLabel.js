@@ -49,5 +49,5 @@ function actionThreadRemoveLabelRun() {
     ],
   }
 
-  GmailProcessorLib.run(config, "dry-run")
+  return GmailProcessorLib.run(config, "dry-run")
 }

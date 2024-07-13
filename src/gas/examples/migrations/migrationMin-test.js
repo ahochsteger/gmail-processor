@@ -51,8 +51,8 @@ function migrationMinTestConfig() {
 }
 
 function migrationMinTest() {
-  const testConfig = migrationMinTestConfig
-  GmailProcessorLib.E2E.runTests(
+  const testConfig = migrationMinTestConfig()
+  return GmailProcessorLib.E2E.runTests(
     testConfig,
     false,
     E2E_REPO_BRANCH,

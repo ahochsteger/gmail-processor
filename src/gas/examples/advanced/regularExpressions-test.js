@@ -43,7 +43,7 @@ function regularExpressionsTestConfig() {
     global: {
       thread: {
         match: {
-          query: `has:attachment -in:trash -in:drafts -in:spam after:\${date.now:date::yyyy-MM-dd} subject:'${GmailProcessorLib.E2EDefaults.EMAIL_SUBJECT_PREFIX}${info.name}'`,
+          query: `has:attachment -in:trash -in:drafts -in:spam after:\${date.now:date::yyyy-MM-dd} is:unread subject:"${GmailProcessorLib.E2EDefaults.EMAIL_SUBJECT_PREFIX}${info.name}"`,
         },
       },
     },
@@ -121,8 +121,8 @@ function regularExpressionsTestConfig() {
 }
 
 function regularExpressionsTest() {
-  const testConfig = regularExpressionsTestConfig
-  GmailProcessorLib.E2E.runTests(
+  const testConfig = regularExpressionsTestConfig()
+  return GmailProcessorLib.E2E.runTests(
     testConfig,
     false,
     E2E_REPO_BRANCH,

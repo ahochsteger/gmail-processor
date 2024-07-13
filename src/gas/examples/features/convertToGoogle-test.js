@@ -35,7 +35,7 @@ function convertToGoogleTestConfig() {
     global: {
       thread: {
         match: {
-          query: `has:attachment -in:trash -in:drafts -in:spam after:\${date.now:date::yyyy-MM-dd}  subject:'${GmailProcessorLib.E2EDefaults.EMAIL_SUBJECT_PREFIX}${info.name}'`,
+          query: `has:attachment -in:trash -in:drafts -in:spam after:\${date.now:date::yyyy-MM-dd} is:unread subject:"${GmailProcessorLib.E2EDefaults.EMAIL_SUBJECT_PREFIX}${info.name}"`,
           maxMessageCount: -1,
           minMessageCount: 1,
         },
@@ -148,8 +148,8 @@ function convertToGoogleTestConfig() {
 }
 
 function convertToGoogleTest() {
-  const testConfig = convertToGoogleTestConfig
-  GmailProcessorLib.E2E.runTests(
+  const testConfig = convertToGoogleTestConfig()
+  return GmailProcessorLib.E2E.runTests(
     testConfig,
     false,
     E2E_REPO_BRANCH,

@@ -7,6 +7,8 @@ export CLASP_SRC_BASEDIR="${CLASP_SRC_BASEDIR:-src/gas}"
 export CLASP_BASEDIR="${CLASP_BASEDIR:-build/gas}"
 export CLASP_LOG_TIME_SECONDS="${CLASP_LOG_TIME_SECONDS:-600}"
 export CLASP_LOG_WAIT_SECONDS="${CLASP_LOG_WAIT_SECONDS:-5}"
+export CLASP_RUN_AUTH_FILE="${CLASP_RUN_AUTH_FILE:-.clasprc.json}"
+export CLASP_CLIENT_CREDS_FILE="${CLASP_CLIENT_CREDS_FILE:-.client_creds.json}"
 
 function buildClaspAuthFile() 
 {
@@ -34,7 +36,16 @@ function runClasp() {
   buildClaspAuthFile
   (
     cd "${CLASP_DIR}"
-    npx clasp --auth .clasprc.json --project .clasp.json "${@}"
+    npx clasp "${@}" --auth .clasprc.json --project .clasp.json
+  )
+}
+
+function runClaspWithRunAuth() {
+  setupClaspIDs
+  buildClaspFiles
+  (
+    cd "${CLASP_DIR}"
+    npx clasp "${@}" --auth "${CLASP_RUN_AUTH_FILE}" --project .clasp.json
   )
 }
 
@@ -169,6 +180,26 @@ function setupClaspIDs() {
   esac
 }
 
+function checkRunAuthFile() {
+  if [[ ! -f "${CLASP_RUN_AUTH_FILE}" ]]; then
+    echo "ERROR: Missing credentials file for running functions: ${CLASP_RUN_AUTH_FILE}"
+    exit 1
+  else
+    CLASP_RUN_AUTH_FILE=$(realpath "${CLASP_RUN_AUTH_FILE}")
+    export CLASP_RUN_AUTH_FILE
+  fi
+}
+
+function checkClaspCredsFile() {
+  if [[ ! -f "${CLASP_CLIENT_CREDS_FILE}" ]]; then
+    echo "ERROR: Missing credentials file for running functions: ${CLASP_CLIENT_CREDS_FILE}"
+    exit 1
+  else
+    CLASP_CLIENT_CREDS_FILE=$(realpath "${CLASP_CLIENT_CREDS_FILE}")
+    export CLASP_CLIENT_CREDS_FILE
+  fi
+}
+
 function checkGuardedAction() {
   local action="${1}"
   local guardedEnv="main"
@@ -186,6 +217,7 @@ cmd="${2:?}"
 shift 2
 export CLASP_DIR="${CLASP_BASEDIR}/${CLASP_PROFILE}"
 export CLASP_SRC_DIR="${CLASP_SRC_BASEDIR}/${CLASP_PROFILE}"
+mkdir -p "${CLASP_DIR}"
 
 case "${cmd}" in
   build)
@@ -201,8 +233,13 @@ case "${cmd}" in
   cleanup)
     cleanup
   ;;
+  login)
+    checkClaspCredsFile
+    runClaspWithRunAuth login --creds ${CLASP_CLIENT_CREDS_FILE} || true # NOTE: Always exists with a false error but it's still creating the file correctly.
+    cp -f "${CLASP_DIR}/.clasprc.json" "${CLASP_RUN_AUTH_FILE}"
+  ;;
   logs)
-    functionName="${1:?}"
+    functionName="${1:-}"
     logTimeSeconds="${2:-${CLASP_LOG_TIME_SECONDS}}"
     runClasp logs --json \
     | sed -re 's#^([A-Z]+)\s+([0-9TZ:\.-]+)\s+([^\{]+)\{#\{#g' \
@@ -214,13 +251,15 @@ case "${cmd}" in
   run)
     functionName="${1:?}"
     checkGuardedAction "${cmd}"
-    runClasp run "${functionName}"
+    checkRunAuthFile
+    runClaspWithRunAuth run "${functionName}"
   ;;
   run-with-logs)
     functionName="${1:?}"
     logTimeSeconds="${2:-${CLASP_LOG_TIME_SECONDS}}"
     checkGuardedAction "${cmd}"
-    runClasp run "${functionName}"
+    checkRunAuthFile
+    runClaspWithRunAuth run "${functionName}"
     sleep "${CLASP_LOG_WAIT_SECONDS}"
     runClasp logs "${functionName}" "${logTimeSeconds}"
   ;;

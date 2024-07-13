@@ -68,7 +68,7 @@ export const runConfig: Config = {
     // Place thread processing config here
     {
       match: {
-        query: `from:\${user.email} subject:'${E2EDefaults.EMAIL_SUBJECT_PREFIX}${info.name}'`,
+        query: `-in:trash -in:drafts -in:spam after:\${date.now:date::yyyy-MM-dd} from:\${user.email} is:unread subject:"${E2EDefaults.EMAIL_SUBJECT_PREFIX}${info.name}"`,
       },
       actions: [
         {

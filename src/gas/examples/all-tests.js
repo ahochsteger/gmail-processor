@@ -25,11 +25,17 @@ function initAllTests() {
   )
 }
 
-function runAllTests(skipInit=true) {
-  GmailProcessorLib.E2E.runAllTests(
+function runAllTests(skipInit = true) {
+  return GmailProcessorLib.E2E.runAllTests(
     getTestConfigs(),
     skipInit,
     E2E_REPO_BRANCH,
     GmailProcessorLib.RunMode.DANGEROUS,
   )
+}
+
+function initAndRunAllTests() {
+  initAllTests()
+  Utilities.sleep(5000)
+  return JSON.stringify(runAllTests())
 }

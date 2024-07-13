@@ -34,13 +34,12 @@ function issue301TestConfig() {
         "/GmailProcessor-Tests/logsheet-${date.now:date::yyyy-MM}",
       markProcessedMethod:
         GmailProcessorLib.MarkProcessedMethod.MARK_MESSAGE_READ,
-      timezone: "UTC",
+      timezone: "Etc/UTC",
     },
     global: {
       thread: {
         match: {
-          query:
-            "has:attachment -in:trash -in:drafts -in:spam after:${date.now:date::yyyy-MM-dd}",
+          query: `has:attachment -in:trash -in:drafts -in:spam after:\${date.now:date::yyyy-MM-dd} is:unread subject:"${GmailProcessorLib.E2EDefaults.EMAIL_SUBJECT_PREFIX}${info.name}"`,
           maxMessageCount: -1,
           minMessageCount: 1,
         },
@@ -153,8 +152,8 @@ function issue301TestConfig() {
 }
 
 function issue301Test() {
-  const testConfig = issue301TestConfig
-  GmailProcessorLib.E2E.runTests(
+  const testConfig = issue301TestConfig()
+  return GmailProcessorLib.E2E.runTests(
     testConfig,
     false,
     E2E_REPO_BRANCH,

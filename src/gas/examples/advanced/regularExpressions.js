@@ -9,7 +9,7 @@ function regularExpressionsRun() {
       thread: {
         match: {
           query:
-            "has:attachment -in:trash -in:drafts -in:spam after:${date.now:date::yyyy-MM-dd} subject:'[GmailProcessor-Test] regularExpressions'",
+            'has:attachment -in:trash -in:drafts -in:spam after:${date.now:date::yyyy-MM-dd} is:unread subject:"[GmailProcessor-Test] regularExpressions"',
         },
       },
     },
@@ -48,5 +48,5 @@ function regularExpressionsRun() {
     ],
   }
 
-  GmailProcessorLib.run(config, "dry-run")
+  return GmailProcessorLib.run(config, "dry-run")
 }

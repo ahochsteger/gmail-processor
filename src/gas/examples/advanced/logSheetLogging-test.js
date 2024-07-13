@@ -60,7 +60,7 @@ function logSheetLoggingTestConfig() {
       // Place thread processing config here
       {
         match: {
-          query: `from:\${user.email} subject:'${GmailProcessorLib.E2EDefaults.EMAIL_SUBJECT_PREFIX}${info.name}'`,
+          query: `-in:trash -in:drafts -in:spam after:\${date.now:date::yyyy-MM-dd} from:\${user.email} is:unread subject:"${GmailProcessorLib.E2EDefaults.EMAIL_SUBJECT_PREFIX}${info.name}"`,
         },
         actions: [
           {
@@ -195,8 +195,8 @@ function logSheetLoggingTestConfig() {
 }
 
 function logSheetLoggingTest() {
-  const testConfig = logSheetLoggingTestConfig
-  GmailProcessorLib.E2E.runTests(
+  const testConfig = logSheetLoggingTestConfig()
+  return GmailProcessorLib.E2E.runTests(
     testConfig,
     false,
     E2E_REPO_BRANCH,

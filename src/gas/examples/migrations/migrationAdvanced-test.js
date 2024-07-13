@@ -78,8 +78,8 @@ function migrationAdvancedTestConfig() {
 }
 
 function migrationAdvancedTest() {
-  const testConfig = migrationAdvancedTestConfig
-  GmailProcessorLib.E2E.runTests(
+  const testConfig = migrationAdvancedTestConfig()
+  return GmailProcessorLib.E2E.runTests(
     testConfig,
     false,
     E2E_REPO_BRANCH,

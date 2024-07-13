@@ -6,7 +6,7 @@ function actionAttachmentExtractTextRun() {
       thread: {
         match: {
           query:
-            "has:attachment -in:trash -in:drafts -in:spam from:${user.email} to:${user.email} after:${date.now:date::yyyy-MM-dd} subject:'[GmailProcessor-Test] actionAttachmentExtractText'",
+            'has:attachment -in:trash -in:drafts -in:spam from:${user.email} to:${user.email} after:${date.now:date::yyyy-MM-dd} is:unread subject:"[GmailProcessor-Test] actionAttachmentExtractText"',
         },
       },
     },
@@ -56,5 +56,5 @@ function actionAttachmentExtractTextRun() {
     ],
   }
 
-  GmailProcessorLib.run(config, "dry-run")
+  return GmailProcessorLib.run(config, "dry-run")
 }

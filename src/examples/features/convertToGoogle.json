@@ -7,7 +7,7 @@
   "global": {
     "thread": {
       "match": {
-        "query": "has:attachment -in:trash -in:drafts -in:spam after:${date.now:date::yyyy-MM-dd}  subject:'[GmailProcessor-Test] convertToGoogle'",
+        "query": "has:attachment -in:trash -in:drafts -in:spam after:${date.now:date::yyyy-MM-dd} is:unread subject:\"[GmailProcessor-Test] convertToGoogle\"",
         "maxMessageCount": -1,
         "minMessageCount": 1
       }
