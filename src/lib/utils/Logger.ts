@@ -26,7 +26,7 @@ export class Logger {
     ...optionalParams: unknown[]
   ) {
     if (!this.shouldLog(level)) return
-    if ([LogLevel.WARN, LogLevel.ERROR].includes(level)) {
+    if ([LogLevel.ERROR].includes(level)) {
       console.error(this.getMessage(message, level), ...optionalParams)
     } else {
       console.log(this.getMessage(message, level), ...optionalParams)

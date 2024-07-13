@@ -145,6 +145,9 @@ export class ActionRegistry {
         error: e,
       }
       context.log.error(`Action ${name} caused an error: ${e}`)
+      if (typeof e === "object" && e.stack !== undefined) {
+        context.log.error(`Stacktrace: ${e.stack}`)
+      }
     }
     context.log.info(`Action result: ${JSON.stringify(result)}`)
     return result

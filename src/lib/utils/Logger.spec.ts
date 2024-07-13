@@ -44,7 +44,7 @@ describe("log levels", () => {
   })
 
   it("should log a warning message", () => {
-    const spy = jest.spyOn(console, "error").mockImplementation()
+    const spy = jest.spyOn(console, "log").mockImplementation()
     spy.mockClear()
     logger.warn("Log message")
     expect(spy.mock.calls[0][0]).toMatch(/^[^ ]+ WARN Log message$/)
@@ -61,15 +61,22 @@ describe("log levels", () => {
     logger = new Logger(LogLevel.WARN)
     const spyLog = jest.spyOn(console, "log")
     const spyError = jest.spyOn(console, "error")
+
     spyLog.mockClear()
     logger.debug("Log message")
     expect(spyLog).not.toHaveBeenCalled()
+    expect(spyError).not.toHaveBeenCalled()
+
     spyLog.mockClear()
     logger.info("Log message")
     expect(spyLog).not.toHaveBeenCalled()
+    expect(spyError).not.toHaveBeenCalled()
+
     spyError.mockClear()
     logger.warn("Log message")
-    expect(spyError).toHaveBeenCalled()
+    expect(spyLog).toHaveBeenCalled()
+    expect(spyError).not.toHaveBeenCalled()
+
     spyError.mockClear()
     logger.error("Log message")
     expect(spyError).toHaveBeenCalled()
