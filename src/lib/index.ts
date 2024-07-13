@@ -28,12 +28,12 @@ export {
   LogLevel,
   MarkProcessedMethod,
   MessageFlag,
+  newE2EGlobalConfig,
   ProcessingResult,
   ProcessingStage,
   ProcessingStatus,
   RunMode,
   V1Config,
-  newE2EGlobalConfig,
 }
 
 /**
