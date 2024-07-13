@@ -8,7 +8,7 @@ describe("Google Apps Script Mocks", () => {
       Utilities.formatDate.mockReturnValue("2019-05-05 12:34:56")
       const s = Utilities.formatDate(
         new Date("2019-05-05T12:34:56Z"),
-        "UTC",
+        "Etc/UTC",
         "yyyy-MM-dd HH:MM:SS",
       )
       expect(s).toBe("2019-05-05 12:34:56")

@@ -81,7 +81,7 @@ export class EnvProvider {
         utilities: Utilities,
         runMode: runMode,
         session: Session,
-        timezone: Session?.getScriptTimeZone() || "UTC",
+        timezone: Session?.getScriptTimeZone() || "Etc/UTC",
         urlFetchApp: UrlFetchApp,
       },
       envMeta: {},

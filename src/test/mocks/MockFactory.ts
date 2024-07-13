@@ -153,7 +153,7 @@ class EnvMocks {
       .mockReturnValue(this.newPdfBlob)
       .mockName("newPdfBlob")
     this.session.getScriptTimeZone
-      .mockReturnValue("UTC")
+      .mockReturnValue("Etc/UTC")
       .mockName("getScriptTimeZone")
     this.session.getActiveUser
       .mockReturnValue(this.user)

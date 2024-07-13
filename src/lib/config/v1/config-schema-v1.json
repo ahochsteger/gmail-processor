@@ -127,7 +127,7 @@
             "type": "number"
         },
         "timezone": {
-            "default": "UTC",
+            "default": "Etc/UTC",
             "description": "Timezone for date/time operations",
             "title": "timezone",
             "type": "string"

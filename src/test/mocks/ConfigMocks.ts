@@ -28,7 +28,7 @@ export class ConfigMocks {
       sleepTimeAttachments: 1,
       sleepTimeMessages: 10,
       sleepTimeThreads: 100,
-      timezone: "UTC",
+      timezone: "Etc/UTC",
     }
   }
 
@@ -227,7 +227,7 @@ export class ConfigMocks {
       sleepTime: 100,
       maxRuntime: 280,
       newerThan: "1d",
-      timezone: "UTC",
+      timezone: "Etc/UTC",
       rules: [
         {
           filter: "to:my.name+scans@gmail.com",

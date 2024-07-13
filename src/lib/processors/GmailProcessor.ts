@@ -101,8 +101,7 @@ export class GmailProcessor extends BaseProcessor {
       config.settings.timezone &&
       config.settings.timezone != "default" &&
       ctx.env.session.getScriptTimeZone() &&
-      config.settings.timezone &&
-      ctx.env.session.getScriptTimeZone()
+      config.settings.timezone != ctx.env.session.getScriptTimeZone()
     ) {
       ctx.log.error(
         `Timezone of Gmail Processor config settings (${config.settings.timezone}) is inconsistent with Google Apps Script (${ctx.env.session.getScriptTimeZone()}). ` +

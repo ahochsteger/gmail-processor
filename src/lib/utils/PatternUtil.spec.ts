@@ -264,7 +264,7 @@ describe("Substitutions", () => {
     )
     expect(actual).toMatchObject({
       envRunMode: RunMode.DANGEROUS,
-      envTimeZone: "UTC",
+      envTimeZone: "Etc/UTC",
       dateNow: fakedSystemDateTimeString,
       timerStartTime: fakedSystemDateTimeString,
     })

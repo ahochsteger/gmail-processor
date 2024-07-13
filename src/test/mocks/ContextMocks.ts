@@ -43,7 +43,7 @@ export class ContextMocks {
         utilities: mocks.utilities,
         runMode,
         session: mocks.session,
-        timezone: mocks.session.getScriptTimeZone() || "UTC",
+        timezone: mocks.session.getScriptTimeZone() || "Etc/UTC",
         urlFetchApp: mocks.urlFetchApp,
       },
       envMeta: {},

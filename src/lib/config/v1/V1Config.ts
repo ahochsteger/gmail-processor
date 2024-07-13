@@ -16,7 +16,7 @@ export class V1Config {
   /** Only process message newer than (leave empty for no restriction; use d, m and y for day, month and year) */
   newerThan = "2m"
   /** Timezone for date/time operations */
-  timezone = "UTC"
+  timezone = "Etc/UTC"
   /** Processing rules */
   @Type(() => V1Rule)
   rules: V1Rule[] = []
@@ -27,7 +27,7 @@ export const defaultV1Config: V1Config = {
   sleepTime: 100,
   maxRuntime: 280,
   newerThan: "2m",
-  timezone: "UTC",
+  timezone: "Etc/UTC",
   rules: [],
 }
 
