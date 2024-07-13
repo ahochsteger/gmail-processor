@@ -1237,7 +1237,7 @@
                             "type": "string"
                         },
                         "name": {
-                            "pattern": "^custom..*$",
+                            "pattern": "^custom\\..*$",
                             "title": "name",
                             "type": "string"
                         },
@@ -2665,7 +2665,7 @@
                             "type": "string"
                         },
                         "name": {
-                            "pattern": "^custom..*$",
+                            "pattern": "^custom\\..*$",
                             "title": "name",
                             "type": "string"
                         },
@@ -3856,7 +3856,7 @@
                             "type": "string"
                         },
                         "name": {
-                            "pattern": "^custom..*$",
+                            "pattern": "^custom\\..*$",
                             "title": "name",
                             "type": "string"
                         },
