@@ -12,3 +12,5 @@ node_modules/
 !.vscode/settings.json
 debug.json
 docs/docs/community/CHANGELOG.md
+.clasprc.json
+.client_creds.json

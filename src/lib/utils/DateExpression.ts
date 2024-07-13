@@ -1,6 +1,7 @@
 import {
   addMilliseconds,
   endOfDay,
+  endOfDecade,
   endOfHour,
   endOfISOWeek,
   endOfISOWeekYear,
@@ -17,6 +18,7 @@ import {
   lastDayOfISOWeek,
   lastDayOfISOWeekYear,
   lastDayOfMonth,
+  lastDayOfQuarter,
   lastDayOfYear,
   nextFriday,
   nextMonday,
@@ -56,14 +58,28 @@ export type ExprInfoType = {
   type: "mod" | "new"
   fn: ModDateType | NewDateType
 }
+
+/*
+// Use this script to extract all supported date functions:
+(
+  cat node_modules/date-fns/*.d.ts \
+  | grep -E -A 2 '^export declare function [a-zA-Z0-9]+<DateType extends Date>' \
+  | grep -E -B 2 '^\): DateType;' \
+  | grep -E '^export declare function' \
+  | sed -re 's/export declare function ([^<]+)<.+/\1/g' \
+  | grep -E -v '^(toDate|constructNow)$' \
+  | sort \
+  | awk '{print "  "$1": { type: \"mod\", fn: "$1" },"}'
+  cat node_modules/date-fns/*.d.ts \
+  | grep -E '^export declare function .+\(\): Date;$' \
+  | sed -re 's/export declare function ([^<]+)\(\).+/\1/g' \
+  | sort \
+  | awk '{print "  "$1": { type: \"new\", fn: "$1" },"}'
+) | sort
+*/
 export const DATE_FNS_FUNCTIONS: Record<string, ExprInfoType> = {
-  endOfToday: { type: "new", fn: endOfToday },
-  endOfTomorrow: { type: "new", fn: endOfTomorrow },
-  endOfYesterday: { type: "new", fn: endOfYesterday },
-  startOfToday: { type: "new", fn: startOfToday },
-  startOfTomorrow: { type: "new", fn: startOfTomorrow },
-  startOfYesterday: { type: "new", fn: startOfYesterday },
   endOfDay: { type: "mod", fn: endOfDay },
+  endOfDecade: { type: "mod", fn: endOfDecade },
   endOfHour: { type: "mod", fn: endOfHour },
   endOfISOWeek: { type: "mod", fn: endOfISOWeek },
   endOfISOWeekYear: { type: "mod", fn: endOfISOWeekYear },
@@ -71,11 +87,15 @@ export const DATE_FNS_FUNCTIONS: Record<string, ExprInfoType> = {
   endOfMonth: { type: "mod", fn: endOfMonth },
   endOfQuarter: { type: "mod", fn: endOfQuarter },
   endOfSecond: { type: "mod", fn: endOfSecond },
+  endOfToday: { type: "new", fn: endOfToday },
+  endOfTomorrow: { type: "new", fn: endOfTomorrow },
   endOfYear: { type: "mod", fn: endOfYear },
+  endOfYesterday: { type: "new", fn: endOfYesterday },
   lastDayOfDecade: { type: "mod", fn: lastDayOfDecade },
   lastDayOfISOWeek: { type: "mod", fn: lastDayOfISOWeek },
   lastDayOfISOWeekYear: { type: "mod", fn: lastDayOfISOWeekYear },
   lastDayOfMonth: { type: "mod", fn: lastDayOfMonth },
+  lastDayOfQuarter: { type: "mod", fn: lastDayOfQuarter },
   lastDayOfYear: { type: "mod", fn: lastDayOfYear },
   nextFriday: { type: "mod", fn: nextFriday },
   nextMonday: { type: "mod", fn: nextMonday },
@@ -100,7 +120,10 @@ export const DATE_FNS_FUNCTIONS: Record<string, ExprInfoType> = {
   startOfMonth: { type: "mod", fn: startOfMonth },
   startOfQuarter: { type: "mod", fn: startOfQuarter },
   startOfSecond: { type: "mod", fn: startOfSecond },
+  startOfToday: { type: "new", fn: startOfToday },
+  startOfTomorrow: { type: "new", fn: startOfTomorrow },
   startOfYear: { type: "mod", fn: startOfYear },
+  startOfYesterday: { type: "new", fn: startOfYesterday },
 }
 
 export class DateExpression {
@@ -122,8 +145,7 @@ export class DateExpression {
     const expression = args[0] ?? ""
     formatStr = args[1] ?? defaultDateFormat
     dateTime = DateExpression.parseExpression(value, expression)
-    const stringValue = format(dateTime, formatStr)
-    return stringValue
+    return format(dateTime, formatStr)
   }
 
   public static normalizeExpression(
@@ -165,7 +187,6 @@ export class DateExpression {
       }
       expr = expr.slice(baseExpr.length)
     }
-    value = addMilliseconds(value, parse(expr) ?? 0)
-    return value
+    return addMilliseconds(value, parse(expr) ?? 0)
   }
 }

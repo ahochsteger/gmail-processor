@@ -139,11 +139,11 @@
     "ajv": "8.16.0",
     "class-transformer": "^0.5.1",
     "crypto-js": "^4.2.0",
-    "date-fns": "^2.30.0",
+    "date-fns": "^3.6.0",
     "parse-duration": "^1.1.0",
     "reflect-metadata": "^0.2.1"
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   }
 }
