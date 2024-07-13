@@ -1,5 +1,12 @@
 # Changelog
 
+# [2.12.0](https://github.com/ahochsteger/gmail-processor/compare/2.11.1...2.12.0) (2024-07-13)
+
+
+### Features
+
+* many deps updates (date-fns v3 + new fns, node v22) ([fdab503](https://github.com/ahochsteger/gmail-processor/commit/fdab503641a6dd76c0b820746e488821b6113324))
+
 ## [2.11.1](https://github.com/ahochsteger/gmail-processor/compare/2.11.0...2.11.1) (2024-05-29)
 
 
