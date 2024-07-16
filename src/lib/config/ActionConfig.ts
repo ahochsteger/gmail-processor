@@ -80,6 +80,24 @@ export type StoreActionBaseArgs = {
   toMimeType?: string
 }
 
+export type StoreAndDecryptActionBaseArgs = StoreActionBaseArgs & {
+  /**
+   * The password to be used for password-protected PDFs.
+   */
+  password: string
+  /**
+   * The location (path + filename) of the decrypted Google Drive file.
+   * For shared folders or Team Drives prepend the location with the folder ID like `{id:<folderId>}/...`.
+   * Supports placeholder substitution.
+   */
+  decryptedPdfLocation: string
+  /**
+   * The description to be attached to the decrypted Google Drive file.
+   * Supports placeholder substitution.
+   */
+  decryptedPdfDescription?: string
+}
+
 export type AttachmentExtractTextArgs = {
   /**
    * Hints at the language to use for OCR. Valid values are BCP 47 codes.

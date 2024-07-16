@@ -145,6 +145,7 @@
   },
   "private": true,
   "dependencies": {
+    "@cantoo/pdf-lib": "2.2.4",
     "addressparser": "1.0.1",
     "ajv": "8.17.1",
     "antlr4ng": "3.0.15",
