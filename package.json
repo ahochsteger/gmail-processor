@@ -129,7 +129,7 @@
     "sonarqube-scanner": "4.2.0",
     "ts-jest": "29.2.4",
     "ts-prune": "0.10.3",
-    "type-fest": "4.23.0",
+    "type-fest": "4.24.0",
     "typedoc": "0.26.5",
     "typescript": "5.5.4",
     "typescript-json-schema": "0.64.0"
