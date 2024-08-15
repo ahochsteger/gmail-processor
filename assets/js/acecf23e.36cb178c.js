@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkgmail_processor_docs=self.webpackChunkgmail_processor_docs||[]).push([[1903],{1912:s=>{s.exports=JSON.parse('{"blogBasePath":"/gmail-processor/blog","blogTitle":"Blog","authorsListPath":"/gmail-processor/blog/authors"}')}}]);
