@@ -132,7 +132,7 @@ export class AttachmentActions implements ActionProvider<AttachmentContext> {
         description: PatternUtil.substitute(context, args.description ?? ""),
       },
     )
-    getDecryptedPdf(context.attachment.object, args.password).then((decryptedFile) => {
+    getDecryptedPdf(context.attachment.object, args.password, context).then((decryptedFile) => {
       context.proc.gdriveAdapter.storeAttachment(
         decryptedFile,
         {
