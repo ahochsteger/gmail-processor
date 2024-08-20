@@ -96,6 +96,10 @@ export type StoreAndDecryptActionBaseArgs = StoreActionBaseArgs & {
    * Supports placeholder substitution.
    */
   decryptedPdfDescription?: string
+  /**
+   * Whether to save the original file after decryption.
+   */
+  saveOriginal?: boolean
 }
 
 export type AttachmentExtractTextArgs = {
