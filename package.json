@@ -89,7 +89,7 @@
   ],
   "license": "Apache-2.0",
   "devDependencies": {
-    "@babel/plugin-transform-class-properties": "7.24.7",
+    "@babel/plugin-transform-class-properties": "7.25.4",
     "@casualbot/jest-sonar-reporter": "2.3.1",
     "@google/clasp": "2.4.2",
     "@qiwi/semantic-release-gh-pages-plugin": "5.2.12",
