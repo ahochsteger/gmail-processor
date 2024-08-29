@@ -35,7 +35,7 @@
     "@docusaurus/tsconfig": "3.5.2",
     "@docusaurus/types": "3.5.2",
     "@mdx-js/loader": "3.0.1",
-    "eslint-import-resolver-typescript": "3.6.1",
+    "eslint-import-resolver-typescript": "3.6.3",
     "eslint-plugin-import": "2.29.1",
     "typescript": "5.5.4"
   },
