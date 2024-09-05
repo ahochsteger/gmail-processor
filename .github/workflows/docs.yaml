@@ -57,6 +57,6 @@ jobs:
         run: npm run ci:docs
       - name: Deploy Pages
         id: deploy-pages
-        uses: JamesIves/github-pages-deploy-action@94f3c658273cf92fb48ef99e5fbc02bd2dc642b2 # v4
+        uses: JamesIves/github-pages-deploy-action@920cbb300dcd3f0568dbc42700c61e2fd9e6139c # v4
         with:
           folder: docs/build
