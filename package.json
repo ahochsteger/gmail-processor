@@ -106,7 +106,7 @@
     "@types/crypto-js": "4.2.2",
     "@types/eslint__js": "8.42.3",
     "@types/google-apps-script": "1.0.83",
-    "@types/jest": "29.5.12",
+    "@types/jest": "29.5.13",
     "@types/node": "22.5.4",
     "@types/sha1": "1.1.5",
     "@typescript-eslint/eslint-plugin": "8.5.0",
