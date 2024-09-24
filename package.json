@@ -126,7 +126,7 @@
     "madge": "8.0.0",
     "prettier": "3.3.3",
     "prettier-plugin-organize-imports": "4.0.0",
-    "rollup": "4.22.0",
+    "rollup": "4.22.4",
     "rollup-plugin-gas": "1.0.0",
     "semantic-release": "24.1.1",
     "sonarqube-scanner": "4.2.3",
