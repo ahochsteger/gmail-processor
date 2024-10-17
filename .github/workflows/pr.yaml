@@ -53,7 +53,7 @@ jobs:
       - id: coveralls
         if: ${{ !github.event.inputs.skip_coveralls }}
         name: Coveralls
-        uses: coverallsapp/github-action@3dfc5567390f6fa9267c0ee9c251e4c8c3f18949 # v2
+        uses: coverallsapp/github-action@4cdef0b2dbe0c9aa26bed48edb868db738625e79 # v2
       - id: sonarcloud
         if: ${{ env.SONAR_TOKEN && !github.event.inputs.skip_sonarcloud }}
         name: SonarCloud Scan
