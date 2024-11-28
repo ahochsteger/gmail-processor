@@ -32,14 +32,14 @@ function customActionsTestConfig() {
     global: {
       thread: {
         match: {
-          query: `has:attachment -in:trash -in:drafts -in:spam after:\${date.now:date::yyyy-MM-dd} is:unread subject:"${GmailProcessorLib.E2EDefaults.EMAIL_SUBJECT_PREFIX}${info.name}"`,
+          query: `has:attachment -in:trash -in:drafts -in:spam after:{{date.now|formatDate('yyyy-MM-dd')}} is:unread subject:"${GmailProcessorLib.E2EDefaults.EMAIL_SUBJECT_PREFIX}${info.name}"`,
         },
       },
     },
     threads: [
       {
         match: {
-          query: "from:${user.email}",
+          query: "from:{{user.email}}",
         },
         messages: [
           {

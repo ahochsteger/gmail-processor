@@ -94,7 +94,7 @@ export type AttachmentExtractTextArgs = {
   docsFileLocation?: string
   /**
    * A regular expression that defines which values should be extracted.
-   * It is recommended to use the named group syntax `(?<name>...)` to reference the extracted values using names like `${attachment.extracted.name}`.
+   * It is recommended to use the named group syntax `(?<name>...)` to reference the extracted values using names like `{{attachment.extracted.name}}`.
    */
   extract?: string
 }

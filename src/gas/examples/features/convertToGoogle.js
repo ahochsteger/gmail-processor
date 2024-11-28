@@ -3,14 +3,14 @@ function convertToGoogleRun() {
     description: "Convert MS Office attachments into Google formats.",
     settings: {
       logSheetLocation:
-        "/GmailProcessor-Tests/logsheet-${date.now:date::yyyy-MM}",
+        "/GmailProcessor-Tests/logsheet-{{date.now|formatDate('yyyy-MM')}}",
       markProcessedMethod: "mark-read",
     },
     global: {
       thread: {
         match: {
           query:
-            'has:attachment -in:trash -in:drafts -in:spam after:${date.now:date::yyyy-MM-dd} is:unread subject:"[GmailProcessor-Test] convertToGoogle"',
+            "has:attachment -in:trash -in:drafts -in:spam after:{{date.now|formatDate('yyyy-MM-dd')}} is:unread subject:\"[GmailProcessor-Test] convertToGoogle\"",
           maxMessageCount: -1,
           minMessageCount: 1,
         },
@@ -20,7 +20,7 @@ function convertToGoogleRun() {
       {
         match: {
           query:
-            "from:${user.email} to:${user.email} subject:'Test with office attachments'",
+            "from:{{user.email}} to:{{user.email}} subject:'Test with office attachments'",
         },
         attachments: [
           {
@@ -34,7 +34,7 @@ function convertToGoogleRun() {
                 name: "attachment.store",
                 args: {
                   conflictStrategy: "replace",
-                  location: "/GmailProcessor-Tests/e2e/${attachment.name}",
+                  location: "/GmailProcessor-Tests/e2e/{{attachment.name}}",
                 },
               },
               {
@@ -43,7 +43,7 @@ function convertToGoogleRun() {
                 args: {
                   conflictStrategy: "replace",
                   location:
-                    "/GmailProcessor-Tests/e2e/${attachment.name.match.basename}",
+                    "/GmailProcessor-Tests/e2e/{{attachment.name.match.basename}}",
                   toMimeType: "application/vnd.google-apps.document",
                 },
               },
@@ -60,7 +60,7 @@ function convertToGoogleRun() {
                 name: "attachment.store",
                 args: {
                   conflictStrategy: "replace",
-                  location: "/GmailProcessor-Tests/e2e/${attachment.name}",
+                  location: "/GmailProcessor-Tests/e2e/{{attachment.name}}",
                 },
               },
               {
@@ -70,7 +70,7 @@ function convertToGoogleRun() {
                 args: {
                   conflictStrategy: "replace",
                   location:
-                    "/GmailProcessor-Tests/e2e/${attachment.name.match.basename}",
+                    "/GmailProcessor-Tests/e2e/{{attachment.name.match.basename}}",
                   toMimeType: "application/vnd.google-apps.presentation",
                 },
               },
@@ -87,7 +87,7 @@ function convertToGoogleRun() {
                 name: "attachment.store",
                 args: {
                   conflictStrategy: "replace",
-                  location: "/GmailProcessor-Tests/e2e/${attachment.name}",
+                  location: "/GmailProcessor-Tests/e2e/{{attachment.name}}",
                 },
               },
               {
@@ -97,7 +97,7 @@ function convertToGoogleRun() {
                 args: {
                   conflictStrategy: "replace",
                   location:
-                    "/GmailProcessor-Tests/e2e/${attachment.name.match.basename}",
+                    "/GmailProcessor-Tests/e2e/{{attachment.name.match.basename}}",
                   toMimeType: "application/vnd.google-apps.spreadsheet",
                 },
               },

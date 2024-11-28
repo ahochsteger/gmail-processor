@@ -130,7 +130,7 @@ export class SettingsConfig {
   defaultArrayJoinSeparator? = ","
   /**
    * Location of the spreadsheet log file. Enables logging to a spreadsheet if not empty.
-   * Example: `GmailProcessor/logsheet-${date.now:date::yyyy-MM}`
+   * Example: `GmailProcessor/logsheet-{{date.now|formatDate('yyyy-MM')}}`
    */
   @Expose()
   logSheetLocation? = ""
@@ -165,7 +165,7 @@ export class SettingsConfig {
     {
       name: "log.timestamp",
       title: "Timestamp",
-      value: "${date.now:date::yyyy-MM-dd HH:mm:ss.SSS}",
+      value: "{{date.now|formatDate('yyyy-MM-dd HH:mm:ss.SSS')}}",
     },
     {
       name: "log.level",
@@ -183,44 +183,44 @@ export class SettingsConfig {
       name: "object.id",
       title: "ID",
       ctxValues: {
-        attachment: "${attachment.hash}",
-        message: "${message.id}",
-        thread: "${thread.id}",
+        attachment: "{{attachment.hash}}",
+        message: "{{message.id}}",
+        thread: "{{thread.id}}",
       },
     },
     {
       name: "object.url",
       title: "GMail URL",
       ctxValues: {
-        attachment: "${message.url}",
-        message: "${message.url}",
-        thread: "${thread.url}",
+        attachment: "{{message.url}}",
+        message: "{{message.url}}",
+        thread: "{{thread.url}}",
       },
     },
     {
       name: "object.date",
       title: "Message Date",
       ctxValues: {
-        attachment: "${message.date}",
-        message: "${message.date}",
-        thread: "${thread.lastMessageDate}",
+        attachment: "{{message.date}}",
+        message: "{{message.date}}",
+        thread: "{{thread.lastMessageDate}}",
       },
     },
     {
       name: "object.subject",
       title: "Subject",
       ctxValues: {
-        attachment: "${message.subject}",
-        message: "${message.subject}",
-        thread: "${thread.firstMessageSubject}",
+        attachment: "{{message.subject}}",
+        message: "{{message.subject}}",
+        thread: "{{thread.firstMessageSubject}}",
       },
     },
     {
       name: "object.from",
       title: "From",
       ctxValues: {
-        attachment: "${message.from}",
-        message: "${message.from}",
+        attachment: "{{message.from}}",
+        message: "{{message.from}}",
       },
     },
     {
@@ -239,21 +239,21 @@ export class SettingsConfig {
       name: "stored.location",
       title: "Stored Location",
       ctxValues: {
-        attachment: "${attachment.stored.location}",
+        attachment: "{{attachment.stored.location}}",
       },
     },
     {
       name: "stored.url",
       title: "Stored URL",
       ctxValues: {
-        attachment: "${attachment.stored.url}",
+        attachment: "{{attachment.stored.url}}",
       },
     },
     {
       name: "stored.downloadUrl",
       title: "Download URL",
       ctxValues: {
-        attachment: "${attachment.stored.downloadUrl}",
+        attachment: "{{attachment.stored.downloadUrl}}",
       },
     },
   ]

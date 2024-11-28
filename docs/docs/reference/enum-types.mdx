@@ -127,29 +127,6 @@ Represents the direction a list should be ordered.
 | `ASC` | `asc` | Order ascending. |
 | `DESC` | `desc` | Order descending. |
 
-## PlaceholderModifierType
-
-The modifiers for placeholder expressions.
-
-| Key | Value | Description |
-|-----|-------|-------------|
-| `DATE` | `date` | The `date` placeholder modifier converts the value of the given placeholder to a `Date` and allows date/time calculations on it.<br /><br />Syntax: `${<placeholder>:date:[[<date-expression>][:<format>]]}`<br />* `<date-expression> = [<date-fns-function>][<+/-><parse-duration>]`: If no expression is given, the date of the placeholder is used unmodified.<br />* `<date-fns-function>`: a supported [`date-fns` function](https://date-fns.org/docs/format) as defined by the constant [`DATE_FNS_FUNCTIONS` in DateUtils.ts](https://github.com/ahochsteger/gmail-processor/blob/main/src/lib/utils/DateUtils.ts)<br />* `<parse-duration>`: a relative duration in the form of a [parse-duration format string](https://github.com/jkroso/parse-duration#api)<br />* `<format>`: Format the resulting date/time using a [date-fns format string](https://date-fns.org/docs/format). If no format is given the setting `defaultTimestampFormat` is used.<br /><br />Examples:<br />* `${message.date:date:lastDayOfMonth-1d:yyyy-MM-DD}`: evaluates to the 2nd last day of the month in which the message has been sent.<br />* `${message.body.match.invoiceDate:date:startOfMonth+4d+1month:yyyy-MM-DD}`: evaluates to the 5th day of the month following the invoice date (extracted using a regex from the message body) |
-| `FORMAT` | `format` | Use `${<placeholder>:format:<format>}` to format the date/time using a [date-fns format string](https://date-fns.org/docs/format).<br />**DEPRECATED**: Use `${<placeholder>:date::<format>}` instead. Note the double colon if no date modification expression is required. |
-| `JOIN` | `join` | Use `${<placeholder>:join[:<separator>]}` to join the values of an array into a string (default: `,`). |
-| `NONE` | `` | No modifier |
-| `OFFSET_FORMAT` | `offset-format` | Use `${<placeholder>:offset-format:<offset>[:<format>]}` to calculate the date/time offset using a [parse-duration format string](https://github.com/jkroso/parse-duration#parsestr-formatms) and then format the resulting date/time using a [date-fns format strings](https://date-fns.org/docs/format).<br />**DEPRECATED**: Use `${<placeholder>:date:<offset>[:<format>]}` instead. |
-| `UNSUPPORTED` | `unsupported` | Unsupported placeholder modifier type given. |
-
-## PlaceholderType
-
-The type of a placeholder.
-
-| Key | Value | Description |
-|-----|-------|-------------|
-| `ATTACHMENT` | `attachment` | An attachment placeholder type. |
-| `MESSAGE` | `message` | A message placeholder type. |
-| `THREAD` | `thread` | A thread placeholder type. |
-
 ## ProcessingStage
 
 The stage of action processing

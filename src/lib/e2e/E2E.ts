@@ -39,6 +39,12 @@ type E2EAssertFn = (
   testConfig: E2ETestConfig,
   procResult: ProcessingResult,
   ctx: EnvContext,
+  expect: (
+    ctx: EnvContext,
+    actual: unknown,
+    expected: unknown,
+    message?: string,
+  ) => boolean,
 ) => boolean
 
 export type E2EAssertion = {
@@ -105,6 +111,23 @@ export function newE2EGlobalConfig(
   }
 }
 export class E2E {
+  public static expect(
+    ctx: EnvContext,
+    actual: unknown,
+    expected: unknown,
+    message = "Actual value does not match expected value",
+  ): boolean {
+    const expectedValue = JSON.stringify(expected)
+    const actualValue = JSON.stringify(actual)
+    let result = true
+    if (actualValue !== expectedValue) {
+      ctx.log.error(
+        `${message}\nExpected: ${expectedValue}\nActual: ${actualValue}`,
+      )
+      result = false
+    }
+    return result
+  }
   public static assert(
     testConfig: E2ETestConfig,
     procResult: ProcessingResult,
@@ -119,7 +142,7 @@ export class E2E {
       try {
         const assertResult = assertion.skip
           ? E2EStatus.SKIPPED
-          : assertion.assertFn(testConfig, procResult, ctx)
+          : assertion.assertFn(testConfig, procResult, ctx, this.expect)
         status = assertResult ? E2EStatus.SUCCESS : E2EStatus.FAILED
       } catch (e) {
         status = E2EStatus.ERROR
@@ -200,9 +223,9 @@ export class E2E {
         break
     }
     if (showNested && result.results) {
-      result.results.forEach((nestedResult) =>
-        this.logResults(ctx, nestedResult, showNested, nestingLevel + 1),
-      )
+      result.results.forEach((nestedResult) => {
+        this.logResults(ctx, nestedResult, showNested, nestingLevel + 1)
+      })
     }
   }
 
@@ -340,7 +363,7 @@ export class E2E {
         ctx.log.info(`E2E.runTests(): Executing GmailProcessor.runWithJson ...`)
         processingResult = GmailProcessor.runWithJson(
           testConfig.runConfig,
-          (testConfig.example as Example)?.customActions ?? [],
+          (testConfig.example as Example).customActions ?? [],
           ctx,
         )
       } else {

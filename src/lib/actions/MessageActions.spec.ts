@@ -103,7 +103,7 @@ it("should store a document from a static URL", () => {
 it("should store a document from an extracted URL", () => {
   mocks = MockFactory.newMocks(ConfigMocks.newComplexConfigJson())
   const result = MessageActions.storeFromURL(mocks.messageContext, {
-    url: "${message.body.match.url}",
+    url: "{{message.body.match.url}}",
     location: `/${NEW_FILE_NAME}`,
     conflictStrategy: ConflictStrategy.KEEP,
   })
@@ -113,7 +113,7 @@ it("should store a document from an extracted URL", () => {
 
 it("should fail on invalid URLs", () => {
   const result = MessageActions.storeFromURL(mocks.messageContext, {
-    url: "${message.body.match.non-matching-url}",
+    url: "{{message.body.match.nonMatchingUrl}}",
     location: `/${NEW_FILE_NAME}`,
     conflictStrategy: ConflictStrategy.KEEP,
   })

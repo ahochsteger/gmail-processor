@@ -309,6 +309,10 @@ describe("runTests", () => {
   beforeAll(() => {
     globals = newE2EGlobalConfig(ctx)
     mockTestConfig = {
+      example: {
+        config: runConfig,
+        info,
+      },
       info,
       globals,
       initConfig,
@@ -390,7 +394,7 @@ describe("runTests", () => {
     )
 
     expect(result.status).toBe(E2EStatus.ERROR)
-    expect((result.error as Error)?.message).toContain("A forced exeption")
+    expect((result.error as Error).message).toContain("A forced exeption")
   })
 })
 

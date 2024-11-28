@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/ban-types */
+/* eslint-disable @typescript-eslint/no-unsafe-function-type */
 type NotNill<T> = T extends null | undefined ? never : T
 type Primitive = undefined | null | boolean | string | number | Function
 
