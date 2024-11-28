@@ -11,7 +11,11 @@ import { ConflictStrategy } from "./adapter/GDriveAdapter"
 import { ProcessingStage } from "./config/ActionConfig"
 import { Config } from "./config/Config"
 import { MessageFlag } from "./config/MessageFlag"
-import { LogLevel, MarkProcessedMethod } from "./config/SettingsConfig"
+import {
+  LogLevel,
+  LogRedactionMode,
+  MarkProcessedMethod,
+} from "./config/SettingsConfig"
 import { V1Config } from "./config/v1/V1Config"
 import { V1ToV2Converter } from "./config/v1/V1ToV2Converter"
 import { E2E, newE2EGlobalConfig } from "./e2e/E2E"
@@ -26,6 +30,7 @@ export {
   E2EDefaults,
   EnvProvider,
   LogLevel,
+  LogRedactionMode,
   MarkProcessedMethod,
   MessageFlag,
   newE2EGlobalConfig,
@@ -70,6 +75,7 @@ export function convertV1Config(v1config: V1Config): Config {
 ;(globalThis as any).E2EDefaults = E2EDefaults
 ;(globalThis as any).EnvProvider = EnvProvider
 ;(globalThis as any).LogLevel = LogLevel
+;(globalThis as any).LogRedactionMode = LogRedactionMode
 ;(globalThis as any).MarkProcessedMethod = MarkProcessedMethod
 ;(globalThis as any).MessageFlag = MessageFlag
 ;(globalThis as any).ProcessingResult = ProcessingResult

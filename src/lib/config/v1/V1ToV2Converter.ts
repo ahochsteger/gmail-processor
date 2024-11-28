@@ -50,26 +50,29 @@ export class V1ToV2Converter {
       // Support original date format
       s = s.replace(
         legacyDateFormatRegex,
-        `$2\${${dateKey}:oldDateFormat:$3}$5`,
+        `$2{{${dateKey}:oldDateFormat:$3}}$5`,
       )
       const regexp = /:oldDateFormat:([^}]+)}/g
       const matches = s.matchAll(regexp)
       for (const match of matches) {
         if (match.length > 1) {
           const convertedFormat = this.convertDateFormat(match[1])
-          s = s.replace(/:oldDateFormat:[^}]+}/g, `:date::${convertedFormat}}`)
+          s = s.replace(
+            /:oldDateFormat:[^}]+}/g,
+            `|formatDate('${convertedFormat}')}`,
+          )
         }
       }
     } else {
       s = s.replace(/'/g, "") // Eliminate all single quotes
     }
     s = s
-      .replace(/%s/g, "${message.subject}") // Original subject syntax
-      .replace(/%o/g, "${attachment.name}") // Alternative syntax (from PR #61)
-      .replace(/%filename/g, "${attachment.name}") // Alternative syntax from issue #50
-      .replace(/#SUBJECT#/g, "${message.subject}") // Alternative syntax (from PR #22)
-      .replace(/#FILE#/g, "${attachment.name}") // Alternative syntax (from PR #22)
-      .replace(/%d/g, "${threadConfig.index}") // Original subject syntax
+      .replace(/%s/g, "{{message.subject}}") // Original subject syntax
+      .replace(/%o/g, "{{attachment.name}}") // Alternative syntax (from PR #61)
+      .replace(/%filename/g, "{{attachment.name}}") // Alternative syntax from issue #50
+      .replace(/#SUBJECT#/g, "{{message.subject}}") // Alternative syntax (from PR #22)
+      .replace(/#FILE#/g, "{{attachment.name}}") // Alternative syntax (from PR #22)
+      .replace(/%d/g, "{{threadConfig.index}}") // Original subject syntax
 
     return s
   }
@@ -80,7 +83,7 @@ export class V1ToV2Converter {
   ): string {
     let filename
     if (rule.filenameFromRegexp) {
-      filename = "${attachment.name.match.1}"
+      filename = "{{attachment.name.match.1}}"
     } else if (rule.filenameTo) {
       filename = this.sanitizeLocation(
         this.convertFromV1Pattern(rule.filenameTo, "message.date"),
@@ -124,7 +127,7 @@ export class V1ToV2Converter {
       messageConfig.actions.push({
         name: "message.storePDF",
         args: {
-          location: this.getLocationFromRule(rule, "${message.subject}.pdf"),
+          location: this.getLocationFromRule(rule, "{{message.subject}}.pdf"),
           conflictStrategy: ConflictStrategy.KEEP,
           skipHeader: rule.skipPDFHeader === true,
         },
@@ -145,8 +148,8 @@ export class V1ToV2Converter {
         args: {
           conflictStrategy: ConflictStrategy.KEEP,
           description:
-            "Mail title: ${message.subject}\nMail date: ${message.date}\nMail link: https://mail.google.com/mail/u/0/#inbox/${message.id}",
-          location: this.getLocationFromRule(rule, "${attachment.name}"),
+            "Mail title: {{message.subject}}\nMail date: {{message.date}}\nMail link: https://mail.google.com/mail/u/0/#inbox/{{message.id}}",
+          location: this.getLocationFromRule(rule, "{{attachment.name}}"),
         },
       })
       threadConfig.attachments.push(attachmentConfig)
@@ -157,7 +160,7 @@ export class V1ToV2Converter {
         args: {
           location: this.getLocationFromRule(
             rule,
-            "${thread.firstMessageSubject}.pdf",
+            "{{thread.firstMessageSubject}}.pdf",
           ),
           conflictStrategy: ConflictStrategy.KEEP,
         },

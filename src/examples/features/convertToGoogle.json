@@ -1,13 +1,13 @@
 {
   "description": "Convert MS Office attachments into Google formats.",
   "settings": {
-    "logSheetLocation": "/GmailProcessor-Tests/logsheet-${date.now:date::yyyy-MM}",
+    "logSheetLocation": "/GmailProcessor-Tests/logsheet-{{date.now|formatDate('yyyy-MM')}}",
     "markProcessedMethod": "mark-read"
   },
   "global": {
     "thread": {
       "match": {
-        "query": "has:attachment -in:trash -in:drafts -in:spam after:${date.now:date::yyyy-MM-dd} is:unread subject:\"[GmailProcessor-Test] convertToGoogle\"",
+        "query": "has:attachment -in:trash -in:drafts -in:spam after:{{date.now|formatDate('yyyy-MM-dd')}} is:unread subject:\"[GmailProcessor-Test] convertToGoogle\"",
         "maxMessageCount": -1,
         "minMessageCount": 1
       }
@@ -16,7 +16,7 @@
   "threads": [
     {
       "match": {
-        "query": "from:${user.email} to:${user.email} subject:'Test with office attachments'"
+        "query": "from:{{user.email}} to:{{user.email}} subject:'Test with office attachments'"
       },
       "attachments": [
         {
@@ -30,7 +30,7 @@
               "name": "attachment.store",
               "args": {
                 "conflictStrategy": "replace",
-                "location": "/GmailProcessor-Tests/e2e/${attachment.name}"
+                "location": "/GmailProcessor-Tests/e2e/{{attachment.name}}"
               }
             },
             {
@@ -38,7 +38,7 @@
               "name": "attachment.store",
               "args": {
                 "conflictStrategy": "replace",
-                "location": "/GmailProcessor-Tests/e2e/${attachment.name.match.basename}",
+                "location": "/GmailProcessor-Tests/e2e/{{attachment.name.match.basename}}",
                 "toMimeType": "application/vnd.google-apps.document"
               }
             }
@@ -55,7 +55,7 @@
               "name": "attachment.store",
               "args": {
                 "conflictStrategy": "replace",
-                "location": "/GmailProcessor-Tests/e2e/${attachment.name}"
+                "location": "/GmailProcessor-Tests/e2e/{{attachment.name}}"
               }
             },
             {
@@ -63,7 +63,7 @@
               "name": "attachment.store",
               "args": {
                 "conflictStrategy": "replace",
-                "location": "/GmailProcessor-Tests/e2e/${attachment.name.match.basename}",
+                "location": "/GmailProcessor-Tests/e2e/{{attachment.name.match.basename}}",
                 "toMimeType": "application/vnd.google-apps.presentation"
               }
             }
@@ -80,7 +80,7 @@
               "name": "attachment.store",
               "args": {
                 "conflictStrategy": "replace",
-                "location": "/GmailProcessor-Tests/e2e/${attachment.name}"
+                "location": "/GmailProcessor-Tests/e2e/{{attachment.name}}"
               }
             },
             {
@@ -88,7 +88,7 @@
               "name": "attachment.store",
               "args": {
                 "conflictStrategy": "replace",
-                "location": "/GmailProcessor-Tests/e2e/${attachment.name.match.basename}",
+                "location": "/GmailProcessor-Tests/e2e/{{attachment.name.match.basename}}",
                 "toMimeType": "application/vnd.google-apps.spreadsheet"
               }
             }

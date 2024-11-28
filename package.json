@@ -59,6 +59,9 @@
     "repush": "npx concurrently 'npm:repush:*'",
     "repush:examples": "npm run rebuild:examples && npm run push:examples",
     "repush:lib": "npm run rebuild:lib && npm run push:lib",
+    "parser:gui": "antlr4-parse src/lib/expr/ExprParser.g4 src/lib/expr/ExprLexer.g4 template -gui",
+    "parser:tokens": "antlr4-parse src/lib/expr/ExprParser.g4 src/lib/expr/ExprLexer.g4 template -tokens",
+    "parser:trace": "antlr4-parse src/lib/expr/ExprParser.g4 src/lib/expr/ExprLexer.g4 template -trace",
     "secrets:check": "scripts/github-secrets.sh check all",
     "secrets:list": "scripts/github-secrets.sh list all",
     "secrets:sync": "scripts/github-secrets.sh sync all",
@@ -67,10 +70,11 @@
     "test": "TZ=Etc/UTC jest --reporters=summary --silent",
     "test:examples": "TZ=Etc/UTC jest --reporters=summary --silent --testPathPattern src/examples",
     "test:verbose": "TZ=Etc/UTC jest --detectOpenHandles --reporters='default' --runInBand --verbose",
-    "update": "TZ=Etc/UTC concurrently 'npm:update:*'",
+    "update": "npm run update:examples && npm run update:parser && npm run update:schema && npm run update:docs && npm run update:contributors",
     "update:contributors": "npx all-contributors generate",
     "update:docs": "TZ=Etc/UTC scripts/update-docs.sh",
     "update:examples": "TZ=Etc/UTC scripts/update-examples.sh",
+    "update:parser": "scripts/update-parser.sh",
     "update:schema": "TZ=Etc/UTC scripts/update-schema.sh"
   },
   "repository": {
@@ -91,6 +95,9 @@
   "license": "Apache-2.0",
   "devDependencies": {
     "@babel/plugin-transform-class-properties": "7.25.9",
+    "@babel/plugin-transform-class-static-block": "^7.24.7",
+    "@babel/plugin-transform-logical-assignment-operators": "^7.25.7",
+    "@babel/plugin-transform-private-methods": "^7.25.4",
     "@casualbot/jest-sonar-reporter": "2.4.0",
     "@eslint/js": "9.15.0",
     "@google/clasp": "2.4.2",
@@ -112,6 +119,7 @@
     "@typescript-eslint/eslint-plugin": "8.16.0",
     "@typescript-eslint/parser": "8.16.0",
     "all-contributors-cli": "6.26.1",
+    "antlr4ng-cli": "^2.0.0",
     "concurrently": "8.2.2",
     "eslint": "9.15.0",
     "eslint-config-prettier": "9.1.0",
@@ -142,6 +150,7 @@
   "dependencies": {
     "addressparser": "^1.0.1",
     "ajv": "8.17.1",
+    "antlr4ng": "^3.0.4",
     "class-transformer": "^0.5.1",
     "crypto-js": "^4.2.0",
     "date-fns": "^3.6.0",

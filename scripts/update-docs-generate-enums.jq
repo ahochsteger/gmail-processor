@@ -15,8 +15,12 @@ include "update-docs-generate-common";
     | [
       "`" + (.key | tostring) + "`",
       "`" + (.value | tostring) + "`",
-      generateDescription
-    ] | join(" | ")
+      (
+        generateDescription
+        | gsub("\\|";"\\|")
+      )
+    ]
+    | join(" | ")
     | "| " + . + " |"
   ] | join("\n"))
 ]

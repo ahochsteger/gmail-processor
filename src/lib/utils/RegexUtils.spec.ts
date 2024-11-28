@@ -17,4 +17,15 @@ describe("matchRegExp()", () => {
     const matches = RegexUtils.matchRegExp("^test$", "something-else")
     expect(matches).toBeNull()
   })
+  it("should match multi-line regex", () => {
+    const matches = RegexUtils.matchRegExp(
+      "^US date: (?<usDate>[0-9/]+)\nGerman date: (?<germanDate>[0-9.]+)\nShort German date: (?<shortGermanDate>[0-9.]+)\nISO date: (?<isoDate>[0-9-]+)$",
+      "US date: 7/14/2024\nGerman date: 14.7.2024\nShort German date: 14.7.24\nISO date: 2024-07-14",
+      "g",
+    )
+    expect(matches?.groups?.usDate).toEqual("7/14/2024")
+    expect(matches?.groups?.germanDate).toEqual("14.7.2024")
+    expect(matches?.groups?.shortGermanDate).toEqual("14.7.24")
+    expect(matches?.groups?.isoDate).toEqual("2024-07-14")
+  })
 })

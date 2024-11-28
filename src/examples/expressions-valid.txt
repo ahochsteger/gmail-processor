@@ -1,0 +1,15 @@
+Just Text: Hello.
+Legacy Simple: ${date.now},
+Legacy format: ${date.now:format:yyyy-MM-dd},
+Legacy date+offset: ${date.now:date:-2d},
+Legacy date+offset+format: ${date.now:date:-2d:yyyy-MM-dd},
+Legacy offset-format+offset: ${date.now:offset-format:-2d},
+Legacy offset-format+offset+format: ${date.now:offset-format:-2d:yyyy-MM-dd},
+Legacy join: ${message.labels:join},
+Legacy join+separator: ${message.labels:join:-},
+Simple: {{date.now}},
+US: {{message.body.match.usDate|parseDate('M/d/yyyy')|formatDate('yyyy-MM-dd')}},
+DE: {{message.body.match.usDate|parseDate('d.M.yyyy')|formatData('yyyy-MM-dd')}},
+DE (short): {{message.body.match.usDate|parseDate('d.M.yy')|formatDate('yyyy-MM-dd')}},
+ISO: {{message.body.match.usDate|parseDate('yyyy-MM-dd')|formatDate('yyyy-MM-dd')}},
+Regex: ^invoice\.pdf$

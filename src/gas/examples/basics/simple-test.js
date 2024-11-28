@@ -74,7 +74,7 @@ function simpleTestConfig() {
       // Place global thread, message or attachment configuration here
       thread: {
         match: {
-          query: `has:attachment -in:trash -in:drafts -in:spam after:\${date.now:date::yyyy-MM-dd} is:unread subject:"${GmailProcessorLib.E2EDefaults.EMAIL_SUBJECT_PREFIX}${info.name}"`,
+          query: `has:attachment -in:trash -in:drafts -in:spam after:{{date.now|formatDate('yyyy-MM-dd')}} is:unread subject:"${GmailProcessorLib.E2EDefaults.EMAIL_SUBJECT_PREFIX}${info.name}"`,
         },
       },
     },
@@ -97,7 +97,7 @@ function simpleTestConfig() {
                   {
                     name: "attachment.store",
                     args: {
-                      location: `${GmailProcessorLib.E2EDefaults.DRIVE_TESTS_BASE_PATH}/${info.name}/\${message.date:date::yyyy-MM-dd}/\${message.subject}-\${attachment.name}`,
+                      location: `${GmailProcessorLib.E2EDefaults.DRIVE_TESTS_BASE_PATH}/${info.name}/{{message.date|formatDate('yyyy-MM-dd')}}/{{message.subject}}-{{attachment.name}}`,
                       conflictStrategy: GmailProcessorLib.ConflictStrategy.KEEP,
                     },
                   },

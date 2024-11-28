@@ -35,7 +35,7 @@ function runModeAwareAction<T extends ProcessingContext>(
 
 export function readingAction<TContext extends ProcessingContext>() {
   return function <TActionProvider extends ActionProvider<TContext>>(
-    // eslint-disable-next-line @typescript-eslint/ban-types
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
     target: Function, // change the type of target parameter to Function
     propertyKey: string,
     descriptor: PropertyDescriptor,
@@ -51,7 +51,7 @@ export function readingAction<TContext extends ProcessingContext>() {
 
 export function writingAction<TContext extends ProcessingContext>() {
   return function <TActionProvider extends ActionProvider<TContext>>(
-    // eslint-disable-next-line @typescript-eslint/ban-types
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
     target: Function, // change the type of target parameter to Function
     propertyKey: string,
     descriptor: PropertyDescriptor,
@@ -67,7 +67,7 @@ export function writingAction<TContext extends ProcessingContext>() {
 
 export function destructiveAction<TContext extends ProcessingContext>() {
   return function <TActionProvider extends ActionProvider<TContext>>(
-    // eslint-disable-next-line @typescript-eslint/ban-types
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
     target: Function, // change the type of target parameter to Function
     propertyKey: string,
     descriptor: PropertyDescriptor,

@@ -9,10 +9,17 @@ import {
 } from "../../lib/Context"
 import { SCRIPT_CACHE_LOGSHEET_ID_KEY } from "../../lib/adapter/SpreadsheetAdapter"
 import { Config, newConfig } from "../../lib/config/Config"
+import { E2ETestConfig } from "../../lib/e2e/E2E"
 import { ConfigMocks } from "./ConfigMocks"
 import { ContextMocks } from "./ContextMocks"
 import { GDriveMocks, LOGSHEET_FILE_ID } from "./GDriveMocks"
-import { GMailData, GMailMocks, IndexType } from "./GMailMocks"
+import {
+  GMailData,
+  GMailMocks,
+  IndexType,
+  MessageData,
+  ThreadData,
+} from "./GMailMocks"
 import { SpreadsheetMocks } from "./SpreadsheetMocks"
 
 export const fakedSystemDateString = "2023-06-26" // Automated tests rely on this date to be a monday!
@@ -219,6 +226,32 @@ export class Mocks extends EnvMocks {
 }
 
 export class MockFactory {
+  public static newMockFromExample(testConfig: E2ETestConfig): Mocks {
+    const messages: MessageData[] =
+      testConfig.initConfig?.mails?.map((m) => {
+        return {
+          subject: m.subject,
+          body: m.body,
+          attachments: m.attachments?.map((a) => {
+            return {
+              name: a,
+            }
+          }),
+        }
+      }) ?? []
+    const threads: ThreadData[] = [
+      {
+        firstMessageSubject: testConfig.initConfig?.mails[0].subject,
+        messages: messages,
+      },
+    ]
+    return this.newCustomMocks(
+      testConfig.runConfig,
+      GMailMocks.getGmailSampleData({
+        threads: threads,
+      }),
+    )
+  }
   public static newMocks(
     config: Config = ConfigMocks.newDefaultConfig(),
     runMode = RunMode.DANGEROUS,

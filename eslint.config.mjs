@@ -19,6 +19,7 @@ export default tseslint.config(
       "*.bak*",
       "**/*.bak*",
       "./src/**/*.ts",
+      "./src/lib/expr/generated/*.ts",
     ],
   },
 

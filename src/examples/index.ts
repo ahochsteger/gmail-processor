@@ -4,6 +4,7 @@ import { example as actionAttachmentExtractTextExample } from "./actions/actionA
 import { example as actionExportExample } from "./actions/actionExport"
 import { example as actionThreadRemoveLabelExample } from "./actions/actionThreadRemoveLabel"
 import { example as customActionsExample } from "./advanced/customActions"
+import { example as dateExpressionsExample } from "./advanced/dateExpressions"
 import { example as logSheetLoggingExample } from "./advanced/logSheetLogging"
 import { example as regularExpressionsExample } from "./advanced/regularExpressions"
 import { example as simpleExample } from "./basics/simple"
@@ -11,6 +12,7 @@ import { example as convertToGoogleExample } from "./features/convertToGoogle"
 import { example as migrationAdvancedExample } from "./migrations/migrationAdvanced"
 import { example as migrationMinExample } from "./migrations/migrationMin"
 import { example as issue301Example } from "./regressions/issue301"
+import { example as legacyExpressionsExample } from "./regressions/legacyExpressions"
 
 export const defaultExample = simpleExample
 export const allExamples: (Example | V1Example)[] = [
@@ -19,7 +21,9 @@ export const allExamples: (Example | V1Example)[] = [
   actionThreadRemoveLabelExample,
   convertToGoogleExample,
   customActionsExample,
+  dateExpressionsExample,
   issue301Example,
+  legacyExpressionsExample,
   logSheetLoggingExample,
   migrationAdvancedExample,
   migrationMinExample,

@@ -29,7 +29,7 @@ export type ThreadData = {
   permalink?: string
 }
 type RequiredThreadData = RequiredDeep<ThreadData>
-type MessageData = {
+export type MessageData = {
   // NOTE: Keep MessageData, newMessageMock and getMessageSampleData in sync
   attachments?: AttachmentData[]
   bcc?: string
@@ -51,7 +51,7 @@ type MessageData = {
   to?: string
 }
 type RequiredMessageData = RequiredDeep<MessageData>
-type AttachmentData = {
+export type AttachmentData = {
   // NOTE: Keep AttachmentData, newAttachmentMock and getAttachmentSampleData in sync
   contentType?: string
   hash?: string
@@ -269,7 +269,8 @@ export class GMailMocks {
       bcc: data.bcc ?? "message-bcc@example.com",
       body:
         data.body ??
-        '<p>Message body with contained url <a href="https://raw.githubusercontent.com/ahochsteger/gmail-processor/main/src/e2e-test/files/plain-text-from-repo.txt">https://raw.githubusercontent.com/ahochsteger/gmail-processor/main/src/e2e-test/files/plain-text-from-repo.txt</a> and some text after the url.</p>',
+        '<p>Message body with contained url <a href="https://raw.githubusercontent.com/ahochsteger/gmail-processor/main/src/e2e-test/files/plain-text-from-repo.txt">https://raw.githubusercontent.com/ahochsteger/gmail-processor/main/src/e2e-test/files/plain-text-from-repo.txt</a> and some text after the url.</p>\n' +
+          "US date: 7/14/2024\nGerman date: 14.7.2024\nShort German date: 14.7.24\nISO date: 2024-07-14",
       cc: data.cc ?? "message-cc@example.com",
       date: data.date ?? new Date("2019-05-02T07:15:28Z"),
       from: data.from ?? "message-from@example.com",

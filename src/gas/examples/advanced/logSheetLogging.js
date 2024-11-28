@@ -4,7 +4,7 @@ function logSheetLoggingRun() {
     settings: {
       markProcessedMethod: "mark-read",
       logSheetLocation:
-        "/GmailProcessor-Tests/logsheet-${date.now:date::yyyy-MM}",
+        "/GmailProcessor-Tests/logsheet-{{date.now|formatDate('yyyy-MM')}}",
       logSheetTracing: true,
       logFields: [
         "log.timestamp",
@@ -29,14 +29,14 @@ function logSheetLoggingRun() {
       {
         match: {
           query:
-            '-in:trash -in:drafts -in:spam after:${date.now:date::yyyy-MM-dd} from:${user.email} is:unread subject:"[GmailProcessor-Test] logSheetLogging"',
+            "-in:trash -in:drafts -in:spam after:{{date.now|formatDate('yyyy-MM-dd')}} from:{{user.email}} is:unread subject:\"[GmailProcessor-Test] logSheetLogging\"",
         },
         actions: [
           {
             name: "global.sheetLog",
             args: {
               level: "info",
-              message: "Thread log (pre-main): ${thread.id}",
+              message: "Thread log (pre-main): {{thread.id}}",
             },
             processingStage: "pre-main",
           },
@@ -44,7 +44,7 @@ function logSheetLoggingRun() {
             name: "global.sheetLog",
             args: {
               level: "info",
-              message: "Thread log (main): ${thread.id}",
+              message: "Thread log (main): {{thread.id}}",
             },
             processingStage: "main",
           },
@@ -52,7 +52,7 @@ function logSheetLoggingRun() {
             name: "global.sheetLog",
             args: {
               level: "info",
-              message: "Thread log (post-main): ${thread.id}",
+              message: "Thread log (post-main): {{thread.id}}",
             },
             processingStage: "post-main",
           },
@@ -64,7 +64,7 @@ function logSheetLoggingRun() {
                 name: "global.sheetLog",
                 args: {
                   level: "warn",
-                  message: "Message log (pre-main): ${message.id}",
+                  message: "Message log (pre-main): {{message.id}}",
                 },
                 processingStage: "pre-main",
               },
@@ -72,7 +72,7 @@ function logSheetLoggingRun() {
                 name: "global.sheetLog",
                 args: {
                   level: "warn",
-                  message: "Message log (main): ${message.id}",
+                  message: "Message log (main): {{message.id}}",
                 },
                 processingStage: "main",
               },
@@ -80,7 +80,7 @@ function logSheetLoggingRun() {
                 name: "global.sheetLog",
                 args: {
                   level: "warn",
-                  message: "Message log (post-main): ${message.id}",
+                  message: "Message log (post-main): {{message.id}}",
                 },
                 processingStage: "post-main",
               },
@@ -92,7 +92,7 @@ function logSheetLoggingRun() {
                     name: "global.sheetLog",
                     args: {
                       level: "error",
-                      message: "Attachment log (pre-main): ${attachment.hash}",
+                      message: "Attachment log (pre-main): {{attachment.hash}}",
                     },
                     processingStage: "pre-main",
                   },
@@ -101,14 +101,15 @@ function logSheetLoggingRun() {
                     args: {
                       conflictStrategy: "update",
                       location:
-                        "/GmailProcessor-Tests/e2e/logSheetLogging/${attachment.name}",
+                        "/GmailProcessor-Tests/e2e/logSheetLogging/{{attachment.name}}",
                     },
                   },
                   {
                     name: "global.sheetLog",
                     args: {
                       level: "error",
-                      message: "Attachment log (post-main): ${attachment.hash}",
+                      message:
+                        "Attachment log (post-main): {{attachment.hash}}",
                     },
                     processingStage: "post-main",
                   },

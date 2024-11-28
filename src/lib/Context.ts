@@ -1,4 +1,4 @@
-import { ActionRegistry } from "./actions/ActionRegistry"
+import { ActionRegistry, ActionReturnType } from "./actions/ActionRegistry"
 import { GDriveAdapter } from "./adapter/GDriveAdapter"
 import { GmailAdapter } from "./adapter/GmailAdapter"
 import { LogAdapter } from "./adapter/LogAdapter"
@@ -176,10 +176,15 @@ export class ProcessingError extends Error {
   }
 }
 
+export type ActionExecution = {
+  config: ActionConfig
+  result?: ActionReturnType
+}
+
 export class ProcessingResult {
   error?: Error
-  failedAction?: ActionConfig
-  executedActions: ActionConfig[] = []
+  failedAction?: ActionExecution
+  executedActions: ActionExecution[] = []
   processedAttachmentConfigs: number = 0
   processedAttachments: number = 0
   processedMessageConfigs: number = 0

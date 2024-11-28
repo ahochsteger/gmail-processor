@@ -124,7 +124,11 @@ function buildExamples() {
   cp -pr "${CLASP_SRC_DIR}"/* "${CLASP_DIR}/"
 
   # Create data file
-  local currentBranch; currentBranch=$(git branch --show-current)
+  local currentBranch
+  currentBranch=$(git branch --show-current)
+  if ! git ls-remote origin "refs/heads/${currentBranch}" | grep -q "refs/heads/${currentBranch}"; then
+    currentBranch="main"
+  fi
   echo "const E2E_REPO_BRANCH = \"${currentBranch}\"" \
   >"${CLASP_DIR}/_data.js"
 

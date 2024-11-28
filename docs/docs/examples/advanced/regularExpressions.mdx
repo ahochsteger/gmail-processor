@@ -18,6 +18,6 @@ It does to following with the message subject:
 * Capture the date as the final part of the subject using the capture group `(?<date>...)`
 
 The extracted data is finally used to dynamically define the location of the attachment to be stored using:
-`.../Reports/${message.subject.match.school}/All Reports/${message.subject.match.reportType}/${message.subject.match.reportSubType}/${message.subject.match.date}-${attachment.name}`
+`.../Reports/{{message.subject.match.school}}/All Reports/{{message.subject.match.reportType}}/{{message.subject.match.reportSubType}}/{{message.subject.match.date}}-{{attachment.name}}`
 
 <RenderExample info={info} config={config} script={script} />
