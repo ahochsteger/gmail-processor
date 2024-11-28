@@ -39,13 +39,13 @@ export const runConfig: Config = {
   description: info.description,
   settings: {
     logSheetLocation:
-      "/GmailProcessor-Tests/logsheet-${date.now:date::yyyy-MM}",
+      "/GmailProcessor-Tests/logsheet-{{date.now|formatDate('yyyy-MM')}}",
     markProcessedMethod: MarkProcessedMethod.MARK_MESSAGE_READ,
   },
   global: {
     thread: {
       match: {
-        query: `-in:trash -in:drafts -in:spam after:\${date.now:date::yyyy-MM-dd} is:unread subject:"${E2EDefaults.EMAIL_SUBJECT_PREFIX}${info.name}"`,
+        query: `-in:trash -in:drafts -in:spam after:{{date.now|formatDate('yyyy-MM-dd')}} is:unread subject:"${E2EDefaults.EMAIL_SUBJECT_PREFIX}${info.name}"`,
         maxMessageCount: -1,
         minMessageCount: 1,
       },
@@ -53,7 +53,7 @@ export const runConfig: Config = {
         {
           name: "thread.exportAsHtml",
           args: {
-            location: `/GmailProcessor-Tests/${info.category}/${info.name}/thread-\${thread.id}-\${thread.firstMessageSubject}.html`,
+            location: `/GmailProcessor-Tests/${info.category}/${info.name}/thread-{{thread.id}}-{{thread.firstMessageSubject}}.html`,
             conflictStrategy: ConflictStrategy.REPLACE,
           },
         },
@@ -61,7 +61,7 @@ export const runConfig: Config = {
           name: "thread.exportAsPdf",
           args: {
             location:
-              "/GmailProcessor-Tests/pr-291/thread-${thread.id}-${thread.firstMessageSubject}.pdf",
+              "/GmailProcessor-Tests/pr-291/thread-{{thread.id}}-{{thread.firstMessageSubject}}.pdf",
             conflictStrategy: ConflictStrategy.REPLACE,
           },
         },
@@ -73,7 +73,7 @@ export const runConfig: Config = {
           name: "message.exportAsHtml",
           args: {
             location:
-              "/GmailProcessor-Tests/pr-291/message-${message.id}-${message.subject}.html",
+              "/GmailProcessor-Tests/pr-291/message-{{message.id}}-{{message.subject}}.html",
             conflictStrategy: ConflictStrategy.REPLACE,
           },
         },
@@ -81,7 +81,7 @@ export const runConfig: Config = {
           name: "message.exportAsPdf",
           args: {
             location:
-              "/GmailProcessor-Tests/pr-291/message-${message.id}-${message.subject}.pdf",
+              "/GmailProcessor-Tests/pr-291/message-{{message.id}}-{{message.subject}}.pdf",
             conflictStrategy: ConflictStrategy.REPLACE,
           },
         },
@@ -92,7 +92,7 @@ export const runConfig: Config = {
     {
       match: {
         query:
-          "from:${user.email} to:${user.email} subject:'GmailProcessor-Test'",
+          "from:{{user.email}} to:{{user.email}} subject:'GmailProcessor-Test'",
       },
     },
   ],

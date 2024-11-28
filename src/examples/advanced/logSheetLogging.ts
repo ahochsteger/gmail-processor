@@ -28,6 +28,8 @@ export const info: ExampleInfo = {
   description: "Logs data to a Google Spreadsheet.",
   category: ExampleCategory.ADVANCED,
   skipGenerate: [ExampleTemplateType.TEST_SPEC],
+  // TODO: Provide logsheet mock folder to run tests locally
+  // TODO: Provide a way to run config validation tests only but not execute the processing.
 }
 
 export const initConfig: E2EInitConfig = {
@@ -43,7 +45,7 @@ export const runConfig: Config = {
   settings: {
     markProcessedMethod: MarkProcessedMethod.MARK_MESSAGE_READ,
     logSheetLocation:
-      "/GmailProcessor-Tests/logsheet-${date.now:date::yyyy-MM}",
+      "/GmailProcessor-Tests/logsheet-{{date.now|formatDate('yyyy-MM')}}",
     logSheetTracing: true,
     logFields: [
       "log.timestamp",
@@ -68,14 +70,14 @@ export const runConfig: Config = {
     // Place thread processing config here
     {
       match: {
-        query: `-in:trash -in:drafts -in:spam after:\${date.now:date::yyyy-MM-dd} from:\${user.email} is:unread subject:"${E2EDefaults.EMAIL_SUBJECT_PREFIX}${info.name}"`,
+        query: `-in:trash -in:drafts -in:spam after:{{date.now|formatDate('yyyy-MM-dd')}} from:{{user.email}} is:unread subject:"${E2EDefaults.EMAIL_SUBJECT_PREFIX}${info.name}"`,
       },
       actions: [
         {
           name: "global.sheetLog",
           args: {
             level: LogLevel.INFO,
-            message: "Thread log (pre-main): ${thread.id}",
+            message: "Thread log (pre-main): {{thread.id}}",
           },
           processingStage: ProcessingStage.PRE_MAIN,
         },
@@ -83,7 +85,7 @@ export const runConfig: Config = {
           name: "global.sheetLog",
           args: {
             level: LogLevel.INFO,
-            message: "Thread log (main): ${thread.id}",
+            message: "Thread log (main): {{thread.id}}",
           },
           processingStage: ProcessingStage.MAIN,
         },
@@ -91,7 +93,7 @@ export const runConfig: Config = {
           name: "global.sheetLog",
           args: {
             level: LogLevel.INFO,
-            message: "Thread log (post-main): ${thread.id}",
+            message: "Thread log (post-main): {{thread.id}}",
           },
           processingStage: ProcessingStage.POST_MAIN,
         },
@@ -103,7 +105,7 @@ export const runConfig: Config = {
               name: "global.sheetLog",
               args: {
                 level: LogLevel.WARN,
-                message: "Message log (pre-main): ${message.id}",
+                message: "Message log (pre-main): {{message.id}}",
               },
               processingStage: ProcessingStage.PRE_MAIN,
             },
@@ -111,7 +113,7 @@ export const runConfig: Config = {
               name: "global.sheetLog",
               args: {
                 level: LogLevel.WARN,
-                message: "Message log (main): ${message.id}",
+                message: "Message log (main): {{message.id}}",
               },
               processingStage: ProcessingStage.MAIN,
             },
@@ -119,7 +121,7 @@ export const runConfig: Config = {
               name: "global.sheetLog",
               args: {
                 level: LogLevel.WARN,
-                message: "Message log (post-main): ${message.id}",
+                message: "Message log (post-main): {{message.id}}",
               },
               processingStage: ProcessingStage.POST_MAIN,
             },
@@ -131,7 +133,7 @@ export const runConfig: Config = {
                   name: "global.sheetLog",
                   args: {
                     level: LogLevel.ERROR,
-                    message: "Attachment log (pre-main): ${attachment.hash}",
+                    message: "Attachment log (pre-main): {{attachment.hash}}",
                   },
                   processingStage: ProcessingStage.PRE_MAIN,
                 },
@@ -139,14 +141,14 @@ export const runConfig: Config = {
                   name: "attachment.store",
                   args: {
                     conflictStrategy: ConflictStrategy.UPDATE,
-                    location: `${E2EDefaults.DRIVE_TESTS_BASE_PATH}/${info.name}/\${attachment.name}`,
+                    location: `${E2EDefaults.DRIVE_TESTS_BASE_PATH}/${info.name}/{{attachment.name}}`,
                   },
                 },
                 {
                   name: "global.sheetLog",
                   args: {
                     level: LogLevel.ERROR,
-                    message: "Attachment log (post-main): ${attachment.hash}",
+                    message: "Attachment log (post-main): {{attachment.hash}}",
                   },
                   processingStage: ProcessingStage.POST_MAIN,
                 },

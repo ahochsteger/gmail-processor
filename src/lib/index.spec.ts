@@ -37,9 +37,9 @@ describe("v1 config compatibility", () => {
                     args: {
                       conflictStrategy: "keep",
                       description:
-                        "Mail title: ${message.subject}\nMail date: ${message.date}\nMail link: https://mail.google.com/mail/u/0/#inbox/${message.id}",
+                        "Mail title: {{message.subject}}\nMail date: {{message.date}}\nMail link: https://mail.google.com/mail/u/0/#inbox/{{message.id}}",
                       location:
-                        "/Scans${message.date:date::-yyyy-MM-dd}/${attachment.name}",
+                        "/Scans-{{message.date|formatDate('yyyy-MM-dd')}}/{{attachment.name}}",
                     },
                     name: "attachment.store",
                   },
@@ -62,8 +62,8 @@ describe("v1 config compatibility", () => {
                     args: {
                       conflictStrategy: "keep",
                       description:
-                        "Mail title: ${message.subject}\nMail date: ${message.date}\nMail link: https://mail.google.com/mail/u/0/#inbox/${message.id}",
-                      location: "/Examples/example1/${attachment.name}",
+                        "Mail title: {{message.subject}}\nMail date: {{message.date}}\nMail link: https://mail.google.com/mail/u/0/#inbox/{{message.id}}",
+                      location: "/Examples/example1/{{attachment.name}}",
                     },
                     name: "attachment.store",
                   },
@@ -86,8 +86,9 @@ describe("v1 config compatibility", () => {
                     args: {
                       conflictStrategy: "keep",
                       description:
-                        "Mail title: ${message.subject}\nMail date: ${message.date}\nMail link: https://mail.google.com/mail/u/0/#inbox/${message.id}",
-                      location: "/Examples/example2/${attachment.name.match.1}",
+                        "Mail title: {{message.subject}}\nMail date: {{message.date}}\nMail link: https://mail.google.com/mail/u/0/#inbox/{{message.id}}",
+                      location:
+                        "/Examples/example2/{{attachment.name.match.1}}",
                     },
                     name: "attachment.store",
                   },
@@ -118,9 +119,9 @@ describe("v1 config compatibility", () => {
                     args: {
                       conflictStrategy: "keep",
                       description:
-                        "Mail title: ${message.subject}\nMail date: ${message.date}\nMail link: https://mail.google.com/mail/u/0/#inbox/${message.id}",
+                        "Mail title: {{message.subject}}\nMail date: {{message.date}}\nMail link: https://mail.google.com/mail/u/0/#inbox/{{message.id}}",
                       location:
-                        "/Examples/example3ab/file-${message.date:date::yyyy-MM-dd-}${message.subject}.txt",
+                        "/Examples/example3ab/file-{{message.date|formatDate('yyyy-MM-dd')}}-{{message.subject}}.txt",
                     },
                     name: "attachment.store",
                   },
@@ -137,7 +138,7 @@ describe("v1 config compatibility", () => {
         actions: [
           {
             args: {
-              location: "/PDF Emails/${thread.firstMessageSubject}.pdf",
+              location: "/PDF Emails/{{thread.firstMessageSubject}}.pdf",
             },
             name: "thread.storePDF",
           },
@@ -151,8 +152,8 @@ describe("v1 config compatibility", () => {
                     args: {
                       conflictStrategy: "keep",
                       description:
-                        "Mail title: ${message.subject}\nMail date: ${message.date}\nMail link: https://mail.google.com/mail/u/0/#inbox/${message.id}",
-                      location: "/PDF Emails/${attachment.name}",
+                        "Mail title: {{message.subject}}\nMail date: {{message.date}}\nMail link: https://mail.google.com/mail/u/0/#inbox/{{message.id}}",
+                      location: "/PDF Emails/{{attachment.name}}",
                     },
                     name: "attachment.store",
                   },
@@ -175,9 +176,9 @@ describe("v1 config compatibility", () => {
                     args: {
                       conflictStrategy: "keep",
                       description:
-                        "Mail title: ${message.subject}\nMail date: ${message.date}\nMail link: https://mail.google.com/mail/u/0/#inbox/${message.id}",
+                        "Mail title: {{message.subject}}\nMail date: {{message.date}}\nMail link: https://mail.google.com/mail/u/0/#inbox/{{message.id}}",
                       location:
-                        "/Examples/example4/file-${message.date:date::yyyy-MM-dd-}${message.subject}.txt",
+                        "/Examples/example4/file-{{message.date|formatDate('yyyy-MM-dd')}}-{{message.subject}}.txt",
                     },
                     name: "attachment.store",
                   },

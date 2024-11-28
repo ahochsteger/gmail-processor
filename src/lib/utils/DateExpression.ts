@@ -1,5 +1,4 @@
 import {
-  addMilliseconds,
   endOfDay,
   endOfDecade,
   endOfHour,
@@ -13,7 +12,6 @@ import {
   endOfTomorrow,
   endOfYear,
   endOfYesterday,
-  format,
   lastDayOfDecade,
   lastDayOfISOWeek,
   lastDayOfISOWeekYear,
@@ -48,11 +46,9 @@ import {
   startOfYear,
   startOfYesterday,
 } from "date-fns"
-import parse from "parse-duration"
-import { PlaceholderModifierType } from "./PlaceholderModifierType"
 
 export const defaultDateFormat = "yyyy-MM-dd HH:mm:ss"
-type ModDateType = (d: Date) => Date
+type ModDateType = (d: Date | number | string) => Date
 type NewDateType = () => Date
 export type ExprInfoType = {
   type: "mod" | "new"
@@ -126,67 +122,6 @@ export const DATE_FNS_FUNCTIONS: Record<string, ExprInfoType> = {
   startOfYesterday: { type: "new", fn: startOfYesterday },
 }
 
-export class DateExpression {
-  public static evaluate(
-    origModifier: PlaceholderModifierType,
-    origArg: string,
-    value: Date,
-  ) {
-    let formatStr = defaultDateFormat
-    let dateTime = value
-    const { modifier, arg } = this.normalizeExpression(origModifier, origArg)
-    if (
-      modifier !== PlaceholderModifierType.NONE &&
-      modifier !== PlaceholderModifierType.DATE
-    ) {
-      return null
-    }
-    const args = arg.split(/:(.*)/s)
-    const expression = args[0] ?? ""
-    formatStr = args[1] ?? defaultDateFormat
-    dateTime = DateExpression.parseExpression(value, expression)
-    return format(dateTime, formatStr)
-  }
-
-  public static normalizeExpression(
-    modifier: PlaceholderModifierType,
-    arg: string,
-  ): {
-    modifier: PlaceholderModifierType
-    arg: string
-  } {
-    switch (modifier) {
-      case PlaceholderModifierType.FORMAT:
-        modifier = PlaceholderModifierType.DATE
-        arg = `:${arg}`
-        break
-      case PlaceholderModifierType.OFFSET_FORMAT:
-        modifier = PlaceholderModifierType.DATE
-        break
-    }
-    return {
-      modifier,
-      arg,
-    }
-  }
-
-  public static parseExpression(value: Date, expr: string): Date {
-    const baseExpr = Object.keys(DATE_FNS_FUNCTIONS).reduce(
-      (prev, k) => (expr.startsWith(k) ? k : prev),
-      "",
-    )
-    if (baseExpr !== "") {
-      const exprInfo = DATE_FNS_FUNCTIONS[baseExpr]
-      switch (exprInfo.type) {
-        case "mod":
-          value = (exprInfo.fn as ModDateType)(value)
-          break
-        case "new":
-          value = (exprInfo.fn as NewDateType)()
-          break
-      }
-      expr = expr.slice(baseExpr.length)
-    }
-    return addMilliseconds(value, parse(expr) ?? 0)
-  }
+export function getDateFnInfo(name: string): ExprInfoType | undefined {
+  return DATE_FNS_FUNCTIONS[name]
 }

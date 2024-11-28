@@ -4,7 +4,7 @@ function issue301Run() {
       "Tests a fix for `getBlob` error on conflict strategy `update`.",
     settings: {
       logSheetLocation:
-        "/GmailProcessor-Tests/logsheet-${date.now:date::yyyy-MM}",
+        "/GmailProcessor-Tests/logsheet-{{date.now|formatDate('yyyy-MM')}}",
       markProcessedMethod: "mark-read",
       timezone: "Etc/UTC",
     },
@@ -12,7 +12,7 @@ function issue301Run() {
       thread: {
         match: {
           query:
-            'has:attachment -in:trash -in:drafts -in:spam after:${date.now:date::yyyy-MM-dd} is:unread subject:"[GmailProcessor-Test] issue301"',
+            "has:attachment -in:trash -in:drafts -in:spam after:{{date.now|formatDate('yyyy-MM-dd')}} is:unread subject:\"[GmailProcessor-Test] issue301\"",
           maxMessageCount: -1,
           minMessageCount: 1,
         },
@@ -22,7 +22,7 @@ function issue301Run() {
       {
         match: {
           query:
-            "from:${user.email} to:${user.email} subject:'Test with office attachments'",
+            "from:{{user.email}} to:{{user.email}} subject:'Test with office attachments'",
         },
         attachments: [
           {
@@ -36,7 +36,7 @@ function issue301Run() {
                 name: "attachment.store",
                 args: {
                   conflictStrategy: "replace",
-                  location: "/GmailProcessor-Tests/e2e/${attachment.name}",
+                  location: "/GmailProcessor-Tests/e2e/{{attachment.name}}",
                 },
               },
               {
@@ -45,7 +45,7 @@ function issue301Run() {
                 args: {
                   conflictStrategy: "replace",
                   location:
-                    "/GmailProcessor-Tests/e2e/${attachment.name.match.basename}",
+                    "/GmailProcessor-Tests/e2e/{{attachment.name.match.basename}}",
                   toMimeType: "application/vnd.google-apps.document",
                 },
               },
@@ -62,7 +62,7 @@ function issue301Run() {
                 name: "attachment.store",
                 args: {
                   conflictStrategy: "replace",
-                  location: "/GmailProcessor-Tests/e2e/${attachment.name}",
+                  location: "/GmailProcessor-Tests/e2e/{{attachment.name}}",
                 },
               },
               {
@@ -72,7 +72,7 @@ function issue301Run() {
                 args: {
                   conflictStrategy: "replace",
                   location:
-                    "/GmailProcessor-Tests/e2e/${attachment.name.match.basename}",
+                    "/GmailProcessor-Tests/e2e/{{attachment.name.match.basename}}",
                   toMimeType: "application/vnd.google-apps.presentation",
                 },
               },
@@ -89,7 +89,7 @@ function issue301Run() {
                 name: "attachment.store",
                 args: {
                   conflictStrategy: "replace",
-                  location: "/GmailProcessor-Tests/e2e/${attachment.name}",
+                  location: "/GmailProcessor-Tests/e2e/{{attachment.name}}",
                 },
               },
               {
@@ -99,7 +99,7 @@ function issue301Run() {
                 args: {
                   conflictStrategy: "replace",
                   location:
-                    "/GmailProcessor-Tests/e2e/${attachment.name.match.basename}",
+                    "/GmailProcessor-Tests/e2e/{{attachment.name.match.basename}}",
                   toMimeType: "application/vnd.google-apps.spreadsheet",
                 },
               },

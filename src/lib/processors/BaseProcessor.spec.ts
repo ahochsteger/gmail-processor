@@ -141,7 +141,7 @@ it("should update meta context if actions return actionMeta", () => {
     value: TEST_CONTEXT_VALUE,
   })
   expect(
-    PatternUtil.substitute(mocks.processingContext, `\${${TEST_CONTEXT_KEY}}`),
+    PatternUtil.substitute(mocks.processingContext, `{{${TEST_CONTEXT_KEY}}}`),
   ).toEqual(TEST_CONTEXT_VALUE)
   result = TestProcessor.execute(
     mocks.processingContext,
@@ -157,7 +157,7 @@ it("should update meta context if actions return actionMeta", () => {
     value: TEST_CONTEXT_VALUE,
   })
   expect(
-    PatternUtil.substitute(mocks.processingContext, `\${${TEST_CONTEXT_KEY}}`),
+    PatternUtil.substitute(mocks.processingContext, `{{${TEST_CONTEXT_KEY}}}`),
   ).toEqual(TEST_CONTEXT_VALUE)
   result = TestProcessor.execute(
     mocks.processingContext,
@@ -173,6 +173,6 @@ it("should update meta context if actions return actionMeta", () => {
     value: TEST_CONTEXT_VALUE,
   })
   expect(
-    PatternUtil.substitute(mocks.processingContext, `\${${TEST_CONTEXT_KEY}}`),
+    PatternUtil.substitute(mocks.processingContext, `{{${TEST_CONTEXT_KEY}}}`),
   ).toEqual(TEST_CONTEXT_VALUE)
 })

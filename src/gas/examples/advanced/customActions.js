@@ -9,14 +9,14 @@ function customActionsRun() {
       thread: {
         match: {
           query:
-            'has:attachment -in:trash -in:drafts -in:spam after:${date.now:date::yyyy-MM-dd} is:unread subject:"[GmailProcessor-Test] customActions"',
+            "has:attachment -in:trash -in:drafts -in:spam after:{{date.now|formatDate('yyyy-MM-dd')}} is:unread subject:\"[GmailProcessor-Test] customActions\"",
         },
       },
     },
     threads: [
       {
         match: {
-          query: "from:${user.email}",
+          query: "from:{{user.email}}",
         },
         messages: [
           {

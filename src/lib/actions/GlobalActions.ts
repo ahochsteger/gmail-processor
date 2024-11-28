@@ -47,9 +47,11 @@ export class GlobalActions implements ActionProvider<ProcessingContext> {
     ctx: ProcessingContext,
     args: GlobalActionLoggingBase,
   ): ActionReturnType {
-    ctx.log.log(PatternUtil.substitute(ctx, args.message), args.level)
+    const logMessage = PatternUtil.substitute(ctx, args.message)
+    ctx.log.log(logMessage, args.level)
     return {
       ok: true,
+      logMessage,
     }
   }
 
@@ -59,12 +61,14 @@ export class GlobalActions implements ActionProvider<ProcessingContext> {
     ctx: ProcessingContext,
     args: GlobalActionLoggingBase,
   ): ActionReturnType {
+    const logMessage = PatternUtil.substitute(ctx, args.message)
     ctx.proc.spreadsheetAdapter.log(ctx, {
       ...args,
-      message: PatternUtil.substitute(ctx, args.message),
+      message: logMessage,
     })
     return {
       ok: true,
+      logMessage,
     }
   }
 }
