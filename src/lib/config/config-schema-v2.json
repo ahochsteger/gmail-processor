@@ -100,7 +100,7 @@
                                     "type": "string"
                                 },
                                 "extract": {
-                                    "description": "A regular expression that defines which values should be extracted.\nIt is recommended to use the named group syntax `(?<name>...)` to reference the extracted values using names like `${attachment.extracted.name}`.",
+                                    "description": "A regular expression that defines which values should be extracted.\nIt is recommended to use the named group syntax `(?<name>...)` to reference the extracted values using names like `{{attachment.extracted.name}}`.",
                                     "title": "extract",
                                     "type": "string"
                                 },
@@ -1511,7 +1511,7 @@
                     "type": "string"
                 },
                 "url": {
-                    "description": "The URL of the document to be stored.\nTo extract the URL from the message body use a message body matcher like `\"(?<url>https://...)\"` and `\"${message.body.match.url}\"` as the URL value.\nNOTE: Take care to narrow down the regex as good as possible to extract valid URLs.\nUse tools like [regex101.com](https://regex101.com) for testing on example messages.",
+                    "description": "The URL of the document to be stored.\nTo extract the URL from the message body use a message body matcher like `\"(?<url>https://...)\"` and `\"{{message.body.match.url}}\"` as the URL value.\nNOTE: Take care to narrow down the regex as good as possible to extract valid URLs.\nUse tools like [regex101.com](https://regex101.com) for testing on example messages.",
                     "title": "url",
                     "type": "string"
                 }
@@ -2784,7 +2784,7 @@
                         {
                             "name": "log.timestamp",
                             "title": "Timestamp",
-                            "value": "${date.now:date::yyyy-MM-dd HH:mm:ss.SSS}"
+                            "value": "{{date.now|formatDate('yyyy-MM-dd HH:mm:ss.SSS')}}"
                         },
                         {
                             "name": "log.level",
@@ -2800,44 +2800,44 @@
                         },
                         {
                             "ctxValues": {
-                                "attachment": "${attachment.hash}",
-                                "message": "${message.id}",
-                                "thread": "${thread.id}"
+                                "attachment": "{{attachment.hash}}",
+                                "message": "{{message.id}}",
+                                "thread": "{{thread.id}}"
                             },
                             "name": "object.id",
                             "title": "ID"
                         },
                         {
                             "ctxValues": {
-                                "attachment": "${message.url}",
-                                "message": "${message.url}",
-                                "thread": "${thread.url}"
+                                "attachment": "{{message.url}}",
+                                "message": "{{message.url}}",
+                                "thread": "{{thread.url}}"
                             },
                             "name": "object.url",
                             "title": "GMail URL"
                         },
                         {
                             "ctxValues": {
-                                "attachment": "${message.date}",
-                                "message": "${message.date}",
-                                "thread": "${thread.lastMessageDate}"
+                                "attachment": "{{message.date}}",
+                                "message": "{{message.date}}",
+                                "thread": "{{thread.lastMessageDate}}"
                             },
                             "name": "object.date",
                             "title": "Message Date"
                         },
                         {
                             "ctxValues": {
-                                "attachment": "${message.subject}",
-                                "message": "${message.subject}",
-                                "thread": "${thread.firstMessageSubject}"
+                                "attachment": "{{message.subject}}",
+                                "message": "{{message.subject}}",
+                                "thread": "{{thread.firstMessageSubject}}"
                             },
                             "name": "object.subject",
                             "title": "Subject"
                         },
                         {
                             "ctxValues": {
-                                "attachment": "${message.from}",
-                                "message": "${message.from}"
+                                "attachment": "{{message.from}}",
+                                "message": "{{message.from}}"
                             },
                             "name": "object.from",
                             "title": "From"
@@ -2856,21 +2856,21 @@
                         },
                         {
                             "ctxValues": {
-                                "attachment": "${attachment.stored.location}"
+                                "attachment": "{{attachment.stored.location}}"
                             },
                             "name": "stored.location",
                             "title": "Stored Location"
                         },
                         {
                             "ctxValues": {
-                                "attachment": "${attachment.stored.url}"
+                                "attachment": "{{attachment.stored.url}}"
                             },
                             "name": "stored.url",
                             "title": "Stored URL"
                         },
                         {
                             "ctxValues": {
-                                "attachment": "${attachment.stored.downloadUrl}"
+                                "attachment": "{{attachment.stored.downloadUrl}}"
                             },
                             "name": "stored.downloadUrl",
                             "title": "Download URL"
@@ -2932,7 +2932,7 @@
                 },
                 "logSheetLocation": {
                     "default": "",
-                    "description": "Location of the spreadsheet log file. Enables logging to a spreadsheet if not empty.\nExample: `GmailProcessor/logsheet-${date.now:date::yyyy-MM}`",
+                    "description": "Location of the spreadsheet log file. Enables logging to a spreadsheet if not empty.\nExample: `GmailProcessor/logsheet-{{date.now|formatDate('yyyy-MM')}}`",
                     "title": "logSheetLocation",
                     "type": "string"
                 },

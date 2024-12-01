@@ -1,0 +1,13 @@
+---
+id: legacyExpressions
+title: Legacy Expressions
+description: This example uses legacy expressions that are deprecated but still should work until support is finally removed.
+---
+import RenderExample from "/src/components/RenderExample.tsx"
+import config from '!!raw-loader!../../../../src/examples/regressions/legacyExpressions.json';
+import script from '!!raw-loader!../../../../src/gas/examples/regressions/legacyExpressions.js';
+import { info } from "../../../../src/examples/regressions/legacyExpressions.ts"
+
+This example uses legacy expressions that are deprecated but still should work until support is finally removed.
+
+<RenderExample info={info} config={config} script={script} />

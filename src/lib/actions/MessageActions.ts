@@ -35,7 +35,7 @@ type MessageActionConfigExport<TName extends string = string> =
 export type MessageActionStoreFromUrlArgs = StoreActionBaseArgs & {
   /**
    * The URL of the document to be stored.
-   * To extract the URL from the message body use a message body matcher like `"(?<url>https://...)"` and `"${message.body.match.url}"` as the URL value.
+   * To extract the URL from the message body use a message body matcher like `"(?<url>https://...)"` and `"{{message.body.match.url}}"` as the URL value.
    * NOTE: Take care to narrow down the regex as good as possible to extract valid URLs.
    * Use tools like [regex101.com](https://regex101.com) for testing on example messages.
    */

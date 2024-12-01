@@ -26,8 +26,8 @@ describe("Pattern Substitution", () => {
   it("should handle a thread", () => {
     const s1 = PatternUtil.substitute(
       mocks.attachmentContext,
-      "${message.from}/${message.to}/${attachment.contentType}/${message.subject}-${message.id}-" +
-        "${attachment.index}-${attachment.name}-${message.date:date::yyyy-MM-dd}",
+      "{{message.from}}/{{message.to}}/{{attachment.contentType}}/{{message.subject}}-{{message.id}}-" +
+        "{{attachment.index}}-{{attachment.name}}-{{message.date|formatDate('yyyy-MM-dd')}}",
     )
     expect(s1).toBe(
       "message-from@example.com/message-to@example.com/application/pdf/Message Subject 1-message-id-0-attachment1.pdf-2019-05-02",
@@ -55,10 +55,10 @@ describe("Pattern Substitution", () => {
       ],
     }
     const pattern =
-      "Evaluation data: message.subject: ${message.subject}, message.from: ${message.from}, " +
-      "message.to: ${message.to}, message.date: ${message.date:date::yyyy-MM-dd}, " +
-      "message.subject.match.1: ${message.subject.match.1}, message.subject.match.2: " +
-      "${message.subject.match.2}"
+      "Evaluation data: message.subject: {{message.subject}}, message.from: {{message.from}}, " +
+      "message.to: {{message.to}}, message.date: {{message.date|formatDate('yyyy-MM-dd')}}, " +
+      "message.subject.match.1: {{message.subject.match.1}}, message.subject.match.2: " +
+      "{{message.subject.match.2}}"
     const expected =
       "Evaluation data: message.subject: Message 01: Some more text, " +
       "message.from: some.email@example.com, message.to: my.email+emailsuffix@example.com, " +
@@ -86,8 +86,8 @@ describe("Pattern Substitution", () => {
                       args: {
                         location:
                           EXISTING_FOLDER_NAME +
-                          "/${message.subject.match.1}/${message.subject} - " +
-                          "${attachment.name.match.1}.jpg",
+                          "/{{message.subject.match.1}}/{{message.subject}} - " +
+                          "{{attachment.name.match.1}}.jpg",
                         conflictStrategy: ConflictStrategy.REPLACE,
                       },
                     },
@@ -107,8 +107,8 @@ describe("Pattern Substitution", () => {
   it("should handle a thread with one message", () => {
     const s = PatternUtil.substitute(
       mocks.messageContext,
-      "${message.from},${message.to},${message.subject}," +
-        "${message.id},${message.date:date::yyyy-MM-dd}",
+      "{{message.from}},{{message.to}},{{message.subject}}," +
+        "{{message.id}},{{message.date|formatDate('yyyy-MM-dd')}}",
     )
     expect(s).toBe(
       "message-from@example.com,message-to@example.com,Message Subject 1,message-id,2019-05-02",
@@ -162,7 +162,7 @@ describe("Pattern Substitution", () => {
     const actual = JSON.parse(
       PatternUtil.substitute(
         customMocks.attachmentContext,
-        '{"attachmentMatched":${attachment.matched},"messageMatched":${message.matched}}',
+        '{"attachmentMatched":{{attachment.matched}},"messageMatched":{{message.matched}}}',
       ),
     )
     expect(actual).toMatchObject({
@@ -174,10 +174,10 @@ describe("Pattern Substitution", () => {
   it("should substitute all thread attributes", () => {
     const s = PatternUtil.substitute(
       mocks.messageContext,
-      "${thread.firstMessageSubject}," +
-        "${thread.hasStarredMessages},${thread.id},${thread.isImportant},${thread.isInPriorityInbox}," +
-        "${thread.labels},${thread.lastMessageDate:date::yyyy-MM-dd},${thread.messageCount}," +
-        "${thread.permalink}",
+      "{{thread.firstMessageSubject}}," +
+        "{{thread.hasStarredMessages}},{{thread.id}},{{thread.isImportant}},{{thread.isInPriorityInbox}}," +
+        "{{thread.labels}},{{thread.lastMessageDate|formatDate('yyyy-MM-dd')}},{{thread.messageCount}}," +
+        "{{thread.permalink}}",
     )
     expect(s).toEqual(
       "Message Subject 1,false,threadId123,false,false,,2019-05-02,2,some-permalink-url",
@@ -187,9 +187,9 @@ describe("Pattern Substitution", () => {
   it("should handle a thread with one message and attachment", () => {
     const s = PatternUtil.substitute(
       mocks.attachmentContext,
-      "${message.from}/${message.to}/${attachment.contentType}" +
-        "/${message.subject}-${message.id}-${attachment.index}-${attachment.name}-" +
-        "${message.date:date::yyyy-MM-dd}",
+      "{{message.from}}/{{message.to}}/{{attachment.contentType}}" +
+        "/{{message.subject}}-{{message.id}}-{{attachment.index}}-{{attachment.name}}-" +
+        "{{message.date|formatDate('yyyy-MM-dd')}}",
     )
     expect(s).toBe(
       "message-from@example.com/message-to@example.com/application/pdf/Message Subject 1-message-id-0-attachment1.pdf-2019-05-02",
@@ -199,9 +199,9 @@ describe("Pattern Substitution", () => {
   it("should substitute advanced message + attachment pattern", () => {
     const s = PatternUtil.substitute(
       mocks.attachmentContext,
-      "${message.from}/${message.to}/${attachment.contentType}" +
-        "/${message.subject}-${message.id}-${attachment.index}-${attachment.name}-" +
-        "${message.date:date::yyyy-MM-dd}",
+      "{{message.from}}/{{message.to}}/{{attachment.contentType}}" +
+        "/{{message.subject}}-{{message.id}}-{{attachment.index}}-{{attachment.name}}-" +
+        "{{message.date|formatDate('yyyy-MM-dd')}}",
     )
     expect(s).toBe(
       "message-from@example.com/message-to@example.com/application/pdf/Message Subject 1-message-id-0-attachment1.pdf-2019-05-02",
@@ -211,9 +211,9 @@ describe("Pattern Substitution", () => {
   it("should substitute mixed message + attachment pattern", () => {
     const s = PatternUtil.substitute(
       mocks.attachmentContext,
-      "${message.from}/${message.to}/${attachment.contentType}/" +
-        "${message.subject}-${message.id}-${attachment.index}-${attachment.name}-" +
-        "${message.date:date::yyyy-MM-dd}",
+      "{{message.from}}/{{message.to}}/{{attachment.contentType}}/" +
+        "{{message.subject}}-{{message.id}}-{{attachment.index}}-{{attachment.name}}-" +
+        "{{message.date|formatDate('yyyy-MM-dd')}}",
     )
     expect(s).toBe(
       "message-from@example.com/message-to@example.com/application/pdf/Message Subject 1-message-id-0-attachment1.pdf-2019-05-02",
@@ -225,9 +225,9 @@ describe("Substitutions", () => {
     expect(
       PatternUtil.substitute(
         mocks.threadContext,
-        "${thread.firstMessageSubject},${thread.hasStarredMessages}," +
-          "${thread.id},${thread.isImportant},${thread.isInPriorityInbox},${thread.labels}," +
-          "${thread.lastMessageDate:date::yyyy-MM-dd},${thread.messageCount},${thread.permalink}",
+        "{{thread.firstMessageSubject}},{{thread.hasStarredMessages}}," +
+          "{{thread.id}},{{thread.isImportant}},{{thread.isInPriorityInbox}},{{thread.labels}}," +
+          "{{thread.lastMessageDate|formatDate('yyyy-MM-dd')}},{{thread.messageCount}},{{thread.permalink}}",
       ),
     ).toBe(
       "Message Subject 1,false,threadId123,false,false,,2019-05-02,2,some-permalink-url",
@@ -237,8 +237,8 @@ describe("Substitutions", () => {
     expect(
       PatternUtil.substitute(
         mocks.messageContext,
-        "${message.bcc},${message.cc},${message.date:date::yyyy-MM-dd},${message.from}," +
-          "${message.id},${message.replyTo},${message.subject},${message.to}",
+        "{{message.bcc}},{{message.cc}},{{message.date|formatDate('yyyy-MM-dd')}},{{message.from}}," +
+          "{{message.id}},{{message.replyTo}},{{message.subject}},{{message.to}}",
       ),
     ).toBe(
       "message-bcc@example.com,message-cc@example.com,2019-05-02,message-from@example.com,message-id,message-reply-to@example.com,Message Subject 1,message-to@example.com",
@@ -248,21 +248,19 @@ describe("Substitutions", () => {
     expect(
       PatternUtil.substitute(
         mocks.attachmentContext,
-        "${attachment.contentType},${attachment.hash},${attachment.isGoogleType},${attachment.name}," +
-          "${attachment.size}",
+        "{{attachment.contentType}},{{attachment.hash}},{{attachment.isGoogleType}},{{attachment.name}}," +
+          "{{attachment.size}}",
       ),
     ).toEqual(
       "application/pdf,aa0b8cc192a5d8d5b5d8ecda24fd0961b10ae283,false,attachment1.pdf,18",
     )
   })
   it("should substitute with processing context", () => {
-    const actual = JSON.parse(
-      PatternUtil.substitute(
-        mocks.processingContext,
-        '{"envRunMode":"${env.runMode}","envTimeZone":"${env.timezone}","dateNow":"${date.now:date::yyyy-MM-dd HH:mm:ss}","timerStartTime":"${timer.startTime:date::yyyy-MM-dd HH:mm:ss}"}',
-      ),
+    const actual = PatternUtil.substitute(
+      mocks.processingContext,
+      '{"envRunMode":"{{env.runMode}}","envTimeZone":"{{env.timezone}}","dateNow":"{{date.now|formatDate("yyyy-MM-dd HH:mm:ss")}}","timerStartTime":"{{timer.startTime|formatDate("yyyy-MM-dd HH:mm:ss")}}"}',
     )
-    expect(actual).toMatchObject({
+    expect(JSON.parse(actual)).toMatchObject({
       envRunMode: RunMode.DANGEROUS,
       envTimeZone: "Etc/UTC",
       dateNow: fakedSystemDateTimeString,
@@ -286,7 +284,7 @@ describe("Substitutions", () => {
     expect(
       PatternUtil.substitute(
         ctx,
-        "var1:${variables.custom.var1},var2:${variables.custom.var2},from:${user.email},to:${user.email}",
+        "var1:{{variables.custom.var1}},var2:{{variables.custom.var2}},from:{{user.email}},to:{{user.email}}",
       ),
     ).toBe(
       "var1:value1,var2:value2,from:my.email@gmail.com,to:my.email@gmail.com",
@@ -301,13 +299,13 @@ describe("Handle single messages", () => {
     expect(
       PatternUtil.substitute(
         mocks.attachmentContext,
-        "${thread.firstMessageSubject},${thread.hasStarredMessages},${thread.id},${thread.isImportant}," +
-          "${thread.isInPriorityInbox},${thread.labels},${thread.lastMessageDate:date::yyyy-MM-dd}," +
-          "${thread.messageCount},${thread.permalink}," +
-          "${message.bcc},${message.cc},${message.date:date::yyyy-MM-dd},${message.from}," +
-          "${message.id},${message.replyTo},${message.subject},${message.to}," +
-          "${attachment.contentType},${attachment.hash},${attachment.isGoogleType},${attachment.name}," +
-          "${attachment.size}",
+        "{{thread.firstMessageSubject}},{{thread.hasStarredMessages}},{{thread.id}},{{thread.isImportant}}," +
+          "{{thread.isInPriorityInbox}},{{thread.labels}},{{thread.lastMessageDate|formatDate('yyyy-MM-dd')}}," +
+          "{{thread.messageCount}},{{thread.permalink}}," +
+          "{{message.bcc}},{{message.cc}},{{message.date|formatDate('yyyy-MM-dd')}},{{message.from}}," +
+          "{{message.id}},{{message.replyTo}},{{message.subject}},{{message.to}}," +
+          "{{attachment.contentType}},{{attachment.hash}},{{attachment.isGoogleType}},{{attachment.name}}," +
+          "{{attachment.size}}",
       ),
     ).toBe(
       "Message Subject 1,false,threadId123,false,false,,2019-05-02,2,some-permalink-url," +
@@ -322,8 +320,8 @@ describe("Handle multiple attachments", () => {
     expect(
       PatternUtil.substitute(
         mocks.attachmentContext,
-        "${attachment.contentType},${attachment.hash},${attachment.isGoogleType},${attachment.name}," +
-          "${attachment.size}",
+        "{{attachment.contentType}},{{attachment.hash}},{{attachment.isGoogleType}},{{attachment.name}}," +
+          "{{attachment.size}}",
       ),
     ).toBe(
       "application/pdf,aa0b8cc192a5d8d5b5d8ecda24fd0961b10ae283,false,attachment1.pdf,18",
@@ -333,8 +331,8 @@ describe("Handle multiple attachments", () => {
     expect(
       PatternUtil.substitute(
         mocks.attachmentContext,
-        "${attachment.contentType},${attachment.hash},${attachment.isGoogleType},${attachment.name}," +
-          "${attachment.size}",
+        "{{attachment.contentType}},{{attachment.hash}},{{attachment.isGoogleType}},{{attachment.name}}," +
+          "{{attachment.size}}",
       ),
     ).toBe(
       "application/pdf,aa0b8cc192a5d8d5b5d8ecda24fd0961b10ae283,false,attachment1.pdf,18",
@@ -343,13 +341,13 @@ describe("Handle multiple attachments", () => {
 })
 describe("Handle multiple messages", () => {
   const pattern =
-    "${thread.firstMessageSubject},${thread.hasStarredMessages},${thread.id},${thread.isImportant}," +
-    "${thread.isInPriorityInbox},${thread.labels},${thread.lastMessageDate:date::yyyy-MM-dd}," +
-    "${thread.messageCount},${thread.permalink}," +
-    "${message.bcc},${message.cc},${message.date:date::yyyy-MM-dd},${message.from}," +
-    "${message.id},${message.replyTo},${message.subject},${message.to}," +
-    "${attachment.contentType},${attachment.hash},${attachment.isGoogleType},${attachment.name}," +
-    "${attachment.size}"
+    "{{thread.firstMessageSubject}},{{thread.hasStarredMessages}},{{thread.id}},{{thread.isImportant}}," +
+    "{{thread.isInPriorityInbox}},{{thread.labels}},{{thread.lastMessageDate|formatDate('yyyy-MM-dd')}}," +
+    "{{thread.messageCount}},{{thread.permalink}}," +
+    "{{message.bcc}},{{message.cc}},{{message.date|formatDate('yyyy-MM-dd')}},{{message.from}}," +
+    "{{message.id}},{{message.replyTo}},{{message.subject}},{{message.to}}," +
+    "{{attachment.contentType}},{{attachment.hash}},{{attachment.isGoogleType}},{{attachment.name}}," +
+    "{{attachment.size}}"
   it("should handle a thread with message 1 of 2 and one attachment", () => {
     expect(PatternUtil.substitute(mocks.attachmentContext, pattern)).toBe(
       "Message Subject 1,false,threadId123,false,false,,2019-05-02,2," +
@@ -372,8 +370,8 @@ describe("Matching", () => {
 describe("Placeholder Handling", () => {
   it("should find multiple occurrence of placeholder", () => {
     const s =
-      "${message.bcc},${message.cc},${date.now:date::yyyy-MM-dd HH:mm:ss},${message.from}," +
-      "${message.id},${message.replyTo},${message.subject},${message.to},${date.now:date::yyyy-MM-dd HH:mm:ss}"
+      "{{message.bcc}},{{message.cc}},{{date.now|formatDate('yyyy-MM-dd HH:mm:ss')}},{{message.from}}," +
+      "{{message.id}},{{message.replyTo}},{{message.subject}},{{message.to}},{{date.now|formatDate('yyyy-MM-dd HH:mm:ss')}}"
     const actual = PatternUtil.substitute(mocks.attachmentContext, s)
     expect(actual).toEqual(
       `message-bcc@example.com,message-cc@example.com,${fakedSystemDateTimeString},message-from@example.com,message-id,message-reply-to@example.com,Message Subject 1,message-to@example.com,${fakedSystemDateTimeString}`,

@@ -3,14 +3,14 @@ function actionExportRun() {
     description: "Export a thread or message as HTML or PDF.",
     settings: {
       logSheetLocation:
-        "/GmailProcessor-Tests/logsheet-${date.now:date::yyyy-MM}",
+        "/GmailProcessor-Tests/logsheet-{{date.now|formatDate('yyyy-MM')}}",
       markProcessedMethod: "mark-read",
     },
     global: {
       thread: {
         match: {
           query:
-            '-in:trash -in:drafts -in:spam after:${date.now:date::yyyy-MM-dd} is:unread subject:"[GmailProcessor-Test] actionExport"',
+            "-in:trash -in:drafts -in:spam after:{{date.now|formatDate('yyyy-MM-dd')}} is:unread subject:\"[GmailProcessor-Test] actionExport\"",
           maxMessageCount: -1,
           minMessageCount: 1,
         },
@@ -19,7 +19,7 @@ function actionExportRun() {
             name: "thread.exportAsHtml",
             args: {
               location:
-                "/GmailProcessor-Tests/actions/actionExport/thread-${thread.id}-${thread.firstMessageSubject}.html",
+                "/GmailProcessor-Tests/actions/actionExport/thread-{{thread.id}}-{{thread.firstMessageSubject}}.html",
               conflictStrategy: "replace",
             },
           },
@@ -27,7 +27,7 @@ function actionExportRun() {
             name: "thread.exportAsPdf",
             args: {
               location:
-                "/GmailProcessor-Tests/pr-291/thread-${thread.id}-${thread.firstMessageSubject}.pdf",
+                "/GmailProcessor-Tests/pr-291/thread-{{thread.id}}-{{thread.firstMessageSubject}}.pdf",
               conflictStrategy: "replace",
             },
           },
@@ -39,7 +39,7 @@ function actionExportRun() {
             name: "message.exportAsHtml",
             args: {
               location:
-                "/GmailProcessor-Tests/pr-291/message-${message.id}-${message.subject}.html",
+                "/GmailProcessor-Tests/pr-291/message-{{message.id}}-{{message.subject}}.html",
               conflictStrategy: "replace",
             },
           },
@@ -47,7 +47,7 @@ function actionExportRun() {
             name: "message.exportAsPdf",
             args: {
               location:
-                "/GmailProcessor-Tests/pr-291/message-${message.id}-${message.subject}.pdf",
+                "/GmailProcessor-Tests/pr-291/message-{{message.id}}-{{message.subject}}.pdf",
               conflictStrategy: "replace",
             },
           },
@@ -58,7 +58,7 @@ function actionExportRun() {
       {
         match: {
           query:
-            "from:${user.email} to:${user.email} subject:'GmailProcessor-Test'",
+            "from:{{user.email}} to:{{user.email}} subject:'GmailProcessor-Test'",
         },
       },
     ],

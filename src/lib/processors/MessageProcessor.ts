@@ -52,7 +52,7 @@ export class MessageProcessor extends BaseProcessor {
       if (!RegexUtils.matchRegExp(matchConfig.body, message.getBody()))
         return RegexUtils.noMatch(
           ctx,
-          `body '${message.getBody().slice(0, 32)}...' does not match '${
+          `body '${this.cutLogMessage(message.getBody())}' does not match '${
             matchConfig.body
           }'`,
         )
@@ -66,9 +66,9 @@ export class MessageProcessor extends BaseProcessor {
       )
         return RegexUtils.noMatch(
           ctx,
-          `plainBody '${message
-            .getPlainBody()
-            .slice(0, 32)}...' does not match '${matchConfig.plainBody}'`,
+          `plainBody '${this.cutLogMessage(
+            message.getPlainBody(),
+          )}' does not match '${matchConfig.plainBody}'`,
         )
       if (!RegexUtils.matchRegExp(matchConfig.to, message.getTo()))
         return RegexUtils.noMatch(

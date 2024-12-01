@@ -22,7 +22,7 @@ import {
  * * Capture the date as the final part of the subject using the capture group `(?<date>...)`
  *
  * The extracted data is finally used to dynamically define the location of the attachment to be stored using:
- * `.../Reports/${message.subject.match.school}/All Reports/${message.subject.match.reportType}/${message.subject.match.reportSubType}/${message.subject.match.date}-${attachment.name}`
+ * `.../Reports/{{message.subject.match.school}}/All Reports/{{message.subject.match.reportType}}/{{message.subject.match.reportSubType}}/{{message.subject.match.date}}-{{attachment.name}}`
  */
 export const info: ExampleInfo = {
   name: "regularExpressions",
@@ -36,7 +36,7 @@ export const info: ExampleInfo = {
 export const initConfig: E2EInitConfig = {
   mails: [
     {
-      subject: `${info.name} School A-Internal-Reading-\${date.now:date::yyyy-MM-dd}`,
+      subject: `${info.name} School A-Internal-Reading-{{date.now|formatDate('yyyy-MM-dd')}}`,
       attachments: ["sample.docx"],
     },
   ],
@@ -50,7 +50,7 @@ export const runConfig: Config = {
   global: {
     thread: {
       match: {
-        query: `has:attachment -in:trash -in:drafts -in:spam after:\${date.now:date::yyyy-MM-dd} is:unread subject:"${E2EDefaults.EMAIL_SUBJECT_PREFIX}${info.name}"`,
+        query: `has:attachment -in:trash -in:drafts -in:spam after:{{date.now|formatDate('yyyy-MM-dd')}} is:unread subject:"${E2EDefaults.EMAIL_SUBJECT_PREFIX}${info.name}"`,
       },
     },
   },
@@ -74,7 +74,7 @@ export const runConfig: Config = {
                 {
                   name: "attachment.store",
                   args: {
-                    location: `${E2EDefaults.DRIVE_TESTS_BASE_PATH}/${info.name}/Reports/\${message.subject.match.school}/All Reports/\${message.subject.match.reportType}/\${message.subject.match.reportSubType}/\${message.subject.match.date}-\${attachment.name}`,
+                    location: `${E2EDefaults.DRIVE_TESTS_BASE_PATH}/${info.name}/Reports/{{message.subject.match.school}}/All Reports/{{message.subject.match.reportType}}/{{message.subject.match.reportSubType}}/{{message.subject.match.date}}-{{attachment.name}}`,
                     conflictStrategy: ConflictStrategy.UPDATE,
                   },
                 },

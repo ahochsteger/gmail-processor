@@ -7,7 +7,8 @@
     "gomplate@3",
     "google-clasp@2",
     "nodejs@22",
-    "renovate@latest"
+    "renovate@latest",
+    "antlr@4"
   ],
   "shell": {
     "init_hook": ["echo 'Welcome to gmail-processor devbox!' > /dev/null"],

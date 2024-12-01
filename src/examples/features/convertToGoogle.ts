@@ -30,13 +30,13 @@ export const runConfig: Config = {
   description: info.description,
   settings: {
     logSheetLocation:
-      "/GmailProcessor-Tests/logsheet-${date.now:date::yyyy-MM}",
+      "/GmailProcessor-Tests/logsheet-{{date.now|formatDate('yyyy-MM')}}",
     markProcessedMethod: MarkProcessedMethod.MARK_MESSAGE_READ,
   },
   global: {
     thread: {
       match: {
-        query: `has:attachment -in:trash -in:drafts -in:spam after:\${date.now:date::yyyy-MM-dd} is:unread subject:"${E2EDefaults.EMAIL_SUBJECT_PREFIX}${info.name}"`,
+        query: `has:attachment -in:trash -in:drafts -in:spam after:{{date.now|formatDate('yyyy-MM-dd')}} is:unread subject:"${E2EDefaults.EMAIL_SUBJECT_PREFIX}${info.name}"`,
         maxMessageCount: -1,
         minMessageCount: 1,
       },
@@ -46,7 +46,7 @@ export const runConfig: Config = {
     {
       match: {
         query:
-          "from:${user.email} to:${user.email} subject:'Test with office attachments'",
+          "from:{{user.email}} to:{{user.email}} subject:'Test with office attachments'",
       },
       attachments: [
         {
@@ -60,7 +60,7 @@ export const runConfig: Config = {
               name: "attachment.store",
               args: {
                 conflictStrategy: ConflictStrategy.REPLACE,
-                location: `${E2EDefaults.DRIVE_TESTS_BASE_PATH}/\${attachment.name}`,
+                location: `${E2EDefaults.DRIVE_TESTS_BASE_PATH}/{{attachment.name}}`,
               },
             },
             {
@@ -68,7 +68,7 @@ export const runConfig: Config = {
               name: "attachment.store",
               args: {
                 conflictStrategy: ConflictStrategy.REPLACE,
-                location: `${E2EDefaults.DRIVE_TESTS_BASE_PATH}/\${attachment.name.match.basename}`,
+                location: `${E2EDefaults.DRIVE_TESTS_BASE_PATH}/{{attachment.name.match.basename}}`,
                 toMimeType: "application/vnd.google-apps.document",
               },
             },
@@ -85,7 +85,7 @@ export const runConfig: Config = {
               name: "attachment.store",
               args: {
                 conflictStrategy: ConflictStrategy.REPLACE,
-                location: `${E2EDefaults.DRIVE_TESTS_BASE_PATH}/\${attachment.name}`,
+                location: `${E2EDefaults.DRIVE_TESTS_BASE_PATH}/{{attachment.name}}`,
               },
             },
             {
@@ -94,7 +94,7 @@ export const runConfig: Config = {
               name: "attachment.store",
               args: {
                 conflictStrategy: ConflictStrategy.REPLACE,
-                location: `${E2EDefaults.DRIVE_TESTS_BASE_PATH}/\${attachment.name.match.basename}`,
+                location: `${E2EDefaults.DRIVE_TESTS_BASE_PATH}/{{attachment.name.match.basename}}`,
                 toMimeType: "application/vnd.google-apps.presentation",
               },
             },
@@ -111,7 +111,7 @@ export const runConfig: Config = {
               name: "attachment.store",
               args: {
                 conflictStrategy: ConflictStrategy.REPLACE,
-                location: `${E2EDefaults.DRIVE_TESTS_BASE_PATH}/\${attachment.name}`,
+                location: `${E2EDefaults.DRIVE_TESTS_BASE_PATH}/{{attachment.name}}`,
               },
             },
             {
@@ -120,7 +120,7 @@ export const runConfig: Config = {
               name: "attachment.store",
               args: {
                 conflictStrategy: ConflictStrategy.REPLACE,
-                location: `${E2EDefaults.DRIVE_TESTS_BASE_PATH}/\${attachment.name.match.basename}`,
+                location: `${E2EDefaults.DRIVE_TESTS_BASE_PATH}/{{attachment.name.match.basename}}`,
                 toMimeType: "application/vnd.google-apps.spreadsheet",
               },
             },

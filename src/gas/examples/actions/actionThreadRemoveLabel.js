@@ -6,7 +6,7 @@ function actionThreadRemoveLabelRun() {
       thread: {
         match: {
           query:
-            "from:${user.email} to:${user.email} after:${date.now:date::yyyy-MM-dd} subject:'[GmailProcessor-Test] actionThreadRemoveLabel'",
+            "from:{{user.email}} to:{{user.email}} after:{{date.now|formatDate('yyyy-MM-dd')}} subject:'[GmailProcessor-Test] actionThreadRemoveLabel'",
         },
       },
     },
