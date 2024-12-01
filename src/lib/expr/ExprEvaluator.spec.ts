@@ -1,3 +1,4 @@
+import { ConfigMocks } from "../../test/mocks/ConfigMocks"
 import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
 import { ExprEvaluator } from "./ExprEvaluator"
 
@@ -14,6 +15,14 @@ describe("parse()", () => {
     )
     expect(tree).not.toBeNull()
   })
+  it("should handle invalid legacy expressions", () => {
+    expect(() => ExprEvaluator.parse("${message.date:invalid}")).toThrow(
+      "SyntaxError",
+    )
+  })
+})
+
+describe("evaluate()", () => {
   it("should evaluate an expression", () => {
     const actual = ExprEvaluator.evaluate(
       mocks.messageContext,
@@ -21,9 +30,6 @@ describe("parse()", () => {
     )
     expect(actual).toEqual("/GmailProcessor-Tests/logsheet-2023-06")
   })
-})
-
-describe("evaluate()", () => {
   it("should evaluate an expression with no filter function", () => {
     expect(
       ExprEvaluator.evaluate(mocks.messageContext, "{{message.subject}}"),
@@ -61,14 +67,55 @@ describe("evaluate()", () => {
 })
 
 describe("evaluate() legacy expressions", () => {
-  it("should detect legacy placeholder expression types", () => {
+  const legacyMocks = MockFactory.newCustomMocks(
+    ConfigMocks.newDefaultConfig(),
+    {
+      threads: [
+        {
+          labels: ["label1", "label2"],
+          messages: [
+            {
+              date: new Date("2024-12-01"),
+            },
+          ],
+        },
+      ],
+    },
+  )
+  it("should handle legacy placeholder expression 'date'", () => {
     const tree = ExprEvaluator.parse("${message.date:date::yyyy-MM-dd}")
-    expect(
-      tree.templatePart().filter((e) => e.expr()?.filterChain()).length,
-    ).toEqual(0)
     expect(
       tree.templatePart().filter((e) => e.legacyExpr()?.legacyPlaceholderExpr())
         .length,
     ).toEqual(1)
+  })
+  it("should evaluate legacy expression 'date'", () => {
+    const actual = ExprEvaluator.evaluate(
+      legacyMocks.messageContext,
+      "${message.date:date:-2d:yyyy-MM-dd}",
+    )
+    expect(actual).toEqual("2024-11-29")
+  })
+  it("should evaluate legacy expression 'offset'", () => {
+    const actual = ExprEvaluator.evaluate(
+      legacyMocks.messageContext,
+      "${message.date:offset-format:-2d:yyyy-MM-dd}",
+    )
+    expect(actual).toEqual("2024-11-29")
+  })
+  it("should evaluate legacy expression 'join'", () => {
+    const actual = ExprEvaluator.evaluate(
+      legacyMocks.messageContext,
+      "${thread.labels:join}",
+    )
+    expect(actual).toEqual("label1,label2")
+  })
+  it("should handle invalid legacy expressions", () => {
+    expect(() =>
+      ExprEvaluator.evaluate(
+        legacyMocks.messageContext,
+        "${message.date:invalid}",
+      ),
+    ).toThrow("SyntaxError")
   })
 })
