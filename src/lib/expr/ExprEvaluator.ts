@@ -2,11 +2,16 @@ import parseDuration from "parse-duration"
 import { Context, MetaInfo, ProcessingContext } from "./../Context"
 /* eslint-disable @typescript-eslint/no-extraneous-class */
 import {
+  ATNSimulator,
+  BaseErrorListener,
   CharStream,
   CommonTokenStream,
   ErrorNode,
   ParserRuleContext,
   ParseTreeWalker,
+  RecognitionException,
+  Recognizer,
+  Token,
 } from "antlr4ng"
 import { addMilliseconds, format, parse } from "date-fns"
 import { AttachmentContext, MessageContext, ThreadContext } from "../Context"
@@ -119,12 +124,23 @@ export class ExprListener extends ExprParserListener {
   }
   exitLegacyPlaceholderExpr = (ctx: LegacyPlaceholderExprContext) => {
     this.ctxs.parseCurrent = ctx
-    if (ctx.LegacyPlaceHolderModifierOffsetFormat()) {
+    const args: string | undefined = ctx.LegacyPlaceholderArgs()?.getText()
+    if (
+      ctx.LegacyPlaceHolderModifierDate() ||
+      ctx.LegacyPlaceHolderModifierOffsetFormat()
+    ) {
+      const [offset, format] = (args ?? "").split(":")
       this.value = ExpressionFilter.execute(
         this.ctxs,
         "offsetDate",
         this.value,
-        ctx.LegacyPlaceHolderModifierOffsetFormat()?.getText(),
+        offset,
+      )
+      this.value = ExpressionFilter.execute(
+        this.ctxs,
+        "formatDate",
+        this.value,
+        format,
       )
     }
     if (ctx.LegacyPlaceholderModifierFormat()) {
@@ -132,7 +148,7 @@ export class ExprListener extends ExprParserListener {
         this.ctxs,
         "formatDate",
         this.value,
-        ctx.LegacyPlaceholderModifierFormat()?.getText(),
+        args,
       )
     }
     if (ctx.LegacyPlaceholderModifierJoin()) {
@@ -140,7 +156,7 @@ export class ExprListener extends ExprParserListener {
         this.ctxs,
         "join",
         this.value,
-        ctx.LegacyPlaceholderArgs()?.getText() ?? ",",
+        args ?? ",",
       )
     }
   }
@@ -195,11 +211,13 @@ class ExpressionFilter {
         {
           // TODO: Assert DateType
           const fmt = args[0] as string
-          const durationValue = parseDuration(fmt)
-          if (!durationValue) {
-            throw new Error(`ERROR: Cannot parse date offset: ${fmt}`)
+          if (fmt.trim() != "") {
+            const durationValue = parseDuration(fmt)
+            if (!durationValue) {
+              throw new Error(`ERROR: Cannot parse date offset: ${fmt}`)
+            }
+            value = addMilliseconds(value as DateType, durationValue)
           }
-          value = addMilliseconds(value as DateType, durationValue)
         }
         break
       case "parseDate":
@@ -216,6 +234,21 @@ class ExpressionFilter {
         break
     }
     return value
+  }
+}
+
+export class ExprErrorListener extends BaseErrorListener {
+  syntaxError<S extends Token, T extends ATNSimulator>(
+    _recognizer: Recognizer<T>,
+    _offendingSymbol: S | null,
+    line: number,
+    column: number,
+    msg: string,
+    e: RecognitionException | null,
+  ): void {
+    throw new SyntaxError(`${msg} at line ${line} and column ${column}`, {
+      cause: e,
+    })
   }
 }
 
@@ -323,14 +356,23 @@ export class ExprEvaluator {
     return value as ValueType
   }
 
-  public static parse(expr: string) {
+  public static parse(expr: string): TemplateContext {
     const inputStream = CharStream.fromString(expr)
     const lexer = new ExprLexer(inputStream)
     const tokenStream = new CommonTokenStream(lexer)
     const parser = new ExprParser(tokenStream)
+    const errorListener = new ExprErrorListener()
+    parser.addErrorListener(errorListener)
     parser.buildParseTrees = true
-    const tree = parser.template()
-    return tree
+    let ctx: TemplateContext
+    try {
+      ctx = parser.template()
+    } catch (e) {
+      throw new SyntaxError(`${e?.toString()} in expression: ${expr}`, {
+        cause: e,
+      })
+    }
+    return ctx
   }
 
   public static evaluate(
@@ -339,7 +381,6 @@ export class ExprEvaluator {
     m: MetaInfo = ctx.meta,
     defaultValue: string = "",
   ): string {
-    //ctx.log.debug(`Evaluating expression '${expr}' ...`)
     const tree = this.parse(expr)
     const listener = new ExprListener(ctx, defaultValue, m)
     ParseTreeWalker.DEFAULT.walk(listener, tree)
