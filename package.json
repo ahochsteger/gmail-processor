@@ -140,6 +140,7 @@
   },
   "private": true,
   "dependencies": {
+    "@cantoo/pdf-lib": "^2.2.0",
     "addressparser": "^1.0.1",
     "ajv": "8.17.1",
     "class-transformer": "^0.5.1",
