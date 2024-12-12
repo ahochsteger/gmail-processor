@@ -57,7 +57,7 @@ jobs:
       - id: sonarcloud
         if: ${{ env.SONAR_TOKEN && !github.event.inputs.skip_sonarcloud }}
         name: SonarCloud Scan
-        uses: sonarsource/sonarcloud-github-action@e44258b109568baa0df60ed515909fc6c72cba92 # v2
+        uses: sonarsource/sonarcloud-github-action@02ef91109b2d589e757aefcfb2854c2783fd7b19 # v4
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
