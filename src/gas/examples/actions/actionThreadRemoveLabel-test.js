@@ -25,7 +25,7 @@ function actionThreadRemoveLabelTestConfig() {
     global: {
       thread: {
         match: {
-          query: `from:\${user.email} to:\${user.email} after:\${date.now:date::yyyy-MM-dd} subject:'${GmailProcessorLib.E2EDefaults.EMAIL_SUBJECT_PREFIX}${info.name}'`,
+          query: `from:{{user.email}} to:{{user.email}} after:{{date.now|formatDate('yyyy-MM-dd')}} subject:'${GmailProcessorLib.E2EDefaults.EMAIL_SUBJECT_PREFIX}${info.name}'`,
         },
       },
     },

@@ -9,7 +9,7 @@ function regularExpressionsRun() {
       thread: {
         match: {
           query:
-            'has:attachment -in:trash -in:drafts -in:spam after:${date.now:date::yyyy-MM-dd} is:unread subject:"[GmailProcessor-Test] regularExpressions"',
+            "has:attachment -in:trash -in:drafts -in:spam after:{{date.now|formatDate('yyyy-MM-dd')}} is:unread subject:\"[GmailProcessor-Test] regularExpressions\"",
         },
       },
     },
@@ -35,7 +35,7 @@ function regularExpressionsRun() {
                     name: "attachment.store",
                     args: {
                       location:
-                        "/GmailProcessor-Tests/e2e/regularExpressions/Reports/${message.subject.match.school}/All Reports/${message.subject.match.reportType}/${message.subject.match.reportSubType}/${message.subject.match.date}-${attachment.name}",
+                        "/GmailProcessor-Tests/e2e/regularExpressions/Reports/{{message.subject.match.school}}/All Reports/{{message.subject.match.reportType}}/{{message.subject.match.reportSubType}}/{{message.subject.match.date}}-{{attachment.name}}",
                       conflictStrategy: "update",
                     },
                   },

@@ -112,6 +112,14 @@ export abstract class BaseProcessor {
     return m
   }
 
+  public static cutLogMessage(msg: string, maxlen = 100): string {
+    if (msg.length > maxlen) {
+      return `${msg.slice(0, 100)}...`
+    } else {
+      return msg
+    }
+  }
+
   private static updateEnvContextMeta(
     ctx: EnvContext,
     addMeta: MetaInfo = {},
@@ -305,10 +313,11 @@ export abstract class BaseProcessor {
     actionResult: ActionReturnType,
   ): ProcessingResult {
     // result.executedActions.push({config:action, result:actionResult}) // TODO: Include action result here!
-    result.executedActions.push(action)
+    const executedAction = { config: action, result: actionResult }
+    result.executedActions.push(executedAction)
     if (!actionResult.ok) {
       result.status = ProcessingStatus.ERROR
-      result.failedAction = action
+      result.failedAction = executedAction
       result.error = actionResult.error
       const trace = this.getProcessingTrace(ctx, action, actionResult)
       throw new ProcessingError(
@@ -336,7 +345,7 @@ export abstract class BaseProcessor {
             actionResult = ctx.proc.actionRegistry.executeAction(
               ctx,
               action.name,
-              action.args as unknown as ActionArgsType,
+              action.args as ActionArgsType,
             )
             if (actionResult.actionMeta) {
               this.updateContextMeta(ctx, actionResult.actionMeta)

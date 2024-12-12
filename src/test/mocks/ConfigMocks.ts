@@ -35,7 +35,7 @@ export class ConfigMocks {
   public static newDefaultThreadActionConfigJson(): ThreadContextActionConfigType {
     return {
       args: {
-        location: `/${E2E_BASE_FOLDER_NAME}/example-\${message.subject}.pdf`,
+        location: `/${E2E_BASE_FOLDER_NAME}/example-{{message.subject}}.pdf`,
         conflictStrategy: ConflictStrategy.REPLACE,
       },
       name: "thread.storePDF",
@@ -137,7 +137,7 @@ export class ConfigMocks {
                     args: {
                       location:
                         EXISTING_FOLDER_NAME +
-                        "/${message.subject.match.1}/example-${attachment.name.match.attNr}.pdf",
+                        "/{{message.subject.match.1}}/example-{{attachment.name.match.attNr}}.pdf",
                       conflictStrategy: ConflictStrategy.REPLACE,
                     },
                   },
@@ -150,7 +150,7 @@ export class ConfigMocks {
                     name: "attachment.store",
                     args: {
                       location:
-                        "Folder3/Subfolder3/${att.basename}-${date:yyyy-MM-dd}.${att.ext}",
+                        "Folder3/Subfolder3/{{att.basename}}-{{date:yyyy-MM-dd}}.{{att.ext}}",
                       conflictStrategy: ConflictStrategy.SKIP,
                     },
                   },
@@ -231,7 +231,7 @@ export class ConfigMocks {
       rules: [
         {
           filter: "to:my.name+scans@gmail.com",
-          folder: "'Scans'-yyyy-MM-dd",
+          folder: "'Scans-'yyyy-MM-dd",
         },
         {
           filter: "from:example1@example.com",
@@ -245,7 +245,7 @@ export class ConfigMocks {
         {
           filter: "(from:example3a@example.com OR from:example3b@example.com)",
           folder: "'Examples/example3ab'",
-          filenameTo: "'file-'yyyy-MM-dd-'%s.txt'",
+          filenameTo: "'file-'yyyy-MM-dd'-%s.txt'",
           archive: true,
         },
         {
@@ -257,7 +257,7 @@ export class ConfigMocks {
           filter: "from:example4@example.com",
           folder: "'Examples/example4'",
           filenameFrom: "file.txt",
-          filenameTo: "'file-'yyyy-MM-dd-'%s.txt'",
+          filenameTo: "'file-'yyyy-MM-dd'-%s.txt'",
         },
       ],
     }
