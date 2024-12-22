@@ -209,10 +209,8 @@ function checkGuardedAction() {
   local guardedEnv="main"
   # Check if running on a valid environment
   if [[ "${GITHUB_ACTIONS:-}" != "true" ]] && [[ "${DEPLOYMENT_ENV:-}" == "${guardedEnv}" ]]; then
-    echo "ATTENTION: You're going to perform the guarded action '${action}' on the environment '${guardedEnv}'!"
-    read -r -p "Press CTRL+C to exit or ENTER to continue: "
-  else
-    echo "NOTE: Allowing guarded action '${action}' on the environment '${guardedEnv}'."
+    echo "ATTENTION: You're going to perform the guarded action '${action}' on the environment '${guardedEnv}'!" 1>&2
+    read -r -p "Press CTRL+C to exit or ENTER to continue: " 1>&2
   fi
 }
 
@@ -266,6 +264,34 @@ case "${cmd}" in
     runClaspWithRunAuth run "${functionName}"
     sleep "${CLASP_LOG_WAIT_SECONDS}"
     runClasp logs "${functionName}" "${logTimeSeconds}"
+  ;;
+  run-test)
+    functionName="${1:?}"
+    checkGuardedAction "${cmd}"
+    checkRunAuthFile
+    # Create named pipes
+    mkfifo stdout_pipe full_pipe
+    # Run the command with redirections in the background
+    runClaspWithRunAuth run "${functionName}" > >(tee build/full.log | tee full_pipe) 2>&1 > >(tee build/stdout.log | tee stdout_pipe >&2)
+    # Read from the pipes
+    out=$(cat stdout_pipe)
+    full=$(cat full_pipe)
+    # Remove the named pipes
+    rm stdout_pipe full_pipe
+    # Evaluate test output:
+    status=$(
+      echo "${out}" \
+      | grep -E -v '^Running in dev mode.$' \
+      | gojq -r .status \
+      || echo "failure"
+    )
+    if [[ "${status}" != "success" ]]; then
+      echo "Error running tests (status: ${status}):"
+      echo "${full}"
+      exit 1
+    else
+      echo "Status: ${status}"
+    fi
   ;;
   push)
     checkGuardedAction "${cmd}"
