@@ -1,5 +1,4 @@
-import parseDuration from "parse-duration"
-import { Context, MetaInfo, ProcessingContext } from "./../Context"
+import { Context, MetaInfo } from "./../Context"
 /* eslint-disable @typescript-eslint/no-extraneous-class */
 import {
   ATNSimulator,
@@ -13,9 +12,9 @@ import {
   Recognizer,
   Token,
 } from "antlr4ng"
-import { addMilliseconds, format, parse } from "date-fns"
+import { format } from "date-fns"
 import { AttachmentContext, MessageContext, ThreadContext } from "../Context"
-import { defaultDateFormat, getDateFnInfo } from "../utils/DateExpression"
+import { defaultDateFormat, executeFilter } from "./ExprFilter"
 import { ExprLexer } from "./generated/ExprLexer"
 import {
   DataRefNameContext,
@@ -44,7 +43,7 @@ export interface ExprState {
   filterArgs: ValueType[]
 }
 
-interface Contexts {
+export interface Contexts {
   data: MetaInfo
   gmailProcessor: Context
   parseRoot?: TemplateContext
@@ -111,8 +110,7 @@ export class ExprListener extends ExprParserListener {
   }
   exitFilterExpr = (ctx: FilterExprContext) => {
     this.ctxs.parseCurrent = ctx
-    this.value = ExpressionFilter.execute(
-      this.ctxs,
+    this.value = executeFilter(
       ctx.filterName().getText(),
       this.value,
       ...this.filterArgs,
@@ -130,34 +128,14 @@ export class ExprListener extends ExprParserListener {
       ctx.LegacyPlaceHolderModifierOffsetFormat()
     ) {
       const [offset, format] = (args ?? "").split(":")
-      this.value = ExpressionFilter.execute(
-        this.ctxs,
-        "offsetDate",
-        this.value,
-        offset,
-      )
-      this.value = ExpressionFilter.execute(
-        this.ctxs,
-        "formatDate",
-        this.value,
-        format,
-      )
+      this.value = executeFilter("offsetDate", this.value, offset)
+      this.value = executeFilter("formatDate", this.value, format)
     }
     if (ctx.LegacyPlaceholderModifierFormat()) {
-      this.value = ExpressionFilter.execute(
-        this.ctxs,
-        "formatDate",
-        this.value,
-        args,
-      )
+      this.value = executeFilter("formatDate", this.value, args)
     }
     if (ctx.LegacyPlaceholderModifierJoin()) {
-      this.value = ExpressionFilter.execute(
-        this.ctxs,
-        "join",
-        this.value,
-        args ?? ",",
-      )
+      this.value = executeFilter("join", this.value, args ?? ",")
     }
   }
   exitLegacyDataRefName = (ctx: LegacyDataRefNameContext) => {
@@ -177,63 +155,6 @@ export class ExprListener extends ExprParserListener {
     throw new Error(
       `Error parsing '${node.getText()}' in expression '${this.ctxs.parseRoot?.getText()}'`,
     )
-  }
-}
-
-class ExpressionFilter {
-  public static asType<T>(v: ValueType): T {
-    return v as T
-  }
-  public static execute(
-    ctxs: Contexts,
-    name: string,
-    value: ValueType,
-    ...args: ValueType[]
-  ): ValueType {
-    //console.log(name, value, args)
-    switch (name) {
-      case "formatDate":
-        {
-          // TODO: Assert DateType
-          const fmt: string =
-            (args[0] ?? "") != "" ? (args[0] as string) : defaultDateFormat
-          value = format(value as Date, fmt)
-        }
-        break
-      case "join":
-        ExprEvaluator.evaluateJoinExpression(
-          ctxs,
-          value as ValueBaseType[],
-          args[0] as string,
-        )
-        break
-      case "offsetDate":
-        {
-          // TODO: Assert DateType
-          const fmt = args[0] as string
-          if (fmt.trim() != "") {
-            const durationValue = parseDuration(fmt)
-            if (!durationValue) {
-              throw new Error(`ERROR: Cannot parse date offset: ${fmt}`)
-            }
-            value = addMilliseconds(value as DateType, durationValue)
-          }
-        }
-        break
-      case "parseDate":
-        // TODO: Assert string type
-        value = parse(value as string, args[0] as string, new Date())
-        break
-      default:
-        // TODO: Assert DateType
-        const fnInfo = getDateFnInfo(name)
-        if (!fnInfo) {
-          throw new Error(`Unknown function '${name}'`)
-        }
-        value = fnInfo.fn(value as Date)
-        break
-    }
-    return value
   }
 }
 
@@ -262,7 +183,7 @@ export class ExprEvaluator {
     switch (typeof value) {
       // TODO: Add support for boolean, number, bigint, symbol, function
       case "object":
-        stringValue = this.objectValueToString(ctxs, value, defaultValue)
+        stringValue = this.objectValueToString(value, defaultValue)
         break
       case "string":
         stringValue = value
@@ -278,27 +199,7 @@ export class ExprEvaluator {
     }
     return stringValue
   }
-  public static evaluateJoinExpression(
-    ctxs: Contexts,
-    value: ValueBaseType[],
-    separator?: string,
-  ): string | undefined {
-    if (Array.isArray(value)) {
-      separator =
-        separator ??
-        (ctxs.gmailProcessor as ProcessingContext).proc.config.settings
-          .defaultArrayJoinSeparator
-      return value.join(separator) // TODO: Maybe recursively evaluate each value before joining
-    } else {
-      ctxs.gmailProcessor.log.warn(
-        `Non-array type cannot be converted to string during ${ctxs.parseCurrent?.getText()} with value: ${JSON.stringify(
-          value,
-        )}`,
-      )
-    }
-  }
   public static objectValueToString(
-    ctxs: Contexts,
     value: object | null,
     defaultValue: string,
   ): string {
@@ -306,8 +207,10 @@ export class ExprEvaluator {
     switch (value?.constructor.name) {
       case "Array":
         stringValue =
-          this.evaluateJoinExpression(ctxs, value as ValueBaseType[], ",") ??
+          (executeFilter("join", value as ValueType) as string | undefined) ??
           defaultValue
+        // this.evaluateJoinExpression(ctxs, value as ValueBaseType[], ",") ??
+        // defaultValue
         break
       case "Date": {
         stringValue = format(value as Date, defaultDateFormat)
