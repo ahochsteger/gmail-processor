@@ -226,14 +226,14 @@ describe("createFile() convert", () => {
     expect(
       (
         mocks.driveApi
-          .Files as MockProxy<GoogleAppsScript.Drive.Collection.FilesCollection>
+          .Files as MockProxy<GoogleAppsScript.Drive_v3.Drive.V3.Collection.FilesCollection>
       ).copy,
     ).not.toHaveBeenCalled()
     expect(
       (
         mocks.driveApi
-          .Files as MockProxy<GoogleAppsScript.Drive.Collection.FilesCollection>
-      ).insert,
+          .Files as MockProxy<GoogleAppsScript.Drive_v3.Drive.V3.Collection.FilesCollection>
+      ).create,
     ).toBeCalled()
   })
 })

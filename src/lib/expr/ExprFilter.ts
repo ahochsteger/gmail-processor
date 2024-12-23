@@ -11,6 +11,7 @@ import {
   endOfSecond,
   endOfToday,
   endOfTomorrow,
+  endOfWeek,
   endOfYear,
   endOfYesterday,
   format,
@@ -19,6 +20,7 @@ import {
   lastDayOfISOWeekYear,
   lastDayOfMonth,
   lastDayOfQuarter,
+  lastDayOfWeek,
   lastDayOfYear,
   nextFriday,
   nextMonday,
@@ -35,6 +37,8 @@ import {
   previousThursday,
   previousTuesday,
   previousWednesday,
+  roundToNearestHours,
+  roundToNearestMinutes,
   startOfDay,
   startOfDecade,
   startOfHour,
@@ -46,6 +50,8 @@ import {
   startOfSecond,
   startOfToday,
   startOfTomorrow,
+  startOfWeek,
+  startOfWeekYear,
   startOfYear,
   startOfYesterday,
 } from "date-fns"
@@ -128,16 +134,15 @@ export const filterFunctions: Record<string, ExprInfoType> = {
   // Use this script to update all supported date-fns functions:
   (
     cat node_modules/date-fns/*.d.ts \
-    | grep -E -A 2 '^export declare function [a-zA-Z0-9]+<DateType extends Date>' \
-    | grep -E -B 2 '^\): DateType;' \
-    | grep -E '^export declare function' \
-    | sed -re 's/export declare function ([^<]+)<.+/\1/g' \
-    | grep -E -v '^(toDate|constructNow)$' \
+    | npx prettier --parser typescript --print-width 1000 --bracket-same-line \
+    | grep -E '^export declare function [A-Za-z]+<DateType extends Date, ResultDate extends Date = DateType>\(date: DateArg<DateType>, options\?: [A-Za-z]+Options<ResultDate>( \| undefined)?\): ResultDate$' \
+    | sed -re 's#.* function ([a-zA-Z]+)<.*#\1#g' \
     | sort \
     | awk '{print "  "$1": { lib: \"date-fns\", fn: "$1" as ExpressionFilterFunction },"}'
     cat node_modules/date-fns/*.d.ts \
-    | grep -E '^export declare function .+\(\): Date;$' \
-    | sed -re 's/export declare function ([^<]+)\(\).+/\1/g' \
+    | npx prettier --parser typescript --print-width 1000 --bracket-same-line \
+    | grep -E '^export declare function [A-Za-z]+(<ContextDate extends Date>\(options\?: [a-zA-Z]+Options<ContextDate> \| undefined\): ContextDate|<DateType extends Date, ResultDate extends Date = DateType>\(date: DateArg<DateType>, options\?: [a-zA-Z]+Options<ResultDate> | undefined\): ResultDate|<ResultDate extends Date = Date>\(options\?: [A-Za-z]+Options<ResultDate>\): ResultDate|<DateType extends Date, ResultDate extends Date = DateType>\(options\?: [A-Za-z]+Options<ResultDate> \| undefined\): ResultDate)$' \
+    | sed -re 's#.* function ([a-zA-Z]+)<.*#\1#g' \
     | sort \
     | awk '{print "  "$1": { lib: \"date-fns\", fn: "$1" as ExpressionFilterFunction, args: (..._args: ValueType[]) => [] },"}'
   ) | sort
@@ -170,6 +175,7 @@ export const filterFunctions: Record<string, ExprInfoType> = {
     fn: endOfTomorrow as ExpressionFilterFunction,
     args: (..._args: ValueType[]) => [],
   },
+  endOfWeek: { lib: "date-fns", fn: endOfWeek as ExpressionFilterFunction },
   endOfYear: { lib: "date-fns", fn: endOfYear as ExpressionFilterFunction },
   endOfYesterday: {
     lib: "date-fns",
@@ -195,6 +201,10 @@ export const filterFunctions: Record<string, ExprInfoType> = {
   lastDayOfQuarter: {
     lib: "date-fns",
     fn: lastDayOfQuarter as ExpressionFilterFunction,
+  },
+  lastDayOfWeek: {
+    lib: "date-fns",
+    fn: lastDayOfWeek as ExpressionFilterFunction,
   },
   lastDayOfYear: {
     lib: "date-fns",
@@ -244,6 +254,14 @@ export const filterFunctions: Record<string, ExprInfoType> = {
     lib: "date-fns",
     fn: previousWednesday as ExpressionFilterFunction,
   },
+  roundToNearestHours: {
+    lib: "date-fns",
+    fn: roundToNearestHours as ExpressionFilterFunction,
+  },
+  roundToNearestMinutes: {
+    lib: "date-fns",
+    fn: roundToNearestMinutes as ExpressionFilterFunction,
+  },
   startOfDay: { lib: "date-fns", fn: startOfDay as ExpressionFilterFunction },
   startOfDecade: {
     lib: "date-fns",
@@ -283,6 +301,11 @@ export const filterFunctions: Record<string, ExprInfoType> = {
     lib: "date-fns",
     fn: startOfTomorrow as ExpressionFilterFunction,
     args: (..._args: ValueType[]) => [],
+  },
+  startOfWeek: { lib: "date-fns", fn: startOfWeek as ExpressionFilterFunction },
+  startOfWeekYear: {
+    lib: "date-fns",
+    fn: startOfWeekYear as ExpressionFilterFunction,
   },
   startOfYear: { lib: "date-fns", fn: startOfYear as ExpressionFilterFunction },
   startOfYesterday: {

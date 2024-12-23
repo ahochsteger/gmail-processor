@@ -259,15 +259,15 @@ export class GDriveMocks {
     driveApi: MockProxy<GoogleAppsScript.Drive>,
     genericNewFile: MockProxy<GoogleAppsScript.Drive.File>,
   ): MockProxy<GoogleAppsScript.Drive> {
-    const files: MockProxy<GoogleAppsScript.Drive.Collection.FilesCollection> =
-      mock<GoogleAppsScript.Drive.Collection.FilesCollection>()
+    const files: MockProxy<GoogleAppsScript.Drive_v3.Drive.V3.Collection.FilesCollection> =
+      mock<GoogleAppsScript.Drive_v3.Drive.V3.Collection.FilesCollection>()
     files.copy
       .mockReturnValue({ id: genericNewFile.getId() })
       .mockName("copy-default")
-    files.insert
+    files.create
       .mockImplementation((resource) => {
         let file: GoogleAppsScript.Drive.File | null = null
-        const fileName = resource.title
+        const fileName = resource.name
         for (const p of genericNewFileNamePatterns) {
           if (fileName && new RegExp(p).exec(fileName)) {
             file = genericNewFile
@@ -290,7 +290,7 @@ export class GDriveMocks {
           )
         }
       })
-      .mockName("insert-default")
+      .mockName("create-default")
     driveApi.Files = files
     return driveApi
   }
