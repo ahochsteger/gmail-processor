@@ -17,7 +17,7 @@ function initAllTests() {
   )
 }
 
-function runAllTests(skipInit=true) {
+function runAllTests(skipInit = true) {
   return GmailProcessorLib.E2E.runAllTests(
     getTestConfigs(),
     skipInit,
