@@ -1,6 +1,6 @@
 import { ContextType, MetaInfo, MetaInfoType, RunMode } from "../../lib/Context"
 import { AttachmentActions } from "../../lib/actions/AttachmentActions"
-import { DATE_FNS_FUNCTIONS, ExprInfoType, defaultDateFormat } from "../../lib/utils/DateExpression"
+import { defaultDateFormat, ExprInfoType, filterFunctions } from "../../lib/expr/ExprFilter"
 import { PatternUtil } from "../../lib/utils/PatternUtil"
 import { ConfigMocks } from "../mocks/ConfigMocks"
 import { NEW_DOCS_FILE_NAME } from "../mocks/GDriveMocks"
@@ -18,6 +18,12 @@ const mocks = MockFactory.newCustomMocks(
 )
 const ctx = mocks.attachmentContext
 
+function log(s: string) {
+  if (process.env.GENERATING_DOCS==="true") {
+    process.stderr.write(`${s}\n`)
+  }
+}
+
 function write(s: string) {
   if (process.env.GENERATING_DOCS==="true") {
     process.stdout.write(`${s}\n`)
@@ -29,75 +35,86 @@ enum ActionContextType {
 }
 type PlaceholderContextType = ContextType | ActionContextType
 
-function genMetaInfoDocs(contextType: PlaceholderContextType, m: MetaInfo, position = "standard") {
-  if (position === "first") {
-    write("[")
-  }
-  write(`{"contextType":"${contextType}","placeholder":[`)
+function genMetaInfoDocs(contextType: PlaceholderContextType, m: MetaInfo) {
+  const data: unknown[] = []
+  data.push
   Object.keys(m)
     .sort()
-    .forEach((k, idx, arr) => {
+    .forEach((k, _idx, _arr) => {
       const stringValue = PatternUtil.stringValue(ctx, k, m)
       let deprInfo = m[k].deprecationInfo ?? ""
       let desc = m[k].description
       if (m[k].type === MetaInfoType.DATE) desc += ` ${dateInfo}`
       if (m[k].type === MetaInfoType.VARIABLE) desc += ` ${variableInfo}`
-      let condComma = ""
-      if (idx < arr.length - 1) {
-        condComma = ","
-      }
-      write(`  {"key":"${k}", "title":"${m[k].title}", "type": "${m[k].type}", "scope": "${contextType}", "example": ${JSON.stringify(stringValue)}, "deprecated": ${!!deprInfo}, "deprecationInfo": ${JSON.stringify(deprInfo)}, "description": ${JSON.stringify(desc)}}${condComma}`)
+      data.push({
+        key:k,
+        title: m[k].title,
+        type: m[k].type,
+        scope: contextType,
+        example: JSON.stringify(stringValue),
+        deprecated: !!deprInfo,
+        deprecationInfo: JSON.stringify(deprInfo),
+        description: desc,
+      })
     })
-    let suffix = ","
-    if (position === "last") {
-      suffix=""
-    }
-    write(`]}${suffix}`)
-    if (position === "last") {
-      write("]")
+    log(JSON.stringify(data))
+    return {
+      contextType: contextType,
+      placeholder: data
     }
   }
 
-function genDateExpressionDocs(
-  dateFnsVersion: string,
-  key: string,
+function genFunctionDocs(
+  name: string,
   info: ExprInfoType,
-  isLast: boolean
 ) {
-  write(`  {"key":"${key}", "type": "${info.type}", "description": "See function [${key}](https://date-fns.org/v${dateFnsVersion}/docs/${key}) of [date-fns](https://date-fns.org/)."}${isLast ? "" : ","}`)
+  const libDocs: Record<string,(name: string) => string> = {
+    "date-fns": (name: string) => `See function [${name}](https://date-fns.org/v${require("date-fns/package.json").version}/docs/${name}) of [date-fns](https://date-fns.org/).`,
+    "parse-duration": (_name: string) => `https://github.com/jkroso/parse-duration?tab=readme-ov-file#api`,
+  }
+  let desc = info.description ?? ""
+  if (info.lib && libDocs[info.lib]) {
+    const upstreamDesc = libDocs[info.lib](info.origFn ?? name)
+    desc += `\n${upstreamDesc}`
+  }
+  return {
+    key: name,
+    lib: info.lib,
+    description: desc,
+  }
 }
 
 describe("Generate Context Substitution Docs", () => {
+  const docs: unknown[] = []
   it("should generate environment context substitution docs", () => {
-    genMetaInfoDocs(
+    docs.push(genMetaInfoDocs(
       ContextType.ENV,
       ctx.envMeta,
-      "first",
-    )
+    ))
   })
   it("should generate processing context substitution docs", () => {
-    genMetaInfoDocs(
+    docs.push(genMetaInfoDocs(
       ContextType.PROCESSING,
       ctx.procMeta,
-    )
+    ))
   })
   it("should generate thread context substitution docs", () => {
-    genMetaInfoDocs(
+    docs.push(genMetaInfoDocs(
       ContextType.THREAD,
       ctx.threadMeta,
-    )
+    ))
   })
   it("should generate message context substitution docs", () => {
-    genMetaInfoDocs(
+    docs.push(genMetaInfoDocs(
       ContextType.MESSAGE,
       ctx.messageMeta,
-    )
+    ))
   })
   it("should generate attachment context substitution docs", () => {
-    genMetaInfoDocs(
+    docs.push(genMetaInfoDocs(
       ContextType.ATTACHMENT,
       ctx.attachmentMeta,
-    )
+    ))
   })
   it("should generate attachment action context substitution docs", () => {
     const result = AttachmentActions.extractText(ctx, {
@@ -106,22 +123,26 @@ describe("Generate Context Substitution Docs", () => {
         "Invoice date:\\s*(?<invoiceDate>[0-9-]+)\\s*Invoice number:\\s*(?<invoiceNumber>[0-9]+)",
     })
     if (result.actionMeta) {
-      genMetaInfoDocs(
+      docs.push(genMetaInfoDocs(
         ActionContextType.ACTION,
         result.actionMeta,
-        "last",
-      )
+      ))
     }
   })
+  it("should write the generated docs data file", () => {
+    const out = JSON.stringify(docs, null, 2)
+    log(out)
+    write(out)
+  })
 })
-describe("Generate Date Expression Substitution Docs", () => {
-  it("should generate date expression substitution docs", () => {
-    const dateFnsVersion = require("date-fns/package.json").version
-    write("[")
-    const expressions = Object.keys(DATE_FNS_FUNCTIONS)
-    expressions.forEach((k) => {
-      genDateExpressionDocs(dateFnsVersion, k, DATE_FNS_FUNCTIONS[k], k === expressions[expressions.length-1])
-    })
-    write("]")
+describe("Generate Expression Filter Function Docs", () => {
+  it("should generate date expression filter function docs", () => {
+    const docs: unknown[] = []
+    for (const [k, fnInfo] of Object.entries(filterFunctions)) {
+      docs.push(genFunctionDocs(k, fnInfo))
+    }
+    const out = JSON.stringify(docs, null, 2)
+    log(out)
+    write(out)
   })
 })

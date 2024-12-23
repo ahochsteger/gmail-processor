@@ -38,7 +38,7 @@
 
 **[Gmail Processor](https://github.com/ahochsteger/gmail-processor)** is an open-source [Google Apps Script](https://www.google.com/script/start/) library that automates the processing of Gmail messages and attachments by executing actions (e.g. store attachments in a GDrive folder, log information into a spreadsheet) depending on powerful matching criteria.
 
-![Dall-e generated image: A friendly smiling robot sitting on a table, sorting mails into three paper trays, colorful flat style, white background](./docs/static/img/gmail-processor-robot-320.png)
+![Dall-e 3 generated image: A friendly smiling robot sitting on a table, busily sorting mails into paper trays, with plants in the picture, colorful flat style, dark background](./docs/static/img/gmail-processor-robot-320.png)
 
 Gmail Processor is the successor of [Gmail2GDrive](https://github.com/ahochsteger/gmail-processor/tree/1.x) with vastly enhanced functionality, completely re-written in [TypeScript](https://www.typescriptlang.org/) with extensibility and stability in mind, using a modern development setup and automation all over the place (dependency updates, tests, documentation, releases, deployments). There's a convenient migration available to convert your old configuration to the new format (see [Migrating from GMail2GDrive](https://ahochsteger.github.io/gmail-processor/docs/migrating)).
 

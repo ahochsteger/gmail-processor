@@ -3909,7 +3909,7 @@
                 },
                 "query": {
                     "default": "",
-                    "description": "The GMail search query additional to the global query to find threads to be processed.\nSee [Search operators you can use with Gmail](https://support.google.com/mail/answer/7190?hl=en) for more information.",
+                    "description": "The GMail search query to find threads to be processed.\nThe search query is composed of the global thread query with the query of individual thread configs appended.\nIn case no global query is set the built-in default `has:attachment -in:trash -in:drafts -in:spam newer_than:1d` is used.\nSee [Search operators you can use with Gmail](https://support.google.com/mail/answer/7190?hl=en) for more information.",
                     "title": "query",
                     "type": "string"
                 }
