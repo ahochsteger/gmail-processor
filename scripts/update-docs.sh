@@ -19,6 +19,7 @@ function extractAllDocs() {
   npx typedoc \
     --json "${jsonfile}" \
     --readme none \
+    --exclude 'src/**/generated/**/*.ts' \
     'src/lib/**/*.ts'
 }
 

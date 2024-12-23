@@ -53,7 +53,7 @@ include "update-docs-generate-common";
         (if (.example|length==0) then "" else "`" + (if (.example|length>32) then (.example[0:32]+"...") else .example end) + "`" end)
       ]
       | join(" | ")
-      | gsub("\n";"<br>")
+      | gsub("\n";"<br />")
       | "| " + . + " |"
     )
   ]
@@ -78,7 +78,7 @@ include "update-docs-generate-common";
         .description
       ]
       | join(" | ")
-      | gsub("\n";"<br>")
+      | gsub("\n";"<br />")
       | "| " + . + " |"
     )
   ]
