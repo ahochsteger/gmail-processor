@@ -247,13 +247,13 @@ export class DriveUtils {
       return file
     } else {
       // Convert converted document
-      const fileMetadata: GoogleAppsScript.Drive.Schema.File = {
+      const fileMetadata: GoogleAppsScript.Drive_v3.Drive.V3.Schema.File = {
         description: fileData.description,
         mimeType: fileData.toMimeType,
-        parents: [{ id: parentFolder.getId() }],
-        title: filename,
+        parents: [parentFolder.getId()],
+        name: filename,
       }
-      const createdFile = ctx.env.driveApi.Files!.insert(
+      const createdFile = ctx.env.driveApi.Files.create(
         fileMetadata,
         fileData.blob,
       )
@@ -370,22 +370,22 @@ export class GDriveAdapter extends BaseAdapter {
     const docsFileLocation = args.docsFileLocation
       ? args.docsFileLocation
       : attachment.getName().replace(/\.pdf$/, "")
-    const insertResource = {
-      title: docsFileLocation, // TODO: Location contains path but this is not allowed here!
+    const createResource = {
+      name: docsFileLocation, // TODO: Location contains path but this is not allowed here!
       mimeType: attachment.getContentType(), // TODO: Allow overriding content type
-    }
-    const insertOptionalArgs = {
+    } as GoogleAppsScript.Drive_v3.Drive.V3.Schema.File
+    const createOptionalArgs = {
       ocr: true,
       ocrLanguage: args.language ?? "en",
-      fields: "id,title",
+      fields: "id,name",
     }
     this.ctx.log.debug(
-      `GDriveAdapter.extractAttachmentText(): inserting file resource=${JSON.stringify(insertResource)}, optionalArgs=${JSON.stringify(insertOptionalArgs)} ...`,
+      `GDriveAdapter.extractAttachmentText(): inserting file resource=${JSON.stringify(createResource)}, optionalArgs=${JSON.stringify(createOptionalArgs)} ...`,
     )
-    const docsFile = this.ctx.env.driveApi.Files!.insert(
-      insertResource,
+    const docsFile = this.ctx.env.driveApi.Files.create(
+      createResource,
       blob,
-      insertOptionalArgs,
+      createOptionalArgs,
     )
     this.ctx.log.debug(
       `GDriveAdapter.extractAttachmentText(): -> ${JSON.stringify(docsFile)}`,
