@@ -38,7 +38,7 @@
     "packages:check": "npm outdated",
     "packages:update": "npm update --save",
     "pre-commit": "npm run clean && npm run update && npm run build && npm run lint:fix && npm run lint && npm run test && npm run clean:docs && npm run build:docs",
-    "pre-push": "npm run pre-commit && npm run push && npm run e2e:init-run-all",
+    "pre-push": "npm run pre-commit && npm run push && npm run e2e",
     "push": "npx concurrently 'npm:push:*'",
     "push:examples": "scripts/clasp.sh examples push",
     "push:lib": "scripts/clasp.sh lib push",
