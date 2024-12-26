@@ -55,7 +55,8 @@
       "groupName": "docs-major",
       "matchUpdateTypes": ["major"],
       "automerge": false,
-      "semanticCommitType": "chore"
+      "semanticCommitType": "chore",
+      "matchPackageNames": ["!react", "!react-dom"]
     }
   ]
 }

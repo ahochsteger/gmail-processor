@@ -75,7 +75,7 @@ jobs:
       - name: Release Please
         if: ${{ !github.event.inputs.skip_release }}
         id: release
-        uses: google-github-actions/release-please-action@e4dc86ba9405554aeba3c6bb2d169500e7d3b4ee # v4
+        uses: googleapis/release-please-action@v4
         with:
           release-type: node # Or the appropriate release type for your project
       - id: coveralls
@@ -85,7 +85,7 @@ jobs:
       - id: sonarcloud
         if: ${{ !github.event.inputs.skip_sonarcloud }}
         name: SonarCloud Scan
-        uses: sonarsource/sonarcloud-github-action@02ef91109b2d589e757aefcfb2854c2783fd7b19 # v4
+        uses: SonarSource/sonarqube-scan-action@v4
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
