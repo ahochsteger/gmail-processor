@@ -4,7 +4,7 @@
   "schedule": ["on thursday"],
   "packageRules": [
     {
-      "description": "Github workflow dependencies",
+      "description": "Other non-major updates",
       "matchFileNames": [
         ".github/workflows/*.yaml",
         "devbox.json",
@@ -16,7 +16,7 @@
       "semanticCommitType": "build"
     },
     {
-      "description": "Github workflow dependencies",
+      "description": "Other major updates",
       "matchFileNames": [
         ".github/workflows/*.yaml",
         "devbox.json",
@@ -28,21 +28,21 @@
       "semanticCommitType": "build"
     },
     {
-      "description": "Primary package.json dependencies",
+      "description": "Lib non-major updates",
       "matchFileNames": ["package.json"],
       "groupName": "libs-non-major",
       "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
       "automerge": true
     },
     {
-      "description": "Primary package.json dependencies",
+      "description": "Lib major updates",
       "matchFileNames": ["package.json"],
       "groupName": "libs-major",
       "matchUpdateTypes": ["major"],
       "automerge": false
     },
     {
-      "description": "Docs package.json dependencies",
+      "description": "Docs non-major updates",
       "matchFileNames": ["docs/package.json"],
       "groupName": "docs-non-major",
       "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
@@ -50,7 +50,7 @@
       "semanticCommitType": "chore"
     },
     {
-      "description": "Docs package.json dependencies",
+      "description": "Docs docs major updates",
       "matchFileNames": ["docs/package.json"],
       "groupName": "docs-major",
       "matchUpdateTypes": ["major"],

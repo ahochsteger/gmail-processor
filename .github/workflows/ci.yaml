@@ -17,7 +17,7 @@ on:
       skip_release:
         description: "Skip release"
         type: boolean
-        default: true
+        default: false
       skip_sonarcloud:
         description: "Skip sonarcloud"
         type: boolean
@@ -32,9 +32,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       new_gas_version: ${{ steps.push-gas.outputs.new_gas_version }}
-      new_release_published: ${{ steps.release.outputs.new_release_published }}
-      new_release_version: ${{ steps.release.outputs.new_release_version }}
-      pages_version: ${{ steps.release-status.outputs.new_release_published == 'true' && steps.release-status.outputs.new_release_version || 'main' }}
+      pages_version: main # Simplified, as release-please handles versioning
       do_push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
     environment:
       name: main
@@ -53,14 +51,14 @@ jobs:
     steps:
       - id: checkout
         name: Checkout
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+        uses: actions/checkout@v3 # Use v3 or later
         with:
           persist-credentials: false
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
       - id: nodejs
         name: Use Node.js
-        uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4
+        uses: actions/setup-node@v3 # Use v3 or later
         with:
           node-version: 22.x
           cache: "npm"
@@ -74,49 +72,41 @@ jobs:
       - id: docs
         name: Build docs
         run: npm run ci:docs
-      - id: release-status
+      - name: Release Please
         if: ${{ !github.event.inputs.skip_release }}
-        name: Release Status
-        uses: cycjimmy/semantic-release-action@cb425203a562475bca039ba4dbf90c7f9ac790f4 # v4
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        id: release
+        uses: google-github-actions/release-please-action@v3
         with:
-          dry_run: true
+          release-type: node # Or the appropriate release type for your project
       - id: coveralls
         if: ${{ !github.event.inputs.skip_coveralls }}
         name: Coveralls
-        uses: coverallsapp/github-action@cfd0633edbd2411b532b808ba7a8b5e04f76d2c8 # v2
+        uses: coverallsapp/github-action@v2
       - id: sonarcloud
         if: ${{ !github.event.inputs.skip_sonarcloud }}
         name: SonarCloud Scan
-        uses: sonarsource/sonarcloud-github-action@02ef91109b2d589e757aefcfb2854c2783fd7b19 # v4
+        uses: sonarsource/sonarcloud-github-action@v4
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_PROJECT_VERSION: ${{ steps.release-status.outputs.new_release_published == 'true' && steps.release-status.outputs.new_release_version || '' }}
+          # SONAR_PROJECT_VERSION: ${{ steps.release-status.outputs.new_release_published == 'true' && steps.release-status.outputs.new_release_version || '' }} Remove this line
       - id: push-gas
         if: ${{ !github.event.inputs.skip_gas }}
         name: Push to GAS
         run: |
           npm run push
           echo "new_gas_version=$(cat build/gas/lib-version.txt)" >> "${GITHUB_OUTPUT}"
-      - id: release
-        if: ${{ !github.event.inputs.skip_release }}
-        name: Release
-        uses: cycjimmy/semantic-release-action@cb425203a562475bca039ba4dbf90c7f9ac790f4 # v4
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - id: deploy-lib
-        if: ${{ !github.event.inputs.skip_release && !github.event.inputs.skip_release && steps.release.outputs.new_release_published == 'true' }}
+        if: ${{ !github.event.inputs.skip_release && steps.release.outputs.release_created }} # Check if a release was created
         name: Deploy Lib
         run: npm run deploy
         env:
-          CLASP_DEPLOYMENT_NAME: ${{ steps.release.outputs.new_release_version }}
+          CLASP_DEPLOYMENT_NAME: ${{ steps.release.outputs.tag_name }} # Use the tag name from release-please
       - id: update-release-notes
-        if: ${{ !github.event.inputs.skip_release && steps.release.outputs.new_release_published == 'true' }}
+        if: ${{ !github.event.inputs.skip_release && steps.release.outputs.release_created }} # Check if a release was created
         name: Update Release Notes
         run: |
           npm run release:update
         env:
-          CLASP_DEPLOYMENT_NAME: ${{ steps.release.outputs.new_release_version }}
+          CLASP_DEPLOYMENT_NAME: ${{ steps.release.outputs.tag_name }} # Use the tag name from release-please
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
