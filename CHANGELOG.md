@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.13.1](https://github.com/ahochsteger/gmail-processor/compare/2.13.0...2.13.1) (2024-12-26)
+
+
+### Bug Fixes
+
+* **deps:** pin dependencies ([c0834a6](https://github.com/ahochsteger/gmail-processor/commit/c0834a68683301834d1eaa63f06d7ecff80a7774))
+
 # [2.13.0](https://github.com/ahochsteger/gmail-processor/compare/2.12.0...2.13.0) (2024-12-26)
 
 
