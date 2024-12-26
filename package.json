@@ -106,7 +106,7 @@
     "@types/addressparser": "1.0.3",
     "@types/crypto-js": "4.2.2",
     "@types/eslint__js": "8.42.3",
-    "@types/google-apps-script": "1.0.88",
+    "@types/google-apps-script": "1.0.89",
     "@types/jest": "29.5.14",
     "@types/node": "22.10.2",
     "@types/sha1": "1.1.5",
