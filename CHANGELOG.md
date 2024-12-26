@@ -1,5 +1,18 @@
 # Changelog
 
+# [2.13.0](https://github.com/ahochsteger/gmail-processor/compare/2.12.0...2.13.0) (2024-12-26)
+
+
+### Bug Fixes
+
+* legacy expression compatibility ([b39ca7b](https://github.com/ahochsteger/gmail-processor/commit/b39ca7b87501387407140ddd33c67db68092a967))
+
+
+### Features
+
+* major deps updates + add more date-fns functions ([c15a47b](https://github.com/ahochsteger/gmail-processor/commit/c15a47b7a09ec813f870684a12981272ea19b278))
+* new expression language ([3ea1982](https://github.com/ahochsteger/gmail-processor/commit/3ea19821e35a4a129d1d2c38ecc0b11b3d08a491))
+
 # [2.12.0](https://github.com/ahochsteger/gmail-processor/compare/2.11.1...2.12.0) (2024-07-13)
 
 
