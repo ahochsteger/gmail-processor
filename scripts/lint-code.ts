@@ -1,4 +1,5 @@
 import * as fs from "fs"
+import path from "path"
 
 type ESLintSupression = {
   kind: string
@@ -37,6 +38,13 @@ function logEntry(level: string, e: ESLintEntry) {
 
 if (process.argv.length < 3) {
   console.error("Missing arguments: Path to eslint json file")
+  process.exit(1)
+}
+const filePath = path.normalize(process.argv[2])
+if (filePath.includes("..")) {
+  console.error(
+    `Invalid path to eslint json file: '${filePath}' must not contain '..'!`,
+  )
   process.exit(1)
 }
 const results = JSON.parse(
