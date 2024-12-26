@@ -55,12 +55,6 @@ export class DriveUtils {
     const { filename } = locationInfo
     const parentFolder = this.getParentFolder(ctx.env.gdriveApp, locationInfo)
 
-    if (!parentFolder) {
-      const errorMessage = `Invalid parent folder: ${location}`
-      ctx.log.error(errorMessage)
-      throw new Error(errorMessage)
-    }
-
     const existingFiles = parentFolder.getFilesByName(filename)
     return {
       locationInfo,
@@ -193,9 +187,6 @@ export class DriveUtils {
     const { folderId, pathSegments } = locationInfo
     if (folderId) {
       parentFolder = gdriveApp.getFolderById(folderId)
-      if (!parentFolder) {
-        throw new Error(`Invalid parent folder ID: ${folderId}`)
-      }
     } else {
       parentFolder = gdriveApp.getRootFolder()
     }
@@ -257,7 +248,7 @@ export class DriveUtils {
         fileMetadata,
         fileData.blob,
       )
-      if (!createdFile?.id) {
+      if (!createdFile.id) {
         throw new Error(
           `Failed creating file '${filename}' ${fileData.toMimeType ? " (using MimeType '" + fileData.toMimeType + "')" : ""}!`,
         )
@@ -280,7 +271,7 @@ export class DriveUtils {
     fileData: FileContent,
   ): GoogleAppsScript.Drive.File {
     ctx.log.info(`Updating existing file '${file.getName()}' ...`)
-    ctx.env.driveApi.Files!.update(
+    ctx.env.driveApi.Files.update(
       {
         mimeType: fileData.toMimeType ?? file.getMimeType(),
         description: fileData.description,
@@ -390,7 +381,7 @@ export class GDriveAdapter extends BaseAdapter {
     this.ctx.log.debug(
       `GDriveAdapter.extractAttachmentText(): -> ${JSON.stringify(docsFile)}`,
     )
-    const id = docsFile?.id
+    const id = docsFile.id
     if (!id) return { text: null }
     const file = this.ctx.env.gdriveApp.getFileById(id)
 
@@ -426,7 +417,7 @@ export class GDriveAdapter extends BaseAdapter {
 
     return {
       text: textContent,
-      file: file,
+      file: args.docsFileLocation ? file : undefined,
     }
   }
 

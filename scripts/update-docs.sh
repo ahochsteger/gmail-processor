@@ -44,6 +44,7 @@ function extractAllPlaceholder() {
     --testPathPattern 'docs/update-docs\.spec\.ts' \
     2>/dev/null \
   | gojq -s .
+  # TODO: The redirection to /dev/null hides execution errors - find a better solution! 
 }
 
 function generateActionDocs() {
