@@ -5,16 +5,24 @@
   "packageRules": [
     {
       "description": "Github workflow dependencies",
-      "matchFileNames": [".github/workflows/*.yaml"],
-      "groupName": "github-workflow-deps-non-major",
+      "matchFileNames": [
+        ".github/workflows/*.yaml",
+        "devbox.json",
+        ".devcontainer/Dockerfile"
+      ],
+      "groupName": "other-non-major",
       "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
       "automerge": true,
       "semanticCommitType": "build"
     },
     {
       "description": "Github workflow dependencies",
-      "matchFileNames": [".github/workflows/*.yaml"],
-      "groupName": "github-workflow-deps-major",
+      "matchFileNames": [
+        ".github/workflows/*.yaml",
+        "devbox.json",
+        ".devcontainer/Dockerfile"
+      ],
+      "groupName": "other-major",
       "matchUpdateTypes": ["major"],
       "automerge": false,
       "semanticCommitType": "build"
@@ -22,21 +30,21 @@
     {
       "description": "Primary package.json dependencies",
       "matchFileNames": ["package.json"],
-      "groupName": "primary-deps-non-major",
+      "groupName": "libs-non-major",
       "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
       "automerge": true
     },
     {
       "description": "Primary package.json dependencies",
       "matchFileNames": ["package.json"],
-      "groupName": "primary-deps-major",
+      "groupName": "libs-major",
       "matchUpdateTypes": ["major"],
       "automerge": false
     },
     {
       "description": "Docs package.json dependencies",
       "matchFileNames": ["docs/package.json"],
-      "groupName": "docs-deps-non-major",
+      "groupName": "docs-non-major",
       "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
       "automerge": true,
       "semanticCommitType": "chore"
@@ -44,7 +52,7 @@
     {
       "description": "Docs package.json dependencies",
       "matchFileNames": ["docs/package.json"],
-      "groupName": "docs-deps-major",
+      "groupName": "docs-major",
       "matchUpdateTypes": ["major"],
       "automerge": false,
       "semanticCommitType": "chore"
