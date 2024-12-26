@@ -17,7 +17,7 @@ on:
       skip_release:
         description: "Skip release"
         type: boolean
-        default: false
+        default: true
       skip_sonarcloud:
         description: "Skip sonarcloud"
         type: boolean
