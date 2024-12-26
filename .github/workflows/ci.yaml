@@ -51,14 +51,14 @@ jobs:
     steps:
       - id: checkout
         name: Checkout
-        uses: actions/checkout@v3 # Use v3 or later
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3 # Use v3 or later
         with:
           persist-credentials: false
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
       - id: nodejs
         name: Use Node.js
-        uses: actions/setup-node@v3 # Use v3 or later
+        uses: actions/setup-node@1a4442cacd436585916779262731d5b162bc6ec7 # v3 # Use v3 or later
         with:
           node-version: 22.x
           cache: "npm"
@@ -75,17 +75,17 @@ jobs:
       - name: Release Please
         if: ${{ !github.event.inputs.skip_release }}
         id: release
-        uses: google-github-actions/release-please-action@v3
+        uses: google-github-actions/release-please-action@db8f2c60ee802b3748b512940dde88eabd7b7e01 # v3
         with:
           release-type: node # Or the appropriate release type for your project
       - id: coveralls
         if: ${{ !github.event.inputs.skip_coveralls }}
         name: Coveralls
-        uses: coverallsapp/github-action@v2
+        uses: coverallsapp/github-action@cfd0633edbd2411b532b808ba7a8b5e04f76d2c8 # v2
       - id: sonarcloud
         if: ${{ !github.event.inputs.skip_sonarcloud }}
         name: SonarCloud Scan
-        uses: sonarsource/sonarcloud-github-action@v4
+        uses: sonarsource/sonarcloud-github-action@02ef91109b2d589e757aefcfb2854c2783fd7b19 # v4
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
