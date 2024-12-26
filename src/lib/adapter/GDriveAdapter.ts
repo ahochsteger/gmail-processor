@@ -372,7 +372,7 @@ export class GDriveAdapter extends BaseAdapter {
       : attachment.getName().replace(/\.pdf$/, "")
     const createResource = {
       name: docsFileLocation, // TODO: Location contains path but this is not allowed here!
-      mimeType: attachment.getContentType(), // TODO: Allow overriding content type
+      mimeType: "application/vnd.google-apps.document", // Using MimeType.GOOGLE_DOCS
     } as GoogleAppsScript.Drive_v3.Drive.V3.Schema.File
     const createOptionalArgs = {
       ocr: true,

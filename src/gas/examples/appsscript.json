@@ -16,11 +16,6 @@
     "enabledAdvancedServices": [
       {
         "userSymbol": "Drive",
-        "version": "v2",
-        "serviceId": "drive"
-      },
-      {
-        "userSymbol": "DriveAPIv3",
         "version": "v3",
         "serviceId": "drive"
       }
