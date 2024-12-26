@@ -270,14 +270,17 @@ case "${cmd}" in
     checkGuardedAction "${cmd}"
     checkRunAuthFile
     # Create named pipes
-    mkfifo stdout_pipe full_pipe
+    rm -f "${CLASP_BASEDIR}/stdout_pipe" "${CLASP_BASEDIR}/full_pipe"
+    mkfifo "${CLASP_BASEDIR}/stdout_pipe" "${CLASP_BASEDIR}/full_pipe"
     # Run the command with redirections in the background
-    runClaspWithRunAuth run "${functionName}" > >(tee build/full.log | tee full_pipe) 2>&1 > >(tee build/stdout.log | tee stdout_pipe >&2)
+    runClaspWithRunAuth run "${functionName}" \
+      > >(tee build/full.log | tee "${CLASP_BASEDIR}/full_pipe") 2>&1 \
+      > >(tee build/stdout.log | tee "${CLASP_BASEDIR}/stdout_pipe" >&2)
     # Read from the pipes
-    out=$(cat stdout_pipe)
-    full=$(cat full_pipe)
+    out=$(cat "${CLASP_BASEDIR}/stdout_pipe")
+    full=$(cat "${CLASP_BASEDIR}/full_pipe")
     # Remove the named pipes
-    rm stdout_pipe full_pipe
+    rm "${CLASP_BASEDIR}/stdout_pipe" "${CLASP_BASEDIR}/full_pipe"
     # Evaluate test output:
     status=$(
       echo "${out}" \
