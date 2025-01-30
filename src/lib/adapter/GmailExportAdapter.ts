@@ -76,6 +76,11 @@ export class GmailExportAdapter extends BaseAdapter {
     }
   }
 
+  protected isValidUrl(urlString: string): boolean {
+    const urlRegex = /^(?:(?:https?|data):\/\/[^\s]+)$/
+    return urlRegex.test(urlString)
+  }
+
   protected getDataUri(
     image?:
       | string
@@ -83,7 +88,7 @@ export class GmailExportAdapter extends BaseAdapter {
       | GoogleAppsScript.Base.Blob,
   ): string | null {
     let imageBlob: GoogleAppsScript.Base.Blob | null = null
-    if (typeof image === "string" && URL.canParse(image)) {
+    if (typeof image === "string" && this.isValidUrl(image)) {
       imageBlob = this.fetchRemoteFile(image)
     } else if (typeof image === "object") {
       imageBlob = image as GoogleAppsScript.Base.Blob // Note: GmailAttachment has all methods of Blob
