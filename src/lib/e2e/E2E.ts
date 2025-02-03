@@ -140,9 +140,12 @@ export class E2E {
       status = E2EStatus.SKIPPED
     } else {
       try {
-        const assertResult = assertion.skip
-          ? E2EStatus.SKIPPED
-          : assertion.assertFn(testConfig, procResult, ctx, this.expect)
+        const assertResult = assertion.assertFn(
+          testConfig,
+          procResult,
+          ctx,
+          this.expect,
+        )
         status = assertResult ? E2EStatus.SUCCESS : E2EStatus.FAILED
       } catch (e) {
         status = E2EStatus.ERROR
@@ -164,7 +167,7 @@ export class E2E {
     globals: E2EGlobalConfig,
     path: string,
   ): GoogleAppsScript.Base.BlobSource {
-    const url = `${globals.repoBaseUrl ?? "https://raw.githubusercontent.com/ahochsteger/gmail-processor"}/${globals.repoBranch ?? "main"}/${globals.repoBasePath ?? "src/e2e-test/files"}/${path}`
+    const url = `${globals.repoBaseUrl}/${globals.repoBranch}/${globals.repoBasePath}/${path}`
     ctx.log.debug(`Fetching '${url}' ...`)
     const blob = UrlFetchApp.fetch(url)
     ctx.log.debug(`Fetching '${url}' done.`)
@@ -208,9 +211,16 @@ export class E2E {
   ) {
     // TODO: Move logging out of there - do at the end of all tests!
     const indent = "  ".repeat(nestingLevel)
+    if (showNested && result.results) {
+      result.results.forEach((nestedResult) => {
+        this.logResults(ctx, nestedResult, showNested, nestingLevel + 1)
+      })
+    }
     switch (result.status) {
       case E2EStatus.ERROR:
-        ctx.log.error(`${indent}❌ Error: ${result.message} (${result.error})`)
+        ctx.log.error(
+          `${indent}❌ Error: ${result.message} (${String(result.error)})`,
+        )
         break
       case E2EStatus.FAILED:
         ctx.log.error(`${indent}👎 Failed: ${result.message}`)
@@ -221,11 +231,6 @@ export class E2E {
       case E2EStatus.SUCCESS:
         ctx.log.info(`${indent}✅ Success: ${result.message}`)
         break
-    }
-    if (showNested && result.results) {
-      result.results.forEach((nestedResult) => {
-        this.logResults(ctx, nestedResult, showNested, nestingLevel + 1)
-      })
     }
   }
 
@@ -349,16 +354,10 @@ export class E2E {
       let processingResult: ProcessingResult
       if (testConfig.migrationConfig) {
         ctx.log.info(`E2E.runTests(): Executing GmailProcessor ...`)
-        const convertedConfig = GmailProcessor.getEssentialConfig(
+        GmailProcessor.getEssentialConfig(
           V1ToV2Converter.v1ConfigToV2ConfigJson(testConfig.migrationConfig),
         )
         processingResult = newProcessingResult()
-        if (!convertedConfig) {
-          processingResult.status = ProcessingStatus.ERROR
-          processingResult.error = new Error(
-            "Converted v1 config with no result!",
-          )
-        }
       } else if (testConfig.runConfig) {
         ctx.log.info(`E2E.runTests(): Executing GmailProcessor.runWithJson ...`)
         processingResult = GmailProcessor.runWithJson(

@@ -98,7 +98,7 @@ export function newConfig(json: Config): RequiredConfig {
   })
 
   // Validate resulting config:
-  if (!config?.threads || config?.threads.length < 1) {
+  if (!config.threads || config.threads.length < 1) {
     throw new Error(
       "No thread configuration found! Make sure there is at least one thread configuration present!",
     )
@@ -111,14 +111,14 @@ export function normalizeConfig(config: Config): Config {
   config.threads = config.threads ?? []
 
   // Normalize top-level attachments config:
-  if (config.attachments !== undefined && config.attachments?.length > 0) {
+  if (config.attachments !== undefined && config.attachments.length > 0) {
     config.messages = config.messages ?? []
     config.messages.push({ attachments: config.attachments })
     delete config.attachments
   }
 
   // Normalize top-level messages config:
-  if (config.messages !== undefined && config.messages?.length > 0) {
+  if (config.messages !== undefined && config.messages.length > 0) {
     config.threads.push({ messages: config.messages })
     delete config.messages
   }

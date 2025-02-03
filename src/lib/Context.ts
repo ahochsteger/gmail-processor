@@ -49,7 +49,7 @@ type MetaInfoValueType =
       obj: Message | Attachment,
       cfg: MessageMatchConfig | AttachmentMatchConfig,
     ) => unknown)
-type MetaInfoEntry = {
+export type MetaInfoEntry = {
   deprecationInfo?: string
   description: string
   title: string
@@ -72,7 +72,7 @@ export function newMetaInfo(
   }
 }
 export type MetaInfo = {
-  [k: string]: MetaInfoEntry
+  [k: string]: MetaInfoEntry | undefined
 }
 
 type EnvInfo = {

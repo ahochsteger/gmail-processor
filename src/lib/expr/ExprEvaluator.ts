@@ -1,5 +1,3 @@
-import { Context, MetaInfo } from "./../Context"
-/* eslint-disable @typescript-eslint/no-extraneous-class */
 import {
   ATNSimulator,
   BaseErrorListener,
@@ -14,6 +12,7 @@ import {
 } from "antlr4ng"
 import { format } from "date-fns"
 import { AttachmentContext, MessageContext, ThreadContext } from "../Context"
+import { Context, MetaInfo } from "./../Context"
 import { defaultDateFormat, executeFilter } from "./ExprFilter"
 import { ExprLexer } from "./generated/ExprLexer"
 import {

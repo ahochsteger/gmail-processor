@@ -101,9 +101,9 @@ it("should extract matched regex from the attachment using OCR", () => {
   const invoiceDate = "2024-03-13"
   const invoiceNumber = "12345678"
   expect(
-    result.actionMeta!["attachment.extracted.match.invoiceDate"].value,
+    result.actionMeta!["attachment.extracted.match.invoiceDate"]?.value,
   ).toEqual(invoiceDate)
   expect(
-    result.actionMeta!["attachment.extracted.match.invoiceNumber"].value,
+    result.actionMeta!["attachment.extracted.match.invoiceNumber"]?.value,
   ).toEqual(invoiceNumber)
 })

@@ -82,7 +82,7 @@ export class LogAdapter extends BaseAdapter {
       value = args.level ?? LogLevel.INFO
     } else if (field.name === LOG_LOCATION_NAME) {
       value = args.location ?? ""
-    } else if (field?.ctxValues?.[ctx.type]) {
+    } else if (field.ctxValues?.[ctx.type]) {
       value = field.ctxValues[ctx.type] as string
     } else if (field.value !== undefined) {
       value = field.value ?? ""

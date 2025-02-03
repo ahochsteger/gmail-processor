@@ -42,6 +42,7 @@ function genMetaInfoDocs(contextType: PlaceholderContextType, m: MetaInfo) {
     .sort()
     .forEach((k, _idx, _arr) => {
       const stringValue = PatternUtil.stringValue(ctx, k, m)
+      if (!m[k]) return
       let deprInfo = m[k].deprecationInfo ?? ""
       let desc = m[k].description
       if (m[k].type === MetaInfoType.DATE) desc += ` ${dateInfo}`

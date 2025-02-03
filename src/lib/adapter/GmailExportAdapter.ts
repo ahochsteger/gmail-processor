@@ -58,7 +58,9 @@ export class GmailExportAdapter extends BaseAdapter {
       `GMailExportAdapter.getAvatar(): fetching from ${avatarUrl} ...`,
     )
     const image = this.fetchRemoteFile(avatarUrl)
-    this.ctx.log.debug(`GMailExportAdapter.getAvatar(): returning ${image}`)
+    this.ctx.log.debug(
+      `GMailExportAdapter.getAvatar(): returning ${String(image)}`,
+    )
     return image
   }
 
@@ -72,6 +74,9 @@ export class GmailExportAdapter extends BaseAdapter {
       })
       return response.getResponseCode() === 200 ? response.getBlob() : null
     } catch (e) {
+      this.ctx.log.warn(
+        `GMailExportAdapter.fetchRemoteFile(): Failed fetching avatar from url ${url} with error '${String(e)}'`,
+      )
       return null
     }
   }
@@ -114,7 +119,6 @@ export class GmailExportAdapter extends BaseAdapter {
     const images: GoogleAppsScript.Base.Blob[] = email
       .getAttachments({ includeInlineImages: true, includeAttachments: false })
       .map((att) => att.copyBlob())
-      .filter((blob) => blob)
     // process all img tags which reference "attachments"
     return this.processImgAttachments(html, images)
   }
@@ -199,9 +203,7 @@ export class GmailExportAdapter extends BaseAdapter {
     let html = ""
     const ind = "    "
     const subject = message.getSubject()
-    const date = message.getDate()
-      ? format(message.getDate().getTime(), "yyyy-MM-dd HH:mm:ss")
-      : ""
+    const date = format(message.getDate().getTime(), "yyyy-MM-dd HH:mm:ss")
     const from = this.addressesToHtml(addressparser(message.getFrom()))
     const to = this.addressesToHtml(addressparser(message.getTo()))
     const cc = this.addressesToHtml(addressparser(message.getCc()))
@@ -211,9 +213,7 @@ export class GmailExportAdapter extends BaseAdapter {
       let avatarBlob: GoogleAppsScript.Base.Blob | null = null
       if (
         opts.embedAvatar &&
-        (avatarBlob = this.getAvatar(
-          addressparser(message.getFrom())[0],
-        ) as GoogleAppsScript.Base.Blob)
+        (avatarBlob = this.getAvatar(addressparser(message.getFrom())[0]))
       ) {
         avatar = `<dd class="avatar"><img src="${this.getDataUri(avatarBlob)}" /></dd>`
       }

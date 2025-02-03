@@ -163,6 +163,7 @@ export class DriveUtils {
       throw new Error(`Invalid location format: ${location}`)
     }
     const folderId = matches.groups.folderId
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     let folderPath = matches.groups.folderPath ?? ""
     if (folderPath.startsWith("/")) folderPath = folderPath.slice(1)
     if (folderPath.endsWith("/")) folderPath = folderPath.slice(0, -1)

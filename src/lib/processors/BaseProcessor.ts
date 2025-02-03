@@ -264,7 +264,7 @@ export abstract class BaseProcessor {
     [k: string]: unknown
   } {
     const d: { [k: string]: unknown } = {}
-    Object.keys(ctx.meta).forEach((key) => (d[key] = ctx.meta[key].value))
+    Object.keys(ctx.meta).forEach((key) => (d[key] = ctx.meta[key]?.value))
     return d
   }
 
@@ -336,8 +336,8 @@ export abstract class BaseProcessor {
     result: ProcessingResult,
     ...actionSets: ActionConfig[][]
   ): ProcessingResult {
-    ;(actionSets || []).forEach((actions) => {
-      ;(actions || [])
+    actionSets.forEach((actions) => {
+      actions
         .filter((action) => action.processingStage === processingStage)
         .forEach((action) => {
           let actionResult: ActionReturnType
@@ -376,7 +376,7 @@ export abstract class BaseProcessor {
   }
 
   protected static isSet(
-    value: boolean | number | string | undefined,
+    value: boolean | number | string | null | undefined,
     unsetValue?: unknown,
   ) {
     return value !== undefined && value != null && value != unsetValue
@@ -391,7 +391,7 @@ export abstract class BaseProcessor {
   ): string {
     return [
       ...new Set(
-        [...(global ?? "").split(","), ...(local ?? "").split(",")].map((v) =>
+        [...(global ?? "").split(","), ...local.split(",")].map((v) =>
           v.trim(),
         ),
       ),
@@ -456,7 +456,7 @@ export abstract class BaseProcessor {
     config: OrderableEntityConfig<C>,
     orderRulesFn: (a: T, b: T, config: OrderableEntityConfig<C>) => number,
   ): T[] {
-    if (config.orderBy && config.orderDirection) {
+    if (config.orderBy) {
       entities = entities.sort((a: T, b: T) => orderRulesFn(a, b, config))
     }
     return entities

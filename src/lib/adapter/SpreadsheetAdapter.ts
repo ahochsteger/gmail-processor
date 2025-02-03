@@ -68,10 +68,12 @@ export class SpreadsheetAdapter extends BaseAdapter {
     return this.logSheet
   }
 
-  private appendToLogSheet(...args: unknown[]) {
+  private appendToLogSheet(...args: string[]) {
     const logSheet = this.getLogSheet()
     if (!logSheet) {
-      this.ctx.log.error(`Could not open logSheet! Could not log: ${args}`)
+      this.ctx.log.error(
+        `Could not open logSheet! Could not log: ${args.join(",")}`,
+      )
       return
     }
     this.ctx.log.debug(`Appending to logSheet: ${JSON.stringify(args)}`)
@@ -92,7 +94,7 @@ export class SpreadsheetAdapter extends BaseAdapter {
     return !!this.settings.logSheetLocation
   }
 
-  public initLogSheet(...args: unknown[]) {
+  public initLogSheet(...args: string[]) {
     if (this.settings.logSheetLocation) {
       const location = PatternUtil.substitute(
         this.ctx,

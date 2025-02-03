@@ -101,7 +101,7 @@ export function normalizeThreadConfig(config: ThreadConfig): ThreadConfig {
   config.messages = config.messages ?? []
 
   // Normalize top-level attachments config:
-  if (config.attachments !== undefined && config.attachments?.length > 0) {
+  if (config.attachments !== undefined && config.attachments.length > 0) {
     config.messages.push({ attachments: config.attachments })
     delete config.attachments
   }

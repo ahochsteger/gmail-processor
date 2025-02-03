@@ -1,3 +1,4 @@
+import { GMailMocks } from "../../test/mocks/GMailMocks"
 import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
 import { GmailExportAdapter } from "./GmailExportAdapter"
 
@@ -27,4 +28,20 @@ it("should generate a HTML message without header", () => {
     includeHeader: false,
   })
   expect(actual).not.toContain(emailHeader)
+})
+
+it("should process data urls in HTML", () => {
+  const img =
+    '<img width="16" height="16" alt="tick" src="data:image/gif;base64,R0lGODdhEAAQAMwAAPj7+FmhUYjNfGuxYYDJdYTIeanOpT+DOTuANXi/bGOrWj6CONzv2sPjv2CmV1unU4zPgISg6DJnJ3ImTh8Mtbs00aNP1CZSGy0YqLEn47RgXW8amasW7XWsmmvX2iuXiwAAAAAEAAQAAAFVyAgjmRpnihqGCkpDQPbGkNUOFk6DZqgHCNGg2T4QAQBoIiRSAwBE4VA4FACKgkB5NGReASFZEmxsQ0whPDi9BiACYQAInXhwOUtgCUQoORFCGt/g4QAIQA7">'
+  const messages = GMailMocks.getMessages({
+    messages: [
+      {
+        body: img,
+      },
+    ],
+  })
+  const actual = adapter.generateMessagesHtml(messages, {
+    includeHeader: false,
+  })
+  expect(actual).toContain(img)
 })

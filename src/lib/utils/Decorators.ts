@@ -9,13 +9,8 @@ function runModeAwareAction<T extends ProcessingContext>(
 ) {
   const originalMethod = descriptor.value
   descriptor.value = function (this: ActionProvider<T>, ...args: unknown[]) {
-    let runMode: RunMode | undefined
     const ctx = args[0] as ProcessingContext
-    if (args.length >= 1 && (args[0] as ProcessingContext)) {
-      runMode = (args[0] as ProcessingContext).env.runMode
-    } else {
-      throw new Error(`Unsupported method decoration: ${propertyKey}`)
-    }
+    const runMode = ctx.env.runMode
     const doCall = allowedRunModes.reduce(
       (acc, curr) => acc || curr === runMode,
       false,

@@ -168,19 +168,19 @@ export const filterFunctions: Record<string, ExprInfoType> = {
   endOfToday: {
     lib: "date-fns",
     fn: endOfToday as ExpressionFilterFunction,
-    args: (..._args: ValueType[]) => [],
+    args: () => [],
   },
   endOfTomorrow: {
     lib: "date-fns",
     fn: endOfTomorrow as ExpressionFilterFunction,
-    args: (..._args: ValueType[]) => [],
+    args: () => [],
   },
   endOfWeek: { lib: "date-fns", fn: endOfWeek as ExpressionFilterFunction },
   endOfYear: { lib: "date-fns", fn: endOfYear as ExpressionFilterFunction },
   endOfYesterday: {
     lib: "date-fns",
     fn: endOfYesterday as ExpressionFilterFunction,
-    args: (..._args: ValueType[]) => [],
+    args: () => [],
   },
   lastDayOfDecade: {
     lib: "date-fns",
@@ -295,12 +295,12 @@ export const filterFunctions: Record<string, ExprInfoType> = {
   startOfToday: {
     lib: "date-fns",
     fn: startOfToday as ExpressionFilterFunction,
-    args: (..._args: ValueType[]) => [],
+    args: () => [],
   },
   startOfTomorrow: {
     lib: "date-fns",
     fn: startOfTomorrow as ExpressionFilterFunction,
-    args: (..._args: ValueType[]) => [],
+    args: () => [],
   },
   startOfWeek: { lib: "date-fns", fn: startOfWeek as ExpressionFilterFunction },
   startOfWeekYear: {
@@ -311,7 +311,7 @@ export const filterFunctions: Record<string, ExprInfoType> = {
   startOfYesterday: {
     lib: "date-fns",
     fn: startOfYesterday as ExpressionFilterFunction,
-    args: (..._args: ValueType[]) => [],
+    args: () => [],
   },
 }
 

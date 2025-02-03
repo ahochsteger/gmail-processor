@@ -271,6 +271,7 @@ export class ThreadProcessor extends BaseProcessor {
       if (
         !RegexUtils.matchRegExp(
           matchConfig.firstMessageSubject,
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
           thread.getFirstMessageSubject() ?? "",
         )
       )
@@ -305,11 +306,10 @@ export class ThreadProcessor extends BaseProcessor {
         .map((l) => l.getName())
         .join(",")
       if (
-        !matchConfig.labels
-          .split(",")
-          .every((matchLabel) =>
-            thread.getLabels().map((l) => l.getName() === matchLabel),
-          )
+        !matchConfig.labels.split(",").every((matchLabel) =>
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+          thread.getLabels().map((l) => l.getName() === matchLabel),
+        )
       )
         return RegexUtils.noMatch(
           ctx,
@@ -320,7 +320,7 @@ export class ThreadProcessor extends BaseProcessor {
         ctx,
         `Skipping thread (id:${JSON.stringify(
           thread.getId(),
-        )}) due to error during match check: ${e} (matchConfig: ${JSON.stringify(
+        )}) due to error during match check: ${String(e)} (matchConfig: ${JSON.stringify(
           matchConfig,
         )})`,
       )
@@ -445,7 +445,7 @@ export class ThreadProcessor extends BaseProcessor {
     )
 
     // Process message configs:
-    if (config.messages) {
+    if (config.messages.length > 0) {
       result = MessageProcessor.processConfigs(ctx, config.messages, result)
     }
 

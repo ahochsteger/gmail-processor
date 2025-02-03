@@ -50,6 +50,7 @@ export class ActionRegistry {
       .concat(
         Object.getOwnPropertyNames(provider.constructor.prototype).filter(
           (actionName: string) =>
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             provider[actionName as keyof typeof provider] &&
             actionName !== "constructor",
         ),
@@ -73,10 +74,11 @@ export class ActionRegistry {
         `An action provider with name ${providerName} is already registered!`,
       )
     this.actionProviders.set(providerName, provider)
-    const actionNames = this.getActionNamesFromProvider(provider) || []
+    const actionNames = this.getActionNamesFromProvider(provider)
     actionNames.forEach((actionName) => {
       const fullActionName = `${providerName}.${String(actionName)}`
       const action =
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         provider[actionName as keyof typeof provider] ||
         Object.getPrototypeOf(provider).constructor[
           actionName as keyof typeof provider

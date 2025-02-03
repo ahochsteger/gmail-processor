@@ -1,34 +1,44 @@
 import { babel } from "@rollup/plugin-babel"
 import commonjs from "@rollup/plugin-commonjs"
 import resolve from "@rollup/plugin-node-resolve"
+import terser from "@rollup/plugin-terser"
 import typescript from "@rollup/plugin-typescript"
 import { defineConfig } from "rollup"
-import gas from "rollup-plugin-gas"
+import analyzer from "rollup-plugin-analyzer"
+import gas from "rollup-plugin-google-apps-script"
+import { visualizer } from "rollup-plugin-visualizer"
 
 export default defineConfig({
   context: "globalThis",
   input: "./build/lib/index.js",
-  // [
-  // "core-js/stable",
-  // "regenerator-runtime/runtime",
-  // "fastestsmallesttextencoderdecoder",
-  // "./build/lib/index.js",
-  // ],
   output: {
     file: "./build/gas/lib/GmailProcessorLib.js",
     format: "iife",
     name: "GmailProcessorLib",
-    sourcemap: true,
   },
   plugins: [
-    resolve(),
+    resolve({
+      //preferBuiltins: false,
+      // browser: true, // Required to activate polyfills for Google Apps Script
+    }),
     commonjs(),
     typescript(),
     babel({ babelHelpers: "bundled" }),
     gas({
-      comment: true,
+      gasEntryOptions: {
+        comment: false,
+      },
       moduleHeaderComment: true,
-      verbose: true,
+    }),
+    analyzer({
+      summaryOnly: true,
+      limit: 5,
+    }),
+    terser({
+      compress: true,
+    }),
+    visualizer({
+      filename: "build/bundle-stats.html",
     }),
   ],
 })

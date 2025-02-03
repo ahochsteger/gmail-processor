@@ -56,7 +56,7 @@ export default tseslint.config(
     },
     rules: {
       "@typescript-eslint/no-unused-vars": "warn",
-      "@typescript-eslint/no-extraneous-class": "warn",
+      "@typescript-eslint/no-extraneous-class": "off", // Reason: Requires refactoring classes with only static methods.
       "@typescript-eslint/no-unnecessary-condition": "warn",
       "@typescript-eslint/restrict-template-expressions": "warn",
     },
