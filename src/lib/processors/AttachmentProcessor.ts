@@ -85,7 +85,7 @@ export class AttachmentProcessor extends BaseProcessor {
     } catch (e) {
       return RegexUtils.matchError(
         ctx,
-        `Skipping attachment (name:${attachment.getName()}, hash:${attachment.getHash()}) due to error during match check: ${e} (matchConfig: ${JSON.stringify(
+        `Skipping attachment (name:${attachment.getName()}, hash:${attachment.getHash()}) due to error during match check: ${String(e)} (matchConfig: ${JSON.stringify(
           matchConfig,
         )})`,
       )

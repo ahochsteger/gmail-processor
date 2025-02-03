@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ProcessingContext } from "../Context"
 import { GlobalActionLoggingBase } from "../actions/GlobalActions"
 import { LogLevel, LogRedactionMode } from "../config/SettingsConfig"
@@ -18,7 +17,7 @@ export class Logger {
     return this.logLevelIndex <= levelIndex(level)
   }
   getMessage(message?: unknown, level: LogLevel = LogLevel.INFO) {
-    return `${new Date().toISOString()} ${level.toUpperCase()} ${message}`
+    return `${new Date().toISOString()} ${level.toUpperCase()} ${String(message)}`
   }
   log(
     message?: unknown,

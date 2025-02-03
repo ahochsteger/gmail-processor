@@ -76,6 +76,7 @@ export class MessageProcessor extends BaseProcessor {
           `to '${message.getTo()}' does not match '${matchConfig.to}'`,
         )
       if (
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         !RegexUtils.matchRegExp(matchConfig.subject, message.getSubject() ?? "")
       )
         return RegexUtils.noMatch(
@@ -87,14 +88,14 @@ export class MessageProcessor extends BaseProcessor {
       if (!this.matchTimestamp(matchConfig.newerThan, message.getDate(), true))
         return RegexUtils.noMatch(
           ctx,
-          `date '${message.getDate()}' not newer than '${
+          `date '${message.getDate().toISOString()}' not newer than '${
             matchConfig.newerThan
           }'`,
         )
       if (!this.matchTimestamp(matchConfig.olderThan, message.getDate(), false))
         return RegexUtils.noMatch(
           ctx,
-          `date '${message.getDate()}' not older than '${
+          `date '${message.getDate().toISOString()}' not older than '${
             matchConfig.olderThan
           }'`,
         )
@@ -121,7 +122,7 @@ export class MessageProcessor extends BaseProcessor {
     } catch (e) {
       return RegexUtils.matchError(
         ctx,
-        `Skipping message (id:${message.getId()}) due to error during match check: ${e} (matchConfig: ${JSON.stringify(
+        `Skipping message (id:${message.getId()}) due to error during match check: ${String(e)} (matchConfig: ${JSON.stringify(
           matchConfig,
         )})`,
       )
@@ -497,7 +498,7 @@ export class MessageProcessor extends BaseProcessor {
     )
 
     // Process attachment configs:
-    if (config.attachments) {
+    if (config.attachments.length > 0) {
       // New rule configuration format
       result = AttachmentProcessor.processConfigs(
         ctx,

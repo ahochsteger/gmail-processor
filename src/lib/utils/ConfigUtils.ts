@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-function essentialProp(prop: any, essentialFn: (obj: any) => any) {
+function essentialProp(prop: any, essentialFn?: (obj: any) => any) {
   if (Array.isArray(prop) && essentialFn) {
     prop = prop.map((entry) => essentialFn(entry))
   } else if (typeof prop === "object" && essentialFn) {

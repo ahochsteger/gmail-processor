@@ -92,7 +92,8 @@ export class GmailAdapter extends BaseAdapter {
       throw new Error(`Invalid label name: '${labelName}'`)
     }
     let label: GoogleAppsScript.Gmail.GmailLabel =
-      this.ctx.env.gmailApp.getUserLabelByName(labelName)
+      this.ctx.env.gmailApp.getUserLabelByName(labelName) // TODO: Wrong typedef - getUserLabelByName() may return null in reality!
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (!label) {
       this.ctx.log.info(`Creating non-existing label '${labelName}' ...`)
       label = this.ctx.env.gmailApp.createLabel(labelName)
