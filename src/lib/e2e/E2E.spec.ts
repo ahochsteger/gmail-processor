@@ -92,6 +92,36 @@ describe("assert", () => {
   })
 })
 
+describe("expect()", () => {
+  it("should return true on identical values", () => {
+    expect(E2E.expect(mocks.envContext, "value", "value")).toBeTruthy()
+  })
+  it("should return true on identical values", () => {
+    expect(
+      E2E.expect(mocks.envContext, "value", "non-matching-value"),
+    ).toBeFalsy()
+  })
+})
+
+describe("statusMapFromResults()", () => {
+  it("should create a status map from results", () => {
+    expect(
+      E2E.statusMapFromResults([
+        { level: "assertion", status: E2EStatus.ERROR },
+        { level: "assertion", status: E2EStatus.FAILED },
+        { level: "assertion", status: E2EStatus.SKIPPED },
+        { level: "assertion", status: E2EStatus.SUCCESS },
+        { level: "assertion", status: E2EStatus.SUCCESS },
+      ]),
+    ).toMatchObject({
+      error: 1,
+      failed: 1,
+      skipped: 1,
+      success: 2,
+    })
+  })
+})
+
 describe("overallStatus", () => {
   it("should decide to skipped", () => {
     expect(
