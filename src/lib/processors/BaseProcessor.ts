@@ -409,7 +409,7 @@ export abstract class BaseProcessor {
     ctx: ProcessingContext,
     matchRules: MatchRule[],
   ): boolean {
-    matchRules.map((mr: MatchRule) => {
+    matchRules.forEach((mr: MatchRule) => {
       switch (mr.type) {
         case "dateNewer":
           mr.matched = this.matchTimestamp(mr.config, mr.value, true)
