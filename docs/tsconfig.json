@@ -1,6 +1,8 @@
 {
   "extends": "@docusaurus/tsconfig",
   "compilerOptions": {
+    "strict": true,
+    "forceConsistentCasingInFileNames":true,
     "jsx": "react",
     "baseUrl": ".",
     "emitDecoratorMetadata": true,

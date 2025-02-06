@@ -117,7 +117,7 @@
     "antlr4ng-cli": "2.0.0",
     "concurrently": "9.1.2",
     "eslint": "9.19.0",
-    "eslint-config-prettier": "9.1.0",
+    "eslint-config-prettier": "10.0.1",
     "eslint-plugin-googleappsscript": "1.0.5",
     "eslint-plugin-prettier": "5.2.3",
     "eslint-plugin-tsdoc": "0.4.0",
@@ -145,14 +145,14 @@
   },
   "private": true,
   "dependencies": {
-    "addressparser": "^1.0.1",
+    "addressparser": "1.0.1",
     "ajv": "8.17.1",
-    "antlr4ng": "^3.0.4",
-    "class-transformer": "^0.5.1",
-    "crypto-js": "^4.2.0",
-    "date-fns": "^4.1.0",
-    "parse-duration": "^1.1.1",
-    "reflect-metadata": "^0.2.1"
+    "antlr4ng": "3.0.14",
+    "class-transformer": "0.5.1",
+    "crypto-js": "4.2.0",
+    "date-fns": "4.1.0",
+    "parse-duration": "1.1.1",
+    "reflect-metadata": "0.2.2"
   },
   "engines": {
     "node": ">=22"
