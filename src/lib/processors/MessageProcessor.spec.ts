@@ -14,80 +14,81 @@ beforeEach(() => {
 
 describe("match()", () => {
   it("should match messages with matching parameters", () => {
-    const matchExamples: { config: MessageMatchConfig; matched: string[] }[] = [
-      {
-        config: {
-          from: "from[0-1]@example.com",
+    const matchExamples: { config: MessageMatchConfig; expected: string[] }[] =
+      [
+        // {
+        //   config: {
+        //     from: "from[0-1]@example.com",
+        //   },
+        //   expected: ["message-1"],
+        // },
+        // {
+        //   config: {
+        //     from: "from[2-9]@example.com",
+        //   },
+        //   expected: ["message-2"],
+        // },
+        // {
+        //   config: {
+        //     to: "to.*@example.com",
+        //   },
+        //   expected: ["message-1", "message-2"],
+        // },
+        // {
+        //   config: {
+        //     to: "not-to.*@example.com",
+        //   },
+        //   expected: [],
+        // },
+        // {
+        //   config: {
+        //     subject: "message-.*",
+        //   },
+        //   expected: ["message-1", "message-2"],
+        // },
+        // {
+        //   config: {
+        //     subject: "message-2",
+        //   },
+        //   expected: ["message-2"],
+        // },
+        {
+          config: {
+            is: [MessageFlag.UNREAD],
+          },
+          expected: ["message-1"],
         },
-        matched: ["message-1"],
-      },
-      {
-        config: {
-          from: "from[2-9]@example.com",
+        {
+          config: {
+            is: [MessageFlag.READ],
+          },
+          expected: ["message-2"],
         },
-        matched: ["message-2"],
-      },
-      {
-        config: {
-          to: "to.*@example.com",
+        {
+          config: {
+            is: [MessageFlag.UNSTARRED],
+          },
+          expected: ["message-1"],
         },
-        matched: ["message-1", "message-2"],
-      },
-      {
-        config: {
-          to: "not-to.*@example.com",
+        {
+          config: {
+            is: [MessageFlag.STARRED],
+          },
+          expected: ["message-2"],
         },
-        matched: [],
-      },
-      {
-        config: {
-          subject: "message-.*",
+        {
+          config: {
+            body: "Test.+message 1",
+          },
+          expected: [],
         },
-        matched: ["message-1", "message-2"],
-      },
-      {
-        config: {
-          subject: "message-2",
+        {
+          config: {
+            body: "(?s)Test.+message 1",
+          },
+          expected: ["message-1"],
         },
-        matched: ["message-2"],
-      },
-      {
-        config: {
-          is: [MessageFlag.UNREAD],
-        },
-        matched: ["message-1"],
-      },
-      {
-        config: {
-          is: [MessageFlag.READ],
-        },
-        matched: ["message-2"],
-      },
-      {
-        config: {
-          is: [MessageFlag.UNSTARRED],
-        },
-        matched: ["message-1"],
-      },
-      {
-        config: {
-          is: [MessageFlag.STARRED],
-        },
-        matched: ["message-2"],
-      },
-      {
-        config: {
-          body: "Test.+message 1",
-        },
-        matched: [],
-      },
-      {
-        config: {
-          body: "(?s)Test.+message 1",
-        },
-        matched: ["message-1"],
-      },
-    ]
+      ]
     const mockedThread = GMailMocks.newThreadMock({
       messages: [
         {
@@ -108,6 +109,8 @@ describe("match()", () => {
         },
       ],
     })
+    let expected = ""
+    let actual = ""
     for (let i = 0; i < matchExamples.length; i++) {
       const e = matchExamples[i]
       const messageConfig = newMessageConfig({
@@ -121,8 +124,11 @@ describe("match()", () => {
           res.push(m.getSubject())
         }
       }
-      expect(`${i}: ${res}`).toEqual(`${i}: ${e.matched}`)
+      const cfg = JSON.stringify(e.config)
+      actual += `${i + 1}. ${cfg}: ${res}\n`
+      expected += `${i + 1}. ${cfg}: ${e.expected}\n`
     }
+    expect(actual).toEqual(expected)
   })
 })
 

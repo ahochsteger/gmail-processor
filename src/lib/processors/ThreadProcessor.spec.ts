@@ -7,6 +7,7 @@ import { OrderDirection } from "../config/CommonConfig"
 import { newConfig } from "../config/Config"
 import { MarkProcessedMethod } from "../config/SettingsConfig"
 import { ThreadOrderField, newThreadConfig } from "../config/ThreadConfig"
+import { ThreadMatchConfig } from "../config/ThreadMatchConfig"
 import { ThreadProcessor } from "./ThreadProcessor"
 
 let mocks: Mocks
@@ -108,6 +109,113 @@ it("should process an thread entity", () => {
   const result = ThreadProcessor.processEntity(mocks.threadContext)
   expect(result).toMatchObject({
     status: ProcessingStatus.OK,
+  })
+})
+
+describe("match()", () => {
+  it("should match messages with matching parameters", () => {
+    const matchExamples: { config: ThreadMatchConfig; expected: string[] }[] = [
+      {
+        config: {
+          firstMessageSubject: ".*-2",
+        },
+        expected: ["thread-2"],
+      },
+      {
+        config: {
+          labels: "thread,thread-1",
+        },
+        expected: ["thread-1"],
+      },
+      {
+        config: {
+          maxMessageCount: 1,
+        },
+        expected: ["thread-1", "thread-3"],
+      },
+      {
+        config: {
+          minMessageCount: 2,
+        },
+        expected: ["thread-2"],
+      },
+    ]
+    const threads = [
+      GMailMocks.newThreadMock({
+        firstMessageSubject: "thread-1",
+        labels: ["thread", "thread-1"],
+        messages: [
+          {
+            from: "from1@example.com",
+            subject: "thread-1",
+            to: "to1@example.com",
+            isStarred: false,
+            isUnread: true,
+            body: "Test\nmessage 1 of thread 1",
+          },
+        ],
+      }),
+      GMailMocks.newThreadMock({
+        firstMessageSubject: "thread-2",
+        labels: ["thread", "thread-2"],
+        messages: [
+          {
+            from: "from1@example.com",
+            subject: "thread-2",
+            to: "to1@example.com",
+            isStarred: false,
+            isUnread: true,
+            body: "Test\nmessage 1 of thread 2",
+          },
+          {
+            from: "from1@example.com",
+            subject: "thread-2",
+            to: "to1@example.com",
+            isStarred: false,
+            isUnread: true,
+            body: "Test\nmessage 2 of thread 2",
+          },
+        ],
+      }),
+      GMailMocks.newThreadMock({
+        firstMessageSubject: "thread-3",
+        labels: [],
+        messages: [
+          {
+            from: "from1@example.com",
+            subject: "thread-3",
+            to: "to1@example.com",
+            isStarred: false,
+            isUnread: true,
+            body: "Test\nmessage of thread 3",
+          },
+        ],
+      }),
+    ]
+    let expected = ""
+    let actual = ""
+    for (let i = 0; i < matchExamples.length; i++) {
+      const e = matchExamples[i]
+      const threadConfig = newThreadConfig({
+        match: e.config,
+      })
+      const res: string[] = []
+      for (const t of threads) {
+        if (
+          ThreadProcessor.matches(
+            mocks.processingContext,
+            threadConfig.match,
+            t,
+          )
+        ) {
+          res.push(t.getFirstMessageSubject())
+        }
+      }
+      const cfg = JSON.stringify(e.config)
+      actual += `${i + 1}. ${cfg}: ${res.sort().join(",")}\n`
+      expected += `${i + 1}. ${cfg}: ${e.expected.sort().join(",")}\n`
+    }
+    expect(actual).toEqual(expected)
   })
 })
 

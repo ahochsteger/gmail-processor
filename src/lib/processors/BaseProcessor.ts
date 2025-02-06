@@ -26,6 +26,26 @@ import { ThreadMatchConfig } from "../config/ThreadMatchConfig"
 import { PatternUtil } from "../utils/PatternUtil"
 import { RegexUtils } from "../utils/RegexUtils"
 
+type BaseMatchRule = {
+  name: string
+  log?: string
+  matched?: boolean
+}
+
+type StringMatchRule = BaseMatchRule & {
+  type: "regex" | "dateNewer" | "dateOlder" | "labels"
+  value: string | undefined
+  config: string
+}
+
+type NumberMatchRule = BaseMatchRule & {
+  type: "min" | "max"
+  value: number | undefined
+  config: number
+}
+
+export type MatchRule = StringMatchRule | NumberMatchRule
+
 type TraceEntry = {
   configIndex: number
   index: number
@@ -362,17 +382,66 @@ export abstract class BaseProcessor {
     return result
   }
 
+  public static matchLabels(config: string, value: string | undefined) {
+    return config
+      .split(",")
+      .every((el) => (value ?? "").split(",").some((l) => RegExp(el).test(l)))
+  }
+
   protected static matchTimestamp(
-    matchTimestamp: string,
-    compareDate: GoogleAppsScript.Base.Date,
+    matchTimestamp: string | undefined,
+    compareDate: string | undefined,
     isNewer = true,
   ) {
     if (matchTimestamp) {
       const matchTime = new Date(matchTimestamp).getTime()
-      const compareTime = compareDate.getTime()
-      return isNewer ? matchTime < compareTime : matchTime >= compareTime
+      if (compareDate) {
+        const compareTime = new Date(compareDate).getTime()
+        return isNewer ? matchTime < compareTime : matchTime >= compareTime
+      } else {
+        return false
+      }
     }
     return true
+  }
+
+  protected static matchesRules(
+    ctx: ProcessingContext,
+    matchRules: MatchRule[],
+  ): boolean {
+    matchRules.map((mr: MatchRule) => {
+      switch (mr.type) {
+        case "dateNewer":
+          mr.matched = this.matchTimestamp(mr.config, mr.value, true)
+          mr.log = `${mr.name} '${mr.value}' not newer than '${mr.config}'`
+          break
+        case "dateOlder":
+          mr.matched = this.matchTimestamp(mr.config, mr.value, false)
+          mr.log = `${mr.name} '${mr.value}' not older than '${mr.config}'`
+          break
+        case "labels":
+          mr.matched = this.matchLabels(mr.config, mr.value)
+          mr.log = `${mr.name} '${mr.value}' do not contain all of '${mr.config}'`
+          break
+        case "max":
+          mr.matched = !!mr.value && (mr.config == -1 || mr.value <= mr.config)
+          mr.log = `${mr.name} ${mr.value} is greater than ${mr.config}`
+          break
+        case "min":
+          mr.matched = !!mr.value && (mr.config == -1 || mr.value >= mr.config)
+          mr.log = `${mr.name} ${mr.value} is less than ${mr.config}`
+          break
+        case "regex":
+          mr.matched = !!RegexUtils.matchRegExp(mr.config, mr.value)
+          mr.log = `${mr.name} '${this.cutLogMessage(mr.value ?? "(undefined)")}' does not match RegEx '${mr.config}'`
+          break
+      }
+    })
+    const nonMatching = matchRules.filter((mr) => !mr.matched && mr.log)
+    nonMatching.forEach((mr) => {
+      ctx.log.debug(`NO MATCH: ${mr.log}`)
+    })
+    return nonMatching.length === 0
   }
 
   protected static isSet(
