@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.13.2](https://github.com/ahochsteger/gmail-processor/compare/2.13.1...v2.13.2) (2025-02-06)
+
+
+### Bug Fixes
+
+* **deps:** update libs-non-major ([4685135](https://github.com/ahochsteger/gmail-processor/commit/468513529fc33220013dbfb01d4a151250093b41))
+* snyk issue in code linter ([5d98e3c](https://github.com/ahochsteger/gmail-processor/commit/5d98e3cf6c1f7db73e77a1ebdf62be92c253bc4f))
+* URL reference error ([6b11cef](https://github.com/ahochsteger/gmail-processor/commit/6b11ceff2d32493a00ed9d7930e94ec90502c80c))
+
 ## [2.13.1](https://github.com/ahochsteger/gmail-processor/compare/2.13.0...2.13.1) (2024-12-26)
 
 
