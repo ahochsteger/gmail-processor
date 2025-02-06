@@ -18,9 +18,8 @@ import {
   ThreadMatchConfig,
 } from "../config/ThreadMatchConfig"
 import { PatternUtil } from "../utils/PatternUtil"
-import { RegexUtils } from "../utils/RegexUtils"
 import { ThreadOrderField } from "./../config/ThreadConfig"
-import { BaseProcessor } from "./BaseProcessor"
+import { BaseProcessor, MatchRule } from "./BaseProcessor"
 import { MessageProcessor } from "./MessageProcessor"
 
 export class ThreadProcessor extends BaseProcessor {
@@ -267,65 +266,36 @@ export class ThreadProcessor extends BaseProcessor {
     matchConfig: RequiredThreadMatchConfig,
     thread: GoogleAppsScript.Gmail.GmailThread,
   ): boolean {
-    try {
-      if (
-        !RegexUtils.matchRegExp(
-          matchConfig.firstMessageSubject,
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-          thread.getFirstMessageSubject() ?? "",
-        )
-      )
-        return RegexUtils.noMatch(
-          ctx,
-          `firstMessageSubject '${thread.getFirstMessageSubject()}' does not match '${
-            matchConfig.firstMessageSubject
-          }'`,
-        )
-      if (
-        matchConfig.minMessageCount != -1 &&
-        thread.getMessageCount() < matchConfig.minMessageCount
-      )
-        return RegexUtils.noMatch(
-          ctx,
-          `messageCount ${thread.getMessageCount()} < minMessageCount ${
-            matchConfig.minMessageCount
-          }`,
-        )
-      if (
-        matchConfig.maxMessageCount != -1 &&
-        thread.getMessageCount() > matchConfig.maxMessageCount
-      )
-        return RegexUtils.noMatch(
-          ctx,
-          `messageCount ${thread.getMessageCount()} > maxMessageCount ${
-            matchConfig.maxMessageCount
-          }`,
-        )
-      const threadLabels = thread
-        .getLabels()
-        .map((l) => l.getName())
-        .join(",")
-      if (
-        !matchConfig.labels.split(",").every((matchLabel) =>
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-          thread.getLabels().map((l) => l.getName() === matchLabel),
-        )
-      )
-        return RegexUtils.noMatch(
-          ctx,
-          `labels '${threadLabels}' do not contain all of '${matchConfig.labels}'`,
-        )
-    } catch (e) {
-      return RegexUtils.matchError(
-        ctx,
-        `Skipping thread (id:${JSON.stringify(
-          thread.getId(),
-        )}) due to error during match check: ${String(e)} (matchConfig: ${JSON.stringify(
-          matchConfig,
-        )})`,
-      )
-    }
-    return true
+    const matchRules: MatchRule[] = [
+      {
+        name: "firstMessageSubject",
+        type: "regex",
+        config: matchConfig.firstMessageSubject,
+        value: thread.getFirstMessageSubject(),
+      },
+      {
+        name: "minMessageCount",
+        type: "min",
+        config: matchConfig.minMessageCount,
+        value: thread.getMessageCount(),
+      },
+      {
+        name: "maxMessageCount",
+        type: "max",
+        config: matchConfig.maxMessageCount,
+        value: thread.getMessageCount(),
+      },
+      {
+        name: "labels",
+        type: "labels",
+        config: matchConfig.labels,
+        value: thread
+          .getLabels()
+          .map((l) => l.getName())
+          .join(","),
+      },
+    ]
+    return this.matchesRules(ctx, matchRules)
   }
 
   public static processConfigs(

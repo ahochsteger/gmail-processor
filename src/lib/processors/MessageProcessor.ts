@@ -16,7 +16,6 @@ import {
   MessageOrderField,
   RequiredMessageConfig,
 } from "../config/MessageConfig"
-import { MessageFlag } from "../config/MessageFlag"
 import {
   MessageMatchConfig,
   RequiredMessageMatchConfig,
@@ -24,8 +23,7 @@ import {
 import { MarkProcessedMethod } from "../config/SettingsConfig"
 import { AttachmentProcessor } from "../processors/AttachmentProcessor"
 import { PatternUtil } from "../utils/PatternUtil"
-import { RegexUtils } from "../utils/RegexUtils"
-import { BaseProcessor } from "./BaseProcessor"
+import { BaseProcessor, MatchRule } from "./BaseProcessor"
 
 export class MessageProcessor extends BaseProcessor {
   public static buildContext(
@@ -47,87 +45,66 @@ export class MessageProcessor extends BaseProcessor {
     ctx: ThreadContext,
     matchConfig: RequiredMessageMatchConfig,
     message: GoogleAppsScript.Gmail.GmailMessage,
-  ) {
-    try {
-      if (!RegexUtils.matchRegExp(matchConfig.body, message.getBody()))
-        return RegexUtils.noMatch(
-          ctx,
-          `body '${this.cutLogMessage(message.getBody())}' does not match '${
-            matchConfig.body
-          }'`,
-        )
-      if (!RegexUtils.matchRegExp(matchConfig.from, message.getFrom()))
-        return RegexUtils.noMatch(
-          ctx,
-          `from '${message.getFrom()}' does not match '${matchConfig.from}'`,
-        )
-      if (
-        !RegexUtils.matchRegExp(matchConfig.plainBody, message.getPlainBody())
-      )
-        return RegexUtils.noMatch(
-          ctx,
-          `plainBody '${this.cutLogMessage(
-            message.getPlainBody(),
-          )}' does not match '${matchConfig.plainBody}'`,
-        )
-      if (!RegexUtils.matchRegExp(matchConfig.to, message.getTo()))
-        return RegexUtils.noMatch(
-          ctx,
-          `to '${message.getTo()}' does not match '${matchConfig.to}'`,
-        )
-      if (
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-        !RegexUtils.matchRegExp(matchConfig.subject, message.getSubject() ?? "")
-      )
-        return RegexUtils.noMatch(
-          ctx,
-          `subject '${message.getSubject()}' does not match '${
-            matchConfig.subject
-          }'`,
-        )
-      if (!this.matchTimestamp(matchConfig.newerThan, message.getDate(), true))
-        return RegexUtils.noMatch(
-          ctx,
-          `date '${message.getDate().toISOString()}' not newer than '${
-            matchConfig.newerThan
-          }'`,
-        )
-      if (!this.matchTimestamp(matchConfig.olderThan, message.getDate(), false))
-        return RegexUtils.noMatch(
-          ctx,
-          `date '${message.getDate().toISOString()}' not older than '${
-            matchConfig.olderThan
-          }'`,
-        )
-      for (const flag of matchConfig.is) {
-        switch (flag) {
-          case MessageFlag.READ:
-            if (message.isUnread())
-              return RegexUtils.noMatch(ctx, `message is not read`)
-            break
-          case MessageFlag.UNREAD:
-            if (!message.isUnread())
-              return RegexUtils.noMatch(ctx, `message is read`)
-            break
-          case MessageFlag.STARRED:
-            if (!message.isStarred())
-              return RegexUtils.noMatch(ctx, `message is not starred`)
-            break
-          case MessageFlag.UNSTARRED:
-            if (message.isStarred())
-              return RegexUtils.noMatch(ctx, `message is starred`)
-            break
-        }
-      }
-    } catch (e) {
-      return RegexUtils.matchError(
-        ctx,
-        `Skipping message (id:${message.getId()}) due to error during match check: ${String(e)} (matchConfig: ${JSON.stringify(
-          matchConfig,
-        )})`,
-      )
-    }
-    return true
+  ): boolean {
+    const matchRules: MatchRule[] = [
+      {
+        name: "body",
+        type: "regex",
+        value: message.getBody(),
+        config: matchConfig.body,
+      },
+      {
+        name: "from",
+        type: "regex",
+        value: message.getFrom(),
+        config: matchConfig.from,
+      },
+      {
+        name: "plainBody",
+        type: "regex",
+        value: message.getPlainBody(),
+        config: matchConfig.plainBody,
+      },
+      {
+        name: "to",
+        type: "regex",
+        value: message.getTo(),
+        config: matchConfig.to,
+      },
+      {
+        name: "subject",
+        type: "regex",
+        value: message.getSubject(),
+        config: matchConfig.subject,
+      },
+      {
+        name: "newerThan",
+        type: "dateNewer",
+        value: message.getDate().toISOString(),
+        config: matchConfig.newerThan,
+      },
+      {
+        name: "oderThan",
+        type: "dateOlder",
+        value: message.getDate().toISOString(),
+        config: matchConfig.olderThan,
+      },
+      {
+        name: "is",
+        type: "labels",
+        value: [
+          { name: "read", value: !message.isUnread() },
+          { name: "unread", value: message.isUnread() },
+          { name: "starred", value: message.isStarred() },
+          { name: "unstarred", value: !message.isStarred() },
+        ]
+          .filter((f) => f.value === true)
+          .map((f) => f.name)
+          .join(","),
+        config: matchConfig.is.map((m) => `^${m}$`).join(","),
+      },
+    ]
+    return this.matchesRules(ctx, matchRules)
   }
 
   public static buildMatchConfig(

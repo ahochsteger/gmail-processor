@@ -21,8 +21,7 @@ import {
   ProcessingResult,
 } from "../Context"
 import { PatternUtil } from "../utils/PatternUtil"
-import { RegexUtils } from "../utils/RegexUtils"
-import { BaseProcessor } from "./BaseProcessor"
+import { BaseProcessor, MatchRule } from "./BaseProcessor"
 
 export class AttachmentProcessor extends BaseProcessor {
   public static buildContext(
@@ -39,58 +38,39 @@ export class AttachmentProcessor extends BaseProcessor {
     this.updateContextMeta(attachmentContext)
     return attachmentContext
   }
+
   public static matches(
     ctx: MessageContext,
     matchConfig: RequiredAttachmentMatchConfig,
     attachment: GoogleAppsScript.Gmail.GmailAttachment,
   ) {
-    try {
-      if (
-        !RegexUtils.matchRegExp(
-          matchConfig.contentType,
-          attachment.getContentType(),
-        )
-      )
-        return RegexUtils.noMatch(
-          ctx,
-          `contentType '${attachment.getContentType()}' does not match '${
-            matchConfig.contentType
-          }'`,
-        )
-      if (!RegexUtils.matchRegExp(matchConfig.name, attachment.getName()))
-        return RegexUtils.noMatch(
-          ctx,
-          `name '${attachment.getName()}' does not match '${matchConfig.name}'`,
-        )
-      if (
-        matchConfig.largerThan != -1 &&
-        attachment.getSize() <= matchConfig.largerThan
-      )
-        return RegexUtils.noMatch(
-          ctx,
-          `size ${attachment.getSize()} not larger than ${
-            matchConfig.largerThan
-          }`,
-        )
-      if (
-        matchConfig.smallerThan != -1 &&
-        attachment.getSize() >= matchConfig.smallerThan
-      )
-        return RegexUtils.noMatch(
-          ctx,
-          `size ${attachment.getSize()} not smaller than ${
-            matchConfig.smallerThan
-          }`,
-        )
-    } catch (e) {
-      return RegexUtils.matchError(
-        ctx,
-        `Skipping attachment (name:${attachment.getName()}, hash:${attachment.getHash()}) due to error during match check: ${String(e)} (matchConfig: ${JSON.stringify(
-          matchConfig,
-        )})`,
-      )
-    }
-    return true
+    const matchRules: MatchRule[] = [
+      {
+        name: "contentType",
+        type: "regex",
+        config: matchConfig.contentType,
+        value: attachment.getContentType(),
+      },
+      {
+        name: "largerThan",
+        type: "min",
+        config: matchConfig.largerThan,
+        value: attachment.getSize() - 1, //
+      },
+      {
+        name: "name",
+        type: "regex",
+        config: matchConfig.name,
+        value: attachment.getName(),
+      },
+      {
+        name: "smallerThan",
+        type: "max",
+        config: matchConfig.smallerThan,
+        value: attachment.getSize() + 1,
+      },
+    ]
+    return this.matchesRules(ctx, matchRules)
   }
 
   public static buildMatchConfig(

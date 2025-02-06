@@ -176,3 +176,30 @@ it("should update meta context if actions return actionMeta", () => {
     PatternUtil.substitute(mocks.processingContext, `{{${TEST_CONTEXT_KEY}}}`),
   ).toEqual(TEST_CONTEXT_VALUE)
 })
+
+describe("matchLabels()", () => {
+  it("should test the labels", () => {
+    const examples = [
+      { config: "label", value: "label", expected: true },
+      { config: "label", value: "", expected: false },
+      { config: "label1,label2", value: "label1", expected: false },
+      { config: "label2", value: "label1,label2", expected: true },
+      { config: "", value: "label1,label2", expected: true },
+      { config: "label1", value: "", expected: false },
+      { config: "label1", value: undefined, expected: false },
+      { config: "^label[0-9]$", value: "label3", expected: true },
+      { config: "^label[0-9]$", value: "xlabel3x", expected: false },
+      { config: ".*", value: "", expected: true },
+    ]
+    let expected = ""
+    let actual = ""
+    for (let i = 0; i < examples.length; i++) {
+      const e = examples[i]
+      const cfg = JSON.stringify(e)
+      const res = BaseProcessor.matchLabels(e.config, e.value)
+      actual += `${i + 1}. ${cfg}: ${res}\n`
+      expected += `${i + 1}. ${cfg}: ${e.expected}\n`
+    }
+    expect(actual).toEqual(expected)
+  })
+})
