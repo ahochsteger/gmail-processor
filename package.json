@@ -12,7 +12,7 @@
     "ci": "npm run ci:build && npm run ci:test && npm run ci:docs",
     "ci:build": "npm run clean && npm ci && npm run build && npm run lint:code",
     "ci:docs": "npm run clean:docs && npm ci && ( cd docs && npm ci ) && npm run build:docs",
-    "ci:test": "TZ=Etc/UTC jest --ci --coverage",
+    "ci:test": "TZ=Etc/UTC jest -i --ci --coverage",
     "clean": "rm -rf build docs/build",
     "clean:docs": "rm -rf docs/build",
     "clean:examples": "scripts/clasp.sh examples clean",
