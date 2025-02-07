@@ -5,7 +5,6 @@ import Layout from "@theme/Layout"
 import React from "react"
 
 import { ToastContainer } from "react-toastify"
-import "react-toastify/dist/ReactToastify.min.css"
 
 function PlaygroundComponent(): JSX.Element {
   // No SSR for the live preview
