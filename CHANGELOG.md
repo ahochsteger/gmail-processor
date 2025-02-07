@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.13.3](https://github.com/ahochsteger/gmail-processor/compare/v2.13.2...v2.13.3) (2025-02-07)
+
+
+### Bug Fixes
+
+* **deps:** update dependency parse-duration to v1.1.2 ([a0ad1fb](https://github.com/ahochsteger/gmail-processor/commit/a0ad1fb1ce571fd0998176bc6e2b12492112d6e7))
+
 ## [2.13.2](https://github.com/ahochsteger/gmail-processor/compare/2.13.1...v2.13.2) (2025-02-06)
 
 
