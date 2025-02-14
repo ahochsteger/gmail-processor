@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.13.4](https://github.com/ahochsteger/gmail-processor/compare/v2.13.3...v2.13.4) (2025-02-14)
+
+
+### Bug Fixes
+
+* **deps:** update react monorepo to v19 ([a8d0002](https://github.com/ahochsteger/gmail-processor/commit/a8d00025f7ea2422593697dd836a8dc5d80a5035))
+
 ## [2.13.3](https://github.com/ahochsteger/gmail-processor/compare/v2.13.2...v2.13.3) (2025-02-07)
 
 
