@@ -109,36 +109,40 @@ export class ExampleHandler {
   // }
 
   public genE2eTestCode(content: string): string {
-    // const content = readFileSync(srcFile)
-    //   .toString()
-    //   .replace(/^import .*/g, "")
-    //   .replace(/^export const ([^:]+):.*=/g, "const $1 =")
-    //   .replace(/^/g, "  ")
-    //   .replace(/\\b(${lib_exports_regex})\\./g, "GmailProcessorLib.$1.")
-
-    // BEGIN { inImport=0 }
-    // /^import / { inImport=1 }
-    // { if (inImport==0) print $0 }
-    // / from "/ && inImport==1 { inImport=0 }
-
-    // skipImports <"${EXAMPLE_SRC_BASEDIR}/${f}" \
-    // | sed -re "
-    //   s/^export const ([^:]+):.*=/const \\1 =/g;
-    //   s/^/  /g;
-    //   s/\\b(${lib_exports_regex})\\./GmailProcessorLib.\\1./g;
-    // "
     // TODO: Move to constructor or pass into this class
     let inImport = false
     content = content
       .split("\n")
       // TODO: Replace enums with their string values
       .map((l) => l.replace(/^export const ([^:]+):.*=/, "const $1 ="))
+      .map((l) => l.replace(/ctx: AttachmentContext,/, "ctx,"))
+      .map((l) =>
+        l.replace(
+          /args: StoreActionBaseArgs & \{ password: string \},/,
+          "args,",
+        ),
+      )
+      .map((l) => l.replace(/\): Promise<ActionReturnType> =>/, ") =>"))
+      .map((l) => l.replace(/\) as any as ActionFunction,/, "),"))
+      // Replace all lib symbols
       .map((l) =>
         l.replace(
           new RegExp(`\\b(${this.libSymbols.join("|")})\\.`),
           "GmailProcessorLib.$1.",
         ),
       )
+      // Remove types from async custom functions (e.g. advanced/decryptPdf)
+      .map((l) => l.replace(/ ([A-Z0-9a-z_]+): [A-Z0-9a-z_]+ =/, " $1 ="))
+      .map((l) => l.replace(/ctx: AttachmentContext,/, "ctx,"))
+      .map((l) =>
+        l.replace(
+          /args: StoreActionBaseArgs & \{ password: string \},/,
+          "args,",
+        ),
+      )
+      .map((l) => l.replace(/\): Promise<ActionReturnType> =>/, ") =>"))
+      .map((l) => l.replace(/( as any)? as [A-Za-z0-9_\.]+(\[\])?,/, ","))
+      // Remove import statements
       .reduce((out: string, l: string) => {
         if (l.startsWith("import ")) inImport = true
         if (!inImport) {

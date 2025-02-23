@@ -135,7 +135,7 @@ export class ActionRegistry {
     let result: ActionReturnType
     try {
       context.log.info(
-        `Executing action '${name}' with args: ${JSON.stringify(args)}`,
+        `Executing action '${name}' with args: ${context.log.redactJsonSecrets(JSON.stringify(args))}`,
       )
       result = {
         ok: true,
