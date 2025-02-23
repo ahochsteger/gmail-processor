@@ -97,16 +97,22 @@ npm run pre-commit
 
 The recommended IDE for this project is [Visual Studio Code](https://code.visualstudio.com/), but any other IDEs with support for TypeScript and NPM will do. Make sure to configure the IDE to respect the [Code Style](#code-style) settings.
 
-### Testing
+### Code Style
+
+We use [Prettier](https://prettier.io/) to automatically format our code and ensure a consistent style. It is recommended to [configure your IDE](https://prettier.io/docs/en/editors) to format the code (e.g. on saving) using Prettier.
+
+### Testing Locally
 
 Please add/update the tests for any change to keep the codebase in a well-tested state. For every source file `*.ts` the corresponding test file is named `*.spec.ts` and they are implemented using [Jest](https://jestjs.io/) as the testing framework.
 Remote services are mocked (see [MockFactory.ts](https://github.com/ahochsteger/gmail-processor/blob/main/src/test/mocks/MockFactory.ts)) to simplify local testing in isolation.
 
 After the changes and tests are done run the `pre-commit` script that validates the changes and updates all generated artifacts (like documentation, examples, JSON schema files, ...) and include all updated files in your commit.
 
-### Code Style
+### Beta Testing on Google Apps Script
 
-We use [Prettier](https://prettier.io/) to automatically format our code and ensure a consistent style. It is recommended to [configure your IDE](https://prettier.io/docs/en/editors) to format the code (e.g. on saving) using Prettier.
+Use the following Script ID in combination with the version `HEAD` to test and give feedback before changes are released:
+
+`1yhOQyl_xWtnGJn_bzlL7oA4d_q5KoMyZyWIqXDJX1SY7bi22_lpjMiQK`
 
 ### Development Resources
 
