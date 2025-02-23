@@ -2,7 +2,6 @@ import {
   ActionBaseConfig,
   AttachmentExtractTextArgs,
   StoreActionBaseArgs,
-  StoreAndDecryptActionBaseArgs,
 } from "../config/ActionConfig"
 import {
   AttachmentContext,
@@ -18,7 +17,6 @@ import {
   ActionProvider,
   ActionReturnType,
 } from "./ActionRegistry"
-import { getDecryptedPdf } from "lib/utils/PdfLibUtils"
 
 export class AttachmentActions implements ActionProvider<AttachmentContext> {
   [key: string]: ActionFunction<AttachmentContext>
@@ -109,45 +107,6 @@ export class AttachmentActions implements ActionProvider<AttachmentContext> {
       "attachment",
       "attachment",
       "attachment.store",
-    )
-    return {
-      ok: true,
-      file,
-      actionMeta,
-    }
-  }
-
-  /** Store and decrypt an attachment to a Google Drive location. */
-  @writingAction<AttachmentContext>()
-  public static storeAndDecrypt(
-    context: AttachmentContext,
-    args: StoreAndDecryptActionBaseArgs,
-  ): ActionReturnType & { file?: GoogleAppsScript.Drive.File } {
-    const location = PatternUtil.substitute(context, args.location)
-    const file = context.proc.gdriveAdapter.storeAttachment(
-      context.attachment.object,
-      {
-        ...args,
-        location: location,
-        description: PatternUtil.substitute(context, args.description ?? ""),
-      },
-    )
-    getDecryptedPdf(context.attachment.object, args.password, context).then((decryptedFile) => {
-      context.proc.gdriveAdapter.storeAttachment(
-        decryptedFile,
-        {
-          ...args,
-          location: PatternUtil.substitute(context, args.decryptedPdfLocation),
-          description: PatternUtil.substitute(context, args.decryptedPdfDescription ?? ""),
-        },
-      )
-    });
-    const actionMeta = context.proc.gdriveAdapter.getActionMeta(
-      file,
-      location,
-      "attachment",
-      "attachment",
-      "attachment.storeAndDecrypt",
     )
     return {
       ok: true,

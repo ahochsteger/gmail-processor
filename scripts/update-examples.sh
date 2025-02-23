@@ -26,6 +26,7 @@ gojq -f scripts/update-docs-extract-enums.jq \
   <"build/typedoc/all-examples.json" \
   >"build/typedoc/example-enums.json"
 
+# Extract example categories:
 categories=$(
   gojq -r <build/typedoc/example-enums.json \
   '[
@@ -43,10 +44,12 @@ find src/examples -type f -name '*.ts' -printf "%P\n" \
 | gojq -s \
 >"build/examples.json"
 
+# Generate index file:
 ts-node scripts/eta.ts index \
 <"build/examples.json" \
 >"${EXAMPLE_SRC_BASEDIR}/index.ts"
 
+# Generate all tests file:
 ts-node scripts/eta.ts gas-all-tests \
 <"build/examples.json" \
 >"${GAS_EXAMPLES_BASEDIR}/all-tests.js"

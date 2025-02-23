@@ -8,7 +8,9 @@
     "google-clasp@2",
     "nodejs@22",
     "renovate@latest",
-    "antlr@4"
+    "antlr@4",
+    "qpdf@11",
+    "wkhtmltopdf-bin@0"
   ],
   "shell": {
     "init_hook": ["echo 'Welcome to gmail-processor devbox!' > /dev/null"],

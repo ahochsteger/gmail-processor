@@ -9,6 +9,7 @@ function getTestConfigs() {
     convertToGoogleTestConfig(),
     customActionsTestConfig(),
     dateExpressionsTestConfig(),
+    decryptPdfTestConfig(),
     issue301TestConfig(),
     legacyExpressionsTestConfig(),
     logSheetLoggingTestConfig(),
