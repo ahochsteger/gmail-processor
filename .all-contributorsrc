@@ -107,6 +107,13 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/9630328?v=4",
       "profile": "https://github.com/gabrielhesposito",
       "contributions": ["doc"]
+    },
+    {
+      "login": "MikeDabrowski",
+      "name": "MikeDabrowski",
+      "avatar_url": "https://avatars.githubusercontent.com/u/17836911?v=4",
+      "profile": "https://gitlab.com/MikeDabrowski",
+      "contributions": ["code", "example"]
     }
   ],
   "contributorsPerLine": 7,
