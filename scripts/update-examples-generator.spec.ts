@@ -3,7 +3,7 @@ import { ExampleHandler } from "./update-examples-generator"
 
 let eh: ExampleHandler
 beforeAll(() => {
-  const libSymbols = ExampleHandler.extractExportedSymbolds(
+  const libSymbols = ExampleHandler.extractExportedSymbols(
     readFileSync("src/lib/index.ts").toString(),
   )
   eh = new ExampleHandler(

@@ -53,10 +53,13 @@ function decryptPdfRun() {
             attachment.getBytes(),
           )
           ctx.log.info(`decryptAndStorePdf(): Loading PDF document ...`)
-          const pdfDoc = await pdf_lib_1.PDFDocument.load(base64Content, {
-            password: args.password,
-            ignoreEncryption: true,
-          })
+          const pdfDoc = await GmailProcessorLib.PDFDocument.load(
+            base64Content,
+            {
+              password: args.password,
+              ignoreEncryption: true,
+            },
+          )
           ctx.log.info(`decryptAndStorePdf(): Decrypt PDF content ...`)
           const decryptedContent = await pdfDoc.save()
           ctx.log.info(`decryptAndStorePdf(): Create new PDF blob ...`)
