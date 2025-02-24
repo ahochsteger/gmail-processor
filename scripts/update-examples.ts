@@ -104,7 +104,7 @@ switch (process.argv[2]) {
   case "generate":
     {
       console.log("Generating all files for examples ...")
-      const libSymbols = ExampleHandler.extractExportedSymbolds(
+      const libSymbols = ExampleHandler.extractExportedSymbols(
         readFileSync("src/lib/index.ts").toString(),
       )
       const eh = new ExampleHandler(

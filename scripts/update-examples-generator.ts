@@ -88,63 +88,40 @@ export class ExampleHandler {
     })
   }
 
-  public static genCustomActionsCode(
-    actions?: ActionRegistration[],
-    ind = 2,
-  ): string | undefined {
-    if (actions === undefined) return undefined
-    let code = "[\n"
-    actions.forEach((a) => {
-      code += `${" ".repeat(ind)}{\n`
-      code += `${" ".repeat(ind + 1)}"name": "${a.name}",\n`
-      code += `${" ".repeat(ind + 1)}"action": ${a.action.toString()}\n`
-      code += `${" ".repeat(ind)}},\n`
-    })
-    code += "]"
-    return this.indent(code, ind)
-  }
-
-  // public extractExportedSymbols(content: string): string[] {
-
-  // }
-
-  public genE2eTestCode(content: string): string {
-    // TODO: Move to constructor or pass into this class
-    let inImport = false
-    content = content
-      .split("\n")
-      // TODO: Replace enums with their string values
-      .map((l) => l.replace(/^export const ([^:]+):.*=/, "const $1 ="))
-      .map((l) => l.replace(/ctx: AttachmentContext,/, "ctx,"))
-      .map((l) =>
-        l.replace(
-          /args: StoreActionBaseArgs & \{ password: string \},/,
-          "args,",
-        ),
-      )
-      .map((l) => l.replace(/\): Promise<ActionReturnType> =>/, ") =>"))
-      .map((l) => l.replace(/\) as any as ActionFunction,/, "),"))
-      // Replace all lib symbols
-      .map((l) =>
-        l.replace(
+  public replaceLibSymbolsFromLine(line: string): string {
+    return (
+      line
+        .replace(
           new RegExp(`\\b(${this.libSymbols.join("|")})\\.`),
           "GmailProcessorLib.$1.",
-        ),
-      )
-      // Remove types from async custom functions (e.g. advanced/decryptPdf)
-      .map((l) => l.replace(/ ([A-Z0-9a-z_]+): [A-Z0-9a-z_]+ =/, " $1 ="))
-      .map((l) => l.replace(/ctx: AttachmentContext,/, "ctx,"))
-      .map((l) =>
-        l.replace(
-          /args: StoreActionBaseArgs & \{ password: string \},/,
-          "args,",
-        ),
-      )
-      .map((l) => l.replace(/\): Promise<ActionReturnType> =>/, ") =>"))
-      .map((l) => l.replace(/( as any)? as [A-Za-z0-9_\.]+(\[\])?,/, ","))
-      // Remove import statements
+        )
+        // Special handling for PDF Lib:
+        .replace(/\bpdf_lib_1\.GmailProcessorLib\./, "GmailProcessorLib.")
+    )
+  }
+
+  public removeExportsFromLine(line: string): string {
+    return line.replace(/^export const ([^:]+):.*=/, "const $1 =")
+  }
+
+  public removeTypesFromLine(line: string): string {
+    return (
+      line
+        .replace(/args: StoreActionBaseArgs & \{ password: string \},/, "args,")
+        .replace(/( as any)? as [A-Za-z0-9_\.]+(\[\])?,/, ",")
+        .replace(/ctx: AttachmentContext,/, "ctx,")
+        .replace(/\): Promise<ActionReturnType> =>/, ") =>")
+        // Remove types from assignments (e.g. advanced/decryptPdf)
+        .replace(/ ([A-Z0-9a-z_]+): [A-Z0-9a-z_]+ =/, " $1 =")
+    )
+  }
+
+  public removeImports(content: string): string {
+    let inImport = false
+    return content
+      .split("\n")
       .reduce((out: string, l: string) => {
-        if (l.startsWith("import ")) inImport = true
+        if (l.trim().startsWith("import ")) inImport = true
         if (!inImport) {
           out += `${l}\n`
         }
@@ -154,6 +131,9 @@ export class ExampleHandler {
         return out
       }, "")
       .trim()
+  }
+
+  public transformEnums(content: string): string {
     this.enums.forEach((e) =>
       e.values.forEach((v) => {
         content = content.replace(`${e.name}.${v.key}`, `"${v.value}"`)
@@ -162,7 +142,49 @@ export class ExampleHandler {
     return content
   }
 
-  public static extractExportedSymbolds(content: string) {
+  public transformCode(content: string): string {
+    let inBlockComment = false
+    content = this.removeImports(content)
+    content = this.transformEnums(content)
+    content = content
+      .split("\n")
+      .map((l) => {
+        if (l.trim().startsWith("/*")) inBlockComment = true
+        if (!inBlockComment) {
+          l = this.removeExportsFromLine(l)
+          l = this.removeTypesFromLine(l)
+          l = this.replaceLibSymbolsFromLine(l)
+        }
+        if (l.trim().endsWith("*/")) inBlockComment = false
+        return l
+      })
+      .join("\n")
+    return content
+  }
+
+  public genCustomActionsCode(
+    actions?: ActionRegistration[],
+    ind = 2,
+  ): string | undefined {
+    if (actions === undefined) return undefined
+    let code = "[\n"
+    actions.forEach((a) => {
+      code += `${" ".repeat(ind)}{\n`
+      code += `${" ".repeat(ind + 1)}"name": "${a.name}",\n`
+      code += `${" ".repeat(ind + 1)}"action": ${this.transformCode(a.action.toString())}`
+      code += `${" ".repeat(ind)}},\n`
+    })
+    code += "]"
+    return ExampleHandler.indent(code, ind)
+  }
+
+  public genE2eTestCode(content: string): string {
+    // TODO: Move to constructor or pass into this class
+    content = this.transformCode(content)
+    return content
+  }
+
+  public static extractExportedSymbols(content: string) {
     return content
       .split("\n")
       .filter((l) => l.startsWith(";(globalThis as any)."))
@@ -199,7 +221,8 @@ export class ExampleHandler {
     const relPath = `${example.info.category}/${example.info.name}`
     const data: object = {
       example,
-      genCustomActionsCode: ExampleHandler.genCustomActionsCode,
+      genCustomActionsCode: (actions?: ActionRegistration[]) =>
+        this.genCustomActionsCode(actions),
       genE2eTestCode: (f: string) =>
         this.genE2eTestCode(readFileSync(f).toString()),
       indent: ExampleHandler.indent,
