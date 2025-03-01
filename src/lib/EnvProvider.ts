@@ -1,3 +1,4 @@
+import * as packageInfo from "../../package.json"
 import {
   ContextType,
   EnvContext,
@@ -7,15 +8,6 @@ import {
   newMetaInfo as mi,
 } from "./Context"
 import { Logger as Log } from "./utils/Logger"
-
-const packageInfo: {
-  description: string
-  name: string
-  version: string
-} =
-  typeof __PACKAGE_JSON__ !== "undefined"
-    ? __PACKAGE_JSON__
-    : { version: "0.0.0", name: "gmail-processor", description: "" }
 
 export class EnvProvider {
   public static buildMetaInfo(ctx: EnvContext) {

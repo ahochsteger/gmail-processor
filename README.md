@@ -46,6 +46,7 @@ Gmail Processor is the successor of [Gmail2GDrive](https://github.com/ahochstege
 
 - 🤖 **Extensive Automation**: Automate email processing using the provided configuration to match threads, messages, and attachments, and trigger actions accordingly.
 - 📁 **Google Drive Integration**: Store files such as attachments, PDFs of messages, or entire threads into any location within Google Drive, providing easy organization and accessibility.
+- 🔒 **PDF Decryption**: Decrypt password-protected PDFs attached to emails and store them.
 - ✂️ **OCR Text Extraction**: Extract text (e.g. invoice number) from attached documents (JPEG, PNG, GIF, PDF) to organize and annotate your attachments.
 - 📄 **Google Spreadsheet Logging**: Keep track of processed threads, messages, and attachments by logging valuable information into a Google Spreadsheet.
 - 🔧 **Flexible Configuration**: Gmail Processor operates based on a JSON configuration that allows you to define matching rules and specify corresponding actions to be executed.

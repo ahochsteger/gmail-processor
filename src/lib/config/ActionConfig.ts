@@ -82,24 +82,9 @@ export type StoreActionBaseArgs = {
 
 export type StoreDecryptedPdfActionArgs = StoreActionBaseArgs & {
   /**
-   * The password to be used for password-protected PDFs.
+   * The password to be used PDF decryption.
    */
   password: string
-  /**
-   * The location (path + filename) of the decrypted Google Drive file.
-   * For shared folders or Team Drives prepend the location with the folder ID like `{id:<folderId>}/...`.
-   * Supports placeholder substitution.
-   */
-  //decryptedPdfLocation: string
-  /**
-   * The description to be attached to the decrypted Google Drive file.
-   * Supports placeholder substitution.
-   */
-  //decryptedPdfDescription?: string
-  /**
-   * Whether to save the original file after decryption.
-   */
-  //saveOriginal?: boolean
 }
 
 export type AttachmentExtractTextArgs = {
