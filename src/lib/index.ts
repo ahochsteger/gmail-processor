@@ -1,7 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { PDFDocument } from "@cantoo/pdf-lib"
 import {
-  Context,
   EnvContext,
   ProcessingResult,
   ProcessingStatus,
@@ -22,7 +20,6 @@ import { V1Config } from "./config/v1/V1Config"
 import { V1ToV2Converter } from "./config/v1/V1ToV2Converter"
 import { E2E, newE2EGlobalConfig } from "./e2e/E2E"
 import { E2EDefaults } from "./e2e/E2EDefaults"
-import { ExprEvaluator } from "./expr/ExprEvaluator"
 import { GmailProcessor } from "./processors/GmailProcessor"
 
 // Re-export everything that should be accessible from the lib
@@ -37,22 +34,11 @@ export {
   MarkProcessedMethod,
   MessageFlag,
   newE2EGlobalConfig,
-  PDFDocument,
   ProcessingResult,
   ProcessingStage,
   ProcessingStatus,
   RunMode,
   V1Config,
-}
-
-/**
- * Evaluates a string template with the given context.
- * @param ctx The context to be used for string template evaluation.
- * @param str The string template to be evaluated.
- * @returns The evaluated string template.
- */
-export function evaluate(ctx: Context, str: string) {
-  return ExprEvaluator.evaluate(ctx, str)
 }
 
 /**
@@ -88,12 +74,10 @@ export function convertV1Config(v1config: V1Config): Config {
 ;(globalThis as any).E2E = E2E
 ;(globalThis as any).E2EDefaults = E2EDefaults
 ;(globalThis as any).EnvProvider = EnvProvider
-;(globalThis as any).evaluate = evaluate
 ;(globalThis as any).LogLevel = LogLevel
 ;(globalThis as any).LogRedactionMode = LogRedactionMode
 ;(globalThis as any).MarkProcessedMethod = MarkProcessedMethod
 ;(globalThis as any).MessageFlag = MessageFlag
-;(globalThis as any).PDFDocument = PDFDocument
 ;(globalThis as any).ProcessingResult = ProcessingResult
 ;(globalThis as any).ProcessingStage = ProcessingStage
 ;(globalThis as any).ProcessingStatus = ProcessingStatus

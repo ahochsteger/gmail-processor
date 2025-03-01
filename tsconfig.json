@@ -20,5 +20,5 @@
     "target": "ES2019",
     "types": ["google-apps-script", "jest", "node"]
   },
-  "include": ["src/lib/**/*", "./global.d.ts"]
+  "include": ["src/lib/**/*", "global.d.ts"]
 }
