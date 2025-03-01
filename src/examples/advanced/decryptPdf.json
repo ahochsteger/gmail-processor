@@ -23,7 +23,7 @@
           },
           "actions": [
             {
-              "name": "custom.decryptAndStorePdf",
+              "name": "attachment.storeDecryptedPdf",
               "args": {
                 "location": "/GmailProcessor-Tests/e2e/advanced/{{message.date|formatDate('yyyy-MM-dd')}}/decrypted.pdf",
                 "conflictStrategy": "replace",

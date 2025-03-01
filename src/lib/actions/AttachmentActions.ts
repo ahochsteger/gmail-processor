@@ -1,7 +1,9 @@
+import { PDFDocument } from "@cantoo/pdf-lib"
 import {
   ActionBaseConfig,
   AttachmentExtractTextArgs,
   StoreActionBaseArgs,
+  StoreDecryptedPdfActionArgs,
 } from "../config/ActionConfig"
 import {
   AttachmentContext,
@@ -114,9 +116,59 @@ export class AttachmentActions implements ActionProvider<AttachmentContext> {
       actionMeta,
     }
   }
+
+  /** Decrypt a PDF attachment and store it to a Google Drive location. */
+  @writingAction<AttachmentContext>()
+  public static async storeDecryptedPdf(
+    ctx: AttachmentContext,
+    args: StoreDecryptedPdfActionArgs,
+  ): Promise<ActionReturnType> {
+    const location = args.location // evaluate(ctx, args.location)
+    try {
+      ctx.log.info(`decryptAndStorePdf(): location=${location}`)
+      const attachment = ctx.attachment.object
+      const base64Content = ctx.env.utilities.base64Encode(
+        attachment.getBytes(),
+      )
+      ctx.log.info(`decryptAndStorePdf(): Loading PDF document ...`)
+      const pdfDoc = await PDFDocument.load(base64Content, {
+        password: args.password,
+        ignoreEncryption: true,
+      })
+      ctx.log.info(`decryptAndStorePdf(): Decrypt PDF content ...`)
+      const decryptedContent: Uint8Array = await pdfDoc.save()
+      ctx.log.info(`decryptAndStorePdf(): Create new PDF blob ...`)
+      const decryptedPdf = ctx.env.utilities.newBlob(
+        decryptedContent as unknown as GoogleAppsScript.Byte[],
+        attachment.getContentType(),
+        attachment.getName(),
+      )
+      ctx.log.info(`decryptAndStorePdf(): Store PDF file to '${location}' ...`)
+      return ctx.proc.gdriveAdapter.createFileFromAction(
+        ctx,
+        args.location,
+        decryptedPdf,
+        args.conflictStrategy,
+        args.description,
+        "decrypted PDF",
+        "attachment",
+        "attachment.decryptAndStorePdf",
+      )
+    } catch (e) {
+      ctx.log.error(
+        // `Error while saving decrypted pdf to ${evaluate(ctx, args.location)}: ${String(e)}`,
+        `Error while saving decrypted pdf to ${location}: ${String(e)}`,
+      )
+      throw e
+    }
+  }
 }
 
 export type AttachmentActionConfigType =
   | ActionBaseConfig<"attachment.noop">
   | ActionBaseConfig<"attachment.extractText", AttachmentExtractTextArgs>
   | ActionBaseConfig<"attachment.store", StoreActionBaseArgs>
+  | ActionBaseConfig<
+      "attachment.storeDecryptedPdf",
+      StoreDecryptedPdfActionArgs
+    >

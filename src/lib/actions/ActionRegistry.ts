@@ -14,11 +14,23 @@ export type ActionReturnType = {
 }
 
 // Define a type for the function that takes context and args as arguments
+export type SyncActionFunction<
+  TContext extends ProcessingContext = ProcessingContext,
+  TArgs extends ActionArgsType = ActionArgsType,
+  TReturn extends ActionReturnType = ActionReturnType,
+> = (ctx: TContext, args: TArgs) => TReturn | void
+export type AsyncActionFunction<
+  TContext extends ProcessingContext = ProcessingContext,
+  TArgs extends ActionArgsType = ActionArgsType,
+  TReturn extends ActionReturnType = ActionReturnType,
+> = (ctx: TContext, args: TArgs) => Promise<TReturn> | void
 export type ActionFunction<
   TContext extends ProcessingContext = ProcessingContext,
   TArgs extends ActionArgsType = ActionArgsType,
   TReturn extends ActionReturnType = ActionReturnType,
-> = (context: TContext, args: TArgs) => TReturn | void
+> =
+  | SyncActionFunction<TContext, TArgs, TReturn>
+  | AsyncActionFunction<TContext, TArgs, TReturn>
 
 export interface ActionProvider<
   TContext extends ProcessingContext = ProcessingContext,
@@ -28,7 +40,7 @@ export interface ActionProvider<
 
 export type ActionRegistration = {
   name: string
-  action: ActionFunction<ProcessingContext, ActionArgsType, ActionReturnType>
+  action: ActionFunction | AsyncActionFunction
 }
 
 export function typedArgs<T>(args: ActionArgsType): T {

@@ -80,7 +80,7 @@ export type StoreActionBaseArgs = {
   toMimeType?: string
 }
 
-export type StoreAndDecryptActionBaseArgs = StoreActionBaseArgs & {
+export type StoreDecryptedPdfActionArgs = StoreActionBaseArgs & {
   /**
    * The password to be used for password-protected PDFs.
    */
@@ -90,16 +90,16 @@ export type StoreAndDecryptActionBaseArgs = StoreActionBaseArgs & {
    * For shared folders or Team Drives prepend the location with the folder ID like `{id:<folderId>}/...`.
    * Supports placeholder substitution.
    */
-  decryptedPdfLocation: string
+  //decryptedPdfLocation: string
   /**
    * The description to be attached to the decrypted Google Drive file.
    * Supports placeholder substitution.
    */
-  decryptedPdfDescription?: string
+  //decryptedPdfDescription?: string
   /**
    * Whether to save the original file after decryption.
    */
-  saveOriginal?: boolean
+  //saveOriginal?: boolean
 }
 
 export type AttachmentExtractTextArgs = {
