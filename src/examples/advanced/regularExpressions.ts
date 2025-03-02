@@ -23,6 +23,8 @@ import {
  *
  * The extracted data is finally used to dynamically define the location of the attachment to be stored using:
  * `.../Reports/{{message.subject.match.school}}/All Reports/{{message.subject.match.reportType}}/{{message.subject.match.reportSubType}}/{{message.subject.match.date}}-{{attachment.name}}`
+ *
+ * Flags like searching for the case-insensitive string are also supported by prefixing the regex with `(?<flags>)` like `(?i)...`.
  */
 export const info: ExampleInfo = {
   name: "regularExpressions",
