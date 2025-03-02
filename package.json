@@ -1,6 +1,6 @@
 {
   "name": "gmail-processor",
-  "version": "2.13.3",
+  "version": "2.14.0",
   "description": "Gmail Processor is an open-source project that automates the processing of Gmail messages and attachments using Google Apps Script and execute actions (e.g. store attachments in a GDrive folder, log information in a spreadsheet) depending on matching criteria.",
   "scripts": {
     "act:ci": "act push",
