@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       skip_coveralls:
-        description: "Skip coveralls"
+        description: "Skip Coveralls"
         type: boolean
         default: false
       skip_gas:
@@ -18,8 +18,8 @@ on:
         description: "Skip release"
         type: boolean
         default: true
-      skip_sonarcloud:
-        description: "Skip sonarcloud"
+      skip_sonarqube:
+        description: "Skip SonarQube"
         type: boolean
         default: false
       skip_tests:
@@ -82,10 +82,10 @@ jobs:
         if: ${{ !github.event.inputs.skip_coveralls }}
         name: Coveralls
         uses: coverallsapp/github-action@648a8eb78e6d50909eff900e4ec85cab4524a45b # v2
-      - id: sonarcloud
-        if: ${{ !github.event.inputs.skip_sonarcloud }}
-        name: SonarCloud Scan
-        uses: SonarSource/sonarqube-scan-action@bfd4e558cda28cda6b5defafb9232d191be8c203 # v4
+      - id: sonarqube
+        if: ${{ !github.event.inputs.skip_sonarqube }}
+        name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@0303d6b62e310685c0e34d0b9cde218036885c4d # v5
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
