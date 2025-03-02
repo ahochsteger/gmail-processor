@@ -201,6 +201,38 @@
                     "additionalProperties": false,
                     "properties": {
                         "args": {
+                            "$ref": "#/definitions/StoreDecryptedPdfActionArgs",
+                            "title": "args"
+                        },
+                        "description": {
+                            "title": "description",
+                            "type": "string"
+                        },
+                        "name": {
+                            "const": "attachment.storeDecryptedPdf",
+                            "title": "name",
+                            "type": "string"
+                        },
+                        "processingStage": {
+                            "description": "The stage of action processing",
+                            "enum": [
+                                "main",
+                                "post-main",
+                                "pre-main"
+                            ],
+                            "title": "processingStage",
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "name"
+                    ],
+                    "type": "object"
+                },
+                {
+                    "additionalProperties": false,
+                    "properties": {
+                        "args": {
                             "title": "args"
                         },
                         "description": {
@@ -2996,6 +3028,43 @@
                 }
             },
             "title": "SettingsConfig",
+            "type": "object"
+        },
+        "StoreDecryptedPdfActionArgs": {
+            "additionalProperties": false,
+            "properties": {
+                "conflictStrategy": {
+                    "$ref": "#/definitions/ConflictStrategy",
+                    "description": "The strategy to be used in case a file already exists at the desired location.",
+                    "title": "conflictStrategy"
+                },
+                "description": {
+                    "description": "The description to be attached to the Google Drive file.\nSupports placeholder substitution.",
+                    "title": "description",
+                    "type": "string"
+                },
+                "location": {
+                    "description": "The location (path + filename) of the Google Drive file.\nFor shared folders or Team Drives prepend the location with the folder ID like `{id:<folderId>}/...`.\nSupports placeholder substitution.",
+                    "title": "location",
+                    "type": "string"
+                },
+                "password": {
+                    "description": "The password to be used PDF decryption.",
+                    "title": "password",
+                    "type": "string"
+                },
+                "toMimeType": {
+                    "description": "Convert to a Google file type using one of the <a href=\"https://developers.google.com/drive/api/guides/mime-types?hl=en\">supported mime-types by Google Drive</a>, like:\n* `application/vnd.google-apps.document`: Google Docs\n* `application/vnd.google-apps.presentation`: Google Slides\n* `application/vnd.google-apps.spreadsheet`: Google Sheets",
+                    "title": "toMimeType",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "conflictStrategy",
+                "location",
+                "password"
+            ],
+            "title": "StoreDecryptedPdfActionArgs",
             "type": "object"
         },
         "ThreadActionArgsStorePDF": {
