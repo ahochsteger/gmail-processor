@@ -4,10 +4,10 @@
     "gojq@0",
     "gh@2",
     "gettext@0",
-    "gomplate@3",
+    "gomplate@4.2.0",
     "google-clasp@2",
-    "nodejs@22",
-    "renovate@latest",
+    "nodejs@23.8.0",
+    "renovate@39.153.1",
     "antlr@4",
     "qpdf@11",
     "wkhtmltopdf-bin@0"
