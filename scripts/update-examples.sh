@@ -6,6 +6,14 @@ export EXAMPLE_SRC_BASEDIR="${EXAMPLE_SRC_BASEDIR:-src/examples}"
 export GAS_EXAMPLES_BASEDIR="${GAS_EXAMPLES_BASEDIR:-src/gas/examples}"
 export TEMPLATES_BASEDIR="${TEMPLATES_BASEDIR:-src/templates}"
 
+# Validate examples (e.g. no direct lib includes - causes docs build failure):
+echo "Checking for invalid lib includes ... "
+(
+  find "${EXAMPLE_SRC_BASEDIR}" -type f -name '*.ts' \
+  | grep -E -v '\.spec\.ts$' \
+  | xargs grep -E 'from "../../lib"$'
+) && exit 1
+
 # Remove generated files (otherwise typedoc may fail):
 npx ts-node scripts/update-examples.ts clean
 
