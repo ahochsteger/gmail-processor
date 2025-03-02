@@ -1,5 +1,20 @@
 # Changelog
 
+## [2.14.0](https://github.com/ahochsteger/gmail-processor/compare/v2.13.3...v2.14.0) (2025-03-02)
+
+
+### Features
+
+* add action `attachment.storeDecryptedPdf` ([64d00ed](https://github.com/ahochsteger/gmail-processor/commit/64d00edff08ced2f19ab5168d02955c6171dd154))
+* add example with async custom action to decrypt PDFs ([3300185](https://github.com/ahochsteger/gmail-processor/commit/33001859d6151b16e90e9324c0490f29b45adcd9))
+
+
+### Bug Fixes
+
+* **deps:** update libs-non-major ([#485](https://github.com/ahochsteger/gmail-processor/issues/485)) ([42ae39f](https://github.com/ahochsteger/gmail-processor/commit/42ae39f3cbfc1167184a7f9fa2346c582ed7c0d2))
+* **deps:** update react monorepo to v19 ([a8d0002](https://github.com/ahochsteger/gmail-processor/commit/a8d00025f7ea2422593697dd836a8dc5d80a5035))
+* GAS example code processing ([abec3e6](https://github.com/ahochsteger/gmail-processor/commit/abec3e6d904178a3d8c3dfa90309d9b1b032da88))
+
 ## [2.13.3](https://github.com/ahochsteger/gmail-processor/compare/v2.13.2...v2.13.3) (2025-02-07)
 
 
