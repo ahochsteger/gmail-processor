@@ -12,6 +12,7 @@ function decryptPdfTestConfig() {
     description:
       "The action `custom.decryptAndStorePdf` decrypts and stores a PDF file.",
     category: "advanced",
+    issues: [355],
     pullRequests: [381],
   }
 

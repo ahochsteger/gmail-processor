@@ -15,6 +15,7 @@ export const info: ExampleInfo = {
   description:
     "The action `custom.decryptAndStorePdf` decrypts and stores a PDF file.",
   category: ExampleCategory.ADVANCED,
+  issues: [355],
   pullRequests: [381],
 }
 
