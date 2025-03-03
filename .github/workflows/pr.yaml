@@ -7,16 +7,24 @@ on:
     types: [opened, synchronize, reopened]
   workflow_dispatch:
     inputs:
-      skip_coveralls:
-        description: "Skip Coveralls"
+      skip_build_docs:
+        description: "Skip build docs"
         type: boolean
         default: false
-      skip_sonarqube:
-        description: "Skip SonarQube"
+      skip_build_lib:
+        description: "Skip build lib"
         type: boolean
         default: false
-      skip_tests:
-        description: "Skip tests"
+      skip_qa_coveralls:
+        description: "Skip QA Coveralls"
+        type: boolean
+        default: false
+      skip_qa_sonarqube:
+        description: "Skip QA SonarQube"
+        type: boolean
+        default: false
+      skip_test:
+        description: "Skip test"
         type: boolean
         default: false
 
@@ -34,29 +42,31 @@ jobs:
           persist-credentials: false
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
-      - id: nodejs
-        name: Use Node.js
+      - id: setup-nodejs
+        name: Setup Node.js
         uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4
         with:
           node-version: 22.x
           cache: "npm"
-      - id: build
-        name: Build
+      - id: build-lib
+        if: ${{ !github.event.inputs.skip_build_lib }}
+        name: Build lib
         run: npm run ci:build
       - id: test
-        if: ${{ !github.event.inputs.skip_tests }}
+        if: ${{ !github.event.inputs.skip_test }}
         name: Test
         run: npm run ci:test
-      - id: docs
+      - id: build-docs
+        if: ${{ !github.event.inputs.skip_build_docs }}
         name: Build docs
         run: npm run ci:docs
-      - id: coveralls
-        if: ${{ !github.event.inputs.skip_coveralls }}
-        name: Coveralls
+      - id: qa-coveralls
+        if: ${{ !github.event.inputs.skip_qa_coveralls }}
+        name: QA Coveralls
         uses: coverallsapp/github-action@648a8eb78e6d50909eff900e4ec85cab4524a45b # v2
-      - id: sonarqube
-        if: ${{ !github.event.inputs.skip_sonarqube }}
-        name: SonarQube Scan
+      - id: qa-sonarqube
+        if: ${{ !github.event.inputs.skip_qa_sonarqube }}
+        name: QA SonarQube
         uses: SonarSource/sonarqube-scan-action@0303d6b62e310685c0e34d0b9cde218036885c4d # v5
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
