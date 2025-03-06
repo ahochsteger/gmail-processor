@@ -55,6 +55,6 @@
     "node": ">=18.0"
   },
   "resolutions": {
-    "react-json-view-lite": "2.3.0"
+    "react-json-view-lite": "2.4.0"
   }
 }
