@@ -37,7 +37,7 @@
     "@mdx-js/loader": "3.1.0",
     "eslint-import-resolver-typescript": "3.8.3",
     "eslint-plugin-import": "2.31.0",
-    "typescript": "5.7.3"
+    "typescript": "5.8.2"
   },
   "browserslist": {
     "production": [
