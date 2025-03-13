@@ -130,7 +130,7 @@
     "madge": "8.0.0",
     "prettier": "3.5.3",
     "prettier-plugin-organize-imports": "4.1.0",
-    "release-please": "16.18.0",
+    "release-please": "17.0.0",
     "rollup": "4.35.0",
     "rollup-plugin-analyzer": "4.0.0",
     "rollup-plugin-google-apps-script": "2.0.2",
