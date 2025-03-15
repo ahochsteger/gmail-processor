@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.14.1](https://github.com/ahochsteger/gmail-processor/compare/v2.14.0...v2.14.1) (2025-03-15)
+
+
+### Bug Fixes
+
+* **deps:** inline parse-duration to fix security issue ([13b1931](https://github.com/ahochsteger/gmail-processor/commit/13b1931eb25a6089eb243e66a2416622599371d8))
+* **deps:** update libs-non-major ([#489](https://github.com/ahochsteger/gmail-processor/issues/489)) ([e069fe5](https://github.com/ahochsteger/gmail-processor/commit/e069fe5837a9917d23dd35b500ee5e216aa9a1bf))
+* **deps:** update libs-non-major ([#492](https://github.com/ahochsteger/gmail-processor/issues/492)) ([c99b78c](https://github.com/ahochsteger/gmail-processor/commit/c99b78c39e3b6dbcfa1e43daf33b1ccf507edd20))
+* **deps:** update libs-non-major ([#495](https://github.com/ahochsteger/gmail-processor/issues/495)) ([00dbc18](https://github.com/ahochsteger/gmail-processor/commit/00dbc182ce486802d16c4e509b920cafc4cde91d))
+* path traversal issue ([a11fa26](https://github.com/ahochsteger/gmail-processor/commit/a11fa266d1dc51eac184cb1a35f7c01263d86646))
+
 ## [2.14.0](https://github.com/ahochsteger/gmail-processor/compare/v2.13.3...v2.14.0) (2025-03-02)
 
 
