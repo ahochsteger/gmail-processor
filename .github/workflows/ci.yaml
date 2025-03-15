@@ -68,7 +68,7 @@ jobs:
       - id: release
         name: Release
         if: ${{ !github.event.inputs.skip_release }}
-        uses: googleapis/release-please-action@7987652d64b4581673a76e33ad5e98e3dd56832f # v4
+        uses: googleapis/release-please-action@a02a34c4d625f9be7cb89156071d8567266a2445 # v4
         with:
           release-type: node
       - id: checkout
