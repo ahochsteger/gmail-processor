@@ -47,9 +47,7 @@ if (filePath.includes("..")) {
   )
   process.exit(1)
 }
-const results = JSON.parse(
-  fs.readFileSync(process.argv[2], "utf8"),
-) as ESLintEntry[]
+const results = JSON.parse(fs.readFileSync(filePath, "utf8")) as ESLintEntry[]
 const fatalErrors = results.filter((e) => e.fatalErrorCount > 0)
 const errors = results.filter((e) => e.errorCount > 0)
 const warnings = results.filter((e) => e.warningCount > 0)

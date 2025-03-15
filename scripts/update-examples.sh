@@ -6,6 +6,14 @@ export EXAMPLE_SRC_BASEDIR="${EXAMPLE_SRC_BASEDIR:-src/examples}"
 export GAS_EXAMPLES_BASEDIR="${GAS_EXAMPLES_BASEDIR:-src/gas/examples}"
 export TEMPLATES_BASEDIR="${TEMPLATES_BASEDIR:-src/templates}"
 
+# Validate examples (e.g. no direct lib includes - causes docs build failure):
+echo "Checking for invalid lib includes ... "
+(
+  find "${EXAMPLE_SRC_BASEDIR}" -type f -name '*.ts' \
+  | grep -E -v '\.spec\.ts$' \
+  | xargs grep -E 'from "../../lib"$'
+) && exit 1
+
 # Remove generated files (otherwise typedoc may fail):
 npx ts-node scripts/update-examples.ts clean
 
@@ -26,6 +34,7 @@ gojq -f scripts/update-docs-extract-enums.jq \
   <"build/typedoc/all-examples.json" \
   >"build/typedoc/example-enums.json"
 
+# Extract example categories:
 categories=$(
   gojq -r <build/typedoc/example-enums.json \
   '[
@@ -43,10 +52,12 @@ find src/examples -type f -name '*.ts' -printf "%P\n" \
 | gojq -s \
 >"build/examples.json"
 
+# Generate index file:
 ts-node scripts/eta.ts index \
 <"build/examples.json" \
 >"${EXAMPLE_SRC_BASEDIR}/index.ts"
 
+# Generate all tests file:
 ts-node scripts/eta.ts gas-all-tests \
 <"build/examples.json" \
 >"${GAS_EXAMPLES_BASEDIR}/all-tests.js"

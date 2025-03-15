@@ -80,6 +80,13 @@ export type StoreActionBaseArgs = {
   toMimeType?: string
 }
 
+export type StoreDecryptedPdfActionArgs = StoreActionBaseArgs & {
+  /**
+   * The password to be used PDF decryption.
+   */
+  password: string
+}
+
 export type AttachmentExtractTextArgs = {
   /**
    * Hints at the language to use for OCR. Valid values are BCP 47 codes.

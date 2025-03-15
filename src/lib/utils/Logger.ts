@@ -66,4 +66,11 @@ export class Logger {
     }
     return value
   }
+  redactJsonSecrets(value?: string | null): string {
+    if (!value) return ""
+    return value.replace(
+      /("(password|token|key|secret|credential)":"([^"]+)")/gi,
+      '"$2":"(redacted)"',
+    )
+  }
 }

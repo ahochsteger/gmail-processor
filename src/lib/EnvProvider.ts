@@ -8,15 +8,6 @@ import {
 } from "./Context"
 import { Logger as Log } from "./utils/Logger"
 
-const packageInfo: {
-  description: string
-  name: string
-  version: string
-} =
-  typeof __PACKAGE_JSON__ !== "undefined"
-    ? __PACKAGE_JSON__
-    : { version: "0.0.0", name: "gmail-processor", description: "" }
-
 export class EnvProvider {
   public static buildMetaInfo(ctx: EnvContext) {
     const m: MetaInfo = {
@@ -40,19 +31,19 @@ export class EnvProvider {
       ),
       "lib.description": mi(
         MIT.STRING,
-        () => packageInfo.description,
+        () => "__PACKAGE_DESCRIPTION__", // NOTE: Is replaced during build
         "Library Description",
         "The description of the Gmail Processor library.",
       ),
       "lib.name": mi(
         MIT.STRING,
-        () => packageInfo.name,
+        () => "__PACKAGE_NAME__", // NOTE: Is replaced during build
         "Library Name",
         "The name of the Gmail Processor library.",
       ),
       "lib.version": mi(
         MIT.STRING,
-        () => packageInfo.version,
+        () => "__PACKAGE_VERSION__", // NOTE: Is replaced during build
         "Library Version",
         "The version of the Gmail Processor library.",
       ),

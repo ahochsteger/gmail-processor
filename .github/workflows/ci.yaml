@@ -6,24 +6,40 @@ on:
       - main
   workflow_dispatch:
     inputs:
-      skip_coveralls:
-        description: "Skip coveralls"
+      skip_build_docs:
+        description: "Skip build docs"
         type: boolean
         default: false
-      skip_gas:
-        description: "Skip push"
+      skip_build_lib:
+        description: "Skip build lib"
+        type: boolean
+        default: false
+      skip_deploy_docs:
+        description: "Skip deploy docs"
+        type: boolean
+        default: false
+      skip_deploy_lib_ci:
+        description: "Skip deploy lib (CI)"
+        type: boolean
+        default: false
+      skip_deploy_lib_release:
+        description: "Skip deploy lib (release)"
+        type: boolean
+        default: false
+      skip_qa_coveralls:
+        description: "Skip QA Coveralls"
+        type: boolean
+        default: false
+      skip_qa_sonarqube:
+        description: "Skip QA SonarQube"
         type: boolean
         default: false
       skip_release:
         description: "Skip release"
         type: boolean
         default: true
-      skip_sonarcloud:
-        description: "Skip sonarcloud"
-        type: boolean
-        default: false
-      skip_tests:
-        description: "Skip tests"
+      skip_test:
+        description: "Skip test"
         type: boolean
         default: false
 
@@ -49,64 +65,71 @@ jobs:
       GCLOUD_PROJECT_ID: ${{secrets.GCLOUD_PROJECT_ID}}
       GCLOUD_PROJECT_NR: ${{secrets.GCLOUD_PROJECT_NR}}
     steps:
+      - id: release
+        name: Release
+        if: ${{ !github.event.inputs.skip_release }}
+        uses: googleapis/release-please-action@a02a34c4d625f9be7cb89156071d8567266a2445 # v4
+        with:
+          release-type: node
       - id: checkout
         name: Checkout
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4 # Use v3 or later
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
         with:
           persist-credentials: false
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
-      - id: nodejs
-        name: Use Node.js
-        uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4 # Use v3 or later
+      - id: setup-nodejs
+        name: Setup Node.js
+        uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4
         with:
           node-version: 22.x
           cache: "npm"
-      - id: build
-        name: Build
+      - id: build-lib
+        if: ${{ !github.event.inputs.skip_build_lib }}
+        name: Build lib
         run: npm run ci:build
       - id: test
-        if: ${{ !github.event.inputs.skip_tests }}
+        if: ${{ !github.event.inputs.skip_test }}
         name: Test
         run: npm run ci:test
-      - id: docs
+      - id: build-docs
+        if: ${{ !github.event.inputs.skip_build_docs }}
         name: Build docs
         run: npm run ci:docs
-      - name: Release Please
-        if: ${{ !github.event.inputs.skip_release }}
-        id: release
-        uses: googleapis/release-please-action@7987652d64b4581673a76e33ad5e98e3dd56832f # v4
-        with:
-          release-type: node # Or the appropriate release type for your project
-      - id: coveralls
-        if: ${{ !github.event.inputs.skip_coveralls }}
-        name: Coveralls
+      - id: qa-coveralls
+        if: ${{ !github.event.inputs.skip_qa_coveralls }}
+        name: QA Coveralls
         uses: coverallsapp/github-action@648a8eb78e6d50909eff900e4ec85cab4524a45b # v2
-      - id: sonarcloud
-        if: ${{ !github.event.inputs.skip_sonarcloud }}
-        name: SonarCloud Scan
-        uses: SonarSource/sonarqube-scan-action@bfd4e558cda28cda6b5defafb9232d191be8c203 # v4
+      - id: qa-sonarqube
+        if: ${{ !github.event.inputs.skip_qa_sonarqube }}
+        name: QA SonarQube
+        uses: SonarSource/sonarqube-scan-action@0303d6b62e310685c0e34d0b9cde218036885c4d # v5
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          # SONAR_PROJECT_VERSION: ${{ steps.release-status.outputs.new_release_published == 'true' && steps.release-status.outputs.new_release_version || '' }} Remove this line
-      - id: push-gas
-        if: ${{ !github.event.inputs.skip_gas }}
-        name: Push to GAS
+      - id: deploy-lib-ci
+        if: ${{ !github.event.inputs.skip_deploy_lib_ci }}
+        name: Deploy Lib (CI)
         run: |
           npm run push
           echo "new_gas_version=$(cat build/gas/lib-version.txt)" >> "${GITHUB_OUTPUT}"
-      - id: deploy-lib
-        if: ${{ !github.event.inputs.skip_release && steps.release.outputs.release_created }} # Check if a release was created
-        name: Deploy Lib
+      - id: deploy-lib-release
+        if: ${{ !github.event.inputs.skip_deploy_lib_release && !github.event.inputs.skip_release && steps.release.outputs.release_created }} # Check if a release was created
+        name: Deploy Lib (Release)
         run: npm run deploy
         env:
-          CLASP_DEPLOYMENT_NAME: ${{ steps.release.outputs.tag_name }} # Use the tag name from release-please
+          CLASP_DEPLOYMENT_NAME: ${{ steps.release.outputs.tag_name }}
       - id: update-release-notes
         if: ${{ !github.event.inputs.skip_release && steps.release.outputs.release_created }} # Check if a release was created
         name: Update Release Notes
         run: |
           npm run release:update
         env:
-          CLASP_DEPLOYMENT_NAME: ${{ steps.release.outputs.tag_name }} # Use the tag name from release-please
+          CLASP_DEPLOYMENT_NAME: ${{ steps.release.outputs.tag_name }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - id: deploy-docs
+        if: ${{ !github.event.inputs.skip_deploy_docs }}
+        name: Deploy docs
+        uses: JamesIves/github-pages-deploy-action@6c2d9db40f9296374acc17b90404b6e8864128c8 # v4
+        with:
+          folder: docs/build

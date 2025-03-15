@@ -10,6 +10,7 @@ describe("matchRegExp()", () => {
     expect(matches?.[0]).toEqual("TEST")
   })
   it("should match regex with inline modifier", () => {
+    //https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_expressions#advanced_searching_with_flags
     const matches = RegexUtils.matchRegExp("(?i)^test$", "TEST")
     expect(matches?.[0]).toEqual("TEST")
   })

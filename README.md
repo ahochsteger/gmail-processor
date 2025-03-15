@@ -46,6 +46,7 @@ Gmail Processor is the successor of [Gmail2GDrive](https://github.com/ahochstege
 
 - 🤖 **Extensive Automation**: Automate email processing using the provided configuration to match threads, messages, and attachments, and trigger actions accordingly.
 - 📁 **Google Drive Integration**: Store files such as attachments, PDFs of messages, or entire threads into any location within Google Drive, providing easy organization and accessibility.
+- 🔒 **PDF Decryption**: Decrypt password-protected PDFs attached to emails and store them.
 - ✂️ **OCR Text Extraction**: Extract text (e.g. invoice number) from attached documents (JPEG, PNG, GIF, PDF) to organize and annotate your attachments.
 - 📄 **Google Spreadsheet Logging**: Keep track of processed threads, messages, and attachments by logging valuable information into a Google Spreadsheet.
 - 🔧 **Flexible Configuration**: Gmail Processor operates based on a JSON configuration that allows you to define matching rules and specify corresponding actions to be executed.
@@ -98,6 +99,7 @@ See the [Development Guide](https://ahochsteger.github.io/gmail-processor/docs/c
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/steve192"><img src="https://avatars.githubusercontent.com/u/6454983?v=4?s=100" width="100px;" alt="steve192"/><br /><sub><b>steve192</b></sub></a><br /><a href="https://github.com/ahochsteger/gmail-processor/commits?author=steve192" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://gregorynicholas.com/"><img src="https://avatars.githubusercontent.com/u/407650?v=4?s=100" width="100px;" alt="gregory nicholas"/><br /><sub><b>gregory nicholas</b></sub></a><br /><a href="#example-gregorynicholas" title="Examples">💡</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/gabrielhesposito"><img src="https://avatars.githubusercontent.com/u/9630328?v=4?s=100" width="100px;" alt="Gabriel Esposito"/><br /><sub><b>Gabriel Esposito</b></sub></a><br /><a href="https://github.com/ahochsteger/gmail-processor/commits?author=gabrielhesposito" title="Documentation">📖</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://gitlab.com/MikeDabrowski"><img src="https://avatars.githubusercontent.com/u/17836911?v=4?s=100" width="100px;" alt="MikeDabrowski"/><br /><sub><b>MikeDabrowski</b></sub></a><br /><a href="https://github.com/ahochsteger/gmail-processor/commits?author=MikeDabrowski" title="Code">💻</a> <a href="#example-MikeDabrowski" title="Examples">💡</a></td>
     </tr>
   </tbody>
   <tfoot>

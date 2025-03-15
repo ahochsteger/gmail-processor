@@ -32,6 +32,7 @@ it("should provide actions in the action registry", () => {
     "attachment.extractText",
     "attachment.noop",
     "attachment.store",
+    "attachment.storeDecryptedPdf",
   ])
 })
 

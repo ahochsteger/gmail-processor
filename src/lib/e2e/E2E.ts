@@ -167,7 +167,10 @@ export class E2E {
     globals: E2EGlobalConfig,
     path: string,
   ): GoogleAppsScript.Base.BlobSource {
-    const url = `${globals.repoBaseUrl}/${globals.repoBranch}/${globals.repoBasePath}/${path}`
+    const url =
+      path.startsWith("http:") || path.startsWith("https:")
+        ? path
+        : `${globals.repoBaseUrl}/${globals.repoBranch}/${globals.repoBasePath}/${path}`
     ctx.log.debug(`Fetching '${url}' ...`)
     const blob = UrlFetchApp.fetch(url)
     ctx.log.debug(`Fetching '${url}' done.`)

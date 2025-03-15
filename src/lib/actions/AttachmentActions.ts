@@ -1,7 +1,9 @@
+import { PDFDocument } from "@cantoo/pdf-lib"
 import {
   ActionBaseConfig,
   AttachmentExtractTextArgs,
   StoreActionBaseArgs,
+  StoreDecryptedPdfActionArgs,
 } from "../config/ActionConfig"
 import {
   AttachmentContext,
@@ -114,9 +116,74 @@ export class AttachmentActions implements ActionProvider<AttachmentContext> {
       actionMeta,
     }
   }
+
+  /**
+   * Decrypt a PDF attachment and store it to a Google Drive location.
+   * NOTE: PDF decryption is done in an asynchronous process which causes
+   * some limitations (failure detection, logs will appear later mixed with
+   * other actions).
+   */
+  @writingAction<AttachmentContext>()
+  public static async storeDecryptedPdf(
+    ctx: AttachmentContext,
+    args: StoreDecryptedPdfActionArgs,
+  ): Promise<ActionReturnType> {
+    const location = args.location // evaluate(ctx, args.location)
+    try {
+      ctx.log.debug(
+        `AttachmentActions.storeDecryptedPdf(): location=${location}`,
+      )
+      const attachment = ctx.attachment.object
+      const base64Content = ctx.env.utilities.base64Encode(
+        attachment.getBytes(),
+      )
+      ctx.log.debug(
+        `AttachmentActions.storeDecryptedPdf(): Loading PDF document ...`,
+      )
+      const pdfDoc = await PDFDocument.load(base64Content, {
+        password: args.password,
+        ignoreEncryption: true,
+      })
+      ctx.log.debug(
+        `AttachmentActions.storeDecryptedPdf(): Decrypting PDF content ...`,
+      )
+      const decryptedContent: Uint8Array = await pdfDoc.save()
+      ctx.log.debug(
+        `AttachmentActions.storeDecryptedPdf(): Creating a new PDF document ...`,
+      )
+      const decryptedPdf = ctx.env.utilities.newBlob(
+        decryptedContent as unknown as GoogleAppsScript.Byte[],
+        attachment.getContentType(),
+        attachment.getName(),
+      )
+      ctx.log.info(
+        `decryptAndStorePdf(): Storing decrypted PDF file '${attachment.getName()}' to '${location}' ...`,
+      )
+      return ctx.proc.gdriveAdapter.createFileFromAction(
+        ctx,
+        args.location,
+        decryptedPdf,
+        args.conflictStrategy,
+        args.description,
+        "decrypted PDF",
+        "attachment",
+        "attachment.decryptAndStorePdf",
+      )
+    } catch (e) {
+      ctx.log.error(
+        // `Error while saving decrypted pdf to ${evaluate(ctx, args.location)}: ${String(e)}`,
+        `Error while saving decrypted pdf to ${location}: ${String(e)}`,
+      )
+      throw e
+    }
+  }
 }
 
 export type AttachmentActionConfigType =
   | ActionBaseConfig<"attachment.noop">
   | ActionBaseConfig<"attachment.extractText", AttachmentExtractTextArgs>
   | ActionBaseConfig<"attachment.store", StoreActionBaseArgs>
+  | ActionBaseConfig<
+      "attachment.storeDecryptedPdf",
+      StoreDecryptedPdfActionArgs
+    >

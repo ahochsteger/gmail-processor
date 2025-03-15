@@ -71,7 +71,6 @@ function genFunctionDocs(
 ) {
   const libDocs: Record<string,(name: string) => string> = {
     "date-fns": (name: string) => `See function [${name}](https://date-fns.org/v${require("date-fns/package.json").version}/docs/${name}) of [date-fns](https://date-fns.org/).`,
-    "parse-duration": (_name: string) => `https://github.com/jkroso/parse-duration?tab=readme-ov-file#api`,
   }
   let desc = info.description ?? ""
   if (info.lib && libDocs[info.lib]) {

@@ -1,14 +1,14 @@
 {
   "$schema": "https://raw.githubusercontent.com/jetpack-io/devbox/0.10.3/.schema/devbox.schema.json",
   "packages": [
-    "gojq@0",
-    "gh@2",
-    "gettext@0",
-    "gomplate@3",
-    "google-clasp@2",
-    "nodejs@22",
-    "renovate@latest",
-    "antlr@4"
+    "gojq@0.12.17",
+    "gh@2.68.1",
+    "gettext@0.22.5",
+    "gomplate@4.2.0",
+    "nodejs@23.9.0",
+    "antlr@4.13.2",
+    "qpdf@11.10.0",
+    "wkhtmltopdf-bin@0"
   ],
   "shell": {
     "init_hook": ["echo 'Welcome to gmail-processor devbox!' > /dev/null"],
