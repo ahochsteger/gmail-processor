@@ -184,7 +184,7 @@ export class ExampleHandler {
     return content
   }
 
-  public static extractExportedSymbols(content: string) {
+  public static extractExportedSymbols(content: string): string[] {
     return content
       .split("\n")
       .filter((l) => l.startsWith(";(globalThis as any)."))

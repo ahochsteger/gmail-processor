@@ -55,8 +55,8 @@ import {
   startOfYear,
   startOfYesterday,
 } from "date-fns"
-import parseDuration from "parse-duration"
 import { DateType, ValueType } from "./ExprEvaluator"
+import { parseDuration } from "./ParseDuration"
 
 export const defaultDateFormat = "yyyy-MM-dd HH:mm:ss"
 export type ExpressionFilterFunction = (
@@ -144,7 +144,7 @@ export const filterFunctions: Record<string, ExprInfoType> = {
     | grep -E '^export declare function [A-Za-z]+(<ContextDate extends Date>\(options\?: [a-zA-Z]+Options<ContextDate> \| undefined\): ContextDate|<DateType extends Date, ResultDate extends Date = DateType>\(date: DateArg<DateType>, options\?: [a-zA-Z]+Options<ResultDate> | undefined\): ResultDate|<ResultDate extends Date = Date>\(options\?: [A-Za-z]+Options<ResultDate>\): ResultDate|<DateType extends Date, ResultDate extends Date = DateType>\(options\?: [A-Za-z]+Options<ResultDate> \| undefined\): ResultDate)$' \
     | sed -re 's#.* function ([a-zA-Z]+)<.*#\1#g' \
     | sort \
-    | awk '{print "  "$1": { lib: \"date-fns\", fn: "$1" as ExpressionFilterFunction, args: (..._args: ValueType[]) => [] },"}'
+    | awk '{print "  "$1": { lib: \"date-fns\", fn: "$1" as ExpressionFilterFunction, args: () => [] },"}'
   ) | sort
   */
   endOfDay: { lib: "date-fns", fn: endOfDay as ExpressionFilterFunction },

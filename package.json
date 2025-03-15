@@ -130,7 +130,7 @@
     "madge": "8.0.0",
     "prettier": "3.5.3",
     "prettier-plugin-organize-imports": "4.1.0",
-    "release-please": "16.18.0",
+    "release-please": "17.0.0",
     "rollup": "4.35.0",
     "rollup-plugin-analyzer": "4.0.0",
     "rollup-plugin-google-apps-script": "2.0.2",
@@ -146,15 +146,19 @@
   },
   "private": true,
   "dependencies": {
-    "@cantoo/pdf-lib": "2.3.1",
+    "@cantoo/pdf-lib": "2.3.2",
     "addressparser": "1.0.1",
     "ajv": "8.17.1",
     "antlr4ng": "3.0.16",
     "class-transformer": "0.5.1",
     "crypto-js": "4.2.0",
     "date-fns": "4.1.0",
-    "parse-duration": "1.1.2",
     "reflect-metadata": "0.2.2"
+  },
+  "overrides": {
+    "sonarqube-scanner": {
+      "axios": "1.8.3"
+    }
   },
   "engines": {
     "node": ">=22"
