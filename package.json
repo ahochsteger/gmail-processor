@@ -138,7 +138,7 @@
     "sonarqube-scanner": "4.3.0",
     "ts-jest": "29.3.1",
     "ts-prune": "0.10.3",
-    "type-fest": "4.39.0",
+    "type-fest": "4.39.1",
     "typedoc": "0.28.1",
     "typescript": "5.8.2",
     "typescript-eslint": "8.29.0",
