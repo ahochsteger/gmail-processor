@@ -11,12 +11,13 @@ PARSER_OUTDIR="${PARSER_OUTDIR:-src/lib/expr/generated}"
 function generate() {
   local prefix="${1}"
 
-#  antlr4 \
-  npx antlr4ng \
+  npx antlr-ng \
+    --lib "${PARSER_INDIR}" \
     -Dlanguage=TypeScript \
-    -o "${PARSER_OUTDIR}" \
-    -listener \
-    -Xexact-output-dir \
+    --output-directory "${PARSER_OUTDIR}" \
+    --generate-listener \
+    --exact-output-dir \
+    -- \
     "${PARSER_INDIR}/${prefix}Lexer.g4" \
     "${PARSER_INDIR}/${prefix}Parser.g4"
 }
