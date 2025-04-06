@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-condition */
-// Generated from src/lib/expr/ExprLexer.g4 by ANTLR 4.13.1
 
 import * as antlr from "antlr4ng"
 

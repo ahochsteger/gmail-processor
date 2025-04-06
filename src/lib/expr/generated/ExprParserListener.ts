@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-// Generated from src/lib/expr/ExprParser.g4 by ANTLR 4.13.1
 
 import {
   ErrorNode,
