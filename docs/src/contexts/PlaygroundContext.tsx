@@ -1,12 +1,12 @@
-import { useContext, createContext } from "react"
+import { createContext, useContext } from "react"
 
 // Type I need for useRef
 import type { MonacoEditorTypes } from "@theme/MonacoEditor"
-import { Example } from "../../../src/examples/Example"
+import { Example, V1Example } from "../../../src/examples/Example"
 
 export type State = {
   // The selected example
-  example?: Example
+  example?: Example | V1Example
   // Name of the selected example
   exampleName?: string
   // Indicates, if the example content has been chaged
@@ -40,7 +40,7 @@ export type Playground = {
 
 export const PlaygroundContext = createContext<Playground>({
   state: {
-    exampleName: null,
+    exampleName: undefined,
     fullSchema: {},
     userSchema: {},
     jsonPointer: "",

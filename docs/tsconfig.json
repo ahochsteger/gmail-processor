@@ -15,6 +15,7 @@
     "resolveJsonModule": true,
     // Extending "@tsconfig/docusaurus/tsconfig.json".types with "docusaurus-json-schema-plugin"
     "types": [
+      "jest",
       "node",
       "@docusaurus/module-type-aliases",
       "@docusaurus/theme-classic",

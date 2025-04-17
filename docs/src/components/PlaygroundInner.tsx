@@ -6,7 +6,7 @@ import React from "react";
 
 import JSONSchemaEditor from "@theme/JSONSchemaEditor";
 
-import { essentialConfig } from "../../../src/lib/config/Config";
+import { Config, essentialConfig } from "../../../src/lib/config/Config";
 import ConfigSchemaV2 from "../../../src/lib/config/config-schema-v2.json";
 import { V1ToV2Converter } from "../../../src/lib/config/v1/V1ToV2Converter";
 import ConfigSchemaV1 from "../../../src/lib/config/v1/config-schema-v1.json";
@@ -29,8 +29,10 @@ import { allExamples, defaultExample } from "../../../src/examples";
 import Actions from "@site/docs/reference/actions.mdx";
 import EnumTypes from "@site/docs/reference/enum-types.mdx";
 import Placeholder from "@site/docs/reference/placeholder.mdx";
+import { monaco } from "docusaurus-json-schema-plugin/lib/theme/MonacoEditor/index.js";
 import { jsonrepair } from "jsonrepair";
-import { Example, ExampleVariant } from "../../../src/examples/Example";
+import { Example, ExampleVariant, V1Example } from "../../../src/examples/Example";
+import { V1Config } from "../../../src/lib";
 
 const DEBUG = false
 
@@ -43,7 +45,7 @@ function dbg(msg: string) {
 function detectSchema(configString: string) {
   dbg(`detectSchema()`)
   const config = JSON.parse(configString)
-  let schema 
+  let schema: (typeof ConfigSchemaV1 | typeof ConfigSchemaV2) & { title?: string }
   if (config['rules']) {
     schema = ConfigSchemaV1
     schema.title = "GMail2GDrive (v1)"
@@ -70,18 +72,18 @@ function getActiveExampleName() {
 function getActiveExample() {
   dbg(`getActiveExample()`)
   const exampleName = getActiveExampleName()
-  const example = getExampleFromName(exampleName)
+  const example = getExampleFromName(exampleName ?? defaultExample.info.name)
   dbg(`getActiveExample(): -> ${exampleName}`)
   return example
 }
 
-function getConfigJsonFromExample(example: Example): string {
+function getConfigJsonFromExample<T extends Example | V1Example>(example: T): string {
   dbg(`getConfigJsonFromExample(${example.info.name})`)
-  const config = example.config
+  let config: Config | V1Config = "config" in example ? example.config : example.migrationConfig
   return JSON.stringify(config, null, 2)
 }
 
-function getSchemaFromExample(example: Example): object {
+function getSchemaFromExample(example: Example | V1Example): object {
   dbg(`getSchemaFromExample(${example.info.name})`)
   return example.info.variant===ExampleVariant.MIGRATION_V1 ? ConfigSchemaV1 : ConfigSchemaV2
 }
@@ -180,7 +182,7 @@ function run() {
     dbg(`handleExampleSelected(${exampleName})`)
     // Update state
     const example = getExampleFromName(exampleName)
-    const configString = getConfigJsonFromExample(example)
+    const configString = getConfigJsonFromExample(example ?? defaultExample)
     const schema = detectSchema(configString)
     updateState({
       fullSchema: schema,
@@ -227,11 +229,11 @@ function run() {
           />
           <JSONSchemaEditor
             // See https://github.com/react-monaco-editor/react-monaco-editor
-            value={value}
-            schema={fullSchema}
+            value={value as string}
+            schema={fullSchema as object}
             theme={colorMode === "dark" ? "vs-dark" : "vs"}
-            editorDidMount={(editor) => {updateState({ editorRef: editor })}}
-            onChange={undefined} // NOTE: {handleContentChanged} causes massive editor lagging - dirty detection disabled
+            editorDidMount={(editor: monaco.editor.IStandaloneCodeEditor) => {updateState({ editorRef: editor })}}
+            onChange={undefined as unknown as (value: string | undefined) => void} // NOTE: {handleContentChanged} causes massive editor lagging - dirty detection disabled
             height={"80vh"}
             key={JSON.stringify(fullSchema)}
           />

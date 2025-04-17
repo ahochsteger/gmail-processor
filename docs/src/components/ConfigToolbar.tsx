@@ -1,14 +1,14 @@
 import { Icon } from '@iconify/react';
 import React from "react";
-import { Example, ExampleVariant } from '../../../src/examples/Example';
+import { Example, ExampleVariant, V1Example } from '../../../src/examples/Example';
 
 type Params = {
-  examples: Example[]
+  examples: (Example|V1Example)[]
   selectedExample: string
   onConvert: () => void
   onCopyConfig: () => void
   onCopyCode: () => void
-  onExampleSelected: (string) => void
+  onExampleSelected: (name: string) => void
   onPaste: () => void
   onDetectSchema: () => void
   onTidyJson: () => void
