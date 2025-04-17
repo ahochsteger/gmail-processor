@@ -3049,7 +3049,7 @@
                     "type": "string"
                 },
                 "password": {
-                    "description": "The password to be used PDF decryption.",
+                    "description": "The password to be used for PDF decryption.",
                     "title": "password",
                     "type": "string"
                 },

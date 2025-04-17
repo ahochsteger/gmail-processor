@@ -120,7 +120,7 @@ export class GmailAdapter extends BaseAdapter {
   /**
    * Generate HTML code for one message of a thread.
    * @param thread - The thread to be represented as HTML
-   * @param skipHeader - Whether to skip the header in the generated HTML
+   * @param options - The options for generating the HTML code
    */
   public threadAsHtml(
     thread: GoogleAppsScript.Gmail.GmailThread,

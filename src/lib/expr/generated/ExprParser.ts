@@ -5,7 +5,7 @@ import * as antlr from "antlr4ng"
 
 import { ExprParserListener } from "./ExprParserListener.js"
 // for running tests with parameters, TODO: discuss strategy for typed parameters in CI
-
+// eslint-disable-next-line no-unused-vars
 // @ts-expect-error This is a generated file and cannot be suppressed
 type int = number
 
@@ -165,7 +165,7 @@ export class ExprParser extends antlr.Parser {
     )
   }
   public template(): TemplateContext {
-    const localContext = new TemplateContext(this.context, this.state)
+    let localContext = new TemplateContext(this.context, this.state)
     this.enterRule(localContext, 0, ExprParser.RULE_template)
     let _la: number
     try {
@@ -201,7 +201,7 @@ export class ExprParser extends antlr.Parser {
     return localContext
   }
   public templatePart(): TemplatePartContext {
-    const localContext = new TemplatePartContext(this.context, this.state)
+    let localContext = new TemplatePartContext(this.context, this.state)
     this.enterRule(localContext, 2, ExprParser.RULE_templatePart)
     try {
       this.state = 45
@@ -244,7 +244,7 @@ export class ExprParser extends antlr.Parser {
     return localContext
   }
   public text(): TextContext {
-    const localContext = new TextContext(this.context, this.state)
+    let localContext = new TextContext(this.context, this.state)
     this.enterRule(localContext, 4, ExprParser.RULE_text)
     try {
       this.enterOuterAlt(localContext, 1)
@@ -265,7 +265,7 @@ export class ExprParser extends antlr.Parser {
     return localContext
   }
   public expr(): ExprContext {
-    const localContext = new ExprContext(this.context, this.state)
+    let localContext = new ExprContext(this.context, this.state)
     this.enterRule(localContext, 6, ExprParser.RULE_expr)
     let _la: number
     try {
@@ -301,7 +301,7 @@ export class ExprParser extends antlr.Parser {
     return localContext
   }
   public dataRefName(): DataRefNameContext {
-    const localContext = new DataRefNameContext(this.context, this.state)
+    let localContext = new DataRefNameContext(this.context, this.state)
     this.enterRule(localContext, 8, ExprParser.RULE_dataRefName)
     try {
       this.enterOuterAlt(localContext, 1)
@@ -324,7 +324,7 @@ export class ExprParser extends antlr.Parser {
     return localContext
   }
   public refObjectName(): RefObjectNameContext {
-    const localContext = new RefObjectNameContext(this.context, this.state)
+    let localContext = new RefObjectNameContext(this.context, this.state)
     this.enterRule(localContext, 10, ExprParser.RULE_refObjectName)
     try {
       this.enterOuterAlt(localContext, 1)
@@ -345,7 +345,7 @@ export class ExprParser extends antlr.Parser {
     return localContext
   }
   public refAttrName(): RefAttrNameContext {
-    const localContext = new RefAttrNameContext(this.context, this.state)
+    let localContext = new RefAttrNameContext(this.context, this.state)
     this.enterRule(localContext, 12, ExprParser.RULE_refAttrName)
     let _la: number
     try {
@@ -387,7 +387,7 @@ export class ExprParser extends antlr.Parser {
     return localContext
   }
   public filterChain(): FilterChainContext {
-    const localContext = new FilterChainContext(this.context, this.state)
+    let localContext = new FilterChainContext(this.context, this.state)
     this.enterRule(localContext, 14, ExprParser.RULE_filterChain)
     let _la: number
     try {
@@ -423,7 +423,7 @@ export class ExprParser extends antlr.Parser {
     return localContext
   }
   public filterExpr(): FilterExprContext {
-    const localContext = new FilterExprContext(this.context, this.state)
+    let localContext = new FilterExprContext(this.context, this.state)
     this.enterRule(localContext, 16, ExprParser.RULE_filterExpr)
     let _la: number
     try {
@@ -459,7 +459,7 @@ export class ExprParser extends antlr.Parser {
     return localContext
   }
   public filterName(): FilterNameContext {
-    const localContext = new FilterNameContext(this.context, this.state)
+    let localContext = new FilterNameContext(this.context, this.state)
     this.enterRule(localContext, 18, ExprParser.RULE_filterName)
     try {
       this.enterOuterAlt(localContext, 1)
@@ -480,7 +480,7 @@ export class ExprParser extends antlr.Parser {
     return localContext
   }
   public filterArgs(): FilterArgsContext {
-    const localContext = new FilterArgsContext(this.context, this.state)
+    let localContext = new FilterArgsContext(this.context, this.state)
     this.enterRule(localContext, 20, ExprParser.RULE_filterArgs)
     let _la: number
     try {
@@ -518,7 +518,7 @@ export class ExprParser extends antlr.Parser {
     return localContext
   }
   public filterArg(): FilterArgContext {
-    const localContext = new FilterArgContext(this.context, this.state)
+    let localContext = new FilterArgContext(this.context, this.state)
     this.enterRule(localContext, 22, ExprParser.RULE_filterArg)
     let _la: number
     try {
@@ -546,7 +546,7 @@ export class ExprParser extends antlr.Parser {
     return localContext
   }
   public legacyExpr(): LegacyExprContext {
-    const localContext = new LegacyExprContext(this.context, this.state)
+    let localContext = new LegacyExprContext(this.context, this.state)
     this.enterRule(localContext, 24, ExprParser.RULE_legacyExpr)
     let _la: number
     try {
@@ -590,7 +590,7 @@ export class ExprParser extends antlr.Parser {
     return localContext
   }
   public legacyDataRefName(): LegacyDataRefNameContext {
-    const localContext = new LegacyDataRefNameContext(this.context, this.state)
+    let localContext = new LegacyDataRefNameContext(this.context, this.state)
     this.enterRule(localContext, 26, ExprParser.RULE_legacyDataRefName)
     try {
       this.enterOuterAlt(localContext, 1)
@@ -613,10 +613,7 @@ export class ExprParser extends antlr.Parser {
     return localContext
   }
   public legacyRefObjectName(): LegacyRefObjectNameContext {
-    const localContext = new LegacyRefObjectNameContext(
-      this.context,
-      this.state,
-    )
+    let localContext = new LegacyRefObjectNameContext(this.context, this.state)
     this.enterRule(localContext, 28, ExprParser.RULE_legacyRefObjectName)
     try {
       this.enterOuterAlt(localContext, 1)
@@ -637,7 +634,7 @@ export class ExprParser extends antlr.Parser {
     return localContext
   }
   public legacyRefAttrName(): LegacyRefAttrNameContext {
-    const localContext = new LegacyRefAttrNameContext(this.context, this.state)
+    let localContext = new LegacyRefAttrNameContext(this.context, this.state)
     this.enterRule(localContext, 30, ExprParser.RULE_legacyRefAttrName)
     let _la: number
     try {
@@ -679,7 +676,7 @@ export class ExprParser extends antlr.Parser {
     return localContext
   }
   public legacyPlaceholderExpr(): LegacyPlaceholderExprContext {
-    const localContext = new LegacyPlaceholderExprContext(
+    let localContext = new LegacyPlaceholderExprContext(
       this.context,
       this.state,
     )

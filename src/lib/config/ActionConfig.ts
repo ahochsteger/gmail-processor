@@ -82,7 +82,7 @@ export type StoreActionBaseArgs = {
 
 export type StoreDecryptedPdfActionArgs = StoreActionBaseArgs & {
   /**
-   * The password to be used PDF decryption.
+   * The password to be used for PDF decryption.
    */
   password: string
 }

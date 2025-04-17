@@ -18,6 +18,7 @@ function extractAllDocs() {
   local jsonfile="${1}"
   npx typedoc \
     --json "${jsonfile}" \
+    --sort alphabetical \
     --readme none \
     --exclude 'src/**/generated/**/*.ts' \
     'src/lib/**/*.ts'

@@ -51,7 +51,7 @@ Decrypt a PDF attachment and store it to a Google Drive location.<br />NOTE: PDF
 | `conflictStrategy` | `ConflictStrategy` | The strategy to be used in case a file already exists at the desired location. See [Enum Type `ConflictStrategy`](enum-types.mdx#conflictstrategy) for valid values. |
 | `description` | `string` | The description to be attached to the Google Drive file.<br />Supports [placeholder](placeholder.mdx) substitution. |
 | `location` | `string` | The location (path + filename) of the Google Drive file.<br />For shared folders or Team Drives prepend the location with the folder ID like `{id:<folderId>}/...`.<br />Supports [placeholder](placeholder.mdx) substitution. |
-| `password` | `string` | The password to be used PDF decryption. |
+| `password` | `string` | The password to be used for PDF decryption. |
 | `toMimeType` | `string` | Convert to a Google file type using one of the <a href="https://developers.google.com/drive/api/guides/mime-types?hl=en">supported mime-types by Google Drive</a>, like:<br />* `application/vnd.google-apps.document`: Google Docs<br />* `application/vnd.google-apps.presentation`: Google Slides<br />* `application/vnd.google-apps.spreadsheet`: Google Sheets |
 
 ## Global Actions
