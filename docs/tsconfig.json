@@ -11,7 +11,10 @@
     "paths": {
       "@lib/*": ["../src/lib/*" ],
       "@site/*": ["./*" ],
-    },
+      "@theme/*": [
+        "./node_modules/docusaurus-json-schema-plugin/src/theme/*",
+        "./src/theme/*"
+      ]    },
     "resolveJsonModule": true,
     // Extending "@tsconfig/docusaurus/tsconfig.json".types with "docusaurus-json-schema-plugin"
     "types": [

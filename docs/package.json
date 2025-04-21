@@ -12,6 +12,7 @@
     "serve": "docusaurus serve",
     "write-translations": "docusaurus write-translations",
     "write-heading-ids": "docusaurus write-heading-ids",
+    "lint": "npx eslint",
     "typecheck": "tsc"
   },
   "dependencies": {
@@ -31,7 +32,11 @@
     "react-dom": "19.1.0",
     "react-toastify": "11.0.5"
   },
+  "overrides": {
+    "react-json-view-lite": "2.3.0"
+  },
   "devDependencies": {
+    "@docusaurus/eslint-plugin": "^3.7.0",
     "@docusaurus/module-type-aliases": "3.7.0",
     "@docusaurus/tsconfig": "3.7.0",
     "@docusaurus/types": "3.7.0",

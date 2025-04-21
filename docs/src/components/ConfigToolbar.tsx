@@ -44,7 +44,7 @@ const ConfigToolbar = ({ examples, selectedExample, onConvert, onCopyConfig, onC
       <h2>Config Editor</h2>
       &nbsp;
       <div style={{ flex: 1 }} />
-      <select name='example' style={{fontSize:"20px"}} onChange={e => onExampleSelected(e.target.value)} value={selectedExample}>
+      <select title='Example' name='example' style={{fontSize:"20px"}} onChange={e => onExampleSelected(e.target.value)} value={selectedExample}>
         <option style={{fontWeight:"bold", textAlign: 'center'}} key="" value="">Select an example</option>
         <option disabled style={{fontWeight:"bold", textAlign: 'center'}}>⎼⎼⎼⎼ Gmail Processor ⎼⎼⎼⎼</option>
         {examples.filter(e=>e.info.variant!==ExampleVariant.MIGRATION_V1).map(ex => <option  key={ex.info.name} value={ex.info.name}>{ex.info.name}</option>)}
