@@ -92,10 +92,10 @@
   ],
   "license": "Apache-2.0",
   "devDependencies": {
-    "@babel/plugin-transform-class-properties": "7.25.9",
-    "@babel/plugin-transform-class-static-block": "7.26.0",
-    "@babel/plugin-transform-logical-assignment-operators": "7.25.9",
-    "@babel/plugin-transform-private-methods": "7.25.9",
+    "@babel/plugin-transform-class-properties": "7.27.1",
+    "@babel/plugin-transform-class-static-block": "7.27.1",
+    "@babel/plugin-transform-logical-assignment-operators": "7.27.1",
+    "@babel/plugin-transform-private-methods": "7.27.1",
     "@casualbot/jest-sonar-reporter": "2.4.0",
     "@eslint/js": "9.25.1",
     "@google/clasp": "2.5.0",
@@ -110,10 +110,10 @@
     "@types/crypto-js": "4.2.2",
     "@types/google-apps-script": "1.0.97",
     "@types/jest": "29.5.14",
-    "@types/node": "22.14.1",
+    "@types/node": "22.15.3",
     "@types/sha1": "1.1.5",
-    "@typescript-eslint/eslint-plugin": "8.31.0",
-    "@typescript-eslint/parser": "8.31.0",
+    "@typescript-eslint/eslint-plugin": "8.31.1",
+    "@typescript-eslint/parser": "8.31.1",
     "all-contributors-cli": "6.26.1",
     "antlr-ng": "1.0.9",
     "concurrently": "9.1.2",
@@ -131,17 +131,17 @@
     "prettier": "3.5.3",
     "prettier-plugin-organize-imports": "4.1.0",
     "release-please": "17.0.0",
-    "rollup": "4.40.0",
+    "rollup": "4.40.1",
     "rollup-plugin-analyzer": "4.0.0",
     "rollup-plugin-google-apps-script": "2.0.2",
     "rollup-plugin-visualizer": "5.14.0",
     "sonarqube-scanner": "4.3.0",
     "ts-jest": "29.3.2",
     "ts-prune": "0.10.3",
-    "type-fest": "4.40.0",
+    "type-fest": "4.40.1",
     "typedoc": "0.28.3",
     "typescript": "5.8.3",
-    "typescript-eslint": "8.31.0",
+    "typescript-eslint": "8.31.1",
     "typescript-json-schema": "0.65.1"
   },
   "private": true,
@@ -157,7 +157,7 @@
   },
   "overrides": {
     "sonarqube-scanner": {
-      "axios": "1.8.4"
+      "axios": "1.9.0"
     }
   },
   "engines": {
