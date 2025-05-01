@@ -16,8 +16,8 @@
     "typecheck": "tsc"
   },
   "dependencies": {
-    "@babel/plugin-proposal-decorators": "7.25.9",
-    "@babel/plugin-transform-class-properties": "7.25.9",
+    "@babel/plugin-proposal-decorators": "7.27.1",
+    "@babel/plugin-transform-class-properties": "7.27.1",
     "@docsearch/react": "3.9.0",
     "@docusaurus/core": "3.7.0",
     "@docusaurus/preset-classic": "3.7.0",
