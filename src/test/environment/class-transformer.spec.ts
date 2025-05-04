@@ -79,20 +79,31 @@ const jsonData = {
 }
 
 function expectDefaultsToBeSet(actual: any) {
-  expect(actual.num).toEqual(1)
-  expect(actual.arr).toEqual(["default1", "default2"])
-  expect(actual.str).toEqual("default")
-  expect(actual.nested.num).toEqual(2)
-  expect(actual.nested.bool).toEqual(true)
+  expect(actual).toMatchObject({
+    num: 1,
+    arr: ["default1", "default2"],
+    str: "default",
+    nested: {
+      num: 2,
+      bool: true,
+    },
+  })
 }
 
 function expectSetValuesToBePresent(actual: any) {
-  expect(actual.bool).toEqual(false)
-  expect(actual.nested.arr).toEqual(["c", "d"])
-  expect(actual.nested.str).toEqual("myString")
-  expect(actual.nestedArray.length).toEqual(1)
-  expect(actual.nestedArray[0].num).toEqual(3)
-  expect(actual.nestedArray[0].str).toEqual("nestedArrayStr")
+  expect(actual).toMatchObject({
+    bool: false,
+    nested: {
+      arr: ["c", "d"],
+      str: "myString",
+    },
+    nestedArray: [
+      {
+        num: 3,
+        str: "nestedArrayStr",
+      },
+    ],
+  })
 }
 
 function expectAdditionalValuesToBeRemoved(actual: any) {
