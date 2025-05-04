@@ -104,7 +104,6 @@ export default {
 
   // A preset that is used as a base for Jest's configuration
   // preset: undefined,
-  preset: "ts-jest/presets/js-with-ts",
 
   // Run tests from one or more projects
   // projects: undefined,
@@ -199,14 +198,23 @@ export default {
   //   '^.+\\.tsx?$': 'babel-jest',
   // },
   transform: {
-    "^.+\\.tsx?$": [
-      "ts-jest",
+    "^.+\\.(t|j)sx?$": [
+      "@swc/jest",
       {
-        /* ts-jest config goes here in Jest */
+        jsc: {
+          parser: {
+            syntax: "typescript",
+            decorators: true, // Enable decorator parsing
+          },
+          keepClassNames: true,
+          transform: {
+            legacyDecorator: true, // Use legacy decorator behavior (common for TS projects)
+            decoratorMetadata: true, // Enable metadata emission (like emitDecoratorMetadata in tsconfig)
+          },
+        },
       },
     ],
   },
-
   // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation
   // transformIgnorePatterns: [
   //   "/node_modules/",
