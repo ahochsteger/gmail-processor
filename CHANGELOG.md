@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.15.0](https://github.com/ahochsteger/gmail-processor/compare/v2.14.1...v2.15.0) (2025-05-04)
+
+
+### Features
+
+* add regex matching of raw message headers ([6f29e61](https://github.com/ahochsteger/gmail-processor/commit/6f29e6100cc5c0a99e187f08b9c2301469ec181c))
+
+
+### Bug Fixes
+
+* complex implementation of extractHeaders ([e632c80](https://github.com/ahochsteger/gmail-processor/commit/e632c80d92c03abc1e2d25f8694d91823de83969))
+* various warnings ([4e5d88a](https://github.com/ahochsteger/gmail-processor/commit/4e5d88a02efbd8b9b5f76a8965ff85caf07c2377))
+
 ## [2.14.1](https://github.com/ahochsteger/gmail-processor/compare/v2.14.0...v2.14.1) (2025-03-15)
 
 
