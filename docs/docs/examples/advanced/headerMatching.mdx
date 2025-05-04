@@ -1,0 +1,20 @@
+---
+id: headerMatching
+title: Header Matching
+description: This example demonstrates how to match raw message headers.
+---
+import RenderExample from "/src/components/RenderExample.tsx"
+import config from '!!raw-loader!../../../../src/examples/advanced/headerMatching.json';
+import script from '!!raw-loader!../../../../src/gas/examples/advanced/headerMatching.js';
+import { info } from "../../../../src/examples/advanced/headerMatching.ts"
+
+This example demonstrates how to use the `rawHeaders` property in the message matching configuration.
+It allows matching messages based on the content of their raw headers using regular expressions.
+
+In this specific example:
+1.  It first matches threads sent by the current user (`from:${user.email}`).
+2.  Within those threads, it matches messages where the raw headers contain a `From:` line exactly matching the user's email address (`(?m)^From: ${user.email}$`). Note the use of `(?m)` at the beginning of the regex to allow matching `^` and `$` at start/end of line (multi-line matching).
+3.  For matching messages, it processes attachments named `invoice.pdf`.
+4.  Matching attachments are stored in Google Drive using a dynamically generated path based on message and attachment details.
+
+<RenderExample info={info} config={config} script={script} />

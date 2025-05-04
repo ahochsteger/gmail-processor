@@ -10,6 +10,7 @@ function getTestConfigs() {
     customActionsTestConfig(),
     dateExpressionsTestConfig(),
     decryptPdfTestConfig(),
+    headerMatchingTestConfig(),
     issue301TestConfig(),
     legacyExpressionsTestConfig(),
     logSheetLoggingTestConfig(),
