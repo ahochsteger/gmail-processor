@@ -140,11 +140,14 @@ export class GMailMocks {
       let headers = `Date: ${msgData.date.toUTCString()}\r\n`
       headers += `From: ${msgData.from}\r\n`
       headers += `To: ${msgData.to}\r\n`
-      if (msgData.cc) headers += `Cc: ${msgData.cc}\r\n`
-      if (msgData.bcc) headers += `Bcc: ${msgData.bcc}\r\n` // Note: BCC usually not in raw headers, but included for testing flexibility
+      if (msgData.cc && msgData.cc.length > 0)
+        headers += `Cc: ${msgData.cc}\r\n`
+      if (msgData.bcc && msgData.bcc.length > 0)
+        headers += `Bcc: ${msgData.bcc}\r\n` // Note: BCC usually not in raw headers, but included for testing flexibility
       headers += `Subject: ${msgData.subject}\r\n`
       headers += `Message-ID: <${msgData.id}@mail.gmail.com>\r\n` // Example Message-ID format
-      if (msgData.replyTo) headers += `Reply-To: ${msgData.replyTo}\r\n`
+      if (msgData.replyTo && msgData.replyTo.length > 0)
+        headers += `Reply-To: ${msgData.replyTo}\r\n`
       headers += `Content-Type: text/html; charset=utf-8\r\n` // Assuming HTML body for simplicity
       return `${headers}\r\n${msgData.body}`
     }
