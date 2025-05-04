@@ -136,6 +136,18 @@ export class GMailMocks {
     // NOTE: Keep MessageData, newMessageMock and getMessageSampleData in sync
     const d = this.getMessageSampleData(data)
     d.attachments = d.attachments ? d.attachments : []
+    const buildRawContent = (msgData: RequiredMessageData): string => {
+      let headers = `Date: ${msgData.date.toUTCString()}\r\n`
+      headers += `From: ${msgData.from}\r\n`
+      headers += `To: ${msgData.to}\r\n`
+      if (msgData.cc) headers += `Cc: ${msgData.cc}\r\n`
+      if (msgData.bcc) headers += `Bcc: ${msgData.bcc}\r\n` // Note: BCC usually not in raw headers, but included for testing flexibility
+      headers += `Subject: ${msgData.subject}\r\n`
+      headers += `Message-ID: <${msgData.id}@mail.gmail.com>\r\n` // Example Message-ID format
+      if (msgData.replyTo) headers += `Reply-To: ${msgData.replyTo}\r\n`
+      headers += `Content-Type: text/html; charset=utf-8\r\n` // Assuming HTML body for simplicity
+      return `${headers}\r\n${msgData.body}`
+    }
     const m = mock<GoogleAppsScript.Gmail.GmailMessage>()
     m.forward.mockReturnValue(m)
     m.getAttachments.mockReturnValue(this.getAttachments(d))
@@ -146,6 +158,7 @@ export class GMailMocks {
     m.getFrom.mockReturnValue(d.from)
     m.getId.mockReturnValue(d.id)
     m.getReplyTo.mockReturnValue(d.replyTo)
+    m.getRawContent.mockReturnValue(buildRawContent(d))
     m.getSubject.mockReturnValue(d.subject)
     m.getTo.mockReturnValue(d.to)
     m.isDraft.mockReturnValue(d.isDraft)
