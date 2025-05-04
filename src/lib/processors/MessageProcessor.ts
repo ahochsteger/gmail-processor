@@ -41,6 +41,23 @@ export class MessageProcessor extends BaseProcessor {
     return messageContext
   }
 
+  private static extractHeaders(rawContent?: string): string {
+    if (!rawContent) {
+      return ""
+    }
+    const headerEndPos = rawContent.indexOf("\r\n\r\n")
+    if (headerEndPos !== -1) {
+      return rawContent.substring(0, headerEndPos)
+    }
+    const headerEndPosLf = rawContent.indexOf("\n\n")
+    if (headerEndPosLf !== -1) {
+      return rawContent.substring(0, headerEndPosLf)
+    }
+    // If no double newline is found, assume the entire content might be headers
+    // (e.g., empty body or unusual format)
+    return rawContent
+  }
+
   public static matches(
     ctx: ThreadContext,
     matchConfig: RequiredMessageMatchConfig,
@@ -64,6 +81,12 @@ export class MessageProcessor extends BaseProcessor {
         type: "regex",
         value: message.getPlainBody(),
         config: matchConfig.plainBody,
+      },
+      {
+        name: "rawHeaders",
+        type: "regex",
+        value: this.extractHeaders(message.getRawContent()),
+        config: matchConfig.rawHeaders,
       },
       {
         name: "to",
@@ -128,6 +151,10 @@ export class MessageProcessor extends BaseProcessor {
         ctx,
         this.effectiveValue(global.plainBody, local.plainBody, ""),
       ),
+      rawHeaders: PatternUtil.substitute(
+        ctx,
+        this.effectiveValue(global.rawHeaders, local.rawHeaders, ""),
+      ),
       subject: PatternUtil.substitute(
         ctx,
         this.effectiveValue(global.subject, local.subject, ""),
@@ -150,6 +177,7 @@ export class MessageProcessor extends BaseProcessor {
     if (mmc.body) m.set("body", mmc.body)
     if (mmc.from) m.set("from", mmc.from)
     if (mmc.plainBody) m.set("plainBody", mmc.plainBody)
+    if (mmc.rawHeaders) m.set("rawHeaders", mmc.rawHeaders)
     if (mmc.subject) m.set("subject", mmc.subject)
     if (mmc.to) m.set("to", mmc.to)
     return m
@@ -294,6 +322,16 @@ export class MessageProcessor extends BaseProcessor {
           keyPrefix,
           "getPlainBody",
           "The plain body of the message.",
+        ),
+      ),
+      [`${keyPrefix}.rawHeaders`]: mi(
+        MIT.STRING,
+        (msg: Message) => this.extractHeaders(msg.getRawContent()),
+        "Message Raw Headers",
+        this.getRefDocs(
+          keyPrefix,
+          "getRawContent",
+          "The raw headers of the message.",
         ),
       ),
       [`${keyPrefix}.replyTo`]: mi(

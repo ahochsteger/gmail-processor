@@ -2774,6 +2774,12 @@
                     "title": "plainBody",
                     "type": "string"
                 },
+                "rawHeaders": {
+                    "default": ".*",
+                    "description": "A RegEx matching the raw headers of messages.\nUse `(?s)` at the beginning of the regex if you want `.` to match a newline.",
+                    "title": "rawHeaders",
+                    "type": "string"
+                },
                 "subject": {
                     "default": ".*",
                     "description": "A RegEx matching the subject of messages",

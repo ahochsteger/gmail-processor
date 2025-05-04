@@ -34,6 +34,11 @@ export class MessageMatchConfig {
    */
   plainBody? = ".*"
   /**
+   * A RegEx matching the raw headers of messages.
+   * Use `(?s)` at the beginning of the regex if you want `.` to match a newline.
+   */
+  rawHeaders? = ".*"
+  /**
    * A RegEx matching the subject of messages
    */
   subject? = ".*"
