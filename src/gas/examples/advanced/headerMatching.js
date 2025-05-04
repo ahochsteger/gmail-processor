@@ -1,0 +1,49 @@
+function headerMatchingRun() {
+  const config = {
+    description: "This example demonstrates how to match raw message headers.",
+    settings: {
+      markProcessedMethod: "mark-read",
+    },
+    global: {
+      thread: {
+        match: {
+          query:
+            "has:attachment -in:trash -in:drafts -in:spam after:{{date.now|formatDate('yyyy-MM-dd')}} is:unread subject:\"[GmailProcessor-Test] headerMatching\"",
+        },
+      },
+    },
+    threads: [
+      {
+        match: {
+          query: "from:${user.email}",
+        },
+        messages: [
+          {
+            match: {
+              rawHeaders: "(?m)^From: ${user.email}$",
+            },
+            attachments: [
+              {
+                match: {
+                  name: "^invoice\\.pdf$",
+                },
+                actions: [
+                  {
+                    name: "attachment.store",
+                    args: {
+                      location:
+                        "/GmailProcessor-Tests/e2e/headerMatching/{{message.date|formatDate('yyyy-MM-dd')}}/{{message.subject}}-{{attachment.name}}",
+                      conflictStrategy: "keep",
+                    },
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  }
+
+  return GmailProcessorLib.run(config, "dry-run")
+}
