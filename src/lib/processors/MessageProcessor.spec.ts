@@ -92,6 +92,24 @@ describe("match()", () => {
           },
           expected: ["message-1"],
         },
+        {
+          config: {
+            // Match the From header of the first message
+            rawHeaders: "(?m)^From: from1@example.com\r\n",
+          },
+          expected: ["message-1"],
+        },
+        {
+          config: {
+            // Match the Subject header of the second message using a broader regex
+            rawHeaders: "(?s)Subject: message-2.*Message-ID:",
+          },
+          expected: ["message-2"],
+        },
+        {
+          config: { rawHeaders: "(?m)^X-NonExistent-Header: .*" },
+          expected: [],
+        },
       ]
     const mockedThread = GMailMocks.newThreadMock({
       messages: [
