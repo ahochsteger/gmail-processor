@@ -7,9 +7,13 @@ import { Config, newConfig } from "./config/Config"
 let configJson: Config
 let mocks: Mocks
 
-beforeEach(() => {
+beforeAll(() => {
   configJson = ConfigMocks.newDefaultConfigJson()
   mocks = MockFactory.newMocks(newConfig(configJson), RunMode.DANGEROUS)
+})
+
+beforeEach(() => {
+  jest.clearAllMocks()
 })
 
 describe("run", () => {

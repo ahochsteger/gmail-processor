@@ -1,4 +1,5 @@
 import { ConfigMocks } from "../../test/mocks/ConfigMocks"
+import { ContextMocks } from "../../test/mocks/ContextMocks"
 import { LOGSHEET_FILE_PATH } from "../../test/mocks/GDriveMocks"
 import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
 import { Config } from "../config/Config"
@@ -7,7 +8,8 @@ import { SpreadsheetAdapter } from "./SpreadsheetAdapter"
 let spreadsheetAdapter: SpreadsheetAdapter
 let mocks: Mocks
 let config: Config
-beforeEach(() => {
+
+beforeAll(() => {
   config = {
     ...ConfigMocks.newDefaultConfigJson(),
     settings: {
@@ -24,15 +26,17 @@ beforeEach(() => {
   spreadsheetAdapter = mocks.processingContext.proc.spreadsheetAdapter
 })
 
+beforeEach(() => {
+  jest.clearAllMocks()
+})
+
 it("should initialize a new logsheet", () => {
-  // NOTE: MockFactory.newMocks() calls constructor of SpreadsheetAdapter
+  ContextMocks.newProcessingContextMock(mocks.envContext)
   expect(mocks.spreadsheetApp.create).toHaveBeenCalled()
   expect(mocks.logSheet.appendRow).toHaveBeenCalled()
 })
 
 it("should log to an existing logsheet", () => {
-  mocks.spreadsheetApp.create.mockReset()
-  mocks.logSheet.appendRow.mockReset()
   spreadsheetAdapter.log(mocks.attachmentContext, {
     location: "SpreadsheetAdapter.spec",
     message: "some log message",

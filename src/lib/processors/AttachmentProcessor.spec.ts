@@ -15,8 +15,12 @@ import { AttachmentProcessor } from "./AttachmentProcessor"
 
 let mocks: Mocks
 
-beforeEach(() => {
+beforeAll(() => {
   mocks = MockFactory.newMocks()
+})
+
+beforeEach(() => {
+  jest.clearAllMocks()
 })
 
 it("should build a match config with default globals", () => {

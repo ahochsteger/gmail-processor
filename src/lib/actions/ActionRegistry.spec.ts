@@ -96,7 +96,7 @@ let mocks: Mocks
 let myThreadActionProvider: TestThreadActionProvider
 let actionRegistry: ActionRegistry
 
-beforeEach(() => {
+beforeAll(() => {
   mocks = MockFactory.newMocks()
   actionRegistry = new ActionRegistry()
   myThreadActionProvider = new TestThreadActionProvider()
@@ -113,6 +113,10 @@ beforeEach(() => {
     "testAttachment",
     new TestAttachmentActionProvider(),
   )
+})
+
+beforeEach(() => {
+  jest.clearAllMocks()
 })
 
 describe("ActionRegistry.registerActionProvider()", () => {

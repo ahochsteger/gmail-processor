@@ -15,13 +15,17 @@ import { ThreadActions } from "./ThreadActions"
 let mocks: Mocks
 let actionRegistry: ActionRegistry
 
-beforeEach(() => {
+beforeAll(() => {
   mocks = MockFactory.newMocks()
   actionRegistry = new ActionRegistry()
   actionRegistry.registerActionProvider(
     "thread",
     new ThreadActions() as unknown as ActionProvider<ProcessingContext>,
   )
+})
+
+beforeEach(() => {
+  jest.clearAllMocks()
 })
 
 it("should provide actions in the action registry", () => {

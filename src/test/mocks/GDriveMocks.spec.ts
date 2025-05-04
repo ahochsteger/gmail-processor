@@ -33,6 +33,10 @@ beforeAll(() => {
   driveSpec = GDriveMocks.getSampleDriveData(mocks)
 })
 
+beforeEach(() => {
+  jest.clearAllMocks()
+})
+
 describe("mock behavior", () => {
   it("should use calledWith without default mock implementation", () => {
     const folder: MockProxy<GoogleAppsScript.Drive.Folder> =

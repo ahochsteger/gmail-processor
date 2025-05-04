@@ -4,12 +4,16 @@ import { GmailAdapter } from "./GmailAdapter"
 let mocks: Mocks
 let adapter: GmailAdapter
 
-beforeEach(() => {
+beforeAll(() => {
   mocks = MockFactory.newMocks()
   adapter = new GmailAdapter(
     mocks.envContext,
     mocks.processingContext.proc.config.settings,
   )
+})
+
+beforeEach(() => {
+  jest.clearAllMocks()
 })
 
 it("should export a message as HTML document", () => {

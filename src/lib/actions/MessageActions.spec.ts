@@ -16,13 +16,17 @@ import { MessageActions } from "./MessageActions"
 let mocks: Mocks
 let actionRegistry: ActionRegistry
 
-beforeEach(() => {
+beforeAll(() => {
   mocks = MockFactory.newMocks()
   actionRegistry = new ActionRegistry()
   actionRegistry.registerActionProvider(
     "message",
     new MessageActions() as ActionProvider<ProcessingContext>,
   )
+})
+
+beforeEach(() => {
+  jest.clearAllMocks()
 })
 
 it("should provide actions in the action registry", () => {

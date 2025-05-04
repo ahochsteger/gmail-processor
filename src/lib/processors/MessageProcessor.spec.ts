@@ -8,8 +8,12 @@ import { MessageProcessor } from "./MessageProcessor"
 
 let mocks: Mocks
 
-beforeEach(() => {
+beforeAll(() => {
   mocks = MockFactory.newMocks()
+})
+
+beforeEach(() => {
+  jest.clearAllMocks()
 })
 
 describe("match()", () => {

@@ -14,7 +14,7 @@ let mocks: Mocks
 let actionRegistry: ActionRegistry
 let actionProvider: ActionProvider<AttachmentContext>
 
-beforeEach(() => {
+beforeAll(() => {
   mocks = MockFactory.newMocks()
   actionRegistry = new ActionRegistry()
   actionProvider = new AttachmentActions()
@@ -22,6 +22,10 @@ beforeEach(() => {
     "attachment",
     actionProvider as ActionProvider<ProcessingContext>,
   )
+})
+
+beforeEach(() => {
+  jest.clearAllMocks()
 })
 
 it("should provide actions in the action registry", () => {

@@ -14,7 +14,7 @@ let safeModeMocks: Mocks
 let dryRunMocks: Mocks
 let spy: jest.SpyInstance
 
-beforeEach(() => {
+beforeAll(() => {
   dangerousMocks = MockFactory.newMocks()
   safeModeMocks = MockFactory.newMocks(
     ConfigMocks.newDefaultConfig(),
@@ -25,6 +25,10 @@ beforeEach(() => {
     RunMode.DRY_RUN,
   )
   spy = jest.spyOn(MyMessageActions, "testFunc")
+})
+
+beforeEach(() => {
+  jest.clearAllMocks()
 })
 
 class MyMessageActions implements ActionProvider<MessageContext> {

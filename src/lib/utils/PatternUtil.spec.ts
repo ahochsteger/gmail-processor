@@ -15,11 +15,15 @@ import { PatternUtil } from "./PatternUtil"
 
 let mocks: Mocks
 
-beforeEach(() => {
+beforeAll(() => {
   mocks = MockFactory.newMocks(
     ConfigMocks.newDefaultConfig(),
     RunMode.DANGEROUS,
   )
+})
+
+beforeEach(() => {
+  jest.clearAllMocks()
 })
 
 describe("Pattern Substitution", () => {

@@ -11,9 +11,13 @@ import { GmailProcessor } from "./GmailProcessor"
 let config: RequiredConfig
 let mocks: Mocks
 
-beforeEach(() => {
+beforeAll(() => {
   mocks = MockFactory.newMocks()
   config = mocks.processingContext.proc.config
+})
+
+beforeEach(() => {
+  jest.clearAllMocks()
 })
 
 describe("run", () => {

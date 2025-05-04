@@ -12,8 +12,12 @@ import { ThreadProcessor } from "./ThreadProcessor"
 
 let mocks: Mocks
 
-beforeEach(() => {
+beforeAll(() => {
   mocks = MockFactory.newMocks()
+})
+
+beforeEach(() => {
+  jest.clearAllMocks()
 })
 
 it("should construct a GMail search query with globals (query, newerThan) and processedLabel", () => {

@@ -11,7 +11,8 @@ import { LogAdapter } from "./LogAdapter"
 let richLogAdapter: LogAdapter
 let mocks: Mocks
 let config: Config
-beforeEach(() => {
+
+beforeAll(() => {
   const logConfig = [
     ...newSettingsConfig({}).logConfig,
     { name: "field.1", title: "Field 1", value: "static value" },
@@ -35,6 +36,10 @@ beforeEach(() => {
   }
   mocks = MockFactory.newMocks(config)
   richLogAdapter = mocks.processingContext.proc.logAdapter
+})
+
+beforeEach(() => {
+  jest.clearAllMocks()
 })
 
 it("should create a field config compliant log array", () => {

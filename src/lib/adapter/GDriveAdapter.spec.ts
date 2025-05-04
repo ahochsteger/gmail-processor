@@ -2,6 +2,7 @@ import { MockProxy } from "jest-mock-extended"
 import {
   EXISTING_FILE_ID,
   EXISTING_FILE_NAME,
+  GDriveMocks,
   NEW_EXISTING_FILE_ID,
   NEW_EXISTING_FILE_NAME,
   NEW_FILE_ID,
@@ -24,8 +25,13 @@ import {
 let mocks: Mocks
 let gdriveAdapter: GDriveAdapter
 
-beforeEach(() => {
+beforeAll(() => {
   mocks = MockFactory.newMocks()
+})
+
+beforeEach(() => {
+  jest.clearAllMocks()
+  GDriveMocks.setupAllMocks(mocks)
   gdriveAdapter = new GDriveAdapter(
     mocks.envContext,
     mocks.processingContext.proc.config.settings,
