@@ -52,7 +52,7 @@ it("should provide actions in the action registry", () => {
 
 it("should mark a thread as important", () => {
   ThreadActions.markImportant(mocks.threadContext)
-  expect(mocks.thread.markImportant).toBeCalled()
+  expect(mocks.thread.markImportant).toHaveBeenCalled()
 })
 
 it("should not mark a thread as important (dryRun)", () => {
@@ -61,7 +61,7 @@ it("should not mark a thread as important (dryRun)", () => {
     RunMode.DRY_RUN,
   )
   ThreadActions.markImportant(dryRunMocks.threadContext)
-  expect(dryRunMocks.thread.markImportant).not.toBeCalled()
+  expect(dryRunMocks.thread.markImportant).not.toHaveBeenCalled()
 })
 
 it("should export a thread as HTML", () => {

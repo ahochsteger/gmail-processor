@@ -53,7 +53,7 @@ it("should create a file with leading slash location", () => {
     description: "automated test",
   })
   expect(result.file).toBe(mocks.newFile)
-  expect(mocks.rootFolder.createFile).toBeCalled()
+  expect(mocks.rootFolder.createFile).toHaveBeenCalled()
 })
 
 it("should create a file without a leading slash location", () => {
@@ -63,7 +63,7 @@ it("should create a file without a leading slash location", () => {
     description: "automated test",
   })
   expect(result.file).toBe(mocks.newFile)
-  expect(mocks.rootFolder.createFile).toBeCalled()
+  expect(mocks.rootFolder.createFile).toHaveBeenCalled()
 })
 
 it("should not create a file on dry-run mode", () => {

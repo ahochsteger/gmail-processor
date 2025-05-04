@@ -508,7 +508,7 @@ describe("V1 Format Conversion", () => {
     )
   })
   it("should fail on unsupported old date formats", () => {
-    expect(() => V1ToV2Converter.convertDateFormat("F a")).toThrowError()
+    expect(() => V1ToV2Converter.convertDateFormat("F a")).toThrow()
   })
   it("should support old filename pattern (type: 'string'format'string')", () => {
     expect(

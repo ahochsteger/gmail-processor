@@ -140,7 +140,7 @@ it("should enforce required settings", () => {
     newConfig({
       threads: [{}],
     }),
-  ).toThrowError("No markProcessedMethod not set in settings!")
+  ).toThrow("No markProcessedMethod not set in settings!")
 })
 
 it("should enforce required thread configs", () => {
@@ -150,7 +150,7 @@ it("should enforce required thread configs", () => {
         markProcessedMethod: MarkProcessedMethod.MARK_MESSAGE_READ,
       },
     }),
-  ).toThrowError("No thread configuration found")
+  ).toThrow("No thread configuration found")
 })
 
 it("should provide essential JSON config with defaults removed", () => {

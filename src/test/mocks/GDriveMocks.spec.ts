@@ -88,11 +88,11 @@ describe("setupFolder()", () => {
     expect(folder.getFilesByName(NO_FILE_NAME).hasNext()).toBeFalsy()
     expect(() => {
       folder.getFilesByName(NO_FILE_NAME).next()
-    }).toThrowError()
+    }).toThrow()
     expect(folder.getFoldersByName(NO_FOLDER_NAME).hasNext()).toBeFalsy()
     expect(() => {
       folder.getFoldersByName(NO_FOLDER_NAME).next()
-    }).toThrowError()
+    }).toThrow()
     const newFileContent = new FileContent(mocks.newBlob)
     expect(folder.createFile(newFileContent.blob)).toBeDefined()
     expect(folder.createFolder(NEW_FOLDER_NAME)).toBeDefined()
@@ -121,12 +121,12 @@ describe("setupFolder()", () => {
     expect(fileIterator.hasNext()).toBeFalsy()
     expect(() => {
       fileIterator.next()
-    }).toThrowError()
+    }).toThrow()
     folderIterator = folder.getFoldersByName(NO_FOLDER_NAME)
     expect(folderIterator.hasNext()).toBeFalsy()
     expect(() => {
       folderIterator.next()
-    }).toThrowError()
+    }).toThrow()
 
     // Test file/folder creation:
     expect(folder.createFile(mocks.newBlob)).toBe(mocks.newFile)
@@ -147,7 +147,7 @@ describe("setupFolder()", () => {
       blob.getName.mockReturnValue(p)
       const blobSource = mock<GoogleAppsScript.Base.BlobSource>()
       blobSource.getBlob.mockReturnValue(blob)
-      expect(() => folder.createFile(blobSource)).toThrowError("no mock data")
+      expect(() => folder.createFile(blobSource)).toThrow("no mock data")
     }
   })
 
@@ -157,7 +157,7 @@ describe("setupFolder()", () => {
       expect(folder.createFolder(p)).toBeDefined()
     }
     for (const p of ["any-folder", "some-folder"]) {
-      expect(() => folder.createFolder(p)).toThrowError("no mock data")
+      expect(() => folder.createFolder(p)).toThrow("no mock data")
     }
   })
 })
@@ -169,10 +169,10 @@ describe("setupFileIterator()", () => {
     expect(it.hasNext()).toBeFalsy() // Second invocation
     expect(() => {
       it.next()
-    }).toThrowError()
+    }).toThrow()
     expect(() => {
       it.next()
-    }).toThrowError()
+    }).toThrow()
   })
 
   it("should setup a default file iterator with an existing file", () => {
@@ -185,7 +185,7 @@ describe("setupFileIterator()", () => {
     expect(it.next()).toBe(file)
     expect(() => {
       it.next()
-    }).toThrowError()
+    }).toThrow()
   })
 })
 
@@ -196,10 +196,10 @@ describe("setupFolderIterator()", () => {
     expect(it.hasNext()).toBeFalsy() // Second invocation
     expect(() => {
       it.next()
-    }).toThrowError()
+    }).toThrow()
     expect(() => {
       it.next()
-    }).toThrowError()
+    }).toThrow()
   })
 
   it("should setup a default folder iterator with an existing folder", () => {
@@ -212,7 +212,7 @@ describe("setupFolderIterator()", () => {
     expect(it.next()).toBe(folder)
     expect(() => {
       it.next()
-    }).toThrowError()
+    }).toThrow()
   })
 })
 
@@ -252,7 +252,7 @@ describe("setupGDriveAppMocks", () => {
     expect(app.getFileById(EXISTING_FILE_ID)).toBe(mocks.existingFile)
     expect(() => {
       app.getFileById(NO_FILE_ID)
-    }).toThrowError()
+    }).toThrow()
 
     // Test file iterators:
     const rootFolder = app.getRootFolder()
@@ -263,7 +263,7 @@ describe("setupGDriveAppMocks", () => {
     expect(fileIterator.hasNext()).toBeFalsy()
     expect(() => {
       fileIterator.next()
-    }).toThrowError()
+    }).toThrow()
   })
 
   it("should setup a drive app with existing folders", () => {
@@ -279,7 +279,7 @@ describe("setupGDriveAppMocks", () => {
     expect(folderIterator.hasNext()).toBeFalsy()
     expect(() => {
       folderIterator.next()
-    }).toThrowError()
+    }).toThrow()
   })
 
   it("should setup a drive app for root file creation", () => {
@@ -309,12 +309,12 @@ describe("setupGDriveAppMocks", () => {
   it("should throw an error for non-existing file ids", () => {
     expect(() => {
       app.getFileById(NO_FILE_ID)
-    }).toThrowError()
+    }).toThrow()
   })
 
   it("should throw an error for non-existing folder ids", () => {
     expect(() => {
       app.getFolderById(NO_FOLDER_ID)
-    }).toThrowError()
+    }).toThrow()
   })
 })

@@ -52,7 +52,7 @@ it("should provide actions in the action registry", () => {
 
 it("should forward a message", () => {
   MessageActions.forward(mocks.messageContext, { to: "test" })
-  expect(mocks.message.forward).toBeCalled()
+  expect(mocks.message.forward).toHaveBeenCalled()
 })
 
 it("should not forward a message (dry-run)", () => {
@@ -61,7 +61,7 @@ it("should not forward a message (dry-run)", () => {
     RunMode.DRY_RUN,
   )
   MessageActions.forward(dryRunMocks.messageContext, { to: "test" })
-  expect(dryRunMocks.message.forward).not.toBeCalled()
+  expect(dryRunMocks.message.forward).not.toHaveBeenCalled()
 })
 
 it("should export a message as HTML", () => {
@@ -100,7 +100,7 @@ it("should store a document from a static URL", () => {
     location: `/${NEW_FILE_NAME}`,
     conflictStrategy: ConflictStrategy.KEEP,
   })
-  expect(mocks.urlFetchApp.fetch).toBeCalled()
+  expect(mocks.urlFetchApp.fetch).toHaveBeenCalled()
   expect(result.file).toBeDefined()
 })
 
@@ -111,7 +111,7 @@ it("should store a document from an extracted URL", () => {
     location: `/${NEW_FILE_NAME}`,
     conflictStrategy: ConflictStrategy.KEEP,
   })
-  expect(mocks.urlFetchApp.fetch).toBeCalled()
+  expect(mocks.urlFetchApp.fetch).toHaveBeenCalled()
   expect(result.file).toBeDefined()
 })
 
@@ -121,7 +121,7 @@ it("should fail on invalid URLs", () => {
     location: `/${NEW_FILE_NAME}`,
     conflictStrategy: ConflictStrategy.KEEP,
   })
-  expect(mocks.urlFetchApp.fetch).not.toBeCalled()
+  expect(mocks.urlFetchApp.fetch).not.toHaveBeenCalled()
   expect(result.ok).toBeFalsy()
   expect(result.file).not.toBeDefined()
 })

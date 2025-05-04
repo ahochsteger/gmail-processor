@@ -52,7 +52,7 @@ beforeEach(() => {
   // it("should throw error if folder is not found", () => {
   //   expect(() => {
   //     gdriveAdapter.getFolderFromPath("/some-non-existing-folder")
-  //   }).toThrowError(/not found/)
+  //   }).toThrow(/not found/)
   // })
 })
 */
@@ -66,7 +66,7 @@ describe("createFile() strategy:ERROR", () => {
       ConflictStrategy.ERROR,
     )
     expect(file?.getId()).toEqual(NEW_FILE_ID)
-    expect(mocks.rootFolder.createFile).toBeCalled()
+    expect(mocks.rootFolder.createFile).toHaveBeenCalled()
   })
 })
 describe("createFile() strategy:REPLACE", () => {
@@ -78,7 +78,7 @@ describe("createFile() strategy:REPLACE", () => {
       ConflictStrategy.REPLACE,
     )
     expect(file).toBeDefined()
-    expect(mocks.rootFolder.createFile).toBeCalled()
+    expect(mocks.rootFolder.createFile).toHaveBeenCalled()
   })
   it("should not replace an existing file if in replace mode but running in dry-run mode", () => {
     gdriveAdapter.ctx.env.runMode = RunMode.DRY_RUN
@@ -87,7 +87,7 @@ describe("createFile() strategy:REPLACE", () => {
       new FileContent(mocks.existingBlob),
       ConflictStrategy.REPLACE,
     )
-    expect(mocks.rootFolder.createFile).not.toBeCalled()
+    expect(mocks.rootFolder.createFile).not.toHaveBeenCalled()
   })
   it("should not replace an existing file if in replace mode but running in safe mode", () => {
     gdriveAdapter.ctx.env.runMode = RunMode.SAFE_MODE
@@ -96,7 +96,7 @@ describe("createFile() strategy:REPLACE", () => {
       new FileContent(mocks.existingBlob),
       ConflictStrategy.REPLACE,
     )
-    expect(mocks.rootFolder.createFile).not.toBeCalled()
+    expect(mocks.rootFolder.createFile).not.toHaveBeenCalled()
   })
 })
 describe("createFile() strategy:UPDATE", () => {
@@ -134,9 +134,9 @@ describe("createFile() strategy:UPDATE", () => {
       new FileContent(mocks.existingBlob),
       ConflictStrategy.UPDATE,
     )
-    expect(mocks.rootFolder.createFile).not.toBeCalled()
-    expect(mocks.existingFile.setContent).not.toBeCalled()
-    expect(mocks.existingFile.setDescription).not.toBeCalled()
+    expect(mocks.rootFolder.createFile).not.toHaveBeenCalled()
+    expect(mocks.existingFile.setContent).not.toHaveBeenCalled()
+    expect(mocks.existingFile.setDescription).not.toHaveBeenCalled()
   })
   it("should not update an existing file if in replace mode but running in safe mode", () => {
     gdriveAdapter.ctx.env.runMode = RunMode.SAFE_MODE
@@ -145,9 +145,9 @@ describe("createFile() strategy:UPDATE", () => {
       new FileContent(mocks.existingBlob),
       ConflictStrategy.UPDATE,
     )
-    expect(mocks.rootFolder.createFile).not.toBeCalled()
-    expect(mocks.existingFile.setContent).not.toBeCalled()
-    expect(mocks.existingFile.setDescription).not.toBeCalled()
+    expect(mocks.rootFolder.createFile).not.toHaveBeenCalled()
+    expect(mocks.existingFile.setContent).not.toHaveBeenCalled()
+    expect(mocks.existingFile.setDescription).not.toHaveBeenCalled()
   })
 })
 describe("createFile() strategy:BACKUP, safe-mode", () => {
@@ -161,8 +161,8 @@ describe("createFile() strategy:BACKUP, safe-mode", () => {
     )
     expect(createdFile?.getId()).not.toEqual(EXISTING_FILE_ID)
     expect(createdFile?.getId()).toEqual(NEW_EXISTING_FILE_ID)
-    expect(mocks.rootFolder.createFile).toBeCalled()
-    expect(mocks.existingFile.setName).toBeCalled()
+    expect(mocks.rootFolder.createFile).toHaveBeenCalled()
+    expect(mocks.existingFile.setName).toHaveBeenCalled()
   })
 })
 describe("createFile() strategy:KEEP", () => {
@@ -174,7 +174,7 @@ describe("createFile() strategy:KEEP", () => {
       ConflictStrategy.KEEP,
     )
     expect(createdFile?.getId()).not.toEqual(EXISTING_FILE_ID)
-    expect(mocks.rootFolder.createFile).toBeCalled()
+    expect(mocks.rootFolder.createFile).toHaveBeenCalled()
   })
 })
 describe("createFile() strategy:SKIP", () => {
@@ -185,7 +185,7 @@ describe("createFile() strategy:SKIP", () => {
       new FileContent(mocks.existingBlob),
       ConflictStrategy.SKIP,
     )
-    expect(mocks.rootFolder.createFile).not.toBeCalled()
+    expect(mocks.rootFolder.createFile).not.toHaveBeenCalled()
   })
 })
 describe("createFile() strategy:ERROR", () => {
@@ -197,7 +197,7 @@ describe("createFile() strategy:ERROR", () => {
         new FileContent(mocks.existingBlob),
         ConflictStrategy.ERROR,
       )
-    }).toThrowError(/Conflict/)
+    }).toThrow(/Conflict/)
   })
 })
 describe("createFile() with folderId", () => {
@@ -208,8 +208,8 @@ describe("createFile() with folderId", () => {
       new FileContent(mocks.newNestedBlob),
       ConflictStrategy.KEEP,
     )
-    expect(mocks.rootFolder.createFolder).toBeCalled()
-    expect(mocks.newFolder.createFile).toBeCalled()
+    expect(mocks.rootFolder.createFolder).toHaveBeenCalled()
+    expect(mocks.newFolder.createFile).toHaveBeenCalled()
     expect(file).toBe(mocks.newNestedFile)
     expect(file?.getId()).toEqual(NEW_NESTED_FILE_ID)
   })
@@ -240,7 +240,7 @@ describe("createFile() convert", () => {
         mocks.driveApi
           .Files as MockProxy<GoogleAppsScript.Drive_v3.Drive.V3.Collection.FilesCollection>
       ).create,
-    ).toBeCalled()
+    ).toHaveBeenCalled()
   })
 })
 describe("DriveUtils.extractLocationInfo()", () => {

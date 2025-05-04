@@ -26,5 +26,5 @@ it("should provide a processing error", () => {
     result.status = ProcessingStatus.ERROR
     result.error = new Error("Some action error")
     throw new ProcessingError("Some processing error", result)
-  }).toThrowError(ProcessingError)
+  }).toThrow(ProcessingError)
 })

@@ -64,45 +64,45 @@ class MyMessageActions implements ActionProvider<MessageContext> {
 
 it("should execute destructive actions in dangerous run mode", () => {
   MyMessageActions.destruct(dangerousMocks.processingContext, {})
-  expect(spy).toBeCalled()
+  expect(spy).toHaveBeenCalled()
 })
 
 it("should not execute destructive actions in dry-run mode", () => {
   MyMessageActions.destruct(dryRunMocks.processingContext, {})
-  expect(spy).not.toBeCalled()
+  expect(spy).not.toHaveBeenCalled()
 })
 
 it("should not execute destructive actions in safe mode", () => {
   MyMessageActions.destruct(safeModeMocks.processingContext, {})
-  expect(spy).not.toBeCalled()
+  expect(spy).not.toHaveBeenCalled()
 })
 
 it("should execute reading actions in dangerous mode", () => {
   MyMessageActions.read(dangerousMocks.processingContext, {})
-  expect(spy).toBeCalled()
+  expect(spy).toHaveBeenCalled()
 })
 
 it("should execute reading actions in dry-run mode", () => {
   MyMessageActions.read(dryRunMocks.processingContext, {})
-  expect(spy).toBeCalled()
+  expect(spy).toHaveBeenCalled()
 })
 
 it("should execute reading actions in safe mode", () => {
   MyMessageActions.read(safeModeMocks.processingContext, {})
-  expect(spy).toBeCalled()
+  expect(spy).toHaveBeenCalled()
 })
 
 it("should execute writing actions in dangerous mode", () => {
   MyMessageActions.write(dangerousMocks.processingContext, {})
-  expect(spy).toBeCalled()
+  expect(spy).toHaveBeenCalled()
 })
 
 it("should execute writing actions in dry-run mode", () => {
   MyMessageActions.write(dryRunMocks.processingContext, {})
-  expect(spy).not.toBeCalled()
+  expect(spy).not.toHaveBeenCalled()
 })
 
 it("should execute writing actions in safe mode", () => {
   MyMessageActions.write(safeModeMocks.processingContext, {})
-  expect(spy).toBeCalled()
+  expect(spy).toHaveBeenCalled()
 })
