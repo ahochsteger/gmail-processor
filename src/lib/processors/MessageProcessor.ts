@@ -45,17 +45,11 @@ export class MessageProcessor extends BaseProcessor {
     if (!rawContent) {
       return ""
     }
-    const headerEndPos = rawContent.indexOf("\r\n\r\n")
-    if (headerEndPos !== -1) {
-      return rawContent.substring(0, headerEndPos)
-    }
-    const headerEndPosLf = rawContent.indexOf("\n\n")
-    if (headerEndPosLf !== -1) {
-      return rawContent.substring(0, headerEndPosLf)
-    }
-    // If no double newline is found, assume the entire content might be headers
-    // (e.g., empty body or unusual format)
-    return rawContent
+    // Split by the first occurrence of a double newline (CRLF or LF)
+    // The limit parameter '1' ensures we only split into headers and the rest
+    const parts = rawContent.split(/\r?\n\r?\n/, 1)
+    // The first part (parts[0]) will always be the headers, even if no separator is found
+    return parts[0]
   }
 
   public static matches(
