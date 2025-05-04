@@ -97,13 +97,17 @@ export class GmailExportAdapter extends BaseAdapter {
       imageBlob = this.fetchRemoteFile(image)
     } else if (typeof image === "object") {
       imageBlob = image as GoogleAppsScript.Base.Blob // Note: GmailAttachment has all methods of Blob
+    } else {
+      this.ctx.log.warn(
+        `GMailExportAdapter.getDataUri(): Invalid image object '${String(image)}'`,
+      )
     }
     if (!imageBlob) {
       return null
     }
     if (imageBlob.getContentType()) {
       const type = imageBlob.getContentType()?.toLowerCase()
-      const data = Utilities.base64Encode(imageBlob.getBytes())
+      const data = this.ctx.env.utilities.base64Encode(imageBlob.getBytes())
       if (type?.indexOf("image") === 0) {
         const dataUrl = "data:" + type + ";base64," + data
         return dataUrl
@@ -196,7 +200,7 @@ export class GmailExportAdapter extends BaseAdapter {
     )
   }
 
-  protected generateMessageHtmlHeader(
+  public generateMessageHtmlHeader(
     message: GoogleAppsScript.Gmail.GmailMessage,
     opts: ExportOptionsType,
   ): string {
