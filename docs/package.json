@@ -19,8 +19,8 @@
     "@babel/plugin-proposal-decorators": "7.27.1",
     "@babel/plugin-transform-class-properties": "7.27.1",
     "@docsearch/react": "3.9.0",
-    "@docusaurus/core": "3.7.0",
-    "@docusaurus/preset-classic": "3.7.0",
+    "@docusaurus/core": "3.8.0",
+    "@docusaurus/preset-classic": "3.8.0",
     "@iconify/react": "6.0.0",
     "@mdx-js/react": "3.1.0",
     "clsx": "2.1.1",
@@ -36,12 +36,12 @@
     "react-json-view-lite": "2.4.1"
   },
   "devDependencies": {
-    "@docusaurus/eslint-plugin": "3.7.0",
-    "@docusaurus/module-type-aliases": "3.7.0",
-    "@docusaurus/tsconfig": "3.7.0",
-    "@docusaurus/types": "3.7.0",
+    "@docusaurus/eslint-plugin": "3.8.0",
+    "@docusaurus/module-type-aliases": "3.8.0",
+    "@docusaurus/tsconfig": "3.8.0",
+    "@docusaurus/types": "3.8.0",
     "@mdx-js/loader": "3.1.0",
-    "eslint-import-resolver-typescript": "4.3.5",
+    "eslint-import-resolver-typescript": "4.4.1",
     "eslint-plugin-import": "2.31.0",
     "typescript": "5.8.3"
   },
