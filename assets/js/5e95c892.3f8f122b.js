@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkgmail_processor_docs=self.webpackChunkgmail_processor_docs||[]).push([[9647],{7121:(s,e,r)=>{r.r(e),r.d(e,{default:()=>n});r(96540);var c=r(34164),a=r(45500),o=r(17559),u=r(22831),l=r(13850),d=r(74848);function n(s){return(0,d.jsx)(a.e3,{className:(0,c.A)(o.G.wrapper.docsPages),children:(0,d.jsx)(l.A,{children:(0,u.v)(s.route.routes)})})}}}]);
