@@ -116,7 +116,7 @@
     "@types/google-apps-script": "1.0.99",
     "@types/jest": "29.5.14",
     "@types/jest-when": "3.5.5",
-    "@types/node": "22.16.2",
+    "@types/node": "22.16.3",
     "@types/sha1": "1.1.5",
     "@typescript-eslint/eslint-plugin": "8.36.0",
     "@typescript-eslint/parser": "8.36.0",
