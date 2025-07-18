@@ -109,7 +109,7 @@
     "@rollup/plugin-replace": "6.0.2",
     "@rollup/plugin-terser": "0.4.4",
     "@rollup/plugin-typescript": "12.1.4",
-    "@swc/core": "1.12.14",
+    "@swc/core": "1.13.0",
     "@swc/jest": "0.2.39",
     "@types/addressparser": "1.0.3",
     "@types/crypto-js": "4.2.2",
