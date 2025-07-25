@@ -1,5 +1,20 @@
 # Changelog
 
+## [2.16.0](https://github.com/ahochsteger/gmail-processor/compare/v2.15.0...v2.16.0) (2025-07-25)
+
+
+### Features
+
+* add string function expressions ([779b7cb](https://github.com/ahochsteger/gmail-processor/commit/779b7cbab4d5f4e5ce70292db2fb175ea5a69046))
+
+
+### Bug Fixes
+
+* **deps:** update libs-non-major ([#523](https://github.com/ahochsteger/gmail-processor/issues/523)) ([a5df9d8](https://github.com/ahochsteger/gmail-processor/commit/a5df9d8106bc69ca945fbd73e62b5ac61af7fad5))
+* **deps:** update libs-non-major ([#527](https://github.com/ahochsteger/gmail-processor/issues/527)) ([2face32](https://github.com/ahochsteger/gmail-processor/commit/2face32aeab83bd138f09dd96d97466050fbc6d1))
+* **deps:** update libs-non-major ([#547](https://github.com/ahochsteger/gmail-processor/issues/547)) ([624343c](https://github.com/ahochsteger/gmail-processor/commit/624343c42bf3f166be17022fc81dac6afe0826cc))
+* parsing of string literals (escapes, empty strings) ([e928b51](https://github.com/ahochsteger/gmail-processor/commit/e928b51910b089927fbdba740a32fcbe73691ddb))
+
 ## [2.15.0](https://github.com/ahochsteger/gmail-processor/compare/v2.14.1...v2.15.0) (2025-05-04)
 
 
