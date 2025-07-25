@@ -15,28 +15,29 @@ export class ExprParser extends antlr.Parser {
   public static readonly XPSTART = 3
   public static readonly LEGACY_XPSTART = 4
   public static readonly WS = 5
-  public static readonly XPEND = 6
-  public static readonly PIPE = 7
-  public static readonly COMMA = 8
-  public static readonly LPAREN = 9
-  public static readonly RPAREN = 10
-  public static readonly DOT = 11
-  public static readonly ID = 12
-  public static readonly BooleanLiteral = 13
-  public static readonly IntegerLiteral = 14
-  public static readonly LEGACY_COLON = 15
-  public static readonly LEGACY_DOT = 16
-  public static readonly LEGACY_ID = 17
-  public static readonly LegacyIntegerLiteral = 18
-  public static readonly LEGACY_EXPR_XPEND = 19
-  public static readonly LegacyPlaceHolderModifierDate = 20
-  public static readonly LegacyPlaceholderModifierFormat = 21
-  public static readonly LegacyPlaceholderModifierJoin = 22
-  public static readonly LegacyPlaceHolderModifierOffsetFormat = 23
-  public static readonly LEGACY_ARGS_COLON = 24
-  public static readonly LEGACY_PLACEHOLDER_XPEND = 25
-  public static readonly LEGACY_ARGS_XPEND = 26
-  public static readonly LegacyPlaceholderArgs = 27
+  public static readonly EXPR_WS = 6
+  public static readonly XPEND = 7
+  public static readonly PIPE = 8
+  public static readonly COMMA = 9
+  public static readonly LPAREN = 10
+  public static readonly RPAREN = 11
+  public static readonly DOT = 12
+  public static readonly ID = 13
+  public static readonly BooleanLiteral = 14
+  public static readonly IntegerLiteral = 15
+  public static readonly LEGACY_COLON = 16
+  public static readonly LEGACY_DOT = 17
+  public static readonly LEGACY_ID = 18
+  public static readonly LegacyIntegerLiteral = 19
+  public static readonly LEGACY_EXPR_XPEND = 20
+  public static readonly LegacyPlaceHolderModifierDate = 21
+  public static readonly LegacyPlaceholderModifierFormat = 22
+  public static readonly LegacyPlaceholderModifierJoin = 23
+  public static readonly LegacyPlaceHolderModifierOffsetFormat = 24
+  public static readonly LEGACY_ARGS_COLON = 25
+  public static readonly LEGACY_PLACEHOLDER_XPEND = 26
+  public static readonly LEGACY_ARGS_XPEND = 27
+  public static readonly LegacyPlaceholderArgs = 28
   public static readonly RULE_template = 0
   public static readonly RULE_templatePart = 1
   public static readonly RULE_text = 2
@@ -62,11 +63,12 @@ export class ExprParser extends antlr.Parser {
     "'{{'",
     "'${'",
     null,
+    null,
     "'}}'",
-    null,
+    "'|'",
     "','",
-    null,
-    null,
+    "'('",
+    "')'",
     null,
     null,
     null,
@@ -89,6 +91,7 @@ export class ExprParser extends antlr.Parser {
     "XPSTART",
     "LEGACY_XPSTART",
     "WS",
+    "EXPR_WS",
     "XPEND",
     "PIPE",
     "COMMA",
@@ -278,7 +281,7 @@ export class ExprParser extends antlr.Parser {
         this.state = 52
         this.errorHandler.sync(this)
         _la = this.tokenStream.LA(1)
-        if (_la === 7) {
+        if (_la === 8) {
           {
             this.state = 51
             this.filterChain()
@@ -361,7 +364,7 @@ export class ExprParser extends antlr.Parser {
               this.match(ExprParser.DOT)
               this.state = 62
               _la = this.tokenStream.LA(1)
-              if (!(_la === 12 || _la === 14)) {
+              if (!(_la === 13 || _la === 15)) {
                 this.errorHandler.recoverInline(this)
               } else {
                 this.errorHandler.reportMatch(this)
@@ -372,7 +375,7 @@ export class ExprParser extends antlr.Parser {
           this.state = 65
           this.errorHandler.sync(this)
           _la = this.tokenStream.LA(1)
-        } while (_la === 11)
+        } while (_la === 12)
       }
     } catch (re) {
       if (re instanceof antlr.RecognitionException) {
@@ -408,7 +411,7 @@ export class ExprParser extends antlr.Parser {
           this.state = 71
           this.errorHandler.sync(this)
           _la = this.tokenStream.LA(1)
-        } while (_la === 7)
+        } while (_la === 8)
       }
     } catch (re) {
       if (re instanceof antlr.RecognitionException) {
@@ -436,7 +439,7 @@ export class ExprParser extends antlr.Parser {
         this.state = 76
         this.errorHandler.sync(this)
         _la = this.tokenStream.LA(1)
-        if ((_la & ~0x1f) === 0 && ((1 << _la) & 24578) !== 0) {
+        if ((_la & ~0x1f) === 0 && ((1 << _la) & 49154) !== 0) {
           {
             this.state = 75
             this.filterArgs()
@@ -491,7 +494,7 @@ export class ExprParser extends antlr.Parser {
         this.state = 87
         this.errorHandler.sync(this)
         _la = this.tokenStream.LA(1)
-        while (_la === 8) {
+        while (_la === 9) {
           {
             {
               this.state = 83
@@ -526,7 +529,7 @@ export class ExprParser extends antlr.Parser {
       {
         this.state = 90
         _la = this.tokenStream.LA(1)
-        if (!((_la & ~0x1f) === 0 && ((1 << _la) & 24578) !== 0)) {
+        if (!((_la & ~0x1f) === 0 && ((1 << _la) & 49154) !== 0)) {
           this.errorHandler.recoverInline(this)
         } else {
           this.errorHandler.reportMatch(this)
@@ -559,7 +562,7 @@ export class ExprParser extends antlr.Parser {
         this.state = 96
         this.errorHandler.sync(this)
         _la = this.tokenStream.LA(1)
-        if (_la === 15) {
+        if (_la === 16) {
           {
             this.state = 94
             this.match(ExprParser.LEGACY_COLON)
@@ -570,7 +573,7 @@ export class ExprParser extends antlr.Parser {
 
         this.state = 98
         _la = this.tokenStream.LA(1)
-        if (!((_la & ~0x1f) === 0 && ((1 << _la) & 101187584) !== 0)) {
+        if (!((_la & ~0x1f) === 0 && ((1 << _la) & 202375168) !== 0)) {
           this.errorHandler.recoverInline(this)
         } else {
           this.errorHandler.reportMatch(this)
@@ -650,7 +653,7 @@ export class ExprParser extends antlr.Parser {
               this.match(ExprParser.LEGACY_DOT)
               this.state = 106
               _la = this.tokenStream.LA(1)
-              if (!(_la === 17 || _la === 18)) {
+              if (!(_la === 18 || _la === 19)) {
                 this.errorHandler.recoverInline(this)
               } else {
                 this.errorHandler.reportMatch(this)
@@ -661,7 +664,7 @@ export class ExprParser extends antlr.Parser {
           this.state = 109
           this.errorHandler.sync(this)
           _la = this.tokenStream.LA(1)
-        } while (_la === 16)
+        } while (_la === 17)
       }
     } catch (re) {
       if (re instanceof antlr.RecognitionException) {
@@ -687,7 +690,7 @@ export class ExprParser extends antlr.Parser {
       {
         this.state = 111
         _la = this.tokenStream.LA(1)
-        if (!((_la & ~0x1f) === 0 && ((1 << _la) & 15728640) !== 0)) {
+        if (!((_la & ~0x1f) === 0 && ((1 << _la) & 31457280) !== 0)) {
           this.errorHandler.recoverInline(this)
         } else {
           this.errorHandler.reportMatch(this)
@@ -696,7 +699,7 @@ export class ExprParser extends antlr.Parser {
         this.state = 114
         this.errorHandler.sync(this)
         _la = this.tokenStream.LA(1)
-        if (_la === 24) {
+        if (_la === 25) {
           {
             this.state = 112
             this.match(ExprParser.LEGACY_ARGS_COLON)
@@ -719,7 +722,7 @@ export class ExprParser extends antlr.Parser {
   }
 
   public static readonly _serializedATN: number[] = [
-    4, 1, 27, 117, 2, 0, 7, 0, 2, 1, 7, 1, 2, 2, 7, 2, 2, 3, 7, 3, 2, 4, 7, 4,
+    4, 1, 28, 117, 2, 0, 7, 0, 2, 1, 7, 1, 2, 2, 7, 2, 2, 3, 7, 3, 2, 4, 7, 4,
     2, 5, 7, 5, 2, 6, 7, 6, 2, 7, 7, 7, 2, 8, 7, 8, 2, 9, 7, 9, 2, 10, 7, 10, 2,
     11, 7, 11, 2, 12, 7, 12, 2, 13, 7, 13, 2, 14, 7, 14, 2, 15, 7, 15, 2, 16, 7,
     16, 1, 0, 5, 0, 36, 8, 0, 10, 0, 12, 0, 39, 9, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1,
@@ -731,8 +734,8 @@ export class ExprParser extends antlr.Parser {
     12, 1, 12, 1, 12, 1, 13, 1, 13, 1, 13, 1, 14, 1, 14, 1, 15, 1, 15, 4, 15,
     108, 8, 15, 11, 15, 12, 15, 109, 1, 16, 1, 16, 1, 16, 3, 16, 115, 8, 16, 1,
     16, 0, 0, 17, 0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32,
-    0, 5, 2, 0, 12, 12, 14, 14, 2, 0, 1, 1, 13, 14, 2, 0, 19, 19, 25, 26, 1, 0,
-    17, 18, 1, 0, 20, 23, 110, 0, 37, 1, 0, 0, 0, 2, 45, 1, 0, 0, 0, 4, 47, 1,
+    0, 5, 2, 0, 13, 13, 15, 15, 2, 0, 1, 1, 14, 15, 2, 0, 20, 20, 26, 27, 1, 0,
+    18, 19, 1, 0, 21, 24, 110, 0, 37, 1, 0, 0, 0, 2, 45, 1, 0, 0, 0, 4, 47, 1,
     0, 0, 0, 6, 49, 1, 0, 0, 0, 8, 56, 1, 0, 0, 0, 10, 59, 1, 0, 0, 0, 12, 63,
     1, 0, 0, 0, 14, 69, 1, 0, 0, 0, 16, 73, 1, 0, 0, 0, 18, 80, 1, 0, 0, 0, 20,
     82, 1, 0, 0, 0, 22, 90, 1, 0, 0, 0, 24, 92, 1, 0, 0, 0, 26, 100, 1, 0, 0, 0,
@@ -743,25 +746,25 @@ export class ExprParser extends antlr.Parser {
     45, 42, 1, 0, 0, 0, 45, 43, 1, 0, 0, 0, 45, 44, 1, 0, 0, 0, 46, 3, 1, 0, 0,
     0, 47, 48, 5, 2, 0, 0, 48, 5, 1, 0, 0, 0, 49, 50, 5, 3, 0, 0, 50, 52, 3, 8,
     4, 0, 51, 53, 3, 14, 7, 0, 52, 51, 1, 0, 0, 0, 52, 53, 1, 0, 0, 0, 53, 54,
-    1, 0, 0, 0, 54, 55, 5, 6, 0, 0, 55, 7, 1, 0, 0, 0, 56, 57, 3, 10, 5, 0, 57,
-    58, 3, 12, 6, 0, 58, 9, 1, 0, 0, 0, 59, 60, 5, 12, 0, 0, 60, 11, 1, 0, 0, 0,
-    61, 62, 5, 11, 0, 0, 62, 64, 7, 0, 0, 0, 63, 61, 1, 0, 0, 0, 64, 65, 1, 0,
+    1, 0, 0, 0, 54, 55, 5, 7, 0, 0, 55, 7, 1, 0, 0, 0, 56, 57, 3, 10, 5, 0, 57,
+    58, 3, 12, 6, 0, 58, 9, 1, 0, 0, 0, 59, 60, 5, 13, 0, 0, 60, 11, 1, 0, 0, 0,
+    61, 62, 5, 12, 0, 0, 62, 64, 7, 0, 0, 0, 63, 61, 1, 0, 0, 0, 64, 65, 1, 0,
     0, 0, 65, 63, 1, 0, 0, 0, 65, 66, 1, 0, 0, 0, 66, 13, 1, 0, 0, 0, 67, 68, 5,
-    7, 0, 0, 68, 70, 3, 16, 8, 0, 69, 67, 1, 0, 0, 0, 70, 71, 1, 0, 0, 0, 71,
+    8, 0, 0, 68, 70, 3, 16, 8, 0, 69, 67, 1, 0, 0, 0, 70, 71, 1, 0, 0, 0, 71,
     69, 1, 0, 0, 0, 71, 72, 1, 0, 0, 0, 72, 15, 1, 0, 0, 0, 73, 74, 3, 18, 9, 0,
-    74, 76, 5, 9, 0, 0, 75, 77, 3, 20, 10, 0, 76, 75, 1, 0, 0, 0, 76, 77, 1, 0,
-    0, 0, 77, 78, 1, 0, 0, 0, 78, 79, 5, 10, 0, 0, 79, 17, 1, 0, 0, 0, 80, 81,
-    5, 12, 0, 0, 81, 19, 1, 0, 0, 0, 82, 87, 3, 22, 11, 0, 83, 84, 5, 8, 0, 0,
+    74, 76, 5, 10, 0, 0, 75, 77, 3, 20, 10, 0, 76, 75, 1, 0, 0, 0, 76, 77, 1, 0,
+    0, 0, 77, 78, 1, 0, 0, 0, 78, 79, 5, 11, 0, 0, 79, 17, 1, 0, 0, 0, 80, 81,
+    5, 13, 0, 0, 81, 19, 1, 0, 0, 0, 82, 87, 3, 22, 11, 0, 83, 84, 5, 9, 0, 0,
     84, 86, 3, 22, 11, 0, 85, 83, 1, 0, 0, 0, 86, 89, 1, 0, 0, 0, 87, 85, 1, 0,
     0, 0, 87, 88, 1, 0, 0, 0, 88, 21, 1, 0, 0, 0, 89, 87, 1, 0, 0, 0, 90, 91, 7,
     1, 0, 0, 91, 23, 1, 0, 0, 0, 92, 93, 5, 4, 0, 0, 93, 96, 3, 26, 13, 0, 94,
-    95, 5, 15, 0, 0, 95, 97, 3, 32, 16, 0, 96, 94, 1, 0, 0, 0, 96, 97, 1, 0, 0,
+    95, 5, 16, 0, 0, 95, 97, 3, 32, 16, 0, 96, 94, 1, 0, 0, 0, 96, 97, 1, 0, 0,
     0, 97, 98, 1, 0, 0, 0, 98, 99, 7, 2, 0, 0, 99, 25, 1, 0, 0, 0, 100, 101, 3,
-    28, 14, 0, 101, 102, 3, 30, 15, 0, 102, 27, 1, 0, 0, 0, 103, 104, 5, 17, 0,
-    0, 104, 29, 1, 0, 0, 0, 105, 106, 5, 16, 0, 0, 106, 108, 7, 3, 0, 0, 107,
+    28, 14, 0, 101, 102, 3, 30, 15, 0, 102, 27, 1, 0, 0, 0, 103, 104, 5, 18, 0,
+    0, 104, 29, 1, 0, 0, 0, 105, 106, 5, 17, 0, 0, 106, 108, 7, 3, 0, 0, 107,
     105, 1, 0, 0, 0, 108, 109, 1, 0, 0, 0, 109, 107, 1, 0, 0, 0, 109, 110, 1, 0,
-    0, 0, 110, 31, 1, 0, 0, 0, 111, 114, 7, 4, 0, 0, 112, 113, 5, 24, 0, 0, 113,
-    115, 5, 27, 0, 0, 114, 112, 1, 0, 0, 0, 114, 115, 1, 0, 0, 0, 115, 33, 1, 0,
+    0, 0, 110, 31, 1, 0, 0, 0, 111, 114, 7, 4, 0, 0, 112, 113, 5, 25, 0, 0, 113,
+    115, 5, 28, 0, 0, 114, 112, 1, 0, 0, 0, 114, 115, 1, 0, 0, 0, 115, 33, 1, 0,
     0, 0, 10, 37, 45, 52, 65, 71, 76, 87, 96, 109, 114,
   ]
 
