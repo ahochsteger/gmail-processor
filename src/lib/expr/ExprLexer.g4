@@ -15,21 +15,25 @@ LEGACY_XPSTART : '${' -> mode(LEGACY_EXPR_MODE);
 WS     : [ \r\t\n]+    -> skip ;
 
 mode EXPR_MODE;
+    StringLiteral:
+        (
+            '"' ( ESCAPE | ~["\\\r\n] )*? '"'
+            | '\'' ( ESCAPE | ~['\\\r\n] )*? '\''
+        ) -> type(STRING)
+    ;
+    fragment ESCAPE:
+        '\\' .
+     ;
+    EXPR_WS : [ \r\t\n]+ -> skip ;
     XPEND : '}}' -> mode(DEFAULT_MODE);
-    PIPE : WS* '|' WS* ;
+    PIPE : '|' ;
     COMMA : ',' ;
-    LPAREN : WS* '(' WS* ;
-    RPAREN : WS* ')' WS* ;
+    LPAREN : '(' ;
+    RPAREN : ')' ;
     DOT: '.' ;
     ID: [a-z][a-zA-Z0-9_]* ;
     BooleanLiteral: 'true' | 'false';
     IntegerLiteral: '0' | [1-9][0-9]* ;
-    StringLiteral:
-        (
-            '"' ('\\' [\\'"bfnrtv] | ~["\\\r\n])*? '"'
-            | '\'' ('\\' [\\'"bfnrtv] | ~['\\\r\n])*? '\''
-        ) -> type(STRING)
-    ;
 
 mode LEGACY_EXPR_MODE;
     LEGACY_COLON: ':' -> mode(LEGACY_PLACEHOLDER_MODE);

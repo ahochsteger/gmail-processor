@@ -13,3 +13,6 @@ DE: {{message.body.match.usDate|parseDate('d.M.yyyy')|formatData('yyyy-MM-dd')}}
 DE (short): {{message.body.match.usDate|parseDate('d.M.yy')|formatDate('yyyy-MM-dd')}},
 ISO: {{message.body.match.usDate|parseDate('yyyy-MM-dd')|formatDate('yyyy-MM-dd')}},
 Regex: ^invoice\.pdf$
+Expression with empty string: {{message.subject|replaceAll('[abc]', '')}}
+Regex with pipe: {{message.subject|replaceAll('a|b', 'c')}}
+Regex with escapes: {{message.subject|replaceAll('[\[\]]', '_')}}
