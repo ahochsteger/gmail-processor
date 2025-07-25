@@ -18,6 +18,7 @@ function getTestConfigs() {
     migrationMinTestConfig(),
     regularExpressionsTestConfig(),
     simpleTestConfig(),
+    stringFnExpressionsTestConfig(),
   ]
 }
 

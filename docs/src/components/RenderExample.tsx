@@ -7,6 +7,7 @@ import { ExampleInfo, ExampleVariant } from '../../../src/examples/Example';
 
 const examplesBasePath = "src/examples"
 const examplesBaseUrl = `https://github.com/ahochsteger/gmail-processor/blob/main/${examplesBasePath}`
+const githubDiscussionsBaseUrl = "https://github.com/ahochsteger/gmail-processor/discussions"
 const githubIssuesBaseUrl = "https://github.com/ahochsteger/gmail-processor/issues"
 const githubPRsBaseUrl = "https://github.com/ahochsteger/gmail-processor/pull"
 
@@ -49,6 +50,7 @@ export default function RenderExample({ info, config, script }: ExampleConfigPro
         <span>Source: <a href={`${examplesBaseUrl}/${info.category}/${info.name}`}>{info.name}.ts</a></span>
         {getIssueLinks("Issues", githubIssuesBaseUrl, info.issues)}
         {getIssueLinks("PRs", githubPRsBaseUrl, info.pullRequests)}
+        {getIssueLinks("Discussions", githubDiscussionsBaseUrl, info.discussions)}
       </p>
     </>
   )

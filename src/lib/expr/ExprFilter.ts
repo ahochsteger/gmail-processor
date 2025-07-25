@@ -129,6 +129,33 @@ export const filterFunctions: Record<string, ExprInfoType> = {
     args: (...args: ValueType[]) => [args[0], args[1], new Date()],
   },
 
+  // string functions:
+  replace: {
+    fn: (value: ValueType, ...args: ValueType[]) =>
+      // TODO: adjust to search for regexp instead of string
+      String(value).replace(new RegExp(args[0] as string), args[1] as string),
+  },
+  replaceAll: {
+    fn: (value: ValueType, ...args: ValueType[]) =>
+      String(value).replaceAll(
+        new RegExp(args[0] as string, "g"),
+        args[1] as string,
+      ),
+  },
+  slice: {
+    fn: (value: ValueType, ...args: ValueType[]) =>
+      String(value).slice(args[0] as number, args[1] as number),
+  },
+  substring: {
+    fn: (value: ValueType, ...args: ValueType[]) =>
+      String(value).substring(args[0] as number, args[1] as number),
+  },
+  trimStart: { fn: (value: ValueType) => String(value).trimStart() },
+  trimEnd: { fn: (value: ValueType) => String(value).trimEnd() },
+  trim: { fn: (value: ValueType) => String(value).trim() },
+  toUpperCase: { fn: (value: ValueType) => String(value).toUpperCase() },
+  toLowerCase: { fn: (value: ValueType) => String(value).toLowerCase() },
+
   // date-fns functions:
   /*
   // Use this script to update all supported date-fns functions:

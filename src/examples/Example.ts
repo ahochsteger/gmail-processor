@@ -37,6 +37,7 @@ export type ExampleInfo = {
   name: string
   title: string
   description: string
+  discussions?: number[]
   issues?: number[]
   pullRequests?: number[]
   skipGenerate?: ExampleTemplateType[]
