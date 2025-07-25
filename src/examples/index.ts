@@ -9,6 +9,7 @@ import { example as decryptPdfExample } from "./advanced/decryptPdf"
 import { example as headerMatchingExample } from "./advanced/headerMatching"
 import { example as logSheetLoggingExample } from "./advanced/logSheetLogging"
 import { example as regularExpressionsExample } from "./advanced/regularExpressions"
+import { example as stringFnExpressionsExample } from "./advanced/stringFnExpressions"
 import { example as simpleExample } from "./basics/simple"
 import { example as convertToGoogleExample } from "./features/convertToGoogle"
 import { example as migrationAdvancedExample } from "./migrations/migrationAdvanced"
@@ -33,4 +34,5 @@ export const allExamples: (Example | V1Example)[] = [
   migrationMinExample,
   regularExpressionsExample,
   simpleExample,
+  stringFnExpressionsExample,
 ]

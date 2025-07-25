@@ -59,6 +59,40 @@ describe("executeFilter()", () => {
         new Date(`2024-02-29 00:00:00.000`),
       )
     })
+    it("should handle string functions", () => {
+      const tests: Record<
+        string,
+        { value: string; args: string[]; expected: string }
+      > = {
+        replace: {
+          value: "abcdabcd",
+          args: ["[ac]", "_"],
+          expected: "_bcdabcd",
+        },
+        replaceAll: {
+          value: "abcdabcd",
+          args: ["[ac]", "_"],
+          expected: "_b_d_b_d",
+        },
+        slice: { value: "01234567", args: ["2", "5"], expected: "234" },
+        trimStart: { value: "  abcd  ", args: [], expected: "abcd  " },
+        trimEnd: { value: "  abcd  ", args: [], expected: "  abcd" },
+        trim: { value: "  abcd  ", args: [], expected: "abcd" },
+        toUpperCase: { value: "ABCdef", args: [], expected: "ABCDEF" },
+        toLowerCase: { value: "ABCdef", args: [], expected: "abcdef" },
+      }
+      const expected: Record<string, string> = {}
+      const actual: Record<string, string> = {}
+      Object.keys(tests).forEach((k) => {
+        expected[k] = tests[k as keyof typeof tests].expected
+        actual[k] = executeFilter(
+          k,
+          tests[k as keyof typeof tests].value,
+          ...tests[k as keyof typeof tests].args,
+        ) as string
+      })
+      expect(actual).toEqual(expected)
+    })
     it("should handle date-fns expressions", () => {
       const expected = {
         endOfDay: `${dateStr} 23:59:59.999`,

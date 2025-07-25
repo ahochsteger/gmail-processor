@@ -1,0 +1,24 @@
+---
+id: stringFnExpressions
+title: String Function Expressions
+description: This example demonstrates how to use string function expressions in the configuration.
+---
+import RenderExample from "/src/components/RenderExample.tsx"
+import config from '!!raw-loader!../../../../src/examples/advanced/stringFnExpressions.json';
+import script from '!!raw-loader!../../../../src/gas/examples/advanced/stringFnExpressions.js';
+import { info } from "../../../../src/examples/advanced/stringFnExpressions.ts"
+
+This example shows how to use string functions within expressions.
+
+The following string functions are supported:
+- replace(searchRegexp, replacement)
+- replaceAll(searchRegexp, replacement)
+- slice(start, end)
+- substring(start, end)
+- trimStart()
+- trimEnd()
+- trim()
+- toUpperCase()
+- toLowerCase()
+
+<RenderExample info={info} config={config} script={script} />
