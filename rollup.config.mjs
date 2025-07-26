@@ -1,13 +1,12 @@
-import { babel } from "@rollup/plugin-babel"
 import commonjs from "@rollup/plugin-commonjs"
 import json from "@rollup/plugin-json"
 import resolve from "@rollup/plugin-node-resolve"
 import replace from "@rollup/plugin-replace"
-import terser from "@rollup/plugin-terser"
+import swc from "@rollup/plugin-swc"
 import typescript from "@rollup/plugin-typescript"
 import fs from "fs"
 import { defineConfig } from "rollup"
-import analyzer from "rollup-plugin-analyzer"
+import filesize from "rollup-plugin-filesize"
 import gas from "rollup-plugin-google-apps-script"
 import { visualizer } from "rollup-plugin-visualizer"
 
@@ -37,22 +36,16 @@ export default defineConfig({
     }),
     commonjs(),
     typescript(),
-    babel({ babelHelpers: "bundled" }),
+    swc(),
     gas({
       gasEntryOptions: {
         comment: false,
       },
       moduleHeaderComment: true,
     }),
-    analyzer({
-      summaryOnly: true,
-      limit: 5,
-    }),
-    terser({
-      compress: true,
-    }),
     visualizer({
       filename: "build/bundle-stats.html",
     }),
+    filesize(),
   ],
 })
