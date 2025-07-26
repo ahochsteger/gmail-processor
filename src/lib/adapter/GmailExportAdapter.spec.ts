@@ -189,17 +189,17 @@ describe("Image Embedding", () => {
     failedResponse.getBlob.mockReturnValue(failedBlob)
     failedBlob.getContentType.mockReturnValue(null)
     failedBlob.getBytes.mockReturnValue([])
-    utilities.base64Encode.mockImplementation(
-      (bytes: string, _charset: unknown) => {
-        if (String(remoteImageBytes) === String(bytes)) {
-          return remoteImageBase64
-        }
-        if (String(inlineImageBytes) === String(bytes)) {
-          return inlineImageBase64
-        }
-        return ""
-      },
-    )
+    utilities.base64Encode.mockImplementation((...args: any[]) => {
+      const bytes = args[0] as string // Extract the first argument
+
+      if (String(remoteImageBytes) === String(bytes)) {
+        return remoteImageBase64
+      }
+      if (String(inlineImageBytes) === String(bytes)) {
+        return inlineImageBase64
+      }
+      return ""
+    })
     const inlineBlob = mock<
       GoogleAppsScript.Base.Blob & GoogleAppsScript.Gmail.GmailAttachment
     >()

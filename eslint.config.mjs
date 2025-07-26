@@ -1,9 +1,9 @@
 // @ts-check
 
 import googleappsscript from "eslint-plugin-googleappsscript"
+import eslintPluginJest from "eslint-plugin-jest"
 import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended"
 import eslintPluginTsdoc from "eslint-plugin-tsdoc"
-import globals from "globals"
 import tseslint from "typescript-eslint"
 
 export default tseslint.config(
@@ -28,25 +28,16 @@ export default tseslint.config(
     name: "ts",
     files: ["src/lib/**/*.ts"],
     ignores: ["src/lib/**/*.spec.ts"],
-    // ignores: ["src/examples/**/*.ts"],
-    extends: [
-      // ...eslint.configs.recommended,
-      ...tseslint.configs.recommended,
-      // ...tseslint.configs.recommendedTypeChecked,
-      //...tseslint.configs.strictTypeChecked,
-      eslintPluginPrettierRecommended,
-    ],
+    extends: [...tseslint.configs.recommended, eslintPluginPrettierRecommended],
     plugins: {
       "@typescript-eslint": tseslint.plugin,
       "eslint-plugin-tsdoc": eslintPluginTsdoc,
-      // prettier: eslintPluginPrettierRecommended,
+      jest: eslintPluginJest,
     },
     languageOptions: {
       globals: {
-        ...globals.es2015,
-        ...globals.node,
         ...googleappsscript.environments.googleappsscript.globals,
-        ...globals.jest,
+        ...eslintPluginJest.environments.globals.globals,
       },
       parser: tseslint.parser,
       parserOptions: {
@@ -55,37 +46,11 @@ export default tseslint.config(
       },
     },
     rules: {
+      ...eslintPluginJest.configs.recommended.rules,
       "@typescript-eslint/no-unused-vars": "warn",
       "@typescript-eslint/no-extraneous-class": "off", // Reason: Requires refactoring classes with only static methods.
       "@typescript-eslint/no-unnecessary-condition": "warn",
       "@typescript-eslint/restrict-template-expressions": "warn",
     },
   },
-
-  // {
-  //   ...eslint.configs.recommended,
-  //   ...eslintPluginPrettierRecommended,
-  //   name: "gas",
-  //   files: ["./src/gas/**/*.js"],
-  //   extends: [],
-  //   languageOptions: {
-  //     globals: {
-  //       ...globals.es2015,
-  //       ...googleappsscript.environments.googleappsscript.globals,
-  //     },
-  //   },
-  //   rules: {},
-  // },
-
-  // global variables, applies to everything
-  // {
-  //   languageOptions: {
-  //     globals: {
-  //       ...globals.es2015,
-  //       ...globals.node,
-  //       ...googleappsscript.environments.googleappsscript.globals,
-  //       ...globals.jest,
-  //     },
-  //   },
-  // },
 )
