@@ -142,7 +142,7 @@
     "rollup": "4.45.1",
     "rollup-plugin-analyzer": "4.0.0",
     "rollup-plugin-google-apps-script": "2.0.2",
-    "rollup-plugin-visualizer": "5.14.0",
+    "rollup-plugin-visualizer": "6.0.3",
     "sonarqube-scanner": "4.3.0",
     "ts-jest": "29.4.0",
     "ts-prune": "0.10.3",
