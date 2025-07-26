@@ -1,8 +1,44 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:best-practices"],
-  "schedule": ["on thursday"],
+  "schedule": ["before 5am on monday"],
   "packageRules": [
+    {
+      "description": "Group @babel packages",
+      "matchPackagePatterns": ["^@babel/"],
+      "groupName": "babel monorepo"
+    },
+    {
+      "description": "Group Docusaurus packages",
+      "matchPackagePatterns": ["^@docusaurus/", "^@mdx-js/"],
+      "matchPackageNames": ["react", "react-dom", "prism-react-renderer"],
+      "groupName": "docusaurus packages"
+    },
+    {
+      "description": "Group eslint packages",
+      "matchPackagePatterns": [
+        "^@eslint/",
+        "^@typescript-eslint/",
+        "^eslint",
+        "typescript-eslint"
+      ],
+      "groupName": "eslint packages"
+    },
+    {
+      "description": "Group Jest packages",
+      "matchPackagePatterns": ["^jest", "^@types/jest", "ts-jest", "@swc/jest"],
+      "groupName": "jest packages"
+    },
+    {
+      "description": "Group Prettier packages",
+      "matchPackagePatterns": ["^prettier"],
+      "groupName": "prettier packages"
+    },
+    {
+      "description": "Group rollup packages",
+      "matchPackagePatterns": ["^@rollup/", "rollup"],
+      "groupName": "rollup packages"
+    },
     {
       "description": "Other non-major updates",
       "matchFileNames": [
@@ -22,7 +58,6 @@
         "devbox.json",
         ".devcontainer/Dockerfile"
       ],
-      "groupName": "other-major",
       "matchUpdateTypes": ["major"],
       "automerge": false,
       "semanticCommitType": "build"
@@ -37,7 +72,6 @@
     {
       "description": "Lib major updates",
       "matchFileNames": ["package.json"],
-      "groupName": "libs-major",
       "matchUpdateTypes": ["major"],
       "automerge": false
     },
@@ -52,7 +86,6 @@
     {
       "description": "Docs docs major updates",
       "matchFileNames": ["docs/package.json"],
-      "groupName": "docs-major",
       "matchUpdateTypes": ["major"],
       "automerge": false,
       "semanticCommitType": "chore",
