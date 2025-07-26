@@ -5,39 +5,49 @@
   "packageRules": [
     {
       "description": "Group @babel packages",
-      "matchPackagePatterns": ["^@babel/"],
-      "groupName": "babel monorepo"
+      "groupName": "babel monorepo",
+      "matchPackageNames": ["/^@babel//"]
     },
     {
       "description": "Group Docusaurus packages",
-      "matchPackagePatterns": ["^@docusaurus/", "^@mdx-js/"],
-      "matchPackageNames": ["react", "react-dom", "prism-react-renderer"],
+      "matchPackageNames": [
+        "react",
+        "react-dom",
+        "prism-react-renderer",
+        "/^@docusaurus//",
+        "/^@mdx-js//"
+      ],
       "groupName": "docusaurus packages"
     },
     {
       "description": "Group eslint packages",
-      "matchPackagePatterns": [
-        "^@eslint/",
-        "^@typescript-eslint/",
-        "^eslint",
-        "typescript-eslint"
-      ],
-      "groupName": "eslint packages"
+      "groupName": "eslint packages",
+      "matchPackageNames": [
+        "/^@eslint//",
+        "/^@typescript-eslint//",
+        "/^eslint/",
+        "/typescript-eslint/"
+      ]
     },
     {
       "description": "Group Jest packages",
-      "matchPackagePatterns": ["^jest", "^@types/jest", "ts-jest", "@swc/jest"],
-      "groupName": "jest packages"
+      "groupName": "jest packages",
+      "matchPackageNames": [
+        "/^jest/",
+        "/^@types/jest/",
+        "/ts-jest/",
+        "/@swc/jest/"
+      ]
     },
     {
       "description": "Group Prettier packages",
-      "matchPackagePatterns": ["^prettier"],
-      "groupName": "prettier packages"
+      "groupName": "prettier packages",
+      "matchPackageNames": ["/^prettier/"]
     },
     {
       "description": "Group rollup packages",
-      "matchPackagePatterns": ["^@rollup/", "rollup"],
-      "groupName": "rollup packages"
+      "groupName": "rollup packages",
+      "matchPackageNames": ["/^@rollup//", "/rollup/"]
     },
     {
       "description": "Other non-major updates",
