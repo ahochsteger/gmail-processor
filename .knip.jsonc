@@ -1,0 +1,12 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema-jsonc.json",
+  "entry": [
+    "src/lib/index.ts",
+    // Actions are dynamically invoked:
+    "src/lib/actions/*.ts",
+    "src/examples/index.ts",
+    "src/gas/examples/all-tests.js",
+    "src/gas/examples/*/*.js",
+  ],
+  "project": ["src/**/*.{js,ts}", "docs/src/**/*.{js,ts}"],
+}
