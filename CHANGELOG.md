@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.16.1](https://github.com/ahochsteger/gmail-processor/compare/v2.16.0...v2.16.1) (2025-08-25)
+
+
+### Bug Fixes
+
+* **deps:** update libs-non-major ([#571](https://github.com/ahochsteger/gmail-processor/issues/571)) ([d953e21](https://github.com/ahochsteger/gmail-processor/commit/d953e21f7cb75845c6761541cd3d3b2b534cc86e))
+
 ## [2.16.0](https://github.com/ahochsteger/gmail-processor/compare/v2.15.0...v2.16.0) (2025-07-25)
 
 
