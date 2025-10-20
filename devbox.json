@@ -2,10 +2,10 @@
   "$schema": "https://raw.githubusercontent.com/jetpack-io/devbox/0.10.3/.schema/devbox.schema.json",
   "packages": [
     "gojq@0.12.17",
-    "gh@2.79.0",
+    "gh@2.81.0",
     "gettext@0.25.1",
     "gomplate@4.3.3",
-    "nodejs@24.8.0",
+    "nodejs@24.10.0",
     "antlr@4.13.2",
     "qpdf@11.10.1",
     "wkhtmltopdf-bin@0"
