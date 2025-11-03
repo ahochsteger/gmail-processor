@@ -97,29 +97,29 @@
   "license": "Apache-2.0",
   "devDependencies": {
     "@casualbot/jest-sonar-reporter": "2.4.0",
-    "@eslint/js": "9.38.0",
+    "@eslint/js": "9.39.0",
     "@google/clasp": "2.5.0",
     "@rollup/plugin-commonjs": "28.0.9",
     "@rollup/plugin-json": "6.1.0",
     "@rollup/plugin-node-resolve": "16.0.3",
-    "@rollup/plugin-replace": "6.0.2",
+    "@rollup/plugin-replace": "6.0.3",
     "@rollup/plugin-swc": "0.4.0",
     "@rollup/plugin-typescript": "12.3.0",
-    "@swc/core": "1.13.5",
+    "@swc/core": "1.14.0",
     "@swc/jest": "0.2.39",
     "@types/addressparser": "1.0.3",
     "@types/crypto-js": "4.2.2",
     "@types/google-apps-script": "1.0.100",
     "@types/jest": "30.0.0",
     "@types/jest-when": "3.5.5",
-    "@types/node": "22.18.12",
+    "@types/node": "22.19.0",
     "@types/sha1": "1.1.5",
     "@typescript-eslint/eslint-plugin": "8.46.2",
     "@typescript-eslint/parser": "8.46.2",
     "all-contributors-cli": "6.26.1",
     "antlr-ng": "1.0.10",
     "concurrently": "9.2.1",
-    "eslint": "9.38.0",
+    "eslint": "9.39.0",
     "eslint-config-prettier": "10.1.8",
     "eslint-plugin-googleappsscript": "1.0.5",
     "eslint-plugin-jest": "29.0.1",
@@ -131,7 +131,7 @@
     "jest-when": "3.7.0",
     "jscpd": "4.0.5",
     "jsdoc": "4.0.5",
-    "knip": "5.66.3",
+    "knip": "5.67.0",
     "madge": "8.0.0",
     "prettier": "3.6.2",
     "prettier-plugin-organize-imports": "4.3.0",
@@ -161,7 +161,7 @@
   },
   "overrides": {
     "sonarqube-scanner": {
-      "axios": "1.12.2"
+      "axios": "1.13.1"
     }
   },
   "engines": {
