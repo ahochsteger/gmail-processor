@@ -130,6 +130,6 @@ jobs:
       - id: deploy-docs
         if: ${{ !github.event.inputs.skip_deploy_docs }}
         name: Deploy docs
-        uses: JamesIves/github-pages-deploy-action@6c2d9db40f9296374acc17b90404b6e8864128c8 # v4
+        uses: JamesIves/github-pages-deploy-action@4a3abc783e1a24aeb44c16e869ad83caf6b4cc23 # v4
         with:
           folder: docs/build
