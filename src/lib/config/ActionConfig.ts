@@ -106,9 +106,9 @@ export type AttachmentExtractTextArgs = {
   extract?: string
 }
 
-type CustomActionConfigType = ActionBaseConfig<`custom.${string}`>
+export type CustomActionConfigType = ActionBaseConfig<`custom.${string}`>
 
-type ProcessingContextActionConfigType =
+export type ProcessingContextActionConfigType =
   | CustomActionConfigType
   | GlobalActionConfigType
 export type ThreadContextActionConfigType =

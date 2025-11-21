@@ -13,22 +13,18 @@ export type ThreadActionLabelArgs = {
   name: string
 }
 
-type ThreadActionConfigLabel<TName extends string = string> = ActionBaseConfig<
-  TName,
-  ThreadActionLabelArgs
->
+export type ThreadActionConfigLabel<TName extends string = string> =
+  ActionBaseConfig<TName, ThreadActionLabelArgs>
 
 export type ThreadActionExportArgs = StoreActionBaseArgs & ExportOptionsType
-type ThreadActionConfigExport<TName extends string = string> = ActionBaseConfig<
-  TName,
-  ThreadActionExportArgs
->
+export type ThreadActionConfigExport<TName extends string = string> =
+  ActionBaseConfig<TName, ThreadActionExportArgs>
 
 export type ThreadActionArgsStorePDF = StoreActionBaseArgs & {
   /** Skip the header if `true`. */
   skipHeader?: boolean
 }
-type ThreadActionConfigStorePDF<TName extends string = string> =
+export type ThreadActionConfigStorePDF<TName extends string = string> =
   ActionBaseConfig<TName, ThreadActionArgsStorePDF>
 
 export class ThreadActions implements ActionProvider<ThreadContext> {

@@ -26,19 +26,19 @@ import { ThreadMatchConfig } from "../config/ThreadMatchConfig"
 import { PatternUtil } from "../utils/PatternUtil"
 import { RegexUtils } from "../utils/RegexUtils"
 
-type BaseMatchRule = {
+export type BaseMatchRule = {
   name: string
   log?: string
   matched?: boolean
 }
 
-type StringMatchRule = BaseMatchRule & {
+export type StringMatchRule = BaseMatchRule & {
   type: "regex" | "dateNewer" | "dateOlder" | "labels"
   value: string | undefined
   config: string
 }
 
-type NumberMatchRule = BaseMatchRule & {
+export type NumberMatchRule = BaseMatchRule & {
   type: "min" | "max"
   value: number | undefined
   config: number
@@ -46,14 +46,14 @@ type NumberMatchRule = BaseMatchRule & {
 
 export type MatchRule = StringMatchRule | NumberMatchRule
 
-type TraceEntry = {
+export type TraceEntry = {
   configIndex: number
   index: number
   match: ThreadMatchConfig | MessageMatchConfig | AttachmentMatchConfig
   object: unknown
 }
 
-type ProcessingTrace = {
+export type ProcessingTrace = {
   action: ActionConfig
   traces: {
     thread?: TraceEntry

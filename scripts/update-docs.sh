@@ -21,6 +21,7 @@ function extractAllDocs() {
     --sort alphabetical \
     --readme none \
     --exclude 'src/**/generated/**/*.ts' \
+    --exclude 'src/lib/e2e/**/*.ts' \
     'src/lib/**/*.ts'
 }
 
@@ -42,7 +43,7 @@ function extractAllPlaceholder() {
   npx jest \
     --silent --useStderr --no-coverage \
     --reporters default --watchAll=false \
-    --testPathPattern 'docs/update-docs\.spec\.ts' \
+    --testPathPatterns 'docs/update-docs\.spec\.ts' \
     2>/dev/null \
   | gojq -s .
   # TODO: The redirection to /dev/null hides execution errors - find a better solution! 

@@ -10,16 +10,18 @@ import {
   ActionReturnType,
 } from "./ActionRegistry"
 
-type MessageReturnType = ActionReturnType & {
+export type MessageReturnType = ActionReturnType & {
   message?: GoogleAppsScript.Gmail.GmailMessage
 }
-type FileReturnType = ActionReturnType & { file?: GoogleAppsScript.Drive.File }
+export type FileReturnType = ActionReturnType & {
+  file?: GoogleAppsScript.Drive.File
+}
 
 export type MessageActionForwardArgs = {
   /** The recipient of the forwarded message. */
   to: string
 }
-type MessageActionConfigForward<TName extends string = string> =
+export type MessageActionConfigForward<TName extends string = string> =
   ActionBaseConfig<TName, MessageActionForwardArgs>
 export type MessageActionStorePDFArgs = StoreActionBaseArgs & {
   /**
@@ -27,10 +29,10 @@ export type MessageActionStorePDFArgs = StoreActionBaseArgs & {
    */
   skipHeader?: boolean
 }
-type MessageActionConfigStorePDF<TName extends string = string> =
+export type MessageActionConfigStorePDF<TName extends string = string> =
   ActionBaseConfig<TName, MessageActionStorePDFArgs>
 export type MessageActionExportArgs = StoreActionBaseArgs & ExportOptionsType
-type MessageActionConfigExport<TName extends string = string> =
+export type MessageActionConfigExport<TName extends string = string> =
   ActionBaseConfig<TName, MessageActionExportArgs>
 export type MessageActionStoreFromUrlArgs = StoreActionBaseArgs & {
   /**
@@ -46,7 +48,7 @@ export type MessageActionStoreFromUrlArgs = StoreActionBaseArgs & {
    */
   headers?: Record<string, string>
 }
-type MessageActionConfigStoreFromURL<TName extends string = string> =
+export type MessageActionConfigStoreFromURL<TName extends string = string> =
   ActionBaseConfig<TName, MessageActionStoreFromUrlArgs>
 
 export class MessageActions implements ActionProvider<MessageContext> {

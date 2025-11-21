@@ -43,7 +43,7 @@ export enum MetaInfoType {
   /** A custom configuration variable. */
   VARIABLE = "variable",
 }
-type MetaInfoValueType =
+export type MetaInfoValueType =
   | unknown
   | ((
       obj: Message | Attachment,
@@ -75,7 +75,7 @@ export type MetaInfo = {
   [k: string]: MetaInfoEntry | undefined
 }
 
-type EnvInfo = {
+export type EnvInfo = {
   documentApp: GoogleAppsScript.Document.DocumentApp
   gmailApp: GoogleAppsScript.Gmail.GmailApp
   gdriveApp: GoogleAppsScript.Drive.DriveApp

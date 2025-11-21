@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-function-type */
-type NotNill<T> = T extends null | undefined ? never : T
-type Primitive = undefined | null | boolean | string | number | Function
+export type NotNill<T> = T extends null | undefined ? never : T
+export type Primitive = undefined | null | boolean | string | number | Function
 
 // Work-around to the error "Type instantiation is excessively deep and possibly infinite.":
 export type RequiredDeep<
