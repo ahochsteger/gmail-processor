@@ -5,7 +5,7 @@
     "gh@2.83.1",
     "gettext@0.25.1",
     "gomplate@4.3.3",
-    "nodejs@24.11.1",
+    "nodejs@25.2.1",
     "antlr@4.13.2",
     "qpdf@11.10.1",
     "wkhtmltopdf-bin@0"
