@@ -2,7 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/jetpack-io/devbox/0.10.3/.schema/devbox.schema.json",
   "packages": [
     "gojq@0.12.18",
-    "gh@2.83.1",
+    "gh@2.83.2",
     "gettext@0.25.1",
     "gomplate@4.3.3",
     "nodejs@24.11.1",
