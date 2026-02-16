@@ -112,17 +112,17 @@
     "@types/google-apps-script": "1.0.100",
     "@types/jest": "30.0.0",
     "@types/jest-when": "3.5.5",
-    "@types/node": "22.19.9",
+    "@types/node": "22.19.11",
     "@types/sha1": "1.1.5",
-    "@typescript-eslint/eslint-plugin": "8.54.0",
-    "@typescript-eslint/parser": "8.54.0",
+    "@typescript-eslint/eslint-plugin": "8.55.0",
+    "@typescript-eslint/parser": "8.55.0",
     "all-contributors-cli": "6.26.1",
     "antlr-ng": "1.0.10",
     "concurrently": "9.2.1",
     "eslint": "9.39.2",
     "eslint-config-prettier": "10.1.8",
     "eslint-plugin-googleappsscript": "1.0.5",
-    "eslint-plugin-jest": "29.12.2",
+    "eslint-plugin-jest": "29.14.0",
     "eslint-plugin-prettier": "5.5.5",
     "eslint-plugin-tsdoc": "0.5.0",
     "eta": "3.5.0",
@@ -131,7 +131,7 @@
     "jest-when": "3.7.0",
     "jscpd": "4.0.8",
     "jsdoc": "4.0.5",
-    "knip": "5.83.0",
+    "knip": "5.83.1",
     "madge": "8.0.0",
     "prettier": "3.8.1",
     "prettier-plugin-organize-imports": "4.3.0",
@@ -145,7 +145,7 @@
     "type-fest": "4.41.0",
     "typedoc": "0.28.16",
     "typescript": "5.9.3",
-    "typescript-eslint": "8.54.0",
+    "typescript-eslint": "8.55.0",
     "typescript-json-schema": "0.67.1"
   },
   "private": true,
@@ -161,7 +161,7 @@
   },
   "overrides": {
     "sonarqube-scanner": {
-      "axios": "1.13.4"
+      "axios": "1.13.5"
     }
   },
   "engines": {
