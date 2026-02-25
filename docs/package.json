@@ -29,7 +29,7 @@
     "prism-react-renderer": "2.4.1",
     "raw-loader": "4.0.2",
     "react": "19.1.0",
-    "react-dom": "19.1.0",
+    "react-dom": "19.1.1",
     "react-toastify": "11.0.5"
   },
   "overrides": {
