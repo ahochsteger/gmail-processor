@@ -378,65 +378,119 @@
         }
       }
     },
-    "qpdf@11.10.1": {
-      "last_modified": "2025-05-07T00:09:58Z",
-      "resolved": "github:NixOS/nixpkgs/b3582c75c7f21ce0b429898980eddbbf05c68e55#qpdf",
+    "qpdf@12.2.0": {
+      "last_modified": "2026-02-24T08:56:33Z",
+      "resolved": "github:NixOS/nixpkgs/ea7f1f06811ce7fcc81d6c6fd4213150c23edcf2#qpdf",
       "source": "devbox-search",
-      "version": "11.10.1",
+      "version": "12.2.0",
       "systems": {
-        "aarch64-linux": {
+        "aarch64-darwin": {
           "outputs": [
             {
               "name": "bin",
-              "path": "/nix/store/2xarfkr5lz5c6z80l8bv2ik5961cgml5-qpdf-11.10.1-bin",
+              "path": "/nix/store/7zykcr19hwl5ry3iw51jf03l6wnhacrz-qpdf-12.2.0-bin",
               "default": true
             },
             {
               "name": "man",
-              "path": "/nix/store/i6lxymy9fryy3x012a7kq5y3bh80zb8n-qpdf-11.10.1-man",
+              "path": "/nix/store/59sffxql9p44i3sbr259xivy4pa4mvg2-qpdf-12.2.0-man",
               "default": true
             },
             {
-              "name": "out",
-              "path": "/nix/store/bafi4ffa4xghldnqcdrrw79czd61g1qp-qpdf-11.10.1"
-            },
-            {
               "name": "doc",
-              "path": "/nix/store/qwnbjryb29k44vr4f10c94mlyayhhz8l-qpdf-11.10.1-doc"
+              "path": "/nix/store/1ihs4vkh724xplci2nl5vp33ynx278lw-qpdf-12.2.0-doc"
             },
             {
               "name": "lib",
-              "path": "/nix/store/x9dpkxsq4szrpzka3fb9acam8561hj9x-qpdf-11.10.1-lib"
+              "path": "/nix/store/h43i2zwmgqhqlmw4kbv1ssvjrsg19y49-qpdf-12.2.0-lib"
+            },
+            {
+              "name": "out",
+              "path": "/nix/store/rnqjxpy6k46zg2j35ak1bx34kmaa9yvr-qpdf-12.2.0"
             }
           ],
-          "store_path": "/nix/store/2xarfkr5lz5c6z80l8bv2ik5961cgml5-qpdf-11.10.1-bin"
+          "store_path": "/nix/store/7zykcr19hwl5ry3iw51jf03l6wnhacrz-qpdf-12.2.0-bin"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "bin",
+              "path": "/nix/store/w4z4k82kb325p74rpcqyd6vfvndb71kn-qpdf-12.2.0-bin",
+              "default": true
+            },
+            {
+              "name": "man",
+              "path": "/nix/store/hwvnkpz118ywcm3x839261dr6cfg34ks-qpdf-12.2.0-man",
+              "default": true
+            },
+            {
+              "name": "doc",
+              "path": "/nix/store/v2vwfgaig456k7wkil6zda7s76i8kahq-qpdf-12.2.0-doc"
+            },
+            {
+              "name": "lib",
+              "path": "/nix/store/ck9haws50xkmhkbrma3zqrvyfhanbf2x-qpdf-12.2.0-lib"
+            },
+            {
+              "name": "out",
+              "path": "/nix/store/mfdrlvxxfp6r7c3z4bhj79pa3jnrmxyk-qpdf-12.2.0"
+            }
+          ],
+          "store_path": "/nix/store/w4z4k82kb325p74rpcqyd6vfvndb71kn-qpdf-12.2.0-bin"
+        },
+        "x86_64-darwin": {
+          "outputs": [
+            {
+              "name": "bin",
+              "path": "/nix/store/rw6vss7yyxfn4s78dyjdzbsxfgfm2y1j-qpdf-12.2.0-bin",
+              "default": true
+            },
+            {
+              "name": "man",
+              "path": "/nix/store/rdrasy8cz7p3al1whrcd36xmpli9jsbl-qpdf-12.2.0-man",
+              "default": true
+            },
+            {
+              "name": "lib",
+              "path": "/nix/store/77wixkllvfz60i82fq4n9l0apfbzj2al-qpdf-12.2.0-lib"
+            },
+            {
+              "name": "out",
+              "path": "/nix/store/bs53wr1rc5s24k309lzrf5388lhnr1l1-qpdf-12.2.0"
+            },
+            {
+              "name": "doc",
+              "path": "/nix/store/vhxqqwh06awm6pppc3bbw4lh4isibf6k-qpdf-12.2.0-doc"
+            }
+          ],
+          "store_path": "/nix/store/rw6vss7yyxfn4s78dyjdzbsxfgfm2y1j-qpdf-12.2.0-bin"
         },
         "x86_64-linux": {
           "outputs": [
             {
               "name": "bin",
-              "path": "/nix/store/wp6arpla52vcv87mym07lshpkhyw8sxs-qpdf-11.10.1-bin",
+              "path": "/nix/store/vkszaa1758g67hbm69lp3vsgvvvp6iqw-qpdf-12.2.0-bin",
               "default": true
             },
             {
               "name": "man",
-              "path": "/nix/store/wk9vwrx31ak0nr4hjshn4bf29ws23z60-qpdf-11.10.1-man",
+              "path": "/nix/store/97kjfdapjj0afg8awn4rzq848qsw78jn-qpdf-12.2.0-man",
               "default": true
             },
             {
-              "name": "out",
-              "path": "/nix/store/ldq78p07ic6fmjxi232awcj7yaksq8ai-qpdf-11.10.1"
-            },
-            {
               "name": "doc",
-              "path": "/nix/store/r24l23sm8mcxrlk6c3wckba37kpf9l6h-qpdf-11.10.1-doc"
+              "path": "/nix/store/zw5rlnylf225r11wpxyhlxn8w853h668-qpdf-12.2.0-doc"
             },
             {
               "name": "lib",
-              "path": "/nix/store/zv3kki3y9lk9683if26sy65g6pc9jx0p-qpdf-11.10.1-lib"
+              "path": "/nix/store/0l4zdmcn2crhr7dfxr9b6jbrmaf32428-qpdf-12.2.0-lib"
+            },
+            {
+              "name": "out",
+              "path": "/nix/store/vl3vcai1k9hvfnw28bziq1p32flabfdf-qpdf-12.2.0"
             }
           ],
-          "store_path": "/nix/store/wp6arpla52vcv87mym07lshpkhyw8sxs-qpdf-11.10.1-bin"
+          "store_path": "/nix/store/vkszaa1758g67hbm69lp3vsgvvvp6iqw-qpdf-12.2.0-bin"
         }
       }
     },
