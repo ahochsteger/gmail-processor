@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.16.1](https://github.com/ahochsteger/gmail-processor/compare/v2.16.0...v2.16.1) (2026-03-02)
+
+
+### Bug Fixes
+
+* **deps:** update dependency ajv to v8.18.0 [security] ([#624](https://github.com/ahochsteger/gmail-processor/issues/624)) ([ef5fa2e](https://github.com/ahochsteger/gmail-processor/commit/ef5fa2e42bfae351beb3b84ea50cb01d099f843e))
+* **deps:** update libs-non-major ([#571](https://github.com/ahochsteger/gmail-processor/issues/571)) ([d953e21](https://github.com/ahochsteger/gmail-processor/commit/d953e21f7cb75845c6761541cd3d3b2b534cc86e))
+* **deps:** update libs-non-major ([#574](https://github.com/ahochsteger/gmail-processor/issues/574)) ([ac9828f](https://github.com/ahochsteger/gmail-processor/commit/ac9828fa6a2a6d4caf33eef592a43456078422c9))
+* **deps:** update libs-non-major ([#576](https://github.com/ahochsteger/gmail-processor/issues/576)) ([684828b](https://github.com/ahochsteger/gmail-processor/commit/684828bd85146c76db4987e157d9dcf9cafcecd9))
+* **deps:** update libs-non-major ([#582](https://github.com/ahochsteger/gmail-processor/issues/582)) ([5badebe](https://github.com/ahochsteger/gmail-processor/commit/5badebe8ce64b61e2f2d3ca611754249ef6b6afe))
+* upgrade docusaurus-json-schema-plugin from 1.14.0 to 1.15.0 ([d52a366](https://github.com/ahochsteger/gmail-processor/commit/d52a36653abb96c2c1d91ca431b64536cc248345))
+
 ## [2.16.0](https://github.com/ahochsteger/gmail-processor/compare/v2.15.0...v2.16.0) (2025-07-25)
 
 
