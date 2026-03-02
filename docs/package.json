@@ -18,7 +18,7 @@
   "dependencies": {
     "@babel/plugin-proposal-decorators": "7.28.0",
     "@babel/plugin-transform-class-properties": "7.27.1",
-    "@docsearch/react": "3.9.0",
+    "@docsearch/react": "4.6.0",
     "@docusaurus/core": "3.8.1",
     "@docusaurus/preset-classic": "3.8.1",
     "@iconify/react": "6.0.0",
