@@ -1,0 +1,17 @@
+---
+id: customActionsAdvanced
+title: Advanced Custom Actions
+description: Demonstrates how to use actionMeta to pass data between actions.
+---
+import RenderExample from "/src/components/RenderExample.tsx"
+import config from '!!raw-loader!../../../../src/examples/advanced/customActionsAdvanced.json';
+import script from '!!raw-loader!../../../../src/gas/examples/advanced/customActionsAdvanced.js';
+import { info } from "../../../../src/examples/advanced/customActionsAdvanced.ts"
+
+This example demonstrates how to use `actionMeta` in custom actions to pass data to subsequent actions.
+
+In this scenario, a custom action `custom.parseInvoice` extracts an invoice number from the email body
+and stores it in `actionMeta`. This value is then accessible in the `attachment.store` action
+using the placeholder `{{message.invoiceNumber}}`.
+
+<RenderExample info={info} config={config} script={script} />
