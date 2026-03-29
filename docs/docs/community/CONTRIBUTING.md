@@ -112,6 +112,18 @@ Remote services are mocked (see [MockFactory.ts](https://github.com/ahochsteger/
 
 After the changes and tests are done run the `pre-commit` script that validates the changes and updates all generated artifacts (like documentation, examples, JSON schema files, ...) and include all updated files in your commit.
 
+### Automated Reviews & Assistance
+
+To maintain code quality and security, several automated tools assist in the review process:
+
+- **Renovate**: Keeps dependencies up to date. You may see PRs from `renovate[bot]`.
+- **Snyk**: Scans for security vulnerabilities. Check the "Security" tab or PR comments for results.
+- **SonarSource**: Performs static analysis. It will comment on PRs with identified issues (bugs, smells, etc.).
+- **Gemini Code Assist**: An AI assistant that may provide automated feedback or suggestions on your PR to help speed up the review.
+- **Jules**: Provides additional AI-powered coding assistance.
+
+Please review any feedback from these tools as they help ensure your contribution follows our standards before a manual review.
+
 ### Beta Testing on Google Apps Script
 
 Use the following Script ID in combination with the version `HEAD` to test and give feedback before changes are released:
