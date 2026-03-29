@@ -389,17 +389,22 @@ export class MessageProcessor extends BaseProcessor {
     b: GoogleAppsScript.Gmail.GmailMessage,
     config: OrderableEntityConfig<MessageOrderField>,
   ): number {
-    return (
-      {
-        [MessageOrderField.DATE]: a.getDate().getTime() - b.getDate().getTime(),
-        [MessageOrderField.FROM]: a.getFrom().localeCompare(b.getFrom()),
-        [MessageOrderField.ID]: a.getId().localeCompare(b.getId()),
-        [MessageOrderField.SUBJECT]: a
-          .getSubject()
-          .localeCompare(b.getSubject()),
-      }[config.orderBy] *
-      (config.orderDirection === OrderDirection.ASC ? 1 : -1)
-    )
+    let res = 0
+    switch (config.orderBy) {
+      case MessageOrderField.DATE:
+        res = a.getDate().getTime() - b.getDate().getTime()
+        break
+      case MessageOrderField.FROM:
+        res = a.getFrom().localeCompare(b.getFrom())
+        break
+      case MessageOrderField.ID:
+        res = a.getId().localeCompare(b.getId())
+        break
+      case MessageOrderField.SUBJECT:
+        res = a.getSubject().localeCompare(b.getSubject())
+        break
+    }
+    return res * (config.orderDirection === OrderDirection.ASC ? 1 : -1)
   }
 
   public static processConfig(
