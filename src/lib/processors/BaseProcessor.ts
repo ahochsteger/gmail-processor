@@ -240,7 +240,7 @@ export abstract class BaseProcessor {
       id: thread.getId(),
       firstMessageSubject: thread.getFirstMessageSubject(),
       lastMessageDate: thread.getLastMessageDate(),
-      messageCount: thread.getMessages().length,
+      messageCount: thread.getMessageCount(),
       permalink: thread.getPermalink(),
     }
   }
