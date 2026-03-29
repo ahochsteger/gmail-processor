@@ -162,34 +162,91 @@ describe("processEntity()", () => {
 })
 
 describe("order messages", () => {
-  let messages = [
-    GMailMocks.newMessageMock({
-      id: "m1",
-      date: new Date(2024, 5, 10),
-    }),
-    GMailMocks.newMessageMock({
-      id: "m2",
-      date: new Date(2024, 5, 9),
-    }),
-    GMailMocks.newMessageMock({
-      id: "m3",
-      date: new Date(2024, 5, 11),
-    }),
-  ]
-  it("should order threads ascending", () => {
+  let messages: GoogleAppsScript.Gmail.GmailMessage[]
+  beforeEach(() => {
+    messages = [
+      GMailMocks.newMessageMock({
+        id: "m2",
+        date: new Date(2024, 5, 10),
+        from: "b@example.com",
+        subject: "Subject B",
+      }),
+      GMailMocks.newMessageMock({
+        id: "m1",
+        date: new Date(2024, 5, 9),
+        from: "a@example.com",
+        subject: "Subject A",
+      }),
+      GMailMocks.newMessageMock({
+        id: "m3",
+        date: new Date(2024, 5, 11),
+        from: "c@example.com",
+        subject: "Subject C",
+      }),
+    ]
+  })
+  it("should order messages by date ascending", () => {
     messages = MessageProcessor.ordered(
       messages,
       { orderBy: MessageOrderField.DATE, orderDirection: OrderDirection.ASC },
       MessageProcessor.orderRules,
     )
-    expect(messages.map((t) => t.getId())).toEqual(["m2", "m1", "m3"])
+    expect(messages.map((t) => t.getId())).toEqual(["m1", "m2", "m3"])
   })
-  it("should order threads ascending", () => {
+  it("should order messages by date descending", () => {
     messages = MessageProcessor.ordered(
       messages,
       { orderBy: MessageOrderField.DATE, orderDirection: OrderDirection.DESC },
       MessageProcessor.orderRules,
     )
-    expect(messages.map((t) => t.getId())).toEqual(["m3", "m1", "m2"])
+    expect(messages.map((t) => t.getId())).toEqual(["m3", "m2", "m1"])
+  })
+  it("should order messages by from ascending", () => {
+    messages = MessageProcessor.ordered(
+      messages,
+      { orderBy: MessageOrderField.FROM, orderDirection: OrderDirection.ASC },
+      MessageProcessor.orderRules,
+    )
+    expect(messages.map((t) => t.getId())).toEqual(["m1", "m2", "m3"])
+  })
+  it("should order messages by from descending", () => {
+    messages = MessageProcessor.ordered(
+      messages,
+      { orderBy: MessageOrderField.FROM, orderDirection: OrderDirection.DESC },
+      MessageProcessor.orderRules,
+    )
+    expect(messages.map((t) => t.getId())).toEqual(["m3", "m2", "m1"])
+  })
+  it("should order messages by id ascending", () => {
+    messages = MessageProcessor.ordered(
+      messages,
+      { orderBy: MessageOrderField.ID, orderDirection: OrderDirection.ASC },
+      MessageProcessor.orderRules,
+    )
+    expect(messages.map((t) => t.getId())).toEqual(["m1", "m2", "m3"])
+  })
+  it("should order messages by id descending", () => {
+    messages = MessageProcessor.ordered(
+      messages,
+      { orderBy: MessageOrderField.ID, orderDirection: OrderDirection.DESC },
+      MessageProcessor.orderRules,
+    )
+    expect(messages.map((t) => t.getId())).toEqual(["m3", "m2", "m1"])
+  })
+  it("should order messages by subject ascending", () => {
+    messages = MessageProcessor.ordered(
+      messages,
+      { orderBy: MessageOrderField.SUBJECT, orderDirection: OrderDirection.ASC },
+      MessageProcessor.orderRules,
+    )
+    expect(messages.map((t) => t.getId())).toEqual(["m1", "m2", "m3"])
+  })
+  it("should order messages by subject descending", () => {
+    messages = MessageProcessor.ordered(
+      messages,
+      { orderBy: MessageOrderField.SUBJECT, orderDirection: OrderDirection.DESC },
+      MessageProcessor.orderRules,
+    )
+    expect(messages.map((t) => t.getId())).toEqual(["m3", "m2", "m1"])
   })
 })
