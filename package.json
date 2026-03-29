@@ -11,7 +11,7 @@
     "build:lib": "scripts/clasp.sh lib build",
     "ci": "npm run ci:build && npm run ci:test && npm run ci:docs",
     "ci:build": "npm run clean && npm ci && npm run build && npm run lint:code",
-    "ci:docs": "npm run clean:docs && npm ci && ( cd docs && npm ci ) && npm run build:docs",
+    "ci:docs": "npm run clean:docs && npm ci && ( cd docs && npm ci --legacy-peer-deps ) && npm run build:docs",
     "ci:test": "TZ=Etc/UTC npx jest --runInBand --ci --coverage",
     "clean": "rm -rf build docs/build",
     "clean:docs": "rm -rf docs/build",
