@@ -118,6 +118,17 @@ See the [Development Guide](https://ahochsteger.github.io/gmail-processor/docs/c
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
+## Tooling & Automation
+
+Gmail Processor uses a set of automated tools and bots to ensure high code quality, security, and smooth maintenance:
+
+- 🤖 **[Renovate](https://www.whitesourcesoftware.com/free-developer-tools/renovate)**: Automatically keeps dependencies up to date via Pull Requests.
+- 🛡️ **[Snyk](https://snyk.io/)**: Scans for vulnerabilities in dependencies and Infrastructure as Code (IaC).
+- 🧩 **[SonarSource](https://www.sonarqube.org/)**: Performs static code analysis to detect bugs, vulnerabilities, and code smells.
+- 💎 **Gemini Code Assist**: Provides AI-powered code reviews and assistance for contributors.
+- 🚀 **GitHub Actions**: Heavily used for Continuous Integration (CI), testing, and automated deployment.
+- ✨ **AllContributors**: Manages the list of contributors via a GitHub bot.
+
 ## License
 
 GmailProcessor is released under the [Apache 2.0 License](LICENSE).
