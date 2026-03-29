@@ -65,7 +65,7 @@ export class EnvProvider {
         cacheService: CacheService,
         gdriveApp: DriveApp,
         documentApp: DocumentApp,
-        driveApi: Drive,
+        driveApi: Drive as GoogleAppsScript.Drive,
         gmailApp: GmailApp,
         mailApp: MailApp,
         spreadsheetApp: SpreadsheetApp,
