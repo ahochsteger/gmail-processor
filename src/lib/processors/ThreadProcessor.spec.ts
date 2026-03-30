@@ -225,24 +225,27 @@ describe("match()", () => {
 
 describe("order threads", () => {
   let threads: GoogleAppsScript.Gmail.GmailThread[]
-  beforeAll(() => {
+  beforeEach(() => {
     jest.useRealTimers()
     threads = [
       GMailMocks.newThreadMock({
-        id: "t1",
+        id: "t2",
         lastMessageDate: new Date(2024, 5, 10),
+        messages: [{ subject: "Subject B" }],
       }),
       GMailMocks.newThreadMock({
-        id: "t2",
+        id: "t1",
         lastMessageDate: new Date(2024, 5, 9),
+        messages: [{ subject: "Subject A" }],
       }),
       GMailMocks.newThreadMock({
         id: "t3",
         lastMessageDate: new Date(2024, 5, 11),
+        messages: [{ subject: "Subject C" }],
       }),
     ]
   })
-  it("should order threads ascending", () => {
+  it("should order threads by last_message_date ascending", () => {
     threads = ThreadProcessor.ordered(
       threads,
       {
@@ -251,9 +254,9 @@ describe("order threads", () => {
       },
       ThreadProcessor.orderRules,
     )
-    expect(threads.map((t) => t.getId())).toEqual(["t2", "t1", "t3"])
+    expect(threads.map((t) => t.getId())).toEqual(["t1", "t2", "t3"])
   })
-  it("should order threads ascending", () => {
+  it("should order threads by last_message_date descending", () => {
     threads = ThreadProcessor.ordered(
       threads,
       {
@@ -262,6 +265,50 @@ describe("order threads", () => {
       },
       ThreadProcessor.orderRules,
     )
-    expect(threads.map((t) => t.getId())).toEqual(["t3", "t1", "t2"])
+    expect(threads.map((t) => t.getId())).toEqual(["t3", "t2", "t1"])
+  })
+  it("should order threads by id ascending", () => {
+    threads = ThreadProcessor.ordered(
+      threads,
+      {
+        orderBy: ThreadOrderField.ID,
+        orderDirection: OrderDirection.ASC,
+      },
+      ThreadProcessor.orderRules,
+    )
+    expect(threads.map((t) => t.getId())).toEqual(["t1", "t2", "t3"])
+  })
+  it("should order threads by id descending", () => {
+    threads = ThreadProcessor.ordered(
+      threads,
+      {
+        orderBy: ThreadOrderField.ID,
+        orderDirection: OrderDirection.DESC,
+      },
+      ThreadProcessor.orderRules,
+    )
+    expect(threads.map((t) => t.getId())).toEqual(["t3", "t2", "t1"])
+  })
+  it("should order threads by first_message_subject ascending", () => {
+    threads = ThreadProcessor.ordered(
+      threads,
+      {
+        orderBy: ThreadOrderField.FIRST_MESSAGE_SUBJECT,
+        orderDirection: OrderDirection.ASC,
+      },
+      ThreadProcessor.orderRules,
+    )
+    expect(threads.map((t) => t.getId())).toEqual(["t1", "t2", "t3"])
+  })
+  it("should order threads by first_message_subject descending", () => {
+    threads = ThreadProcessor.ordered(
+      threads,
+      {
+        orderBy: ThreadOrderField.FIRST_MESSAGE_SUBJECT,
+        orderDirection: OrderDirection.DESC,
+      },
+      ThreadProcessor.orderRules,
+    )
+    expect(threads.map((t) => t.getId())).toEqual(["t3", "t2", "t1"])
   })
 })

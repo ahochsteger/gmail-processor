@@ -327,17 +327,22 @@ export class ThreadProcessor extends BaseProcessor {
     b: GoogleAppsScript.Gmail.GmailThread,
     config: OrderableEntityConfig<ThreadOrderField>,
   ): number {
-    return (
-      {
-        [ThreadOrderField.LAST_MESSAGE_DATE]:
-          a.getLastMessageDate().getTime() - b.getLastMessageDate().getTime(),
-        [ThreadOrderField.ID]: a.getId().localeCompare(b.getId()),
-        [ThreadOrderField.FIRST_MESSAGE_SUBJECT]: a
+    let res = 0
+    switch (config.orderBy) {
+      case ThreadOrderField.LAST_MESSAGE_DATE:
+        res =
+          a.getLastMessageDate().getTime() - b.getLastMessageDate().getTime()
+        break
+      case ThreadOrderField.ID:
+        res = a.getId().localeCompare(b.getId())
+        break
+      case ThreadOrderField.FIRST_MESSAGE_SUBJECT:
+        res = a
           .getFirstMessageSubject()
-          .localeCompare(b.getFirstMessageSubject()),
-      }[config.orderBy] *
-      (config.orderDirection === OrderDirection.ASC ? 1 : -1)
-    )
+          .localeCompare(b.getFirstMessageSubject())
+        break
+    }
+    return res * (config.orderDirection === OrderDirection.ASC ? 1 : -1)
   }
 
   public static processConfig(

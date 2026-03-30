@@ -1,11 +1,18 @@
 function decryptPdfRun() {
   const config = {
     description:
-      "The action `custom.decryptAndStorePdf` decrypts and stores a PDF file.",
+      "The action `custom.decryptAndStorePdf` decrypts and stores a PDF file. NOTE Make sure to set the `PDF_PASSWORD` script property in the Google Apps Script project settings.",
     settings: {
       markProcessedMethod: "mark-read",
     },
     global: {
+      variables: [
+        {
+          key: "pdfPassword",
+          type: "property",
+          value: "PDF_PASSWORD",
+        },
+      ],
       thread: {
         match: {
           query:
@@ -31,7 +38,7 @@ function decryptPdfRun() {
                   location:
                     "/GmailProcessor-Tests/e2e/advanced/{{message.date|formatDate('yyyy-MM-dd')}}/decrypted.pdf",
                   conflictStrategy: "replace",
-                  password: "test",
+                  password: "${variables.pdfPassword}",
                 },
               },
             ],

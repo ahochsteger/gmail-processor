@@ -197,21 +197,27 @@ it("should process an attachment entity", () => {
 })
 
 describe("order attachments", () => {
-  let attachments = [
-    GMailMocks.newAttachmentMock({
-      hash: "a1",
-      name: "2",
-    }),
-    GMailMocks.newAttachmentMock({
-      hash: "a2",
-      name: "1",
-    }),
-    GMailMocks.newAttachmentMock({
-      hash: "a3",
-      name: "3",
-    }),
-  ]
-  it("should order threads ascending", () => {
+  let attachments: GoogleAppsScript.Gmail.GmailAttachment[]
+  beforeEach(() => {
+    attachments = [
+      GMailMocks.newAttachmentMock({
+        hash: "a2",
+        name: "2",
+        contentType: "b/content",
+      }),
+      GMailMocks.newAttachmentMock({
+        hash: "a1",
+        name: "1",
+        contentType: "a/content",
+      }),
+      GMailMocks.newAttachmentMock({
+        hash: "a3",
+        name: "3",
+        contentType: "c/content",
+      }),
+    ]
+  })
+  it("should order attachments by name ascending", () => {
     attachments = AttachmentProcessor.ordered(
       attachments,
       {
@@ -220,9 +226,9 @@ describe("order attachments", () => {
       },
       AttachmentProcessor.orderRules,
     )
-    expect(attachments.map((t) => t.getHash())).toEqual(["a2", "a1", "a3"])
+    expect(attachments.map((t) => t.getHash())).toEqual(["a1", "a2", "a3"])
   })
-  it("should order threads ascending", () => {
+  it("should order attachments by name descending", () => {
     attachments = AttachmentProcessor.ordered(
       attachments,
       {
@@ -231,6 +237,50 @@ describe("order attachments", () => {
       },
       AttachmentProcessor.orderRules,
     )
-    expect(attachments.map((t) => t.getHash())).toEqual(["a3", "a1", "a2"])
+    expect(attachments.map((t) => t.getHash())).toEqual(["a3", "a2", "a1"])
+  })
+  it("should order attachments by hash ascending", () => {
+    attachments = AttachmentProcessor.ordered(
+      attachments,
+      {
+        orderBy: AttachmentOrderField.HASH,
+        orderDirection: OrderDirection.ASC,
+      },
+      AttachmentProcessor.orderRules,
+    )
+    expect(attachments.map((t) => t.getHash())).toEqual(["a1", "a2", "a3"])
+  })
+  it("should order attachments by hash descending", () => {
+    attachments = AttachmentProcessor.ordered(
+      attachments,
+      {
+        orderBy: AttachmentOrderField.HASH,
+        orderDirection: OrderDirection.DESC,
+      },
+      AttachmentProcessor.orderRules,
+    )
+    expect(attachments.map((t) => t.getHash())).toEqual(["a3", "a2", "a1"])
+  })
+  it("should order attachments by content_type ascending", () => {
+    attachments = AttachmentProcessor.ordered(
+      attachments,
+      {
+        orderBy: AttachmentOrderField.CONTENT_TYPE,
+        orderDirection: OrderDirection.ASC,
+      },
+      AttachmentProcessor.orderRules,
+    )
+    expect(attachments.map((t) => t.getHash())).toEqual(["a1", "a2", "a3"])
+  })
+  it("should order attachments by content_type descending", () => {
+    attachments = AttachmentProcessor.ordered(
+      attachments,
+      {
+        orderBy: AttachmentOrderField.CONTENT_TYPE,
+        orderDirection: OrderDirection.DESC,
+      },
+      AttachmentProcessor.orderRules,
+    )
+    expect(attachments.map((t) => t.getHash())).toEqual(["a3", "a2", "a1"])
   })
 })

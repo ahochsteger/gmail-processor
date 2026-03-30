@@ -1,8 +1,26 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:best-practices"],
+  "extends": ["config:recommended", "helpers:pinGitHubActionDigests"],
+  "dependencyDashboard": true,
+  "lockFileMaintenance": {
+    "enabled": true,
+    "schedule": ["before 5am on monday"]
+  },
+  "osvVulnerabilityAlerts": true,
   "schedule": ["before 5am on monday"],
   "packageRules": [
+    {
+      "description": "Security vulnerability updates",
+      "groupName": "security",
+      "matchUpdateTypes": ["vulnerability"],
+      "addLabels": ["security"],
+      "priority": 100
+    },
+    {
+      "description": "Group @types packages",
+      "groupName": "types packages",
+      "matchPackageNames": ["/^@types//"]
+    },
     {
       "description": "Group @babel packages",
       "groupName": "babel monorepo",

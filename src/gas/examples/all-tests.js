@@ -8,6 +8,7 @@ function getTestConfigs() {
     actionThreadRemoveLabelTestConfig(),
     convertToGoogleTestConfig(),
     customActionsTestConfig(),
+    customActionsAdvancedTestConfig(),
     dateExpressionsTestConfig(),
     decryptPdfTestConfig(),
     headerMatchingTestConfig(),
