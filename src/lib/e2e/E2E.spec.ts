@@ -49,7 +49,8 @@ describe("newE2EGlobalConfig", () => {
 describe("getUuid", () => {
   it("should default to test-id when no env is provided", () => {
     const mockCtx = {} as EnvContext
-    const activeTestRunId = undefined ?? (mockCtx && mockCtx.env && mockCtx.env.utilities && typeof mockCtx.env.utilities.getUuid === "function" ? mockCtx.env.utilities.getUuid().substring(0, 8) : "test-id")
+    let runId: string | undefined
+    const activeTestRunId = runId ?? (mockCtx && mockCtx.env && mockCtx.env.utilities && typeof mockCtx.env.utilities.getUuid === "function" ? mockCtx.env.utilities.getUuid().substring(0, 8) : "test-id")
     expect(activeTestRunId).toEqual("test-id")
   })
 })
@@ -442,7 +443,7 @@ describe("runTests", () => {
     initConfig.mails = [{ subject: "Test mail" }]
     jest.spyOn(E2E, "initWait").mockImplementation(() => {})
 
-    const result = E2E.runTests(
+    E2E.runTests(
       mockTestConfig,
       false,
       "main",
