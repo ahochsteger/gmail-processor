@@ -329,15 +329,16 @@ export class E2E {
       )
       const maxPolls = globals.maxPollTimeMs / globals.pollIntervalMs
       const query = `subject:"${globals.subjectPrefix}"`
+      let foundCount = 0
       for (let i = 0; i < maxPolls; i++) {
-        const foundCount = ctx.env.gmailApp.search(query).length
+        foundCount = ctx.env.gmailApp.search(query).length
         if (foundCount >= expectedCount) {
           ctx.log.debug(`E2E.initWait(): Found ${foundCount} emails, finished waiting.`)
           return
         }
         ctx.env.utilities.sleep(globals.pollIntervalMs)
       }
-      ctx.log.debug(`E2E.initWait(): Poll time expired. Found emails matching query: ${ctx.env.gmailApp.search(query).length}`)
+      ctx.log.debug(`E2E.initWait(): Poll time expired. Found emails matching query: ${foundCount}`)
     } else {
       // Wait for emails to become available statically
       ctx.log.debug(
