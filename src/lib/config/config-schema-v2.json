@@ -1528,7 +1528,7 @@
                     "type": "string"
                 },
                 "headers": {
-                    "$ref": "#/definitions/Record<string,string>",
+                    "$ref": "#/definitions/Record%3Cstring%2Cstring%3E",
                     "description": "The header to pass to the URL. May be used to pass an authentication token.\nSupports placeholder substitution.",
                     "title": "headers"
                 },
@@ -3997,10 +3997,24 @@
             "description": "A variable entry available for string substitution (using `${variables.<varName>}`)",
             "properties": {
                 "key": {
+                    "default": "",
+                    "description": "The name of the variable.",
                     "title": "key",
                     "type": "string"
                 },
+                "type": {
+                    "default": "const",
+                    "description": "The type of the variable.\n'const' for a static value (default).\n'property' for fetching from GAS script properties.",
+                    "enum": [
+                        "const",
+                        "property"
+                    ],
+                    "title": "type",
+                    "type": "string"
+                },
                 "value": {
+                    "default": "",
+                    "description": "The value of the variable. If type is 'property', this is the name of the script property to fetch.",
                     "title": "value",
                     "type": "string"
                 }

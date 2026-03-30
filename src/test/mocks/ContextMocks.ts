@@ -45,6 +45,7 @@ export class ContextMocks {
         session: mocks.session,
         timezone: mocks.session.getScriptTimeZone() || "Etc/UTC",
         urlFetchApp: mocks.urlFetchApp,
+        propertiesService: mocks.propertiesService,
       },
       envMeta: {},
       log: new Logger(),
