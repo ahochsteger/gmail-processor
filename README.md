@@ -126,6 +126,7 @@ Gmail Processor uses a set of automated tools and bots to ensure high code quali
 - 🛡️ **[Snyk](https://snyk.io/)**: Scans for vulnerabilities in dependencies and Infrastructure as Code (IaC).
 - 🧩 **[SonarSource](https://www.sonarqube.org/)**: Performs static code analysis to detect bugs, vulnerabilities, and code smells.
 - 💎 **Gemini Code Assist**: Provides AI-powered code reviews and assistance for contributors.
+- 🤖 **Jules**: Provides additional AI-powered coding assistance.
 - 🚀 **GitHub Actions**: Heavily used for Continuous Integration (CI), testing, and automated deployment.
 - ✨ **AllContributors**: Manages the list of contributors via a GitHub bot.
 
