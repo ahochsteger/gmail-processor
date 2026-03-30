@@ -55,9 +55,54 @@ Labels can help you find an issue you'd like to help with.
 2. Install or update to **Node.js** to the [latest LTS release](https://nodejs.dev/en/about/releases/) or see the specified node engine version in [package.json](https://github.com/ahochsteger/gmail-processor/blob/main/package.json). For more information, see [Development Guidelines](#development-guide).
 3. Create a working branch and start with your changes!
 
+
 ### Commit your update
 
 Commit the changes once you are happy with them. Don't forget to do a self-review of the PR to speed up the review process:zap:.
+
+All commits must follow the [Conventional Commits](https://www.conventionalcommits.org/) specification:
+
+```
+<type>[optional scope]: <description>
+
+[optional body]
+
+[optional footer(s)]
+```
+
+#### Types
+| Type | When to use |
+|------|-------------|
+| `feat` | A new feature |
+| `fix` | A bug fix |
+| `docs` | Documentation-only changes |
+| `style` | Formatting, missing semicolons, etc. (no logic change) |
+| `refactor` | Code change that is neither a fix nor a feature |
+| `perf` | A performance improvement |
+| `test` | Adding or updating tests |
+| `chore` | Build process, dependency updates, tooling |
+| `ci` | CI/CD configuration changes |
+
+#### Scope (optional)
+Use the affected component as the scope, e.g.:
+- `feat(attachment)`, `fix(processor)`, `docs(config)`, `chore(deps)`
+
+#### Examples
+```
+feat(attachment): add support for inline image extraction
+fix(processor): handle empty thread list gracefully
+docs: add conventional commits section to CONTRIBUTING.md
+chore(deps): update class-transformer to 0.6.0
+```
+
+#### Breaking Changes
+Append `!` after type/scope and add a `BREAKING CHANGE:` footer:
+```
+feat(config)!: rename markProcessedMode to markProcessedMethod
+
+BREAKING CHANGE: The config key `markProcessedMode` has been renamed to `markProcessedMethod`.
+```
+
 
 ### Pull Request
 
