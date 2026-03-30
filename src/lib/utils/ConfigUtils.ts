@@ -28,8 +28,11 @@ export function essentialObject<T extends object = any>(
         jsonVal === JSON.stringify(defaultObj[key as keyof T]) ||
         jsonVal === "[]" ||
         jsonVal === "{}")
-    )
+    ) {
       delete obj[key as keyof T]
+    } else {
+      obj[key as keyof T] = prop
+    }
   })
   return obj
 }
