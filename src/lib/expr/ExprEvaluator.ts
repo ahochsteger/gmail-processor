@@ -180,7 +180,13 @@ export class ExprEvaluator {
   ): string {
     let stringValue = ""
     switch (typeof value) {
-      // TODO: Add support for boolean, number, bigint, symbol, function
+      case "boolean":
+      case "number":
+      case "bigint":
+      case "symbol":
+      case "function":
+        stringValue = String(value)
+        break
       case "object":
         stringValue = this.objectValueToString(value, defaultValue)
         break
