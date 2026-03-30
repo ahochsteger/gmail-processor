@@ -215,15 +215,20 @@ export class AttachmentProcessor extends BaseProcessor {
     b: GoogleAppsScript.Gmail.GmailAttachment,
     config: OrderableEntityConfig<AttachmentOrderField>,
   ): number {
+    let comparison = 0
+    switch (config.orderBy) {
+      case AttachmentOrderField.CONTENT_TYPE:
+        comparison = a.getContentType().localeCompare(b.getContentType())
+        break
+      case AttachmentOrderField.HASH:
+        comparison = a.getHash().localeCompare(b.getHash())
+        break
+      case AttachmentOrderField.NAME:
+        comparison = a.getName().localeCompare(b.getName())
+        break
+    }
     return (
-      {
-        [AttachmentOrderField.CONTENT_TYPE]: a
-          .getContentType()
-          .localeCompare(b.getContentType()),
-        [AttachmentOrderField.HASH]: a.getHash().localeCompare(b.getHash()),
-        [AttachmentOrderField.NAME]: a.getName().localeCompare(b.getName()),
-      }[config.orderBy] *
-      (config.orderDirection === OrderDirection.ASC ? 1 : -1)
+      comparison * (config.orderDirection === OrderDirection.ASC ? 1 : -1)
     )
   }
 
