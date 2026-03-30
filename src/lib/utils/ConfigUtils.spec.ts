@@ -89,9 +89,7 @@ describe("essentialObject", () => {
     }
     const propEssentialMap = {
       list: (o: any) => {
-        if (Array.isArray(o)) {
-          o.forEach((item) => delete item.a)
-        }
+        delete o.a
         return o
       },
     }
