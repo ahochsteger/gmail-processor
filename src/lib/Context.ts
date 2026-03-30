@@ -88,6 +88,7 @@ export type EnvInfo = {
   session: GoogleAppsScript.Base.Session
   timezone: string
   urlFetchApp: typeof UrlFetchApp
+  propertiesService: GoogleAppsScript.Properties.PropertiesService
 }
 
 export type ProcessingInfo = {

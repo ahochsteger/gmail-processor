@@ -4,13 +4,16 @@
 
 function decryptPdfTestConfig() {
   /**
-   * This is an example to demonstrate custom actions.
+   * This is an example to demonstrate how to decrypt and store a PDF file.
+   * To keep passwords secure, it uses a script property variable.
+   * You must manually create a script property named `PDF_PASSWORD` with the
+   * actual password in the Google Apps Script project settings.
    */
   const info = {
     name: "decryptPdf",
     title: "Decrypt and Store PDF",
     description:
-      "The action `custom.decryptAndStorePdf` decrypts and stores a PDF file.",
+      "The action custom.decryptAndStorePdf decrypts and stores a PDF file. NOTE Make sure to set the PDF_PASSWORD script property in the Google Apps Script project settings.",
     category: "advanced",
     issues: [355],
     pullRequests: [381],
@@ -31,6 +34,13 @@ function decryptPdfTestConfig() {
         GmailProcessorLib.MarkProcessedMethod.MARK_MESSAGE_READ,
     },
     global: {
+      variables: [
+        {
+          key: "pdfPassword",
+          type: "property",
+          value: "PDF_PASSWORD",
+        },
+      ],
       thread: {
         match: {
           query: `has:attachment -in:trash -in:drafts -in:spam after:{{date.now|formatDate('yyyy-MM-dd')}} is:unread subject:"${GmailProcessorLib.E2EDefaults.EMAIL_SUBJECT_PREFIX}${info.name}"`,
@@ -54,7 +64,7 @@ function decryptPdfTestConfig() {
                 args: {
                   location: `${GmailProcessorLib.E2EDefaults.DRIVE_TESTS_BASE_PATH}/advanced/{{message.date|formatDate('yyyy-MM-dd')}}/decrypted.pdf`,
                   conflictStrategy: GmailProcessorLib.ConflictStrategy.REPLACE,
-                  password: "test",
+                  password: "${variables.pdfPassword}",
                 },
               },
             ],

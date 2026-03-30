@@ -22,10 +22,25 @@ import {
  * A variable entry available for string substitution (using `${variables.<varName>}`)
  */
 export class VariableEntry {
-  constructor(
-    public key: string,
-    public value: string,
-  ) {}
+  /**
+   * The type of the variable.
+   * 'const' for a static value (default).
+   * 'property' for fetching from GAS script properties.
+   */
+  @Expose()
+  type?: "const" | "property" = "const"
+
+  /**
+   * The name of the variable.
+   */
+  @Expose()
+  key: string = ""
+
+  /**
+   * The value of the variable. If type is 'property', this is the name of the script property to fetch.
+   */
+  @Expose()
+  value: string = ""
 }
 
 /**
