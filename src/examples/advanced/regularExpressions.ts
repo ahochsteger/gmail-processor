@@ -104,14 +104,35 @@ export const tests: E2ETest[] = [
           procResult.status === ProcessingStatus.OK,
       },
       {
-        message: "At least one thread should have been processed",
-        assertFn: (_testConfig, procResult) => procResult.processedThreads >= 1,
+        message: "One thread should have been processed",
+        assertFn: (_testConfig, procResult) =>
+          procResult.processedThreads === 1,
+      },
+      {
+        message: "One message should have been processed",
+        assertFn: (_testConfig, procResult) =>
+          procResult.processedMessages === 1,
+      },
+      {
+        message: "One attachment should have been processed",
+        assertFn: (_testConfig, procResult) =>
+          procResult.processedAttachments === 1,
       },
       {
         message: "Expected number of actions should have been executed",
         assertFn: (_testConfig, procResult) =>
           procResult.executedActions.length ===
           procResult.processedThreads + procResult.processedAttachments,
+      },
+      {
+        message: "Store action should have been executed",
+        assertFn: (_testConfig, procResult) => {
+          return (
+            procResult.executedActions.filter(
+              (a) => a.action.name === "attachment.store",
+            ).length === 1
+          )
+        },
       },
     ],
   },
