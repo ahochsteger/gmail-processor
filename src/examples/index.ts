@@ -4,6 +4,7 @@ import { example as actionAttachmentExtractTextExample } from "./actions/actionA
 import { example as actionExportExample } from "./actions/actionExport"
 import { example as actionThreadRemoveLabelExample } from "./actions/actionThreadRemoveLabel"
 import { example as customActionsExample } from "./advanced/customActions"
+import { example as customActionsAdvancedExample } from "./advanced/customActionsAdvanced"
 import { example as dateExpressionsExample } from "./advanced/dateExpressions"
 import { example as decryptPdfExample } from "./advanced/decryptPdf"
 import { example as headerMatchingExample } from "./advanced/headerMatching"
@@ -24,6 +25,7 @@ export const allExamples: (Example | V1Example)[] = [
   actionThreadRemoveLabelExample,
   convertToGoogleExample,
   customActionsExample,
+  customActionsAdvancedExample,
   dateExpressionsExample,
   decryptPdfExample,
   headerMatchingExample,

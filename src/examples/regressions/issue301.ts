@@ -1,5 +1,6 @@
 import { ConflictStrategy } from "../../lib/adapter/GDriveAdapter"
 import { Config } from "../../lib/config/Config"
+import { ProcessingStatus } from "../../lib/Context"
 import { MarkProcessedMethod } from "../../lib/config/SettingsConfig"
 import { E2EInitConfig, E2ETest, E2ETestConfig } from "../../lib/e2e/E2E"
 import { E2EDefaults } from "../../lib/e2e/E2EDefaults"
@@ -144,7 +145,43 @@ export const example: Example = {
   config: runConfig,
 }
 
-export const tests: E2ETest[] = []
+export const tests: E2ETest[] = [
+  {
+    message: "No failures",
+    assertions: [
+      {
+        message: "Processing status should be OK",
+        assertFn: (_testConfig, procResult) =>
+          procResult.status === ProcessingStatus.OK,
+      },
+      {
+        message: "One thread should have been processed",
+        assertFn: (_testConfig, procResult) =>
+          procResult.processedThreads === 1,
+      },
+      {
+        message: "One attachment should have been processed",
+        assertFn: (_testConfig, procResult) =>
+          procResult.processedAttachments === 1,
+      },
+      {
+        message: "Expected number of actions should have been executed",
+        assertFn: (_testConfig, procResult) =>
+          procResult.executedActions.length ===
+          procResult.processedThreads + procResult.processedAttachments * 2, // 2 actions per attachment (store original, store converted)
+      },
+      {
+        message: "Actions should have been executed",
+        assertFn: (_testConfig, procResult) => {
+          const storeActions = procResult.executedActions.filter(
+            (a) => a.action.name === "attachment.store",
+          )
+          return storeActions.length === 2
+        },
+      },
+    ],
+  },
+]
 
 export const testConfig: E2ETestConfig = {
   example,

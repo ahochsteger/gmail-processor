@@ -33,7 +33,7 @@
     "react-toastify": "11.0.5"
   },
   "overrides": {
-    "react-json-view-lite": "2.4.1"
+    "react-json-view-lite": "2.5.0"
   },
   "devDependencies": {
     "@docusaurus/eslint-plugin": "3.9.2",

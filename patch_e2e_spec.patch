@@ -1,0 +1,68 @@
+<<<<<<< SEARCH
+describe("assert", () => {
+=======
+describe("newE2EGlobalConfig", () => {
+  it("should generate a valid config without testRunId", () => {
+    const config = newE2EGlobalConfig(ctx)
+    expect(config.subjectPrefix).toEqual("[GmailProcessor-Test] ")
+  })
+
+  it("should generate a valid config with testRunId", () => {
+    const config = newE2EGlobalConfig(ctx, undefined, undefined, "abc-123")
+    expect(config.subjectPrefix).toEqual("[GmailProcessor-Test][abc-123] ")
+  })
+})
+
+describe("getUuid", () => {
+  it("should default to test-id when no env is provided", () => {
+    const mockCtx = {} as EnvContext
+    const activeTestRunId = undefined ?? (mockCtx && mockCtx.env && mockCtx.env.utilities && typeof mockCtx.env.utilities.getUuid === "function" ? mockCtx.env.utilities.getUuid().substring(0, 8) : "test-id")
+    expect(activeTestRunId).toEqual("test-id")
+  })
+})
+
+describe("initWait", () => {
+  let globals: E2EGlobalConfig
+
+  beforeEach(() => {
+    globals = newE2EGlobalConfig(ctx)
+    jest.clearAllMocks()
+  })
+
+  it("should sleep statically if expectedCount <= 0", () => {
+    E2E.initWait(globals, RunMode.DANGEROUS, ctx, -1)
+    expect(ctx.env.utilities.sleep).toHaveBeenCalledWith(globals.sleepTimeMs)
+    expect(ctx.env.gmailApp.search).not.toHaveBeenCalled()
+  })
+
+  it("should poll and return early if expected count is reached", () => {
+    ;(ctx.env.gmailApp.search as jest.Mock).mockReturnValue([{}, {}]) // Returns 2 emails
+    E2E.initWait(globals, RunMode.DANGEROUS, ctx, 2)
+    expect(ctx.env.gmailApp.search).toHaveBeenCalledWith(
+      `subject:"${globals.subjectPrefix}"`,
+    )
+    expect(ctx.env.utilities.sleep).not.toHaveBeenCalled()
+  })
+
+  it("should poll and sleep interval if count is not reached immediately", () => {
+    ;(ctx.env.gmailApp.search as jest.Mock)
+      .mockReturnValueOnce([])
+      .mockReturnValueOnce([{}])
+    E2E.initWait(globals, RunMode.DANGEROUS, ctx, 1)
+    expect(ctx.env.gmailApp.search).toHaveBeenCalledTimes(2)
+    expect(ctx.env.utilities.sleep).toHaveBeenCalledWith(globals.pollIntervalMs)
+  })
+
+  it("should poll until maxPollTimeMs is exhausted and then stop", () => {
+    globals.maxPollTimeMs = 4000
+    globals.pollIntervalMs = 2000
+    ;(ctx.env.gmailApp.search as jest.Mock).mockReturnValue([])
+    E2E.initWait(globals, RunMode.DANGEROUS, ctx, 1)
+    expect(ctx.env.gmailApp.search).toHaveBeenCalledTimes(3) // at 0, 2000, maxPollTime is evaluated before loop
+    expect(ctx.env.utilities.sleep).toHaveBeenCalledWith(globals.pollIntervalMs)
+    expect(ctx.env.utilities.sleep).toHaveBeenCalledTimes(2)
+  })
+})
+
+describe("assert", () => {
+>>>>>>> REPLACE

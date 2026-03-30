@@ -61,13 +61,25 @@ export class GmailProcessor extends BaseProcessor {
       ),
     }
     ;(ctx.proc.config.global.variables as VariableEntry[]).forEach(
-      (entry: VariableEntry) =>
-        (m[`variables.${entry.key}`] = mi(
+      (entry: VariableEntry) => {
+        let value: string | null = entry.value
+        if (entry.type === "property") {
+          value = ctx.env.propertiesService
+            .getScriptProperties()
+            .getProperty(entry.value)
+          if (value === null) {
+            ctx.log.warn(
+              `Script property '${entry.value}' for variable '${entry.key}' is not set!`,
+            )
+          }
+        }
+        m[`variables.${entry.key}`] = mi(
           MIT.VARIABLE,
-          entry.value,
+          value ?? "",
           `Variable ${entry.key}`,
           "A custom defined variable.",
-        )),
+        )
+      },
     )
     return m
   }

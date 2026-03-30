@@ -55,6 +55,55 @@ Labels can help you find an issue you'd like to help with.
 
 Commit the changes once you are happy with them. Don't forget to do a self-review of the PR to speed up the review process:zap:.
 
+All commits must follow the [Conventional Commits](https://www.conventionalcommits.org/) specification:
+
+```
+<type>[optional scope]: <description>
+
+[optional body]
+
+[optional footer(s)]
+```
+
+#### Types
+
+| Type       | When to use                                            |
+| ---------- | ------------------------------------------------------ |
+| `feat`     | A new feature                                          |
+| `fix`      | A bug fix                                              |
+| `docs`     | Documentation-only changes                             |
+| `style`    | Formatting, missing semicolons, etc. (no logic change) |
+| `refactor` | Code change that is neither a fix nor a feature        |
+| `perf`     | A performance improvement                              |
+| `test`     | Adding or updating tests                               |
+| `chore`    | Build process, dependency updates, tooling             |
+| `ci`       | CI/CD configuration changes                            |
+
+#### Scope (optional)
+
+Use the affected component as the scope, e.g.:
+
+- `feat(attachment)`, `fix(processor)`, `docs(config)`, `chore(deps)`
+
+#### Examples
+
+```
+feat(attachment): add support for inline image extraction
+fix(processor): handle empty thread list gracefully
+docs: add conventional commits section to CONTRIBUTING.md
+chore(deps): update class-transformer to 0.6.0
+```
+
+#### Breaking Changes
+
+Append `!` after type/scope and add a `BREAKING CHANGE:` footer:
+
+```
+feat(config)!: rename markProcessedMode to markProcessedMethod
+
+BREAKING CHANGE: The config key `markProcessedMode` has been renamed to `markProcessedMethod`.
+```
+
 ### Pull Request
 
 When you're finished with the changes, create a pull request, also known as a PR.
@@ -107,6 +156,18 @@ Please add/update the tests for any change to keep the codebase in a well-tested
 Remote services are mocked (see [MockFactory.ts](https://github.com/ahochsteger/gmail-processor/blob/main/src/test/mocks/MockFactory.ts)) to simplify local testing in isolation.
 
 After the changes and tests are done run the `pre-commit` script that validates the changes and updates all generated artifacts (like documentation, examples, JSON schema files, ...) and include all updated files in your commit.
+
+### Automated Reviews & Assistance
+
+To maintain code quality and security, several automated tools assist in the review process:
+
+- **Renovate**: Keeps dependencies up to date. You may see PRs from `renovate[bot]`.
+- **Snyk**: Scans for security vulnerabilities. Check the "Security" tab or PR comments for results.
+- **SonarSource**: Performs static analysis. It will comment on PRs with identified issues (bugs, smells, etc.).
+- **Gemini Code Assist**: An AI assistant that may provide automated feedback or suggestions on your PR to help speed up the review.
+- **Jules**: Provides additional AI-powered coding assistance.
+
+Please review any feedback from these tools as they help ensure your contribution follows our standards before a manual review.
 
 ### Beta Testing on Google Apps Script
 

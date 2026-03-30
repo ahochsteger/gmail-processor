@@ -117,10 +117,17 @@ class EnvMocks {
     mock<GoogleAppsScript.Utilities.Utilities>()
   public urlFetchApp: MockProxy<GoogleAppsScript.URL_Fetch.UrlFetchApp> =
     mock<GoogleAppsScript.URL_Fetch.UrlFetchApp>()
+  public propertiesService: MockProxy<GoogleAppsScript.Properties.PropertiesService> =
+    mock<GoogleAppsScript.Properties.PropertiesService>()
+  public scriptProperties: MockProxy<GoogleAppsScript.Properties.Properties> =
+    mock<GoogleAppsScript.Properties.Properties>()
   public urlResponse: MockProxy<GoogleAppsScript.URL_Fetch.HTTPResponse> =
     mock<GoogleAppsScript.URL_Fetch.HTTPResponse>()
 
   constructor() {
+    this.propertiesService.getScriptProperties.mockReturnValue(
+      this.scriptProperties,
+    )
     this.cache.get
       .calledWith(matches((v) => v !== SCRIPT_CACHE_LOGSHEET_ID_KEY))
       .mockReturnValue(null)
@@ -168,6 +175,9 @@ class EnvMocks {
     this.session.getEffectiveUser
       .mockReturnValue(this.user)
       .mockName("getEffectiveUser")
+    this.utilities.getUuid
+      .mockReturnValue("mock-uuid")
+      .mockName("getUuid")
   }
 }
 export class Mocks extends EnvMocks {
