@@ -13,7 +13,7 @@ function decryptPdfTestConfig() {
     name: "decryptPdf",
     title: "Decrypt and Store PDF",
     description:
-      "The action `custom.decryptAndStorePdf` decrypts and stores a PDF file. NOTE Make sure to set the `PDF_PASSWORD` script property in the Google Apps Script project settings.",
+      "The action custom.decryptAndStorePdf decrypts and stores a PDF file. NOTE Make sure to set the PDF_PASSWORD script property in the Google Apps Script project settings.",
     category: "advanced",
     issues: [355],
     pullRequests: [381],

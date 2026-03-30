@@ -19,7 +19,7 @@
     {
       "description": "Group @types packages",
       "groupName": "types packages",
-      "matchPackageNames": ["^@types/"]
+      "matchPackageNames": ["/^@types//"]
     },
     {
       "description": "Group @babel packages",

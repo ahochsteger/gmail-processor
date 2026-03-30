@@ -1,7 +1,7 @@
 function decryptPdfRun() {
   const config = {
     description:
-      "The action `custom.decryptAndStorePdf` decrypts and stores a PDF file. NOTE Make sure to set the `PDF_PASSWORD` script property in the Google Apps Script project settings.",
+      "The action custom.decryptAndStorePdf decrypts and stores a PDF file. NOTE Make sure to set the PDF_PASSWORD script property in the Google Apps Script project settings.",
     settings: {
       markProcessedMethod: "mark-read",
     },
