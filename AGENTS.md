@@ -56,6 +56,19 @@ To maintain testability and GAS compatibility, external service interactions are
 - `src/examples/`: Reference configurations and E2E tests.
 - `scripts/`: Build and maintenance scripts.
 
+## Examples Structure & Generation
+
+The project examples serve multiple purposes and are all generated from a single source of truth: `src/examples/**.ts`. This file defines the example logic, configuration, end-to-end (E2E) tests, and documentation metadata.
+
+When you modify or create an example in `src/examples/**.ts`, the build process (`npm run update:examples`) automatically generates the following artifacts:
+1. **End-to-end tests:** Generated into `src/gas/examples/**-test.js` (used for running tests in Google Apps Script).
+2. **Working example code:** The standalone code that has been E2E-tested, generated into `src/gas/examples/**.js`.
+3. **Example JSON config files:** Configuration representations, generated into `src/examples/**.json`.
+4. **Example unit tests:** Local tests generated into `src/examples/**.spec.ts`.
+5. **Documentation:** Markdown documentation pages generated into `docs/docs/examples/**.mdx`.
+
+**Agent Instruction:** Ensure that any new or updated examples are modified **only** in the source of truth (`src/examples/**.ts`). Do not manually edit the generated files listed above, as they will be overwritten during the build process.
+
 ## Coding Conventions
 
 ### Language & Runtime

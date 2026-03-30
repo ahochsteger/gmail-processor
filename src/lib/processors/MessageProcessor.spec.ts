@@ -236,10 +236,7 @@ describe("order messages", () => {
   it("should order messages by subject ascending", () => {
     messages = MessageProcessor.ordered(
       messages,
-      {
-        orderBy: MessageOrderField.SUBJECT,
-        orderDirection: OrderDirection.ASC,
-      },
+      { orderBy: MessageOrderField.SUBJECT, orderDirection: OrderDirection.ASC },
       MessageProcessor.orderRules,
     )
     expect(messages.map((t) => t.getId())).toEqual(["m1", "m2", "m3"])
@@ -247,10 +244,7 @@ describe("order messages", () => {
   it("should order messages by subject descending", () => {
     messages = MessageProcessor.ordered(
       messages,
-      {
-        orderBy: MessageOrderField.SUBJECT,
-        orderDirection: OrderDirection.DESC,
-      },
+      { orderBy: MessageOrderField.SUBJECT, orderDirection: OrderDirection.DESC },
       MessageProcessor.orderRules,
     )
     expect(messages.map((t) => t.getId())).toEqual(["m3", "m2", "m1"])
