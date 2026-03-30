@@ -10,6 +10,9 @@
     "qpdf@12.3.2",
     "wkhtmltopdf-bin@0"
   ],
+  "env": {
+    "PATH": "$PATH:$PWD/node_modules/.bin"
+  },
   "shell": {
     "init_hook": ["echo 'Welcome to gmail-processor devbox!' > /dev/null"],
     "scripts": {
