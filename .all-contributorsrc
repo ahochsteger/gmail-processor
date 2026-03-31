@@ -114,6 +114,13 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/17836911?v=4",
       "profile": "https://gitlab.com/MikeDabrowski",
       "contributions": ["code", "example"]
+    },
+    {
+      "login": "chrismazanec",
+      "name": "Chris Mazanec",
+      "avatar_url": "https://avatars.githubusercontent.com/u/24566100?v=4",
+      "profile": "https://chrismazanec.com/",
+      "contributions": ["ideas", "code"]
     }
   ],
   "contributorsPerLine": 7,
