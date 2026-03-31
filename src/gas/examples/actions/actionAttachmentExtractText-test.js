@@ -92,14 +92,14 @@ function actionAttachmentExtractTextTestConfig() {
             procResult.processedThreadConfigs === 1,
         },
         {
-          message: "At least one thread should have been processed",
+          message: "One thread should have been processed",
           assertFn: (_testConfig, procResult) =>
-            procResult.processedThreads >= 1,
+            procResult.processedThreads === 1,
         },
         {
-          message: "At least one message should have been processed",
+          message: "One message should have been processed",
           assertFn: (_testConfig, procResult) =>
-            procResult.processedMessages >= 1,
+            procResult.processedMessages === 1,
         },
         {
           message: "Correct number of actions should have been executed",

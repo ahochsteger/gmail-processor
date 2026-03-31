@@ -98,15 +98,35 @@ function regularExpressionsTestConfig() {
             procResult.status === GmailProcessorLib.ProcessingStatus.OK,
         },
         {
-          message: "At least one thread should have been processed",
+          message: "One thread should have been processed",
           assertFn: (_testConfig, procResult) =>
-            procResult.processedThreads >= 1,
+            procResult.processedThreads === 1,
+        },
+        {
+          message: "One message should have been processed",
+          assertFn: (_testConfig, procResult) =>
+            procResult.processedMessages === 1,
+        },
+        {
+          message: "One attachment should have been processed",
+          assertFn: (_testConfig, procResult) =>
+            procResult.processedAttachments === 1,
         },
         {
           message: "Expected number of actions should have been executed",
           assertFn: (_testConfig, procResult) =>
             procResult.executedActions.length ===
             procResult.processedThreads + procResult.processedAttachments,
+        },
+        {
+          message: "Store action should have been executed",
+          assertFn: (_testConfig, procResult) => {
+            return (
+              procResult.executedActions.filter(
+                (a) => a.config.name === "attachment.store",
+              ).length === 1
+            )
+          },
         },
       ],
     },

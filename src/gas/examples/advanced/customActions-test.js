@@ -80,9 +80,9 @@ function customActionsTestConfig() {
             procResult.status === GmailProcessorLib.ProcessingStatus.OK,
         },
         {
-          message: "At least one message should have been processed",
+          message: "One message should have been processed",
           assertFn: (_testConfig, procResult) =>
-            procResult.processedMessages >= 1,
+            procResult.processedMessages === 1,
         },
         {
           message: "Expected number of actions should have been executed",

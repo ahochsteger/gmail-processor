@@ -174,7 +174,7 @@ export const tests: E2ETest[] = [
         message: "Actions should have been executed",
         assertFn: (_testConfig, procResult) => {
           const storeActions = procResult.executedActions.filter(
-            (a) => a.action.name === "attachment.store",
+            (a) => a.config.name === "attachment.store",
           )
           return storeActions.length === 2
         },
