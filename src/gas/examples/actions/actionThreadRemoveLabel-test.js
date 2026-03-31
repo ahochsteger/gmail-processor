@@ -83,9 +83,9 @@ function actionThreadRemoveLabelTestConfig() {
             procResult.status === GmailProcessorLib.ProcessingStatus.OK,
         },
         {
-          message: "At least one thread should have been processed",
+          message: "One thread should have been processed",
           assertFn: (_testConfig, procResult) =>
-            procResult.processedThreads >= 1,
+            procResult.processedThreads === 1,
         },
         {
           message: "Expected number of actions should have been executed",
