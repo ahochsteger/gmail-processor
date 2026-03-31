@@ -120,7 +120,7 @@ export const tests: E2ETest[] = [
         assertFn: (_testConfig, procResult) => {
           return (
             procResult.executedActions.filter(
-              (a) => a.action.name === "attachment.store",
+              (a) => a.config.name === "attachment.store",
             ).length === 1
           )
         },

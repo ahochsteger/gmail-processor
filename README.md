@@ -101,6 +101,9 @@ See the [Development Guide](https://ahochsteger.github.io/gmail-processor/docs/c
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/gabrielhesposito"><img src="https://avatars.githubusercontent.com/u/9630328?v=4?s=100" width="100px;" alt="Gabriel Esposito"/><br /><sub><b>Gabriel Esposito</b></sub></a><br /><a href="https://github.com/ahochsteger/gmail-processor/commits?author=gabrielhesposito" title="Documentation">📖</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://gitlab.com/MikeDabrowski"><img src="https://avatars.githubusercontent.com/u/17836911?v=4?s=100" width="100px;" alt="MikeDabrowski"/><br /><sub><b>MikeDabrowski</b></sub></a><br /><a href="https://github.com/ahochsteger/gmail-processor/commits?author=MikeDabrowski" title="Code">💻</a> <a href="#example-MikeDabrowski" title="Examples">💡</a></td>
     </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://chrismazanec.com/"><img src="https://avatars.githubusercontent.com/u/24566100?v=4?s=100" width="100px;" alt="Chris Mazanec"/><br /><sub><b>Chris Mazanec</b></sub></a><br /><a href="#ideas-chrismazanec" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/ahochsteger/gmail-processor/commits?author=chrismazanec" title="Code">💻</a></td>
+    </tr>
   </tbody>
   <tfoot>
     <tr>
