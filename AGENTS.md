@@ -142,6 +142,24 @@ feat(config)!: rename markProcessedMode to markProcessedMethod
 BREAKING CHANGE: The config key `markProcessedMode` has been renamed to `markProcessedMethod`.
 ```
 
+### Attribution and Community Credits
+
+Every contribution from the community, no matter how small (e.g., an idea, a suggestion, documentation, an issue report, or discussion), must be properly credited. This applies even if the originally suggested implementation is modified or completely re-implemented from scratch by the repository owner (`ahochsteger`) or an AI agent. Community involvement is highly valued and must be reflected in the commit history and release notes.
+
+**How to credit contributors:**
+- Add a `Co-authored-by: Name <email>` trailer to the end of your commit message. If you only know the contributor's GitHub username, you can use `Co-authored-by: Username <Username@users.noreply.github.com>`.
+- If the contribution originated from an issue or discussion, reference it in the commit message body (e.g., `closes #123` or `resolves #123`). This ensures the release process (like release-please) picks it up.
+- Use the `all-contributors` CLI to add them to the `README.md` contributors list. You can run `npx all-contributors add <username> <contribution_type>` (e.g. `bug`, `ideas`, `code`, `doc`) to track it.
+
+### AI-Assisted Development Transparency
+
+To maintain transparency about the development process while keeping the human in the loop as the responsible party, AI assistance should be acknowledged without overloading the commit history.
+
+**How to declare AI assistance:**
+- Add an `AI-Assisted: true` trailer or similar to the end of your commit message (alongside other trailers like `Co-authored-by`).
+- Alternatively, include a brief mention in the PR description, such as: "This change was developed with the assistance of AI."
+- This ensures it's clear where AI tools were used for tedious, repetitive work or scaffolding, while acknowledging that the human developer remains responsible for reviewing, testing, and merging the code.
+
 ## Development Workflow
 
 1. **Testing:**
