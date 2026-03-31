@@ -149,7 +149,7 @@ Every contribution from the community, no matter how small (e.g., an idea, a sug
 **How to credit contributors:**
 - Add a `Co-authored-by: Name <email>` trailer to the end of your commit message. If you only know the contributor's GitHub username, you can use `Co-authored-by: Username <Username@users.noreply.github.com>`.
 - If the contribution originated from an issue or discussion, reference it in the commit message body (e.g., `closes #123` or `resolves #123`). This ensures the release process (like release-please) picks it up.
-- Use the `all-contributors` CLI to add them to the `README.md` contributors list. You can run `npx all-contributors add <username> <contribution_type>` (e.g. `bug`, `ideas`, `code`, `doc`) to track it.
+- Use the all-contributors CLI to add them to the README.md contributors list. You can run npx all-contributors add <username> <contribution> (e.g. bug, ideas, code, doc) to track it.
 
 ### AI-Assisted Development Transparency
 
