@@ -154,6 +154,11 @@ function issue301TestConfig() {
             procResult.processedThreads === 1,
         },
         {
+          message: "One message should have been processed",
+          assertFn: (_testConfig, procResult) =>
+            procResult.processedMessages === 1,
+        },
+        {
           message: "One attachment should have been processed",
           assertFn: (_testConfig, procResult) =>
             procResult.processedAttachments === 1,
