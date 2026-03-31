@@ -153,11 +153,13 @@ Every contribution from the community, no matter how small (e.g., an idea, a sug
 
 ### AI-Assisted Development Transparency
 
-To maintain transparency about the development process while keeping the human in the loop as the responsible party, AI assistance should be acknowledged without overloading the commit history.
+In alignment with the 2026 EU AI Act and security best practices, we disclose AI involvement to ensure accountability and auditability. The human remains responsible for all code changes.
 
 **How to declare AI assistance:**
-- Add an `AI-Assisted: true` trailer or similar to the end of your commit message (alongside other trailers like `Co-authored-by`).
-- Alternatively, include a brief mention in the PR description, such as: "This change was developed with the assistance of AI."
+- Add the `AI-Assisted: true` trailer to the end of your commit message. This trailer is **required** if AI was used for logic or generation.
+- (Optional) Add the `AI-Tool: <tool-name>` trailer (e.g., `Claude-Code`, `Copilot`, `Aider`).
+- (Optional) Add the `AI-Model: <model-version>` trailer (e.g., `claude-3-5-sonnet-20241022`).
+- Alternatively or additionally, include a brief mention in the PR description.
 - This ensures it's clear where AI tools were used for tedious, repetitive work or scaffolding, while acknowledging that the human developer remains responsible for reviewing, testing, and merging the code.
 
 ## Development Workflow
