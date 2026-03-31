@@ -144,7 +144,7 @@ BREAKING CHANGE: The config key `markProcessedMode` has been renamed to `markPro
 
 ### Attribution and Community Credits
 
-Every contribution from the community, no matter how small (e.g., an idea, a suggestion, documentation, an issue report, or discussion), must be properly credited. This applies even if the originally suggested implementation is modified or completely re-implemented from scratch by the repository owner (`ahochsteger`) or an AI agent. Community involvement is highly valued and must be reflected in the commit history and release notes.
+Every contribution from the community, no matter how small (e.g., an idea, a suggestion, documentation, an issue report, or discussion), must be properly credited. This applies even if the originally suggested implementation is modified or completely re-implemented from scratch by the repository maintainers or an AI agent. Community involvement is highly valued and must be reflected in the commit history and release notes.
 
 **How to credit contributors:**
 - Add a `Co-authored-by: Name <email>` trailer to the end of your commit message. If you only know the contributor's GitHub username, you can use `Co-authored-by: Username <Username@users.noreply.github.com>`.
