@@ -1,7 +1,7 @@
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
 import { themes } from 'prism-react-renderer';
-import { version } from "../package.json"
+import { version } from "../package.json";
 const lightCodeTheme = themes.vsLight;
 const darkCodeTheme = themes.vsDark;
 
@@ -28,7 +28,11 @@ const config = {
   projectName: 'gmail-processor', // Usually your repo name.
 
   onBrokenLinks: 'throw',
-  onBrokenMarkdownLinks: 'warn',
+  markdown: {
+    hooks: {
+      onBrokenMarkdownLinks: 'warn',
+    },
+  },
 
   // Even if you don't use internalization, you can use this field to set useful
   // metadata like html lang. For example, if your site is Chinese, you may want
@@ -177,6 +181,15 @@ const config = {
         //... other Algolia params
       },
     }),
+  // future: {
+  //   experimental_faster: true,
+  //   experimental_storage: {
+  //     type: 'localStorage',
+  //     namespace: false,
+  //   },
+  //   experimental_router: 'browser',
+  //   v4: true,
+  // },
 };
 
 module.exports = config;
