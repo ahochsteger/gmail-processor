@@ -1,0 +1,67 @@
+name: Auto Contributors
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  auto-contributors:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Extract missing contributors
+        id: missing-contributors
+        run: |
+          # Use all-contributors check to get missing contributors
+          # It outputs "Missing contributors in .all-contributorsrc:\n    user1, user2"
+          # We filter out bot accounts.
+
+          # Initialize empty array for users
+          USERS=""
+
+          # Run check and parse output
+          OUTPUT=$(npx all-contributors-cli check || true)
+          echo "Output from check: $OUTPUT"
+
+          if echo "$OUTPUT" | grep -q "Missing contributors in .all-contributorsrc:"; then
+            MISSING_LINE=$(echo "$OUTPUT" | grep -A 1 "Missing contributors in .all-contributorsrc:" | tail -n 1)
+            # Split by comma
+            IFS=',' read -r -a array <<< "$MISSING_LINE"
+            for user in "${array[@]}"; do
+              # Trim whitespace
+              user=$(echo "$user" | xargs)
+              # Ignore bots
+              if [[ ! "$user" =~ \[bot\] ]] && [[ "$user" != *"-bot"* ]] && [[ "$user" != *"bot-"* ]] && [[ "$user" != "dependabot" ]]; then
+                USERS="$USERS $user"
+              fi
+            done
+          fi
+
+          echo "Found missing non-bot contributors: $USERS"
+          echo "users=$USERS" >> "$GITHUB_OUTPUT"
+
+      - name: Add missing contributors
+        if: steps.missing-contributors.outputs.users != ''
+        run: |
+          USERS="${{ steps.missing-contributors.outputs.users }}"
+          for user in $USERS; do
+            echo "Adding contributor: $user"
+            npx all-contributors-cli add "$user" code || true
+          done
+
+      - name: Commit changes
+        if: steps.missing-contributors.outputs.users != ''
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add README.md .all-contributorsrc
+          git commit -m "docs: add missing contributors [skip ci]" || echo "No changes to commit"
+          git push
