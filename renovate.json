@@ -2,6 +2,7 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:recommended", "helpers:pinGitHubActionDigests"],
   "dependencyDashboard": true,
+  "semanticCommits": "enabled",
   "lockFileMaintenance": {
     "enabled": true,
     "schedule": ["before 5am on monday"]
@@ -9,6 +10,13 @@
   "osvVulnerabilityAlerts": true,
   "schedule": ["before 5am on monday"],
   "packageRules": [
+    {
+      "description": "Group all non-major dependencies",
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+      "groupName": "non-major dependencies",
+      "semanticCommitType": "chore",
+      "automerge": true
+    },
     {
       "description": "Security vulnerability updates",
       "groupName": "security",
