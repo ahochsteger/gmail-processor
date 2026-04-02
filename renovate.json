@@ -12,9 +12,10 @@
   "packageRules": [
     {
       "description": "Group all non-major dependencies",
-      "matchUpdateTypes": ["minor", "patch"],
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
       "groupName": "non-major dependencies",
-      "semanticCommitType": "chore"
+      "semanticCommitType": "chore",
+      "automerge": true
     },
     {
       "description": "Security vulnerability updates",
