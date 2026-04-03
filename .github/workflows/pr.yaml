@@ -96,8 +96,8 @@ jobs:
         name: Deploy Lib (PR)
         run: |
           if [ -z "${CLASP_LIB_SCRIPT_ID}" ]; then
-            echo "::error::CLASP_LIB_SCRIPT_ID is empty. Please ensure you have added it to the 'pr' environment secrets or repository secrets."
-            exit 1
+            echo "::warning::CLASP_LIB_SCRIPT_ID is empty. Please ensure you have added it to the 'pr' environment secrets or repository secrets. Skipping push."
+            exit 0
           fi
           npm run push:lib
       - id: deploy-examples-pr
@@ -105,7 +105,7 @@ jobs:
         name: Deploy Examples (PR)
         run: |
           if [ -z "${CLASP_EXAMPLES_SCRIPT_ID}" ]; then
-            echo "::error::CLASP_EXAMPLES_SCRIPT_ID is empty. Please ensure you have added it to the 'pr' environment secrets or repository secrets."
-            exit 1
+            echo "::warning::CLASP_EXAMPLES_SCRIPT_ID is empty. Please ensure you have added it to the 'pr' environment secrets or repository secrets. Skipping push."
+            exit 0
           fi
           npm run push:examples
