@@ -92,10 +92,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       - id: deploy-lib-pr
-        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.trigger_push_lib == 'true' }}
+        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.trigger_push_lib == 'true' && env.CLASP_LIB_SCRIPT_ID != '' }}
         name: Deploy Lib (PR)
         run: npm run push:lib
       - id: deploy-examples-pr
-        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.trigger_push_examples == 'true' }}
+        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.trigger_push_examples == 'true' && env.CLASP_EXAMPLES_SCRIPT_ID != '' }}
         name: Deploy Examples (PR)
         run: npm run push:examples
