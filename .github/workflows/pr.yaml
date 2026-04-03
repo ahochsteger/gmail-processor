@@ -94,8 +94,8 @@ jobs:
       - id: deploy-lib-pr
         if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.trigger_push_lib == 'true' }}
         name: Deploy Lib (PR)
-        run: npm run push:lib
+        run: npm run repush:lib
       - id: deploy-examples-pr
         if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.trigger_push_examples == 'true' }}
         name: Deploy Examples (PR)
-        run: npm run push:examples
+        run: npm run repush:examples
