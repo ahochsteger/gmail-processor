@@ -128,7 +128,8 @@ export class AttachmentActions implements ActionProvider<AttachmentContext> {
     ctx: AttachmentContext,
     args: StoreDecryptedPdfActionArgs,
   ): Promise<ActionReturnType> {
-    const location = args.location // evaluate(ctx, args.location)
+    const location = PatternUtil.substitute(ctx, args.location)
+    const description = PatternUtil.substitute(ctx, args.description ?? "")
     try {
       ctx.log.debug(
         `AttachmentActions.storeDecryptedPdf(): location=${location}`,
@@ -161,10 +162,10 @@ export class AttachmentActions implements ActionProvider<AttachmentContext> {
       )
       return ctx.proc.gdriveAdapter.createFileFromAction(
         ctx,
-        args.location,
+        location,
         decryptedPdf,
         args.conflictStrategy,
-        args.description,
+        description,
         "decrypted PDF",
         "attachment",
         "attachment.decryptAndStorePdf",
