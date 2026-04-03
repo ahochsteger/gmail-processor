@@ -68,9 +68,9 @@ jobs:
         with:
           node-version: 24.x
           cache: "npm"
-      - id: build-lib
+      - id: build
         if: ${{ !github.event.inputs.skip_build_lib || github.event.inputs.trigger_push_lib == 'true' || github.event.inputs.trigger_push_examples == 'true' }}
-        name: Build lib
+        name: Build lib and examples
         run: npm run ci:build
       - id: test
         if: ${{ !github.event.inputs.skip_test }}
