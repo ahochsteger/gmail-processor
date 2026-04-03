@@ -69,33 +69,33 @@ jobs:
           node-version: 24.x
           cache: "npm"
       - id: build
-        if: ${{ !github.event.inputs.skip_build_lib || github.event.inputs.trigger_push_lib == 'true' || github.event.inputs.trigger_push_examples == 'true' }}
+        if: ${{ !inputs.skip_build_lib || inputs.trigger_push_lib || inputs.trigger_push_examples }}
         name: Build lib and examples
         run: npm run ci:build
       - id: test
-        if: ${{ !github.event.inputs.skip_test }}
+        if: ${{ !inputs.skip_test }}
         name: Test
         run: npm run ci:test
       - id: build-docs
-        if: ${{ !github.event.inputs.skip_build_docs }}
+        if: ${{ !inputs.skip_build_docs }}
         name: Build docs
         run: npm run ci:docs
       - id: qa-coveralls
-        if: ${{ !github.event.inputs.skip_qa_coveralls }}
+        if: ${{ !inputs.skip_qa_coveralls }}
         name: QA Coveralls
         uses: coverallsapp/github-action@5cbfd81b66ca5d10c19b062c04de0199c215fb6e # v2
       - id: qa-sonarqube
-        if: ${{ !github.event.inputs.skip_qa_sonarqube }}
+        if: ${{ !inputs.skip_qa_sonarqube }}
         name: QA SonarQube
         uses: SonarSource/sonarqube-scan-action@a31c9398be7ace6bbfaf30c0bd5d415f843d45e9 # v7
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       - id: deploy-lib-pr
-        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.trigger_push_lib == 'true' && env.CLASP_LIB_SCRIPT_ID != '' }}
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.trigger_push_lib }}
         name: Deploy Lib (PR)
         run: npm run push:lib
       - id: deploy-examples-pr
-        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.trigger_push_examples == 'true' && env.CLASP_EXAMPLES_SCRIPT_ID != '' }}
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.trigger_push_examples }}
         name: Deploy Examples (PR)
         run: npm run push:examples
