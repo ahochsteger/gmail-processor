@@ -7,6 +7,10 @@ on:
     types: [opened, synchronize, reopened]
   workflow_dispatch:
     inputs:
+      trigger_push:
+        description: "Push built PR code to GAS"
+        type: boolean
+        default: false
       skip_build_docs:
         description: "Skip build docs"
         type: boolean
@@ -34,6 +38,18 @@ jobs:
     concurrency: ci-${{ github.ref }}
     environment:
       name: pr
+    env:
+      CLASP_ACCESS_TOKEN: ${{secrets.CLASP_ACCESS_TOKEN}}
+      CLASP_CLIENT_ID: ${{secrets.CLASP_CLIENT_ID}}
+      CLASP_CLIENT_SECRET: ${{secrets.CLASP_CLIENT_SECRET}}
+      CLASP_EXAMPLES_DEPLOYMENT_ID: ${{secrets.CLASP_EXAMPLES_DEPLOYMENT_ID}}
+      CLASP_EXAMPLES_SCRIPT_ID: ${{secrets.CLASP_EXAMPLES_SCRIPT_ID}}
+      CLASP_ID_TOKEN: ${{secrets.CLASP_ID_TOKEN}}
+      CLASP_LIB_DEPLOYMENT_ID: ${{secrets.CLASP_LIB_DEPLOYMENT_ID}}
+      CLASP_LIB_SCRIPT_ID: ${{secrets.CLASP_LIB_SCRIPT_ID}}
+      CLASP_REFRESH_TOKEN: ${{secrets.CLASP_REFRESH_TOKEN}}
+      GCLOUD_PROJECT_ID: ${{secrets.GCLOUD_PROJECT_ID}}
+      GCLOUD_PROJECT_NR: ${{secrets.GCLOUD_PROJECT_NR}}
     steps:
       - id: checkout
         name: Checkout
@@ -71,3 +87,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      - id: deploy-lib-pr
+        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.trigger_push == 'true' }}
+        name: Deploy Lib (PR)
+        run: npm run push
