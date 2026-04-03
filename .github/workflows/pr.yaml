@@ -94,8 +94,18 @@ jobs:
       - id: deploy-lib-pr
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.trigger_push_lib }}
         name: Deploy Lib (PR)
-        run: npm run push:lib
+        run: |
+          if [ -z "${CLASP_LIB_SCRIPT_ID}" ]; then
+            echo "::error::CLASP_LIB_SCRIPT_ID is empty. Please ensure you have added it to the 'pr' environment secrets or repository secrets."
+            exit 1
+          fi
+          npm run push:lib
       - id: deploy-examples-pr
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.trigger_push_examples }}
         name: Deploy Examples (PR)
-        run: npm run push:examples
+        run: |
+          if [ -z "${CLASP_EXAMPLES_SCRIPT_ID}" ]; then
+            echo "::error::CLASP_EXAMPLES_SCRIPT_ID is empty. Please ensure you have added it to the 'pr' environment secrets or repository secrets."
+            exit 1
+          fi
+          npm run push:examples
