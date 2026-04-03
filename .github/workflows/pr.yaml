@@ -69,7 +69,7 @@ jobs:
           node-version: 24.x
           cache: "npm"
       - id: build-lib
-        if: ${{ !github.event.inputs.skip_build_lib }}
+        if: ${{ !github.event.inputs.skip_build_lib || github.event.inputs.trigger_push_lib == 'true' || github.event.inputs.trigger_push_examples == 'true' }}
         name: Build lib
         run: npm run ci:build
       - id: test
@@ -94,8 +94,8 @@ jobs:
       - id: deploy-lib-pr
         if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.trigger_push_lib == 'true' }}
         name: Deploy Lib (PR)
-        run: npm ci && npm run repush:lib
+        run: npm run push:lib
       - id: deploy-examples-pr
         if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.trigger_push_examples == 'true' }}
         name: Deploy Examples (PR)
-        run: npm ci && npm run repush:examples
+        run: npm run push:examples
