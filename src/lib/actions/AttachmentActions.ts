@@ -141,7 +141,7 @@ export class AttachmentActions implements ActionProvider<AttachmentContext> {
         `AttachmentActions.storeDecryptedPdf(): Loading PDF document ...`,
       )
       const pdfDoc = await PDFDocument.load(base64Content, {
-        password: args.password,
+        password: PatternUtil.substitute(ctx, args.password),
         ignoreEncryption: true,
       })
       ctx.log.debug(
