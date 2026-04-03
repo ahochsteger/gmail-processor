@@ -7,8 +7,12 @@ on:
     types: [opened, synchronize, reopened]
   workflow_dispatch:
     inputs:
-      trigger_push:
-        description: "Push built PR code to GAS"
+      trigger_push_lib:
+        description: "Push built PR lib code to GAS"
+        type: boolean
+        default: false
+      trigger_push_examples:
+        description: "Push built PR examples code to GAS"
         type: boolean
         default: false
       skip_build_docs:
@@ -88,6 +92,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       - id: deploy-lib-pr
-        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.trigger_push == 'true' }}
+        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.trigger_push_lib == 'true' }}
         name: Deploy Lib (PR)
-        run: npm run push
+        run: npm run push:lib
+      - id: deploy-examples-pr
+        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.trigger_push_examples == 'true' }}
+        name: Deploy Examples (PR)
+        run: npm run push:examples
