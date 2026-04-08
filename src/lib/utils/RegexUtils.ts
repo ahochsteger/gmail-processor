@@ -7,7 +7,7 @@ export class RegexUtils {
    * @returns The escaped string.
    */
   public static escapeRegExp(str: string): string {
-    return str.replace(/[.*+?^${}()|[\\]\\-]/g, "\\$&")
+    return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
   }
 
   public static matchRegExp(
