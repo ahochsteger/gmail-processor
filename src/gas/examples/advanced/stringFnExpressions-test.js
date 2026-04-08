@@ -29,9 +29,7 @@ function stringFnExpressionsTestConfig() {
   }
   const initConfig = {
     mails: [
-      {
-        body: "This is the full body.",
-      },
+      {}, // just an empty default email
     ],
   }
 
@@ -61,7 +59,7 @@ function stringFnExpressionsTestConfig() {
                 name: "global.log",
                 args: {
                   message:
-                    "Removing 'full' from body: {{message.body|replaceAll(' full ', ' ')|trim()}}",
+                    "Removing '[]' from subject: {{message.subject|replaceAll('[\\[\\]]', '')}}",
                 },
               },
             ],
@@ -103,14 +101,13 @@ function stringFnExpressionsTestConfig() {
         },
         {
           message: "The correct message should have been logged",
-          assertFn: (_testConfig, procResult, ctx, expect) => {
-            return expect(
+          assertFn: (_testConfig, procResult, ctx, expect) =>
+            expect(
               ctx,
               procResult.executedActions[0]?.result?.logMessage,
-              `Removing 'full' from body: This is the body.`,
+              `Removing '[]' from subject: GmailProcessor-Test ${info.name}`,
               "Actual log message does not match the expected one",
-            )
-          },
+            ),
         },
       ],
     },
@@ -133,12 +130,5 @@ function stringFnExpressionsTest() {
     false,
     E2E_REPO_BRANCH,
     GmailProcessorLib.RunMode.DANGEROUS,
-    GmailProcessorLib.EnvProvider.defaultContext(
-      GmailProcessorLib.RunMode.DANGEROUS,
-      {
-        cacheService: CacheService,
-        propertiesService: PropertiesService,
-      },
-    ),
   )
 }

@@ -1,7 +1,6 @@
 import {
   ContextType,
   EnvContext,
-  EnvInfo,
   MetaInfoType as MIT,
   MetaInfo,
   RunMode,
@@ -58,10 +57,7 @@ export class EnvProvider {
     return m
   }
 
-  public static defaultContext(
-    runMode = RunMode.SAFE_MODE,
-    envOverrides: Partial<EnvInfo> = {},
-  ) {
+  public static defaultContext(runMode = RunMode.SAFE_MODE) {
     const logger = new Log()
     const ctx: EnvContext = {
       type: ContextType.ENV,
@@ -79,7 +75,6 @@ export class EnvProvider {
         timezone: Session.getScriptTimeZone() || "Etc/UTC",
         urlFetchApp: UrlFetchApp,
         propertiesService: PropertiesService,
-        ...envOverrides,
       },
       envMeta: {},
       log: logger,

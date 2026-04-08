@@ -168,7 +168,7 @@ export const tests: E2ETest[] = [
       {
         message: "Correct number of actions should have been executed",
         assertFn: (_testConfig, procResult) =>
-          procResult.executedActions.length === 7,
+          procResult.executedActions === 7,
       },
     ],
   },

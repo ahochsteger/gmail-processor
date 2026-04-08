@@ -1,7 +1,7 @@
 import { ConflictStrategy } from "../../lib/adapter/GDriveAdapter"
 import { Config } from "../../lib/config/Config"
-import { MarkProcessedMethod } from "../../lib/config/SettingsConfig"
 import { ProcessingStatus } from "../../lib/Context"
+import { MarkProcessedMethod } from "../../lib/config/SettingsConfig"
 import { E2EInitConfig, E2ETest, E2ETestConfig } from "../../lib/e2e/E2E"
 import { E2EDefaults } from "../../lib/e2e/E2EDefaults"
 import {
@@ -53,7 +53,8 @@ export const runConfig: Config = {
   threads: [
     {
       match: {
-        query: `from:{{user.email}} to:{{user.email}} subject:(${E2EDefaults.EMAIL_SUBJECT_PREFIX}${info.name})`,
+        query:
+          `from:{{user.email}} to:{{user.email}} subject:(${E2EDefaults.EMAIL_SUBJECT_PREFIX}${info.name})`,
       },
       attachments: [
         {

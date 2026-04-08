@@ -56,8 +56,5 @@ function actionAttachmentExtractTextRun() {
     ],
   }
 
-  return GmailProcessorLib.run(config, "dry-run", [], undefined, {
-    cacheService: CacheService,
-    propertiesService: PropertiesService,
-  })
+  return GmailProcessorLib.run(config, "dry-run")
 }

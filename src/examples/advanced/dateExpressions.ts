@@ -81,8 +81,7 @@ export const tests: E2ETest[] = [
       },
       {
         message: "One thread should have been processed",
-        assertFn: (_testConfig, procResult) =>
-          procResult.processedThreads === 1,
+        assertFn: (_testConfig, procResult) => procResult.processedThreads === 1,
       },
       {
         message: "One message should have been processed",

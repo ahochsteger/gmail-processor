@@ -144,12 +144,5 @@ function decryptPdfTest() {
     false,
     E2E_REPO_BRANCH,
     GmailProcessorLib.RunMode.DANGEROUS,
-    GmailProcessorLib.EnvProvider.defaultContext(
-      GmailProcessorLib.RunMode.DANGEROUS,
-      {
-        cacheService: CacheService,
-        propertiesService: PropertiesService,
-      },
-    ),
   )
 }

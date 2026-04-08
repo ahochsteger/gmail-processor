@@ -20,6 +20,7 @@ function issue301TestConfig() {
   const initConfig = {
     mails: [
       {
+        subject: "Test for PR #301",
         body: "Test email for PR #301.",
         attachments: ["sample.xlsx"],
       },
@@ -47,7 +48,8 @@ function issue301TestConfig() {
     threads: [
       {
         match: {
-          query: `from:{{user.email}} to:{{user.email}} subject:(${GmailProcessorLib.E2EDefaults.EMAIL_SUBJECT_PREFIX}${info.name})`,
+          query:
+            "from:{{user.email}} to:{{user.email}} subject:'Test with office attachments'",
         },
         attachments: [
           {
@@ -152,6 +154,11 @@ function issue301TestConfig() {
             procResult.processedThreads === 1,
         },
         {
+          message: "One message should have been processed",
+          assertFn: (_testConfig, procResult) =>
+            procResult.processedMessages === 1,
+        },
+        {
           message: "One attachment should have been processed",
           assertFn: (_testConfig, procResult) =>
             procResult.processedAttachments === 1,
@@ -192,12 +199,5 @@ function issue301Test() {
     false,
     E2E_REPO_BRANCH,
     GmailProcessorLib.RunMode.DANGEROUS,
-    GmailProcessorLib.EnvProvider.defaultContext(
-      GmailProcessorLib.RunMode.DANGEROUS,
-      {
-        cacheService: CacheService,
-        propertiesService: PropertiesService,
-      },
-    ),
   )
 }

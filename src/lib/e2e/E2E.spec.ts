@@ -50,14 +50,7 @@ describe("getUuid", () => {
   it("should default to test-id when no env is provided", () => {
     const mockCtx = {} as EnvContext
     let runId: string | undefined
-    const activeTestRunId =
-      runId ??
-      (mockCtx &&
-      mockCtx.env &&
-      mockCtx.env.utilities &&
-      typeof mockCtx.env.utilities.getUuid === "function"
-        ? mockCtx.env.utilities.getUuid().substring(0, 8)
-        : "test-id")
+    const activeTestRunId = runId ?? (mockCtx && mockCtx.env && mockCtx.env.utilities && typeof mockCtx.env.utilities.getUuid === "function" ? mockCtx.env.utilities.getUuid().substring(0, 8) : "test-id")
     expect(activeTestRunId).toEqual("test-id")
   })
 })
@@ -450,7 +443,13 @@ describe("runTests", () => {
     initConfig.mails = [{ subject: "Test mail" }]
     jest.spyOn(E2E, "initWait").mockImplementation(() => {})
 
-    E2E.runTests(mockTestConfig, false, "main", RunMode.DANGEROUS, ctx)
+    E2E.runTests(
+      mockTestConfig,
+      false,
+      "main",
+      RunMode.DANGEROUS,
+      ctx,
+    )
 
     expect(ctx.env.mailApp.sendEmail).toHaveBeenCalledWith({
       to: globals.to,
@@ -470,23 +469,20 @@ describe("runTests", () => {
   })
 
   it("should handle errors during test execution", () => {
-    const errorConfig = {
-      ...mockTestConfig,
-      runConfig: {
-        threads: [
-          {
-            actions: [
-              {
-                name: "global.panic",
-                args: {
-                  message: "A forced exeption",
-                },
+    const errorConfig = { ...mockTestConfig, runConfig: {
+      threads: [
+        {
+          actions: [
+            {
+              name: "global.panic",
+              args: {
+                message: "A forced exeption",
               },
-            ],
-          },
-        ],
-      },
-    } as any
+            },
+          ],
+        },
+      ],
+    } } as any
 
     const result = E2E.runTests(
       errorConfig,

@@ -68,8 +68,5 @@ function customActionsAdvancedRun() {
       },
     },
   ]
-  return GmailProcessorLib.run(config, "dry-run", customActions, undefined, {
-    cacheService: CacheService,
-    propertiesService: PropertiesService,
-  })
+  return GmailProcessorLib.run(config, "dry-run", customActions)
 }

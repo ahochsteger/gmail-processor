@@ -1,19 +1,5 @@
 import { RegexUtils } from "./RegexUtils"
 
-describe("escapeRegExp()", () => {
-  it("should escape special characters", () => {
-    expect(RegexUtils.escapeRegExp(".*+?^${}()|[\]\\")).toEqual(
-      "\\.\\*\\+\\?\\^\\$\\{\\}\\(\\)\\|\\[\\]\\\\",
-    )
-  })
-  it("should not escape non-special characters", () => {
-    expect(RegexUtils.escapeRegExp("abc123_ ")).toEqual("abc123_ ")
-  })
-  it("should handle empty string", () => {
-    expect(RegexUtils.escapeRegExp("")).toEqual("")
-  })
-})
-
 describe("matchRegExp()", () => {
   it("should match regex without modifier", () => {
     const matches = RegexUtils.matchRegExp("^test$", "test")

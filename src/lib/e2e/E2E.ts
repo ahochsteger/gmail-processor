@@ -12,7 +12,6 @@ import { V1Config } from "../config/v1/V1Config"
 import { V1ToV2Converter } from "../config/v1/V1ToV2Converter"
 import { GmailProcessor } from "../processors/GmailProcessor"
 import { PatternUtil } from "../utils/PatternUtil"
-import { RegexUtils } from "../utils/RegexUtils"
 import { E2EDefaults } from "./E2EDefaults"
 
 export type E2EGlobalConfig = {
@@ -111,9 +110,7 @@ export function newE2EGlobalConfig(
     sleepTimeMs: E2EDefaults.EMAIL_SLEEP_TIME_MS,
     maxPollTimeMs: E2EDefaults.EMAIL_MAX_POLL_TIME_MS,
     pollIntervalMs: E2EDefaults.EMAIL_POLL_INTERVAL_MS,
-    subjectPrefix: testRunId
-      ? `${E2EDefaults.EMAIL_SUBJECT_PREFIX}[${testRunId}] `
-      : E2EDefaults.EMAIL_SUBJECT_PREFIX,
+    subjectPrefix: testRunId ? `${E2EDefaults.EMAIL_SUBJECT_PREFIX}[${testRunId}] ` : E2EDefaults.EMAIL_SUBJECT_PREFIX,
     to: ctx.env.session.getActiveUser().getEmail(),
     ...testGlobals,
   }
@@ -251,7 +248,7 @@ export class E2E {
     processingResult: ProcessingResult,
     ctx: EnvContext = EnvProvider.defaultContext(),
   ) {
-    ctx.log.info(`E2E._runTest(): Running test '${test.message}' ...`)
+    ctx.log.info(`E2E.runTest(): Running test '${test.message}' ...`)
     const results: E2EResult[] = []
     const statusMap: Record<E2EStatus, number> = {
       error: 0,
@@ -283,7 +280,7 @@ export class E2E {
       results,
     }
 
-    ctx.log.info(`E2E._runTest(): Finished.`)
+    ctx.log.info(`E2E.runTest(): Finished.`)
     return result
   }
 
@@ -295,14 +292,9 @@ export class E2E {
     testRunId?: string,
   ) {
     ctx.log.info(
-      `E2E.initTests(): [${testConfig.info.category}/${testConfig.info.name}] Initializing test with testRunId '${testRunId}' ...`,
+      `E2E.runTests(): [${testConfig.info.category}/${testConfig.info.name}] Initializing test ...`,
     )
-    const globals = newE2EGlobalConfig(
-      ctx,
-      branch,
-      testConfig.globals,
-      testRunId,
-    )
+    const globals = newE2EGlobalConfig(ctx, branch, testConfig.globals, testRunId)
     testConfig.initConfig?.mails.forEach((mail) => {
       ctx.env.mailApp.sendEmail({
         to: PatternUtil.substitute(ctx, globals.to),
@@ -320,7 +312,7 @@ export class E2E {
       })
     })
     ctx.log.info(
-      `E2E.initTests(): [${testConfig.info.category}/${testConfig.info.name}] Finished initializing test with testRunId '${testRunId}'.`,
+      `E2E.runTests(): [${testConfig.info.category}/${testConfig.info.name}] Finished initializing test.`,
     )
   }
 
@@ -340,16 +332,12 @@ export class E2E {
       for (let i = 0; i < maxPolls; i++) {
         const foundCount = ctx.env.gmailApp.search(query).length
         if (foundCount >= expectedCount) {
-          ctx.log.debug(
-            `E2E.initWait(): Found ${foundCount} emails, finished waiting.`,
-          )
+          ctx.log.debug(`E2E.initWait(): Found ${foundCount} emails, finished waiting.`)
           return
         }
         ctx.env.utilities.sleep(globals.pollIntervalMs)
       }
-      ctx.log.debug(
-        `E2E.initWait(): Poll time expired. Found emails matching query: ${ctx.env.gmailApp.search(query).length}`,
-      )
+      ctx.log.debug(`E2E.initWait(): Poll time expired. Found emails matching query: ${ctx.env.gmailApp.search(query).length}`)
     } else {
       // Wait for emails to become available statically
       ctx.log.debug(
@@ -368,17 +356,12 @@ export class E2E {
     ctx: EnvContext = EnvProvider.defaultContext(runMode),
     testRunId?: string,
   ): E2EResult {
-    const activeTestRunId = testRunId ?? this.getTestRunId(ctx)
+    const activeTestRunId = testRunId ?? (ctx && ctx.env && ctx.env.utilities && typeof ctx.env.utilities.getUuid === "function" ? ctx.env.utilities.getUuid().substring(0, 8) : Math.random().toString(36).substring(2, 8))
 
     // Send test mails
     if (!skipInit) {
       this.initTests(testConfig, branch, runMode, ctx, activeTestRunId)
-      const globals = newE2EGlobalConfig(
-        ctx,
-        branch,
-        testConfig.globals,
-        activeTestRunId,
-      )
+      const globals = newE2EGlobalConfig(ctx, branch, testConfig.globals, activeTestRunId)
       const expectedCount = testConfig.initConfig?.mails.length ?? -1
       this.initWait(globals, runMode, ctx, expectedCount)
     } else {
@@ -388,7 +371,7 @@ export class E2E {
     }
 
     ctx.log.info(
-      `E2E.runTests(): [${testConfig.info.category}/${testConfig.info.name}] Running test with testRunId '${activeTestRunId}' ...`,
+      `E2E.runTests(): [${testConfig.info.category}/${testConfig.info.name}] Running test ...`,
     )
     // Run tests
     let error: unknown
@@ -413,7 +396,7 @@ export class E2E {
         let testRunConfig = testConfig.runConfig
         if (activeTestRunId) {
           const runConfigStr = JSON.stringify(testConfig.runConfig).replace(
-            new RegExp(RegexUtils.escapeRegExp(E2EDefaults.EMAIL_SUBJECT_PREFIX), "g"),
+            new RegExp(E2EDefaults.EMAIL_SUBJECT_PREFIX.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g"),
             `${E2EDefaults.EMAIL_SUBJECT_PREFIX}[${activeTestRunId}] `
           )
           testRunConfig = JSON.parse(runConfigStr) as Config
@@ -461,10 +444,6 @@ export class E2E {
     return result
   }
 
-  public static getTestRunId(ctx: EnvContext) {
-    return ctx.env.utilities.getUuid().substring(0, 8)
-  }
-
   public static initAllTests(
     testConfigs: E2ETestConfig[],
     branch = "main",
@@ -472,18 +451,14 @@ export class E2E {
     ctx: EnvContext = EnvProvider.defaultContext(runMode),
     testRunId?: string,
   ): string {
-    const activeTestRunId = testRunId ?? this.getTestRunId(ctx)
-    ctx.log.info(
-      `E2E.initAllTests(): Started with testRunId '${testRunId}' - continuing with '${activeTestRunId}' ...`,
-    )
+    ctx.log.info(`E2E.initAllTests(): Started.`)
+    const activeTestRunId = testRunId ?? (ctx && ctx.env && ctx.env.utilities && typeof ctx.env.utilities.getUuid === "function" ? ctx.env.utilities.getUuid().substring(0, 8) : Math.random().toString(36).substring(2, 8))
     testConfigs.forEach((testConfig) => {
       this.initTests(testConfig, branch, runMode, ctx, activeTestRunId)
     })
     const globals = newE2EGlobalConfig(ctx, branch, undefined, activeTestRunId)
     this.initWait(globals, runMode, ctx)
-    ctx.log.info(
-      `E2E.initAllTests(): Finished with testRunId '${activeTestRunId}'.`,
-    )
+    ctx.log.info(`E2E.initAllTests(): Finished.`)
     return activeTestRunId
   }
 
@@ -495,19 +470,10 @@ export class E2E {
     ctx: EnvContext = EnvProvider.defaultContext(runMode),
     testRunId?: string,
   ): E2EResult {
-    const activeTestRunId = testRunId ?? this.getTestRunId(ctx)
-    ctx.log.info(
-      `E2E.runAllTests(): Started with testRunId '${testRunId}' - continuing with '${activeTestRunId}' ...`,
-    )
+    ctx.log.info(`E2E.runAllTests(): Started.`)
+    const activeTestRunId = testRunId ?? (ctx && ctx.env && ctx.env.utilities && typeof ctx.env.utilities.getUuid === "function" ? ctx.env.utilities.getUuid().substring(0, 8) : Math.random().toString(36).substring(2, 8))
     const results = testConfigs.map((testConfig) =>
-      this.runTests(
-        testConfig,
-        skipInit,
-        branch,
-        runMode,
-        ctx,
-        activeTestRunId,
-      ),
+      this.runTests(testConfig, skipInit, branch, runMode, ctx, activeTestRunId),
     )
     const statusMap = this.statusMapFromResults(results)
     const status = this._overallStatus(statusMap)

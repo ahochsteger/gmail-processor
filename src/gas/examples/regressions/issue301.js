@@ -22,7 +22,7 @@ function issue301Run() {
       {
         match: {
           query:
-            "from:{{user.email}} to:{{user.email}} subject:([GmailProcessor-Test] issue301)",
+            "from:{{user.email}} to:{{user.email}} subject:'Test with office attachments'",
         },
         attachments: [
           {
@@ -110,8 +110,5 @@ function issue301Run() {
     ],
   }
 
-  return GmailProcessorLib.run(config, "dry-run", [], undefined, {
-    cacheService: CacheService,
-    propertiesService: PropertiesService,
-  })
+  return GmailProcessorLib.run(config, "dry-run")
 }

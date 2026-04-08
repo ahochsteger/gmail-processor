@@ -125,12 +125,15 @@ it("should catch errors when storing a decrypted PDF", async () => {
     throw new Error("Blob creation failed")
   })
   await expect(
-    AttachmentActions.storeDecryptedPdf(mocks.attachmentContext, {
-      location: "/generic-decrypted.pdf",
-      conflictStrategy: ConflictStrategy.REPLACE,
-      description: "automated test {{attachment.name}}",
-      password: "password-{{attachment.name}}",
-    }),
+    AttachmentActions.storeDecryptedPdf(
+      mocks.attachmentContext,
+      {
+        location: "/generic-decrypted.pdf",
+        conflictStrategy: ConflictStrategy.REPLACE,
+        description: "automated test {{attachment.name}}",
+        password: "password-{{attachment.name}}",
+      },
+    )
   ).rejects.toThrow("Blob creation failed")
 })
 

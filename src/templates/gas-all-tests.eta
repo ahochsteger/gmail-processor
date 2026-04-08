@@ -10,39 +10,24 @@ function getTestConfigs() {
 }
 
 function initAllTests() {
-  return GmailProcessorLib.E2E.initAllTests(
+  GmailProcessorLib.E2E.initAllTests(
     getTestConfigs(),
     E2E_REPO_BRANCH,
     GmailProcessorLib.RunMode.DANGEROUS,
-    GmailProcessorLib.EnvProvider.defaultContext(
-      GmailProcessorLib.RunMode.DANGEROUS,
-      {
-        cacheService: CacheService,
-        propertiesService: PropertiesService
-      }
-    )
   )
 }
 
-function runAllTests(skipInit = true, testRunId = undefined) {
+function runAllTests(skipInit = true) {
   return GmailProcessorLib.E2E.runAllTests(
     getTestConfigs(),
     skipInit,
     E2E_REPO_BRANCH,
     GmailProcessorLib.RunMode.DANGEROUS,
-    GmailProcessorLib.EnvProvider.defaultContext(
-      GmailProcessorLib.RunMode.DANGEROUS,
-      {
-        cacheService: CacheService,
-        propertiesService: PropertiesService
-      }
-    ),
-    testRunId,
   )
 }
 
 function initAndRunAllTests() {
-  const testRunId = initAllTests()
+  initAllTests()
   Utilities.sleep(5000)
-  return JSON.stringify(runAllTests(true, testRunId))
+  return JSON.stringify(runAllTests())
 }

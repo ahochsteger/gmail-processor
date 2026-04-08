@@ -135,43 +135,7 @@ function convertToGoogleTestConfig() {
     config: runConfig,
   }
 
-  const tests = [
-    {
-      message: "Successful execution",
-      assertions: [
-        {
-          message: "One thread config should have been processed",
-          assertFn: (_testConfig, procResult) =>
-            procResult.processedThreadConfigs === 1,
-        },
-        {
-          message: "One thread should have been processed",
-          assertFn: (_testConfig, procResult) =>
-            procResult.processedThreads === 1,
-        },
-        {
-          message: "One message should have been processed",
-          assertFn: (_testConfig, procResult) =>
-            procResult.processedMessages === 1,
-        },
-        {
-          message: "Three attachment configs should have been processed",
-          assertFn: (_testConfig, procResult) =>
-            procResult.processedAttachmentConfigs === 3,
-        },
-        {
-          message: "Three attachments should have been processed",
-          assertFn: (_testConfig, procResult) =>
-            procResult.processedAttachments === 3,
-        },
-        {
-          message: "Correct number of actions should have been executed",
-          assertFn: (_testConfig, procResult) =>
-            procResult.executedActions.length === 7,
-        },
-      ],
-    },
-  ]
+  const tests = []
 
   const testConfig = {
     example,
@@ -190,12 +154,5 @@ function convertToGoogleTest() {
     false,
     E2E_REPO_BRANCH,
     GmailProcessorLib.RunMode.DANGEROUS,
-    GmailProcessorLib.EnvProvider.defaultContext(
-      GmailProcessorLib.RunMode.DANGEROUS,
-      {
-        cacheService: CacheService,
-        propertiesService: PropertiesService,
-      },
-    ),
   )
 }

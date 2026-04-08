@@ -38,22 +38,7 @@ function migrationMinTestConfig() {
     migrationConfig,
   }
 
-  const tests = [
-    {
-      message: "No failures",
-      assertions: [
-        {
-          message: "Processing status should not be ERROR",
-          assertFn: (_testConfig, procResult) =>
-            procResult.status !== GmailProcessorLib.ProcessingStatus.ERROR,
-        },
-        {
-          message: "No error should have occurred",
-          assertFn: (_testConfig, procResult) => procResult.error === undefined,
-        },
-      ],
-    },
-  ]
+  const tests = []
 
   const testConfig = {
     example,
@@ -72,12 +57,5 @@ function migrationMinTest() {
     false,
     E2E_REPO_BRANCH,
     GmailProcessorLib.RunMode.DANGEROUS,
-    GmailProcessorLib.EnvProvider.defaultContext(
-      GmailProcessorLib.RunMode.DANGEROUS,
-      {
-        cacheService: CacheService,
-        propertiesService: PropertiesService,
-      },
-    ),
   )
 }

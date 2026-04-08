@@ -17,7 +17,7 @@
   "threads": [
     {
       "match": {
-        "query": "from:{{user.email}} to:{{user.email}} subject:([GmailProcessor-Test] issue301)"
+        "query": "from:{{user.email}} to:{{user.email}} subject:'Test with office attachments'"
       },
       "attachments": [
         {

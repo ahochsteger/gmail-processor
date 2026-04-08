@@ -1,15 +1,6 @@
 import { ProcessingContext } from "../Context"
 
 export class RegexUtils {
-  /**
-   * Escapes special characters in a string to be used in a regular expression.
-   * @param str The string to escape.
-   * @returns The escaped string.
-   */
-  public static escapeRegExp(str: string): string {
-    return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
-  }
-
   public static matchRegExp(
     regex: string,
     str: string | undefined,
