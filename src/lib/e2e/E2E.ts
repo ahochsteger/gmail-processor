@@ -294,7 +294,7 @@ export class E2E {
     testRunId?: string,
   ) {
     ctx.log.info(
-      `E2E.runTests(): [${testConfig.info.category}/${testConfig.info.name}] Initializing test ...`,
+      `E2E.runTests(): [${testConfig.info.category}/${testConfig.info.name}] Initializing test with test run id '${testRunId}' ...`,
     )
     const globals = newE2EGlobalConfig(
       ctx,
@@ -359,6 +359,10 @@ export class E2E {
     }
   }
 
+  public static getTestRunId(ctx: EnvContext) {
+    return ctx.env.utilities.getUuid().substring(0, 8)
+  }
+
   public static runTests(
     testConfig: E2ETestConfig,
     skipInit = false,
@@ -367,15 +371,10 @@ export class E2E {
     ctx: EnvContext = EnvProvider.defaultContext(runMode),
     testRunId?: string,
   ): E2EResult {
-    const activeTestRunId =
-      testRunId ??
-      (ctx &&
-      ctx.env &&
-      ctx.env.utilities &&
-      typeof ctx.env.utilities.getUuid === "function"
-        ? ctx.env.utilities.getUuid().substring(0, 8)
-        : Math.random().toString(36).substring(2, 8))
-
+    const activeTestRunId = testRunId ?? this.getTestRunId(ctx)
+    ctx.log.info(
+      `E2E.runTests(): Started with test run id '${activeTestRunId}'.`,
+    )
     // Send test mails
     if (!skipInit) {
       this.initTests(testConfig, branch, runMode, ctx, activeTestRunId)
@@ -480,15 +479,10 @@ export class E2E {
     ctx: EnvContext = EnvProvider.defaultContext(runMode),
     testRunId?: string,
   ): string {
-    ctx.log.info(`E2E.initAllTests(): Started.`)
-    const activeTestRunId =
-      testRunId ??
-      (ctx &&
-      ctx.env &&
-      ctx.env.utilities &&
-      typeof ctx.env.utilities.getUuid === "function"
-        ? ctx.env.utilities.getUuid().substring(0, 8)
-        : Math.random().toString(36).substring(2, 8))
+    const activeTestRunId = testRunId ?? this.getTestRunId(ctx)
+    ctx.log.info(
+      `E2E.initAllTests(): Started with test run id '${activeTestRunId}'.`,
+    )
     testConfigs.forEach((testConfig) => {
       this.initTests(testConfig, branch, runMode, ctx, activeTestRunId)
     })
@@ -506,15 +500,10 @@ export class E2E {
     ctx: EnvContext = EnvProvider.defaultContext(runMode),
     testRunId?: string,
   ): E2EResult {
-    ctx.log.info(`E2E.runAllTests(): Started.`)
-    const activeTestRunId =
-      testRunId ??
-      (ctx &&
-      ctx.env &&
-      ctx.env.utilities &&
-      typeof ctx.env.utilities.getUuid === "function"
-        ? ctx.env.utilities.getUuid().substring(0, 8)
-        : Math.random().toString(36).substring(2, 8))
+    const activeTestRunId = testRunId ?? this.getTestRunId(ctx)
+    ctx.log.info(
+      `E2E.runAllTests(): Started with test run id '${activeTestRunId}'.`,
+    )
     const results = testConfigs.map((testConfig) =>
       this.runTests(
         testConfig,
