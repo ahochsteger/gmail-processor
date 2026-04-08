@@ -7,6 +7,14 @@ on:
     types: [opened, synchronize, reopened]
   workflow_dispatch:
     inputs:
+      trigger_push_lib:
+        description: "Push built PR lib code to GAS"
+        type: boolean
+        default: false
+      trigger_push_examples:
+        description: "Push built PR examples code to GAS"
+        type: boolean
+        default: false
       skip_build_docs:
         description: "Skip build docs"
         type: boolean
@@ -34,6 +42,18 @@ jobs:
     concurrency: ci-${{ github.ref }}
     environment:
       name: pr
+    env:
+      CLASP_ACCESS_TOKEN: ${{secrets.CLASP_ACCESS_TOKEN}}
+      CLASP_CLIENT_ID: ${{secrets.CLASP_CLIENT_ID}}
+      CLASP_CLIENT_SECRET: ${{secrets.CLASP_CLIENT_SECRET}}
+      CLASP_EXAMPLES_DEPLOYMENT_ID: ${{secrets.CLASP_EXAMPLES_DEPLOYMENT_ID}}
+      CLASP_EXAMPLES_SCRIPT_ID: ${{secrets.CLASP_EXAMPLES_SCRIPT_ID}}
+      CLASP_ID_TOKEN: ${{secrets.CLASP_ID_TOKEN}}
+      CLASP_LIB_DEPLOYMENT_ID: ${{secrets.CLASP_LIB_DEPLOYMENT_ID}}
+      CLASP_LIB_SCRIPT_ID: ${{secrets.CLASP_LIB_SCRIPT_ID}}
+      CLASP_REFRESH_TOKEN: ${{secrets.CLASP_REFRESH_TOKEN}}
+      GCLOUD_PROJECT_ID: ${{secrets.GCLOUD_PROJECT_ID}}
+      GCLOUD_PROJECT_NR: ${{secrets.GCLOUD_PROJECT_NR}}
     steps:
       - id: checkout
         name: Checkout
@@ -48,26 +68,44 @@ jobs:
         with:
           node-version: 24.x
           cache: "npm"
-      - id: build-lib
-        if: ${{ !github.event.inputs.skip_build_lib }}
-        name: Build lib
+      - id: build
+        if: ${{ !inputs.skip_build_lib || inputs.trigger_push_lib || inputs.trigger_push_examples }}
+        name: Build lib and examples
         run: npm run ci:build
       - id: test
-        if: ${{ !github.event.inputs.skip_test }}
+        if: ${{ !inputs.skip_test }}
         name: Test
         run: npm run ci:test
       - id: build-docs
-        if: ${{ !github.event.inputs.skip_build_docs }}
+        if: ${{ !inputs.skip_build_docs }}
         name: Build docs
         run: npm run ci:docs
       - id: qa-coveralls
-        if: ${{ !github.event.inputs.skip_qa_coveralls }}
+        if: ${{ !inputs.skip_qa_coveralls }}
         name: QA Coveralls
         uses: coverallsapp/github-action@5cbfd81b66ca5d10c19b062c04de0199c215fb6e # v2
       - id: qa-sonarqube
-        if: ${{ !github.event.inputs.skip_qa_sonarqube }}
+        if: ${{ !inputs.skip_qa_sonarqube }}
         name: QA SonarQube
         uses: SonarSource/sonarqube-scan-action@a31c9398be7ace6bbfaf30c0bd5d415f843d45e9 # v7
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      - id: deploy-lib-pr
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.trigger_push_lib }}
+        name: Deploy Lib (PR)
+        run: |
+          if [ -z "${CLASP_LIB_SCRIPT_ID}" ]; then
+            echo "::warning::CLASP_LIB_SCRIPT_ID is empty. Please ensure you have added it to the 'pr' environment secrets or repository secrets. Skipping push."
+            exit 0
+          fi
+          npm run push:lib
+      - id: deploy-examples-pr
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.trigger_push_examples }}
+        name: Deploy Examples (PR)
+        run: |
+          if [ -z "${CLASP_EXAMPLES_SCRIPT_ID}" ]; then
+            echo "::warning::CLASP_EXAMPLES_SCRIPT_ID is empty. Please ensure you have added it to the 'pr' environment secrets or repository secrets. Skipping push."
+            exit 0
+          fi
+          npm run push:examples

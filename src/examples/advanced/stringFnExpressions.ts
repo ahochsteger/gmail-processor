@@ -102,13 +102,16 @@ export const tests: E2ETest[] = [
       },
       {
         message: "The correct message should have been logged",
-        assertFn: (_testConfig, procResult, ctx, expect) =>
-          expect(
+        assertFn: (_testConfig, procResult, ctx, expect) => {
+          const expectedSubject = testConfig.globals?.subjectPrefix ? `${testConfig.globals.subjectPrefix}${info.name}` : `${E2EDefaults.EMAIL_SUBJECT_PREFIX}${info.name}`
+          const cleanSubject = expectedSubject.replace(/[\[\]]/g, "")
+          return expect(
             ctx,
             procResult.executedActions[0]?.result?.logMessage,
-            `Removing '[]' from subject: GmailProcessor-Test ${info.name}`,
+            `Removing '[]' from subject: ${cleanSubject}`,
             "Actual log message does not match the expected one",
-          ),
+          )
+        },
       },
     ],
   },

@@ -298,8 +298,11 @@ case "${cmd}" in
   ;;
   push)
     checkGuardedAction "${cmd}"
-    runClasp push --force
-    showLastGASVersion
+    if ! runClasp push --force; then
+      echo "::warning::Clasp push failed. If the output says 'Invalid ID', please check that your CLASP_SCRIPT_ID secret is a valid Google Apps Script project ID."
+      exit 1
+    fi
+    showLastGASVersion || true
   ;;
   deploy)
     setupClaspIDs

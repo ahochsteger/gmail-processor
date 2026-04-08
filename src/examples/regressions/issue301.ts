@@ -27,7 +27,6 @@ export const info: ExampleInfo = {
 export const initConfig: E2EInitConfig = {
   mails: [
     {
-      subject: "Test for PR #301",
       body: "Test email for PR #301.",
       attachments: ["sample.xlsx"],
     },
@@ -55,7 +54,7 @@ export const runConfig: Config = {
     {
       match: {
         query:
-          "from:{{user.email}} to:{{user.email}} subject:'Test with office attachments'",
+          `from:{{user.email}} to:{{user.email}} subject:(${E2EDefaults.EMAIL_SUBJECT_PREFIX}${info.name})`,
       },
       attachments: [
         {
