@@ -2,7 +2,7 @@ import { RegexUtils } from "./RegexUtils"
 
 describe("escapeRegExp()", () => {
   it("should escape special characters", () => {
-    expect(RegexUtils.escapeRegExp(".*+?^${}()|[\]\\")).toEqual(
+    expect(RegexUtils.escapeRegExp(".*+?^${}()|[]\\")).toEqual(
       "\\.\\*\\+\\?\\^\\$\\{\\}\\(\\)\\|\\[\\]\\\\",
     )
   })
