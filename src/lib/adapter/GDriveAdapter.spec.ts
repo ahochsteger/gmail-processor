@@ -188,6 +188,26 @@ describe("createFile() strategy:SKIP", () => {
     expect(mocks.rootFolder.createFile).not.toHaveBeenCalled()
   })
 })
+describe("createFile() strategy:INCREMENT", () => {
+  it("should create an incremented file if a file already exists", () => {
+    gdriveAdapter.ctx.env.runMode = RunMode.DANGEROUS
+    gdriveAdapter.createFile(
+      `/${EXISTING_FILE_NAME}`,
+      new FileContent(mocks.existingBlob),
+      ConflictStrategy.INCREMENT,
+    )
+    expect(mocks.rootFolder.createFile).toHaveBeenCalled()
+  })
+  it("should not create an incremented file if in dry-run mode", () => {
+    gdriveAdapter.ctx.env.runMode = RunMode.DRY_RUN
+    gdriveAdapter.createFile(
+      `/${EXISTING_FILE_NAME}`,
+      new FileContent(mocks.existingBlob),
+      ConflictStrategy.INCREMENT,
+    )
+    expect(mocks.rootFolder.createFile).not.toHaveBeenCalled()
+  })
+})
 describe("createFile() strategy:ERROR", () => {
   it("should throw an error if file exists and error mode", () => {
     gdriveAdapter.ctx.env.runMode = RunMode.DANGEROUS

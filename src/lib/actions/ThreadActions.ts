@@ -149,6 +149,9 @@ export class ThreadActions implements ActionProvider<ThreadContext> {
       "exported thread HTML file",
       "thread",
       "thread.exportAsHtml",
+      args.incrementPrefix,
+      args.incrementSuffix,
+      args.incrementStart,
     )
   }
 
@@ -167,6 +170,9 @@ export class ThreadActions implements ActionProvider<ThreadContext> {
       "exported thread PDF file",
       "thread",
       "thread.exportAsPdf",
+      args.incrementPrefix,
+      args.incrementSuffix,
+      args.incrementStart,
     )
   }
 
@@ -190,6 +196,9 @@ export class ThreadActions implements ActionProvider<ThreadContext> {
       "exported thread PDF file",
       "thread",
       "thread.storePDF",
+      args.incrementPrefix,
+      args.incrementSuffix,
+      args.incrementStart,
     )
   }
 }

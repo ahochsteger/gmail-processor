@@ -134,6 +134,9 @@ export class MessageActions implements ActionProvider<MessageContext> {
       "exported message HTML file",
       "message",
       "message.exportAsHtml",
+      args.incrementPrefix,
+      args.incrementSuffix,
+      args.incrementStart,
     )
   }
 
@@ -152,6 +155,9 @@ export class MessageActions implements ActionProvider<MessageContext> {
       "exported message PDF file",
       "message",
       "message.exportAsPdf",
+      args.incrementPrefix,
+      args.incrementSuffix,
+      args.incrementStart,
     )
   }
 
@@ -175,6 +181,9 @@ export class MessageActions implements ActionProvider<MessageContext> {
       "exported message PDF file",
       "message",
       "message.storePDF",
+      args.incrementPrefix,
+      args.incrementSuffix,
+      args.incrementStart,
     )
   }
 
@@ -210,6 +219,9 @@ export class MessageActions implements ActionProvider<MessageContext> {
         PatternUtil.substitute(context, args.description ?? ""),
       ),
       args.conflictStrategy,
+      args.incrementPrefix,
+      args.incrementSuffix,
+      args.incrementStart,
     )
     const actionMeta = context.proc.gdriveAdapter.getActionMeta(
       file,

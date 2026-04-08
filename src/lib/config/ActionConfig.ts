@@ -67,6 +67,23 @@ export type StoreActionBaseArgs = {
    */
   conflictStrategy: ConflictStrategy
   /**
+   * The prefix to be used for the increment number in case of ConflictStrategy.INCREMENT.
+   * Typical naming conventions: `_` for file_1.txt, ` (` for file (1).txt
+   * Default: ` (`
+   */
+  incrementPrefix?: string
+  /**
+   * The suffix to be used for the increment number in case of ConflictStrategy.INCREMENT.
+   * Typical naming conventions: empty string for file_1.txt, `)` for file (1).txt
+   * Default: `)`
+   */
+  incrementSuffix?: string
+  /**
+   * The starting number to be used for the increment number in case of ConflictStrategy.INCREMENT.
+   * Default: `1`
+   */
+  incrementStart?: number
+  /**
    * The description to be attached to the Google Drive file.
    * Supports placeholder substitution.
    */

@@ -6,6 +6,7 @@ function getTestConfigs() {
     actionAttachmentExtractTextTestConfig(),
     actionExportTestConfig(),
     actionThreadRemoveLabelTestConfig(),
+    conflictStrategyTestConfig(),
     convertToGoogleTestConfig(),
     customActionsTestConfig(),
     customActionsAdvancedTestConfig(),

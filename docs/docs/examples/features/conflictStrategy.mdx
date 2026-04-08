@@ -1,0 +1,13 @@
+---
+id: conflictStrategy
+title: Conflict Strategy
+description: Test different conflict strategies like increment.
+---
+import RenderExample from "/src/components/RenderExample.tsx"
+import config from '!!raw-loader!../../../../src/examples/features/conflictStrategy.json';
+import script from '!!raw-loader!../../../../src/gas/examples/features/conflictStrategy.js';
+import { info } from "../../../../src/examples/features/conflictStrategy.ts"
+
+
+
+<RenderExample info={info} config={config} script={script} />
