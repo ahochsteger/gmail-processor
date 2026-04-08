@@ -12,6 +12,7 @@ import { V1Config } from "../config/v1/V1Config"
 import { V1ToV2Converter } from "../config/v1/V1ToV2Converter"
 import { GmailProcessor } from "../processors/GmailProcessor"
 import { PatternUtil } from "../utils/PatternUtil"
+import { RegexUtils } from "../utils/RegexUtils"
 import { E2EDefaults } from "./E2EDefaults"
 
 export type E2EGlobalConfig = {
@@ -396,7 +397,7 @@ export class E2E {
         let testRunConfig = testConfig.runConfig
         if (activeTestRunId) {
           const runConfigStr = JSON.stringify(testConfig.runConfig).replace(
-            new RegExp(E2EDefaults.EMAIL_SUBJECT_PREFIX.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g"),
+            new RegExp(RegexUtils.escapeRegExp(E2EDefaults.EMAIL_SUBJECT_PREFIX), "g"),
             `${E2EDefaults.EMAIL_SUBJECT_PREFIX}[${activeTestRunId}] `
           )
           testRunConfig = JSON.parse(runConfigStr) as Config
