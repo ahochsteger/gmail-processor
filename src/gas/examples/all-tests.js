@@ -28,6 +28,13 @@ function initAllTests() {
     getTestConfigs(),
     E2E_REPO_BRANCH,
     GmailProcessorLib.RunMode.DANGEROUS,
+    GmailProcessorLib.EnvProvider.defaultContext(
+      GmailProcessorLib.RunMode.DANGEROUS,
+      {
+        cacheService: CacheService,
+        propertiesService: PropertiesService,
+      },
+    ),
   )
 }
 
@@ -37,6 +44,13 @@ function runAllTests(skipInit = true) {
     skipInit,
     E2E_REPO_BRANCH,
     GmailProcessorLib.RunMode.DANGEROUS,
+    GmailProcessorLib.EnvProvider.defaultContext(
+      GmailProcessorLib.RunMode.DANGEROUS,
+      {
+        cacheService: CacheService,
+        propertiesService: PropertiesService,
+      },
+    ),
   )
 }
 

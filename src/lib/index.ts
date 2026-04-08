@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   EnvContext,
+  EnvInfo,
   ProcessingResult,
   ProcessingStatus,
   RunMode,
@@ -28,6 +29,7 @@ export {
   ConflictStrategy,
   E2E,
   E2EDefaults,
+  EnvInfo,
   EnvProvider,
   LogLevel,
   LogRedactionMode,
@@ -45,16 +47,21 @@ export {
  * Run Gmail Processor with the given config
  * @param config - GmailProcessor configuration JSON - @see Config
  * @param runMode - The processing mode - @see RunMode
+ * @param customActions - An array of custom actions - @see ActionRegistration
  * @param ctx - The environment context to be used for processing - @see EnvContext
+ * @param envOverrides - Overrides for the environment (e.g. to use a different PropertiesService/CacheService) - @see EnvInfo
  * @returns Processing result - @see ProcessingResult
  */
 export function run(
   config: Config,
   runMode: string = RunMode.SAFE_MODE,
   customActions: ActionRegistration[] = [],
-  ctx: EnvContext = EnvProvider.defaultContext(runMode as RunMode),
+  ctx?: EnvContext,
+  envOverrides?: Partial<EnvInfo>,
 ): ProcessingResult {
-  return GmailProcessor.runWithJson(config, customActions, ctx)
+  const effectiveCtx =
+    ctx ?? EnvProvider.defaultContext(runMode as RunMode, envOverrides)
+  return GmailProcessor.runWithJson(config, customActions, effectiveCtx)
 }
 
 /**

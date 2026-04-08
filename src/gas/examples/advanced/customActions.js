@@ -42,5 +42,8 @@ function customActionsRun() {
         ctx.log.info(`Called with args '${JSON.stringify(args)}' ...`),
     },
   ]
-  return GmailProcessorLib.run(config, "dry-run", customActions)
+  return GmailProcessorLib.run(config, "dry-run", customActions, undefined, {
+    cacheService: CacheService,
+    propertiesService: PropertiesService,
+  })
 }
