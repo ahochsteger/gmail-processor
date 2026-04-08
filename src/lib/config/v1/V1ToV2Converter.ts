@@ -12,6 +12,7 @@ import {
   DEFAULT_GLOBAL_QUERY_NEWER_THAN,
   DEFAULT_GLOBAL_QUERY_PREFIX,
 } from "../ThreadMatchConfig"
+import { RegexUtils } from "../../utils/RegexUtils"
 import { V1Config, newV1Config } from "./V1Config"
 import { RequiredV1Rule } from "./V1Rule"
 
@@ -138,10 +139,9 @@ export class V1ToV2Converter {
         attachmentConfig.match.name = rule.filenameFromRegexp
       }
       if (rule.filenameFrom && rule.filenameTo) {
-        attachmentConfig.match.name = String(rule.filenameFrom).replace(
-          /[\\^$*+?.()|[\]{}]/g,
-          "\\$&",
-        ) // TODO: Validate this regex!
+        attachmentConfig.match.name = RegexUtils.escapeRegExp(
+          String(rule.filenameFrom),
+        )
       }
       attachmentConfig.actions.push({
         name: "attachment.store",
