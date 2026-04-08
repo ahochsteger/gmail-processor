@@ -85,8 +85,9 @@ export const tests: E2ETest[] = [
         assertFn: (_testConfig, procResult) => procResult.error === undefined,
       },
       {
-        message: "No action should have failed",
-        assertFn: (_testConfig, procResult) => procResult.failedActions === 0,
+        message: "Processing status should be OK",
+        assertFn: (_testConfig, procResult) =>
+          procResult.status === ProcessingStatus.OK,
       },
     ],
   },

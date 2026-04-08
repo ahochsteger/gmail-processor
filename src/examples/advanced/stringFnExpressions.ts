@@ -88,7 +88,8 @@ export const tests: E2ETest[] = [
       },
       {
         message: "One thread should have been processed",
-        assertFn: (_testConfig, procResult) => procResult.processedThreads === 1,
+        assertFn: (_testConfig, procResult) =>
+          procResult.processedThreads === 1,
       },
       {
         message: "One message should have been processed",
@@ -103,7 +104,9 @@ export const tests: E2ETest[] = [
       {
         message: "The correct message should have been logged",
         assertFn: (_testConfig, procResult, ctx, expect) => {
-          const expectedSubject = testConfig.globals?.subjectPrefix ? `${testConfig.globals.subjectPrefix}${info.name}` : `${E2EDefaults.EMAIL_SUBJECT_PREFIX}${info.name}`
+          const expectedSubject = testConfig.globals?.subjectPrefix
+            ? `${testConfig.globals.subjectPrefix}${info.name}`
+            : `${E2EDefaults.EMAIL_SUBJECT_PREFIX}${info.name}`
           const cleanSubject = expectedSubject.replace(/[\[\]]/g, "")
           return expect(
             ctx,
