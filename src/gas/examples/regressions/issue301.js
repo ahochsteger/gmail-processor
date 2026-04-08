@@ -22,7 +22,7 @@ function issue301Run() {
       {
         match: {
           query:
-            "from:{{user.email}} to:{{user.email}} subject:'Test with office attachments'",
+            "from:{{user.email}} to:{{user.email}} subject:([GmailProcessor-Test] issue301)",
         },
         attachments: [
           {

@@ -38,7 +38,26 @@ function migrationMinTestConfig() {
     migrationConfig,
   }
 
-  const tests = []
+  const tests = [
+    {
+      message: "No failures",
+      assertions: [
+        {
+          message: "Processing status should not be ERROR",
+          assertFn: (_testConfig, procResult) =>
+            procResult.status !== GmailProcessorLib.ProcessingStatus.ERROR,
+        },
+        {
+          message: "No error should have occurred",
+          assertFn: (_testConfig, procResult) => procResult.error === undefined,
+        },
+        {
+          message: "No action should have failed",
+          assertFn: (_testConfig, procResult) => !procResult.failedAction,
+        },
+      ],
+    },
+  ]
 
   const testConfig = {
     example,

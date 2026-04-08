@@ -124,7 +124,7 @@ function regularExpressionsTestConfig() {
             return (
               procResult.executedActions.filter(
                 (a) => a.config.name === "attachment.store",
-              ).length === 1
+              ).length === procResult.processedAttachments
             )
           },
         },

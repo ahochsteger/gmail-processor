@@ -175,9 +175,7 @@ class EnvMocks {
     this.session.getEffectiveUser
       .mockReturnValue(this.user)
       .mockName("getEffectiveUser")
-    this.utilities.getUuid
-      .mockReturnValue("mock-uuid")
-      .mockName("getUuid")
+    this.utilities.getUuid.mockReturnValue("mock-uuid").mockName("getUuid")
   }
 }
 export class Mocks extends EnvMocks {

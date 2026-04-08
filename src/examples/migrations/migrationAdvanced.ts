@@ -86,7 +86,7 @@ export const tests: E2ETest[] = [
       },
       {
         message: "No action should have failed",
-        assertFn: (_testConfig, procResult) => procResult.failedActions === 0,
+        assertFn: (_testConfig, procResult) => !procResult.failedAction,
       },
     ],
   },
