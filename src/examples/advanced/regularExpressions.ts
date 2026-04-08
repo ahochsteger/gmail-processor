@@ -130,7 +130,7 @@ export const tests: E2ETest[] = [
           return (
             procResult.executedActions.filter(
               (a) => a.config.name === "attachment.store",
-            ).length === procResult.processedAttachments
+            ).length === 1
           )
         },
       },

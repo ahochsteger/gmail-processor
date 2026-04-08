@@ -26,7 +26,7 @@ function stringFnExpressionsRun() {
                 name: "global.log",
                 args: {
                   message:
-                    "Removing '[]' from subject: {{message.subject|replaceAll('[\\[\\]]', '')}}",
+                    "Removing 'full' from body: {{message.body|replaceAll(' full ', ' ')|trim()}}",
                 },
               },
             ],

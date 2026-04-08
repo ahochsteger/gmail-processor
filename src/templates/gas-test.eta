@@ -14,5 +14,12 @@ function <%= it.example.info.name %>Test() {
     false,
     E2E_REPO_BRANCH,
     GmailProcessorLib.RunMode.DANGEROUS,
+    GmailProcessorLib.EnvProvider.defaultContext(
+      GmailProcessorLib.RunMode.DANGEROUS,
+      {
+        cacheService: CacheService,
+        propertiesService: PropertiesService
+      }
+    )
   )
 }

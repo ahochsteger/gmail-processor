@@ -24,7 +24,7 @@ function getTestConfigs() {
 }
 
 function initAllTests() {
-  GmailProcessorLib.E2E.initAllTests(
+  return GmailProcessorLib.E2E.initAllTests(
     getTestConfigs(),
     E2E_REPO_BRANCH,
     GmailProcessorLib.RunMode.DANGEROUS,
@@ -38,7 +38,7 @@ function initAllTests() {
   )
 }
 
-function runAllTests(skipInit = true) {
+function runAllTests(skipInit = true, testRunId = undefined) {
   return GmailProcessorLib.E2E.runAllTests(
     getTestConfigs(),
     skipInit,
@@ -51,11 +51,12 @@ function runAllTests(skipInit = true) {
         propertiesService: PropertiesService,
       },
     ),
+    testRunId,
   )
 }
 
 function initAndRunAllTests() {
-  initAllTests()
+  const testRunId = initAllTests()
   Utilities.sleep(5000)
-  return JSON.stringify(runAllTests())
+  return JSON.stringify(runAllTests(true, testRunId))
 }
