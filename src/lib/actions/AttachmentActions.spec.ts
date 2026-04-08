@@ -10,6 +10,14 @@ import { ConflictStrategy } from "../adapter/GDriveAdapter"
 import { ActionProvider, ActionRegistry } from "./ActionRegistry"
 import { AttachmentActions } from "./AttachmentActions"
 
+jest.mock("@cantoo/pdf-lib", () => ({
+  PDFDocument: {
+    load: jest.fn().mockResolvedValue({
+      save: jest.fn().mockResolvedValue(new Uint8Array([1, 2, 3])),
+    }),
+  },
+}))
+
 let mocks: Mocks
 let actionRegistry: ActionRegistry
 let actionProvider: ActionProvider<AttachmentContext>
@@ -95,6 +103,35 @@ it("should execute all actions using the action registry", () => {
     conflictStrategy: ConflictStrategy.REPLACE,
     description: "my description",
   })
+})
+
+it("should store a decrypted PDF", async () => {
+  mocks.newPdfBlob.getName.mockReturnValue("generic-decrypted.pdf")
+  const result = await AttachmentActions.storeDecryptedPdf(
+    mocks.attachmentContext,
+    {
+      location: "/generic-decrypted.pdf",
+      conflictStrategy: ConflictStrategy.REPLACE,
+      description: "automated test {{attachment.name}}",
+      password: "password-{{attachment.name}}",
+    },
+  )
+  expect(result.file).toBe(mocks.genericNewFile)
+  expect(mocks.envContext.env.utilities.newBlob).toHaveBeenCalled()
+})
+
+it("should catch errors when storing a decrypted PDF", async () => {
+  mocks.envContext.env.utilities.newBlob = jest.fn().mockImplementation(() => {
+    throw new Error("Blob creation failed")
+  })
+  await expect(
+    AttachmentActions.storeDecryptedPdf(mocks.attachmentContext, {
+      location: "/generic-decrypted.pdf",
+      conflictStrategy: ConflictStrategy.REPLACE,
+      description: "automated test {{attachment.name}}",
+      password: "password-{{attachment.name}}",
+    }),
+  ).rejects.toThrow("Blob creation failed")
 })
 
 it("should extract matched regex from the attachment using OCR", () => {
