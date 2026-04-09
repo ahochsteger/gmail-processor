@@ -24,13 +24,13 @@ function conflictStrategyRun() {
         },
         attachments: [
           {
-            description: "Process *.docx attachment files",
+            description: "Process *.txt attachment files",
             match: {
-              name: "(?<basename>.+)\\.docx$",
+              name: "(?<basename>.+)\\.txt$",
             },
             actions: [
               {
-                description: "Store original docx file",
+                description: "Store original txt file",
                 name: "attachment.store",
                 args: {
                   conflictStrategy: "replace",
@@ -38,7 +38,8 @@ function conflictStrategyRun() {
                 },
               },
               {
-                description: "Store docx file with increment strategy",
+                description:
+                  "Store the same txt file again with increment strategy",
                 name: "attachment.store",
                 args: {
                   conflictStrategy: "increment",

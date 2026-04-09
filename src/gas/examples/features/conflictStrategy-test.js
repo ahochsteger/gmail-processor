@@ -13,7 +13,7 @@ function conflictStrategyTestConfig() {
   const initConfig = {
     mails: [
       {
-        attachments: ["sample.docx", "sample.txt"],
+        attachments: ["sample.txt"],
       },
     ],
   }
@@ -43,13 +43,13 @@ function conflictStrategyTestConfig() {
         },
         attachments: [
           {
-            description: "Process *.docx attachment files",
+            description: "Process *.txt attachment files",
             match: {
-              name: "(?<basename>.+)\\.docx$",
+              name: "(?<basename>.+)\\.txt$",
             },
             actions: [
               {
-                description: "Store original docx file",
+                description: "Store original txt file",
                 name: "attachment.store",
                 args: {
                   conflictStrategy: GmailProcessorLib.ConflictStrategy.REPLACE,
@@ -57,7 +57,8 @@ function conflictStrategyTestConfig() {
                 },
               },
               {
-                description: "Store docx file with increment strategy",
+                description:
+                  "Store the same txt file again with increment strategy",
                 name: "attachment.store",
                 args: {
                   conflictStrategy:

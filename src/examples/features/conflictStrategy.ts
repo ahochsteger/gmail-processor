@@ -15,7 +15,7 @@ export const info: ExampleInfo = {
 export const initConfig: E2EInitConfig = {
   mails: [
     {
-      attachments: ["sample.docx", "sample.txt"],
+      attachments: ["sample.txt"],
     },
   ],
 }
@@ -44,13 +44,13 @@ export const runConfig: Config = {
       },
       attachments: [
         {
-          description: "Process *.docx attachment files",
+          description: "Process *.txt attachment files",
           match: {
-            name: "(?<basename>.+)\\.docx$",
+            name: "(?<basename>.+)\\.txt$",
           },
           actions: [
             {
-              description: "Store original docx file",
+              description: "Store original txt file",
               name: "attachment.store",
               args: {
                 conflictStrategy: ConflictStrategy.REPLACE,
@@ -58,7 +58,7 @@ export const runConfig: Config = {
               },
             },
             {
-              description: "Store docx file with increment strategy",
+              description: "Store the same txt file again with increment strategy",
               name: "attachment.store",
               args: {
                 conflictStrategy: ConflictStrategy.INCREMENT,
