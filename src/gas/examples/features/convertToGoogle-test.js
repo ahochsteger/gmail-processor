@@ -44,8 +44,7 @@ function convertToGoogleTestConfig() {
     threads: [
       {
         match: {
-          query:
-            "from:{{user.email}} to:{{user.email}} subject:'Test with office attachments'",
+          query: "from:{{user.email}} to:{{user.email}}",
         },
         attachments: [
           {
@@ -59,7 +58,7 @@ function convertToGoogleTestConfig() {
                 name: "attachment.store",
                 args: {
                   conflictStrategy: GmailProcessorLib.ConflictStrategy.REPLACE,
-                  location: `${GmailProcessorLib.E2EDefaults.DRIVE_TESTS_BASE_PATH}/{{attachment.name}}`,
+                  location: `${GmailProcessorLib.E2EDefaults.DRIVE_TESTS_BASE_PATH}/${info.name}/{{message.date|formatDate('yyyy-MM-dd')}}/{{attachment.name}}`,
                 },
               },
               {
@@ -67,7 +66,7 @@ function convertToGoogleTestConfig() {
                 name: "attachment.store",
                 args: {
                   conflictStrategy: GmailProcessorLib.ConflictStrategy.REPLACE,
-                  location: `${GmailProcessorLib.E2EDefaults.DRIVE_TESTS_BASE_PATH}/{{attachment.name.match.basename}}`,
+                  location: `${GmailProcessorLib.E2EDefaults.DRIVE_TESTS_BASE_PATH}/${info.name}/{{message.date|formatDate('yyyy-MM-dd')}}/{{attachment.name.match.basename}}-from-docx`,
                   toMimeType: "application/vnd.google-apps.document",
                 },
               },
@@ -84,7 +83,7 @@ function convertToGoogleTestConfig() {
                 name: "attachment.store",
                 args: {
                   conflictStrategy: GmailProcessorLib.ConflictStrategy.REPLACE,
-                  location: `${GmailProcessorLib.E2EDefaults.DRIVE_TESTS_BASE_PATH}/{{attachment.name}}`,
+                  location: `${GmailProcessorLib.E2EDefaults.DRIVE_TESTS_BASE_PATH}/${info.name}/{{message.date|formatDate('yyyy-MM-dd')}}/{{attachment.name}}`,
                 },
               },
               {
@@ -93,7 +92,7 @@ function convertToGoogleTestConfig() {
                 name: "attachment.store",
                 args: {
                   conflictStrategy: GmailProcessorLib.ConflictStrategy.REPLACE,
-                  location: `${GmailProcessorLib.E2EDefaults.DRIVE_TESTS_BASE_PATH}/{{attachment.name.match.basename}}`,
+                  location: `${GmailProcessorLib.E2EDefaults.DRIVE_TESTS_BASE_PATH}/${info.name}/{{message.date|formatDate('yyyy-MM-dd')}}/{{attachment.name.match.basename}}-from-pptx`,
                   toMimeType: "application/vnd.google-apps.presentation",
                 },
               },
@@ -110,7 +109,7 @@ function convertToGoogleTestConfig() {
                 name: "attachment.store",
                 args: {
                   conflictStrategy: GmailProcessorLib.ConflictStrategy.REPLACE,
-                  location: `${GmailProcessorLib.E2EDefaults.DRIVE_TESTS_BASE_PATH}/{{attachment.name}}`,
+                  location: `${GmailProcessorLib.E2EDefaults.DRIVE_TESTS_BASE_PATH}/${info.name}/{{message.date|formatDate('yyyy-MM-dd')}}/{{attachment.name}}`,
                 },
               },
               {
@@ -119,7 +118,7 @@ function convertToGoogleTestConfig() {
                 name: "attachment.store",
                 args: {
                   conflictStrategy: GmailProcessorLib.ConflictStrategy.REPLACE,
-                  location: `${GmailProcessorLib.E2EDefaults.DRIVE_TESTS_BASE_PATH}/{{attachment.name.match.basename}}`,
+                  location: `${GmailProcessorLib.E2EDefaults.DRIVE_TESTS_BASE_PATH}/${info.name}/{{message.date|formatDate('yyyy-MM-dd')}}/{{attachment.name.match.basename}}-from-xlsx`,
                   toMimeType: "application/vnd.google-apps.spreadsheet",
                 },
               },

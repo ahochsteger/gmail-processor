@@ -19,8 +19,7 @@ function convertToGoogleRun() {
     threads: [
       {
         match: {
-          query:
-            "from:{{user.email}} to:{{user.email}} subject:'Test with office attachments'",
+          query: "from:{{user.email}} to:{{user.email}}",
         },
         attachments: [
           {
@@ -34,7 +33,8 @@ function convertToGoogleRun() {
                 name: "attachment.store",
                 args: {
                   conflictStrategy: "replace",
-                  location: "/GmailProcessor-Tests/e2e/{{attachment.name}}",
+                  location:
+                    "/GmailProcessor-Tests/e2e/convertToGoogle/{{message.date|formatDate('yyyy-MM-dd')}}/{{attachment.name}}",
                 },
               },
               {
@@ -43,7 +43,7 @@ function convertToGoogleRun() {
                 args: {
                   conflictStrategy: "replace",
                   location:
-                    "/GmailProcessor-Tests/e2e/{{attachment.name.match.basename}}",
+                    "/GmailProcessor-Tests/e2e/convertToGoogle/{{message.date|formatDate('yyyy-MM-dd')}}/{{attachment.name.match.basename}}-from-docx",
                   toMimeType: "application/vnd.google-apps.document",
                 },
               },
@@ -60,7 +60,8 @@ function convertToGoogleRun() {
                 name: "attachment.store",
                 args: {
                   conflictStrategy: "replace",
-                  location: "/GmailProcessor-Tests/e2e/{{attachment.name}}",
+                  location:
+                    "/GmailProcessor-Tests/e2e/convertToGoogle/{{message.date|formatDate('yyyy-MM-dd')}}/{{attachment.name}}",
                 },
               },
               {
@@ -70,7 +71,7 @@ function convertToGoogleRun() {
                 args: {
                   conflictStrategy: "replace",
                   location:
-                    "/GmailProcessor-Tests/e2e/{{attachment.name.match.basename}}",
+                    "/GmailProcessor-Tests/e2e/convertToGoogle/{{message.date|formatDate('yyyy-MM-dd')}}/{{attachment.name.match.basename}}-from-pptx",
                   toMimeType: "application/vnd.google-apps.presentation",
                 },
               },
@@ -87,7 +88,8 @@ function convertToGoogleRun() {
                 name: "attachment.store",
                 args: {
                   conflictStrategy: "replace",
-                  location: "/GmailProcessor-Tests/e2e/{{attachment.name}}",
+                  location:
+                    "/GmailProcessor-Tests/e2e/convertToGoogle/{{message.date|formatDate('yyyy-MM-dd')}}/{{attachment.name}}",
                 },
               },
               {
@@ -97,7 +99,7 @@ function convertToGoogleRun() {
                 args: {
                   conflictStrategy: "replace",
                   location:
-                    "/GmailProcessor-Tests/e2e/{{attachment.name.match.basename}}",
+                    "/GmailProcessor-Tests/e2e/convertToGoogle/{{message.date|formatDate('yyyy-MM-dd')}}/{{attachment.name.match.basename}}-from-xlsx",
                   toMimeType: "application/vnd.google-apps.spreadsheet",
                 },
               },

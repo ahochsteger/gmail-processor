@@ -38,8 +38,7 @@ function conflictStrategyTestConfig() {
     threads: [
       {
         match: {
-          query:
-            "from:{{user.email}} to:{{user.email}} subject:'Test with office attachments'",
+          query: "from:{{user.email}} to:{{user.email}}",
         },
         attachments: [
           {
@@ -53,7 +52,7 @@ function conflictStrategyTestConfig() {
                 name: "attachment.store",
                 args: {
                   conflictStrategy: GmailProcessorLib.ConflictStrategy.REPLACE,
-                  location: `${GmailProcessorLib.E2EDefaults.DRIVE_TESTS_BASE_PATH}/{{attachment.name}}`,
+                  location: `${GmailProcessorLib.E2EDefaults.DRIVE_TESTS_BASE_PATH}/${info.name}/{{message.date|formatDate('yyyy-MM-dd')}}/{{attachment.name}}`,
                 },
               },
               {
@@ -66,7 +65,7 @@ function conflictStrategyTestConfig() {
                   incrementPrefix: "_",
                   incrementSuffix: "",
                   incrementStart: 2,
-                  location: `${GmailProcessorLib.E2EDefaults.DRIVE_TESTS_BASE_PATH}/{{attachment.name}}`,
+                  location: `${GmailProcessorLib.E2EDefaults.DRIVE_TESTS_BASE_PATH}/${info.name}/{{message.date|formatDate('yyyy-MM-dd')}}/{{attachment.name}}`,
                 },
               },
             ],

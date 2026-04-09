@@ -19,8 +19,7 @@ function conflictStrategyRun() {
     threads: [
       {
         match: {
-          query:
-            "from:{{user.email}} to:{{user.email}} subject:'Test with office attachments'",
+          query: "from:{{user.email}} to:{{user.email}}",
         },
         attachments: [
           {
@@ -34,7 +33,8 @@ function conflictStrategyRun() {
                 name: "attachment.store",
                 args: {
                   conflictStrategy: "replace",
-                  location: "/GmailProcessor-Tests/e2e/{{attachment.name}}",
+                  location:
+                    "/GmailProcessor-Tests/e2e/conflictStrategy/{{message.date|formatDate('yyyy-MM-dd')}}/{{attachment.name}}",
                 },
               },
               {
@@ -46,7 +46,8 @@ function conflictStrategyRun() {
                   incrementPrefix: "_",
                   incrementSuffix: "",
                   incrementStart: 2,
-                  location: "/GmailProcessor-Tests/e2e/{{attachment.name}}",
+                  location:
+                    "/GmailProcessor-Tests/e2e/conflictStrategy/{{message.date|formatDate('yyyy-MM-dd')}}/{{attachment.name}}",
                 },
               },
             ],

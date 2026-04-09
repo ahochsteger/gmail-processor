@@ -39,8 +39,7 @@ export const runConfig: Config = {
   threads: [
     {
       match: {
-        query:
-          "from:{{user.email}} to:{{user.email}} subject:'Test with office attachments'",
+        query: "from:{{user.email}} to:{{user.email}}",
       },
       attachments: [
         {
@@ -54,18 +53,19 @@ export const runConfig: Config = {
               name: "attachment.store",
               args: {
                 conflictStrategy: ConflictStrategy.REPLACE,
-                location: `${E2EDefaults.DRIVE_TESTS_BASE_PATH}/{{attachment.name}}`,
+                location: `${E2EDefaults.DRIVE_TESTS_BASE_PATH}/${info.name}/{{message.date|formatDate('yyyy-MM-dd')}}/{{attachment.name}}`,
               },
             },
             {
-              description: "Store the same txt file again with increment strategy",
+              description:
+                "Store the same txt file again with increment strategy",
               name: "attachment.store",
               args: {
                 conflictStrategy: ConflictStrategy.INCREMENT,
                 incrementPrefix: "_",
                 incrementSuffix: "",
                 incrementStart: 2,
-                location: `${E2EDefaults.DRIVE_TESTS_BASE_PATH}/{{attachment.name}}`,
+                location: `${E2EDefaults.DRIVE_TESTS_BASE_PATH}/${info.name}/{{message.date|formatDate('yyyy-MM-dd')}}/{{attachment.name}}`,
               },
             },
           ],
