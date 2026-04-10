@@ -71,7 +71,7 @@ export const runConfig: Config = {
                   name: "attachment.store",
                   args: {
                     // Use the value extracted by the custom action:
-                    location: `${E2EDefaults.DRIVE_TESTS_BASE_PATH}/${info.name}/{{message.invoiceNumber}}/{{attachment.name}}`,
+                    location: `${E2EDefaults.driveTestBasePath(info)}/{{message.invoiceNumber}}/{{attachment.name}}`,
                     conflictStrategy: ConflictStrategy.KEEP,
                   },
                 },

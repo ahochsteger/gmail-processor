@@ -61,7 +61,7 @@ function issue301TestConfig() {
                 name: "attachment.store",
                 args: {
                   conflictStrategy: GmailProcessorLib.ConflictStrategy.REPLACE,
-                  location: `${GmailProcessorLib.E2EDefaults.DRIVE_TESTS_BASE_PATH}/{{attachment.name}}`,
+                  location: `${GmailProcessorLib.E2EDefaults.driveTestBasePath(info)}/{{attachment.name}}`,
                 },
               },
               {
@@ -69,7 +69,7 @@ function issue301TestConfig() {
                 name: "attachment.store",
                 args: {
                   conflictStrategy: GmailProcessorLib.ConflictStrategy.REPLACE,
-                  location: `${GmailProcessorLib.E2EDefaults.DRIVE_TESTS_BASE_PATH}/{{attachment.name.match.basename}}`,
+                  location: `${GmailProcessorLib.E2EDefaults.driveTestBasePath(info)}/{{attachment.name.match.basename}}`,
                   toMimeType: "application/vnd.google-apps.document",
                 },
               },
@@ -86,7 +86,7 @@ function issue301TestConfig() {
                 name: "attachment.store",
                 args: {
                   conflictStrategy: GmailProcessorLib.ConflictStrategy.REPLACE,
-                  location: `${GmailProcessorLib.E2EDefaults.DRIVE_TESTS_BASE_PATH}/{{attachment.name}}`,
+                  location: `${GmailProcessorLib.E2EDefaults.driveTestBasePath(info)}/{{attachment.name}}`,
                 },
               },
               {
@@ -95,7 +95,7 @@ function issue301TestConfig() {
                 name: "attachment.store",
                 args: {
                   conflictStrategy: GmailProcessorLib.ConflictStrategy.REPLACE,
-                  location: `${GmailProcessorLib.E2EDefaults.DRIVE_TESTS_BASE_PATH}/{{attachment.name.match.basename}}`,
+                  location: `${GmailProcessorLib.E2EDefaults.driveTestBasePath(info)}/{{attachment.name.match.basename}}`,
                   toMimeType: "application/vnd.google-apps.presentation",
                 },
               },
@@ -112,7 +112,7 @@ function issue301TestConfig() {
                 name: "attachment.store",
                 args: {
                   conflictStrategy: GmailProcessorLib.ConflictStrategy.REPLACE,
-                  location: `${GmailProcessorLib.E2EDefaults.DRIVE_TESTS_BASE_PATH}/{{attachment.name}}`,
+                  location: `${GmailProcessorLib.E2EDefaults.driveTestBasePath(info)}/{{attachment.name}}`,
                 },
               },
               {
@@ -121,7 +121,7 @@ function issue301TestConfig() {
                 name: "attachment.store",
                 args: {
                   conflictStrategy: GmailProcessorLib.ConflictStrategy.REPLACE,
-                  location: `${GmailProcessorLib.E2EDefaults.DRIVE_TESTS_BASE_PATH}/{{attachment.name.match.basename}}`,
+                  location: `${GmailProcessorLib.E2EDefaults.driveTestBasePath(info)}/{{attachment.name.match.basename}}`,
                   toMimeType: "application/vnd.google-apps.spreadsheet",
                 },
               },

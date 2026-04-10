@@ -97,7 +97,7 @@ function simpleTestConfig() {
                   {
                     name: "attachment.store",
                     args: {
-                      location: `${GmailProcessorLib.E2EDefaults.DRIVE_TESTS_BASE_PATH}/${info.name}/{{message.date|formatDate('yyyy-MM-dd')}}/{{message.subject}}-{{attachment.name}}`,
+                      location: `${GmailProcessorLib.E2EDefaults.driveTestBasePath(info)}/{{message.subject}}-{{attachment.name}}`,
                       conflictStrategy: GmailProcessorLib.ConflictStrategy.KEEP,
                     },
                   },

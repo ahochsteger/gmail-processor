@@ -67,7 +67,7 @@ export const runConfig: Config = {
                 {
                   name: "attachment.store",
                   args: {
-                    location: `${E2EDefaults.DRIVE_TESTS_BASE_PATH}/${info.name}/{{message.date|formatDate('yyyy-MM-dd')}}/{{message.subject}}-{{attachment.name}}`,
+                    location: `${E2EDefaults.driveTestBasePath(info)}/{{message.date|formatDate('yyyy-MM-dd')}}/{{message.subject}}-{{attachment.name}}`,
                     conflictStrategy: ConflictStrategy.KEEP,
                   },
                 },

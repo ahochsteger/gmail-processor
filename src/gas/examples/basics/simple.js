@@ -30,7 +30,7 @@ function simpleRun() {
                     name: "attachment.store",
                     args: {
                       location:
-                        "/GmailProcessor-Tests/e2e/simple/{{message.date|formatDate('yyyy-MM-dd')}}/{{message.subject}}-{{attachment.name}}",
+                        "/GmailProcessor-Tests/e2e/{{date.now|formatDate('yyyy-MM-dd')}}/basics/simple/{{message.subject}}-{{attachment.name}}",
                       conflictStrategy: "keep",
                     },
                   },

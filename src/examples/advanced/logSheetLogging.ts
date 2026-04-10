@@ -141,7 +141,7 @@ export const runConfig: Config = {
                   name: "attachment.store",
                   args: {
                     conflictStrategy: ConflictStrategy.UPDATE,
-                    location: `${E2EDefaults.DRIVE_TESTS_BASE_PATH}/${info.name}/{{attachment.name}}`,
+                    location: `${E2EDefaults.driveTestBasePath(info)}/{{attachment.name}}`,
                   },
                 },
                 {

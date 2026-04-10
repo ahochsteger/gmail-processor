@@ -36,7 +36,7 @@ function decryptPdfRun() {
                 name: "attachment.storeDecryptedPdf",
                 args: {
                   location:
-                    "/GmailProcessor-Tests/e2e/advanced/{{message.date|formatDate('yyyy-MM-dd')}}/decrypted.pdf",
+                    "/GmailProcessor-Tests/e2e/{{date.now|formatDate('yyyy-MM-dd')}}/advanced/decryptPdf/decrypted.pdf",
                   conflictStrategy: "replace",
                   password: "${variables.pdfPassword}",
                 },

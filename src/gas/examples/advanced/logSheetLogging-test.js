@@ -134,7 +134,7 @@ function logSheetLoggingTestConfig() {
                     args: {
                       conflictStrategy:
                         GmailProcessorLib.ConflictStrategy.UPDATE,
-                      location: `${GmailProcessorLib.E2EDefaults.DRIVE_TESTS_BASE_PATH}/${info.name}/{{attachment.name}}`,
+                      location: `${GmailProcessorLib.E2EDefaults.driveTestBasePath(info)}/{{attachment.name}}`,
                     },
                   },
                   {

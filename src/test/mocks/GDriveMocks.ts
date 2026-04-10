@@ -10,8 +10,8 @@ import { Mocks } from "./MockFactory"
 
 export const E2E_BASE_FOLDER_ID = "GmailProcessor-Tests-id"
 export const E2E_BASE_FOLDER_NAME = "GmailProcessor-Tests"
-export const E2E_TEST_FOLDER_ID = "e2e01-id"
-export const E2E_TEST_FOLDER_NAME = "e2e01"
+export const E2E_TEST_FOLDER_ID = "e2e-id"
+export const E2E_TEST_FOLDER_NAME = "e2e"
 export const EXISTING_FILE_ID = "some-existing-file-id"
 export const EXISTING_FILE_NAME = "some-existing-file.txt"
 export const EXISTING_FILE_PATH = `/${EXISTING_FILE_NAME}`
@@ -63,6 +63,7 @@ export const genericNewFolderNamePatterns = [
   "example",
   "generic",
   "^Subject 2$",
+  "^\\d{4}-\\d{2}-\\d{2}$", // date-level run folder (e.g. 2023-06-26)
 ]
 
 export class GDriveMocks {
@@ -492,5 +493,26 @@ export class GDriveMocks {
     )
     GDriveMocks.setupDocumentAppMocks(driveSpec, mocks.documentApp)
     mocks.newHtmlBlob.getAs.mockReturnValue(mocks.newPdfBlob)
+
+    // Make genericNewFolder self-referential so it handles arbitrary-depth
+    // sub-path creation (category/name/… folders under the date run folder).
+    mocks.genericNewFolder.getFilesByName
+      .calledWith(anyString())
+      .mockReturnValue(GDriveMocks.setupFileIterator())
+      .mockName("genericNewFolder.getFilesByName-empty")
+    mocks.genericNewFolder.getFoldersByName
+      .calledWith(anyString())
+      .mockReturnValue(GDriveMocks.setupFolderIterator())
+      .mockName("genericNewFolder.getFoldersByName-empty")
+    mocks.genericNewFolder.createFolder
+      .calledWith(anyString())
+      .mockReturnValue(mocks.genericNewFolder)
+      .mockName("genericNewFolder.createFolder-self")
+    type CreateFileWithBlob = (
+      blobSource: GoogleAppsScript.Base.BlobSource,
+    ) => GoogleAppsScript.Drive.File
+    ;(mocks.genericNewFolder.createFile as MockProxy<CreateFileWithBlob>) = jest
+      .fn(() => mocks.genericNewFile)
+      .mockName("genericNewFolder.createFile-generic")
   }
 }

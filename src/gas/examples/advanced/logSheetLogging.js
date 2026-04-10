@@ -101,7 +101,7 @@ function logSheetLoggingRun() {
                     args: {
                       conflictStrategy: "update",
                       location:
-                        "/GmailProcessor-Tests/e2e/logSheetLogging/{{attachment.name}}",
+                        "/GmailProcessor-Tests/e2e/{{date.now|formatDate('yyyy-MM-dd')}}/advanced/logSheetLogging/{{attachment.name}}",
                     },
                   },
                   {

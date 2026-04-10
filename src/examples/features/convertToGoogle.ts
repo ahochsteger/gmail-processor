@@ -59,7 +59,7 @@ export const runConfig: Config = {
               name: "attachment.store",
               args: {
                 conflictStrategy: ConflictStrategy.REPLACE,
-                location: `${E2EDefaults.DRIVE_TESTS_BASE_PATH}/${info.name}/{{message.date|formatDate('yyyy-MM-dd')}}/{{attachment.name}}`,
+                location: `${E2EDefaults.driveTestBasePath(info)}/{{attachment.name}}`,
               },
             },
             {
@@ -67,7 +67,7 @@ export const runConfig: Config = {
               name: "attachment.store",
               args: {
                 conflictStrategy: ConflictStrategy.REPLACE,
-                location: `${E2EDefaults.DRIVE_TESTS_BASE_PATH}/${info.name}/{{message.date|formatDate('yyyy-MM-dd')}}/{{attachment.name.match.basename}}-from-docx`,
+                location: `${E2EDefaults.driveTestBasePath(info)}/{{attachment.name.match.basename}}-from-docx`,
                 toMimeType: "application/vnd.google-apps.document",
               },
             },
@@ -84,7 +84,7 @@ export const runConfig: Config = {
               name: "attachment.store",
               args: {
                 conflictStrategy: ConflictStrategy.REPLACE,
-                location: `${E2EDefaults.DRIVE_TESTS_BASE_PATH}/${info.name}/{{message.date|formatDate('yyyy-MM-dd')}}/{{attachment.name}}`,
+                location: `${E2EDefaults.driveTestBasePath(info)}/{{attachment.name}}`,
               },
             },
             {
@@ -93,7 +93,7 @@ export const runConfig: Config = {
               name: "attachment.store",
               args: {
                 conflictStrategy: ConflictStrategy.REPLACE,
-                location: `${E2EDefaults.DRIVE_TESTS_BASE_PATH}/${info.name}/{{message.date|formatDate('yyyy-MM-dd')}}/{{attachment.name.match.basename}}-from-pptx`,
+                location: `${E2EDefaults.driveTestBasePath(info)}/{{attachment.name.match.basename}}-from-pptx`,
                 toMimeType: "application/vnd.google-apps.presentation",
               },
             },
@@ -110,7 +110,7 @@ export const runConfig: Config = {
               name: "attachment.store",
               args: {
                 conflictStrategy: ConflictStrategy.REPLACE,
-                location: `${E2EDefaults.DRIVE_TESTS_BASE_PATH}/${info.name}/{{message.date|formatDate('yyyy-MM-dd')}}/{{attachment.name}}`,
+                location: `${E2EDefaults.driveTestBasePath(info)}/{{attachment.name}}`,
               },
             },
             {
@@ -119,7 +119,7 @@ export const runConfig: Config = {
               name: "attachment.store",
               args: {
                 conflictStrategy: ConflictStrategy.REPLACE,
-                location: `${E2EDefaults.DRIVE_TESTS_BASE_PATH}/${info.name}/{{message.date|formatDate('yyyy-MM-dd')}}/{{attachment.name.match.basename}}-from-xlsx`,
+                location: `${E2EDefaults.driveTestBasePath(info)}/{{attachment.name.match.basename}}-from-xlsx`,
                 toMimeType: "application/vnd.google-apps.spreadsheet",
               },
             },

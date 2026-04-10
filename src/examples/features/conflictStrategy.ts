@@ -53,7 +53,7 @@ export const runConfig: Config = {
               name: "attachment.store",
               args: {
                 conflictStrategy: ConflictStrategy.REPLACE,
-                location: `${E2EDefaults.DRIVE_TESTS_BASE_PATH}/${info.name}/{{message.date|formatDate('yyyy-MM-dd')}}/{{attachment.name}}`,
+                location: `${E2EDefaults.driveTestBasePath(info)}/{{attachment.name}}`,
               },
             },
             {
@@ -65,7 +65,7 @@ export const runConfig: Config = {
                 incrementPrefix: "_",
                 incrementSuffix: "",
                 incrementStart: 2,
-                location: `${E2EDefaults.DRIVE_TESTS_BASE_PATH}/${info.name}/{{message.date|formatDate('yyyy-MM-dd')}}/{{attachment.name}}`,
+                location: `${E2EDefaults.driveTestBasePath(info)}/{{attachment.name}}`,
               },
             },
           ],

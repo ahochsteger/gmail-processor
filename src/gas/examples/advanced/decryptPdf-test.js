@@ -62,7 +62,7 @@ function decryptPdfTestConfig() {
               {
                 name: "attachment.storeDecryptedPdf",
                 args: {
-                  location: `${GmailProcessorLib.E2EDefaults.DRIVE_TESTS_BASE_PATH}/advanced/{{message.date|formatDate('yyyy-MM-dd')}}/decrypted.pdf`,
+                  location: `${GmailProcessorLib.E2EDefaults.driveTestBasePath(info)}/decrypted.pdf`,
                   conflictStrategy: GmailProcessorLib.ConflictStrategy.REPLACE,
                   password: "${variables.pdfPassword}",
                 },

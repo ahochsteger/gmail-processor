@@ -34,7 +34,7 @@ function conflictStrategyRun() {
                 args: {
                   conflictStrategy: "replace",
                   location:
-                    "/GmailProcessor-Tests/e2e/conflictStrategy/{{message.date|formatDate('yyyy-MM-dd')}}/{{attachment.name}}",
+                    "/GmailProcessor-Tests/e2e/{{date.now|formatDate('yyyy-MM-dd')}}/features/conflictStrategy/{{attachment.name}}",
                 },
               },
               {
@@ -47,7 +47,7 @@ function conflictStrategyRun() {
                   incrementSuffix: "",
                   incrementStart: 2,
                   location:
-                    "/GmailProcessor-Tests/e2e/conflictStrategy/{{message.date|formatDate('yyyy-MM-dd')}}/{{attachment.name}}",
+                    "/GmailProcessor-Tests/e2e/{{date.now|formatDate('yyyy-MM-dd')}}/features/conflictStrategy/{{attachment.name}}",
                 },
               },
             ],

@@ -35,7 +35,7 @@ function regularExpressionsRun() {
                     name: "attachment.store",
                     args: {
                       location:
-                        "/GmailProcessor-Tests/e2e/regularExpressions/Reports/{{message.subject.match.school}}/All Reports/{{message.subject.match.reportType}}/{{message.subject.match.reportSubType}}/{{message.subject.match.date}}-{{attachment.name}}",
+                        "/GmailProcessor-Tests/e2e/{{date.now|formatDate('yyyy-MM-dd')}}/advanced/regularExpressions/Reports/{{message.subject.match.school}}/All Reports/{{message.subject.match.reportType}}/{{message.subject.match.reportSubType}}/{{message.subject.match.date}}-{{attachment.name}}",
                       conflictStrategy: "update",
                     },
                   },

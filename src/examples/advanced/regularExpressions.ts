@@ -76,7 +76,7 @@ export const runConfig: Config = {
                 {
                   name: "attachment.store",
                   args: {
-                    location: `${E2EDefaults.DRIVE_TESTS_BASE_PATH}/${info.name}/Reports/{{message.subject.match.school}}/All Reports/{{message.subject.match.reportType}}/{{message.subject.match.reportSubType}}/{{message.subject.match.date}}-{{attachment.name}}`,
+                    location: `${E2EDefaults.driveTestBasePath(info)}/Reports/{{message.subject.match.school}}/All Reports/{{message.subject.match.reportType}}/{{message.subject.match.reportSubType}}/{{message.subject.match.date}}-{{attachment.name}}`,
                     conflictStrategy: ConflictStrategy.UPDATE,
                   },
                 },

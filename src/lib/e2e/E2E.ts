@@ -417,7 +417,9 @@ export class E2E {
         // Replace the default subject prefix with the test-run specific one if available
         let testRunConfig = testConfig.runConfig
         if (activeTestRunId) {
-          const runConfigStr = JSON.stringify(testConfig.runConfig).replace(
+          let runConfigStr = JSON.stringify(testConfig.runConfig)
+          // Replace email subject prefix
+          runConfigStr = runConfigStr.replace(
             new RegExp(
               E2EDefaults.EMAIL_SUBJECT_PREFIX.replace(
                 /[.*+?^${}()|[\]\\]/g,
@@ -427,6 +429,15 @@ export class E2E {
             ),
             `${E2EDefaults.EMAIL_SUBJECT_PREFIX}[${activeTestRunId}] `,
           )
+          // Replace drive base path produced by driveTestBasePath() so parallel
+          // runs land in isolated folders without touching runConfig source.
+          const basePath = E2EDefaults.driveTestBasePath(testConfig.info)
+          if (runConfigStr.includes(basePath)) {
+            runConfigStr = runConfigStr.replaceAll(
+              basePath,
+              E2EDefaults.driveTestBasePath(testConfig.info, activeTestRunId),
+            )
+          }
           testRunConfig = JSON.parse(runConfigStr) as Config
         }
         processingResult = GmailProcessor.runWithJson(

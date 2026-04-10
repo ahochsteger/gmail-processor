@@ -67,7 +67,7 @@ export const runConfig: Config = {
               name: "attachment.store",
               args: {
                 conflictStrategy: ConflictStrategy.REPLACE,
-                location: `${E2EDefaults.DRIVE_TESTS_BASE_PATH}/{{attachment.name}}`,
+                location: `${E2EDefaults.driveTestBasePath(info)}/{{attachment.name}}`,
               },
             },
             {
@@ -75,7 +75,7 @@ export const runConfig: Config = {
               name: "attachment.store",
               args: {
                 conflictStrategy: ConflictStrategy.REPLACE,
-                location: `${E2EDefaults.DRIVE_TESTS_BASE_PATH}/{{attachment.name.match.basename}}`,
+                location: `${E2EDefaults.driveTestBasePath(info)}/{{attachment.name.match.basename}}`,
                 toMimeType: "application/vnd.google-apps.document",
               },
             },
@@ -92,7 +92,7 @@ export const runConfig: Config = {
               name: "attachment.store",
               args: {
                 conflictStrategy: ConflictStrategy.REPLACE,
-                location: `${E2EDefaults.DRIVE_TESTS_BASE_PATH}/{{attachment.name}}`,
+                location: `${E2EDefaults.driveTestBasePath(info)}/{{attachment.name}}`,
               },
             },
             {
@@ -101,7 +101,7 @@ export const runConfig: Config = {
               name: "attachment.store",
               args: {
                 conflictStrategy: ConflictStrategy.REPLACE,
-                location: `${E2EDefaults.DRIVE_TESTS_BASE_PATH}/{{attachment.name.match.basename}}`,
+                location: `${E2EDefaults.driveTestBasePath(info)}/{{attachment.name.match.basename}}`,
                 toMimeType: "application/vnd.google-apps.presentation",
               },
             },
@@ -118,7 +118,7 @@ export const runConfig: Config = {
               name: "attachment.store",
               args: {
                 conflictStrategy: ConflictStrategy.REPLACE,
-                location: `${E2EDefaults.DRIVE_TESTS_BASE_PATH}/{{attachment.name}}`,
+                location: `${E2EDefaults.driveTestBasePath(info)}/{{attachment.name}}`,
               },
             },
             {
@@ -127,7 +127,7 @@ export const runConfig: Config = {
               name: "attachment.store",
               args: {
                 conflictStrategy: ConflictStrategy.REPLACE,
-                location: `${E2EDefaults.DRIVE_TESTS_BASE_PATH}/{{attachment.name.match.basename}}`,
+                location: `${E2EDefaults.driveTestBasePath(info)}/{{attachment.name.match.basename}}`,
                 toMimeType: "application/vnd.google-apps.spreadsheet",
               },
             },

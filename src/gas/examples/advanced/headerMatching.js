@@ -32,7 +32,7 @@ function headerMatchingRun() {
                     name: "attachment.store",
                     args: {
                       location:
-                        "/GmailProcessor-Tests/e2e/headerMatching/{{message.date|formatDate('yyyy-MM-dd')}}/{{message.subject}}-{{attachment.name}}",
+                        "/GmailProcessor-Tests/e2e/{{date.now|formatDate('yyyy-MM-dd')}}/advanced/headerMatching/{{message.date|formatDate('yyyy-MM-dd')}}/{{message.subject}}-{{attachment.name}}",
                       conflictStrategy: "keep",
                     },
                   },

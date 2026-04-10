@@ -64,7 +64,7 @@ function customActionsAdvancedTestConfig() {
                     name: "attachment.store",
                     args: {
                       // Use the value extracted by the custom action:
-                      location: `${GmailProcessorLib.E2EDefaults.DRIVE_TESTS_BASE_PATH}/${info.name}/{{message.invoiceNumber}}/{{attachment.name}}`,
+                      location: `${GmailProcessorLib.E2EDefaults.driveTestBasePath(info)}/{{message.invoiceNumber}}/{{attachment.name}}`,
                       conflictStrategy: GmailProcessorLib.ConflictStrategy.KEEP,
                     },
                   },

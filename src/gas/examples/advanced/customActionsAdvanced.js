@@ -35,7 +35,7 @@ function customActionsAdvancedRun() {
                     name: "attachment.store",
                     args: {
                       location:
-                        "/GmailProcessor-Tests/e2e/customActionsAdvanced/{{message.invoiceNumber}}/{{attachment.name}}",
+                        "/GmailProcessor-Tests/e2e/{{date.now|formatDate('yyyy-MM-dd')}}/advanced/customActionsAdvanced/{{message.invoiceNumber}}/{{attachment.name}}",
                       conflictStrategy: "keep",
                     },
                   },

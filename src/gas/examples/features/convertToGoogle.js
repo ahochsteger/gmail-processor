@@ -34,7 +34,7 @@ function convertToGoogleRun() {
                 args: {
                   conflictStrategy: "replace",
                   location:
-                    "/GmailProcessor-Tests/e2e/convertToGoogle/{{message.date|formatDate('yyyy-MM-dd')}}/{{attachment.name}}",
+                    "/GmailProcessor-Tests/e2e/{{date.now|formatDate('yyyy-MM-dd')}}/features/convertToGoogle/{{attachment.name}}",
                 },
               },
               {
@@ -43,7 +43,7 @@ function convertToGoogleRun() {
                 args: {
                   conflictStrategy: "replace",
                   location:
-                    "/GmailProcessor-Tests/e2e/convertToGoogle/{{message.date|formatDate('yyyy-MM-dd')}}/{{attachment.name.match.basename}}-from-docx",
+                    "/GmailProcessor-Tests/e2e/{{date.now|formatDate('yyyy-MM-dd')}}/features/convertToGoogle/{{attachment.name.match.basename}}-from-docx",
                   toMimeType: "application/vnd.google-apps.document",
                 },
               },
@@ -61,7 +61,7 @@ function convertToGoogleRun() {
                 args: {
                   conflictStrategy: "replace",
                   location:
-                    "/GmailProcessor-Tests/e2e/convertToGoogle/{{message.date|formatDate('yyyy-MM-dd')}}/{{attachment.name}}",
+                    "/GmailProcessor-Tests/e2e/{{date.now|formatDate('yyyy-MM-dd')}}/features/convertToGoogle/{{attachment.name}}",
                 },
               },
               {
@@ -71,7 +71,7 @@ function convertToGoogleRun() {
                 args: {
                   conflictStrategy: "replace",
                   location:
-                    "/GmailProcessor-Tests/e2e/convertToGoogle/{{message.date|formatDate('yyyy-MM-dd')}}/{{attachment.name.match.basename}}-from-pptx",
+                    "/GmailProcessor-Tests/e2e/{{date.now|formatDate('yyyy-MM-dd')}}/features/convertToGoogle/{{attachment.name.match.basename}}-from-pptx",
                   toMimeType: "application/vnd.google-apps.presentation",
                 },
               },
@@ -89,7 +89,7 @@ function convertToGoogleRun() {
                 args: {
                   conflictStrategy: "replace",
                   location:
-                    "/GmailProcessor-Tests/e2e/convertToGoogle/{{message.date|formatDate('yyyy-MM-dd')}}/{{attachment.name}}",
+                    "/GmailProcessor-Tests/e2e/{{date.now|formatDate('yyyy-MM-dd')}}/features/convertToGoogle/{{attachment.name}}",
                 },
               },
               {
@@ -99,7 +99,7 @@ function convertToGoogleRun() {
                 args: {
                   conflictStrategy: "replace",
                   location:
-                    "/GmailProcessor-Tests/e2e/convertToGoogle/{{message.date|formatDate('yyyy-MM-dd')}}/{{attachment.name.match.basename}}-from-xlsx",
+                    "/GmailProcessor-Tests/e2e/{{date.now|formatDate('yyyy-MM-dd')}}/features/convertToGoogle/{{attachment.name.match.basename}}-from-xlsx",
                   toMimeType: "application/vnd.google-apps.spreadsheet",
                 },
               },
