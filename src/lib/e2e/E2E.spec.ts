@@ -6,12 +6,7 @@ import {
 } from "../../examples/Example"
 import { ConfigMocks } from "../../test/mocks/ConfigMocks"
 import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
-import {
-  EnvContext,
-  ProcessingResult,
-  ProcessingStatus,
-  RunMode,
-} from "../Context"
+import { EnvContext, ProcessingResult, ProcessingStatus } from "../Context"
 import { Config } from "../config/Config"
 import { MarkProcessedMethod } from "../config/SettingsConfig"
 import {
@@ -71,14 +66,14 @@ describe("initWait", () => {
   })
 
   it("should sleep statically if expectedCount <= 0", () => {
-    E2E.initWait(globals, RunMode.DANGEROUS, ctx, -1)
+    E2E.initWait(globals, ctx, -1)
     expect(ctx.env.utilities.sleep).toHaveBeenCalledWith(globals.sleepTimeMs)
     expect(ctx.env.gmailApp.search).not.toHaveBeenCalled()
   })
 
   it("should poll and return early if expected count is reached", () => {
     ;(ctx.env.gmailApp.search as jest.Mock).mockReturnValue([{}, {}]) // Returns 2 emails
-    E2E.initWait(globals, RunMode.DANGEROUS, ctx, 2)
+    E2E.initWait(globals, ctx, 2)
     expect(ctx.env.gmailApp.search).toHaveBeenCalledWith(
       `subject:"${globals.subjectPrefix}"`,
     )
@@ -89,7 +84,7 @@ describe("initWait", () => {
     ;(ctx.env.gmailApp.search as jest.Mock)
       .mockReturnValueOnce([])
       .mockReturnValueOnce([{}])
-    E2E.initWait(globals, RunMode.DANGEROUS, ctx, 1)
+    E2E.initWait(globals, ctx, 1)
     expect(ctx.env.gmailApp.search).toHaveBeenCalledTimes(2)
     expect(ctx.env.utilities.sleep).toHaveBeenCalledWith(globals.pollIntervalMs)
   })
@@ -98,7 +93,7 @@ describe("initWait", () => {
     globals.maxPollTimeMs = 4000
     globals.pollIntervalMs = 2000
     ;(ctx.env.gmailApp.search as jest.Mock).mockReturnValue([])
-    E2E.initWait(globals, RunMode.DANGEROUS, ctx, 1)
+    E2E.initWait(globals, ctx, 1)
     expect(ctx.env.gmailApp.search).toHaveBeenCalledTimes(3) // at 0, 2000, maxPollTime is evaluated before loop
     expect(ctx.env.utilities.sleep).toHaveBeenCalledWith(globals.pollIntervalMs)
     expect(ctx.env.utilities.sleep).toHaveBeenCalledTimes(2)
@@ -434,13 +429,7 @@ describe("runTests", () => {
     const originalTests = mockTestConfig.tests
     mockTestConfig.tests = []
 
-    const result = E2E.runTests(
-      mockTestConfig,
-      true,
-      "main",
-      RunMode.DANGEROUS,
-      ctx,
-    )
+    const result = E2E.runTests(mockTestConfig, true, "main", ctx)
 
     mockTestConfig.tests = originalTests
     expect(result.level).toEqual("suite")
@@ -450,7 +439,7 @@ describe("runTests", () => {
     initConfig.mails = [{ subject: "Test mail" }]
     jest.spyOn(E2E, "initWait").mockImplementation(() => {})
 
-    E2E.runTests(mockTestConfig, false, "main", RunMode.DANGEROUS, ctx)
+    E2E.runTests(mockTestConfig, false, "main", ctx)
 
     expect(ctx.env.mailApp.sendEmail).toHaveBeenCalledWith({
       to: globals.to,
@@ -464,7 +453,7 @@ describe("runTests", () => {
   })
 
   it("should skip sending emails if skipInit is true", () => {
-    E2E.runTests(mockTestConfig, true, undefined, RunMode.DANGEROUS, ctx)
+    E2E.runTests(mockTestConfig, true, undefined, ctx)
 
     expect(ctx.env.mailApp.sendEmail).not.toHaveBeenCalled()
   })
@@ -488,13 +477,7 @@ describe("runTests", () => {
       },
     } as any
 
-    const result = E2E.runTests(
-      errorConfig,
-      true,
-      "main",
-      RunMode.DANGEROUS,
-      ctx,
-    )
+    const result = E2E.runTests(errorConfig, true, "main", ctx)
 
     expect(result.status).toBe(E2EStatus.ERROR)
   })
@@ -531,7 +514,7 @@ describe("runTests with migrationConfig", () => {
     jest.clearAllMocks()
   })
   it("should process migrationConfig", () => {
-    E2E.runTests(mockTestConfig, true, undefined, RunMode.DANGEROUS, ctx)
+    E2E.runTests(mockTestConfig, true, undefined, ctx)
 
     expect(ctx.env.mailApp.sendEmail).not.toHaveBeenCalled()
   })

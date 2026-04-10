@@ -6,6 +6,7 @@ coverage/
 dist/
 dist-examples/
 node_modules/
+work/
 .env
 *.env
 *.bak*

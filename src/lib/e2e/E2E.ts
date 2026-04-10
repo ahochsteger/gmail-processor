@@ -289,8 +289,9 @@ export class E2E {
   public static initTests(
     testConfig: E2ETestConfig,
     branch = "main",
-    runMode = RunMode.DANGEROUS,
-    ctx: EnvContext = EnvProvider.defaultContext(runMode),
+    ctx: EnvContext = EnvProvider.defaultContext({
+      runMode: RunMode.DANGEROUS,
+    }),
     testRunId?: string,
   ) {
     ctx.log.info(
@@ -325,8 +326,9 @@ export class E2E {
 
   public static initWait(
     globals: E2EGlobalConfig,
-    runMode = RunMode.DANGEROUS,
-    ctx: EnvContext = EnvProvider.defaultContext(runMode),
+    ctx: EnvContext = EnvProvider.defaultContext({
+      runMode: RunMode.DANGEROUS,
+    }),
     expectedCount = -1,
   ) {
     if (expectedCount > 0) {
@@ -367,8 +369,9 @@ export class E2E {
     testConfig: E2ETestConfig,
     skipInit = false,
     branch = "main",
-    runMode = RunMode.DANGEROUS,
-    ctx: EnvContext = EnvProvider.defaultContext(runMode),
+    ctx: EnvContext = EnvProvider.defaultContext({
+      runMode: RunMode.DANGEROUS,
+    }),
     testRunId?: string,
   ): E2EResult {
     const activeTestRunId = testRunId ?? this.getTestRunId(ctx)
@@ -377,7 +380,7 @@ export class E2E {
     )
     // Send test mails
     if (!skipInit) {
-      this.initTests(testConfig, branch, runMode, ctx, activeTestRunId)
+      this.initTests(testConfig, branch, ctx, activeTestRunId)
       const globals = newE2EGlobalConfig(
         ctx,
         branch,
@@ -385,7 +388,7 @@ export class E2E {
         activeTestRunId,
       )
       const expectedCount = testConfig.initConfig?.mails.length ?? -1
-      this.initWait(globals, runMode, ctx, expectedCount)
+      this.initWait(globals, ctx, expectedCount)
     } else {
       ctx.log.info(
         `E2E.runTests(): [${testConfig.info.category}/${testConfig.info.name}] SKIPPED: Initializing test data ...`,
@@ -486,8 +489,9 @@ export class E2E {
   public static initAllTests(
     testConfigs: E2ETestConfig[],
     branch = "main",
-    runMode = RunMode.DANGEROUS,
-    ctx: EnvContext = EnvProvider.defaultContext(runMode),
+    ctx: EnvContext = EnvProvider.defaultContext({
+      runMode: RunMode.DANGEROUS,
+    }),
     testRunId?: string,
   ): string {
     const activeTestRunId = testRunId ?? this.getTestRunId(ctx)
@@ -495,10 +499,10 @@ export class E2E {
       `E2E.initAllTests(): Started with test run id '${activeTestRunId}'.`,
     )
     testConfigs.forEach((testConfig) => {
-      this.initTests(testConfig, branch, runMode, ctx, activeTestRunId)
+      this.initTests(testConfig, branch, ctx, activeTestRunId)
     })
     const globals = newE2EGlobalConfig(ctx, branch, undefined, activeTestRunId)
-    this.initWait(globals, runMode, ctx)
+    this.initWait(globals, ctx)
     ctx.log.info(`E2E.initAllTests(): Finished.`)
     return activeTestRunId
   }
@@ -507,8 +511,9 @@ export class E2E {
     testConfigs: E2ETestConfig[],
     skipInit = false,
     branch = "main",
-    runMode = RunMode.DANGEROUS,
-    ctx: EnvContext = EnvProvider.defaultContext(runMode),
+    ctx: EnvContext = EnvProvider.defaultContext({
+      runMode: RunMode.DANGEROUS,
+    }),
     testRunId?: string,
   ): E2EResult {
     const activeTestRunId = testRunId ?? this.getTestRunId(ctx)
@@ -516,14 +521,7 @@ export class E2E {
       `E2E.runAllTests(): Started with test run id '${activeTestRunId}'.`,
     )
     const results = testConfigs.map((testConfig) =>
-      this.runTests(
-        testConfig,
-        skipInit,
-        branch,
-        runMode,
-        ctx,
-        activeTestRunId,
-      ),
+      this.runTests(testConfig, skipInit, branch, ctx, activeTestRunId),
     )
     const statusMap = this.statusMapFromResults(results)
     const status = this._overallStatus(statusMap)

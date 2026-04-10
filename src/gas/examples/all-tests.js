@@ -28,14 +28,11 @@ function initAllTests() {
   return GmailProcessorLib.E2E.initAllTests(
     getTestConfigs(),
     E2E_REPO_BRANCH,
-    GmailProcessorLib.RunMode.DANGEROUS,
-    GmailProcessorLib.EnvProvider.defaultContext(
-      GmailProcessorLib.RunMode.DANGEROUS,
-      {
-        cacheService: CacheService,
-        propertiesService: PropertiesService
-      }
-    )
+    GmailProcessorLib.EnvProvider.defaultContext({
+      runMode: GmailProcessorLib.RunMode.DANGEROUS,
+      cacheService: CacheService,
+      propertiesService: PropertiesService,
+    }),
   )
 }
 
@@ -44,14 +41,11 @@ function runAllTests(skipInit = true, testRunId = undefined) {
     getTestConfigs(),
     skipInit,
     E2E_REPO_BRANCH,
-    GmailProcessorLib.RunMode.DANGEROUS,
-    GmailProcessorLib.EnvProvider.defaultContext(
-      GmailProcessorLib.RunMode.DANGEROUS,
-      {
-        cacheService: CacheService,
-        propertiesService: PropertiesService
-      }
-    ),
+    GmailProcessorLib.EnvProvider.defaultContext({
+      runMode: GmailProcessorLib.RunMode.DANGEROUS,
+      cacheService: CacheService,
+      propertiesService: PropertiesService,
+    }),
     testRunId,
   )
 }

@@ -23,8 +23,8 @@ function customActionsAdvancedTestConfig() {
   const initConfig = {
     mails: [
       {
-        body: "Invoice Number: INV-12345",
-        attachments: [`invoice.pdf`],
+        body: "Invoice Number: INV-161126",
+        attachments: ["invoice.pdf"],
       },
     ],
   }
@@ -52,6 +52,7 @@ function customActionsAdvancedTestConfig() {
             actions: [
               {
                 name: "custom.parseInvoice",
+                processingStage: GmailProcessorLib.ProcessingStage.PRE_MAIN,
               },
             ],
             attachments: [
@@ -64,7 +65,7 @@ function customActionsAdvancedTestConfig() {
                     name: "attachment.store",
                     args: {
                       // Use the value extracted by the custom action:
-                      location: `${GmailProcessorLib.E2EDefaults.driveTestBasePath(info)}/{{message.invoiceNumber}}/{{attachment.name}}`,
+                      location: `${GmailProcessorLib.E2EDefaults.driveTestBasePath(info)}/{{custom.invoiceNumber}}/{{attachment.name}}`,
                       conflictStrategy: GmailProcessorLib.ConflictStrategy.KEEP,
                     },
                   },
@@ -87,13 +88,20 @@ function customActionsAdvancedTestConfig() {
           // Ensure we have a message context (runtime check that also satisfies TS)
           if (!("message" in ctx)) return {}
           // @ts-ignore
-          const body = ctx.message.object.getBody()
-          const match = body.match(/Invoice Number: (INV-\d+)/)
+          const body = ctx.message.object.getPlainBody()
+          const match = body.match(/Invoice Number:\s*(INV-[0-9]+)/i)
           if (match && match[1]) {
             ctx.log.info(`Extracted invoice number: ${match[1]}`)
-            // Store the extracted value in actionMeta to make it available as {{message.invoiceNumber}}
+            // Store the extracted value in actionMeta to make it available as {{custom.invoiceNumber}}
             return {
-              "message.invoiceNumber": match[1],
+              actionMeta: {
+                "custom.invoiceNumber": {
+                  type: "string", // Corresponds to MetaInfoType.STRING
+                  value: match[1],
+                  title: "Invoice Number",
+                  description: "The extracted invoice number.",
+                },
+              },
             }
           }
           return {}
@@ -129,8 +137,9 @@ function customActionsAdvancedTestConfig() {
             procResult.executedActions.some(
               (action) =>
                 action.config.name === "custom.parseInvoice" &&
-                action.result &&
-                action.result["message.invoiceNumber"] === "INV-12345",
+                action.result?.actionMeta &&
+                action.result.actionMeta["custom.invoiceNumber"]?.value ===
+                  "INV-161126",
             ),
         },
       ],
@@ -153,13 +162,10 @@ function customActionsAdvancedTest() {
     testConfig,
     false,
     E2E_REPO_BRANCH,
-    GmailProcessorLib.RunMode.DANGEROUS,
-    GmailProcessorLib.EnvProvider.defaultContext(
-      GmailProcessorLib.RunMode.DANGEROUS,
-      {
-        cacheService: CacheService,
-        propertiesService: PropertiesService,
-      },
-    ),
+    GmailProcessorLib.EnvProvider.defaultContext({
+      runMode: GmailProcessorLib.RunMode.DANGEROUS,
+      cacheService: CacheService,
+      propertiesService: PropertiesService,
+    }),
   )
 }

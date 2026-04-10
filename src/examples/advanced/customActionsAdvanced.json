@@ -19,7 +19,8 @@
         {
           "actions": [
             {
-              "name": "custom.parseInvoice"
+              "name": "custom.parseInvoice",
+              "processingStage": "pre-main"
             }
           ],
           "attachments": [

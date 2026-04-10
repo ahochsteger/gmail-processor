@@ -161,6 +161,7 @@ export class GMailMocks {
     m.getFrom.mockReturnValue(d.from)
     m.getId.mockReturnValue(d.id)
     m.getReplyTo.mockReturnValue(d.replyTo)
+    m.getPlainBody.mockReturnValue(d.plainBody)
     m.getRawContent.mockReturnValue(buildRawContent(d))
     m.getSubject.mockReturnValue(d.subject)
     m.getTo.mockReturnValue(d.to)

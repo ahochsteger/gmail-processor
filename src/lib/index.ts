@@ -2,6 +2,9 @@
 import {
   EnvContext,
   EnvInfo,
+  // MetaInfo,
+  // MetaInfoType,
+  // newMetaInfo,
   ProcessingResult,
   ProcessingStatus,
   RunMode,
@@ -36,6 +39,9 @@ export {
   MarkProcessedMethod,
   MessageFlag,
   newE2EGlobalConfig,
+  // MetaInfo,
+  // MetaInfoType,
+  // newMetaInfo,
   ProcessingResult,
   ProcessingStage,
   ProcessingStatus,
@@ -60,7 +66,11 @@ export function run(
   envOverrides?: Partial<EnvInfo>,
 ): ProcessingResult {
   const effectiveCtx =
-    ctx ?? EnvProvider.defaultContext(runMode as RunMode, envOverrides)
+    ctx ??
+    EnvProvider.defaultContext({
+      runMode: runMode as RunMode,
+      ...envOverrides,
+    })
   return GmailProcessor.runWithJson(config, customActions, effectiveCtx)
 }
 
