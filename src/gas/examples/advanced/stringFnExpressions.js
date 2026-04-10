@@ -26,7 +26,7 @@ function stringFnExpressionsRun() {
                 name: "global.log",
                 args: {
                   message:
-                    "Removing '[]' from subject: {{message.subject|replaceAll('[\\[\\]]', '')}}",
+                    "Removing 'full' from body: {{message.body|replaceAll('full ', '')}}",
                 },
               },
             ],
@@ -36,5 +36,8 @@ function stringFnExpressionsRun() {
     ],
   }
 
-  return GmailProcessorLib.run(config, "dry-run")
+  return GmailProcessorLib.run(config, "dry-run", [], undefined, {
+    cacheService: CacheService,
+    propertiesService: PropertiesService,
+  })
 }

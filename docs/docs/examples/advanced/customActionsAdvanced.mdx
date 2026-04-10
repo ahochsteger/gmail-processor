@@ -12,6 +12,6 @@ This example demonstrates how to use `actionMeta` in custom actions to pass data
 
 In this scenario, a custom action `custom.parseInvoice` extracts an invoice number from the email body
 and stores it in `actionMeta`. This value is then accessible in the `attachment.store` action
-using the placeholder `{{message.invoiceNumber}}`.
+using the placeholder `{{custom.invoiceNumber}}`.
 
 <RenderExample info={info} config={config} script={script} />

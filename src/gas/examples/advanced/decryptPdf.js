@@ -48,5 +48,8 @@ function decryptPdfRun() {
     ],
   }
 
-  return GmailProcessorLib.run(config, "dry-run")
+  return GmailProcessorLib.run(config, "dry-run", [], undefined, {
+    cacheService: CacheService,
+    propertiesService: PropertiesService,
+  })
 }

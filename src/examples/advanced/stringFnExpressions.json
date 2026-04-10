@@ -22,7 +22,7 @@
             {
               "name": "global.log",
               "args": {
-                "message": "Removing '[]' from subject: {{message.subject|replaceAll('[\\[\\]]', '')}}"
+                "message": "Removing 'full' from body: {{message.body|replaceAll('full ', '')}}"
               }
             }
           ]
