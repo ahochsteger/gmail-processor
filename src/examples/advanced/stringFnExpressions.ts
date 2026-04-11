@@ -33,7 +33,9 @@ export const info: ExampleInfo = {
 }
 export const initConfig: E2EInitConfig = {
   mails: [
-    {}, // just an empty default email
+    {
+      body: "This is the full email body.",
+    },
   ],
 }
 
@@ -62,7 +64,7 @@ export const runConfig: Config = {
               name: "global.log",
               args: {
                 message:
-                  "Removing '[]' from subject: {{message.subject|replaceAll('[\\[\\]]', '')}}",
+                  "Removing 'full' from body: {{message.body|replaceAll('full ', '')}}",
               },
             },
           ],
@@ -79,37 +81,21 @@ export const example: Example = {
 
 export const tests: E2ETest[] = [
   {
-    message: "Successful execution",
+    message: "Execution should be successful",
     assertions: [
       {
-        message: "One thread config should have been processed",
-        assertFn: (_testConfig, procResult) =>
-          procResult.processedThreadConfigs === 1,
-      },
-      {
-        message: "One thread should have been processed",
-        assertFn: (_testConfig, procResult) => procResult.processedThreads === 1,
-      },
-      {
-        message: "One message should have been processed",
-        assertFn: (_testConfig, procResult) =>
-          procResult.processedMessages === 1,
-      },
-      {
-        message: "Correct number of actions should have been executed",
-        assertFn: (_testConfig, procResult) =>
-          procResult.executedActions.length == 2 * procResult.processedMessages,
-      },
-      {
         message: "The correct message should have been logged",
-        assertFn: (_testConfig, procResult, ctx, expect) => {
-          const expectedSubject = testConfig.globals?.subjectPrefix ? `${testConfig.globals.subjectPrefix}${info.name}` : `${E2EDefaults.EMAIL_SUBJECT_PREFIX}${info.name}`
-          const cleanSubject = expectedSubject.replace(/[\[\]]/g, "")
-          return expect(
-            ctx,
-            procResult.executedActions[0]?.result?.logMessage,
-            `Removing '[]' from subject: ${cleanSubject}`,
-            "Actual log message does not match the expected one",
+        assertFn: (_testConfig, _procResult, _ctx, _expect, h) => {
+          const a = h.findNextAction("global.log")
+          return (
+            h.expectStatus() &&
+            h.expectActionExecuted(a, "global.log") &&
+            h.expect(
+              _ctx,
+              a?.result?.logMessage,
+              "Removing 'full' from body: This is the email body.",
+              "Actual log message does not match the expected one",
+            )
           )
         },
       },

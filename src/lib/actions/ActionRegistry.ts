@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { MetaInfo, ProcessingContext } from "../Context"
+import { BaseProcessor } from "../processors/BaseProcessor"
 
 export type JsonPrimitive = number | string | boolean | null
 export type JsonObject = { [key in string]?: JsonValue }
@@ -149,10 +150,31 @@ export class ActionRegistry {
       context.log.info(
         `Executing action '${name}' with args: ${context.log.redactJsonSecrets(JSON.stringify(args))}`,
       )
-      result = {
-        ok: true,
-        ...fn(context, args),
-      } as ActionReturnType
+      const fnResult = fn(context, args)
+      if (fnResult instanceof Promise) {
+        result = {
+          ok: true,
+        }
+        const promise = fnResult
+          .then((actualResult) => {
+            Object.assign(result, actualResult)
+            if (actualResult.actionMeta) {
+              BaseProcessor.updateContextMeta(context, actualResult.actionMeta)
+            }
+            return actualResult
+          })
+          .catch((e) => {
+            result.ok = false
+            result.error = e
+            throw e
+          })
+        context.proc.actionPromises.push(promise)
+      } else {
+        result = {
+          ok: true,
+          ...fnResult,
+        }
+      }
     } catch (e: any) {
       result = {
         ok: false,

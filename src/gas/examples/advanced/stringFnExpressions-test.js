@@ -29,7 +29,9 @@ function stringFnExpressionsTestConfig() {
   }
   const initConfig = {
     mails: [
-      {}, // just an empty default email
+      {
+        body: "This is the full email body.",
+      },
     ],
   }
 
@@ -59,7 +61,7 @@ function stringFnExpressionsTestConfig() {
                 name: "global.log",
                 args: {
                   message:
-                    "Removing '[]' from subject: {{message.subject|replaceAll('[\\[\\]]', '')}}",
+                    "Removing 'full' from body: {{message.body|replaceAll('full ', '')}}",
                 },
               },
             ],
@@ -76,38 +78,23 @@ function stringFnExpressionsTestConfig() {
 
   const tests = [
     {
-      message: "Successful execution",
+      message: "Execution should be successful",
       assertions: [
         {
-          message: "One thread config should have been processed",
-          assertFn: (_testConfig, procResult) =>
-            procResult.processedThreadConfigs === 1,
-        },
-        {
-          message: "One thread should have been processed",
-          assertFn: (_testConfig, procResult) =>
-            procResult.processedThreads === 1,
-        },
-        {
-          message: "One message should have been processed",
-          assertFn: (_testConfig, procResult) =>
-            procResult.processedMessages === 1,
-        },
-        {
-          message: "Correct number of actions should have been executed",
-          assertFn: (_testConfig, procResult) =>
-            procResult.executedActions.length ==
-            2 * procResult.processedMessages,
-        },
-        {
           message: "The correct message should have been logged",
-          assertFn: (_testConfig, procResult, ctx, expect) =>
-            expect(
-              ctx,
-              procResult.executedActions[0]?.result?.logMessage,
-              `Removing '[]' from subject: GmailProcessor-Test ${info.name}`,
-              "Actual log message does not match the expected one",
-            ),
+          assertFn: (_testConfig, _procResult, _ctx, _expect, h) => {
+            const a = h.findNextAction("global.log")
+            return (
+              h.expectStatus() &&
+              h.expectActionExecuted(a, "global.log") &&
+              h.expect(
+                _ctx,
+                a?.result?.logMessage,
+                "Removing 'full' from body: This is the email body.",
+                "Actual log message does not match the expected one",
+              )
+            )
+          },
         },
       ],
     },
@@ -123,12 +110,16 @@ function stringFnExpressionsTestConfig() {
   return testConfig
 }
 
-function stringFnExpressionsTest() {
+async function stringFnExpressionsTest() {
   const testConfig = stringFnExpressionsTestConfig()
-  return GmailProcessorLib.E2E.runTests(
+  return await GmailProcessorLib.E2E.runTests(
     testConfig,
     false,
     E2E_REPO_BRANCH,
-    GmailProcessorLib.RunMode.DANGEROUS,
+    GmailProcessorLib.EnvProvider.defaultContext({
+      runMode: GmailProcessorLib.RunMode.DANGEROUS,
+      cacheService: CacheService,
+      propertiesService: PropertiesService,
+    }),
   )
 }

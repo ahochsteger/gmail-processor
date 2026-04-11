@@ -38,25 +38,6 @@ beforeEach(() => {
   )
 })
 
-/*describe("getFolderFromPath()", () => {
-  it("should find folder from path", () => {
-    const actual = gdriveAdapter.getFolderFromPath("some-folder")
-    expect(actual).toMatchObject({})
-  })
-  it("should find folder from root path", () => {
-    mocks.fileIterator.hasNext.mockReset()
-    const actual = gdriveAdapter.getFolderFromPath("/some-folder")
-    expect(actual).toMatchObject({})
-  })
-  test.todo("should throw error if folder is not found")
-  // it("should throw error if folder is not found", () => {
-  //   expect(() => {
-  //     gdriveAdapter.getFolderFromPath("/some-non-existing-folder")
-  //   }).toThrow(/not found/)
-  // })
-})
-*/
-
 describe("createFile() strategy:ERROR", () => {
   it("should create a non-existing file in the root folder", () => {
     gdriveAdapter.ctx.env.runMode = RunMode.DANGEROUS
@@ -188,6 +169,26 @@ describe("createFile() strategy:SKIP", () => {
     expect(mocks.rootFolder.createFile).not.toHaveBeenCalled()
   })
 })
+describe("createFile() strategy:INCREMENT", () => {
+  it("should create an incremented file if a file already exists", () => {
+    gdriveAdapter.ctx.env.runMode = RunMode.DANGEROUS
+    gdriveAdapter.createFile(
+      `/${EXISTING_FILE_NAME}`,
+      new FileContent(mocks.existingBlob),
+      ConflictStrategy.INCREMENT,
+    )
+    expect(mocks.rootFolder.createFile).toHaveBeenCalled()
+  })
+  it("should not create an incremented file if in dry-run mode", () => {
+    gdriveAdapter.ctx.env.runMode = RunMode.DRY_RUN
+    gdriveAdapter.createFile(
+      `/${EXISTING_FILE_NAME}`,
+      new FileContent(mocks.existingBlob),
+      ConflictStrategy.INCREMENT,
+    )
+    expect(mocks.rootFolder.createFile).not.toHaveBeenCalled()
+  })
+})
 describe("createFile() strategy:ERROR", () => {
   it("should throw an error if file exists and error mode", () => {
     gdriveAdapter.ctx.env.runMode = RunMode.DANGEROUS
@@ -284,7 +285,3 @@ describe("DriveUtils.extractLocationInfo()", () => {
     expect(actual.folderId).toBeUndefined()
   })
 })
-test.todo("should transparently create a folder or return an existing one")
-test.todo(
-  "should get a collection of files within a folder matching the given name",
-)

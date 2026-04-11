@@ -6,9 +6,12 @@ coverage/
 dist/
 dist-examples/
 node_modules/
+scratch/
+work/
 .env
 *.env
 *.bak*
+*.log
 !.vscode/settings.json
 debug.json
 docs/docs/community/CHANGELOG.md

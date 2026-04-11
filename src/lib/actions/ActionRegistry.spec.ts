@@ -2,6 +2,8 @@ import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
 import {
   AttachmentContext,
   MessageContext,
+  MetaInfoType,
+  newMetaInfo,
   ProcessingContext,
   ThreadContext,
 } from "../Context"
@@ -296,6 +298,51 @@ describe("ActionRegistry.registerCustomActions", () => {
         },
       ])
     }).toThrow()
+  })
+
+  it("should handle async action success and update meta", async () => {
+    const registry = new ActionRegistry()
+    registry.registerCustomActions([
+      {
+        name: "asyncAction",
+        action: async () => ({
+          ok: true,
+          actionMeta: {
+            "async.key": newMetaInfo(MetaInfoType.STRING, "async-val", "", ""),
+          },
+        }),
+      },
+    ])
+
+    const result = registry.executeAction(
+      mocks.processingContext,
+      "custom.asyncAction",
+      {},
+    )
+    expect(result.ok).toBe(true)
+    expect(mocks.processingContext.proc.actionPromises.length).toBe(1)
+
+    await mocks.processingContext.proc.actionPromises[0]
+    expect(mocks.processingContext.meta["async.key"]?.value).toBe("async-val")
+  })
+
+  it("should handle async action failure", async () => {
+    const registry = new ActionRegistry()
+    registry.registerCustomActions([
+      {
+        name: "failAction",
+        action: async () => {
+          throw new Error("async fail")
+        },
+      },
+    ])
+
+    registry.executeAction(mocks.processingContext, "custom.failAction", {})
+    await expect(
+      mocks.processingContext.proc.actionPromises[
+        mocks.processingContext.proc.actionPromises.length - 1
+      ],
+    ).rejects.toThrow("async fail")
   })
 })
 

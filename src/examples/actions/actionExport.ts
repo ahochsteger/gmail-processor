@@ -73,16 +73,14 @@ export const runConfig: Config = {
         {
           name: "message.exportAsHtml",
           args: {
-            location:
-              "/GmailProcessor-Tests/pr-291/message-{{message.id}}-{{message.subject}}.html",
+            location: `${E2EDefaults.driveTestBasePath(info)}/message-{{message.id}}-{{message.subject}}.html`,
             conflictStrategy: ConflictStrategy.REPLACE,
           },
         },
         {
           name: "message.exportAsPdf",
           args: {
-            location:
-              "/GmailProcessor-Tests/pr-291/message-{{message.id}}-{{message.subject}}.pdf",
+            location: `${E2EDefaults.driveTestBasePath(info)}/message-{{message.id}}-{{message.subject}}.pdf`,
             conflictStrategy: ConflictStrategy.REPLACE,
           },
         },
@@ -95,6 +93,7 @@ export const runConfig: Config = {
         query:
           "from:{{user.email}} to:{{user.email}} subject:'GmailProcessor-Test'",
       },
+      messages: [{}],
     },
   ],
 }
@@ -104,7 +103,46 @@ export const example: Example = {
   config: runConfig,
 }
 
-export const tests: E2ETest[] = []
+export const tests: E2ETest[] = [
+  {
+    message: "Execution should be successful",
+    assertions: [
+      {
+        message: "Thread should have been exported as PDF",
+        assertFn: (_testConfig, _procResult, _ctx, _expect, h) => {
+          const a = h.findAction("thread.exportAsPdf", {
+            "arg.conflictStrategy": ConflictStrategy.REPLACE,
+          })
+          return (
+            h.expectStatus() &&
+            h.expectActionExecuted(a, "thread.exportAsPdf") &&
+            h.expectActionMeta(
+              a,
+              "thread.stored.location",
+              /.*\/thread-.*-.*\.pdf$/,
+            )
+          )
+        },
+      },
+      {
+        message: "Message should have been exported as PDF",
+        assertFn: (_testConfig, _procResult, _ctx, _expect, h) => {
+          const a = h.findAction("message.exportAsPdf", {
+            "arg.conflictStrategy": ConflictStrategy.REPLACE,
+          })
+          return (
+            h.expectActionExecuted(a, "message.exportAsPdf") &&
+            h.expectActionMeta(
+              a,
+              "message.stored.location",
+              /.*\/message-.*-.*\.pdf$/,
+            )
+          )
+        },
+      },
+    ],
+  },
+]
 
 export const testConfig: E2ETestConfig = {
   example,

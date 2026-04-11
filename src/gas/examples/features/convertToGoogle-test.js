@@ -44,8 +44,7 @@ function convertToGoogleTestConfig() {
     threads: [
       {
         match: {
-          query:
-            "from:{{user.email}} to:{{user.email}} subject:'Test with office attachments'",
+          query: "from:{{user.email}} to:{{user.email}}",
         },
         attachments: [
           {
@@ -59,7 +58,7 @@ function convertToGoogleTestConfig() {
                 name: "attachment.store",
                 args: {
                   conflictStrategy: GmailProcessorLib.ConflictStrategy.REPLACE,
-                  location: `${GmailProcessorLib.E2EDefaults.DRIVE_TESTS_BASE_PATH}/{{attachment.name}}`,
+                  location: `${GmailProcessorLib.E2EDefaults.driveTestBasePath(info)}/{{attachment.name}}`,
                 },
               },
               {
@@ -67,7 +66,7 @@ function convertToGoogleTestConfig() {
                 name: "attachment.store",
                 args: {
                   conflictStrategy: GmailProcessorLib.ConflictStrategy.REPLACE,
-                  location: `${GmailProcessorLib.E2EDefaults.DRIVE_TESTS_BASE_PATH}/{{attachment.name.match.basename}}`,
+                  location: `${GmailProcessorLib.E2EDefaults.driveTestBasePath(info)}/{{attachment.name.match.basename}}-from-docx`,
                   toMimeType: "application/vnd.google-apps.document",
                 },
               },
@@ -84,7 +83,7 @@ function convertToGoogleTestConfig() {
                 name: "attachment.store",
                 args: {
                   conflictStrategy: GmailProcessorLib.ConflictStrategy.REPLACE,
-                  location: `${GmailProcessorLib.E2EDefaults.DRIVE_TESTS_BASE_PATH}/{{attachment.name}}`,
+                  location: `${GmailProcessorLib.E2EDefaults.driveTestBasePath(info)}/{{attachment.name}}`,
                 },
               },
               {
@@ -93,7 +92,7 @@ function convertToGoogleTestConfig() {
                 name: "attachment.store",
                 args: {
                   conflictStrategy: GmailProcessorLib.ConflictStrategy.REPLACE,
-                  location: `${GmailProcessorLib.E2EDefaults.DRIVE_TESTS_BASE_PATH}/{{attachment.name.match.basename}}`,
+                  location: `${GmailProcessorLib.E2EDefaults.driveTestBasePath(info)}/{{attachment.name.match.basename}}-from-pptx`,
                   toMimeType: "application/vnd.google-apps.presentation",
                 },
               },
@@ -110,7 +109,7 @@ function convertToGoogleTestConfig() {
                 name: "attachment.store",
                 args: {
                   conflictStrategy: GmailProcessorLib.ConflictStrategy.REPLACE,
-                  location: `${GmailProcessorLib.E2EDefaults.DRIVE_TESTS_BASE_PATH}/{{attachment.name}}`,
+                  location: `${GmailProcessorLib.E2EDefaults.driveTestBasePath(info)}/{{attachment.name}}`,
                 },
               },
               {
@@ -119,7 +118,7 @@ function convertToGoogleTestConfig() {
                 name: "attachment.store",
                 args: {
                   conflictStrategy: GmailProcessorLib.ConflictStrategy.REPLACE,
-                  location: `${GmailProcessorLib.E2EDefaults.DRIVE_TESTS_BASE_PATH}/{{attachment.name.match.basename}}`,
+                  location: `${GmailProcessorLib.E2EDefaults.driveTestBasePath(info)}/{{attachment.name.match.basename}}-from-xlsx`,
                   toMimeType: "application/vnd.google-apps.spreadsheet",
                 },
               },
@@ -135,7 +134,64 @@ function convertToGoogleTestConfig() {
     config: runConfig,
   }
 
-  const tests = []
+  const tests = [
+    {
+      message: "Execution should be successful",
+      assertions: [
+        {
+          message: "Should have converted DOCX to Google Docs",
+          assertFn: (_testConfig, _procResult, _ctx, _expect, h) => {
+            const a = h.findAction("attachment.store", {
+              "arg.toMimeType": "application/vnd.google-apps.document",
+            })
+            return (
+              h.expectStatus() &&
+              h.expectActionExecuted(a, "DOCX conversion") &&
+              h.expectActionMeta(
+                a,
+                "attachment.stored.location",
+                /.*\/sample-from-docx$/,
+              )
+            )
+          },
+        },
+        {
+          message: "Should have converted XLSX to Google Spreadsheet",
+          assertFn: (_testConfig, _procResult, _ctx, _expect, h) => {
+            const a = h.findAction("attachment.store", {
+              "arg.toMimeType": "application/vnd.google-apps.spreadsheet",
+            })
+            return (
+              h.expectStatus() &&
+              h.expectActionExecuted(a, "XLSX conversion") &&
+              h.expectActionMeta(
+                a,
+                "attachment.stored.location",
+                /.*\/sample-from-xlsx$/,
+              )
+            )
+          },
+        },
+        {
+          message: "Should have converted PPTX to Google Presentation",
+          assertFn: (_testConfig, _procResult, _ctx, _expect, h) => {
+            const a = h.findAction("attachment.store", {
+              "arg.toMimeType": "application/vnd.google-apps.presentation",
+            })
+            return (
+              h.expectStatus() &&
+              h.expectActionExecuted(a, "PPTX conversion") &&
+              h.expectActionMeta(
+                a,
+                "attachment.stored.location",
+                /.*\/sample-from-pptx$/,
+              )
+            )
+          },
+        },
+      ],
+    },
+  ]
 
   const testConfig = {
     example,
@@ -147,12 +203,16 @@ function convertToGoogleTestConfig() {
   return testConfig
 }
 
-function convertToGoogleTest() {
+async function convertToGoogleTest() {
   const testConfig = convertToGoogleTestConfig()
-  return GmailProcessorLib.E2E.runTests(
+  return await GmailProcessorLib.E2E.runTests(
     testConfig,
     false,
     E2E_REPO_BRANCH,
-    GmailProcessorLib.RunMode.DANGEROUS,
+    GmailProcessorLib.EnvProvider.defaultContext({
+      runMode: GmailProcessorLib.RunMode.DANGEROUS,
+      cacheService: CacheService,
+      propertiesService: PropertiesService,
+    }),
   )
 }

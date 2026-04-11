@@ -1,4 +1,3 @@
-import { ProcessingStatus } from "../../lib/Context"
 import { Config } from "../../lib/config/Config"
 import { MarkProcessedMethod } from "../../lib/config/SettingsConfig"
 import { E2EInitConfig, E2ETest, E2ETestConfig } from "../../lib/e2e/E2E"
@@ -66,9 +65,9 @@ export const tests: E2ETest[] = [
     message: "No failures",
     assertions: [
       {
-        message: "Processing status should be OK",
-        assertFn: (_testConfig, procResult) =>
-          procResult.status === ProcessingStatus.OK,
+        message: "Processing should be successful",
+        assertFn: (_testConfig, _procResult, _ctx, _expect, h) =>
+          h.expectStatus(),
       },
     ],
   },

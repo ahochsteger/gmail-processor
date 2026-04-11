@@ -19,7 +19,8 @@
         {
           "actions": [
             {
-              "name": "custom.parseInvoice"
+              "name": "custom.parseInvoice",
+              "processingStage": "pre-main"
             }
           ],
           "attachments": [
@@ -31,7 +32,7 @@
                 {
                   "name": "attachment.store",
                   "args": {
-                    "location": "/GmailProcessor-Tests/e2e/customActionsAdvanced/{{message.invoiceNumber}}/{{attachment.name}}",
+                    "location": "/GmailProcessor-Tests/e2e/{{date.now|formatDate('yyyy-MM-dd')}}/advanced/customActionsAdvanced/{{custom.invoiceNumber}}/{{attachment.name}}",
                     "conflictStrategy": "keep"
                   }
                 }

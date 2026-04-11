@@ -65,9 +65,9 @@ function legacyExpressionsTestConfig() {
       message: "No failures",
       assertions: [
         {
-          message: "Processing status should be OK",
-          assertFn: (_testConfig, procResult) =>
-            procResult.status === GmailProcessorLib.ProcessingStatus.OK,
+          message: "Processing should be successful",
+          assertFn: (_testConfig, _procResult, _ctx, _expect, h) =>
+            h.expectStatus(),
         },
       ],
     },
@@ -83,12 +83,16 @@ function legacyExpressionsTestConfig() {
   return testConfig
 }
 
-function legacyExpressionsTest() {
+async function legacyExpressionsTest() {
   const testConfig = legacyExpressionsTestConfig()
-  return GmailProcessorLib.E2E.runTests(
+  return await GmailProcessorLib.E2E.runTests(
     testConfig,
     false,
     E2E_REPO_BRANCH,
-    GmailProcessorLib.RunMode.DANGEROUS,
+    GmailProcessorLib.EnvProvider.defaultContext({
+      runMode: GmailProcessorLib.RunMode.DANGEROUS,
+      cacheService: CacheService,
+      propertiesService: PropertiesService,
+    }),
   )
 }

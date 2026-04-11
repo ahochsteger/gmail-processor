@@ -31,7 +31,7 @@ function actionAttachmentExtractTextRun() {
                 name: "attachment.extractText",
                 args: {
                   docsFileLocation:
-                    "/GmailProcessor-Tests/e2e/actionAttachmentExtractText/{{attachment.name.match.basename}} (Google Docs)",
+                    "/GmailProcessor-Tests/e2e/{{date.now|formatDate('yyyy-MM-dd')}}/actions/actionAttachmentExtractText/{{attachment.name.match.basename}} (Google Docs)",
                   extract:
                     "Invoice date:\\s*(?<invoiceDate>[A-Za-z]{3} [0-9]{1,2}, [0-9]{4})\\s*Invoice number:\\s*(?<invoiceNumber>[0-9]+)\\s*Payment due:\\s(?<paymentDueDays>[0-9]+)\\sdays after invoice date",
                 },
@@ -44,7 +44,7 @@ function actionAttachmentExtractTextRun() {
                 args: {
                   conflictStrategy: "update",
                   location:
-                    "/GmailProcessor-Tests/e2e/actionAttachmentExtractText/{{attachment.name.match.basename}}-number-{{attachment.extracted.match.invoiceNumber}}-date-{{attachment.extracted.match.invoiceDate|formatDate('yyyy-MM-dd')}}-due-{{attachment.extracted.match.paymentDueDays}}-days.pdf",
+                    "/GmailProcessor-Tests/e2e/{{date.now|formatDate('yyyy-MM-dd')}}/actions/actionAttachmentExtractText/{{attachment.name.match.basename}}-number-{{attachment.extracted.match.invoiceNumber}}-date-{{attachment.extracted.match.invoiceDate|formatDate('yyyy-MM-dd')}}-due-{{attachment.extracted.match.paymentDueDays}}-days.pdf",
                   description:
                     "Invoice number: {{attachment.extracted.match.invoiceNumber}}\nInvoice date: {{attachment.extracted.match.invoiceDate|formatDate('yyyy-MM-dd')}}\nPayment due: {{attachment.extracted.match.paymentDueDays}} days",
                 },
@@ -56,5 +56,8 @@ function actionAttachmentExtractTextRun() {
     ],
   }
 
-  return GmailProcessorLib.run(config, "dry-run")
+  return GmailProcessorLib.run(config, "dry-run", [], undefined, {
+    cacheService: CacheService,
+    propertiesService: PropertiesService,
+  })
 }

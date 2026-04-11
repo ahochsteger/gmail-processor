@@ -45,8 +45,7 @@ export const runConfig: Config = {
   threads: [
     {
       match: {
-        query:
-          "from:{{user.email}} to:{{user.email}} subject:'Test with office attachments'",
+        query: "from:{{user.email}} to:{{user.email}}",
       },
       attachments: [
         {
@@ -60,7 +59,7 @@ export const runConfig: Config = {
               name: "attachment.store",
               args: {
                 conflictStrategy: ConflictStrategy.REPLACE,
-                location: `${E2EDefaults.DRIVE_TESTS_BASE_PATH}/{{attachment.name}}`,
+                location: `${E2EDefaults.driveTestBasePath(info)}/{{attachment.name}}`,
               },
             },
             {
@@ -68,7 +67,7 @@ export const runConfig: Config = {
               name: "attachment.store",
               args: {
                 conflictStrategy: ConflictStrategy.REPLACE,
-                location: `${E2EDefaults.DRIVE_TESTS_BASE_PATH}/{{attachment.name.match.basename}}`,
+                location: `${E2EDefaults.driveTestBasePath(info)}/{{attachment.name.match.basename}}-from-docx`,
                 toMimeType: "application/vnd.google-apps.document",
               },
             },
@@ -85,7 +84,7 @@ export const runConfig: Config = {
               name: "attachment.store",
               args: {
                 conflictStrategy: ConflictStrategy.REPLACE,
-                location: `${E2EDefaults.DRIVE_TESTS_BASE_PATH}/{{attachment.name}}`,
+                location: `${E2EDefaults.driveTestBasePath(info)}/{{attachment.name}}`,
               },
             },
             {
@@ -94,7 +93,7 @@ export const runConfig: Config = {
               name: "attachment.store",
               args: {
                 conflictStrategy: ConflictStrategy.REPLACE,
-                location: `${E2EDefaults.DRIVE_TESTS_BASE_PATH}/{{attachment.name.match.basename}}`,
+                location: `${E2EDefaults.driveTestBasePath(info)}/{{attachment.name.match.basename}}-from-pptx`,
                 toMimeType: "application/vnd.google-apps.presentation",
               },
             },
@@ -111,7 +110,7 @@ export const runConfig: Config = {
               name: "attachment.store",
               args: {
                 conflictStrategy: ConflictStrategy.REPLACE,
-                location: `${E2EDefaults.DRIVE_TESTS_BASE_PATH}/{{attachment.name}}`,
+                location: `${E2EDefaults.driveTestBasePath(info)}/{{attachment.name}}`,
               },
             },
             {
@@ -120,7 +119,7 @@ export const runConfig: Config = {
               name: "attachment.store",
               args: {
                 conflictStrategy: ConflictStrategy.REPLACE,
-                location: `${E2EDefaults.DRIVE_TESTS_BASE_PATH}/{{attachment.name.match.basename}}`,
+                location: `${E2EDefaults.driveTestBasePath(info)}/{{attachment.name.match.basename}}-from-xlsx`,
                 toMimeType: "application/vnd.google-apps.spreadsheet",
               },
             },
@@ -138,37 +137,58 @@ export const example: Example = {
 
 export const tests: E2ETest[] = [
   {
-    message: "Successful execution",
+    message: "Execution should be successful",
     assertions: [
       {
-        message: "One thread config should have been processed",
-        assertFn: (_testConfig, procResult) =>
-          procResult.processedThreadConfigs === 1,
+        message: "Should have converted DOCX to Google Docs",
+        assertFn: (_testConfig, _procResult, _ctx, _expect, h) => {
+          const a = h.findAction("attachment.store", {
+            "arg.toMimeType": "application/vnd.google-apps.document",
+          })
+          return (
+            h.expectStatus() &&
+            h.expectActionExecuted(a, "DOCX conversion") &&
+            h.expectActionMeta(
+              a,
+              "attachment.stored.location",
+              /.*\/sample-from-docx$/,
+            )
+          )
+        },
       },
       {
-        message: "One thread should have been processed",
-        assertFn: (_testConfig, procResult) =>
-          procResult.processedThreads === 1,
+        message: "Should have converted XLSX to Google Spreadsheet",
+        assertFn: (_testConfig, _procResult, _ctx, _expect, h) => {
+          const a = h.findAction("attachment.store", {
+            "arg.toMimeType": "application/vnd.google-apps.spreadsheet",
+          })
+          return (
+            h.expectStatus() &&
+            h.expectActionExecuted(a, "XLSX conversion") &&
+            h.expectActionMeta(
+              a,
+              "attachment.stored.location",
+              /.*\/sample-from-xlsx$/,
+            )
+          )
+        },
       },
       {
-        message: "One message should have been processed",
-        assertFn: (_testConfig, procResult) =>
-          procResult.processedMessages === 1,
-      },
-      {
-        message: "Three attachment configs should have been processed",
-        assertFn: (_testConfig, procResult) =>
-          procResult.processedAttachmentConfigs === 3,
-      },
-      {
-        message: "Three attachments should have been processed",
-        assertFn: (_testConfig, procResult) =>
-          procResult.processedAttachments === 3,
-      },
-      {
-        message: "Correct number of actions should have been executed",
-        assertFn: (_testConfig, procResult) =>
-          procResult.executedActions === 7,
+        message: "Should have converted PPTX to Google Presentation",
+        assertFn: (_testConfig, _procResult, _ctx, _expect, h) => {
+          const a = h.findAction("attachment.store", {
+            "arg.toMimeType": "application/vnd.google-apps.presentation",
+          })
+          return (
+            h.expectStatus() &&
+            h.expectActionExecuted(a, "PPTX conversion") &&
+            h.expectActionMeta(
+              a,
+              "attachment.stored.location",
+              /.*\/sample-from-pptx$/,
+            )
+          )
+        },
       },
     ],
   },

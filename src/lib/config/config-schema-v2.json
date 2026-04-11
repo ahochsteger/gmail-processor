@@ -154,6 +154,21 @@
                                     "title": "description",
                                     "type": "string"
                                 },
+                                "incrementPrefix": {
+                                    "description": "The prefix to be used for the increment number in case of ConflictStrategy.INCREMENT.\nTypical naming conventions: `_` for file_1.txt, ` (` for file (1).txt\nDefault: ` (`",
+                                    "title": "incrementPrefix",
+                                    "type": "string"
+                                },
+                                "incrementStart": {
+                                    "description": "The starting number to be used for the increment number in case of ConflictStrategy.INCREMENT.\nDefault: `1`",
+                                    "title": "incrementStart",
+                                    "type": "number"
+                                },
+                                "incrementSuffix": {
+                                    "description": "The suffix to be used for the increment number in case of ConflictStrategy.INCREMENT.\nTypical naming conventions: empty string for file_1.txt, `)` for file (1).txt\nDefault: `)`",
+                                    "title": "incrementSuffix",
+                                    "type": "string"
+                                },
                                 "location": {
                                     "description": "The location (path + filename) of the Google Drive file.\nFor shared folders or Team Drives prepend the location with the folder ID like `{id:<folderId>}/...`.\nSupports placeholder substitution.",
                                     "title": "location",
@@ -1341,6 +1356,7 @@
             "enum": [
                 "backup",
                 "error",
+                "increment",
                 "keep",
                 "replace",
                 "skip",
@@ -1491,6 +1507,21 @@
                     "title": "includeHeader",
                     "type": "boolean"
                 },
+                "incrementPrefix": {
+                    "description": "The prefix to be used for the increment number in case of ConflictStrategy.INCREMENT.\nTypical naming conventions: `_` for file_1.txt, ` (` for file (1).txt\nDefault: ` (`",
+                    "title": "incrementPrefix",
+                    "type": "string"
+                },
+                "incrementStart": {
+                    "description": "The starting number to be used for the increment number in case of ConflictStrategy.INCREMENT.\nDefault: `1`",
+                    "title": "incrementStart",
+                    "type": "number"
+                },
+                "incrementSuffix": {
+                    "description": "The suffix to be used for the increment number in case of ConflictStrategy.INCREMENT.\nTypical naming conventions: empty string for file_1.txt, `)` for file (1).txt\nDefault: `)`",
+                    "title": "incrementSuffix",
+                    "type": "string"
+                },
                 "location": {
                     "description": "The location (path + filename) of the Google Drive file.\nFor shared folders or Team Drives prepend the location with the folder ID like `{id:<folderId>}/...`.\nSupports placeholder substitution.",
                     "title": "location",
@@ -1532,6 +1563,21 @@
                     "description": "The header to pass to the URL. May be used to pass an authentication token.\nSupports placeholder substitution.",
                     "title": "headers"
                 },
+                "incrementPrefix": {
+                    "description": "The prefix to be used for the increment number in case of ConflictStrategy.INCREMENT.\nTypical naming conventions: `_` for file_1.txt, ` (` for file (1).txt\nDefault: ` (`",
+                    "title": "incrementPrefix",
+                    "type": "string"
+                },
+                "incrementStart": {
+                    "description": "The starting number to be used for the increment number in case of ConflictStrategy.INCREMENT.\nDefault: `1`",
+                    "title": "incrementStart",
+                    "type": "number"
+                },
+                "incrementSuffix": {
+                    "description": "The suffix to be used for the increment number in case of ConflictStrategy.INCREMENT.\nTypical naming conventions: empty string for file_1.txt, `)` for file (1).txt\nDefault: `)`",
+                    "title": "incrementSuffix",
+                    "type": "string"
+                },
                 "location": {
                     "description": "The location (path + filename) of the Google Drive file.\nFor shared folders or Team Drives prepend the location with the folder ID like `{id:<folderId>}/...`.\nSupports placeholder substitution.",
                     "title": "location",
@@ -1567,6 +1613,21 @@
                 "description": {
                     "description": "The description to be attached to the Google Drive file.\nSupports placeholder substitution.",
                     "title": "description",
+                    "type": "string"
+                },
+                "incrementPrefix": {
+                    "description": "The prefix to be used for the increment number in case of ConflictStrategy.INCREMENT.\nTypical naming conventions: `_` for file_1.txt, ` (` for file (1).txt\nDefault: ` (`",
+                    "title": "incrementPrefix",
+                    "type": "string"
+                },
+                "incrementStart": {
+                    "description": "The starting number to be used for the increment number in case of ConflictStrategy.INCREMENT.\nDefault: `1`",
+                    "title": "incrementStart",
+                    "type": "number"
+                },
+                "incrementSuffix": {
+                    "description": "The suffix to be used for the increment number in case of ConflictStrategy.INCREMENT.\nTypical naming conventions: empty string for file_1.txt, `)` for file (1).txt\nDefault: `)`",
+                    "title": "incrementSuffix",
                     "type": "string"
                 },
                 "location": {
@@ -3049,6 +3110,21 @@
                     "title": "description",
                     "type": "string"
                 },
+                "incrementPrefix": {
+                    "description": "The prefix to be used for the increment number in case of ConflictStrategy.INCREMENT.\nTypical naming conventions: `_` for file_1.txt, ` (` for file (1).txt\nDefault: ` (`",
+                    "title": "incrementPrefix",
+                    "type": "string"
+                },
+                "incrementStart": {
+                    "description": "The starting number to be used for the increment number in case of ConflictStrategy.INCREMENT.\nDefault: `1`",
+                    "title": "incrementStart",
+                    "type": "number"
+                },
+                "incrementSuffix": {
+                    "description": "The suffix to be used for the increment number in case of ConflictStrategy.INCREMENT.\nTypical naming conventions: empty string for file_1.txt, `)` for file (1).txt\nDefault: `)`",
+                    "title": "incrementSuffix",
+                    "type": "string"
+                },
                 "location": {
                     "description": "The location (path + filename) of the Google Drive file.\nFor shared folders or Team Drives prepend the location with the folder ID like `{id:<folderId>}/...`.\nSupports placeholder substitution.",
                     "title": "location",
@@ -3084,6 +3160,21 @@
                 "description": {
                     "description": "The description to be attached to the Google Drive file.\nSupports placeholder substitution.",
                     "title": "description",
+                    "type": "string"
+                },
+                "incrementPrefix": {
+                    "description": "The prefix to be used for the increment number in case of ConflictStrategy.INCREMENT.\nTypical naming conventions: `_` for file_1.txt, ` (` for file (1).txt\nDefault: ` (`",
+                    "title": "incrementPrefix",
+                    "type": "string"
+                },
+                "incrementStart": {
+                    "description": "The starting number to be used for the increment number in case of ConflictStrategy.INCREMENT.\nDefault: `1`",
+                    "title": "incrementStart",
+                    "type": "number"
+                },
+                "incrementSuffix": {
+                    "description": "The suffix to be used for the increment number in case of ConflictStrategy.INCREMENT.\nTypical naming conventions: empty string for file_1.txt, `)` for file (1).txt\nDefault: `)`",
+                    "title": "incrementSuffix",
                     "type": "string"
                 },
                 "location": {
@@ -3151,6 +3242,21 @@
                     "description": "Include the message header (default: `true`)",
                     "title": "includeHeader",
                     "type": "boolean"
+                },
+                "incrementPrefix": {
+                    "description": "The prefix to be used for the increment number in case of ConflictStrategy.INCREMENT.\nTypical naming conventions: `_` for file_1.txt, ` (` for file (1).txt\nDefault: ` (`",
+                    "title": "incrementPrefix",
+                    "type": "string"
+                },
+                "incrementStart": {
+                    "description": "The starting number to be used for the increment number in case of ConflictStrategy.INCREMENT.\nDefault: `1`",
+                    "title": "incrementStart",
+                    "type": "number"
+                },
+                "incrementSuffix": {
+                    "description": "The suffix to be used for the increment number in case of ConflictStrategy.INCREMENT.\nTypical naming conventions: empty string for file_1.txt, `)` for file (1).txt\nDefault: `)`",
+                    "title": "incrementSuffix",
+                    "type": "string"
                 },
                 "location": {
                     "description": "The location (path + filename) of the Google Drive file.\nFor shared folders or Team Drives prepend the location with the folder ID like `{id:<folderId>}/...`.\nSupports placeholder substitution.",

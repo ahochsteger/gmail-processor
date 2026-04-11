@@ -1,3 +1,4 @@
+import { ContextMocks } from "../../test/mocks/ContextMocks"
 import { RegexUtils } from "./RegexUtils"
 
 describe("matchRegExp()", () => {
@@ -28,5 +29,29 @@ describe("matchRegExp()", () => {
     expect(matches?.groups?.germanDate).toEqual("14.7.2024")
     expect(matches?.groups?.shortGermanDate).toEqual("14.7.24")
     expect(matches?.groups?.isoDate).toEqual("2024-07-14")
+  })
+  it("should handle undefined string", () => {
+    const matches = RegexUtils.matchRegExp("^test$", undefined)
+    expect(matches).toBeNull()
+  })
+})
+
+describe("matchError()", () => {
+  it("should log a warning and return false", () => {
+    const ctx = ContextMocks.newProcessingContextMock()
+    const spy = jest.spyOn(ctx.log, "warn")
+    const result = RegexUtils.matchError(ctx, "test error")
+    expect(result).toBe(false)
+    expect(spy).toHaveBeenCalledWith("MATCH ERROR: test error")
+  })
+})
+
+describe("noMatch()", () => {
+  it("should log a debug message and return false", () => {
+    const ctx = ContextMocks.newProcessingContextMock()
+    const spy = jest.spyOn(ctx.log, "debug")
+    const result = RegexUtils.noMatch(ctx, "test no match")
+    expect(result).toBe(false)
+    expect(spy).toHaveBeenCalledWith("NO MATCH: test no match")
   })
 })

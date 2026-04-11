@@ -74,6 +74,7 @@ export class ContextMocks {
       config,
       actionRegistry: actionRegistry,
       timer: new Timer(config.settings.maxRuntime),
+      actionPromises: [],
     })
   }
 

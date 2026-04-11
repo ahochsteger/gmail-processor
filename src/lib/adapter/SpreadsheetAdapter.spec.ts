@@ -44,3 +44,27 @@ it("should log to an existing logsheet", () => {
   expect(mocks.spreadsheetApp.create).not.toHaveBeenCalled()
   expect(mocks.logSheet.appendRow).toHaveBeenCalled()
 })
+
+it("should skip logging if logSheetLocation is not set", () => {
+  const configNoLog = ConfigMocks.newDefaultConfig()
+  configNoLog.settings.logSheetLocation = ""
+  const mocksNoLog = MockFactory.newMocks(configNoLog)
+  const adapter = mocksNoLog.processingContext.proc.spreadsheetAdapter
+  const spy = jest.spyOn(mocksNoLog.envContext.log, "log")
+
+  adapter.log(mocksNoLog.attachmentContext, {
+    location: "test",
+    message: "skip me",
+  })
+  expect(mocksNoLog.logSheet.appendRow).not.toHaveBeenCalled()
+  expect(spy).toHaveBeenCalledWith(
+    expect.stringContaining("Skipping logsheet log"),
+    undefined,
+  )
+})
+
+it("should append rows when initializing with arguments", () => {
+  const adapter = mocks.processingContext.proc.spreadsheetAdapter
+  adapter.initLogSheet("arg1", "arg2")
+  expect(mocks.logSheet.appendRow).toHaveBeenCalledWith(["arg1", "arg2"])
+})

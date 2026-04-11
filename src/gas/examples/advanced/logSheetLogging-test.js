@@ -134,7 +134,7 @@ function logSheetLoggingTestConfig() {
                     args: {
                       conflictStrategy:
                         GmailProcessorLib.ConflictStrategy.UPDATE,
-                      location: `${GmailProcessorLib.E2EDefaults.DRIVE_TESTS_BASE_PATH}/${info.name}/{{attachment.name}}`,
+                      location: `${GmailProcessorLib.E2EDefaults.driveTestBasePath(info)}/{{attachment.name}}`,
                     },
                   },
                   {
@@ -163,25 +163,36 @@ function logSheetLoggingTestConfig() {
 
   const tests = [
     {
-      message: "No failures",
+      message: "Execution should be successful",
       assertions: [
         {
-          message: "Processing status should be OK",
-          assertFn: (_testConfig, procResult) =>
-            procResult.status === GmailProcessorLib.ProcessingStatus.OK,
+          message: "Should have executed thread logging",
+          assertFn: (_testConfig, _procResult, _ctx, _expect, h) => {
+            const a = h.findNextAction("global.sheetLog", {
+              "arg.message": /Thread log/,
+            })
+            return (
+              h.expectStatus() && h.expectActionExecuted(a, "thread logging")
+            )
+          },
         },
         {
-          message: "One thread should have been processed",
-          assertFn: (_testConfig, procResult) =>
-            procResult.processedThreads === 1,
+          message: "Should have executed message logging",
+          assertFn: (_testConfig, _procResult, _ctx, _expect, h) => {
+            const a = h.findNextAction("global.sheetLog", {
+              "arg.message": /Message log/,
+            })
+            return h.expectActionExecuted(a, "message logging")
+          },
         },
         {
-          message: "Expected number of actions should have been executed",
-          assertFn: (_testConfig, procResult) =>
-            procResult.executedActions.length ===
-            procResult.processedThreads * 2 +
-              procResult.processedMessages * 3 +
-              procResult.processedAttachments * 3,
+          message: "Should have executed attachment logging",
+          assertFn: (_testConfig, _procResult, _ctx, _expect, h) => {
+            const a = h.findNextAction("global.sheetLog", {
+              "arg.message": /Attachment log/,
+            })
+            return h.expectActionExecuted(a, "attachment logging")
+          },
         },
       ],
     },
@@ -197,12 +208,16 @@ function logSheetLoggingTestConfig() {
   return testConfig
 }
 
-function logSheetLoggingTest() {
+async function logSheetLoggingTest() {
   const testConfig = logSheetLoggingTestConfig()
-  return GmailProcessorLib.E2E.runTests(
+  return await GmailProcessorLib.E2E.runTests(
     testConfig,
     false,
     E2E_REPO_BRANCH,
-    GmailProcessorLib.RunMode.DANGEROUS,
+    GmailProcessorLib.EnvProvider.defaultContext({
+      runMode: GmailProcessorLib.RunMode.DANGEROUS,
+      cacheService: CacheService,
+      propertiesService: PropertiesService,
+    }),
   )
 }

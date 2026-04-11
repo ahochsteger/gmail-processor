@@ -65,7 +65,18 @@ function migrationAdvancedTestConfig() {
     migrationConfig,
   }
 
-  const tests = []
+  const tests = [
+    {
+      message: "Processing should be successful",
+      assertions: [
+        {
+          message: "No failures",
+          assertFn: (_testConfig, _procResult, _ctx, _expect, h) =>
+            h.expectStatus(),
+        },
+      ],
+    },
+  ]
 
   const testConfig = {
     example,
@@ -77,12 +88,16 @@ function migrationAdvancedTestConfig() {
   return testConfig
 }
 
-function migrationAdvancedTest() {
+async function migrationAdvancedTest() {
   const testConfig = migrationAdvancedTestConfig()
-  return GmailProcessorLib.E2E.runTests(
+  return await GmailProcessorLib.E2E.runTests(
     testConfig,
     false,
     E2E_REPO_BRANCH,
-    GmailProcessorLib.RunMode.DANGEROUS,
+    GmailProcessorLib.EnvProvider.defaultContext({
+      runMode: GmailProcessorLib.RunMode.DANGEROUS,
+      cacheService: CacheService,
+      propertiesService: PropertiesService,
+    }),
   )
 }

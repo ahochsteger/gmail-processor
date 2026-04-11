@@ -1,0 +1,130 @@
+import { ConflictStrategy } from "../../lib/adapter/GDriveAdapter"
+import { Config } from "../../lib/config/Config"
+import { MarkProcessedMethod } from "../../lib/config/SettingsConfig"
+import { E2EInitConfig, E2ETest, E2ETestConfig } from "../../lib/e2e/E2E"
+import { E2EDefaults } from "../../lib/e2e/E2EDefaults"
+import { Example, ExampleCategory, ExampleInfo } from "../Example"
+
+export const info: ExampleInfo = {
+  name: "conflictStrategy",
+  title: "Conflict Strategy",
+  description: "Test different conflict strategies like increment.",
+  category: ExampleCategory.FEATURES,
+}
+
+export const initConfig: E2EInitConfig = {
+  mails: [
+    {
+      attachments: ["sample.txt"],
+    },
+  ],
+}
+
+export const runConfig: Config = {
+  description: info.description,
+  settings: {
+    logSheetLocation:
+      "/GmailProcessor-Tests/logsheet-{{date.now|formatDate('yyyy-MM')}}",
+    markProcessedMethod: MarkProcessedMethod.MARK_MESSAGE_READ,
+  },
+  global: {
+    thread: {
+      match: {
+        query: `has:attachment -in:trash -in:drafts -in:spam after:{{date.now|formatDate('yyyy-MM-dd')}} is:unread subject:"${E2EDefaults.EMAIL_SUBJECT_PREFIX}${info.name}"`,
+        maxMessageCount: -1,
+        minMessageCount: 1,
+      },
+    },
+  },
+  threads: [
+    {
+      match: {
+        query: "from:{{user.email}} to:{{user.email}}",
+      },
+      attachments: [
+        {
+          description: "Process *.txt attachment files",
+          match: {
+            name: "(?<basename>.+)\\.txt$",
+          },
+          actions: [
+            {
+              description: "Store original txt file",
+              name: "attachment.store",
+              args: {
+                conflictStrategy: ConflictStrategy.REPLACE,
+                location: `${E2EDefaults.driveTestBasePath(info)}/{{attachment.name}}`,
+              },
+            },
+            {
+              description:
+                "Store the same txt file again with increment strategy",
+              name: "attachment.store",
+              args: {
+                conflictStrategy: ConflictStrategy.INCREMENT,
+                incrementPrefix: "_",
+                incrementSuffix: "",
+                incrementStart: 2,
+                location: `${E2EDefaults.driveTestBasePath(info)}/{{attachment.name}}`,
+              },
+            },
+          ],
+        },
+      ],
+    },
+  ],
+}
+
+export const example: Example = {
+  info,
+  config: runConfig,
+}
+
+export const tests: E2ETest[] = [
+  {
+    message: "Execution should be successful",
+    assertions: [
+      {
+        message: "Should have executed storage with REPLACE strategy",
+        assertFn: (_testConfig, _procResult, _ctx, _expect, h) => {
+          const a = h.findNextAction("attachment.store", {
+            "arg.conflictStrategy": ConflictStrategy.REPLACE,
+          })
+          return (
+            h.expectStatus() &&
+            h.expectActionExecuted(a, "REPLACE action") &&
+            h.expectActionMeta(
+              a,
+              "attachment.stored.location",
+              /.*\/sample\.txt$/,
+            )
+          )
+        },
+      },
+      {
+        message: "Should have executed storage with INCREMENT strategy",
+        assertFn: (_testConfig, _procResult, _ctx, _expect, h) => {
+          const a = h.findNextAction("attachment.store", {
+            "arg.conflictStrategy": ConflictStrategy.INCREMENT,
+          })
+          return (
+            h.expectActionExecuted(a, "INCREMENT action") &&
+            h.expectActionMeta(
+              a,
+              "attachment.stored.location",
+              /.*\/sample_2\.txt$/,
+            )
+          )
+        },
+      },
+    ],
+  },
+]
+
+export const testConfig: E2ETestConfig = {
+  example,
+  info,
+  initConfig,
+  runConfig,
+  tests,
+}

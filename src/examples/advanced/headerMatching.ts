@@ -1,4 +1,3 @@
-import { ProcessingStatus } from "../../lib/Context"
 import { ConflictStrategy } from "../../lib/adapter/GDriveAdapter"
 import { Config } from "../../lib/config/Config"
 import { MarkProcessedMethod } from "../../lib/config/SettingsConfig"
@@ -67,7 +66,7 @@ export const runConfig: Config = {
                 {
                   name: "attachment.store",
                   args: {
-                    location: `${E2EDefaults.DRIVE_TESTS_BASE_PATH}/${info.name}/{{message.date|formatDate('yyyy-MM-dd')}}/{{message.subject}}-{{attachment.name}}`,
+                    location: `${E2EDefaults.driveTestBasePath(info)}/{{message.date|formatDate('yyyy-MM-dd')}}/{{message.subject}}-{{attachment.name}}`,
                     conflictStrategy: ConflictStrategy.KEEP,
                   },
                 },
@@ -87,41 +86,20 @@ export const example: Example = {
 
 export const tests: E2ETest[] = [
   {
-    message: "No failures",
+    message: "Execution should be successful",
     assertions: [
       {
-        message: "Processing status should be OK",
-        assertFn: (_testConfig, procResult) =>
-          procResult.status === ProcessingStatus.OK,
-      },
-      {
-        message: "One thread should have been processed",
-        assertFn: (_testConfig, procResult) =>
-          procResult.processedThreads === 1,
-      },
-      {
-        message: "One message should have been processed",
-        assertFn: (_testConfig, procResult) =>
-          procResult.processedMessages === 1,
-      },
-      {
-        message: "One attachment should have been processed",
-        assertFn: (_testConfig, procResult) =>
-          procResult.processedAttachments === 1,
-      },
-      {
-        message: "Expected number of actions should have been executed",
-        assertFn: (_testConfig, procResult) =>
-          procResult.executedActions.length ===
-          procResult.processedThreads + procResult.processedAttachments,
-      },
-      {
-        message: "Store action should have been executed",
-        assertFn: (_testConfig, procResult) => {
+        message: "Attachment should have been stored at the correct location",
+        assertFn: (_testConfig, _procResult, _ctx, _expect, h) => {
+          const a = h.findAction("attachment.store")
           return (
-            procResult.executedActions.filter(
-              (a) => a.config.name === "attachment.store",
-            ).length === procResult.processedAttachments
+            h.expectStatus() &&
+            h.expectActionExecuted(a, "attachment.store") &&
+            h.expectActionMeta(
+              a,
+              "attachment.stored.location",
+              /headerMatching-invoice\.pdf$/,
+            )
           )
         },
       },

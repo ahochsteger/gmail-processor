@@ -367,10 +367,7 @@ describe("Handle multiple messages", () => {
     )
   })
 })
-describe("Matching", () => {
-  test.todo("should handle a thread with matched messages")
-  test.todo("should handle a thread with one message and matched attachments")
-})
+
 describe("Placeholder Handling", () => {
   it("should find multiple occurrence of placeholder", () => {
     const s =

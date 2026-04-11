@@ -23,6 +23,56 @@ describe("run", () => {
       status: ProcessingStatus.OK,
     })
   })
+
+  it("should use default context if none is provided", () => {
+    // Mock GAS globals needed for defaultContext
+    const mockGlobals = [
+      "CacheService",
+      "DriveApp",
+      "DocumentApp",
+      "Drive",
+      "GmailApp",
+      "MailApp",
+      "SpreadsheetApp",
+      "Utilities",
+      "Session",
+      "UrlFetchApp",
+      "PropertiesService",
+    ]
+    mockGlobals.forEach((g) => {
+      ;(global as any)[g] = {
+        getScriptCache: () => ({ get: () => null, put: () => {} }),
+        getScriptTimeZone: () => "UTC",
+        getActiveUser: () => ({ getEmail: () => "test@example.com" }),
+        getUuid: () => "mock-uuid",
+        search: () => [],
+      }
+    })
+    const mockFolder = {
+      getFoldersByName: () => ({ hasNext: () => false }),
+      createFolder: () => mockFolder,
+      getFilesByName: () => ({ hasNext: () => false }),
+    }
+    const mockFile = { moveTo: () => {}, getUrl: () => "http://log" }
+    ;(global as any).DriveApp.getRootFolder = () => mockFolder
+    ;(global as any).DriveApp.getFileById = () => mockFile
+    const mockSheet = { appendRow: () => {} }
+    const mockSpreadsheet = {
+      getId: () => "sheet-id",
+      getSheets: () => [mockSheet],
+    }
+    ;(global as any).SpreadsheetApp.create = () => mockSpreadsheet
+    ;(global as any).SpreadsheetApp.openById = () => mockSpreadsheet
+
+    // We expect it to call GmailProcessor.runWithJson
+    const result = run(configJson, RunMode.SAFE_MODE)
+    expect(result.status).toEqual(ProcessingStatus.OK)
+
+    // Cleanup
+    mockGlobals.forEach((g) => {
+      delete (global as any)[g]
+    })
+  })
 })
 
 describe("v1 config compatibility", () => {

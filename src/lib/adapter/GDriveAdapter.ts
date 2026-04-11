@@ -20,6 +20,8 @@ export enum ConflictStrategy {
   BACKUP = "backup",
   /** Terminate processing with an error. */
   ERROR = "error",
+  /** Increment the file name if a file already exists. */
+  INCREMENT = "increment",
   /** Keep the existing file and create the new one with the same name. */
   KEEP = "keep",
   /** Replace the existing file with the new one. */
@@ -68,6 +70,9 @@ export class DriveUtils {
     location: string,
     fileData: FileContent,
     conflictStrategy: ConflictStrategy,
+    incrementPrefix: string = "(",
+    incrementSuffix: string = ")",
+    incrementStart: number = 1,
   ): GoogleAppsScript.Drive.File | undefined {
     const { locationInfo, parentFolder, existingFiles } =
       this.findFilesByLocation(ctx, location)
@@ -97,6 +102,48 @@ export class DriveUtils {
             `A file with the same name already exists at location: ${location}. Skipping file creation.`,
           )
           file = existingFile
+          break
+        case ConflictStrategy.INCREMENT:
+          if (
+            ctx.env.runMode === RunMode.DANGEROUS ||
+            ctx.env.runMode === RunMode.SAFE_MODE
+          ) {
+            ctx.log.warn(
+              `A file with the same name already exists at location: ${location}. Incrementing ...`,
+            )
+            let nextIndex = incrementStart
+            let currentFilename = ""
+            const extensionIndex = locationInfo.filename.lastIndexOf(".")
+            const hasExtension = extensionIndex > 0
+            const baseName = hasExtension
+              ? locationInfo.filename.substring(0, extensionIndex)
+              : locationInfo.filename
+            const extension = hasExtension
+              ? locationInfo.filename.substring(extensionIndex)
+              : ""
+
+            while (true) {
+              currentFilename = `${baseName}${incrementPrefix}${nextIndex}${incrementSuffix}${extension}`
+              const existingIncrementedFiles =
+                parentFolder.getFilesByName(currentFilename)
+              if (!existingIncrementedFiles.hasNext()) {
+                break
+              }
+              nextIndex++
+            }
+
+            file = this.createFileInParent(
+              ctx,
+              parentFolder,
+              currentFilename,
+              fileData,
+            )
+          } else {
+            ctx.log.warn(
+              `A file with the same name already exists at location: ${location}. Skipping increment due to runMode ...`,
+            )
+            file = existingFile
+          }
           break
         case ConflictStrategy.REPLACE:
           if (ctx.env.runMode === RunMode.DANGEROUS) {
@@ -302,12 +349,18 @@ export class GDriveAdapter extends BaseAdapter {
     location: string,
     fileData: FileContent,
     conflictStrategy: ConflictStrategy,
+    incrementPrefix?: string,
+    incrementSuffix?: string,
+    incrementStart?: number,
   ): GoogleAppsScript.Drive.File | undefined {
     const file = DriveUtils.createFile(
       this.ctx,
       location,
       fileData,
       conflictStrategy,
+      incrementPrefix ?? " (",
+      incrementSuffix ?? ")",
+      incrementStart ?? 1,
     )
     return file
   }
@@ -321,6 +374,9 @@ export class GDriveAdapter extends BaseAdapter {
     entity: string,
     keyPrefix: string,
     actionName: string,
+    incrementPrefix?: string,
+    incrementSuffix?: string,
+    incrementStart?: number,
   ) {
     location = PatternUtil.substitute(ctx, location)
     const name = location.slice(location.lastIndexOf("/") + 1)
@@ -329,6 +385,9 @@ export class GDriveAdapter extends BaseAdapter {
       location,
       new FileContent(blob, name, PatternUtil.substitute(ctx, description)),
       conflictStrategy,
+      incrementPrefix,
+      incrementSuffix,
+      incrementStart,
     )
     const actionMeta = this.getActionMeta(
       file,
@@ -438,6 +497,9 @@ export class GDriveAdapter extends BaseAdapter {
       args.location,
       fileData,
       args.conflictStrategy,
+      args.incrementPrefix ?? " (",
+      args.incrementSuffix ?? ")",
+      args.incrementStart ?? 1,
     )
     return file
   }
@@ -451,10 +513,14 @@ export class GDriveAdapter extends BaseAdapter {
     actionMeta: MetaInfo = {},
   ): MetaInfo {
     if (file) {
+      const locationInfo = DriveUtils.extractLocationInfo(location)
+      const actualLocation = `${
+        locationInfo.folderId ? `{id:${locationInfo.folderId}}/` : "/"
+      }${locationInfo.folderPath ? locationInfo.folderPath + "/" : ""}${file.getName()}`
       const desc = `of the stored ${entity} (using action \`${actionName}\`)`
       actionMeta[`${keyPrefix}.stored.location`] = newMetaInfo(
         MetaInfoType.STRING,
-        location,
+        actualLocation,
         "Stored Location",
         `The location ${desc}`,
       )

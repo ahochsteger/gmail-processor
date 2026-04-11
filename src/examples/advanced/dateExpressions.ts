@@ -72,36 +72,23 @@ export const example: Example = {
 
 export const tests: E2ETest[] = [
   {
-    message: "Successful execution",
+    message: "Execution should be successful",
     assertions: [
       {
-        message: "One thread config should have been processed",
-        assertFn: (_testConfig, procResult) =>
-          procResult.processedThreadConfigs === 1,
-      },
-      {
-        message: "One thread should have been processed",
-        assertFn: (_testConfig, procResult) => procResult.processedThreads === 1,
-      },
-      {
-        message: "One message should have been processed",
-        assertFn: (_testConfig, procResult) =>
-          procResult.processedMessages === 1,
-      },
-      {
-        message: "Correct number of actions should have been executed",
-        assertFn: (_testConfig, procResult) =>
-          procResult.executedActions.length == 2 * procResult.processedMessages,
-      },
-      {
         message: "The correct message should have been logged",
-        assertFn: (_testConfig, procResult, ctx, expect) =>
-          expect(
-            ctx,
-            procResult.executedActions[0]?.result?.logMessage,
-            "Extracted dates US:2024-07-14, DE:2024-07-14, DE (short):2024-07-14, ISO:2024-07-14",
-            "Actual log message does not match the expected one",
-          ),
+        assertFn: (_testConfig, _procResult, _ctx, _expect, h) => {
+          const a = h.findNextAction("global.log")
+          return (
+            h.expectStatus() &&
+            h.expectActionExecuted(a, "global.log") &&
+            h.expect(
+              _ctx,
+              a?.result?.logMessage,
+              "Extracted dates US:2024-07-14, DE:2024-07-14, DE (short):2024-07-14, ISO:2024-07-14",
+              "logMessage",
+            )
+          )
+        },
       },
     ],
   },

@@ -53,7 +53,4 @@ describe("validate()", () => {
     validateV1Config(ConfigMocks.newDefaultV1ConfigJson())
     expect(validateV1Config.errors).toBeNull()
   })
-  test.todo(
-    "should remove additional properties (unsupported: see https://ajv.js.org/guide/modifying-data.html#general-considerations)",
-  )
 })

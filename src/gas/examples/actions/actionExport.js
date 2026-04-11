@@ -39,7 +39,7 @@ function actionExportRun() {
             name: "message.exportAsHtml",
             args: {
               location:
-                "/GmailProcessor-Tests/pr-291/message-{{message.id}}-{{message.subject}}.html",
+                "/GmailProcessor-Tests/e2e/{{date.now|formatDate('yyyy-MM-dd')}}/actions/actionExport/message-{{message.id}}-{{message.subject}}.html",
               conflictStrategy: "replace",
             },
           },
@@ -47,7 +47,7 @@ function actionExportRun() {
             name: "message.exportAsPdf",
             args: {
               location:
-                "/GmailProcessor-Tests/pr-291/message-{{message.id}}-{{message.subject}}.pdf",
+                "/GmailProcessor-Tests/e2e/{{date.now|formatDate('yyyy-MM-dd')}}/actions/actionExport/message-{{message.id}}-{{message.subject}}.pdf",
               conflictStrategy: "replace",
             },
           },
@@ -60,9 +60,13 @@ function actionExportRun() {
           query:
             "from:{{user.email}} to:{{user.email}} subject:'GmailProcessor-Test'",
         },
+        messages: [{}],
       },
     ],
   }
 
-  return GmailProcessorLib.run(config, "dry-run")
+  return GmailProcessorLib.run(config, "dry-run", [], undefined, {
+    cacheService: CacheService,
+    propertiesService: PropertiesService,
+  })
 }

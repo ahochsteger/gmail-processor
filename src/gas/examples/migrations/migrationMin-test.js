@@ -38,7 +38,18 @@ function migrationMinTestConfig() {
     migrationConfig,
   }
 
-  const tests = []
+  const tests = [
+    {
+      message: "No failures",
+      assertions: [
+        {
+          message: "Processing should be successful",
+          assertFn: (_testConfig, _procResult, _ctx, _expect, h) =>
+            h.expectStatus(),
+        },
+      ],
+    },
+  ]
 
   const testConfig = {
     example,
@@ -50,12 +61,16 @@ function migrationMinTestConfig() {
   return testConfig
 }
 
-function migrationMinTest() {
+async function migrationMinTest() {
   const testConfig = migrationMinTestConfig()
-  return GmailProcessorLib.E2E.runTests(
+  return await GmailProcessorLib.E2E.runTests(
     testConfig,
     false,
     E2E_REPO_BRANCH,
-    GmailProcessorLib.RunMode.DANGEROUS,
+    GmailProcessorLib.EnvProvider.defaultContext({
+      runMode: GmailProcessorLib.RunMode.DANGEROUS,
+      cacheService: CacheService,
+      propertiesService: PropertiesService,
+    }),
   )
 }

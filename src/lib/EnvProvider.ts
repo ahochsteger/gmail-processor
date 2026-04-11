@@ -1,6 +1,7 @@
 import {
   ContextType,
   EnvContext,
+  EnvInfo,
   MetaInfoType as MIT,
   MetaInfo,
   RunMode,
@@ -57,7 +58,7 @@ export class EnvProvider {
     return m
   }
 
-  public static defaultContext(runMode = RunMode.SAFE_MODE) {
+  public static defaultContext(envOverrides: Partial<EnvInfo> = {}) {
     const logger = new Log()
     const ctx: EnvContext = {
       type: ContextType.ENV,
@@ -70,11 +71,12 @@ export class EnvProvider {
         mailApp: MailApp,
         spreadsheetApp: SpreadsheetApp,
         utilities: Utilities,
-        runMode: runMode,
+        runMode: RunMode.SAFE_MODE,
         session: Session,
         timezone: Session.getScriptTimeZone() || "Etc/UTC",
         urlFetchApp: UrlFetchApp,
         propertiesService: PropertiesService,
+        ...envOverrides,
       },
       envMeta: {},
       log: logger,

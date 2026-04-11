@@ -67,16 +67,14 @@ function actionExportTestConfig() {
           {
             name: "message.exportAsHtml",
             args: {
-              location:
-                "/GmailProcessor-Tests/pr-291/message-{{message.id}}-{{message.subject}}.html",
+              location: `${GmailProcessorLib.E2EDefaults.driveTestBasePath(info)}/message-{{message.id}}-{{message.subject}}.html`,
               conflictStrategy: GmailProcessorLib.ConflictStrategy.REPLACE,
             },
           },
           {
             name: "message.exportAsPdf",
             args: {
-              location:
-                "/GmailProcessor-Tests/pr-291/message-{{message.id}}-{{message.subject}}.pdf",
+              location: `${GmailProcessorLib.E2EDefaults.driveTestBasePath(info)}/message-{{message.id}}-{{message.subject}}.pdf`,
               conflictStrategy: GmailProcessorLib.ConflictStrategy.REPLACE,
             },
           },
@@ -89,6 +87,7 @@ function actionExportTestConfig() {
           query:
             "from:{{user.email}} to:{{user.email}} subject:'GmailProcessor-Test'",
         },
+        messages: [{}],
       },
     ],
   }
@@ -98,7 +97,48 @@ function actionExportTestConfig() {
     config: runConfig,
   }
 
-  const tests = []
+  const tests = [
+    {
+      message: "Execution should be successful",
+      assertions: [
+        {
+          message: "Thread should have been exported as PDF",
+          assertFn: (_testConfig, _procResult, _ctx, _expect, h) => {
+            const a = h.findAction("thread.exportAsPdf", {
+              "arg.conflictStrategy":
+                GmailProcessorLib.ConflictStrategy.REPLACE,
+            })
+            return (
+              h.expectStatus() &&
+              h.expectActionExecuted(a, "thread.exportAsPdf") &&
+              h.expectActionMeta(
+                a,
+                "thread.stored.location",
+                /.*\/thread-.*-.*\.pdf$/,
+              )
+            )
+          },
+        },
+        {
+          message: "Message should have been exported as PDF",
+          assertFn: (_testConfig, _procResult, _ctx, _expect, h) => {
+            const a = h.findAction("message.exportAsPdf", {
+              "arg.conflictStrategy":
+                GmailProcessorLib.ConflictStrategy.REPLACE,
+            })
+            return (
+              h.expectActionExecuted(a, "message.exportAsPdf") &&
+              h.expectActionMeta(
+                a,
+                "message.stored.location",
+                /.*\/message-.*-.*\.pdf$/,
+              )
+            )
+          },
+        },
+      ],
+    },
+  ]
 
   const testConfig = {
     example,
@@ -110,12 +150,16 @@ function actionExportTestConfig() {
   return testConfig
 }
 
-function actionExportTest() {
+async function actionExportTest() {
   const testConfig = actionExportTestConfig()
-  return GmailProcessorLib.E2E.runTests(
+  return await GmailProcessorLib.E2E.runTests(
     testConfig,
     false,
     E2E_REPO_BRANCH,
-    GmailProcessorLib.RunMode.DANGEROUS,
+    GmailProcessorLib.EnvProvider.defaultContext({
+      runMode: GmailProcessorLib.RunMode.DANGEROUS,
+      cacheService: CacheService,
+      propertiesService: PropertiesService,
+    }),
   )
 }

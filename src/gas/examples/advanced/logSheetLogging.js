@@ -101,7 +101,7 @@ function logSheetLoggingRun() {
                     args: {
                       conflictStrategy: "update",
                       location:
-                        "/GmailProcessor-Tests/e2e/logSheetLogging/{{attachment.name}}",
+                        "/GmailProcessor-Tests/e2e/{{date.now|formatDate('yyyy-MM-dd')}}/advanced/logSheetLogging/{{attachment.name}}",
                     },
                   },
                   {
@@ -122,5 +122,8 @@ function logSheetLoggingRun() {
     ],
   }
 
-  return GmailProcessorLib.run(config, "dry-run")
+  return GmailProcessorLib.run(config, "dry-run", [], undefined, {
+    cacheService: CacheService,
+    propertiesService: PropertiesService,
+  })
 }

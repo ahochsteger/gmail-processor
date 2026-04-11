@@ -145,6 +145,7 @@ export abstract class BaseProcessor {
     addMeta: MetaInfo = {},
   ): MetaInfo {
     ctx.envMeta = { ...ctx.envMeta, ...addMeta }
+    ctx.meta = { ...ctx.meta, ...addMeta }
     return ctx.envMeta
   }
 
@@ -153,6 +154,7 @@ export abstract class BaseProcessor {
     addMeta: MetaInfo = {},
   ): MetaInfo {
     ctx.procMeta = { ...ctx.procMeta, ...addMeta }
+    ctx.meta = { ...ctx.meta, ...addMeta }
     return {
       ...ctx.envMeta,
       ...ctx.procMeta,
@@ -164,6 +166,7 @@ export abstract class BaseProcessor {
     addMeta: MetaInfo = {},
   ): MetaInfo {
     ctx.threadMeta = { ...ctx.threadMeta, ...addMeta }
+    ctx.meta = { ...ctx.meta, ...addMeta }
     return {
       ...ctx.envMeta,
       ...ctx.procMeta,
@@ -176,6 +179,7 @@ export abstract class BaseProcessor {
     addMeta: MetaInfo = {},
   ): MetaInfo {
     ctx.messageMeta = { ...ctx.messageMeta, ...addMeta }
+    ctx.meta = { ...ctx.meta, ...addMeta }
     return {
       ...ctx.envMeta,
       ...ctx.procMeta,
@@ -189,6 +193,7 @@ export abstract class BaseProcessor {
     addMeta: MetaInfo = {},
   ): MetaInfo {
     ctx.attachmentMeta = { ...ctx.attachmentMeta, ...addMeta }
+    ctx.meta = { ...ctx.meta, ...addMeta }
     return {
       ...ctx.envMeta,
       ...ctx.procMeta,

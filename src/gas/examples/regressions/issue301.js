@@ -22,7 +22,7 @@ function issue301Run() {
       {
         match: {
           query:
-            "from:{{user.email}} to:{{user.email}} subject:'Test with office attachments'",
+            "from:{{user.email}} to:{{user.email}} subject:([GmailProcessor-Test] issue301)",
         },
         attachments: [
           {
@@ -36,7 +36,8 @@ function issue301Run() {
                 name: "attachment.store",
                 args: {
                   conflictStrategy: "replace",
-                  location: "/GmailProcessor-Tests/e2e/{{attachment.name}}",
+                  location:
+                    "/GmailProcessor-Tests/e2e/{{date.now|formatDate('yyyy-MM-dd')}}/regressions/issue301/{{attachment.name}}",
                 },
               },
               {
@@ -45,7 +46,7 @@ function issue301Run() {
                 args: {
                   conflictStrategy: "replace",
                   location:
-                    "/GmailProcessor-Tests/e2e/{{attachment.name.match.basename}}",
+                    "/GmailProcessor-Tests/e2e/{{date.now|formatDate('yyyy-MM-dd')}}/regressions/issue301/{{attachment.name.match.basename}}",
                   toMimeType: "application/vnd.google-apps.document",
                 },
               },
@@ -62,7 +63,8 @@ function issue301Run() {
                 name: "attachment.store",
                 args: {
                   conflictStrategy: "replace",
-                  location: "/GmailProcessor-Tests/e2e/{{attachment.name}}",
+                  location:
+                    "/GmailProcessor-Tests/e2e/{{date.now|formatDate('yyyy-MM-dd')}}/regressions/issue301/{{attachment.name}}",
                 },
               },
               {
@@ -72,7 +74,7 @@ function issue301Run() {
                 args: {
                   conflictStrategy: "replace",
                   location:
-                    "/GmailProcessor-Tests/e2e/{{attachment.name.match.basename}}",
+                    "/GmailProcessor-Tests/e2e/{{date.now|formatDate('yyyy-MM-dd')}}/regressions/issue301/{{attachment.name.match.basename}}",
                   toMimeType: "application/vnd.google-apps.presentation",
                 },
               },
@@ -89,7 +91,8 @@ function issue301Run() {
                 name: "attachment.store",
                 args: {
                   conflictStrategy: "replace",
-                  location: "/GmailProcessor-Tests/e2e/{{attachment.name}}",
+                  location:
+                    "/GmailProcessor-Tests/e2e/{{date.now|formatDate('yyyy-MM-dd')}}/regressions/issue301/{{attachment.name}}",
                 },
               },
               {
@@ -99,7 +102,7 @@ function issue301Run() {
                 args: {
                   conflictStrategy: "replace",
                   location:
-                    "/GmailProcessor-Tests/e2e/{{attachment.name.match.basename}}",
+                    "/GmailProcessor-Tests/e2e/{{date.now|formatDate('yyyy-MM-dd')}}/regressions/issue301/{{attachment.name.match.basename}}",
                   toMimeType: "application/vnd.google-apps.spreadsheet",
                 },
               },
@@ -110,5 +113,8 @@ function issue301Run() {
     ],
   }
 
-  return GmailProcessorLib.run(config, "dry-run")
+  return GmailProcessorLib.run(config, "dry-run", [], undefined, {
+    cacheService: CacheService,
+    propertiesService: PropertiesService,
+  })
 }

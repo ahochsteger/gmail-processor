@@ -1,7 +1,6 @@
 import { E2EDefaults } from "../../../src/lib/e2e/E2EDefaults"
 import { E2EInitConfig, E2ETest, E2ETestConfig } from "../../lib/e2e/E2E"
 import { Example, ExampleCategory, ExampleInfo } from "../Example"
-import { ProcessingStatus } from "./../../lib/Context"
 import { ConflictStrategy } from "./../../lib/adapter/GDriveAdapter"
 import { ProcessingStage } from "./../../lib/config/ActionConfig"
 import { Config } from "./../../lib/config/Config"
@@ -56,7 +55,7 @@ export const runConfig: Config = {
                 "Extract the text from the body of the PDF attachment using language auto-detection.",
               name: "attachment.extractText",
               args: {
-                docsFileLocation: `${E2EDefaults.DRIVE_TESTS_BASE_PATH}/${info.name}/{{attachment.name.match.basename}} (Google Docs)`,
+                docsFileLocation: `${E2EDefaults.driveTestBasePath(info)}/{{attachment.name.match.basename}} (Google Docs)`,
                 extract:
                   "Invoice date:\\s*(?<invoiceDate>[A-Za-z]{3} [0-9]{1,2}, [0-9]{4})\\s*Invoice number:\\s*(?<invoiceNumber>[0-9]+)\\s*Payment due:\\s(?<paymentDueDays>[0-9]+)\\sdays after invoice date",
               },
@@ -68,7 +67,7 @@ export const runConfig: Config = {
               name: "attachment.store",
               args: {
                 conflictStrategy: ConflictStrategy.UPDATE,
-                location: `${E2EDefaults.DRIVE_TESTS_BASE_PATH}/${info.name}/{{attachment.name.match.basename}}-number-{{attachment.extracted.match.invoiceNumber}}-date-{{attachment.extracted.match.invoiceDate|formatDate('yyyy-MM-dd')}}-due-{{attachment.extracted.match.paymentDueDays}}-days.pdf`,
+                location: `${E2EDefaults.driveTestBasePath(info)}/{{attachment.name.match.basename}}-number-{{attachment.extracted.match.invoiceNumber}}-date-{{attachment.extracted.match.invoiceDate|formatDate('yyyy-MM-dd')}}-due-{{attachment.extracted.match.paymentDueDays}}-days.pdf`,
                 description:
                   "Invoice number: {{attachment.extracted.match.invoiceNumber}}\nInvoice date: {{attachment.extracted.match.invoiceDate|formatDate('yyyy-MM-dd')}}\nPayment due: {{attachment.extracted.match.paymentDueDays}} days",
               },
@@ -87,68 +86,51 @@ export const example: Example = {
 
 export const tests: E2ETest[] = [
   {
-    message: "Successful execution",
+    message: "Execution should be successful",
     assertions: [
       {
-        message: "One thread config should have been processed",
-        assertFn: (_testConfig, procResult) =>
-          procResult.processedThreadConfigs === 1,
+        message: "Invoice data should have been correctly extracted",
+        assertFn: (_testConfig, _procResult, _ctx, _expect, h) => {
+          const a = h.findAction("attachment.extractText", {
+            "arg.extract":
+              "Invoice date:\\s*(?<invoiceDate>[A-Za-z]{3} [0-9]{1,2}, [0-9]{4})\\s*Invoice number:\\s*(?<invoiceNumber>[0-9]+)\\s*Payment due:\\s(?<paymentDueDays>[0-9]+)\\sdays after invoice date",
+          })
+          return (
+            h.expectStatus() &&
+            h.expectActionExecuted(a, "attachment.extractText") &&
+            h.expectActionMeta(
+              a,
+              "meta.attachment.extracted.match.invoiceNumber",
+              "161126",
+            ) &&
+            h.expectActionMeta(
+              a,
+              "meta.attachment.extracted.match.invoiceDate",
+              "Nov 26, 2016",
+            ) &&
+            h.expectActionMeta(
+              a,
+              "meta.attachment.extracted.match.paymentDueDays",
+              "30",
+            )
+          )
+        },
       },
       {
-        message: "One thread should have been processed",
-        assertFn: (_testConfig, procResult) => procResult.processedThreads === 1,
-      },
-      {
-        message: "One message should have been processed",
-        assertFn: (_testConfig, procResult) =>
-          procResult.processedMessages === 1,
-      },
-      {
-        message: "Correct number of actions should have been executed",
-        assertFn: (_testConfig, procResult) =>
-          procResult.executedActions.length ==
-          procResult.processedMessages + procResult.processedAttachments * 2,
-      },
-    ],
-  },
-  {
-    message: "No failures",
-    assertions: [
-      {
-        message: "Processing status should not be ERROR",
-        assertFn: (_testConfig, procResult) =>
-          procResult.status !== ProcessingStatus.ERROR,
-      },
-      {
-        message: "No error should have occurred",
-        assertFn: (_testConfig, procResult) => procResult.error === undefined,
-      },
-      {
-        message: "No action should have failed",
-        assertFn: (_testConfig, procResult) =>
-          procResult.failedAction === undefined,
-      },
-    ],
-  },
-  {
-    message: "Skipped tests",
-    assertions: [
-      {
-        message: "Processing status should not be ERROR",
-        assertFn: (_testConfig, procResult) =>
-          procResult.status !== ProcessingStatus.ERROR,
-        skip: true,
-      },
-      {
-        message: "No error should have occurred",
-        assertFn: (_testConfig, procResult) => procResult.error === undefined,
-        skip: true,
-      },
-      {
-        message: "No action should have failed",
-        assertFn: (_testConfig, procResult) =>
-          procResult.failedAction === undefined,
-        skip: true,
+        message: "Attachment should have been stored at the correct path",
+        assertFn: (_testConfig, _procResult, _ctx, _expect, h) => {
+          const a = h.findAction("attachment.store", {
+            "arg.conflictStrategy": ConflictStrategy.UPDATE,
+          })
+          return (
+            h.expectActionExecuted(a, "attachment.store") &&
+            h.expectActionMeta(
+              a,
+              "meta.attachment.stored.location",
+              /.*\/invoice-number-161126-date-2016-11-26-due-30-days\.pdf$/,
+            )
+          )
+        },
       },
     ],
   },

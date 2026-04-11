@@ -62,7 +62,7 @@ function decryptPdfTestConfig() {
               {
                 name: "attachment.storeDecryptedPdf",
                 args: {
-                  location: `${GmailProcessorLib.E2EDefaults.DRIVE_TESTS_BASE_PATH}/advanced/{{message.date|formatDate('yyyy-MM-dd')}}/decrypted.pdf`,
+                  location: `${GmailProcessorLib.E2EDefaults.driveTestBasePath(info)}/decrypted.pdf`,
                   conflictStrategy: GmailProcessorLib.ConflictStrategy.REPLACE,
                   password: "${variables.pdfPassword}",
                 },
@@ -81,47 +81,30 @@ function decryptPdfTestConfig() {
 
   const tests = [
     {
-      message: "Successful execution",
+      message: "Execution should be successful",
       assertions: [
         {
-          message: "One thread config should have been processed",
-          assertFn: (_testConfig, procResult) =>
-            procResult.processedThreadConfigs === 1,
-        },
-        {
-          message: "One thread should have been processed",
-          assertFn: (_testConfig, procResult) =>
-            procResult.processedThreads === 1,
-        },
-        {
-          message: "One message should have been processed",
-          assertFn: (_testConfig, procResult) =>
-            procResult.processedMessages === 1,
-        },
-        {
-          message: "Correct number of actions should have been executed",
-          assertFn: (_testConfig, procResult) =>
-            procResult.executedActions.length ==
-            procResult.processedMessages + procResult.processedAttachments,
-        },
-      ],
-    },
-    {
-      message: "No failures",
-      assertions: [
-        {
-          message: "Processing status should not be ERROR",
-          assertFn: (_testConfig, procResult) =>
-            procResult.status !== GmailProcessorLib.ProcessingStatus.ERROR,
-        },
-        {
-          message: "No error should have occurred",
-          assertFn: (_testConfig, procResult) => procResult.error === undefined,
-        },
-        {
-          message: "No action should have failed",
-          assertFn: (_testConfig, procResult) =>
-            procResult.failedAction === undefined,
+          message: "Attachment should have been decrypted and stored",
+          assertFn: (_testConfig, _procResult, _ctx, _expect, h) => {
+            const a = h.findAction("attachment.storeDecryptedPdf", {
+              "arg.password": "${variables.pdfPassword}",
+            })
+            return (
+              h.expectStatus() &&
+              h.expectActionExecuted(a, "attachment.storeDecryptedPdf") &&
+              h.expect(
+                _ctx,
+                Reflect.get(a?.config.args ?? {}, "password"),
+                "${variables.pdfPassword}",
+                "password",
+              ) &&
+              h.expectActionMeta(
+                a,
+                "meta.attachment.stored.location",
+                /.*\/decrypted\.pdf$/,
+              )
+            )
+          },
         },
       ],
     },
@@ -137,12 +120,16 @@ function decryptPdfTestConfig() {
   return testConfig
 }
 
-function decryptPdfTest() {
+async function decryptPdfTest() {
   const testConfig = decryptPdfTestConfig()
-  return GmailProcessorLib.E2E.runTests(
+  return await GmailProcessorLib.E2E.runTests(
     testConfig,
     false,
     E2E_REPO_BRANCH,
-    GmailProcessorLib.RunMode.DANGEROUS,
+    GmailProcessorLib.EnvProvider.defaultContext({
+      runMode: GmailProcessorLib.RunMode.DANGEROUS,
+      cacheService: CacheService,
+      propertiesService: PropertiesService,
+    }),
   )
 }

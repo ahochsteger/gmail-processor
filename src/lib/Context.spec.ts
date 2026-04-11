@@ -16,6 +16,7 @@ it("should create a new processing result", () => {
     processedMessageConfigs: 0,
     processedThreads: 0,
     processedThreadConfigs: 0,
+    actionPromises: [],
   }
   expect(actual).toMatchObject(expected)
 })

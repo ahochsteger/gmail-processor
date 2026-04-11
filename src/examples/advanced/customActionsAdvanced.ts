@@ -1,7 +1,7 @@
 import { ConflictStrategy } from "../../lib/adapter/GDriveAdapter"
+import { ProcessingStage } from "../../lib/config/ActionConfig"
 import { Config } from "../../lib/config/Config"
 import { MarkProcessedMethod } from "../../lib/config/SettingsConfig"
-import { ProcessingStatus } from "../../lib/Context"
 import { E2EInitConfig, E2ETest, E2ETestConfig } from "../../lib/e2e/E2E"
 import {
   Example,
@@ -31,8 +31,8 @@ export const info: ExampleInfo = {
 export const initConfig: E2EInitConfig = {
   mails: [
     {
-      body: "Invoice Number: INV-12345",
-      attachments: [`invoice.pdf`],
+      body: "Invoice Number: INV-161126",
+      attachments: ["invoice.pdf"],
     },
   ],
 }
@@ -59,6 +59,7 @@ export const runConfig: Config = {
           actions: [
             {
               name: "custom.parseInvoice",
+              processingStage: ProcessingStage.PRE_MAIN,
             },
           ],
           attachments: [
@@ -71,7 +72,7 @@ export const runConfig: Config = {
                   name: "attachment.store",
                   args: {
                     // Use the value extracted by the custom action:
-                    location: `${E2EDefaults.DRIVE_TESTS_BASE_PATH}/${info.name}/{{message.invoiceNumber}}/{{attachment.name}}`,
+                    location: `${E2EDefaults.driveTestBasePath(info)}/{{custom.invoiceNumber}}/{{attachment.name}}`,
                     conflictStrategy: ConflictStrategy.KEEP,
                   },
                 },
@@ -94,13 +95,20 @@ export const example: Example = {
         // Ensure we have a message context (runtime check that also satisfies TS)
         if (!("message" in ctx)) return {}
         // @ts-ignore
-        const body = ctx.message.object.getBody()
-        const match = body.match(/Invoice Number: (INV-\d+)/)
+        const body = ctx.message.object.getPlainBody()
+        const match = body.match(/Invoice Number:\s*(INV-[0-9]+)/i)
         if (match && match[1]) {
           ctx.log.info(`Extracted invoice number: ${match[1]}`)
-          // Store the extracted value in actionMeta to make it available as {{message.invoiceNumber}}
+          // Store the extracted value in actionMeta to make it available as {{custom.invoiceNumber}}
           return {
-            "message.invoiceNumber": match[1],
+            actionMeta: {
+              "custom.invoiceNumber": {
+                type: "string" as any, // Corresponds to MetaInfoType.STRING
+                value: match[1],
+                title: "Invoice Number",
+                description: "The extracted invoice number.",
+              },
+            },
           }
         }
         return {}
@@ -111,34 +119,28 @@ export const example: Example = {
 
 export const tests: E2ETest[] = [
   {
-    message: "No failures",
+    message: "Execution should be successful",
     assertions: [
       {
-        message: "Processing status should be OK",
-        assertFn: (_testConfig, procResult) =>
-          procResult.status === ProcessingStatus.OK,
+        message: "Invoice number should have been correctly extracted",
+        assertFn: (_testConfig, _procResult, _ctx, _expect, h) => {
+          const a = h.findAction("custom.parseInvoice")
+          return (
+            h.expectStatus() &&
+            h.expectActionExecuted(a, "custom.parseInvoice") &&
+            h.expectActionMeta(a, "custom.invoiceNumber", "INV-161126")
+          )
+        },
       },
       {
-        message: "One message should have been processed",
-        assertFn: (_testConfig, procResult) =>
-          procResult.processedMessages === 1,
-      },
-      {
-        message: "Custom action should have been executed",
-        assertFn: (_testConfig, procResult) =>
-          procResult.executedActions.some(
-            (action) => action.config.name === "custom.parseInvoice",
-          ),
-      },
-      {
-        message: "Invoice number should have been extracted",
-        assertFn: (_testConfig, procResult) =>
-          procResult.executedActions.some(
-            (action) =>
-              action.config.name === "custom.parseInvoice" &&
-              action.result &&
-              action.result["message.invoiceNumber"] === "INV-12345",
-          ),
+        message:
+          "Attachment should have been stored using the extracted invoice number",
+        assertFn: (_testConfig, _procResult, _ctx, _expect, h) => {
+          const a = h.findAction("attachment.store", {
+            "meta.attachment.stored.location": /\/INV-161126\/invoice.pdf$/,
+          })
+          return h.expectActionExecuted(a, "attachment.store")
+        },
       },
     ],
   },

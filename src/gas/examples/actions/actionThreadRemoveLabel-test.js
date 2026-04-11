@@ -75,23 +75,27 @@ function actionThreadRemoveLabelTestConfig() {
 
   const tests = [
     {
-      message: "No failures",
+      message: "Execution should be successful",
       assertions: [
         {
-          message: "Processing status should be OK",
-          assertFn: (_testConfig, procResult) =>
-            procResult.status === GmailProcessorLib.ProcessingStatus.OK,
-        },
-        {
-          message: "One thread should have been processed",
-          assertFn: (_testConfig, procResult) =>
-            procResult.processedThreads === 1,
-        },
-        {
-          message: "Expected number of actions should have been executed",
-          assertFn: (_testConfig, procResult) =>
-            procResult.executedActions.length ===
-            procResult.processedThreads * 4,
+          message: "Labels should have been managed correctly",
+          assertFn: (_testConfig, _procResult, _ctx, _expect, h) => {
+            const add0 = h.findNextAction("thread.addLabel", {
+              "arg.name": "accounting-process",
+            })
+            const rm = h.findNextAction("thread.removeLabel", {
+              "arg.name": "accounting-process",
+            })
+            const add1 = h.findNextAction("thread.addLabel", {
+              "arg.name": "accounting-autoinvoice",
+            })
+            return (
+              h.expectStatus() &&
+              h.expectActionExecuted(add0, "thread.addLabel (process)") &&
+              h.expectActionExecuted(rm, "thread.removeLabel") &&
+              h.expectActionExecuted(add1, "thread.addLabel (autoinvoice)")
+            )
+          },
         },
       ],
     },
@@ -107,12 +111,16 @@ function actionThreadRemoveLabelTestConfig() {
   return testConfig
 }
 
-function actionThreadRemoveLabelTest() {
+async function actionThreadRemoveLabelTest() {
   const testConfig = actionThreadRemoveLabelTestConfig()
-  return GmailProcessorLib.E2E.runTests(
+  return await GmailProcessorLib.E2E.runTests(
     testConfig,
     false,
     E2E_REPO_BRANCH,
-    GmailProcessorLib.RunMode.DANGEROUS,
+    GmailProcessorLib.EnvProvider.defaultContext({
+      runMode: GmailProcessorLib.RunMode.DANGEROUS,
+      cacheService: CacheService,
+      propertiesService: PropertiesService,
+    }),
   )
 }

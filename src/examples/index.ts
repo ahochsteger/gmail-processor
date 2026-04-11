@@ -12,6 +12,7 @@ import { example as logSheetLoggingExample } from "./advanced/logSheetLogging"
 import { example as regularExpressionsExample } from "./advanced/regularExpressions"
 import { example as stringFnExpressionsExample } from "./advanced/stringFnExpressions"
 import { example as simpleExample } from "./basics/simple"
+import { example as conflictStrategyExample } from "./features/conflictStrategy"
 import { example as convertToGoogleExample } from "./features/convertToGoogle"
 import { example as migrationAdvancedExample } from "./migrations/migrationAdvanced"
 import { example as migrationMinExample } from "./migrations/migrationMin"
@@ -23,6 +24,7 @@ export const allExamples: (Example | V1Example)[] = [
   actionAttachmentExtractTextExample,
   actionExportExample,
   actionThreadRemoveLabelExample,
+  conflictStrategyExample,
   convertToGoogleExample,
   customActionsExample,
   customActionsAdvancedExample,

@@ -7,12 +7,16 @@ function <%= it.example.info.name %>TestConfig() {
   return testConfig
 }
 
-function <%= it.example.info.name %>Test() {
+async function <%= it.example.info.name %>Test() {
   const testConfig = <%= it.example.info.name %>TestConfig()
-  return GmailProcessorLib.E2E.runTests(
+  return await GmailProcessorLib.E2E.runTests(
     testConfig,
     false,
     E2E_REPO_BRANCH,
-    GmailProcessorLib.RunMode.DANGEROUS,
+    GmailProcessorLib.EnvProvider.defaultContext({
+      runMode: GmailProcessorLib.RunMode.DANGEROUS,
+      cacheService: CacheService,
+      propertiesService: PropertiesService
+    })
   )
 }

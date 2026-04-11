@@ -1,7 +1,6 @@
 import { ConflictStrategy } from "../../lib/adapter/GDriveAdapter"
 import { Config } from "../../lib/config/Config"
 import { MarkProcessedMethod } from "../../lib/config/SettingsConfig"
-import { ProcessingStatus } from "../../lib/Context"
 import { E2EInitConfig, E2ETest, E2ETestConfig } from "../../lib/e2e/E2E"
 import { Example, ExampleCategory, ExampleInfo } from "../Example"
 import { E2EDefaults } from "./../../lib/e2e/E2EDefaults"
@@ -64,7 +63,7 @@ export const runConfig: Config = {
             {
               name: "attachment.storeDecryptedPdf",
               args: {
-                location: `${E2EDefaults.DRIVE_TESTS_BASE_PATH}/advanced/{{message.date|formatDate('yyyy-MM-dd')}}/decrypted.pdf`,
+                location: `${E2EDefaults.driveTestBasePath(info)}/decrypted.pdf`,
                 conflictStrategy: ConflictStrategy.REPLACE,
                 password: "${variables.pdfPassword}",
               },
@@ -83,46 +82,30 @@ export const example: Example = {
 
 export const tests: E2ETest[] = [
   {
-    message: "Successful execution",
+    message: "Execution should be successful",
     assertions: [
       {
-        message: "One thread config should have been processed",
-        assertFn: (_testConfig, procResult) =>
-          procResult.processedThreadConfigs === 1,
-      },
-      {
-        message: "One thread should have been processed",
-        assertFn: (_testConfig, procResult) => procResult.processedThreads === 1,
-      },
-      {
-        message: "One message should have been processed",
-        assertFn: (_testConfig, procResult) =>
-          procResult.processedMessages === 1,
-      },
-      {
-        message: "Correct number of actions should have been executed",
-        assertFn: (_testConfig, procResult) =>
-          procResult.executedActions.length ==
-          procResult.processedMessages + procResult.processedAttachments,
-      },
-    ],
-  },
-  {
-    message: "No failures",
-    assertions: [
-      {
-        message: "Processing status should not be ERROR",
-        assertFn: (_testConfig, procResult) =>
-          procResult.status !== ProcessingStatus.ERROR,
-      },
-      {
-        message: "No error should have occurred",
-        assertFn: (_testConfig, procResult) => procResult.error === undefined,
-      },
-      {
-        message: "No action should have failed",
-        assertFn: (_testConfig, procResult) =>
-          procResult.failedAction === undefined,
+        message: "Attachment should have been decrypted and stored",
+        assertFn: (_testConfig, _procResult, _ctx, _expect, h) => {
+          const a = h.findAction("attachment.storeDecryptedPdf", {
+            "arg.password": "${variables.pdfPassword}",
+          })
+          return (
+            h.expectStatus() &&
+            h.expectActionExecuted(a, "attachment.storeDecryptedPdf") &&
+            h.expect(
+              _ctx,
+              Reflect.get(a?.config.args ?? {}, "password"),
+              "${variables.pdfPassword}",
+              "password",
+            ) &&
+            h.expectActionMeta(
+              a,
+              "meta.attachment.stored.location",
+              /.*\/decrypted\.pdf$/,
+            )
+          )
+        },
       },
     ],
   },

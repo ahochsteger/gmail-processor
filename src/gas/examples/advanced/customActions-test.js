@@ -72,23 +72,30 @@ function customActionsTestConfig() {
 
   const tests = [
     {
-      message: "No failures",
+      message: "Execution should be successful",
       assertions: [
         {
-          message: "Processing status should be OK",
-          assertFn: (_testConfig, procResult) =>
-            procResult.status === GmailProcessorLib.ProcessingStatus.OK,
-        },
-        {
-          message: "One message should have been processed",
-          assertFn: (_testConfig, procResult) =>
-            procResult.processedMessages === 1,
-        },
-        {
-          message: "Expected number of actions should have been executed",
-          assertFn: (_testConfig, procResult) =>
-            procResult.executedActions.length ===
-            2 * procResult.processedMessages,
+          message:
+            "Custom action should have been called with correct arguments",
+          assertFn: (_testConfig, _procResult, _ctx, _expect, h) => {
+            const a = h.findAction("custom.mylog")
+            return (
+              h.expectStatus() &&
+              h.expectActionExecuted(a, "custom.mylog") &&
+              h.expect(
+                _ctx,
+                Reflect.get(a?.config.args ?? {}, "arg1"),
+                "value1",
+                "arg1",
+              ) &&
+              h.expect(
+                _ctx,
+                Reflect.get(a?.config.args ?? {}, "arg2"),
+                "value2",
+                "arg2",
+              )
+            )
+          },
         },
       ],
     },
@@ -104,12 +111,16 @@ function customActionsTestConfig() {
   return testConfig
 }
 
-function customActionsTest() {
+async function customActionsTest() {
   const testConfig = customActionsTestConfig()
-  return GmailProcessorLib.E2E.runTests(
+  return await GmailProcessorLib.E2E.runTests(
     testConfig,
     false,
     E2E_REPO_BRANCH,
-    GmailProcessorLib.RunMode.DANGEROUS,
+    GmailProcessorLib.EnvProvider.defaultContext({
+      runMode: GmailProcessorLib.RunMode.DANGEROUS,
+      cacheService: CacheService,
+      propertiesService: PropertiesService,
+    }),
   )
 }
