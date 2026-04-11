@@ -513,10 +513,14 @@ export class GDriveAdapter extends BaseAdapter {
     actionMeta: MetaInfo = {},
   ): MetaInfo {
     if (file) {
+      const locationInfo = DriveUtils.extractLocationInfo(location)
+      const actualLocation = `${
+        locationInfo.folderId ? `{id:${locationInfo.folderId}}/` : "/"
+      }${locationInfo.folderPath ? locationInfo.folderPath + "/" : ""}${file.getName()}`
       const desc = `of the stored ${entity} (using action \`${actionName}\`)`
       actionMeta[`${keyPrefix}.stored.location`] = newMetaInfo(
         MetaInfoType.STRING,
-        location,
+        actualLocation,
         "Stored Location",
         `The location ${desc}`,
       )

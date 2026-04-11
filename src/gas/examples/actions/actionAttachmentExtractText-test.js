@@ -84,69 +84,51 @@ function actionAttachmentExtractTextTestConfig() {
 
   const tests = [
     {
-      message: "Successful execution",
+      message: "Execution should be successful",
       assertions: [
         {
-          message: "One thread config should have been processed",
-          assertFn: (_testConfig, procResult) =>
-            procResult.processedThreadConfigs === 1,
+          message: "Invoice data should have been correctly extracted",
+          assertFn: (_testConfig, _procResult, _ctx, _expect, h) => {
+            const a = h.findAction("attachment.extractText", {
+              "arg.extract":
+                "Invoice date:\\s*(?<invoiceDate>[A-Za-z]{3} [0-9]{1,2}, [0-9]{4})\\s*Invoice number:\\s*(?<invoiceNumber>[0-9]+)\\s*Payment due:\\s(?<paymentDueDays>[0-9]+)\\sdays after invoice date",
+            })
+            return (
+              h.expectStatus() &&
+              h.expectActionExecuted(a, "attachment.extractText") &&
+              h.expectActionMeta(
+                a,
+                "meta.attachment.extracted.match.invoiceNumber",
+                "161126",
+              ) &&
+              h.expectActionMeta(
+                a,
+                "meta.attachment.extracted.match.invoiceDate",
+                "Nov 26, 2016",
+              ) &&
+              h.expectActionMeta(
+                a,
+                "meta.attachment.extracted.match.paymentDueDays",
+                "30",
+              )
+            )
+          },
         },
         {
-          message: "One thread should have been processed",
-          assertFn: (_testConfig, procResult) =>
-            procResult.processedThreads === 1,
-        },
-        {
-          message: "One message should have been processed",
-          assertFn: (_testConfig, procResult) =>
-            procResult.processedMessages === 1,
-        },
-        {
-          message: "Correct number of actions should have been executed",
-          assertFn: (_testConfig, procResult) =>
-            procResult.executedActions.length ==
-            procResult.processedMessages + procResult.processedAttachments * 2,
-        },
-      ],
-    },
-    {
-      message: "No failures",
-      assertions: [
-        {
-          message: "Processing status should not be ERROR",
-          assertFn: (_testConfig, procResult) =>
-            procResult.status !== GmailProcessorLib.ProcessingStatus.ERROR,
-        },
-        {
-          message: "No error should have occurred",
-          assertFn: (_testConfig, procResult) => procResult.error === undefined,
-        },
-        {
-          message: "No action should have failed",
-          assertFn: (_testConfig, procResult) =>
-            procResult.failedAction === undefined,
-        },
-      ],
-    },
-    {
-      message: "Skipped tests",
-      assertions: [
-        {
-          message: "Processing status should not be ERROR",
-          assertFn: (_testConfig, procResult) =>
-            procResult.status !== GmailProcessorLib.ProcessingStatus.ERROR,
-          skip: true,
-        },
-        {
-          message: "No error should have occurred",
-          assertFn: (_testConfig, procResult) => procResult.error === undefined,
-          skip: true,
-        },
-        {
-          message: "No action should have failed",
-          assertFn: (_testConfig, procResult) =>
-            procResult.failedAction === undefined,
-          skip: true,
+          message: "Attachment should have been stored at the correct path",
+          assertFn: (_testConfig, _procResult, _ctx, _expect, h) => {
+            const a = h.findAction("attachment.store", {
+              "arg.conflictStrategy": GmailProcessorLib.ConflictStrategy.UPDATE,
+            })
+            return (
+              h.expectActionExecuted(a, "attachment.store") &&
+              h.expectActionMeta(
+                a,
+                "meta.attachment.stored.location",
+                /.*\/invoice-number-161126-date-2016-11-26-due-30-days\.pdf$/,
+              )
+            )
+          },
         },
       ],
     },
@@ -162,9 +144,9 @@ function actionAttachmentExtractTextTestConfig() {
   return testConfig
 }
 
-function actionAttachmentExtractTextTest() {
+async function actionAttachmentExtractTextTest() {
   const testConfig = actionAttachmentExtractTextTestConfig()
-  return GmailProcessorLib.E2E.runTests(
+  return await GmailProcessorLib.E2E.runTests(
     testConfig,
     false,
     E2E_REPO_BRANCH,

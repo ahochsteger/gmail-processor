@@ -139,36 +139,23 @@ function issue301TestConfig() {
 
   const tests = [
     {
-      message: "No failures",
+      message: "Execution should be successful",
       assertions: [
         {
-          message: "Processing status should be OK",
-          assertFn: (_testConfig, procResult) =>
-            procResult.status === GmailProcessorLib.ProcessingStatus.OK,
-        },
-        {
-          message: "One thread should have been processed",
-          assertFn: (_testConfig, procResult) =>
-            procResult.processedThreads === 1,
-        },
-        {
-          message: "One attachment should have been processed",
-          assertFn: (_testConfig, procResult) =>
-            procResult.processedAttachments === 1,
-        },
-        {
-          message: "Expected number of actions should have been executed",
-          assertFn: (_testConfig, procResult) =>
-            procResult.executedActions.length ===
-            procResult.processedThreads + procResult.processedAttachments * 2, // 2 actions per attachment (store original, store converted)
-        },
-        {
-          message: "Actions should have been executed",
-          assertFn: (_testConfig, procResult) => {
-            const storeActions = procResult.executedActions.filter(
-              (a) => a.config.name === "attachment.store",
+          message: "Should have converted XLSX to Google Spreadsheet",
+          assertFn: (_testConfig, _procResult, _ctx, _expect, h) => {
+            const a = h.findAction("attachment.store", {
+              "arg.toMimeType": "application/vnd.google-apps.spreadsheet",
+            })
+            return (
+              h.expectStatus() &&
+              h.expectActionExecuted(a, "XLSX conversion") &&
+              h.expectActionMeta(
+                a,
+                "attachment.stored.location",
+                /.*\/regressions\/issue301\/sample$/,
+              )
             )
-            return storeActions.length === 2
           },
         },
       ],
@@ -185,9 +172,9 @@ function issue301TestConfig() {
   return testConfig
 }
 
-function issue301Test() {
+async function issue301Test() {
   const testConfig = issue301TestConfig()
-  return GmailProcessorLib.E2E.runTests(
+  return await GmailProcessorLib.E2E.runTests(
     testConfig,
     false,
     E2E_REPO_BRANCH,

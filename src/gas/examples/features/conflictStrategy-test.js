@@ -82,37 +82,42 @@ function conflictStrategyTestConfig() {
 
   const tests = [
     {
-      message: "Successful execution",
+      message: "Execution should be successful",
       assertions: [
         {
-          message: "One thread config should have been processed",
-          assertFn: (_testConfig, procResult) =>
-            procResult.processedThreadConfigs === 1,
+          message: "Should have executed storage with REPLACE strategy",
+          assertFn: (_testConfig, _procResult, _ctx, _expect, h) => {
+            const a = h.findNextAction("attachment.store", {
+              "arg.conflictStrategy":
+                GmailProcessorLib.ConflictStrategy.REPLACE,
+            })
+            return (
+              h.expectStatus() &&
+              h.expectActionExecuted(a, "REPLACE action") &&
+              h.expectActionMeta(
+                a,
+                "attachment.stored.location",
+                /.*\/sample\.txt$/,
+              )
+            )
+          },
         },
         {
-          message: "One thread should have been processed",
-          assertFn: (_testConfig, procResult) =>
-            procResult.processedThreads === 1,
-        },
-        {
-          message: "One message should have been processed",
-          assertFn: (_testConfig, procResult) =>
-            procResult.processedMessages === 1,
-        },
-        {
-          message: "One attachment config should have been processed",
-          assertFn: (_testConfig, procResult) =>
-            procResult.processedAttachmentConfigs === 1,
-        },
-        {
-          message: "One attachment should have been processed",
-          assertFn: (_testConfig, procResult) =>
-            procResult.processedAttachments === 1,
-        },
-        {
-          message: "Correct number of actions should have been executed",
-          assertFn: (_testConfig, procResult) =>
-            procResult.executedActions.length === 3,
+          message: "Should have executed storage with INCREMENT strategy",
+          assertFn: (_testConfig, _procResult, _ctx, _expect, h) => {
+            const a = h.findNextAction("attachment.store", {
+              "arg.conflictStrategy":
+                GmailProcessorLib.ConflictStrategy.INCREMENT,
+            })
+            return (
+              h.expectActionExecuted(a, "INCREMENT action") &&
+              h.expectActionMeta(
+                a,
+                "attachment.stored.location",
+                /.*\/sample_2\.txt$/,
+              )
+            )
+          },
         },
       ],
     },
@@ -128,9 +133,9 @@ function conflictStrategyTestConfig() {
   return testConfig
 }
 
-function conflictStrategyTest() {
+async function conflictStrategyTest() {
   const testConfig = conflictStrategyTestConfig()
-  return GmailProcessorLib.E2E.runTests(
+  return await GmailProcessorLib.E2E.runTests(
     testConfig,
     false,
     E2E_REPO_BRANCH,

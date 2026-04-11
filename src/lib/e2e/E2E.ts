@@ -1,5 +1,6 @@
 import { Example, ExampleInfo, V1Example } from "../../examples/Example"
 import {
+  ActionExecution,
   EnvContext,
   ProcessingResult,
   ProcessingStatus,
@@ -11,6 +12,7 @@ import { Config } from "../config/Config"
 import { V1Config } from "../config/v1/V1Config"
 import { V1ToV2Converter } from "../config/v1/V1ToV2Converter"
 import { GmailProcessor } from "../processors/GmailProcessor"
+import { BaseProcessor } from "../processors/BaseProcessor"
 import { PatternUtil } from "../utils/PatternUtil"
 import { E2EDefaults } from "./E2EDefaults"
 
@@ -37,16 +39,130 @@ export type E2EInitConfig = {
   mails: E2EMail[]
 }
 
+export type E2EExpectFn = (
+  ctx: EnvContext,
+  actual: unknown,
+  expected: unknown,
+  message?: string,
+) => boolean
+
+export class E2EAssertionHelper {
+  private lastActionIndex = -1
+  constructor(
+    public testConfig: E2ETestConfig,
+    public procResult: ProcessingResult,
+    public ctx: EnvContext,
+    public expect: E2EExpectFn,
+  ) {}
+
+  public expectStatus(expected = ProcessingStatus.OK): boolean {
+    return this.expect(this.ctx, this.procResult.status, expected, "status")
+  }
+
+  private getMetaValue(
+    action: ActionExecution | undefined,
+    key: string,
+  ): unknown {
+    const searchKey = key.startsWith("meta.") ? key.substring(5) : key
+    const metaEntry =
+      action?.result?.actionMeta?.[searchKey] ?? (this.ctx as any).meta?.[searchKey]
+    return metaEntry && typeof metaEntry === "object" && "value" in metaEntry
+      ? metaEntry.value
+      : metaEntry
+  }
+
+  public matches(
+    actual: unknown,
+    expected: unknown,
+  ): boolean {
+    return E2E.isRegExp(expected)
+      ? expected.test(String(actual))
+      : actual === expected
+  }
+
+  public findAction(
+    name: string,
+    args?: Record<string, unknown>,
+    fromIndex = 0,
+  ): ActionExecution | undefined {
+    const action = this.procResult.executedActions
+      .slice(fromIndex)
+      .find((a) => {
+        if (a.config.name !== name) return false
+        if (args) {
+          for (const [key, expectedValue] of Object.entries(args)) {
+            let actualValue: unknown
+            if (key.startsWith("arg.")) {
+              const argKey = key.substring(4)
+              actualValue = Reflect.get(a.config.args ?? {}, argKey)
+            } else if (key.startsWith("meta.")) {
+              actualValue = this.getMetaValue(a, key.substring(5))
+            } else {
+              throw new Error(
+                `Ambiguous key '${key}' in findAction(). Use 'arg.' or 'meta.' prefix.`,
+              )
+            }
+            if (!this.matches(actualValue, expectedValue)) return false
+          }
+        }
+        return true
+      })
+    if (action) {
+      this.lastActionIndex = this.procResult.executedActions.indexOf(action)
+    }
+    return action
+  }
+
+  public findNextAction(
+    name: string,
+    args?: Record<string, unknown>,
+  ): ActionExecution | undefined {
+    return this.findAction(name, args, this.lastActionIndex + 1)
+  }
+
+  public expectActionExecuted(
+    action: ActionExecution | undefined,
+    message: string,
+  ): boolean {
+    return this.expect(this.ctx, !!action, true, `${message} exists`)
+  }
+
+  public expectActionMeta(
+    action: ActionExecution | undefined,
+    key: string,
+    expected: unknown,
+    message?: string,
+  ): boolean {
+    const actual = this.getMetaValue(action, key)
+    return this.expect(this.ctx, actual, expected, message ?? key)
+  }
+
+  public expectActionOrder(
+    actions: (ActionExecution | undefined)[],
+    message = "Action order is incorrect",
+  ): boolean {
+    const indices = actions.map((a) =>
+      a ? this.procResult.executedActions.indexOf(a) : -1,
+    )
+    for (let i = 0; i < indices.length - 1; i++) {
+      if (
+        indices[i] === -1 ||
+        indices[i + 1] === -1 ||
+        indices[i] >= indices[i + 1]
+      ) {
+        return this.expect(this.ctx, false, true, message)
+      }
+    }
+    return true
+  }
+}
+
 type E2EAssertFn = (
   testConfig: E2ETestConfig,
   procResult: ProcessingResult,
   ctx: EnvContext,
-  expect: (
-    ctx: EnvContext,
-    actual: unknown,
-    expected: unknown,
-    message?: string,
-  ) => boolean,
+  expect: E2EExpectFn,
+  h: E2EAssertionHelper,
 ) => boolean
 
 export type E2EAssertion = {
@@ -88,7 +204,9 @@ export enum E2EStatus {
 }
 
 export type E2EResult = {
+  actual?: unknown
   error?: unknown
+  expected?: unknown
   message?: string
   name?: string
   level: "assertion" | "test" | "suite" | "summary"
@@ -117,24 +235,45 @@ export function newE2EGlobalConfig(
     ...testGlobals,
   }
 }
+
 export class E2E {
+  public static isRegExp(val: unknown): val is RegExp {
+    return (
+      val instanceof RegExp ||
+      Object.prototype.toString.call(val) === "[object RegExp]"
+    )
+  }
+
+
+
   public static expect(
     ctx: EnvContext,
     actual: unknown,
     expected: unknown,
     message = "Actual value does not match expected value",
   ): boolean {
-    const expectedValue = JSON.stringify(expected)
-    const actualValue = JSON.stringify(actual)
-    let result = true
-    if (actualValue !== expectedValue) {
-      ctx.log.error(
-        `${message}\nExpected: ${expectedValue}\nActual: ${actualValue}`,
-      )
-      result = false
+    // Standard E2E.expect uses JSON.stringify equality, but we add Regex support for findAction
+    let match = false
+    if (this.isRegExp(expected)) {
+      match = expected.test(String(actual))
+    } else {
+      match = JSON.stringify(actual) === JSON.stringify(expected)
     }
-    return result
+
+    if (!match) {
+      if (typeof actual === "function") {
+        actual = (actual as any)()
+      }
+      const expStr = this.isRegExp(expected)
+        ? expected.toString()
+        : JSON.stringify(expected)
+      const actStr =
+        typeof actual === "string" ? actual : JSON.stringify(actual, null, 2)
+      ctx.log.error(`${message}\nExpected: ${expStr}\nActual: ${actStr}`)
+    }
+    return match
   }
+
   public static assert(
     testConfig: E2ETestConfig,
     procResult: ProcessingResult,
@@ -143,15 +282,37 @@ export class E2E {
   ): E2EResult {
     let error: unknown
     let status: E2EStatus
+    let lastExpectation:
+      | { actual: unknown; expected: unknown; message?: string }
+      | undefined
+    const wrappedExpect = (
+      ctx: EnvContext,
+      actual: unknown,
+      expected: unknown,
+      message?: string,
+    ): boolean => {
+      const match = this.expect(ctx, actual, expected, message)
+      if (!match) {
+        lastExpectation = { actual, expected, message }
+      }
+      return match
+    }
     if (assertion.skip) {
       status = E2EStatus.SKIPPED
     } else {
       try {
+        const h = new E2EAssertionHelper(
+          testConfig,
+          procResult,
+          ctx,
+          wrappedExpect,
+        )
         const assertResult = assertion.assertFn(
           testConfig,
           procResult,
           ctx,
-          this.expect,
+          wrappedExpect,
+          h,
         )
         status = assertResult ? E2EStatus.SUCCESS : E2EStatus.FAILED
       } catch (e) {
@@ -165,6 +326,20 @@ export class E2E {
       status,
       error,
       message: assertion.message,
+    }
+    if (lastExpectation) {
+      result.actual = lastExpectation.actual
+      result.expected = lastExpectation.expected
+      const expStr = E2E.isRegExp(lastExpectation.expected)
+        ? lastExpectation.expected.toString()
+        : JSON.stringify(lastExpectation.expected, null, 2)
+      const actStr =
+        typeof lastExpectation.actual === "string"
+          ? lastExpectation.actual
+          : JSON.stringify(lastExpectation.actual, null, 2)
+      result.message += `\nExpected: ${expStr}\nActual: ${actStr}`
+    } else if (status === E2EStatus.FAILED) {
+      result.message += "\n(No detailed expectation was reported via expect())"
     }
     return result
   }
@@ -365,7 +540,7 @@ export class E2E {
     return ctx.env.utilities.getUuid().substring(0, 8)
   }
 
-  public static runTests(
+  public static async runTests(
     testConfig: E2ETestConfig,
     skipInit = false,
     branch = "main",
@@ -373,7 +548,7 @@ export class E2E {
       runMode: RunMode.DANGEROUS,
     }),
     testRunId?: string,
-  ): E2EResult {
+  ): Promise<E2EResult> {
     const activeTestRunId = testRunId ?? this.getTestRunId(ctx)
     ctx.log.info(
       `E2E.runTests(): Started with test run id '${activeTestRunId}'.`,
@@ -451,6 +626,33 @@ export class E2E {
       } else {
         throw new Error("No processing configuration given!")
       }
+
+      // Await all actions that return a promise (e.g. storeDecryptedPdf)
+      if (processingResult.actionPromises.length > 0) {
+        ctx.log.info(
+          `E2E.runTests(): Waiting for ${processingResult.actionPromises.length} action promises to finish ...`,
+        )
+        await Promise.all(processingResult.actionPromises.map((p) =>
+          p.then((actualResult) => {
+            if (actualResult.actionMeta) {
+              BaseProcessor.updateContextMeta(ctx, actualResult.actionMeta)
+            }
+            return actualResult
+          }),
+        ))
+        ctx.log.info(`E2E.runTests(): Action promises finished.`)
+
+        // Diagnostic logging: Trace all metadata currently in context
+        ctx.log.info(`E2E.runTests(): Current Context Meta Keys:`)
+        const meta = (ctx as any).meta ?? {}
+        Object.keys(meta).forEach((k) => {
+          const entry = meta[k]
+          const val = entry?.value
+          const displayVal = typeof val === "function" ? "()=>..." : JSON.stringify(val)
+          ctx.log.info(`  - ${k}: ${displayVal} (Raw: ${JSON.stringify(entry)})`)
+        })
+      }
+
       if (processingResult.status === ProcessingStatus.ERROR) {
         statusMap[E2EStatus.ERROR]++
         error = processingResult.error
@@ -507,7 +709,7 @@ export class E2E {
     return activeTestRunId
   }
 
-  public static runAllTests(
+  public static async runAllTests(
     testConfigs: E2ETestConfig[],
     skipInit = false,
     branch = "main",
@@ -515,13 +717,15 @@ export class E2E {
       runMode: RunMode.DANGEROUS,
     }),
     testRunId?: string,
-  ): E2EResult {
+  ): Promise<E2EResult> {
     const activeTestRunId = testRunId ?? this.getTestRunId(ctx)
     ctx.log.info(
       `E2E.runAllTests(): Started with test run id '${activeTestRunId}'.`,
     )
-    const results = testConfigs.map((testConfig) =>
-      this.runTests(testConfig, skipInit, branch, ctx, activeTestRunId),
+    const results = await Promise.all(
+      testConfigs.map((testConfig) =>
+        this.runTests(testConfig, skipInit, branch, ctx, activeTestRunId),
+      ),
     )
     const statusMap = this.statusMapFromResults(results)
     const status = this._overallStatus(statusMap)

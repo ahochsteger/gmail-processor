@@ -182,6 +182,7 @@ export class GmailProcessor extends BaseProcessor {
         logAdapter,
       ),
       timer: new Timer(config.settings.maxRuntime),
+      actionPromises: [],
     })
     ctx.log.trace(processingContext, {
       location: "GmailProcessor.run()",
@@ -192,6 +193,7 @@ export class GmailProcessor extends BaseProcessor {
       config.threads,
       newProcessingResult(),
     )
+    result.actionPromises = processingContext.proc.actionPromises
     this.reportResults(ctx, result, reportFormat)
     ctx.log.trace(processingContext, {
       location: "GmailProcessor.run()",

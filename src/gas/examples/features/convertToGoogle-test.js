@@ -136,37 +136,58 @@ function convertToGoogleTestConfig() {
 
   const tests = [
     {
-      message: "Successful execution",
+      message: "Execution should be successful",
       assertions: [
         {
-          message: "One thread config should have been processed",
-          assertFn: (_testConfig, procResult) =>
-            procResult.processedThreadConfigs === 1,
+          message: "Should have converted DOCX to Google Docs",
+          assertFn: (_testConfig, _procResult, _ctx, _expect, h) => {
+            const a = h.findAction("attachment.store", {
+              "arg.toMimeType": "application/vnd.google-apps.document",
+            })
+            return (
+              h.expectStatus() &&
+              h.expectActionExecuted(a, "DOCX conversion") &&
+              h.expectActionMeta(
+                a,
+                "attachment.stored.location",
+                /.*\/sample-from-docx$/,
+              )
+            )
+          },
         },
         {
-          message: "One thread should have been processed",
-          assertFn: (_testConfig, procResult) =>
-            procResult.processedThreads === 1,
+          message: "Should have converted XLSX to Google Spreadsheet",
+          assertFn: (_testConfig, _procResult, _ctx, _expect, h) => {
+            const a = h.findAction("attachment.store", {
+              "arg.toMimeType": "application/vnd.google-apps.spreadsheet",
+            })
+            return (
+              h.expectStatus() &&
+              h.expectActionExecuted(a, "XLSX conversion") &&
+              h.expectActionMeta(
+                a,
+                "attachment.stored.location",
+                /.*\/sample-from-xlsx$/,
+              )
+            )
+          },
         },
         {
-          message: "One message should have been processed",
-          assertFn: (_testConfig, procResult) =>
-            procResult.processedMessages === 1,
-        },
-        {
-          message: "Three attachment configs should have been processed",
-          assertFn: (_testConfig, procResult) =>
-            procResult.processedAttachmentConfigs === 3,
-        },
-        {
-          message: "Three attachments should have been processed",
-          assertFn: (_testConfig, procResult) =>
-            procResult.processedAttachments === 3,
-        },
-        {
-          message: "Correct number of actions should have been executed",
-          assertFn: (_testConfig, procResult) =>
-            procResult.executedActions.length === 7,
+          message: "Should have converted PPTX to Google Presentation",
+          assertFn: (_testConfig, _procResult, _ctx, _expect, h) => {
+            const a = h.findAction("attachment.store", {
+              "arg.toMimeType": "application/vnd.google-apps.presentation",
+            })
+            return (
+              h.expectStatus() &&
+              h.expectActionExecuted(a, "PPTX conversion") &&
+              h.expectActionMeta(
+                a,
+                "attachment.stored.location",
+                /.*\/sample-from-pptx$/,
+              )
+            )
+          },
         },
       ],
     },
@@ -182,9 +203,9 @@ function convertToGoogleTestConfig() {
   return testConfig
 }
 
-function convertToGoogleTest() {
+async function convertToGoogleTest() {
   const testConfig = convertToGoogleTestConfig()
-  return GmailProcessorLib.E2E.runTests(
+  return await GmailProcessorLib.E2E.runTests(
     testConfig,
     false,
     E2E_REPO_BRANCH,

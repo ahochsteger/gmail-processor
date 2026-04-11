@@ -69,24 +69,15 @@ export const example: V1Example = {
   migrationConfig,
 }
 
-import { ProcessingStatus } from "../../lib/Context"
 
 export const tests: E2ETest[] = [
   {
-    message: "No failures",
+    message: "Processing should be successful",
     assertions: [
       {
-        message: "Processing status should not be ERROR",
-        assertFn: (_testConfig, procResult) =>
-          procResult.status !== ProcessingStatus.ERROR,
-      },
-      {
-        message: "No error should have occurred",
-        assertFn: (_testConfig, procResult) => procResult.error === undefined,
-      },
-      {
-        message: "No action should have failed",
-        assertFn: (_testConfig, procResult) => !procResult.failedAction,
+        message: "No failures",
+        assertFn: (_testConfig, _procResult, _ctx, _expect, h) =>
+          h.expectStatus(),
       },
     ],
   },

@@ -1,7 +1,6 @@
 import { E2EInitConfig, E2ETest, E2ETestConfig } from "../../lib/e2e/E2E"
 import { E2EDefaults } from "../../lib/e2e/E2EDefaults"
 import { Example, ExampleCategory, ExampleInfo } from "../Example"
-import { ProcessingStatus } from "./../../lib/Context"
 import { ProcessingStage } from "./../../lib/config/ActionConfig"
 import { Config } from "./../../lib/config/Config"
 import { MarkProcessedMethod } from "./../../lib/config/SettingsConfig"
@@ -77,22 +76,27 @@ export const example: Example = {
 
 export const tests: E2ETest[] = [
   {
-    message: "No failures",
+    message: "Execution should be successful",
     assertions: [
       {
-        message: "Processing status should be OK",
-        assertFn: (_testConfig, procResult) =>
-          procResult.status === ProcessingStatus.OK,
-      },
-      {
-        message: "One thread should have been processed",
-        assertFn: (_testConfig, procResult) =>
-          procResult.processedThreads === 1,
-      },
-      {
-        message: "Expected number of actions should have been executed",
-        assertFn: (_testConfig, procResult) =>
-          procResult.executedActions.length === procResult.processedThreads * 4,
+        message: "Labels should have been managed correctly",
+        assertFn: (_testConfig, _procResult, _ctx, _expect, h) => {
+          const add0 = h.findNextAction("thread.addLabel", {
+            "arg.name": "accounting-process",
+          })
+          const rm = h.findNextAction("thread.removeLabel", {
+            "arg.name": "accounting-process",
+          })
+          const add1 = h.findNextAction("thread.addLabel", {
+            "arg.name": "accounting-autoinvoice",
+          })
+          return (
+            h.expectStatus() &&
+            h.expectActionExecuted(add0, "thread.addLabel (process)") &&
+            h.expectActionExecuted(rm, "thread.removeLabel") &&
+            h.expectActionExecuted(add1, "thread.addLabel (autoinvoice)")
+          )
+        },
       },
     ],
   },

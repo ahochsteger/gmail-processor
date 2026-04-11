@@ -1,4 +1,3 @@
-import { ProcessingStatus } from "../../lib/Context"
 import { Config } from "../../lib/config/Config"
 import { LogLevel, MarkProcessedMethod } from "../../lib/config/SettingsConfig"
 import { E2EInitConfig, E2ETest, E2ETestConfig } from "../../lib/e2e/E2E"
@@ -168,25 +167,36 @@ export const example: Example = {
 
 export const tests: E2ETest[] = [
   {
-    message: "No failures",
+    message: "Execution should be successful",
     assertions: [
       {
-        message: "Processing status should be OK",
-        assertFn: (_testConfig, procResult) =>
-          procResult.status === ProcessingStatus.OK,
+        message: "Should have executed thread logging",
+        assertFn: (_testConfig, _procResult, _ctx, _expect, h) => {
+          const a = h.findNextAction("global.sheetLog", {
+            "arg.message": /Thread log/,
+          })
+          return (
+            h.expectStatus() && h.expectActionExecuted(a, "thread logging")
+          )
+        },
       },
       {
-        message: "One thread should have been processed",
-        assertFn: (_testConfig, procResult) =>
-          procResult.processedThreads === 1,
+        message: "Should have executed message logging",
+        assertFn: (_testConfig, _procResult, _ctx, _expect, h) => {
+          const a = h.findNextAction("global.sheetLog", {
+            "arg.message": /Message log/,
+          })
+          return h.expectActionExecuted(a, "message logging")
+        },
       },
       {
-        message: "Expected number of actions should have been executed",
-        assertFn: (_testConfig, procResult) =>
-          procResult.executedActions.length ===
-          procResult.processedThreads * 2 +
-            procResult.processedMessages * 3 +
-            procResult.processedAttachments * 3,
+        message: "Should have executed attachment logging",
+        assertFn: (_testConfig, _procResult, _ctx, _expect, h) => {
+          const a = h.findNextAction("global.sheetLog", {
+            "arg.message": /Attachment log/,
+          })
+          return h.expectActionExecuted(a, "attachment logging")
+        },
       },
     ],
   },

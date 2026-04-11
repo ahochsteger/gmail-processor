@@ -278,7 +278,9 @@ describe("runTest", () => {
     const results: E2EResult[] = result.results ?? []
     expect(result.status).toEqual(E2EStatus.FAILED)
     expect(results.length).toEqual(1)
-    expect(results[0].message).toEqual("Assertion message")
+    expect(results[0].message).toEqual(
+      "Assertion message\n(No detailed expectation was reported via expect())",
+    )
     expect(results[0].status).toEqual(E2EStatus.FAILED)
     expect(mockAssertion.assertFn).toHaveBeenCalled()
   })
@@ -423,23 +425,23 @@ describe("runTests", () => {
     // E2E.runTest = runTest
   })
 
-  it("should return aggregated results from individual tests", () => {
+  it("should return aggregated results from individual tests", async () => {
     // NOTE: For some unknown reason this test fails if moved to the last it() within describe()
     // Bypass mock verification of successful processing elements to only check structure
     const originalTests = mockTestConfig.tests
     mockTestConfig.tests = []
 
-    const result = E2E.runTests(mockTestConfig, true, "main", ctx)
+    const result = await E2E.runTests(mockTestConfig, true, "main", ctx)
 
     mockTestConfig.tests = originalTests
     expect(result.level).toEqual("suite")
   })
 
-  it("should send test emails and run tests", () => {
+  it("should send test emails and run tests", async () => {
     initConfig.mails = [{ subject: "Test mail" }]
     jest.spyOn(E2E, "initWait").mockImplementation(() => {})
 
-    E2E.runTests(mockTestConfig, false, "main", ctx)
+    await E2E.runTests(mockTestConfig, false, "main", ctx)
 
     expect(ctx.env.mailApp.sendEmail).toHaveBeenCalledWith({
       to: globals.to,
@@ -452,13 +454,13 @@ describe("runTests", () => {
     expect(ctx.env.mailApp.sendEmail).toHaveBeenCalled()
   })
 
-  it("should skip sending emails if skipInit is true", () => {
-    E2E.runTests(mockTestConfig, true, undefined, ctx)
+  it("should skip sending emails if skipInit is true", async () => {
+    await E2E.runTests(mockTestConfig, true, undefined, ctx)
 
     expect(ctx.env.mailApp.sendEmail).not.toHaveBeenCalled()
   })
 
-  it("should handle errors during test execution", () => {
+  it("should handle errors during test execution", async () => {
     const errorConfig = {
       ...mockTestConfig,
       runConfig: {
@@ -477,7 +479,7 @@ describe("runTests", () => {
       },
     } as any
 
-    const result = E2E.runTests(errorConfig, true, "main", ctx)
+    const result = await E2E.runTests(errorConfig, true, "main", ctx)
 
     expect(result.status).toBe(E2EStatus.ERROR)
   })
@@ -513,8 +515,8 @@ describe("runTests with migrationConfig", () => {
   beforeEach(() => {
     jest.clearAllMocks()
   })
-  it("should process migrationConfig", () => {
-    E2E.runTests(mockTestConfig, true, undefined, ctx)
+  it("should process migrationConfig", async () => {
+    await E2E.runTests(mockTestConfig, true, undefined, ctx)
 
     expect(ctx.env.mailApp.sendEmail).not.toHaveBeenCalled()
   })

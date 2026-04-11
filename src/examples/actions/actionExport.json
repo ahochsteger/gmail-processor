@@ -33,14 +33,14 @@
         {
           "name": "message.exportAsHtml",
           "args": {
-            "location": "/GmailProcessor-Tests/pr-291/message-{{message.id}}-{{message.subject}}.html",
+            "location": "/GmailProcessor-Tests/e2e/{{date.now|formatDate('yyyy-MM-dd')}}/actions/actionExport/message-{{message.id}}-{{message.subject}}.html",
             "conflictStrategy": "replace"
           }
         },
         {
           "name": "message.exportAsPdf",
           "args": {
-            "location": "/GmailProcessor-Tests/pr-291/message-{{message.id}}-{{message.subject}}.pdf",
+            "location": "/GmailProcessor-Tests/e2e/{{date.now|formatDate('yyyy-MM-dd')}}/actions/actionExport/message-{{message.id}}-{{message.subject}}.pdf",
             "conflictStrategy": "replace"
           }
         }
@@ -51,7 +51,8 @@
     {
       "match": {
         "query": "from:{{user.email}} to:{{user.email}} subject:'GmailProcessor-Test'"
-      }
+      },
+      "messages": [{}]
     }
   ]
 }

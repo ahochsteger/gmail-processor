@@ -43,17 +43,9 @@ function migrationMinTestConfig() {
       message: "No failures",
       assertions: [
         {
-          message: "Processing status should not be ERROR",
-          assertFn: (_testConfig, procResult) =>
-            procResult.status !== GmailProcessorLib.ProcessingStatus.ERROR,
-        },
-        {
-          message: "No error should have occurred",
-          assertFn: (_testConfig, procResult) => procResult.error === undefined,
-        },
-        {
-          message: "No action should have failed",
-          assertFn: (_testConfig, procResult) => !procResult.failedAction,
+          message: "Processing should be successful",
+          assertFn: (_testConfig, _procResult, _ctx, _expect, h) =>
+            h.expectStatus(),
         },
       ],
     },
@@ -69,9 +61,9 @@ function migrationMinTestConfig() {
   return testConfig
 }
 
-function migrationMinTest() {
+async function migrationMinTest() {
   const testConfig = migrationMinTestConfig()
-  return GmailProcessorLib.E2E.runTests(
+  return await GmailProcessorLib.E2E.runTests(
     testConfig,
     false,
     E2E_REPO_BRANCH,

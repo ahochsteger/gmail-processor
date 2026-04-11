@@ -31,27 +31,27 @@ function initAllTests() {
     GmailProcessorLib.EnvProvider.defaultContext({
       runMode: GmailProcessorLib.RunMode.DANGEROUS,
       cacheService: CacheService,
-      propertiesService: PropertiesService,
-    }),
+      propertiesService: PropertiesService
+    })
   )
 }
 
-function runAllTests(skipInit = true, testRunId = undefined) {
-  return GmailProcessorLib.E2E.runAllTests(
+async function runAllTests(skipInit = true, testRunId = undefined) {
+  return await GmailProcessorLib.E2E.runAllTests(
     getTestConfigs(),
     skipInit,
     E2E_REPO_BRANCH,
     GmailProcessorLib.EnvProvider.defaultContext({
       runMode: GmailProcessorLib.RunMode.DANGEROUS,
       cacheService: CacheService,
-      propertiesService: PropertiesService,
+      propertiesService: PropertiesService
     }),
     testRunId,
   )
 }
 
-function initAndRunAllTests() {
+async function initAndRunAllTests() {
   const testRunId = initAllTests()
   Utilities.sleep(5000)
-  return JSON.stringify(runAllTests(true, testRunId))
+  return JSON.stringify(await runAllTests(true, testRunId))
 }

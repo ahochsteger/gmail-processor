@@ -1,4 +1,3 @@
-import { ProcessingStatus } from "../../lib/Context"
 import { ConflictStrategy } from "../../lib/adapter/GDriveAdapter"
 import { Config } from "../../lib/config/Config"
 import { MarkProcessedMethod } from "../../lib/config/SettingsConfig"
@@ -119,23 +118,18 @@ export const example: Example = {
 
 export const tests: E2ETest[] = [
   {
-    message: "No failures",
+    message: "Execution should be successful",
     assertions: [
       {
-        message: "Processing status should be OK",
-        assertFn: (_testConfig, procResult) =>
-          procResult.status === ProcessingStatus.OK,
-      },
-      {
-        message: "One thread should have been processed",
-        assertFn: (_testConfig, procResult) =>
-          procResult.processedThreads === 1,
-      },
-      {
-        message: "Expected number of actions should have been executed",
-        assertFn: (_testConfig, procResult) =>
-          procResult.executedActions.length ===
-          procResult.processedThreads + procResult.processedAttachments,
+        message: "Attachment should have been stored at the correct location",
+        assertFn: (_testConfig, _procResult, _ctx, _expect, h) => {
+          const a = h.findAction("attachment.store")
+          return (
+            h.expectStatus() &&
+            h.expectActionExecuted(a, "attachment.store") &&
+            h.expectActionMeta(a, "attachment.stored.location", /simple-invoice\.pdf$/)
+          )
+        },
       },
     ],
   },

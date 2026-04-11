@@ -99,6 +99,7 @@ export type ProcessingInfo = {
   logAdapter: LogAdapter
   spreadsheetAdapter: SpreadsheetAdapter
   timer: Timer
+  actionPromises: Promise<any>[]
 }
 
 export type ThreadInfo = {
@@ -193,6 +194,7 @@ export class ProcessingResult {
   processedThreadConfigs: number = 0
   processedThreads: number = 0
   status: ProcessingStatus = ProcessingStatus.OK
+  actionPromises: Promise<any>[] = []
 }
 
 export function newProcessingResult(): ProcessingResult {

@@ -67,20 +67,12 @@ function migrationAdvancedTestConfig() {
 
   const tests = [
     {
-      message: "No failures",
+      message: "Processing should be successful",
       assertions: [
         {
-          message: "Processing status should not be ERROR",
-          assertFn: (_testConfig, procResult) =>
-            procResult.status !== GmailProcessorLib.ProcessingStatus.ERROR,
-        },
-        {
-          message: "No error should have occurred",
-          assertFn: (_testConfig, procResult) => procResult.error === undefined,
-        },
-        {
-          message: "No action should have failed",
-          assertFn: (_testConfig, procResult) => !procResult.failedAction,
+          message: "No failures",
+          assertFn: (_testConfig, _procResult, _ctx, _expect, h) =>
+            h.expectStatus(),
         },
       ],
     },
@@ -96,9 +88,9 @@ function migrationAdvancedTestConfig() {
   return testConfig
 }
 
-function migrationAdvancedTest() {
+async function migrationAdvancedTest() {
   const testConfig = migrationAdvancedTestConfig()
-  return GmailProcessorLib.E2E.runTests(
+  return await GmailProcessorLib.E2E.runTests(
     testConfig,
     false,
     E2E_REPO_BRANCH,

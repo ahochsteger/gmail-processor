@@ -117,23 +117,22 @@ function simpleTestConfig() {
 
   const tests = [
     {
-      message: "No failures",
+      message: "Execution should be successful",
       assertions: [
         {
-          message: "Processing status should be OK",
-          assertFn: (_testConfig, procResult) =>
-            procResult.status === GmailProcessorLib.ProcessingStatus.OK,
-        },
-        {
-          message: "One thread should have been processed",
-          assertFn: (_testConfig, procResult) =>
-            procResult.processedThreads === 1,
-        },
-        {
-          message: "Expected number of actions should have been executed",
-          assertFn: (_testConfig, procResult) =>
-            procResult.executedActions.length ===
-            procResult.processedThreads + procResult.processedAttachments,
+          message: "Attachment should have been stored at the correct location",
+          assertFn: (_testConfig, _procResult, _ctx, _expect, h) => {
+            const a = h.findAction("attachment.store")
+            return (
+              h.expectStatus() &&
+              h.expectActionExecuted(a, "attachment.store") &&
+              h.expectActionMeta(
+                a,
+                "attachment.stored.location",
+                /simple-invoice\.pdf$/,
+              )
+            )
+          },
         },
       ],
     },
@@ -149,9 +148,9 @@ function simpleTestConfig() {
   return testConfig
 }
 
-function simpleTest() {
+async function simpleTest() {
   const testConfig = simpleTestConfig()
-  return GmailProcessorLib.E2E.runTests(
+  return await GmailProcessorLib.E2E.runTests(
     testConfig,
     false,
     E2E_REPO_BRANCH,

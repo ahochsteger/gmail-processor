@@ -112,35 +112,28 @@ function customActionsAdvancedTestConfig() {
 
   const tests = [
     {
-      message: "No failures",
+      message: "Execution should be successful",
       assertions: [
         {
-          message: "Processing status should be OK",
-          assertFn: (_testConfig, procResult) =>
-            procResult.status === GmailProcessorLib.ProcessingStatus.OK,
+          message: "Invoice number should have been correctly extracted",
+          assertFn: (_testConfig, _procResult, _ctx, _expect, h) => {
+            const a = h.findAction("custom.parseInvoice")
+            return (
+              h.expectStatus() &&
+              h.expectActionExecuted(a, "custom.parseInvoice") &&
+              h.expectActionMeta(a, "custom.invoiceNumber", "INV-161126")
+            )
+          },
         },
         {
-          message: "One message should have been processed",
-          assertFn: (_testConfig, procResult) =>
-            procResult.processedMessages === 1,
-        },
-        {
-          message: "Custom action should have been executed",
-          assertFn: (_testConfig, procResult) =>
-            procResult.executedActions.some(
-              (action) => action.config.name === "custom.parseInvoice",
-            ),
-        },
-        {
-          message: "Invoice number should have been extracted",
-          assertFn: (_testConfig, procResult) =>
-            procResult.executedActions.some(
-              (action) =>
-                action.config.name === "custom.parseInvoice" &&
-                action.result?.actionMeta &&
-                action.result.actionMeta["custom.invoiceNumber"]?.value ===
-                  "INV-161126",
-            ),
+          message:
+            "Attachment should have been stored using the extracted invoice number",
+          assertFn: (_testConfig, _procResult, _ctx, _expect, h) => {
+            const a = h.findAction("attachment.store", {
+              "meta.attachment.stored.location": /\/INV-161126\/invoice.pdf$/,
+            })
+            return h.expectActionExecuted(a, "attachment.store")
+          },
         },
       ],
     },
@@ -156,9 +149,9 @@ function customActionsAdvancedTestConfig() {
   return testConfig
 }
 
-function customActionsAdvancedTest() {
+async function customActionsAdvancedTest() {
   const testConfig = customActionsAdvancedTestConfig()
-  return GmailProcessorLib.E2E.runTests(
+  return await GmailProcessorLib.E2E.runTests(
     testConfig,
     false,
     E2E_REPO_BRANCH,
