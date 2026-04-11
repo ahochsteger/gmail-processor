@@ -38,25 +38,6 @@ beforeEach(() => {
   )
 })
 
-/*describe("getFolderFromPath()", () => {
-  it("should find folder from path", () => {
-    const actual = gdriveAdapter.getFolderFromPath("some-folder")
-    expect(actual).toMatchObject({})
-  })
-  it("should find folder from root path", () => {
-    mocks.fileIterator.hasNext.mockReset()
-    const actual = gdriveAdapter.getFolderFromPath("/some-folder")
-    expect(actual).toMatchObject({})
-  })
-  test.todo("should throw error if folder is not found")
-  // it("should throw error if folder is not found", () => {
-  //   expect(() => {
-  //     gdriveAdapter.getFolderFromPath("/some-non-existing-folder")
-  //   }).toThrow(/not found/)
-  // })
-})
-*/
-
 describe("createFile() strategy:ERROR", () => {
   it("should create a non-existing file in the root folder", () => {
     gdriveAdapter.ctx.env.runMode = RunMode.DANGEROUS
@@ -304,7 +285,3 @@ describe("DriveUtils.extractLocationInfo()", () => {
     expect(actual.folderId).toBeUndefined()
   })
 })
-test.todo("should transparently create a folder or return an existing one")
-test.todo(
-  "should get a collection of files within a folder matching the given name",
-)

@@ -304,8 +304,6 @@ describe("setupGDriveAppMocks", () => {
     expect(newNestedFile).toBe(mocks.newNestedFile)
   })
 
-  test.todo("should setup a drive app for nested folder creation")
-
   it("should throw an error for non-existing file ids", () => {
     expect(() => {
       app.getFileById(NO_FILE_ID)

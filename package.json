@@ -66,6 +66,7 @@
     "sonar:local": "npx sonar-scanner -Dsonar.branch.name=local -Dsonar.branch.target=main -Dsonar.projectVersion=''",
     "start:docs": "npm run build:docs && cd docs && npm start",
     "test": "TZ=Etc/UTC npx jest --reporters=summary --silent",
+    "test:coverage": "TZ=Etc/UTC npx jest --coverage",
     "test:examples": "TZ=Etc/UTC npx jest --reporters=summary --silent --testPathPattern src/examples",
     "test:parser": "scripts/test-parser.sh",
     "test:profile-devtools": "node --inspect-brk ./node_modules/.bin/jest",

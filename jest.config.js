@@ -27,9 +27,10 @@ export default {
   coverageDirectory: "build/coverage",
 
   // An array of regexp pattern strings used to skip coverage collection
-  // coveragePathIgnorePatterns: [
-  //   "/node_modules/"
-  // ],
+  coveragePathIgnorePatterns: [
+    "/node_modules/",
+    "<rootDir>/src/lib/expr/generated/",
+  ],
 
   // Indicates which provider should be used to instrument code for coverage
   coverageProvider: "v8",
@@ -41,7 +42,7 @@ export default {
   //   "lcov",
   //   "clover"
   // ],
-  coverageReporters: ["json-summary", "lcovonly"],
+  coverageReporters: ["json-summary", "lcovonly", "text"],
 
   // An object that configures minimum threshold enforcement for coverage results
   // coverageThreshold: undefined,

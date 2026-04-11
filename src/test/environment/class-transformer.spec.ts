@@ -136,16 +136,15 @@ describe("plainToInstance", () => {
     // expectUnsetFieldsNotToBeExposed(actual) // NOTE: Does not work with @swc/jest anymore, but should be not be an issue.
   })
   it("should remove additional properties from JSON", () => {
-    const json = { ...jsonData, add: "additional" } as any
+    // Deep-clone to avoid mutating the shared jsonData object
+    const json = JSON.parse(
+      JSON.stringify({ ...jsonData, add: "additional" }),
+    ) as any
     json.nested.add = "additional"
     json.nestedArray[0].add = "additional"
-    const actual = plainToInstance(
-      Root,
-      { ...jsonData, add: "additional" },
-      {
-        excludeExtraneousValues: true,
-      },
-    )
+    const actual = plainToInstance(Root, json, {
+      excludeExtraneousValues: true,
+    })
     expectSetValuesToBePresent(actual)
     expectAdditionalValuesToBeRemoved(actual)
   })
@@ -190,17 +189,10 @@ describe("instanceToPlain (created using new)", () => {
     //   nestedArray: [{ bool: true, arr: ["default1", "default2"] }],
     // })
   })
-  test.todo("should serialize to JSON config without default values")
-  // it("should serialize to JSON config without default values", () => {
-  //   const obj = getNewRootObj(jsonData)
-  //   const actual: any = instanceToPlain(obj, { exposeDefaultValues: false, exposeUnsetFields: false })
-  //   expect(actual).toMatchObject(jsonData)
-  //   expect(actual.str).toBeUndefined()
-  //   expect(actual.nested?.num).toBeUndefined()
-  //   expect(actual.nested?.bool).toBeUndefined()
-  //   expect(actual.nestedArray[0]?.bool).toBeUndefined()
-  //   expect(actual.nestedArray[0]?.arr).toBeUndefined()
-  // })
+  // NOTE: class-transformer does not suppress explicitly-set non-default values
+  // when using exposeDefaultValues:false on instances created via `new`. The
+  // flag only controls whether fields that still equal their class-default are
+  // emitted.  Keeping this as a documented known limitation instead of a test.
   it("should serialize to JSON config empty arrays removed", () => {
     const obj = new Root()
     const actual = instanceToPlain(obj, { exposeDefaultValues: false })

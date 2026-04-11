@@ -203,3 +203,118 @@ describe("matchLabels()", () => {
     expect(actual).toEqual(expected)
   })
 })
+
+describe("Hierarchical Metadata Synchronization", () => {
+  it("should update metadata for all context types", () => {
+    const mocks = MockFactory.newMocks()
+
+    // Test ProcessingContext
+    BaseProcessor.updateContextMeta(mocks.processingContext, {
+      "proc.key": newMetaInfo(MetaInfoType.STRING, "proc-val", "", ""),
+    })
+    expect(mocks.processingContext.meta["proc.key"]?.value).toBe("proc-val")
+
+    // Test ThreadContext
+    BaseProcessor.updateContextMeta(mocks.threadContext, {
+      "thread.key": newMetaInfo(MetaInfoType.STRING, "thread-val", "", ""),
+    })
+    expect(mocks.threadContext.meta["thread.key"]?.value).toBe("thread-val")
+
+    // Test MessageContext
+    BaseProcessor.updateContextMeta(mocks.messageContext, {
+      "message.key": newMetaInfo(MetaInfoType.STRING, "message-val", "", ""),
+    })
+    expect(mocks.messageContext.meta["message.key"]?.value).toBe("message-val")
+
+    // Test AttachmentContext
+    BaseProcessor.updateContextMeta(mocks.attachmentContext, {
+      "attachment.key": newMetaInfo(
+        MetaInfoType.STRING,
+        "attachment-val",
+        "",
+        "",
+      ),
+    })
+    expect(mocks.attachmentContext.meta["attachment.key"]?.value).toBe(
+      "attachment-val",
+    )
+  })
+
+  it("should update metadata for environment context", () => {
+    const mocks = MockFactory.newMocks()
+    BaseProcessor.updateContextMeta(mocks.envContext, {
+      "env.key": newMetaInfo(MetaInfoType.STRING, "env-val", "", ""),
+    })
+    expect(mocks.envContext.meta["env.key"]?.value).toBe("env-val")
+  })
+})
+
+describe("matchTimestamp()", () => {
+  it("should match timestamps correctly", () => {
+    const past = "2023-01-01T00:00:00Z"
+    const future = "2024-01-01T00:00:00Z"
+    // isNewer=true: matchTime (past) < compareTime (future) -> true
+    expect((BaseProcessor as any).matchTimestamp(past, future, true)).toBe(true)
+    // isNewer=false: matchTime (past) >= compareTime (future) -> false
+    expect((BaseProcessor as any).matchTimestamp(past, future, false)).toBe(
+      false,
+    )
+    // compareDate undefined
+    expect((BaseProcessor as any).matchTimestamp(past, undefined, true)).toBe(
+      false,
+    )
+    // matchTimestamp undefined
+    expect((BaseProcessor as any).matchTimestamp(undefined, future, true)).toBe(
+      true,
+    )
+  })
+})
+
+describe("buildRegExpSubstitutionMap()", () => {
+  it("should handle regex match groups and named groups", () => {
+    const mocks = MockFactory.newMocks()
+    const m: MetaInfo = {
+      "message.subject": newMetaInfo(
+        MetaInfoType.STRING,
+        "Order #12345: Shipment",
+        "",
+        "",
+      ),
+    }
+    const regexMap = new Map([
+      ["subject", "Order #(?<orderId>[0-9]+): (?<type>.*)"],
+    ])
+    const result = BaseProcessor.buildRegExpSubstitutionMap(
+      mocks.processingContext,
+      m,
+      "message",
+      regexMap,
+    )
+
+    expect(result["message.subject.match.1"]?.value).toBe("12345")
+    expect(result["message.subject.match.2"]?.value).toBe("Shipment")
+    expect(result["message.subject.match.orderId"]?.value).toBe("12345")
+    expect(result["message.subject.match.type"]?.value).toBe("Shipment")
+    expect(result["message.matched"]?.value).toBe(true)
+  })
+
+  it("should handle non-matching regex", () => {
+    const mocks = MockFactory.newMocks()
+    const m: MetaInfo = {
+      "message.subject": newMetaInfo(
+        MetaInfoType.STRING,
+        "No match here",
+        "",
+        "",
+      ),
+    }
+    const regexMap = new Map([["subject", "Order #([0-9]+)"]])
+    const result = BaseProcessor.buildRegExpSubstitutionMap(
+      mocks.processingContext,
+      m,
+      "message",
+      regexMap,
+    )
+    expect(result["message.matched"]?.value).toBe(false)
+  })
+})

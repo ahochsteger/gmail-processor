@@ -1,6 +1,6 @@
 import { ConfigMocks } from "../../test/mocks/ConfigMocks"
 import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
-import { ExprEvaluator } from "./ExprEvaluator"
+import { ExprEvaluator, ExprListener } from "./ExprEvaluator"
 
 let mocks: Mocks
 
@@ -117,5 +117,72 @@ describe("evaluate() legacy expressions", () => {
         "${message.date:invalid}",
       ),
     ).toThrow("SyntaxError")
+  })
+})
+
+describe("ExprEvaluator edge cases", () => {
+  it("should handle anyValueToString with various types", () => {
+    const ctx = mocks.messageContext
+    const ctxs = { gmailProcessor: ctx, data: {} }
+    expect(ExprEvaluator.anyValueToString(ctxs, true)).toBe("true")
+    expect(ExprEvaluator.anyValueToString(ctxs, 123)).toBe("123")
+    expect(ExprEvaluator.anyValueToString(ctxs, BigInt(9007199254740991))).toBe(
+      "9007199254740991",
+    )
+    expect(ExprEvaluator.anyValueToString(ctxs, Symbol("test"))).toBe(
+      "Symbol(test)",
+    )
+    const func = () => "func"
+    expect(ExprEvaluator.anyValueToString(ctxs, func)).toBe(String(func))
+    expect(ExprEvaluator.anyValueToString(ctxs, undefined)).toBe("")
+  })
+
+  it("should handle objectValueToString with unknown objects", () => {
+    expect(ExprEvaluator.objectValueToString({ a: 1 }, "default")).toBe(
+      '{"a":1}',
+    )
+    expect(ExprEvaluator.objectValueToString(null, "default")).toBe("null")
+  })
+
+  it("should handle getContextValue with functions", () => {
+    const data = {
+      "thread.func": { value: (obj: any) => `thread-${obj ? "ok" : "fail"}` },
+      "message.func": { value: (obj: any) => `message-${obj ? "ok" : "fail"}` },
+      "attachment.func": {
+        value: (obj: any) => `attachment-${obj ? "ok" : "fail"}`,
+      },
+      "other.func": { value: () => "other-val" },
+    }
+    expect(
+      ExprEvaluator.getContextValue(
+        { gmailProcessor: mocks.threadContext, data } as any,
+        "thread.func",
+      ),
+    ).toBe("thread-ok")
+    expect(
+      ExprEvaluator.getContextValue(
+        { gmailProcessor: mocks.messageContext, data } as any,
+        "message.func",
+      ),
+    ).toBe("message-ok")
+    expect(
+      ExprEvaluator.getContextValue(
+        { gmailProcessor: mocks.attachmentContext, data } as any,
+        "attachment.func",
+      ),
+    ).toBe("attachment-ok")
+    expect(
+      ExprEvaluator.getContextValue(
+        { gmailProcessor: mocks.threadContext, data } as any,
+        "other.func",
+      ),
+    ).toBe("other-val")
+  })
+
+  it("should throw error for visitErrorNode", () => {
+    const listener = new ExprListener(mocks.messageContext)
+    expect(() =>
+      listener.visitErrorNode({ getText: () => "err" } as any),
+    ).toThrow("Error parsing 'err'")
   })
 })

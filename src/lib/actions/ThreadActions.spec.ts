@@ -125,5 +125,3 @@ it("should execute all actions using the action registry", () => {
     skipHeader: false,
   })
 })
-
-it.todo("should use filenameTo as the output filename") // See PR #61
