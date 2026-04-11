@@ -127,7 +127,11 @@ export const tests: E2ETest[] = [
           return (
             h.expectStatus() &&
             h.expectActionExecuted(a, "attachment.store") &&
-            h.expectActionMeta(a, "attachment.stored.location", /simple-invoice\.pdf$/)
+            h.expectActionMeta(
+              a,
+              "attachment.stored.location",
+              /simple-invoice\.pdf$/,
+            )
           )
         },
       },

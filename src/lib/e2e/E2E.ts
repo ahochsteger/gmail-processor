@@ -11,8 +11,8 @@ import { EnvProvider } from "../EnvProvider"
 import { Config } from "../config/Config"
 import { V1Config } from "../config/v1/V1Config"
 import { V1ToV2Converter } from "../config/v1/V1ToV2Converter"
-import { GmailProcessor } from "../processors/GmailProcessor"
 import { BaseProcessor } from "../processors/BaseProcessor"
+import { GmailProcessor } from "../processors/GmailProcessor"
 import { PatternUtil } from "../utils/PatternUtil"
 import { E2EDefaults } from "./E2EDefaults"
 
@@ -65,16 +65,14 @@ export class E2EAssertionHelper {
   ): unknown {
     const searchKey = key.startsWith("meta.") ? key.substring(5) : key
     const metaEntry =
-      action?.result?.actionMeta?.[searchKey] ?? (this.ctx as any).meta?.[searchKey]
+      action?.result?.actionMeta?.[searchKey] ??
+      (this.ctx as any).meta?.[searchKey]
     return metaEntry && typeof metaEntry === "object" && "value" in metaEntry
       ? metaEntry.value
       : metaEntry
   }
 
-  public matches(
-    actual: unknown,
-    expected: unknown,
-  ): boolean {
+  public matches(actual: unknown, expected: unknown): boolean {
     return E2E.isRegExp(expected)
       ? expected.test(String(actual))
       : actual === expected
@@ -243,8 +241,6 @@ export class E2E {
       Object.prototype.toString.call(val) === "[object RegExp]"
     )
   }
-
-
 
   public static expect(
     ctx: EnvContext,
@@ -632,14 +628,16 @@ export class E2E {
         ctx.log.info(
           `E2E.runTests(): Waiting for ${processingResult.actionPromises.length} action promises to finish ...`,
         )
-        await Promise.all(processingResult.actionPromises.map((p) =>
-          p.then((actualResult) => {
-            if (actualResult.actionMeta) {
-              BaseProcessor.updateContextMeta(ctx, actualResult.actionMeta)
-            }
-            return actualResult
-          }),
-        ))
+        await Promise.all(
+          processingResult.actionPromises.map((p) =>
+            p.then((actualResult) => {
+              if (actualResult.actionMeta) {
+                BaseProcessor.updateContextMeta(ctx, actualResult.actionMeta)
+              }
+              return actualResult
+            }),
+          ),
+        )
         ctx.log.info(`E2E.runTests(): Action promises finished.`)
 
         // Diagnostic logging: Trace all metadata currently in context
@@ -648,8 +646,11 @@ export class E2E {
         Object.keys(meta).forEach((k) => {
           const entry = meta[k]
           const val = entry?.value
-          const displayVal = typeof val === "function" ? "()=>..." : JSON.stringify(val)
-          ctx.log.info(`  - ${k}: ${displayVal} (Raw: ${JSON.stringify(entry)})`)
+          const displayVal =
+            typeof val === "function" ? "()=>..." : JSON.stringify(val)
+          ctx.log.info(
+            `  - ${k}: ${displayVal} (Raw: ${JSON.stringify(entry)})`,
+          )
         })
       }
 

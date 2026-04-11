@@ -148,7 +148,11 @@ export const tests: E2ETest[] = [
           return (
             h.expectStatus() &&
             h.expectActionExecuted(a, "DOCX conversion") &&
-            h.expectActionMeta(a, "attachment.stored.location", /.*\/sample-from-docx$/)
+            h.expectActionMeta(
+              a,
+              "attachment.stored.location",
+              /.*\/sample-from-docx$/,
+            )
           )
         },
       },
@@ -161,7 +165,11 @@ export const tests: E2ETest[] = [
           return (
             h.expectStatus() &&
             h.expectActionExecuted(a, "XLSX conversion") &&
-            h.expectActionMeta(a, "attachment.stored.location", /.*\/sample-from-xlsx$/)
+            h.expectActionMeta(
+              a,
+              "attachment.stored.location",
+              /.*\/sample-from-xlsx$/,
+            )
           )
         },
       },
@@ -174,7 +182,11 @@ export const tests: E2ETest[] = [
           return (
             h.expectStatus() &&
             h.expectActionExecuted(a, "PPTX conversion") &&
-            h.expectActionMeta(a, "attachment.stored.location", /.*\/sample-from-pptx$/)
+            h.expectActionMeta(
+              a,
+              "attachment.stored.location",
+              /.*\/sample-from-pptx$/,
+            )
           )
         },
       },

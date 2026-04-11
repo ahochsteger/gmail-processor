@@ -93,7 +93,11 @@ export const tests: E2ETest[] = [
           return (
             h.expectStatus() &&
             h.expectActionExecuted(a, "REPLACE action") &&
-            h.expectActionMeta(a, "attachment.stored.location", /.*\/sample\.txt$/)
+            h.expectActionMeta(
+              a,
+              "attachment.stored.location",
+              /.*\/sample\.txt$/,
+            )
           )
         },
       },
@@ -105,7 +109,11 @@ export const tests: E2ETest[] = [
           })
           return (
             h.expectActionExecuted(a, "INCREMENT action") &&
-            h.expectActionMeta(a, "attachment.stored.location", /.*\/sample_2\.txt$/)
+            h.expectActionMeta(
+              a,
+              "attachment.stored.location",
+              /.*\/sample_2\.txt$/,
+            )
           )
         },
       },

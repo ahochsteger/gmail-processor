@@ -42,7 +42,6 @@ export const example: V1Example = {
   migrationConfig,
 }
 
-
 export const tests: E2ETest[] = [
   {
     message: "No failures",

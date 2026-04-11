@@ -175,9 +175,7 @@ export const tests: E2ETest[] = [
           const a = h.findNextAction("global.sheetLog", {
             "arg.message": /Thread log/,
           })
-          return (
-            h.expectStatus() && h.expectActionExecuted(a, "thread logging")
-          )
+          return h.expectStatus() && h.expectActionExecuted(a, "thread logging")
         },
       },
       {

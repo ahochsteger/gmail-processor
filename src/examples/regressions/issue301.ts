@@ -155,7 +155,11 @@ export const tests: E2ETest[] = [
           return (
             h.expectStatus() &&
             h.expectActionExecuted(a, "XLSX conversion") &&
-            h.expectActionMeta(a, "attachment.stored.location", /.*\/regressions\/issue301\/sample$/)
+            h.expectActionMeta(
+              a,
+              "attachment.stored.location",
+              /.*\/regressions\/issue301\/sample$/,
+            )
           )
         },
       },

@@ -99,7 +99,11 @@ export const tests: E2ETest[] = [
               "${variables.pdfPassword}",
               "password",
             ) &&
-            h.expectActionMeta(a, "meta.attachment.stored.location", /.*\/decrypted\.pdf$/)
+            h.expectActionMeta(
+              a,
+              "meta.attachment.stored.location",
+              /.*\/decrypted\.pdf$/,
+            )
           )
         },
       },

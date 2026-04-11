@@ -73,16 +73,14 @@ export const runConfig: Config = {
         {
           name: "message.exportAsHtml",
           args: {
-            location:
-              `${E2EDefaults.driveTestBasePath(info)}/message-{{message.id}}-{{message.subject}}.html`,
+            location: `${E2EDefaults.driveTestBasePath(info)}/message-{{message.id}}-{{message.subject}}.html`,
             conflictStrategy: ConflictStrategy.REPLACE,
           },
         },
         {
           name: "message.exportAsPdf",
           args: {
-            location:
-              `${E2EDefaults.driveTestBasePath(info)}/message-{{message.id}}-{{message.subject}}.pdf`,
+            location: `${E2EDefaults.driveTestBasePath(info)}/message-{{message.id}}-{{message.subject}}.pdf`,
             conflictStrategy: ConflictStrategy.REPLACE,
           },
         },
@@ -118,7 +116,11 @@ export const tests: E2ETest[] = [
           return (
             h.expectStatus() &&
             h.expectActionExecuted(a, "thread.exportAsPdf") &&
-            h.expectActionMeta(a, "thread.stored.location", /.*\/thread-.*-.*\.pdf$/)
+            h.expectActionMeta(
+              a,
+              "thread.stored.location",
+              /.*\/thread-.*-.*\.pdf$/,
+            )
           )
         },
       },
@@ -130,7 +132,11 @@ export const tests: E2ETest[] = [
           })
           return (
             h.expectActionExecuted(a, "message.exportAsPdf") &&
-            h.expectActionMeta(a, "message.stored.location", /.*\/message-.*-.*\.pdf$/)
+            h.expectActionMeta(
+              a,
+              "message.stored.location",
+              /.*\/message-.*-.*\.pdf$/,
+            )
           )
         },
       },
