@@ -301,7 +301,44 @@ describe("Image Embedding", () => {
   })
 })
 
-// TODO: Add tests for Attachment Handling (includeAttachments, embedAttachments)
-// - Test embedding image attachments
-// - Test listing non-image attachments when embedding is on
-// - Test listing all attachments when embedding is off
+describe("addressesToHtml", () => {
+  it("should handle undefined addresses", () => {
+    expect((adapter as any).addressesToHtml(undefined)).toBe("")
+  })
+
+  it("should handle a single email address object", () => {
+    const email = { address: "test@example.com", name: "Test" }
+    expect((adapter as any).addressesToHtml(email)).toBe(
+      '<a href="mailto:test@example.com">test@example.com</a>',
+    )
+  })
+})
+
+describe("fetchRemoteFile error handling", () => {
+  it("should return null if urlFetchApp.fetch throws an error", () => {
+    urlFetchApp.fetch.mockImplementation(() => {
+      throw new Error("Network error")
+    })
+    const spyWarn = jest.spyOn(mocks.envContext.log, "warn")
+    const result = (adapter as any).fetchRemoteFile("http://example.com")
+    expect(result).toBeNull()
+    expect(spyWarn).toHaveBeenCalledWith(
+      expect.stringContaining("Failed fetching avatar"),
+    )
+  })
+})
+
+describe("getDataUri edge cases", () => {
+  it("should return null for non-image content types", () => {
+    const blob = mock<GoogleAppsScript.Base.Blob>()
+    blob.getContentType.mockReturnValue("application/pdf")
+    blob.getBytes.mockReturnValue([1, 2, 3])
+    const result = (adapter as any).getDataUri(blob)
+    expect(result).toBeNull()
+  })
+
+  it("should return null if no image blob is provided", () => {
+    const result = (adapter as any).getDataUri(undefined)
+    expect(result).toBeNull()
+  })
+})

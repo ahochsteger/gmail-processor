@@ -92,3 +92,14 @@ it("should log with a certain log level (warn) to a logSheet", () => {
     message,
   )
 })
+
+it("should call noop action", () => {
+  GlobalActions.noop(mocks.processingContext)
+  // No exception means success
+})
+
+it("should panic and throw error", () => {
+  expect(() =>
+    GlobalActions.panic(mocks.processingContext, { message: "Panicking!" }),
+  ).toThrow("Panicking!")
+})

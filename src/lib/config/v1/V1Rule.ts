@@ -1,7 +1,7 @@
 import { plainToInstance } from "class-transformer"
 import "reflect-metadata"
 import { PartialDeep } from "type-fest"
-import { RequiredDeep } from "../../utils/UtilityTypes"
+import { RequiredDeep } from "../../utils/Utility.types"
 
 export class V1Rule {
   /** Archive thread after processing */

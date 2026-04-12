@@ -1,6 +1,6 @@
 import { plainToInstance } from "class-transformer"
 import { essentialObject } from "../utils/ConfigUtils"
-import { RequiredDeep } from "../utils/UtilityTypes"
+import { RequiredDeep } from "../utils/Utility.types"
 import { MessageFlag } from "./MessageFlag"
 
 /**

@@ -52,7 +52,13 @@ export class SpreadsheetAdapter extends BaseAdapter {
       logSheetFile = existingFiles.next()
       this.ctx.log.info(`Found existing logSheet at: ${logSheetFile.getUrl()}`)
       this.logSheetId = logSheetFile.getId()
-      this.logSpreadsheet = this.spreadsheetApp.openById(this.logSheetId)
+      try {
+        this.logSpreadsheet = this.spreadsheetApp.openById(this.logSheetId)
+      } catch (e) {
+        this.ctx.log.warn(
+          `Error opening logSheet (ID:${this.logSheetId}): ${e}`,
+        )
+      }
     } else {
       const folder = DriveUtils.ensureFolderExists(this.ctx, location)
       this.logSpreadsheet = this.spreadsheetApp.create(locationInfo.filename)
@@ -83,9 +89,15 @@ export class SpreadsheetAdapter extends BaseAdapter {
   private getLogSheet(): GoogleAppsScript.Spreadsheet.Sheet | null {
     if (this.logSheet) return this.logSheet
     if (this.logSheetId) {
-      this.logSpreadsheet = this.spreadsheetApp.openById(this.logSheetId)
-      this.logSheet = this.logSpreadsheet.getSheets()[0]
-      return this.logSheet
+      try {
+        this.logSpreadsheet = this.spreadsheetApp.openById(this.logSheetId)
+        this.logSheet = this.logSpreadsheet.getSheets()[0]
+        return this.logSheet
+      } catch (e) {
+        this.ctx.log.warn(
+          `Error opening logSheet (ID:${this.logSheetId}): ${e}`,
+        )
+      }
     }
     return null
   }

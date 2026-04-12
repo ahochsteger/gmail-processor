@@ -317,4 +317,41 @@ describe("buildRegExpSubstitutionMap()", () => {
     )
     expect(result["message.matched"]?.value).toBe(false)
   })
+
+  it("should handle effectiveValue with global set and local unset", () => {
+    const res = TestProcessor["effectiveValue"](true, false, false)
+    expect(res).toBe(true)
+  })
+
+  it("should handle effectiveNumber", () => {
+    const res = TestProcessor["effectiveNumber"](10, -1, -1)
+    expect(res).toBe(10)
+  })
+
+  it("should generate processing trace for different contexts", () => {
+    const mocks = MockFactory.newMocks()
+    const action = { name: "test-action" }
+    const actionResult = { ok: true }
+
+    const threadTrace = TestProcessor["getProcessingTrace"](
+      mocks.threadContext,
+      action,
+      actionResult,
+    )
+    expect(threadTrace.traces.thread).toBeDefined()
+
+    const messageTrace = TestProcessor["getProcessingTrace"](
+      mocks.messageContext,
+      action,
+      actionResult,
+    )
+    expect(messageTrace.traces.message).toBeDefined()
+
+    const attachmentTrace = TestProcessor["getProcessingTrace"](
+      mocks.attachmentContext,
+      action,
+      actionResult,
+    )
+    expect(attachmentTrace.traces.attachment).toBeDefined()
+  })
 })

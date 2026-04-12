@@ -133,10 +133,16 @@ export class GmailProcessor extends BaseProcessor {
     }
     if (result.status !== ProcessingStatus.OK) {
       ctx.log.error(`There have been errors during processing:`)
-      ctx.log.error(
-        ` - Failed action: ${JSON.stringify(result.failedAction ?? "-")}`,
-      )
-      ctx.log.error(` - Error: ${JSON.stringify(result.error ?? "-")}`)
+      if (result.failedAction) {
+        ctx.log.error(
+          ` - Failed action: ${JSON.stringify(result.failedAction)}`,
+        )
+      }
+      if (result.error) {
+        ctx.log.error(
+          ` - Error: ${result.error instanceof Error ? result.error.message : JSON.stringify(result.error)}`,
+        )
+      }
     }
     ctx.log.info("Processing GmailProcessor config finished.")
     ctx.log.info(`Processing summary:`)
@@ -193,7 +199,8 @@ export class GmailProcessor extends BaseProcessor {
       config.threads,
       newProcessingResult(),
     )
-    result.actionPromises = processingContext.proc.actionPromises
+    result.actionPromises = processingContext.proc.actionPromises ?? []
+
     this.reportResults(ctx, result, reportFormat)
     ctx.log.trace(processingContext, {
       location: "GmailProcessor.run()",

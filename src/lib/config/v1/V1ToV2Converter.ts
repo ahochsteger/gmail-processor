@@ -183,8 +183,11 @@ export class V1ToV2Converter {
   }
 
   static v1ConfigToV2ConfigJson(partialV1Config: V1Config): Config {
+    if (typeof partialV1Config !== "object" || partialV1Config === null) {
+      throw new Error("v1 config is not an object")
+    }
     const v1Config = newV1Config(partialV1Config)
-    const threadConfigs = v1Config.rules.map((rule) =>
+    const threadConfigs = v1Config.rules.map((rule: any) =>
       this.v1RuleToV2ThreadConfig(rule),
     )
     const globalFilter = v1Config.globalFilter || DEFAULT_GLOBAL_QUERY_PREFIX

@@ -6,7 +6,7 @@ import {
 } from "class-transformer"
 import "reflect-metadata"
 import { essentialObject } from "../utils/ConfigUtils"
-import { RequiredDeep } from "../utils/UtilityTypes"
+import { RequiredDeep } from "../utils/Utility.types"
 import { ProcessingStage } from "./ActionConfig"
 import { AttachmentConfig, essentialAttachmentConfig } from "./AttachmentConfig"
 import {
@@ -126,19 +126,18 @@ export function normalizeConfig(config: Config): Config {
   // Inject mark processed actions
   config.settings = config.settings ?? {}
   config.global = normalizeGlobalConfig(config.global ?? {})
-  config.global.thread = config.global.thread ?? {}
-  config.global.thread.actions = config.global.thread.actions ?? []
-  config.global.thread.match = config.global.thread.match ?? {}
-  config.global.message = config.global.message ?? {}
-  config.global.message.actions = config.global.message.actions ?? []
-  config.global.message.match = config.global.message.match ?? {}
-  config.global.attachment = config.global.attachment ?? {}
-  config.global.attachment.actions = config.global.attachment.actions ?? []
+  const g = config.global
+  const gt = g.thread!
+  const gm = g.message!
+  const ga = g.attachment!
+  gt.actions = gt.actions ?? []
+  gm.actions = gm.actions ?? []
+  ga.actions = ga.actions ?? []
   switch (config.settings.markProcessedMethod) {
     case MarkProcessedMethod.ADD_THREAD_LABEL:
       if (config.settings.markProcessedLabel) {
-        config.global.thread.match.query += ` -label:${config.settings.markProcessedLabel}`
-        config.global.thread.actions.push({
+        gt.match!.query += ` -label:${config.settings.markProcessedLabel}`
+        gt.actions.push({
           name: "thread.addLabel",
           args: {
             name: config.settings.markProcessedLabel,
@@ -151,10 +150,8 @@ export function normalizeConfig(config: Config): Config {
       // Do nothing!
       break
     case MarkProcessedMethod.MARK_MESSAGE_READ:
-      config.global.message.match.is = (
-        config.global.message.match.is ?? []
-      ).concat([MessageFlag.UNREAD])
-      config.global.message.actions.push({
+      gm.match!.is = (gm.match!.is ?? []).concat([MessageFlag.UNREAD])
+      gm.actions.push({
         name: "message.markRead",
         processingStage: ProcessingStage.POST_MAIN,
       })

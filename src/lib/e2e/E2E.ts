@@ -293,6 +293,7 @@ export class E2E {
       }
       return match
     }
+
     if (assertion.skip) {
       status = E2EStatus.SKIPPED
     } else {
@@ -350,7 +351,7 @@ export class E2E {
         ? path
         : `${globals.repoBaseUrl}/${globals.repoBranch}/${globals.repoBasePath}/${path}`
     ctx.log.debug(`Fetching '${url}' ...`)
-    const blob = UrlFetchApp.fetch(url)
+    const blob = ctx.env.urlFetchApp.fetch(url)
     ctx.log.debug(`Fetching '${url}' done.`)
     return blob
   }

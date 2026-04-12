@@ -198,9 +198,6 @@ export class ExprEvaluator {
           `About to process an undefined value with '${ctxs.parseCurrent?.getText()}' '${ctxs.parseRoot?.getText()}' value is undefined!`,
         )
         break
-      default:
-        stringValue = String(value)
-        break
     }
     return stringValue
   }

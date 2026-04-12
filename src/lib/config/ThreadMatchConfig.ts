@@ -1,7 +1,7 @@
 import { Expose, plainToInstance } from "class-transformer"
 import "reflect-metadata"
 import { essentialObject } from "../utils/ConfigUtils"
-import { RequiredDeep } from "../utils/UtilityTypes"
+import { RequiredDeep } from "../utils/Utility.types"
 
 export const DEFAULT_GLOBAL_QUERY_PREFIX =
   "has:attachment -in:trash -in:drafts -in:spam"

@@ -1,6 +1,6 @@
 import { MockProxy, mock } from "jest-mock-extended"
 import { sha1Hex } from "../../lib/utils/Converter"
-import { RequiredDeep } from "../../lib/utils/UtilityTypes"
+import { RequiredDeep } from "../../lib/utils/Utility.types"
 import { Mocks } from "./MockFactory"
 
 export type IndexType = [thread: number, message: number, attachment: number]
@@ -100,7 +100,7 @@ export class GMailMocks {
     t.getFirstMessageSubject.mockReturnValue(d.firstMessageSubject)
     t.getId.mockReturnValue(d.id)
     t.getLabels.mockReturnValue(
-      (d.labels ?? []).map((l) => {
+      (d.labels ?? []).map((l: any) => {
         const ml = mock<GoogleAppsScript.Gmail.GmailLabel>()
         ml.getName.mockReturnValue(l)
         return ml

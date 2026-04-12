@@ -1,7 +1,7 @@
 import { ConfigMocks } from "../../test/mocks/ConfigMocks"
 import { GMailMocks } from "../../test/mocks/GMailMocks"
 import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
-import { ProcessingStatus } from "../Context"
+import { ProcessingStatus, newProcessingResult } from "../Context"
 import { ProcessingStage } from "../config/ActionConfig"
 import { Config, RequiredConfig } from "../config/Config"
 import { LogLevel, MarkProcessedMethod } from "../config/SettingsConfig"
@@ -21,12 +21,14 @@ beforeEach(() => {
 })
 
 describe("run", () => {
-  mocks = MockFactory.newCustomMocks(
-    ConfigMocks.newDefaultConfigJson(),
-    GMailMocks.getGmailSampleData(),
-    [0, 0, 0],
-    [0, 0, 0],
-  )
+  beforeEach(() => {
+    mocks = MockFactory.newCustomMocks(
+      ConfigMocks.newDefaultConfigJson(),
+      GMailMocks.getGmailSampleData(),
+      [0, 0, 0],
+      [0, 0, 0],
+    )
+  })
   it("should process a v2 config object", () => {
     const result = GmailProcessor.run(config, [], mocks.envContext)
     expect(mocks.envContext.env.gmailApp.search).toHaveBeenCalledTimes(
@@ -61,6 +63,15 @@ describe("run", () => {
     expect(() => GmailProcessor.run(config, [], mocks.envContext)).toThrow(
       "Error in action 'global.panic'",
     )
+  })
+
+  it("should output JSON report format", () => {
+    const freshMocks = MockFactory.newMocks()
+
+    const freshConfig = freshMocks.processingContext.proc.config
+    const spyInfo = jest.spyOn(freshMocks.envContext.log, "info")
+    GmailProcessor.run(freshConfig, [], freshMocks.envContext, "json")
+    expect(spyInfo).toHaveBeenCalledWith(expect.stringContaining("{"))
   })
 })
 
@@ -110,4 +121,117 @@ describe("getEffectiveConfig", () => {
     const actual = GmailProcessor.getEffectiveConfig(simpleConfig)
     expect(actual).toMatchObject(expected)
   })
+})
+
+describe("getEssentialConfig", () => {
+  it("should return only essential config fields", () => {
+    const cfg = ConfigMocks.newDefaultConfigJson()
+    const essential = GmailProcessor.getEssentialConfig(cfg)
+    expect(essential).toBeDefined()
+  })
+})
+
+describe("checkTimezone", () => {
+  it("should log an error when config timezone mismatches script timezone", () => {
+    const freshMocks = MockFactory.newMocks()
+    const spyError = jest.spyOn(freshMocks.envContext.log, "error")
+    ;(
+      freshMocks.envContext.env.session.getScriptTimeZone as jest.Mock
+    ).mockReturnValue("America/New_York")
+    const tzConfig = GmailProcessor.getEffectiveConfig({
+      settings: {
+        markProcessedMethod: MarkProcessedMethod.MARK_MESSAGE_READ,
+        timezone: "Europe/Vienna",
+      },
+      threads: [{}],
+    })
+    GmailProcessor.run(tzConfig, [], freshMocks.envContext)
+    expect(spyError).toHaveBeenCalledWith(
+      expect.stringContaining("inconsistent with Google Apps Script"),
+    )
+  })
+
+  it("should not log a timezone error when timezones match", () => {
+    const freshMocks = MockFactory.newMocks()
+    const spyError = jest.spyOn(freshMocks.envContext.log, "error")
+    ;(
+      freshMocks.envContext.env.session.getScriptTimeZone as jest.Mock
+    ).mockReturnValue("Europe/Vienna")
+    const tzConfig = GmailProcessor.getEffectiveConfig({
+      settings: {
+        markProcessedMethod: MarkProcessedMethod.MARK_MESSAGE_READ,
+        timezone: "Europe/Vienna",
+      },
+      threads: [{}],
+    })
+    GmailProcessor.run(tzConfig, [], freshMocks.envContext)
+    expect(spyError).not.toHaveBeenCalledWith(
+      expect.stringContaining("inconsistent"),
+    )
+  })
+})
+
+describe("buildMetaInfo with property-type variables", () => {
+  it("should warn when a property-type variable value is not set", () => {
+    const freshMocks = MockFactory.newMocks()
+    const spyWarn = jest.spyOn(freshMocks.envContext.log, "warn")
+    ;(
+      freshMocks.envContext.env.propertiesService.getScriptProperties()
+        .getProperty as jest.Mock
+    ).mockReturnValue(null)
+
+    const cfgWithPropVar = GmailProcessor.getEffectiveConfig({
+      settings: {
+        markProcessedMethod: MarkProcessedMethod.MARK_MESSAGE_READ,
+      },
+      global: {
+        variables: [{ key: "myVar", value: "MISSING_PROP", type: "property" }],
+      },
+      threads: [{}],
+    })
+    GmailProcessor.run(cfgWithPropVar, [], freshMocks.envContext)
+    expect(spyWarn).toHaveBeenCalledWith(
+      expect.stringContaining("MISSING_PROP"),
+    )
+  })
+
+  it("should resolve property-type variables when the property exists", () => {
+    const freshMocks = MockFactory.newMocks()
+    ;(
+      freshMocks.envContext.env.propertiesService.getScriptProperties()
+        .getProperty as jest.Mock
+    ).mockReturnValue("resolved-value")
+
+    const cfgWithPropVar = GmailProcessor.getEffectiveConfig({
+      settings: {
+        markProcessedMethod: MarkProcessedMethod.MARK_MESSAGE_READ,
+      },
+      global: {
+        variables: [{ key: "myVar", value: "EXISTING_PROP", type: "property" }],
+      },
+      threads: [{}],
+    })
+    const result = GmailProcessor.run(cfgWithPropVar, [], freshMocks.envContext)
+    expect(result.status).toBe(ProcessingStatus.OK)
+  })
+})
+
+it("should report non-OK status in reportResults", () => {
+  const freshMocks = MockFactory.newMocks()
+  const spyError = jest.spyOn(freshMocks.envContext.log, "error")
+  const result = newProcessingResult()
+  result.status = ProcessingStatus.ERROR
+  result.failedAction = {
+    config: { name: "test-action" } as any,
+    result: { ok: false },
+  }
+  result.error = new Error("test-error")
+
+  GmailProcessor["reportResults"](freshMocks.envContext, result, "text")
+
+  expect(spyError).toHaveBeenCalledWith(
+    expect.stringContaining("There have been errors during processing"),
+  )
+  expect(spyError).toHaveBeenCalledWith(expect.stringContaining("test-action"))
+  expect(spyError).toHaveBeenCalledWith(expect.stringContaining("test-error"))
 })

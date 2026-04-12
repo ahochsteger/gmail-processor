@@ -23,6 +23,7 @@ import {
   E2ETestConfig,
   newE2EGlobalConfig,
 } from "./E2E"
+import { E2EDefaults } from "./E2EDefaults"
 
 let ctx: EnvContext
 let mocks: Mocks
@@ -30,6 +31,14 @@ let mocks: Mocks
 beforeAll(() => {
   mocks = MockFactory.newMocks()
   ctx = mocks.envContext
+  ;(ctx.env.session.getActiveUser as jest.Mock).mockReturnValue({
+    getEmail: () => "test@example.com",
+  } as any)
+})
+
+beforeEach(() => {
+  jest.restoreAllMocks()
+  jest.clearAllMocks()
 })
 
 describe("newE2EGlobalConfig", () => {
@@ -44,19 +53,35 @@ describe("newE2EGlobalConfig", () => {
   })
 })
 
-describe("getUuid", () => {
-  it("should default to test-id when no env is provided", () => {
-    const mockCtx = {} as EnvContext
-    let runId: string | undefined
-    const activeTestRunId =
-      runId ??
-      (mockCtx &&
-      mockCtx.env &&
-      mockCtx.env.utilities &&
-      typeof mockCtx.env.utilities.getUuid === "function"
-        ? mockCtx.env.utilities.getUuid().substring(0, 8)
-        : "test-id")
-    expect(activeTestRunId).toEqual("test-id")
+describe("E2EDefaults.driveTestBasePath", () => {
+  const info: ExampleInfo = {
+    category: ExampleCategory.BASICS,
+    name: "myExample",
+    title: "My Example",
+    description: "desc",
+  }
+
+  it("should return a path without testRunId (date only)", () => {
+    const result = E2EDefaults.driveTestBasePath(info)
+    expect(result).toContain("/GmailProcessor-Tests/e2e/")
+    expect(result).toContain("/basics/myExample")
+    // When no testRunId is given, result must not contain a dash-separated run segment
+    expect(result).not.toContain("-run-")
+  })
+
+  it("should return a path with testRunId appended to the date", () => {
+    const result = E2EDefaults.driveTestBasePath(info, "run-42")
+    expect(result).toContain("/GmailProcessor-Tests/e2e/")
+    expect(result).toContain("-run-42/")
+    expect(result).toContain("/basics/myExample")
+  })
+})
+
+describe("getTestRunId", () => {
+  it("should return an 8-character UUID prefix from context utilities", () => {
+    const result = E2E.getTestRunId(ctx)
+    expect(result).toHaveLength(8)
+    expect(ctx.env.utilities.getUuid).toHaveBeenCalled()
   })
 })
 
@@ -611,5 +636,261 @@ describe("E2E action promises", () => {
     // Access meta through bracket notation to avoid any strange JS object behavior
     expect(localCtx.meta["new.key"]).toBeDefined()
     expect((localCtx.meta as any)["new.key"].value).toBe("new-val")
+  })
+})
+
+describe("E2E edge cases", () => {
+  let globals: E2EGlobalConfig
+  beforeEach(() => {
+    globals = newE2EGlobalConfig(ctx)
+  })
+
+  it("should handle migrationConfig in runTests", async () => {
+    const migrationConfig = {
+      rules: [
+        {
+          filter: "to:me",
+          folder: "Archive",
+        },
+      ],
+      processedLabel: "gmail-processor/processed",
+      sleepTime: 100,
+      maxRuntime: 100,
+      timezone: "UTC",
+    } as any
+    const testConfig = {
+      info: { category: ExampleCategory.BASICS, name: "mig" },
+      migrationConfig,
+      globals,
+    } as any
+    const result = await E2E.runTests(testConfig, true, "main", ctx)
+    expect(result.status).toBe(E2EStatus.SUCCESS)
+  })
+
+  it("should handle processing results with ERROR status", async () => {
+    const errorResult = {
+      status: ProcessingStatus.ERROR,
+      error: new Error("Processing error"),
+      executedActions: [],
+      actionPromises: [],
+    } as any
+    jest.spyOn(GmailProcessor, "runWithJson").mockReturnValue(errorResult)
+
+    const testConfig = {
+      info: { category: ExampleCategory.BASICS, name: "err" },
+      runConfig: {},
+      globals,
+    } as any
+    const result = await E2E.runTests(testConfig, true, "main", ctx)
+    expect(result.status).toBe(E2EStatus.ERROR)
+    expect(result.error).toBeInstanceOf(Error)
+  })
+
+  it("should timeout in initWait if expected count is never reached", () => {
+    globals.maxPollTimeMs = 100
+    globals.pollIntervalMs = 50
+    ;(ctx.env.gmailApp.search as jest.Mock).mockReturnValue([])
+    E2E.initWait(globals, ctx, 1)
+    expect(ctx.env.gmailApp.search).toHaveBeenCalled()
+  })
+
+  it("should run all tests in runAllTests and return summary", async () => {
+    const testConfigs = [
+      {
+        info: { category: ExampleCategory.BASICS, name: "test1" },
+        example: { config: {} },
+        runConfig: {},
+        globals,
+      },
+    ] as any
+    jest
+      .spyOn(E2E, "runTests")
+      .mockResolvedValue({ status: E2EStatus.SUCCESS } as any)
+    const result = await E2E.runAllTests(testConfigs, true, "main", ctx)
+    expect(result.status).toBe(E2EStatus.SUCCESS)
+  })
+
+  it("should support regex and other types in isRegExp", () => {
+    expect(E2E.isRegExp(/test/)).toBe(true)
+    expect(E2E.isRegExp("test")).toBe(false)
+    expect(E2E.isRegExp(null)).toBe(false)
+  })
+
+  it("should fetch blob source from file path", () => {
+    const spyFetch = jest
+      .spyOn(ctx.env.urlFetchApp, "fetch")
+      .mockReturnValue({ getBlob: () => ({}) } as any)
+    E2E["_getBlobSourceFromFilePath"](ctx, globals, "http://example.com/file")
+
+    expect(spyFetch).toHaveBeenCalledWith("http://example.com/file")
+  })
+
+  it("should handle nested results in logResults", () => {
+    const spyInfo = jest.spyOn(ctx.log, "info")
+    E2E.logResults(
+      ctx,
+      {
+        status: E2EStatus.SUCCESS,
+        message: "parent",
+        results: [{ status: E2EStatus.SUCCESS, message: "child" }],
+      } as any,
+      true,
+    )
+    expect(spyInfo).toHaveBeenCalledWith(expect.stringContaining("parent"))
+    expect(spyInfo).toHaveBeenCalledWith(expect.stringContaining("child"))
+  })
+
+  it("should exercise E2EAssertionHelper missing methods", () => {
+    const h = new E2EAssertionHelper(
+      {} as any,
+      { status: ProcessingStatus.ERROR, executedActions: [] } as any,
+      ctx,
+      E2E.expect.bind(E2E),
+    )
+    expect(h.expectStatus(ProcessingStatus.ERROR)).toBe(true)
+    expect(h.matches("test", /test/)).toBe(true)
+    expect(h.matches("test", "test")).toBe(true)
+    expect(h.matches("test", "other")).toBe(false)
+    expect(h.expectActionExecuted(undefined, "missing")).toBe(false)
+    expect(h.expectActionMeta(undefined, "key", "val")).toBe(false)
+  })
+
+  it("should handle initTests with attachments", () => {
+    const configWithAttachments = {
+      info: {
+        category: ExampleCategory.BASICS,
+        name: "test",
+        description: "description",
+      },
+      initConfig: {
+        mails: [{ attachments: ["path/to/file.txt"] }],
+      },
+      globals,
+    } as any
+    const spyFetch = jest
+      .spyOn(ctx.env.urlFetchApp, "fetch")
+      .mockReturnValue({ getBlob: () => ({}) } as any)
+    E2E.initTests(configWithAttachments, "main", ctx, "run-id")
+    expect(spyFetch).toHaveBeenCalled()
+  })
+
+  it("should replace drive base path in runConfig", async () => {
+    const basePath = E2EDefaults.driveTestBasePath(
+      { category: ExampleCategory.BASICS, name: "test-replace" } as any,
+      undefined,
+    )
+    const runConfig = {
+      settings: {
+        markProcessedMethod: MarkProcessedMethod.MARK_MESSAGE_READ,
+        logSheetLocation: `${basePath}/log`,
+      },
+      threads: [],
+    } as any
+    const testConfig = {
+      info: { category: ExampleCategory.BASICS, name: "test-replace" },
+      example: { config: runConfig },
+      runConfig,
+    } as any
+
+    const spyRun = jest.spyOn(GmailProcessor, "runWithJson").mockReturnValue({
+      status: ProcessingStatus.OK,
+      executedActions: [],
+      actionPromises: [],
+    } as any)
+
+    await E2E.runTests(testConfig, true, "main", ctx, "run-id")
+
+    expect(spyRun).toHaveBeenCalledWith(
+      expect.objectContaining({
+        settings: expect.objectContaining({
+          logSheetLocation: expect.stringContaining("-run-id"),
+        }),
+      }),
+      expect.any(Array),
+      expect.any(Object),
+    )
+  })
+
+  it("should throw error if no config is given in runTests", async () => {
+    const testConfig = {
+      info: {
+        category: ExampleCategory.BASICS,
+        name: "test",
+        description: "desc",
+      },
+      example: {},
+    } as any
+    const result = await E2E.runTests(testConfig, true, "main", ctx)
+    expect(result.status).toBe(E2EStatus.ERROR)
+    expect((result.error as Error).message).toBe(
+      "No processing configuration given!",
+    )
+  })
+
+  it("should handle test execution loop", async () => {
+    const runConfig = {
+      settings: { markProcessedMethod: MarkProcessedMethod.MARK_MESSAGE_READ },
+      threads: [],
+    } as any
+    const testConfig = {
+      info: {
+        category: ExampleCategory.BASICS,
+        name: "test",
+        description: "desc",
+      },
+      runConfig,
+      example: {},
+      tests: [
+        {
+          message: "Test 1",
+          assertions: [{ message: "Assert 1", assertFn: () => true }],
+        },
+      ],
+    } as any
+    jest.spyOn(GmailProcessor, "runWithJson").mockReturnValue({
+      status: ProcessingStatus.OK,
+      executedActions: [],
+      actionPromises: [],
+    } as any)
+
+    const result = await E2E.runTests(testConfig, true, "main", ctx)
+    expect(result.results).toHaveLength(1)
+    expect(result.results![0].status).toBe(E2EStatus.SUCCESS)
+  })
+
+  it("should cover findNextAction and detailed failure reporting", () => {
+    const a1 = { config: { name: "action1" } } as any
+    const a2 = { config: { name: "action2" } } as any
+    const h = new E2EAssertionHelper(
+      {} as any,
+      { executedActions: [a1, a2] } as any,
+      ctx,
+      E2E.expect.bind(E2E),
+    )
+    expect(h.findNextAction("action2")).toBe(a2)
+
+    // Trigger failure detail reporting in E2E.assert
+    const assertion: E2EAssertion = {
+      message: "Detail Fail",
+      assertFn: (_tc, _pr, _ctx, expect) => {
+        expect(ctx, "actual", "expected", "should fail")
+        return false
+      },
+    }
+    const result = E2E.assert({} as any, {} as any, assertion, ctx)
+    expect(result.message).toContain('Expected: "expected"')
+    expect(result.message).toContain("Actual: actual")
+
+    // Trigger more detail branches in E2E.ts
+    const assertion2: E2EAssertion = {
+      message: "Detail Fail 2",
+      assertFn: (_tc, _pr, _ctx, expect) => {
+        expect(ctx, { x: 1 }, /regex/, "should fail")
+        return false
+      },
+    }
+    const res2 = E2E.assert({} as any, {} as any, assertion2, ctx)
+    expect(res2.message).toContain("Expected: /regex/")
+    expect(res2.message).toContain("Actual: {")
   })
 })

@@ -1,7 +1,7 @@
 import { plainToInstance } from "class-transformer"
 import "reflect-metadata"
 import { essentialObject } from "../utils/ConfigUtils"
-import { RequiredDeep } from "../utils/UtilityTypes"
+import { RequiredDeep } from "../utils/Utility.types"
 /**
  * Represents a config to match a certain GMail attachment
  */

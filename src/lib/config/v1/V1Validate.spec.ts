@@ -1,4 +1,5 @@
 import { ConfigMocks } from "../../../test/mocks/ConfigMocks"
+import { newV1Config } from "./V1Config"
 import { validateV1Config } from "./V1Validate"
 
 describe("validate()", () => {
@@ -52,5 +53,26 @@ describe("validate()", () => {
   it("should validate all MockFactory v1 config JSON without errors", () => {
     validateV1Config(ConfigMocks.newDefaultV1ConfigJson())
     expect(validateV1Config.errors).toBeNull()
+  })
+})
+
+describe("newV1Config()", () => {
+  it("should throw when no rules are provided", () => {
+    expect(() => newV1Config({ rules: [] })).toThrow(
+      "No rules found - make sure there is at least one rule present!",
+    )
+  })
+
+  it("should return a config with default values when a rule is provided", () => {
+    const cfg = newV1Config({
+      rules: [{ filter: "from:test@example.com", folder: "TestFolder" }],
+    })
+    expect(cfg.globalFilter).toBeDefined()
+    expect(cfg.processedLabel).toBe("to-gdrive/processed")
+    expect(cfg.sleepTime).toBe(100)
+    expect(cfg.maxRuntime).toBe(280)
+    expect(cfg.newerThan).toBe("2m")
+    expect(cfg.timezone).toBe("Etc/UTC")
+    expect(cfg.rules).toHaveLength(1)
   })
 })

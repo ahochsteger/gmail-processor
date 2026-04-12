@@ -31,9 +31,9 @@ mode EXPR_MODE;
     LPAREN : '(' ;
     RPAREN : ')' ;
     DOT: '.' ;
-    ID: [a-z][a-zA-Z0-9_]* ;
     BooleanLiteral: 'true' | 'false';
     IntegerLiteral: '0' | [1-9][0-9]* ;
+    ID: [a-z][a-zA-Z0-9_]* ;
 
 mode LEGACY_EXPR_MODE;
     LEGACY_COLON: ':' -> mode(LEGACY_PLACEHOLDER_MODE);

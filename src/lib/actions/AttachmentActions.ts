@@ -83,6 +83,7 @@ export class AttachmentActions implements ActionProvider<AttachmentContext> {
       }
     }
     return {
+      ok: true,
       actionMeta,
       ...result,
     }
@@ -142,7 +143,7 @@ export class AttachmentActions implements ActionProvider<AttachmentContext> {
         `AttachmentActions.storeDecryptedPdf(): Loading PDF document ...`,
       )
       const pdfDoc = await PDFDocument.load(base64Content, {
-        password: PatternUtil.substitute(ctx, args.password),
+        password: PatternUtil.substitute(ctx, args.password ?? ""),
         ignoreEncryption: true,
       })
       ctx.log.debug(

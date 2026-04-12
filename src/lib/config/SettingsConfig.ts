@@ -1,7 +1,7 @@
 import { Expose, Type, plainToInstance } from "class-transformer"
 import "reflect-metadata"
 import { essentialObject } from "../utils/ConfigUtils"
-import { RequiredDeep } from "../utils/UtilityTypes"
+import { RequiredDeep } from "../utils/Utility.types"
 
 // TODO: Use these constants in SettingsConfig below, when typescript-json-schema bug is resolved.
 // See https://github.com/YousefED/typescript-json-schema/issues/336#issuecomment-1528969616

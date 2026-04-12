@@ -557,3 +557,42 @@ describe("V1 Format Conversion", () => {
     )
   })
 })
+
+it("should throw error if v1 config is not an object", () => {
+  expect(() => V1ToV2Converter.v1ConfigToV2Config(null as any)).toThrow(
+    "v1 config is not an object",
+  )
+})
+
+it("should handle v1 rules where filter does not match regex", () => {
+  const v1config: V1Config = {
+    ...defaultV1Config,
+    rules: [
+      {
+        filter: "subject:Test", // simple string, no regex-like parts
+        folder: "TestFolder",
+      },
+    ],
+  }
+  const actual = V1ToV2Converter.v1ConfigToV2Config(v1config)
+  expect(actual.threads[0].match.query).toBe("subject:Test")
+})
+
+it("should handle newerThan and trailing slash in V1 rule", () => {
+  const v1config: V1Config = {
+    ...defaultV1Config,
+    rules: [
+      {
+        filter: "from:someone",
+        folder: "SomeFolder/",
+        newerThan: "1d",
+      },
+    ],
+  }
+  const actual = V1ToV2Converter.v1ConfigToV2Config(v1config)
+  expect(actual.threads[0].match.query).toContain("newer_than:1d")
+  expect(
+    (actual.threads[0].messages[0].attachments[0].actions[0].args as any)
+      .location,
+  ).toBe("/SomeFolder/{{attachment.name}}")
+})

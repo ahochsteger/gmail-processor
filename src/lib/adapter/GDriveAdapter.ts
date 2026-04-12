@@ -182,6 +182,16 @@ export class DriveUtils {
           ctx.log.error(errorMessage)
           throw new Error(errorMessage)
         }
+        default:
+          ctx.log.warn(
+            `Unknown conflict strategy '${conflictStrategy}'. Defaulting to KEEP.`,
+          )
+          file = this.createFileInParent(
+            ctx,
+            parentFolder,
+            locationInfo.filename,
+            fileData,
+          )
       }
     } else {
       file = this.createFileInParent(
@@ -397,6 +407,7 @@ export class GDriveAdapter extends BaseAdapter {
       actionName,
     )
     return {
+      ok: true,
       file,
       actionMeta,
     }

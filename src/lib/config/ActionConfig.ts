@@ -6,7 +6,7 @@ import { MessageActionConfigType } from "../actions/MessageActions"
 import { ThreadActionConfigType } from "../actions/ThreadActions"
 import { ConflictStrategy } from "../adapter/GDriveAdapter"
 import { essentialObject } from "../utils/ConfigUtils"
-import { RequiredDeep } from "../utils/UtilityTypes"
+import { RequiredDeep } from "../utils/Utility.types"
 
 /**
  * The stage of action processing

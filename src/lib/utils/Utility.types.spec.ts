@@ -1,6 +1,6 @@
-import { RequiredDeep } from "./UtilityTypes"
+import { RequiredDeep } from "./Utility.types"
 
-describe("UtilityTypes", () => {
+describe("Utility.types", () => {
   it("should exercise RequiredDeep at runtime", () => {
     type TestType = {
       a?: string

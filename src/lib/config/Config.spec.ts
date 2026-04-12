@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { plainToInstance } from "class-transformer"
 import { ConfigMocks } from "../../test/mocks/ConfigMocks"
 import {
   Config,
@@ -8,6 +9,7 @@ import {
   newConfig,
   normalizeConfig,
 } from "./Config"
+import { MessageFlag } from "./MessageFlag"
 import {
   DEFAULT_SETTING_MAX_BATCH_SIZE,
   DEFAULT_SETTING_MAX_RUNTIME,
@@ -45,6 +47,50 @@ describe("normalizeConfig", () => {
     expect(cfg.threads[1]?.messages[1]?.attachments[0]?.description).toEqual(
       "Attachment config 1",
     )
+  })
+
+  it("should handle existing messages when normalizing attachments", () => {
+    const cfg = normalizeConfig({
+      threads: [],
+      messages: [{ description: "Existing message" }],
+      attachments: [{ description: "New attachment" }],
+    }) as any
+    expect(cfg.threads[0].messages).toHaveLength(2)
+    expect(cfg.threads[0].messages[0].description).toEqual("Existing message")
+    expect(cfg.threads[0].messages[1].attachments[0].description).toEqual(
+      "New attachment",
+    )
+  })
+
+  it("should handle missing sub-configs during normalization", () => {
+    const cfg = normalizeConfig({
+      attachments: [{ name: "att1" }],
+      settings: {
+        markProcessedMethod: MarkProcessedMethod.MARK_MESSAGE_READ,
+      },
+      global: {
+        message: { match: {} }, // 'is' will be undefined
+      },
+    } as any) as any
+    expect(cfg.global.message.match.is).toContain(MessageFlag.UNREAD)
+  })
+
+  it("should handle partial global config and existing message flags", () => {
+    const cfg = normalizeConfig({
+      settings: {
+        markProcessedMethod: MarkProcessedMethod.MARK_MESSAGE_READ,
+      },
+      global: {
+        thread: { match: { query: "thread-query" } },
+        message: { match: { is: [MessageFlag.STARRED] } },
+      },
+      threads: [{}],
+    }) as any
+    expect(cfg.global.thread.match.query).toContain("thread-query")
+    expect(cfg.global.message.match.is).toContain("starred")
+    expect(cfg.global.message.match.is).toContain("unread")
+    expect(cfg.global.attachment).toBeDefined()
+    expect(cfg.global.attachment.actions).toEqual([])
   })
 })
 
@@ -188,4 +234,60 @@ it("should provide essential JSON config with defaults removed", () => {
   } as Config)
   expect(actual.settings?.maxRuntime).toBeUndefined()
   expect(actual.settings?.timezone).toBeUndefined()
+})
+
+it("should exercise Config shorthand properties", () => {
+  const cfg = newConfig({
+    settings: {
+      markProcessedMethod: MarkProcessedMethod.MARK_MESSAGE_READ,
+    },
+    threads: [{}],
+    messages: [{ description: "Direct message config" }],
+    attachments: [{ description: "Direct attachment config" }],
+  })
+  expect(cfg.threads).toHaveLength(2)
+})
+
+it("should exercise LogFieldContextConfig properties", () => {
+  const cfg = newConfig({
+    settings: {
+      markProcessedMethod: MarkProcessedMethod.MARK_MESSAGE_READ,
+      logConfig: [
+        {
+          name: "test",
+          title: "Test Title",
+          ctxValues: {
+            env: "env-val",
+            proc: "proc-val",
+            thread: "thread-val",
+            message: "msg-val",
+            attachment: "att-val",
+          },
+        },
+      ],
+    },
+    threads: [{}],
+  })
+  const ctxValues = cfg.settings.logConfig![0].ctxValues!
+  expect(ctxValues.env).toBe("env-val")
+  expect(ctxValues.proc).toBe("proc-val")
+  expect(ctxValues.thread).toBe("thread-val")
+  expect(ctxValues.message).toBe("msg-val")
+  expect(ctxValues.attachment).toBe("att-val")
+})
+
+it("should initialize default message and attachment handlers in Config", () => {
+  const cfg = new Config()
+  expect(cfg.messages).toEqual([])
+  expect(cfg.attachments).toEqual([])
+})
+
+it("should handle partial plainToInstance for Config", () => {
+  const plain = {
+    threads: [{}],
+  }
+  const cfg = plainToInstance(Config, plain, { exposeDefaultValues: true })
+  expect(cfg.messages).toEqual([])
+  expect(cfg.attachments).toEqual([])
+  expect(cfg.threads).toHaveLength(1)
 })

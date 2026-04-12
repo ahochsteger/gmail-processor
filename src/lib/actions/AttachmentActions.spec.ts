@@ -121,9 +121,11 @@ it("should store a decrypted PDF", async () => {
 })
 
 it("should catch errors when storing a decrypted PDF", async () => {
-  mocks.envContext.env.utilities.newBlob = jest.fn().mockImplementation(() => {
-    throw new Error("Blob creation failed")
-  })
+  jest
+    .spyOn(mocks.envContext.env.utilities, "newBlob")
+    .mockImplementationOnce(() => {
+      throw new Error("Blob creation failed")
+    })
   await expect(
     AttachmentActions.storeDecryptedPdf(mocks.attachmentContext, {
       location: "/generic-decrypted.pdf",
@@ -148,4 +150,63 @@ it("should extract matched regex from the attachment using OCR", () => {
   expect(
     result.actionMeta!["attachment.extracted.match.invoiceNumber"]?.value,
   ).toEqual(invoiceNumber)
+})
+
+it("should handle extractText with minimal arguments and no extracted text", () => {
+  const spyExtract = jest
+    .spyOn(mocks.envContext.env.gdriveApp, "getFilesByName")
+    .mockReturnValue({
+      hasNext: () => false,
+      next: () => {
+        throw Error("No next file!")
+      },
+    } as any)
+  // Mock gdriveAdapter.extractAttachmentText to return no text/file
+  const spyGDrive = jest
+    .spyOn(mocks.processingContext.proc.gdriveAdapter, "extractAttachmentText")
+    .mockReturnValue({ text: "" })
+
+  const result = AttachmentActions.extractText(mocks.attachmentContext, {})
+
+  expect(result.ok).toBe(true)
+  expect(result.text).toBe("")
+
+  expect(result.actionMeta).toEqual({})
+  spyExtract.mockRestore()
+  spyGDrive.mockRestore()
+})
+
+it("should handle extractText where result.file is missing", () => {
+  const spyGDrive = jest
+    .spyOn(mocks.processingContext.proc.gdriveAdapter, "extractAttachmentText")
+    .mockReturnValue({ text: "some text", file: undefined })
+
+  const result = AttachmentActions.extractText(mocks.attachmentContext, {
+    docsFileLocation: "some-location",
+  })
+
+  expect(result.ok).toBe(true)
+  expect(result.actionMeta!["attachment.extracted"]).toBeDefined()
+
+  expect(result.actionMeta!["attachment.docsFile"]).toBeUndefined()
+  spyGDrive.mockRestore()
+})
+
+it("should handle storeDecryptedPdf with minimal arguments", async () => {
+  mocks.newPdfBlob.getName.mockReturnValue("generic-decrypted.pdf")
+  const result = await AttachmentActions.storeDecryptedPdf(
+    mocks.attachmentContext,
+    {
+      location: "/generic-decrypted.pdf",
+      conflictStrategy: ConflictStrategy.KEEP,
+      password: "some-password",
+    },
+  )
+  expect(result.ok).toBe(true)
+  expect(result.file).toBe(mocks.genericNewFile)
+})
+
+it("should call noop action", () => {
+  const result = AttachmentActions.noop(mocks.attachmentContext)
+  expect(result).toBeUndefined()
 })

@@ -1,7 +1,7 @@
 import { Type, plainToInstance } from "class-transformer"
 import "reflect-metadata"
 import { PartialDeep } from "type-fest"
-import { RequiredDeep } from "../../utils/UtilityTypes"
+import { RequiredDeep } from "../../utils/Utility.types"
 import { V1Rule } from "./V1Rule"
 
 export class V1Config {
