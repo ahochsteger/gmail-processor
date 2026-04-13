@@ -21,7 +21,7 @@ jobs:
         with:
           node-version: "24.x"
           cache: "npm"
-      - name: Install dependencies
+      - name: Install dependencies (lib)
         run: npm ci
       - name: Snyk Test (lib)
         uses: snyk/actions/node@master
@@ -29,6 +29,8 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           args: --severity-threshold=high
+      - name: Install dependencies (docs)
+        run: cd docs && npm ci
       - name: Snyk Test (docs)
         uses: snyk/actions/node@master
         env:
