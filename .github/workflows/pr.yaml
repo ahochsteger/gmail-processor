@@ -71,6 +71,9 @@ jobs:
         with:
           node-version: "24.x"
           cache: "npm"
+      - id: setup
+        name: Setup dependencies
+        run: npm run all:setup
       - id: build
         if: ${{ !inputs.skip_build_lib || inputs.trigger_push_lib || inputs.trigger_push_examples }}
         name: Build lib and examples

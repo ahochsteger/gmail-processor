@@ -137,15 +137,15 @@ See [the steps at Pull Request](#pull-request) for instructions on forking.
 git clone https://github.com/ahochsteger/gmail-processor.git
 cd gmail-processor
 
-# Install dependencies
-npm install
+# Install dependencies (lib and docs)
+npm run setup
 
 # Perform changes
 code .
 
 # Run pre-commit tasks to make sure the code is in an acceptable state to be commited
 # (clean, build, run tests, update docs, do some sanity checks, ...)
-npm run pre-commit
+npm run all:pre-commit
 ```
 
 The recommended IDE for this project is [Visual Studio Code](https://code.visualstudio.com/), but any other IDEs with support for TypeScript and NPM will do. Make sure to configure the IDE to respect the [Code Style](#code-style) settings.
@@ -159,7 +159,7 @@ We use [Prettier](https://prettier.io/) to automatically format our code and ens
 Please add/update the tests for any change to keep the codebase in a well-tested state. For every source file `*.ts` the corresponding test file is named `*.spec.ts` and they are implemented using [Jest](https://jestjs.io/) as the testing framework.
 Remote services are mocked (see [MockFactory.ts](https://github.com/ahochsteger/gmail-processor/blob/main/src/test/mocks/MockFactory.ts)) to simplify local testing in isolation.
 
-After the changes and tests are done run the `pre-commit` script that validates the changes and updates all generated artifacts (like documentation, examples, JSON schema files, ...) and include all updated files in your commit.
+After the changes and tests are done run the `all:pre-commit` script that validates the changes and updates all generated artifacts (like documentation, examples, JSON schema files, ...) and include all updated files in your commit.
 
 ### Automated Reviews & Assistance
 

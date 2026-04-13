@@ -87,6 +87,9 @@ jobs:
         with:
           node-version: 24.x
           cache: "npm"
+      - id: setup
+        name: Setup dependencies
+        run: npm run all:setup
       - id: build-lib
         if: ${{ !github.event.inputs.skip_build_lib }}
         name: Build lib

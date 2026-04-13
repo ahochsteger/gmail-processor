@@ -168,14 +168,14 @@ In alignment with the 2026 EU AI Act and security best practices, we disclose AI
 ## Development Workflow
 
 1. **Testing:**
-   - Unit tests: `npm run test` (uses Jest).
+   - Unit tests: `npm run test:lib` (uses Jest).
    - E2E tests: Located in `src/examples/`, run via GAS.
    - Mocking: Use `MockFactory` for GAS services in tests.
-2. **Pre-commit:** Always run `npm run pre-commit` before pushing. This runs:
-   - Linting (ESLint/Prettier).
-   - Build.
-   - Tests.
-   - Documentation updates.
+2. **Pre-commit:** Always run `npm run all:pre-commit` before pushing. This runs:
+   - Linting (`npm run all:lint`).
+   - Build (`npm run all:build`).
+   - Tests (`npm run all:test`).
+   - Documentation updates (`npm run all:update`).
 
 ## Tooling
 

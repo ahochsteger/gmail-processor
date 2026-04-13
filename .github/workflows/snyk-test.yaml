@@ -22,7 +22,7 @@ jobs:
           node-version: "24.x"
           cache: "npm"
       - name: Install dependencies (lib)
-        run: npm ci
+        run: npm run setup:lib
       - name: Snyk Test (lib)
         uses: snyk/actions/node@master
         env:
@@ -30,7 +30,7 @@ jobs:
         with:
           args: --severity-threshold=high
       - name: Install dependencies (docs)
-        run: cd docs && npm ci --legacy-peer-deps
+        run: npm run setup:docs
       - name: Snyk Test (docs)
         uses: snyk/actions/node@master
         env:

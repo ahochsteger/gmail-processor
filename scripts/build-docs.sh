@@ -14,5 +14,4 @@ sed -re 's/^# \[/## [/g' \
   <CHANGELOG.md \
 | sed -re '/^$/N;/^\n$/D' \
   >>"${changelog_outfile}"
-cd docs
-npm run build
+npm run build --prefix docs
