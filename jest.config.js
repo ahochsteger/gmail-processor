@@ -30,6 +30,7 @@ export default {
   coveragePathIgnorePatterns: [
     "/node_modules/",
     "<rootDir>/src/lib/expr/generated/",
+    "\\.types\\.ts$",
   ],
 
   // Indicates which provider should be used to instrument code for coverage

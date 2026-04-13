@@ -17,7 +17,7 @@ function genSchema() {
     ;;
   esac
 
-  npx typescript-json-schema tsconfig.json \
+  npx typescript-json-schema tsconfig.schema.json \
     "${typeName}" \
     --noExtraProps \
     --required \

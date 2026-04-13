@@ -46,8 +46,11 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
     outputs:
-      new_gas_version: ${{ steps.push-gas.outputs.new_gas_version }}
+      new_gas_version: ${{ steps.deploy-lib-ci.outputs.new_gas_version }}
       pages_version: main # Simplified, as release-please handles versioning
       do_push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
     environment:

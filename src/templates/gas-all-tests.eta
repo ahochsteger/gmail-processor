@@ -16,8 +16,8 @@ function initAllTests() {
     GmailProcessorLib.EnvProvider.defaultContext({
       runMode: GmailProcessorLib.RunMode.DANGEROUS,
       cacheService: CacheService,
-      propertiesService: PropertiesService
-    })
+      propertiesService: PropertiesService,
+    }),
   )
 }
 

@@ -39,6 +39,9 @@ on:
 jobs:
   pr-build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
     concurrency: ci-${{ github.ref }}
     environment:
       name: pr
@@ -66,7 +69,7 @@ jobs:
         name: Setup Node.js
         uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
         with:
-          node-version: 24.x
+          node-version: "24.x"
           cache: "npm"
       - id: build
         if: ${{ !inputs.skip_build_lib || inputs.trigger_push_lib || inputs.trigger_push_examples }}
