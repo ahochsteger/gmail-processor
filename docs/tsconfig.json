@@ -2,12 +2,14 @@
   "extends": "@docusaurus/tsconfig",
   "compilerOptions": {
     "strict": true,
-    "forceConsistentCasingInFileNames":true,
-    "jsx": "react",
+    "forceConsistentCasingInFileNames": true,
+    "jsx": "react-jsx",
     "baseUrl": ".",
+    "ignoreDeprecations": "6.0",
     "emitDecoratorMetadata": true,
     "esModuleInterop": true,
     "experimentalDecorators": true,
+    "skipLibCheck": true,
     "paths": {
       "@lib/*": ["../src/lib/*" ],
       "@site/*": ["./*" ],
@@ -20,9 +22,12 @@
     "types": [
       "jest",
       "node",
+      "google-apps-script",
+      "react",
       "@docusaurus/module-type-aliases",
       "@docusaurus/theme-classic",
       "docusaurus-json-schema-plugin"
     ]
-  }
+  },
+  "exclude": ["node_modules"]
 }

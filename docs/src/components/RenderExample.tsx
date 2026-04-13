@@ -25,7 +25,7 @@ export function getIssueLinks(title: string, baseUrl: string, issues?: number[])
     ].concat(
       issues?.map((nr, i, arr) => (
         <span key={nr}>
-          <a href={`${baseUrl}/${nr}`}>#{nr}</a>{(i < arr.length - 1) ? " " : ""}
+          <Link href={`${baseUrl}/${nr}`}>#{nr}</Link>{(i < arr.length - 1) ? " " : ""}
         </span>
       ))
     )
@@ -47,7 +47,7 @@ export default function RenderExample({ info, config, script }: ExampleConfigPro
         </TabItem>
       </Tabs>
       <p>
-        <span>Source: <a href={`${examplesBaseUrl}/${info.category}/${info.name}`}>{info.name}.ts</a></span>
+        <span>Source: <Link href={`${examplesBaseUrl}/${info.category}/${info.name}`}>{info.name}.ts</Link></span>
         {getIssueLinks("Issues", githubIssuesBaseUrl, info.issues)}
         {getIssueLinks("PRs", githubPRsBaseUrl, info.pullRequests)}
         {getIssueLinks("Discussions", githubDiscussionsBaseUrl, info.discussions)}

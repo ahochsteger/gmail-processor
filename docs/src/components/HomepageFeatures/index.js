@@ -1,3 +1,4 @@
+import Heading from '@theme/Heading';
 import clsx from 'clsx';
 import React from 'react';
 import styles from './styles.module.css';
@@ -42,7 +43,7 @@ function Feature({Svg, title, description}) {
         <Svg className={styles.featureSvg} role="img" />
       </div>
       <div className="text--center padding-horiz--md">
-        <h3>{title}</h3>
+        <Heading as="h3">{title}</Heading>
         <p>{description}</p>
       </div>
     </div>

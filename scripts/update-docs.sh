@@ -22,7 +22,10 @@ function extractAllDocs() {
     --readme none \
     --exclude 'src/**/generated/**/*.ts' \
     --exclude 'src/lib/e2e/**/*.ts' \
-    'src/lib/**/*.ts'
+    --tsconfig tsconfig.json \
+    --validation.notExported false \
+    --validation.invalidLink false \
+    $(find src/lib -name "*.ts" ! -name "*.spec.ts" ! -path "*/generated/*" ! -path "*/e2e/*")
 }
 
 function extractAllEnums() {

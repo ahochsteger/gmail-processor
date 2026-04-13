@@ -1,7 +1,7 @@
 import { createContext, useContext } from "react"
+import { monaco } from "docusaurus-json-schema-plugin/lib/theme/MonacoEditor/index.js"
 
 // Type I need for useRef
-import type { MonacoEditorTypes } from "@theme/MonacoEditor"
 import { Example, V1Example } from "../../../src/examples/Example"
 
 export type State = {
@@ -19,16 +19,16 @@ export type State = {
   // The current json pointer
   jsonPointer: string
   // Schema editor ref
-  schemaRef: undefined | MonacoEditorTypes.IStandaloneCodeEditor
+  schemaRef: undefined | monaco.editor.IStandaloneCodeEditor
   // Data editor ref
-  editorRef: undefined | MonacoEditorTypes.IStandaloneCodeEditor
+  editorRef: undefined | monaco.editor.IStandaloneCodeEditor
   // Data on the data editor
   // When using "Infer schema from data", it would be annoying to lose our written
   data: string
   // Errors in schema
-  schemaErrors: MonacoEditorTypes.IMarkerData[]
+  schemaErrors: monaco.editor.IMarkerData[]
   // Errors in data
-  dataErrors: MonacoEditorTypes.IMarkerData[]
+  dataErrors: monaco.editor.IMarkerData[]
 }
 
 export type Playground = {

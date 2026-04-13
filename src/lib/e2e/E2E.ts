@@ -92,7 +92,10 @@ export class E2EAssertionHelper {
             let actualValue: unknown
             if (key.startsWith("arg.")) {
               const argKey = key.substring(4)
-              actualValue = Reflect.get(a.config.args ?? {}, argKey)
+              actualValue = Reflect.get(
+                (a.config.args as Record<string, unknown>) ?? {},
+                argKey,
+              )
             } else if (key.startsWith("meta.")) {
               actualValue = this.getMetaValue(a, key.substring(5))
             } else {

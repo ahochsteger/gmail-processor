@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable @typescript-eslint/no-require-imports */
 import BrowserOnly from "@docusaurus/BrowserOnly"
 import ErrorBoundary from "@docusaurus/ErrorBoundary"
 import Layout from "@theme/Layout"
@@ -6,7 +6,7 @@ import React from "react"
 
 import { ToastContainer } from "react-toastify"
 
-function PlaygroundComponent(): JSX.Element {
+function PlaygroundComponent(): React.JSX.Element {
   // No SSR for the live preview
   // See https://github.com/facebook/docusaurus/issues/5747
   return (
@@ -29,7 +29,7 @@ function PlaygroundComponent(): JSX.Element {
   )
 }
 
-export default function Playground(): JSX.Element {
+export default function Playground(): React.JSX.Element {
   return (
     <Layout
       title={`Playground`}

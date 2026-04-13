@@ -33,23 +33,14 @@
                     "type": "string"
                 },
                 "orderBy": {
+                    "$ref": "#/definitions/AttachmentOrderField",
                     "description": "The field to order attachments by for processing.",
-                    "enum": [
-                        "contentType",
-                        "hash",
-                        "name"
-                    ],
-                    "title": "orderBy",
-                    "type": "string"
+                    "title": "orderBy"
                 },
                 "orderDirection": {
+                    "$ref": "#/definitions/OrderDirection",
                     "description": "The direction to order attachments for processing.",
-                    "enum": [
-                        "asc",
-                        "desc"
-                    ],
-                    "title": "orderDirection",
-                    "type": "string"
+                    "title": "orderDirection"
                 }
             },
             "title": "AttachmentConfig",
@@ -73,14 +64,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -123,14 +108,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -197,14 +176,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -229,14 +202,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -260,14 +227,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -282,16 +243,9 @@
                             "additionalProperties": false,
                             "properties": {
                                 "level": {
+                                    "$ref": "#/definitions/LogLevel",
                                     "description": "The level of the log message (default: `info`).",
-                                    "enum": [
-                                        "debug",
-                                        "error",
-                                        "info",
-                                        "trace",
-                                        "warn"
-                                    ],
-                                    "title": "level",
-                                    "type": "string"
+                                    "title": "level"
                                 },
                                 "location": {
                                     "description": "The location of the log message",
@@ -320,14 +274,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -342,16 +290,9 @@
                             "additionalProperties": false,
                             "properties": {
                                 "level": {
+                                    "$ref": "#/definitions/LogLevel",
                                     "description": "The level of the log message (default: `info`).",
-                                    "enum": [
-                                        "debug",
-                                        "error",
-                                        "info",
-                                        "trace",
-                                        "warn"
-                                    ],
-                                    "title": "level",
-                                    "type": "string"
+                                    "title": "level"
                                 },
                                 "location": {
                                     "description": "The location of the log message",
@@ -380,14 +321,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -402,16 +337,9 @@
                             "additionalProperties": false,
                             "properties": {
                                 "level": {
+                                    "$ref": "#/definitions/LogLevel",
                                     "description": "The level of the log message (default: `info`).",
-                                    "enum": [
-                                        "debug",
-                                        "error",
-                                        "info",
-                                        "trace",
-                                        "warn"
-                                    ],
-                                    "title": "level",
-                                    "type": "string"
+                                    "title": "level"
                                 },
                                 "location": {
                                     "description": "The location of the log message",
@@ -440,14 +368,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -471,14 +393,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -514,14 +430,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -546,14 +456,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -578,14 +482,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -610,14 +508,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -642,14 +534,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -673,14 +559,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -704,14 +584,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -735,14 +609,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -766,14 +634,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -797,14 +659,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -828,14 +684,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -871,14 +721,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -903,14 +747,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -935,14 +773,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -978,14 +810,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -1010,14 +836,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -1041,14 +861,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -1072,14 +886,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -1103,14 +911,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -1134,14 +936,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -1165,14 +961,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -1196,14 +986,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -1227,14 +1011,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -1258,14 +1036,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -1289,14 +1061,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -1350,6 +1116,16 @@
             },
             "title": "AttachmentMatchConfig",
             "type": "object"
+        },
+        "AttachmentOrderField": {
+            "description": "Represents an attachment field to be ordered by for processing.",
+            "enum": [
+                "contentType",
+                "hash",
+                "name"
+            ],
+            "title": "AttachmentOrderField",
+            "type": "string"
         },
         "ConflictStrategy": {
             "description": "Strategy that defines how to deal in case of conflicts with already existing files at the desired location in Google Drive.",
@@ -1463,6 +1239,38 @@
             },
             "title": "LogFieldContextConfig",
             "type": "object"
+        },
+        "LogLevel": {
+            "description": "Levels of log messages used for marking and filtering.",
+            "enum": [
+                "trace",
+                "debug",
+                "info",
+                "warn",
+                "error"
+            ],
+            "title": "LogLevel",
+            "type": "string"
+        },
+        "LogRedactionMode": {
+            "description": "Specifies how sensitive data should be redacted for logging.",
+            "enum": [
+                "none",
+                "auto",
+                "all"
+            ],
+            "title": "LogRedactionMode",
+            "type": "string"
+        },
+        "MarkProcessedMethod": {
+            "description": "The method to mark processed threads/messages/attachments.",
+            "enum": [
+                "add-label",
+                "custom",
+                "mark-read"
+            ],
+            "title": "MarkProcessedMethod",
+            "type": "string"
         },
         "MessageActionExportArgs": {
             "additionalProperties": false,
@@ -1693,24 +1501,14 @@
                     "type": "string"
                 },
                 "orderBy": {
+                    "$ref": "#/definitions/MessageOrderField",
                     "description": "The field to order messages by for processing.",
-                    "enum": [
-                        "date",
-                        "from",
-                        "id",
-                        "subject"
-                    ],
-                    "title": "orderBy",
-                    "type": "string"
+                    "title": "orderBy"
                 },
                 "orderDirection": {
+                    "$ref": "#/definitions/OrderDirection",
                     "description": "The direction to order messages for processing.",
-                    "enum": [
-                        "asc",
-                        "desc"
-                    ],
-                    "title": "orderDirection",
-                    "type": "string"
+                    "title": "orderDirection"
                 }
             },
             "title": "MessageConfig",
@@ -1734,14 +1532,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -1756,16 +1548,9 @@
                             "additionalProperties": false,
                             "properties": {
                                 "level": {
+                                    "$ref": "#/definitions/LogLevel",
                                     "description": "The level of the log message (default: `info`).",
-                                    "enum": [
-                                        "debug",
-                                        "error",
-                                        "info",
-                                        "trace",
-                                        "warn"
-                                    ],
-                                    "title": "level",
-                                    "type": "string"
+                                    "title": "level"
                                 },
                                 "location": {
                                     "description": "The location of the log message",
@@ -1794,14 +1579,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -1816,16 +1595,9 @@
                             "additionalProperties": false,
                             "properties": {
                                 "level": {
+                                    "$ref": "#/definitions/LogLevel",
                                     "description": "The level of the log message (default: `info`).",
-                                    "enum": [
-                                        "debug",
-                                        "error",
-                                        "info",
-                                        "trace",
-                                        "warn"
-                                    ],
-                                    "title": "level",
-                                    "type": "string"
+                                    "title": "level"
                                 },
                                 "location": {
                                     "description": "The location of the log message",
@@ -1854,14 +1626,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -1876,16 +1642,9 @@
                             "additionalProperties": false,
                             "properties": {
                                 "level": {
+                                    "$ref": "#/definitions/LogLevel",
                                     "description": "The level of the log message (default: `info`).",
-                                    "enum": [
-                                        "debug",
-                                        "error",
-                                        "info",
-                                        "trace",
-                                        "warn"
-                                    ],
-                                    "title": "level",
-                                    "type": "string"
+                                    "title": "level"
                                 },
                                 "location": {
                                     "description": "The location of the log message",
@@ -1914,14 +1673,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -1945,14 +1698,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -1988,14 +1735,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -2020,14 +1761,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -2052,14 +1787,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -2084,14 +1813,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -2116,14 +1839,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -2147,14 +1864,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -2178,14 +1889,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -2209,14 +1914,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -2240,14 +1939,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -2271,14 +1964,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -2302,14 +1989,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -2345,14 +2026,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -2377,14 +2052,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -2409,14 +2078,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -2452,14 +2115,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -2484,14 +2141,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -2515,14 +2166,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -2546,14 +2191,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -2577,14 +2216,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -2608,14 +2241,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -2639,14 +2266,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -2670,14 +2291,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -2701,14 +2316,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -2732,14 +2341,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -2763,14 +2366,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -2856,6 +2453,36 @@
             },
             "title": "MessageMatchConfig",
             "type": "object"
+        },
+        "MessageOrderField": {
+            "description": "Represents a message field to be ordered by for processing.",
+            "enum": [
+                "date",
+                "from",
+                "id",
+                "subject"
+            ],
+            "title": "MessageOrderField",
+            "type": "string"
+        },
+        "OrderDirection": {
+            "description": "Represents the direction a list should be ordered.",
+            "enum": [
+                "asc",
+                "desc"
+            ],
+            "title": "OrderDirection",
+            "type": "string"
+        },
+        "ProcessingStage": {
+            "description": "The stage of action processing",
+            "enum": [
+                "pre-main",
+                "main",
+                "post-main"
+            ],
+            "title": "ProcessingStage",
+            "type": "string"
         },
         "Record<string,string>": {
             "additionalProperties": false,
@@ -3008,26 +2635,14 @@
                     "type": "array"
                 },
                 "logLevel": {
+                    "$ref": "#/definitions/LogLevel",
                     "description": "Filter logs to given level or higher.",
-                    "enum": [
-                        "debug",
-                        "error",
-                        "info",
-                        "trace",
-                        "warn"
-                    ],
-                    "title": "logLevel",
-                    "type": "string"
+                    "title": "logLevel"
                 },
                 "logSensitiveRedactionMode": {
+                    "$ref": "#/definitions/LogRedactionMode",
                     "description": "Specifies how sensitive information should be redacted for logging.",
-                    "enum": [
-                        "all",
-                        "auto",
-                        "none"
-                    ],
-                    "title": "logSensitiveRedactionMode",
-                    "type": "string"
+                    "title": "logSensitiveRedactionMode"
                 },
                 "logSheetLocation": {
                     "default": "",
@@ -3048,14 +2663,9 @@
                     "type": "string"
                 },
                 "markProcessedMethod": {
+                    "$ref": "#/definitions/MarkProcessedMethod",
                     "description": "The method to mark processed threads/messages.",
-                    "enum": [
-                        "add-label",
-                        "custom",
-                        "mark-read"
-                    ],
-                    "title": "markProcessedMethod",
-                    "type": "string"
+                    "title": "markProcessedMethod"
                 },
                 "maxBatchSize": {
                     "default": 10,
@@ -3330,23 +2940,14 @@
                     "type": "string"
                 },
                 "orderBy": {
+                    "$ref": "#/definitions/ThreadOrderField",
                     "description": "The field to order threads by for processing.",
-                    "enum": [
-                        "firstMessageSubject",
-                        "id",
-                        "lastMessageDate"
-                    ],
-                    "title": "orderBy",
-                    "type": "string"
+                    "title": "orderBy"
                 },
                 "orderDirection": {
+                    "$ref": "#/definitions/OrderDirection",
                     "description": "The direction to order threads for processing.",
-                    "enum": [
-                        "asc",
-                        "desc"
-                    ],
-                    "title": "orderDirection",
-                    "type": "string"
+                    "title": "orderDirection"
                 }
             },
             "title": "ThreadConfig",
@@ -3370,14 +2971,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -3392,16 +2987,9 @@
                             "additionalProperties": false,
                             "properties": {
                                 "level": {
+                                    "$ref": "#/definitions/LogLevel",
                                     "description": "The level of the log message (default: `info`).",
-                                    "enum": [
-                                        "debug",
-                                        "error",
-                                        "info",
-                                        "trace",
-                                        "warn"
-                                    ],
-                                    "title": "level",
-                                    "type": "string"
+                                    "title": "level"
                                 },
                                 "location": {
                                     "description": "The location of the log message",
@@ -3430,14 +3018,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -3452,16 +3034,9 @@
                             "additionalProperties": false,
                             "properties": {
                                 "level": {
+                                    "$ref": "#/definitions/LogLevel",
                                     "description": "The level of the log message (default: `info`).",
-                                    "enum": [
-                                        "debug",
-                                        "error",
-                                        "info",
-                                        "trace",
-                                        "warn"
-                                    ],
-                                    "title": "level",
-                                    "type": "string"
+                                    "title": "level"
                                 },
                                 "location": {
                                     "description": "The location of the log message",
@@ -3490,14 +3065,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -3512,16 +3081,9 @@
                             "additionalProperties": false,
                             "properties": {
                                 "level": {
+                                    "$ref": "#/definitions/LogLevel",
                                     "description": "The level of the log message (default: `info`).",
-                                    "enum": [
-                                        "debug",
-                                        "error",
-                                        "info",
-                                        "trace",
-                                        "warn"
-                                    ],
-                                    "title": "level",
-                                    "type": "string"
+                                    "title": "level"
                                 },
                                 "location": {
                                     "description": "The location of the log message",
@@ -3550,14 +3112,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -3581,14 +3137,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -3624,14 +3174,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -3656,14 +3200,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -3688,14 +3226,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -3731,14 +3263,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -3763,14 +3289,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -3794,14 +3314,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -3825,14 +3339,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -3856,14 +3364,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -3887,14 +3389,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -3918,14 +3414,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -3949,14 +3439,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -3980,14 +3464,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -4011,14 +3489,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -4042,14 +3514,8 @@
                             "type": "string"
                         },
                         "processingStage": {
-                            "description": "The stage of action processing",
-                            "enum": [
-                                "main",
-                                "post-main",
-                                "pre-main"
-                            ],
-                            "title": "processingStage",
-                            "type": "string"
+                            "$ref": "#/definitions/ProcessingStage",
+                            "title": "processingStage"
                         }
                     },
                     "required": [
@@ -4097,6 +3563,16 @@
             },
             "title": "ThreadMatchConfig",
             "type": "object"
+        },
+        "ThreadOrderField": {
+            "description": "Represents a thread field to be ordered by for processing.",
+            "enum": [
+                "lastMessageDate",
+                "id",
+                "firstMessageSubject"
+            ],
+            "title": "ThreadOrderField",
+            "type": "string"
         },
         "VariableEntry": {
             "additionalProperties": false,

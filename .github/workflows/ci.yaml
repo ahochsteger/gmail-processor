@@ -42,6 +42,10 @@ on:
         description: "Skip test"
         type: boolean
         default: false
+      dry_run:
+        description: "Dry-run release (safe verification)"
+        type: boolean
+        default: false
 
 jobs:
   build:
@@ -67,6 +71,7 @@ jobs:
       CLASP_REFRESH_TOKEN: ${{secrets.CLASP_REFRESH_TOKEN}}
       GCLOUD_PROJECT_ID: ${{secrets.GCLOUD_PROJECT_ID}}
       GCLOUD_PROJECT_NR: ${{secrets.GCLOUD_PROJECT_NR}}
+      DRY_RUN: ${{ inputs.dry_run || 'false' }}
     steps:
       - id: release
         name: Release
@@ -120,13 +125,13 @@ jobs:
           npm run push
           echo "new_gas_version=$(cat build/gas/lib-version.txt)" >> "${GITHUB_OUTPUT}"
       - id: deploy-lib-release
-        if: ${{ !github.event.inputs.skip_deploy_lib_release && !github.event.inputs.skip_release && steps.release.outputs.release_created }} # Check if a release was created
+        if: ${{ !github.event.inputs.skip_deploy_lib_release && !github.event.inputs.skip_release && (steps.release.outputs.release_created || inputs.dry_run) }} # Check if a release was created
         name: Deploy Lib (Release)
         run: npm run deploy
         env:
           CLASP_DEPLOYMENT_NAME: ${{ steps.release.outputs.tag_name }}
       - id: update-release-notes
-        if: ${{ !github.event.inputs.skip_release && steps.release.outputs.release_created }} # Check if a release was created
+        if: ${{ !github.event.inputs.skip_release && (steps.release.outputs.release_created || inputs.dry_run) }} # Check if a release was created
         name: Update Release Notes
         run: |
           npm run release:update

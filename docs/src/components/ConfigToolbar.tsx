@@ -1,3 +1,4 @@
+import Heading from '@theme/Heading';
 import { Icon } from '@iconify/react';
 import React from "react";
 import { Example, ExampleVariant, V1Example } from '../../../src/examples/Example';
@@ -41,7 +42,7 @@ const ConfigToolbar = ({ examples, selectedExample, onConvert, onCopyConfig, onC
 
   return (
     <div style={styles.toolbar}>
-      <h2>Config Editor</h2>
+      <Heading as="h2">Config Editor</Heading>
       &nbsp;
       <div style={{ flex: 1 }} />
       <select title='Example' name='example' style={{fontSize:"20px"}} onChange={e => onExampleSelected(e.target.value)} value={selectedExample}>

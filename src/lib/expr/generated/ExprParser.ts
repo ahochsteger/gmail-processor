@@ -1,3 +1,4 @@
+// @ts-nocheck
 /* eslint-disable @typescript-eslint/no-unnecessary-condition */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
@@ -6,7 +7,6 @@ import * as antlr from "antlr4ng"
 import { ExprParserListener } from "./ExprParserListener.js"
 // for running tests with parameters, TODO: discuss strategy for typed parameters in CI
 // eslint-disable-next-line no-unused-vars
-// @ts-expect-error This is a generated file and cannot be suppressed
 type int = number
 
 export class ExprParser extends antlr.Parser {

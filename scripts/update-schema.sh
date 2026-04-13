@@ -19,6 +19,7 @@ function genSchema() {
 
   npx typescript-json-schema tsconfig.schema.json \
     "${typeName}" \
+    --ignoreErrors \
     --noExtraProps \
     --required \
     --titles \

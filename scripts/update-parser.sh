@@ -28,15 +28,14 @@ echo "done."
 # Satisfy eslint errors:
 echo "Fixing linter issues:"
 sed -i -re '
-  1s;^;\/\* eslint-disable @typescript-eslint/no-unnecessary-condition \*\/\n\/\* eslint-disable @typescript-eslint/no-unused-vars \*\/\n;
-  s#^(type int = number;)$#// @ts-expect-error This is a generated file and cannot be suppressed\n\1#g;
+  1s;^;// @ts-nocheck\n/* eslint-disable @typescript-eslint/no-unnecessary-condition */\n/* eslint-disable @typescript-eslint/no-unused-vars */\n;
 ' "${PARSER_OUTDIR}"/*Parser.ts
 sed -i -re '
-  1s;^;\/\* eslint-disable @typescript-eslint/no-unused-vars \*\/\n;
+  1s;^;// @ts-nocheck\n/* eslint-disable @typescript-eslint/no-unused-vars */\n;
   s#\(node: #(_node: #g
 ' "${PARSER_OUTDIR}"/*ParserListener.ts
 sed -i -re '
-  1s;^;\/\* eslint-disable @typescript-eslint/no-unnecessary-condition \*\/\n;
+  1s;^;// @ts-nocheck\n/* eslint-disable @typescript-eslint/no-unnecessary-condition */\n;
 ' "${PARSER_OUTDIR}"/*Lexer.ts
 
 # Format generated parser:

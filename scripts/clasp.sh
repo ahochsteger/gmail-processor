@@ -72,6 +72,13 @@ function updateGithubRelease() {
   local releaseId="${1:-latest}"
   local releaseNotes; releaseNotes=$(getPatchedReleaseNotes "${releaseId}")
   local releaseId; releaseId=$(gh api /repos/ahochsteger/gmail-processor/releases/latest --jq .id)
+  if [[ "${DRY_RUN:-}" == "true" ]]; then
+    echo "DRYRUN: Would patch GitHub release ${releaseId} with the following notes:"
+    echo "---"
+    echo "${releaseNotes}"
+    echo "---"
+    return 0
+  fi
   gh api -X PATCH "/repos/ahochsteger/gmail-processor/releases/${releaseId}" \
     -f body="${releaseNotes}" \
     -F draft=false
@@ -298,6 +305,10 @@ case "${cmd}" in
   ;;
   push)
     checkGuardedAction "${cmd}"
+    if [[ "${DRY_RUN:-}" == "true" ]]; then
+      echo "DRYRUN: Would push code to GAS (script: ${CLASP_SCRIPT_ID:-$(setupClaspIDs && echo $CLASP_SCRIPT_ID)})"
+      return 0
+    fi
     if ! runClasp push --force; then
       echo "::warning::Clasp push failed. If the output says 'Invalid ID', please check that your CLASP_SCRIPT_ID secret is a valid Google Apps Script project ID."
       exit 1
@@ -308,6 +319,10 @@ case "${cmd}" in
     setupClaspIDs
     CLASP_DEPLOYMENT_NAME="${CLASP_DEPLOYMENT_NAME:-$(git describe --tags)}"
     checkGuardedAction "${cmd}"
+    if [[ "${DRY_RUN:-}" == "true" ]]; then
+      echo "DRYRUN: Would deploy to GAS (ID: ${CLASP_DEPLOYMENT_ID}, Name: ${CLASP_DEPLOYMENT_NAME})"
+      return 0
+    fi
     runClasp deploy -i "${CLASP_DEPLOYMENT_ID}" -d "${CLASP_DEPLOYMENT_NAME}"
     showLastGASVersion
   ;;

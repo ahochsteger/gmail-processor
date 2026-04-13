@@ -79,7 +79,7 @@ function getActiveExample() {
 
 function getConfigJsonFromExample<T extends Example | V1Example>(example: T): string {
   dbg(`getConfigJsonFromExample(${example.info.name})`)
-  let config: Config | V1Config = "config" in example ? example.config : example.migrationConfig
+  const config: Config | V1Config = ("config" in example) ? (example as Example).config : (example as V1Example).migrationConfig
   return JSON.stringify(config, null, 2)
 }
 
@@ -88,18 +88,19 @@ function getSchemaFromExample(example: Example | V1Example): object {
   return example.info.variant===ExampleVariant.MIGRATION_V1 ? ConfigSchemaV1 : ConfigSchemaV2
 }
 
-function PlaygroundInner(): JSX.Element {
+function PlaygroundInner(): React.JSX.Element {
   dbg(`PlaygroundInner()`)
   const {
-    state: { exampleName, fullSchema, editorRef, data: value },
+    state: { example, fullSchema, editorRef, data: value },
     updateState,
   } = usePlaygroundContext()
+  const exampleName = example?.info?.name
   const { colorMode } = useColorMode()
 
   async function handleCopyConfig() {
     dbg(`handleCopyConfig()`)
     // Get the text to copy
-    const config: string = editorRef.getModel().getValue() || ("" as string)
+    const config: string = editorRef?.getModel()?.getValue() || ("" as string)
     await navigator.clipboard.writeText(config)
     toast.success("Config copied.")
   }
@@ -107,7 +108,7 @@ function PlaygroundInner(): JSX.Element {
   async function handleCopyCode() {
     dbg(`handleCopyCode()`)
     // Get the text to copy
-    const config: string = editorRef.getModel().getValue() || ("" as string)
+    const config: string = editorRef?.getModel()?.getValue() || ("" as string)
     const code = `const config = ${config.trim()}
     
 function run() {
@@ -151,7 +152,7 @@ function run() {
   
   async function handleConvertConfig() {
     dbg(`handleConvertConfig()`)
-    const code = editorRef.getModel().getValue()
+    const code = editorRef?.getModel()?.getValue() ?? ""
     try {
       const v1config = JSON.parse(code)
       if (!Object.keys(v1config).includes('rules')) {
@@ -171,7 +172,7 @@ function run() {
 
   async function handleDetectSchema() {
     dbg(`handleDetectSchema()`)
-    const code = editorRef.getModel().getValue()
+    const code = editorRef?.getModel()?.getValue() ?? ""
     const schema = detectSchema(code)
     dbg(`handleDetectSchema(): Schema detected`)
     updateState({fullSchema: schema})
@@ -206,7 +207,7 @@ function run() {
 
   function handleTidyJson() {
     dbg(`handleCleanJson()`)
-    const json = editorRef.getModel().getValue()
+    const json = editorRef?.getModel()?.getValue() ?? ""
     const cleanedJson = JSON.stringify(JSON.parse(jsonrepair(json)), null, 2)
     handleUpdateConfig(cleanedJson)
     toast.success(`Config tidied.`)
@@ -266,7 +267,7 @@ function run() {
   )
 }
 
-function StateProvider(): JSX.Element {
+function StateProvider(): React.JSX.Element {
   dbg(`StateProvider()`)
   const example = getActiveExample()
   const [state, setState] = React.useState({
@@ -290,7 +291,7 @@ function StateProvider(): JSX.Element {
   )
 }
 
-export default function PlaygroundComponent(): JSX.Element {
+export default function PlaygroundComponent(): React.JSX.Element {
   dbg(`PlaygroundComponent()`)
   return (
     <BrowserOnly fallback={<div>Loading...</div>}>

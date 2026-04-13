@@ -40,10 +40,18 @@
     "@docusaurus/module-type-aliases": "3.9.2",
     "@docusaurus/tsconfig": "3.9.2",
     "@docusaurus/types": "3.9.2",
+    "@eslint/js": "^10.0.1",
     "@mdx-js/loader": "3.1.1",
+    "@types/google-apps-script": "^2.0.8",
+    "@types/jest": "30.0.0",
+    "@types/node": "25.5.0",
+    "@types/react": "19.0.10",
+    "@types/react-dom": "19.0.4",
     "eslint-import-resolver-typescript": "4.4.4",
     "eslint-plugin-import-x": "4.16.2",
-    "typescript": "6.0.2"
+    "globals": "^17.5.0",
+    "typescript": "6.0.2",
+    "typescript-eslint": "^8.58.1"
   },
   "browserslist": {
     "production": [
