@@ -23,13 +23,15 @@ jobs:
           cache: "npm"
       - name: Install dependencies
         run: npm ci
-      - name: Snyk Test
+      - name: Snyk Test (lib)
         uses: snyk/actions/node@master
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           args: --severity-threshold=high
-      - name: Snyk IaC Test
-        uses: snyk/actions/iac@master
+      - name: Snyk Test (docs)
+        uses: snyk/actions/node@master
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --severity-threshold=high --file=docs/package.json
