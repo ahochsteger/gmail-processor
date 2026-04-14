@@ -19,8 +19,8 @@
     "@babel/plugin-proposal-decorators": "7.29.0",
     "@babel/plugin-transform-class-properties": "7.28.6",
     "@docsearch/react": "4.6.2",
-    "@docusaurus/core": "3.9.2",
-    "@docusaurus/preset-classic": "3.9.2",
+    "@docusaurus/core": "3.10.0",
+    "@docusaurus/preset-classic": "3.10.0",
     "@iconify/react": "6.0.2",
     "@mdx-js/react": "3.1.1",
     "clsx": "2.1.1",
@@ -28,30 +28,30 @@
     "jsonrepair": "3.13.3",
     "prism-react-renderer": "2.4.1",
     "raw-loader": "4.0.2",
-    "react": "19.2.4",
-    "react-dom": "19.2.4",
+    "react": "19.2.5",
+    "react-dom": "19.2.5",
     "react-toastify": "11.0.5"
   },
   "overrides": {
     "react-json-view-lite": "2.5.0"
   },
   "devDependencies": {
-    "@docusaurus/eslint-plugin": "3.9.2",
-    "@docusaurus/module-type-aliases": "3.9.2",
-    "@docusaurus/tsconfig": "3.9.2",
-    "@docusaurus/types": "3.9.2",
+    "@docusaurus/eslint-plugin": "3.10.0",
+    "@docusaurus/module-type-aliases": "3.10.0",
+    "@docusaurus/tsconfig": "3.10.0",
+    "@docusaurus/types": "3.10.0",
     "@eslint/js": "^10.0.1",
     "@mdx-js/loader": "3.1.1",
     "@types/google-apps-script": "^2.0.8",
     "@types/jest": "30.0.0",
-    "@types/node": "25.5.0",
-    "@types/react": "19.0.10",
-    "@types/react-dom": "19.0.4",
+    "@types/node": "25.6.0",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
     "eslint-import-resolver-typescript": "4.4.4",
     "eslint-plugin-import-x": "4.16.2",
     "globals": "^17.5.0",
     "typescript": "6.0.2",
-    "typescript-eslint": "^8.58.1"
+    "typescript-eslint": "8.58.2"
   },
   "browserslist": {
     "production": [
