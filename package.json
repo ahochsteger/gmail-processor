@@ -181,11 +181,6 @@
     "date-fns": "4.1.0",
     "reflect-metadata": "0.2.2"
   },
-  "overrides": {
-    "sonarqube-scanner": {
-      "axios": "1.13.6"
-    }
-  },
   "engines": {
     "node": ">=22"
   }

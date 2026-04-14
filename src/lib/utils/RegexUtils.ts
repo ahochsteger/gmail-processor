@@ -1,6 +1,19 @@
 import { ProcessingContext } from "../Context"
 
+/**
+ * Utility class for regular expression operations.
+ */
 export class RegexUtils {
+  /**
+   * Escapes a string for use in a regular expression.
+   * This is a polyfill for the upcoming RegExp.escape() standard.
+   * @param str - The string to escape.
+   * @returns The escaped string.
+   */
+  public static escape(str: string): string {
+    return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+  }
+
   public static matchRegExp(
     regex: string,
     str: string | undefined,

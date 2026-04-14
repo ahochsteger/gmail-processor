@@ -1,6 +1,17 @@
 import { ContextMocks } from "../../test/mocks/ContextMocks"
 import { RegexUtils } from "./RegexUtils"
 
+describe("escape()", () => {
+  it("should escape special regex characters", () => {
+    const escaped = RegexUtils.escape(".*+?^${}()|[]\\")
+    expect(escaped).toEqual("\\.\\*\\+\\?\\^\\$\\{\\}\\(\\)\\|\\[\\]\\\\")
+  })
+  it("should return identical string for non-special characters", () => {
+    const escaped = RegexUtils.escape("abc123")
+    expect(escaped).toEqual("abc123")
+  })
+})
+
 describe("matchRegExp()", () => {
   it("should match regex without modifier", () => {
     const matches = RegexUtils.matchRegExp("^test$", "test")

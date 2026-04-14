@@ -82,7 +82,7 @@ export class ActionRegistry {
     providerName: string,
     provider: ActionProvider,
   ) {
-    if (this.actionProviders.get(providerName))
+    if (this.actionProviders.has(providerName))
       throw new Error(
         `An action provider with name ${providerName} is already registered!`,
       )
