@@ -1,5 +1,41 @@
 # Changelog
 
+## [2.17.0](https://github.com/ahochsteger/gmail-processor/compare/v2.16.0...v2.17.0) (2026-04-14)
+
+
+### Features
+
+* **adapter:** add `increment` conflict strategy for Google Drive files ([1363073](https://github.com/ahochsteger/gmail-processor/commit/13630731904e641a8154c95aa05f44900174677a))
+* add `increment` conflict strategy ([66278c5](https://github.com/ahochsteger/gmail-processor/commit/66278c5c19db6f498d1512f06943d00022e7bcce)), closes [#633](https://github.com/ahochsteger/gmail-processor/issues/633)
+* add envOverrides for cache and property service ([92215cb](https://github.com/ahochsteger/gmail-processor/commit/92215cb120518a84995caa38c94eff7e1d7bbe3e))
+* add file conflict strategy `increment` ([#652](https://github.com/ahochsteger/gmail-processor/issues/652)) ([1363073](https://github.com/ahochsteger/gmail-processor/commit/13630731904e641a8154c95aa05f44900174677a))
+* **expr:** add support for boolean, number, bigint, symbol, and function types in anyValueToString ([4b5a1c6](https://github.com/ahochsteger/gmail-processor/commit/4b5a1c6ef5a97f2d678fa8e2b7438196725a612b))
+* **modernization:** implement regex escape and secure docs dependencies ([418d7a0](https://github.com/ahochsteger/gmail-processor/commit/418d7a0b0f8c25fce3fe449e390b5743303ee32a))
+
+
+### Bug Fixes
+
+* adjust driveApi typing for new @types/google-apps-script ([9276cda](https://github.com/ahochsteger/gmail-processor/commit/9276cda28e892493a43c1c12417637d324b510c2))
+* **deps:** update dependency ajv to v8.18.0 [security] ([#624](https://github.com/ahochsteger/gmail-processor/issues/624)) ([ef5fa2e](https://github.com/ahochsteger/gmail-processor/commit/ef5fa2e42bfae351beb3b84ea50cb01d099f843e))
+* **deps:** update libs-non-major ([#571](https://github.com/ahochsteger/gmail-processor/issues/571)) ([d953e21](https://github.com/ahochsteger/gmail-processor/commit/d953e21f7cb75845c6761541cd3d3b2b534cc86e))
+* **deps:** update libs-non-major ([#574](https://github.com/ahochsteger/gmail-processor/issues/574)) ([ac9828f](https://github.com/ahochsteger/gmail-processor/commit/ac9828fa6a2a6d4caf33eef592a43456078422c9))
+* **deps:** update libs-non-major ([#576](https://github.com/ahochsteger/gmail-processor/issues/576)) ([684828b](https://github.com/ahochsteger/gmail-processor/commit/684828bd85146c76db4987e157d9dcf9cafcecd9))
+* **deps:** update libs-non-major ([#582](https://github.com/ahochsteger/gmail-processor/issues/582)) ([5badebe](https://github.com/ahochsteger/gmail-processor/commit/5badebe8ce64b61e2f2d3ca611754249ef6b6afe))
+* **deps:** update libs-non-major ([#631](https://github.com/ahochsteger/gmail-processor/issues/631)) ([f98897e](https://github.com/ahochsteger/gmail-processor/commit/f98897eb11c78adeaef34560c52a96058db013fb))
+* **docs:** resolve package-lock.json conflict for react-json-view-lite ([c192c24](https://github.com/ahochsteger/gmail-processor/commit/c192c2441c9659752c904896ec2f13c1a8050ae2))
+* ERESOLVE in docs build and optimize thread message count retrieval ([dd48c60](https://github.com/ahochsteger/gmail-processor/commit/dd48c6061bc2c1194c36c43ee0c5b16fbd0dcb61))
+* **security:** remove hardcoded PDF decryption password in example ([#642](https://github.com/ahochsteger/gmail-processor/issues/642)) ([c833be0](https://github.com/ahochsteger/gmail-processor/commit/c833be070f2d075f63dd310633a104f81a738473))
+* typedoc warnings ([c5cbcef](https://github.com/ahochsteger/gmail-processor/commit/c5cbcefd12712a27c3c96f14821f5cd61f295900))
+* upgrade @iconify/react from 6.0.0 to 6.0.1 ([7c8be2d](https://github.com/ahochsteger/gmail-processor/commit/7c8be2d12b0e7bbc405793c1b57ee4a4141246c7))
+* upgrade docusaurus-json-schema-plugin from 1.14.0 to 1.15.0 ([d52a366](https://github.com/ahochsteger/gmail-processor/commit/d52a36653abb96c2c1d91ca431b64536cc248345))
+
+
+### Performance Improvements
+
+* eliminate duplicate gmail search ([d5d601b](https://github.com/ahochsteger/gmail-processor/commit/d5d601bc658bf83f1740aa5fd3ba64030560e1ad))
+* hort-circuit evaluation in orderRules comparators to minimize API calls ([bfe149c](https://github.com/ahochsteger/gmail-processor/commit/bfe149c5f62b254c5ec53774fbf12736a02329a8))
+* optimize thread message count retrieval ([5e3acd9](https://github.com/ahochsteger/gmail-processor/commit/5e3acd953239f31d5b1c9e5b89d13f71b4997a4a))
+
 ## [2.16.0](https://github.com/ahochsteger/gmail-processor/compare/v2.15.0...v2.16.0) (2025-07-25)
 
 
