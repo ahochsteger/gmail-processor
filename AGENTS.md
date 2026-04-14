@@ -67,19 +67,24 @@ To keep the workspace in a sane state, specific commands MUST be executed after 
 | Root `*.md` files        | Sync Docs             | `npm run update:docs`                    |
 | `package.json`           | Total Reinstall       | `npm run all:reinstall`                  |
 | Documentation CSS/Config | Verify Build          | `npm run ci:docs`                        |
+| Deployment / Release     | Update Release Notes  | `npm run release:update`                 |
+| Release Preview          | Dry-run Release Notes | `npm run release:notes`                  |
 
 ## Generated Artifacts & Automation
 
 The following paths contain automatically generated files and **MUST NOT** be modified manually. Always update their respective source files and run the corresponding update script.
 
-| Generated Path           | Update Script             | Source of Truth          |
-| :----------------------- | :------------------------ | :----------------------- |
-| `docs/docs/community/`   | `npm run update:docs`     | Root `*.md` files        |
-| `docs/docs/examples/`    | `npm run update:examples` | `src/examples/*.ts`      |
-| `docs/docs/reference/`   | `npm run update:docs`     | `src/lib/` (via TypeDoc) |
-| `src/gas/examples/`      | `npm run update:examples` | `src/examples/*.ts`      |
-| `src/examples/*.json`    | `npm run update:examples` | `src/examples/*.ts`      |
-| `src/examples/*.spec.ts` | `npm run update:examples` | `src/examples/*.ts`      |
+| Generated Path           | Update Script             | Source of Truth                                |
+| :----------------------- | :------------------------ | :--------------------------------------------- |
+| `docs/docs/community/`   | `npm run update:docs`     | Root `*.md` files                              |
+| `docs/docs/examples/`    | `npm run update:examples` | `src/examples/*.ts`                            |
+| `docs/docs/reference/`   | `npm run update:docs`     | `src/lib/` (via TypeDoc)                       |
+| `src/gas/examples/`      | `npm run update:examples` | `src/examples/*.ts`                            |
+| `src/examples/*.json`    | `npm run update:examples` | `src/examples/*.ts`                            |
+| `src/examples/*.spec.ts` | `npm run update:examples` | `src/examples/*.ts`                            |
+| Release Notes Summary    | `npm run release:update`  | `scripts/prompts/*.md`                         |
+| Release Notes Preview    | `npm run release:notes`   | `scripts/` (via `scripts/release-manager.mjs`) |
+| Release Notes Prompt     | `npm run release:notes`   | `scripts/` (via `scripts/release-manager.mjs`) |
 
 **Agent Instruction:** If you need to change documentation or examples, find the **Source of Truth** listed above. Manual changes to generated paths will be overwritten during the build process.
 
@@ -232,3 +237,23 @@ The documentation build (Docusaurus 3) is sensitive to `ajv` and `schema-utils` 
 If the NPM or Devbox environment becomes corrupted:
 
 - **Guideline**: Use `npm run all:reinstall`. This is the project's "Total Reset" button, which destructively cleans all lockfiles (including `devbox.lock`) and re-resolves the entire environment.
+
+## Modernized Release Pipeline
+
+The release process is managed by `scripts/release-manager.mjs`, which orchestrates high-fidelity, community-centric release notes.
+
+### Core Architecture
+
+- **Surgical Community Context**: Automatically detects co-authors via Git trailers (`Co-authored-by`), filters bots/maintainers, and maps names to GitHub profiles. Includes a **Time-Based Filter** that ensures only participants active since the previous release are credited in Discussions/Issues.
+- **Technical Transparency**:
+  - Automatically labels dependency updates with `[MAJOR]`, `[MINOR]`, or `[PATCH]` by comparing semver strings.
+  - Reconstructs hyperlinked Google Apps Script (GAS) library versions prominently in the header.
+  - **Documentation Context Indexing**: Scans the `docs/` directory to provide the AI with a mapping of all reference pages and examples, enabling precise deep-linking.
+- **AI-Enhanced**: Uses Gemini to summarize changes based on a decoupled prompt template (`scripts/prompts/release-summary.md`), where instructions and technical data are kept strictly separate for reasoning accuracy.
+- **Interactive Linkification**: Every commit hash, PR number, and community mention is automatically hyperlinked to GitHub across the entire document.
+- **Dry-Run Workflow**: Generates both a final preview and the exact AI prompt in the `build/` directory for verification before patching the GitHub release.
+
+### Maintenance Commands
+
+- `npm run release:notes`: Performs a full dry-run, generating `build/release-notes-preview.md` and `build/release-notes-prompt.md`.
+- `npm run release:update`: The production command used by CI to gather context, call the AI, patch the release, and announce in GitHub Discussions. Supports `--release-id <tag>` and `--dry-run` for safe manual execution from CI.

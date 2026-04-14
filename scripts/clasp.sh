@@ -55,34 +55,7 @@ function getReleaseInfo() {
   echo "Google Apps Script Version: [${lastGasVersion}](https://script.google.com/macros/library/d/${CLASP_SCRIPT_ID}/${lastGasVersion})"
 }
 
-function getGithubReleaseNotes() {
-  local releaseId="${1:-latest}"
-  gh api "/repos/ahochsteger/gmail-processor/releases/${releaseId}" \
-  --jq .body
-}
 
-function getPatchedReleaseNotes() {
-  local releaseId="${1:-latest}"
-  local releaseInfo; releaseInfo=$(getReleaseInfo)
-  gh api "/repos/ahochsteger/gmail-processor/releases/${releaseId}" \
-  --jq .body | sed -re "s|^(##? .*)$|\1\n\n${releaseInfo}|g"
-}
-
-function updateGithubRelease() {
-  local releaseId="${1:-latest}"
-  local releaseNotes; releaseNotes=$(getPatchedReleaseNotes "${releaseId}")
-  local releaseId; releaseId=$(gh api /repos/ahochsteger/gmail-processor/releases/latest --jq .id)
-  if [[ "${DRY_RUN:-}" == "true" ]]; then
-    echo "DRYRUN: Would patch GitHub release ${releaseId} with the following notes:"
-    echo "---"
-    echo "${releaseNotes}"
-    echo "---"
-    return 0
-  fi
-  gh api -X PATCH "/repos/ahochsteger/gmail-processor/releases/${releaseId}" \
-    -f body="${releaseNotes}" \
-    -F draft=false
-}
 
 function cleanup() {
   rm -f "${CLASP_DIR}/.clasprc.json"
@@ -91,6 +64,7 @@ function cleanup() {
 function getLastGASVersion() {
   runClasp versions 2>/dev/null \
   | tail -n 1 \
+  | sed 's/^~ //' \
   | awk '{print $1}' \
   >"${CLASP_BASEDIR}/${CLASP_PROFILE}-version.txt"
   cat "${CLASP_BASEDIR}/${CLASP_PROFILE}-version.txt"
@@ -326,18 +300,26 @@ case "${cmd}" in
     runClasp deploy -i "${CLASP_DEPLOYMENT_ID}" -d "${CLASP_DEPLOYMENT_NAME}"
     showLastGASVersion
   ;;
+  verify-lib-version)
+    TAG_NAME="$2"
+    if [[ -z "${TAG_NAME}" ]]; then
+      echo "Error: TAG_NAME not provided for verify-lib-version"
+      exit 1
+    fi
+    setupClaspIDs
+    LAST_VERSION_INFO=$(runClasp versions 2>/dev/null | tail -n 1)
+    # Check if the description (last column) matches the tag name
+    # clasp versions output format: ~ 125 - 2026-04-14T13:45:56.000Z - v2.17.0
+    if [[ "${LAST_VERSION_INFO}" == *"${TAG_NAME}"* ]]; then
+      echo "Success: Latest GAS version description matches release tag ${TAG_NAME}"
+    else
+      echo "Error: Latest GAS version description DOES NOT match release tag ${TAG_NAME}"
+      echo "Latest version info: ${LAST_VERSION_INFO}"
+      exit 1
+    fi
+  ;;
   release-info)
     getReleaseInfo
-  ;;
-  release-notes)
-    getPatchedReleaseNotes
-  ;;
-  release-notes-github)
-    getGithubReleaseNotes "${1:-latest}"
-  ;;
-  update-github-release)
-    checkGuardedAction "${cmd}"
-    updateGithubRelease "${1:-latest}"
   ;;
   last-version)
     getLastGASVersion

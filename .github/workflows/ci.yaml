@@ -131,13 +131,14 @@ jobs:
         env:
           CLASP_DEPLOYMENT_NAME: ${{ steps.release.outputs.tag_name }}
       - id: update-release-notes
-        if: ${{ !github.event.inputs.skip_release && (steps.release.outputs.release_created || inputs.dry_run) }} # Check if a release was created
+        if: ${{ !github.event.inputs.skip_release && (steps.release.outputs.release_created || github.event.inputs.dry_run) }} # Check if a release was created
         name: Update Release Notes
         run: |
-          npm run release:update
+          npm run release:update -- --release-id "${{ steps.release.outputs.tag_name || 'latest' }}" ${{ github.event.inputs.dry_run && '--dry-run' || '' }}
         env:
           CLASP_DEPLOYMENT_NAME: ${{ steps.release.outputs.tag_name }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
       - id: deploy-docs
         if: ${{ !github.event.inputs.skip_deploy_docs }}
         name: Deploy docs
