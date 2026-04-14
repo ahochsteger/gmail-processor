@@ -1,3 +1,4 @@
+/** @generated - DO NOT EDIT MANUALLY - Use 'npm run update:examples' instead */
 function conflictStrategyRun() {
   const config = {
     description: "Test different conflict strategies like increment.",

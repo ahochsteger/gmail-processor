@@ -1,3 +1,4 @@
+/** @generated - DO NOT EDIT MANUALLY - Use 'npm run update:examples' instead */
 function logSheetLoggingRun() {
   const config = {
     description: "Logs data to a Google Spreadsheet.",

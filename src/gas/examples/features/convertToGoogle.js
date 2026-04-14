@@ -1,3 +1,4 @@
+/** @generated - DO NOT EDIT MANUALLY - Use 'npm run update:examples' instead */
 function convertToGoogleRun() {
   const config = {
     description: "Convert MS Office attachments into Google formats.",

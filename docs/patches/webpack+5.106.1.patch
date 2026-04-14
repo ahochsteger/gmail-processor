@@ -1,0 +1,13 @@
+diff --git a/node_modules/webpack/schemas/plugins/ProgressPlugin.json b/node_modules/webpack/schemas/plugins/ProgressPlugin.json
+index f79cd9e..ecc9e06 100644
+--- a/node_modules/webpack/schemas/plugins/ProgressPlugin.json
++++ b/node_modules/webpack/schemas/plugins/ProgressPlugin.json
+@@ -8,7 +8,7 @@
+     "ProgressPluginOptions": {
+       "description": "Options object for the ProgressPlugin.",
+       "type": "object",
+-      "additionalProperties": false,
++      "additionalProperties": true,
+       "properties": {
+         "activeModules": {
+           "description": "Show active modules count and one active module in progress message.",

@@ -1,3 +1,4 @@
+/** @generated - DO NOT EDIT MANUALLY - Use 'npm run update:examples' instead */
 function migrationAdvancedConvert() {
   const oldConfig = {
     globalFilter: "has:attachment -in:trash -in:drafts -in:spam",

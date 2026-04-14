@@ -1,3 +1,4 @@
+/** @generated - DO NOT EDIT MANUALLY - Use 'npm run update:examples' instead */
 function actionExportRun() {
   const config = {
     description: "Export a thread or message as HTML or PDF.",

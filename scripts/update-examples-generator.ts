@@ -244,7 +244,15 @@ export class ExampleHandler {
   }
 
   public renderToFile(template: string, data: object, file: string) {
-    const content = this.render(template, data)
+    let content = this.render(template, data)
+    const ext = path.extname(file)
+    const header =
+      "@generated - DO NOT EDIT MANUALLY - Use 'npm run update:examples' instead"
+    if (ext === ".js" || ext === ".ts") {
+      content = `/** ${header} */\n${content}`
+    } else if (ext === ".md" || ext === ".mdx") {
+      content = `<!-- ${header} -->\n\n${content}`
+    }
     console.log(`  Generating file '${file}' from template '${template}' ...`)
     mkdirSync(path.parse(file).dir, { recursive: true })
     writeFileSync(file, content)

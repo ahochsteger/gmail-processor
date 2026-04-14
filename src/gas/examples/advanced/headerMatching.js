@@ -1,3 +1,4 @@
+/** @generated - DO NOT EDIT MANUALLY - Use 'npm run update:examples' instead */
 function headerMatchingRun() {
   const config = {
     description: "This example demonstrates how to match raw message headers.",

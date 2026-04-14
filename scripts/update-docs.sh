@@ -102,6 +102,8 @@ function saveToDocs() {
     echo "id: ${id}"
     echo "sidebar_position: ${sidebarPos}"
     echo "---"
+    echo "<!-- @generated - DO NOT EDIT MANUALLY - Use 'npm run update:docs' instead -->"
+    echo ""
     cat
   } >"${destFile}"
 

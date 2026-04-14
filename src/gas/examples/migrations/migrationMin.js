@@ -1,3 +1,4 @@
+/** @generated - DO NOT EDIT MANUALLY - Use 'npm run update:examples' instead */
 function migrationMinConvert() {
   const oldConfig = {
     processedLabel: "gmail2gdrive/client-test",

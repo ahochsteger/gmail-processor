@@ -56,6 +56,33 @@ To maintain testability and GAS compatibility, external service interactions are
 - `src/examples/`: Reference configurations and E2E tests.
 - `scripts/`: Build and maintenance scripts.
 
+## Maintenance Triggers
+
+To keep the workspace in a sane state, specific commands MUST be executed after modifying certain types of files:
+
+| Affected Area            | Required Action       | Command                                  |
+| :----------------------- | :-------------------- | :--------------------------------------- |
+| `src/lib/`               | Rebuild & Update Docs | `npm run all:update && npm run test:lib` |
+| `src/examples/*.ts`      | Re-generate Examples  | `npm run update:examples`                |
+| Root `*.md` files        | Sync Docs             | `npm run update:docs`                    |
+| `package.json`           | Total Reinstall       | `npm run all:reinstall`                  |
+| Documentation CSS/Config | Verify Build          | `npm run ci:docs`                        |
+
+## Generated Artifacts & Automation
+
+The following paths contain automatically generated files and **MUST NOT** be modified manually. Always update their respective source files and run the corresponding update script.
+
+| Generated Path           | Update Script             | Source of Truth          |
+| :----------------------- | :------------------------ | :----------------------- |
+| `docs/docs/community/`   | `npm run update:docs`     | Root `*.md` files        |
+| `docs/docs/examples/`    | `npm run update:examples` | `src/examples/*.ts`      |
+| `docs/docs/reference/`   | `npm run update:docs`     | `src/lib/` (via TypeDoc) |
+| `src/gas/examples/`      | `npm run update:examples` | `src/examples/*.ts`      |
+| `src/examples/*.json`    | `npm run update:examples` | `src/examples/*.ts`      |
+| `src/examples/*.spec.ts` | `npm run update:examples` | `src/examples/*.ts`      |
+
+**Agent Instruction:** If you need to change documentation or examples, find the **Source of Truth** listed above. Manual changes to generated paths will be overwritten during the build process.
+
 ## Examples Structure & Generation
 
 The project examples serve multiple purposes and are all generated from a single source of truth: `src/examples/**.ts`. This file defines the example logic, configuration, end-to-end (E2E) tests, and documentation metadata.
@@ -81,6 +108,11 @@ When you modify or create an example in `src/examples/**.ts`, the build process 
 
 - Use `class-transformer` decorators (`@Expose`, `@Type`) for configuration classes in `src/lib/config/`.
 - Maintain the JSON schema (`config-schema-v2.json`) whenever config classes change.
+
+### Formatting
+
+- **Canonical Formatting**: Every file (JS, TS, JSON, MD, etc.) must be canonically formatted before committing to prevent style-only changes in the Git history.
+- **Tooling**: Use `npm run lint-fix` (Prettier) for global formatting.
 
 ### Run-Mode Aware Actions
 
@@ -172,13 +204,31 @@ In alignment with the 2026 EU AI Act and security best practices, we disclose AI
    - E2E tests: Located in `src/examples/`, run via GAS.
    - Mocking: Use `MockFactory` for GAS services in tests.
 2. **Pre-commit:** Always run `npm run all:pre-commit` before pushing. This runs:
+   - Formatting fix (`npm run lint-fix`).
    - Linting (`npm run all:lint`).
    - Build (`npm run all:build`).
    - Tests (`npm run all:test`).
    - Documentation updates (`npm run all:update`).
+3. **Environment Maintenance:** If you encounter persistent dependency or environment issues, perform a total project reset:
+   - Reset all lockfiles and environments: `npm run all:reinstall`.
 
 ## Tooling
 
-- **Clasp:** For syncing code with Google Apps Script.
-- **Rollup:** For bundling the library.
-- **Prettier:** Code formatting (enforced via linting).
+- **Clasp**: For syncing code with Google Apps Script.
+- **Rollup**: For bundling the library.
+- **Prettier**: Code formatting (enforced via linting).
+
+## Architectural Lessons (2026 Session)
+
+### Node 25 / Webpack 5 Stability
+
+The documentation build (Docusaurus 3) is sensitive to `ajv` and `schema-utils` version poisoning on Node 25.
+
+- **Guideline**: NEVER use forced `overrides` or `resolutions` for AJV in the docs project; it fixes the build but breaks dependency resolution.
+- **Solution**: Use `patch-package` (see `docs/patches/`) to surgically loosen Webpack's `ProgressPlugin` schema validation. This maintains a clean modern stack with zero vulnerabilities.
+
+### Environment Resilience
+
+If the NPM or Devbox environment becomes corrupted:
+
+- **Guideline**: Use `npm run all:reinstall`. This is the project's "Total Reset" button, which destructively cleans all lockfiles (including `devbox.lock`) and re-resolves the entire environment.

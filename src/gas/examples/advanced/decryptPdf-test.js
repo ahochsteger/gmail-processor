@@ -1,3 +1,4 @@
+/** @generated - DO NOT EDIT MANUALLY - Use 'npm run update:examples' instead */
 // NOTE: Do not edit this auto-generated file!
 // Template: src/templates/gas-test.eta
 // Source: src/examples/advanced/decryptPdf.ts

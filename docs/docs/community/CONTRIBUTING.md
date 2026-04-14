@@ -2,6 +2,8 @@
 id: contributing
 sidebar_position: 71
 ---
+<!-- @generated - DO NOT EDIT MANUALLY - Use 'npm run update:docs' instead -->
+
 # Contributing
 
 <!-- See
@@ -126,25 +128,44 @@ Congratulations :tada::tada: The project team thanks you :sparkles:.
 
 ## Development Guide
 
+### Quick Start
+
+1. **Clone the repository**:
+
+   ```bash
+   git clone https://github.com/ahochsteger/gmail-processor.git
+   cd gmail-processor
+   ```
+
+2. **Setup your environment**: Choose one of the following paths:
+   - **Option A (Recommended): With [Devbox](https://www.jetify.com/devbox)**
+     Ensures a perfectly consistent toolset (Node, Antlr, etc.) via Nix.
+
+     ```bash
+     devbox shell
+     ```
+
+   - **Option B: Traditional (No Devbox)**
+     Ensure you have **Node.js 22+** installed on your system.
+
+3. **Install dependencies**:
+   ```bash
+   npm run all:reinstall
+   ```
+
+---
+
 ### Development Flow
 
 See [the steps at Pull Request](#pull-request) for instructions on forking.
 
 ```bash
-# Pre-requisites: Make sure a recent Node.js LTS version is installed
-
-# Clone the repository and navigate to the project folder
-git clone https://github.com/ahochsteger/gmail-processor.git
-cd gmail-processor
-
-# Install dependencies (lib and docs)
-npm run setup
+# Follow the Quick Start above to get your environment ready
 
 # Perform changes
 code .
 
-# Run pre-commit tasks to make sure the code is in an acceptable state to be commited
-# (clean, build, run tests, update docs, do some sanity checks, ...)
+# Run pre-commit tasks (clean, build, tests, update docs, etc.)
 npm run all:pre-commit
 ```
 
@@ -201,3 +222,38 @@ Helpful resources about development for Google Apps Script:
 - [https://github.com/google/clasp/blob/master/docs/typescript.md](https://github.com/google/clasp/blob/master/docs/typescript.md)
 - [https://github.com/grant/ts2gas](https://github.com/grant/ts2gas)
 - [https://blog.filippo.io/gmail-bot-with-apps-script-and-typescript/](https://blog.filippo.io/gmail-bot-with-apps-script-and-typescript/)
+
+---
+
+## Maintenance Guide
+
+The project uses a semantic naming convention for maintenance scripts to ensure they are isolated from standard build lifecycles.
+
+### Total Environment Reset
+
+| Script          | Command                 | Description                                                                                                                    |
+| :-------------- | :---------------------- | :----------------------------------------------------------------------------------------------------------------------------- |
+| `all:reinstall` | `npm run all:reinstall` | **Recommended**. Performs a full clean and fresh installation of all components including Node modules and Devbox environment. |
+
+### Lockfile & Dependency Management
+
+| Script                | Namespace           | Description                                                        |
+| :-------------------- | :------------------ | :----------------------------------------------------------------- |
+| `all:locks-clean`     | `npm:locks:clean:*` | Safely removes all `package-lock.json` and `node_modules` folders. |
+| `locks:clean:lib`     | -                   | Specifically cleans the root library dependencies.                 |
+| `locks:clean:docs`    | -                   | Specifically cleans the documentation workspace.                   |
+| `locks:clean:devbox`  | -                   | Removes the `.devbox` directory and `devbox.lock`.                 |
+| `locks:update:devbox` | -                   | Runs `devbox update` to refresh the environment lockfile.          |
+
+### Typical Maintenance Workflow
+
+Follow this procedure when performing periodic dependency updates or fixing security vulnerabilities:
+
+1.  **Baseline**: Ensure your environment is fresh via `npm run all:reinstall`.
+2.  **Audit**: Check for outdated packages (`npm run all:packages-outdated`).
+3.  **Update**: Modify `package.json` versions or `overrides`.
+4.  **Regenerate & Verify**: Run `npm run all:reinstall` and `npm run all:ci`.
+5.  **Audit Security**: Run `npm run all:audit-security`.
+
+> [!CAUTION]
+> **Documentation Build Sensitivity**: The documentation workspace uses a complex Webpack 5 / Docusaurus 3 setup that is sensitive to `ajv` version conflicts. Always verify the `ci:docs` task specifically after modifying any `ajv` or `schema-utils` related dependencies.

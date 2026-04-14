@@ -1,3 +1,4 @@
+/** @generated - DO NOT EDIT MANUALLY - Use 'npm run update:examples' instead */
 function actionThreadRemoveLabelRun() {
   const config = {
     description:

@@ -1,0 +1,8 @@
+# Mark generated directories as linguist-generated to hide them from language stats and collapse them in diffs.
+docs/docs/community/** linguist-generated=true
+docs/docs/examples/** linguist-generated=true
+docs/docs/reference/** linguist-generated=true
+src/gas/examples/** linguist-generated=true
+src/examples/*.json linguist-generated=true
+src/examples/*.spec.ts linguist-generated=true
+config-schema-v2.json linguist-generated=true

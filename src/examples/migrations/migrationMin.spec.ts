@@ -1,3 +1,4 @@
+/** @generated - DO NOT EDIT MANUALLY - Use 'npm run update:examples' instead */
 // NOTE: Do not edit this auto-generated file!
 // Template: src/templates/test-spec-migration-v1.eta
 // Source: src/examples/migrations/migrationMin.ts
