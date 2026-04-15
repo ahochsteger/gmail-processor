@@ -42,12 +42,12 @@ const isDryRun = command === "preview" || !command
 const isUpdateRelease = command === "update"
 const isPublish = command === "publish"
 
-// If no mode specified, default to dry-run
+// If no mode specified, default to preview
 const mode = isPublish
   ? "publish"
   : isUpdateRelease
     ? "update-release"
-    : "dry-run"
+    : "preview"
 
 const possibleTag = args[1]
 const tagArg = possibleTag && !possibleTag.startsWith("--") ? possibleTag : null
@@ -596,8 +596,8 @@ function patchAiSection(existingBody, newAiSection) {
  */
 function injectGasVersion(body, newGasInfo) {
   return body.replace(
-    /\*\*ℹ️ GAS Lib Version\*\*: .*/,
-    `**ℹ️ GAS Lib Version**: ${newGasInfo}`,
+    /(\*\*ℹ️ GAS Lib Version\*\*:\s*)[^| \n]+(?:\s*\*\([^)]+\)\*)?/,
+    `$1${newGasInfo}`,
   )
 }
 
@@ -719,30 +719,27 @@ async function announceInDiscussions(version, body) {
 
 // --- GAS Version Resolution ---
 
-function resolveGasInfo(version, dryRun, upcoming, existingBody) {
-  // In CI: build/gas/lib-version.txt is written by the deploy step
-  let gVersion = "LATEST"
-  if (fs.existsSync(path.join(BASE_DIR, "build/gas/lib-version.txt"))) {
-    gVersion = fs
-      .readFileSync(path.join(BASE_DIR, "build/gas/lib-version.txt"), "utf8")
-      .trim()
-  } else if (existingBody) {
-    const match = existingBody.match(
-      /\*\*ℹ️ GAS Lib Version\*\*: \[?(\d+)\]?\(/,
-    )
-    if (match) {
-      gVersion = match[1]
+function resolveGasInfo(version, isPreview, upcoming, existingBody) {
+  const envVersion = process.env.GAS_LIB_VERSION
+  let gVersion = envVersion || "LATEST"
+
+  if (gVersion === "LATEST") {
+    if (fs.existsSync(path.join(BASE_DIR, "build/gas/lib-version.txt"))) {
+      gVersion = fs
+        .readFileSync(path.join(BASE_DIR, "build/gas/lib-version.txt"), "utf8")
+        .trim()
+    } else if (existingBody) {
+      const match = existingBody.match(
+        /\*\*ℹ️ GAS Lib Version\*\*: \[?(\d+)\]?\(/,
+      )
+      if (match) {
+        gVersion = match[1]
+      }
     }
   }
 
   if (gVersion === "LATEST") {
     return "LATEST \*(pending deployment)\*"
-  }
-
-  if (dryRun && upcoming && gVersion !== "LATEST") {
-    const next = parseInt(gVersion) + 1
-    console.log(`Dry-run: projecting GAS version ${gVersion} -> ${next}`)
-    gVersion = next.toString()
   }
 
   const scriptId =
@@ -763,7 +760,7 @@ async function main() {
 
     // --- Tag Resolution ---
     const tag = tagArg || detectTag()
-    if (!tag && mode !== "dry-run") {
+    if (!tag && mode !== "preview") {
       console.error(
         "ERROR: Could not detect release tag. Use --update-release <tag> or --publish <tag>.",
       )
@@ -808,7 +805,7 @@ async function main() {
       return
     }
 
-    // --- Changelog Sourcing (dry-run and update-release modes) ---
+    // --- Changelog Sourcing (preview and update-release modes) ---
     if (tag && mode === "update-release") {
       releasePR = findReleasePR(tag, prOverride ? parseInt(prOverride) : null)
       if (releasePR) {
@@ -847,6 +844,10 @@ async function main() {
         rawNotes = run(`git log ${prevTag}..HEAD --pretty=format:"* %s (%h)"`)
       }
     }
+    // Always fetch full git log for the AI context (ensures "Under the Hood" sees hidden commits)
+    const fullGitLog = run(
+      `git log ${prevTag}..${currentRef} --pretty=format:"* %s (%h)"`,
+    )
 
     if (!rawNotes) {
       console.warn("WARNING: No raw changelog notes found. Using fallback.")
@@ -865,7 +866,7 @@ async function main() {
     }
     const gasInfo = resolveGasInfo(
       version,
-      mode === "dry-run",
+      mode === "preview",
       releasePR,
       releaseBodyToParse,
     )
@@ -888,7 +889,7 @@ async function main() {
     const aiContext = {
       version,
       gas_info: gasInfo,
-      changelog: filteredChangelog,
+      changelog: fullGitLog || rawNotes, // AI sees EVERYTHING for better "Under the Hood"
       dep_diff: depDiff || "No dependency changes.",
       community_info: JSON.stringify(communityInfo, null, 2),
       pr_context: prContext || "No additional PR context available.",
@@ -923,7 +924,11 @@ ${aiContext.docs_context}
     // --- Assemble Release Body ---
     const groupedNotes = groupChangelogEntries(rawNotes)
     const headerMatch = groupedNotes.match(/## \[(.*?)\]\((.*?)\) \((.*?)\)/)
-    const diffLink = headerMatch ? headerMatch[2] : ""
+    const diffLink =
+      (headerMatch ? headerMatch[2] : null) ||
+      (prevTag && tag
+        ? `https://github.com/${REPO}/compare/${prevTag}...${tag}`
+        : "")
     const releaseDate = headerMatch
       ? headerMatch[3]
       : new Date().toISOString().slice(0, 10)
@@ -945,7 +950,7 @@ ${aiContext.docs_context}
     })
 
     // --- Output ---
-    if (mode === "dry-run") {
+    if (mode === "preview") {
       console.log(`\n[SAFE PREVIEW] --- Proposed Release Notes ---`)
       console.log(
         `(No changes made. Prompt saved to build/release-notes-prompt.md)\n`,

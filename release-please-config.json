@@ -1,7 +1,9 @@
 {
   "packages": {
     ".": {
+      "component": "gmail-processor",
       "release-type": "node",
+      "include-component-in-tag": false,
       "draft": true
     }
   },
@@ -11,11 +13,11 @@
     { "type": "perf", "section": "Performance Improvements", "hidden": false },
     { "type": "docs", "section": "Documentation", "hidden": false },
     { "type": "revert", "section": "Reverts", "hidden": false },
-    { "type": "chore", "section": "Internal Changes", "hidden": false },
-    { "type": "refactor", "section": "Internal Changes", "hidden": false },
-    { "type": "test", "section": "Internal Changes", "hidden": false },
-    { "type": "build", "section": "Internal Changes", "hidden": false },
-    { "type": "ci", "section": "Internal Changes", "hidden": false }
+    { "type": "chore", "section": "Internal Changes", "hidden": true },
+    { "type": "refactor", "section": "Internal Changes", "hidden": true },
+    { "type": "test", "section": "Internal Changes", "hidden": true },
+    { "type": "build", "section": "Internal Changes", "hidden": true },
+    { "type": "ci", "section": "Internal Changes", "hidden": true }
   ],
   "pull-request-header": "",
   "pull-request-footer": ""
