@@ -73,12 +73,10 @@ jobs:
       GCLOUD_PROJECT_NR: ${{secrets.GCLOUD_PROJECT_NR}}
       DRY_RUN: ${{ inputs.dry_run || 'false' }}
     steps:
-      - id: release
-        name: Release
+      - id: create-draft-release
+        name: Create Draft Release
         if: ${{ !github.event.inputs.skip_release }}
         uses: googleapis/release-please-action@16a9c90856f42705d54a6fda1823352bdc62cf38 # v4
-        with:
-          release-type: node
       - id: checkout
         name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
@@ -131,14 +129,25 @@ jobs:
         env:
           CLASP_DEPLOYMENT_NAME: ${{ steps.release.outputs.tag_name }}
       - id: update-release-notes
-        if: ${{ !github.event.inputs.skip_release && (steps.release.outputs.release_created || github.event.inputs.dry_run) }} # Check if a release was created
-        name: Update Release Notes
+        if: ${{ !github.event.inputs.skip_release && (steps.release.outputs.release_created || github.event.inputs.dry_run) }}
+        name: Update Draft Release Notes
         run: |
-          npm run release:update -- --release-id "${{ steps.release.outputs.tag_name || 'latest' }}" ${{ github.event.inputs.dry_run && '--dry-run' || '' }}
+          if [ "${{ github.event.inputs.dry_run }}" == "true" ]; then
+             npm run release:preview -- "${{ steps.release.outputs.tag_name || 'latest' }}"
+          else
+             npm run release:update -- "${{ steps.release.outputs.tag_name || 'latest' }}"
+          fi
         env:
           CLASP_DEPLOYMENT_NAME: ${{ steps.release.outputs.tag_name }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      - id: auto-publish-patch
+        if: ${{ !github.event.inputs.skip_release && steps.release.outputs.release_created && steps.release.outputs.patch != '0' }}
+        name: Auto-publish Patch Release
+        run: |
+          npm run release:publish -- "${{ steps.release.outputs.tag_name }}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - id: deploy-docs
         if: ${{ !github.event.inputs.skip_deploy_docs }}
         name: Deploy docs

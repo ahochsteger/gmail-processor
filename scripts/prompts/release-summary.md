@@ -22,5 +22,6 @@ Create a high-quality release announcement based ONLY on the provided technical 
 - **Section Integrity**: Ensure each technical improvement or fix is mentioned **exactly once**. Feature-linked community highlights should focus on the human impact/suggestion, while technical implementation details stay in **Under the Hood**.
 - **Tone**: Maintain a **neutral, objective, and professional tone**. Avoid dramatic or promotional superlatives like "highly requested," "major milestone," or "revolutionary" unless explicitly supported by interaction data or PR descriptions in the technical input.
 - **Style**: Clear and professional. Use emojis to make it engaging, but maintain a high-quality technical standard.
+- **NO @-MENTIONS**: NEVER use the `@` symbol for user mentions (e.g., do NOT use `@username`). This prevents redundant notifications for community members. Always link contributor names to their provided profile URLs instead.
 - **Linking**: Maintain existing PR numbers (#123) and commit hashes ((abc1234)) exactly as provided in the data.
 - **Trailer**: Do NOT include any "AI-Assisted" trailer in your response; it will be appended automatically by the system.

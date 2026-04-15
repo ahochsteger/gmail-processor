@@ -240,20 +240,36 @@ If the NPM or Devbox environment becomes corrupted:
 
 ## Modernized Release Pipeline
 
-The release process is managed by `scripts/release-manager.mjs`, which orchestrates high-fidelity, community-centric release notes.
+The release process is managed by `scripts/release-manager.mjs`, which orchestrates high-fidelity, community-centric release notes using a **Draft-First (Option C+)** workflow.
 
-### Core Architecture
+### Release Workflow Lifecycle
 
-- **Surgical Community Context**: Automatically detects co-authors via Git trailers (`Co-authored-by`), filters bots/maintainers, and maps names to GitHub profiles. Includes a **Time-Based Filter** that ensures only participants active since the previous release are credited in Discussions/Issues.
+1.  **PR & Draft Creation**: `release-please` automatically opens a Pull Request and creates a **GitHub Draft Release**. This release is invisible to the public and serves as the staging area.
+2.  **AI Enrichment**: The `release-manager.mjs` script (triggered by CI or manually) patches the draft release with AI-generated summaries, community context, and technical metadata.
+3.  **Automatic Patch Publishing**: If the release is strictly a patch update (e.g. `v2.18.1`), CI automatically publishes the release and closes the loop without human intervention.
+4.  **Manual Verification (Minor/Major)**: For feature releases, maintainers can preview the draft release and make manual edits.
+5.  **Final Publication**: Publication for Minor/Major releases is a deliberate manual step that removes the 'draft' status and triggers community announcements.
+
+### Core Architecture & Hardening
+
+- **AI Section Persistence**: AI-generated content is wrapped in `<!-- RELEASE_NOTES_AI_START -->` and `<!-- RELEASE_NOTES_AI_END -->` delimiters. Re-running the script will **only** update the section between these markers, preserving any manual edits made to the header or changelog.
+- **Surgical Community Context**: Automatically detects human contributors via Git trailers (`Co-authored-by`), filters bots/maintainers, and maps names to GitHub profiles.
+- **Notification Safety**: The AI prompt strictly forbids `@` mentions to prevent redundant notifications. All human recognition is done via hyperlinked names.
 - **Technical Transparency**:
-  - Automatically labels dependency updates with `[MAJOR]`, `[MINOR]`, or `[PATCH]` by comparing semver strings.
-  - Reconstructs hyperlinked Google Apps Script (GAS) library versions prominently in the header.
-  - **Documentation Context Indexing**: Scans the `docs/` directory to provide the AI with a mapping of all reference pages and examples, enabling precise deep-linking.
-- **AI-Enhanced**: Uses Gemini to summarize changes based on a decoupled prompt template (`scripts/prompts/release-summary.md`), where instructions and technical data are kept strictly separate for reasoning accuracy.
-- **Interactive Linkification**: Every commit hash, PR number, and community mention is automatically hyperlinked to GitHub across the entire document.
-- **Dry-Run Workflow**: Generates both a final preview and the exact AI prompt in the `build/` directory for verification before patching the GitHub release.
+  - Automatically labels dependency updates with `[MAJOR]`, `[MINOR]`, or `[PATCH]`.
+  - Reconstructs hyperlinked Google Apps Script (GAS) library versions in the metadata bar.
+  - **Documentation Indexing**: Scans `docs/` to provide AI with precise deep-linking capabilities to reference pages and examples.
+- **Announcement Guard**: Community announcements in GitHub Discussions are only triggered during the final `--publish` phase to prevent noise from draft updates.
 
-### Maintenance Commands
+### Maintenance & Manual Triggers
 
-- `npm run release:notes`: Performs a full dry-run, generating `build/release-notes-preview.md` and `build/release-notes-prompt.md`.
-- `npm run release:update`: The production command used by CI to gather context, call the AI, patch the release, and announce in GitHub Discussions. Supports `--release-id <tag>` and `--dry-run` for safe manual execution from CI.
+The `.github/workflows/release.yaml` workflow provides a UI for the following tasks:
+
+- **Preview Release Notes**: Generates a local preview (`build/release-notes-preview.md`) and the exact AI prompt for verification.
+- **Update Release Notes**: Patches an existing GitHub Draft Release with the latest enriched content. Supports a `--pr` override to target specific PRs.
+- **Publish Release**: Finalizes the draft release, sets it to 'latest', and announces it to the community. You can run this seamlessly from the **GitHub Mobile App**: simply navigate to Actions -> Release Manager -> Run Workflow without specifying a tag, and it will resolve `latest` automatically!
+
+**CLI Reference:**
+- `npm run release:notes`: Local dry-run preview.
+- `npm run release:update`: CI command to patch draft releases.
+- `npm run release:publish`: CI command to finalize and announce.

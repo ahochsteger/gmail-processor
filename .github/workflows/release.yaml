@@ -1,0 +1,67 @@
+name: Release Manager
+
+on:
+  workflow_dispatch:
+    inputs:
+      job:
+        description: "Job to run"
+        type: choice
+        options:
+          - preview
+          - update-release
+          - publish-release
+        default: publish-release
+      tag:
+        description: "Release tag (e.g. v2.17.0)"
+        type: string
+        required: false
+      pr:
+        description: "PR number (for override)"
+        type: string
+        required: false
+
+jobs:
+  release-notes:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      discussions: write
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      CLASP_LIB_SCRIPT_ID: ${{ secrets.CLASP_LIB_SCRIPT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.x
+          cache: "npm"
+      - run: npm install
+
+      - id: preview-release-notes
+        name: Preview Release Notes
+        if: ${{ github.event.inputs.job == 'preview' }}
+        run: |
+          npm run release:preview -- ${{ github.event.inputs.pr && format('--pr {0}', github.event.inputs.pr) || '' }}
+      
+      - id: update-release-notes
+        name: Update Release Notes
+        if: ${{ github.event.inputs.job == 'update-release' }}
+        run: |
+          npm run release:update -- "${{ github.event.inputs.tag }}" ${{ github.event.inputs.pr && format('--pr {0}', github.event.inputs.pr) || '' }}
+
+      - id: publish-release
+        name: Publish Release
+        if: ${{ github.event.inputs.job == 'publish-release' }}
+        run: |
+          npm run release:publish -- "${{ github.event.inputs.tag || 'latest' }}"
+
+      - id: upload-preview-artifact
+        name: Upload Preview Artifact
+        if: ${{ github.event.inputs.job == 'preview' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-notes-preview
+          path: build/release-notes-*
