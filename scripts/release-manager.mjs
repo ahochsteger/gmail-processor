@@ -806,7 +806,9 @@ async function main() {
     }
 
     // --- Changelog Sourcing (preview and update-release modes) ---
-    if (tag && mode === "update-release") {
+    // If a tag is provided, we search for a PR matching THAT tag.
+    // If no tag is provided (preview only), we look for a pending release PR.
+    if (tag) {
       releasePR = findReleasePR(tag, prOverride ? parseInt(prOverride) : null)
       if (releasePR) {
         console.log(`Using changelog from Release PR #${releasePR.number}`)
@@ -826,8 +828,8 @@ async function main() {
           )
         }
       }
-    } else {
-      // Dry-run: use pending release PR
+    } else if (mode === "preview") {
+      // Upcoming preview: search for the pending autorelease PR
       const pending = JSON.parse(
         run(
           `gh pr list --label "autorelease: pending" --json title,body,number`,
