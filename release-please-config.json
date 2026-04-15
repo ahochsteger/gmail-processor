@@ -1,6 +1,10 @@
 {
-  "release-type": "node",
-  "draft": true,
+  "packages": {
+    ".": {
+      "release-type": "node",
+      "draft": true
+    }
+  },
   "changelog-sections": [
     { "type": "feat", "section": "Features", "hidden": false },
     { "type": "fix", "section": "Bug Fixes", "hidden": false },

@@ -270,6 +270,7 @@ The `.github/workflows/release.yaml` workflow provides a UI for the following ta
 - **Publish Release**: Finalizes the draft release, sets it to 'latest', and announces it to the community. You can run this seamlessly from the **GitHub Mobile App**: simply navigate to Actions -> Release Manager -> Run Workflow without specifying a tag, and it will resolve `latest` automatically!
 
 **CLI Reference:**
+
 - `npm run release:notes`: Local dry-run preview.
 - `npm run release:update`: CI command to patch draft releases.
 - `npm run release:publish`: CI command to finalize and announce.

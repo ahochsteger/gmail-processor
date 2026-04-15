@@ -227,6 +227,7 @@ We use an AI-enhanced release process (powered by `release-please` and a custom 
 To quickly publish a pre-staged **Draft Release** (and automatically announce it to the community):
 
 **Via GitHub Mobile App (On Web or On The Go):**
+
 1. Navigate to the `ahochsteger/gmail-processor` repository.
 2. Go to **Actions** -> **Release Manager** (Workflow).
 3. Click **Run Workflow**.

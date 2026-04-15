@@ -50,10 +50,9 @@ const mode = isPublish
     : "dry-run"
 
 const possibleTag = args[1]
-const tagArg = (possibleTag && !possibleTag.startsWith("--")) ? possibleTag : null
+const tagArg = possibleTag && !possibleTag.startsWith("--") ? possibleTag : null
 
-const prOverride =
-  args.find((_, i) => args[i - 1] === "--pr") || null
+const prOverride = args.find((_, i) => args[i - 1] === "--pr") || null
 
 const geminiApiKey = process.env.GEMINI_API_KEY
 
@@ -86,7 +85,9 @@ function sleep(ms) {
  */
 async function fetchReleaseWithRetry(tag, maxAttempts = 5, delayMs = 10000) {
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
-    const result = run(`gh release view "${tag}" --json tagName,body,isDraft,url 2>/dev/null`)
+    const result = run(
+      `gh release view "${tag}" --json tagName,body,isDraft,url 2>/dev/null`,
+    )
     if (result) {
       try {
         return JSON.parse(result)
@@ -95,7 +96,9 @@ async function fetchReleaseWithRetry(tag, maxAttempts = 5, delayMs = 10000) {
       }
     }
     if (attempt < maxAttempts) {
-      console.log(`Release "${tag}" not found yet, retrying in ${delayMs / 1000}s... (${attempt}/${maxAttempts})`)
+      console.log(
+        `Release "${tag}" not found yet, retrying in ${delayMs / 1000}s... (${attempt}/${maxAttempts})`,
+      )
       await sleep(delayMs)
     }
   }
@@ -109,7 +112,9 @@ async function fetchReleaseWithRetry(tag, maxAttempts = 5, delayMs = 10000) {
 function detectTag() {
   // 1. Pending release PR (not yet merged)
   const pending = JSON.parse(
-    run(`gh pr list --label "autorelease: pending" --json title,number,headRefName`) || "[]",
+    run(
+      `gh pr list --label "autorelease: pending" --json title,number,headRefName`,
+    ) || "[]",
   )
   if (pending.length > 0) {
     const match = pending[0].title.match(/release (\d+\.\d+\.\d+)/)
@@ -118,7 +123,9 @@ function detectTag() {
 
   // 2. Recently tagged (merged) release PR
   const tagged = JSON.parse(
-    run(`gh pr list --state merged --label "autorelease: tagged" --limit 1 --json title,headRefName`) || "[]",
+    run(
+      `gh pr list --state merged --label "autorelease: tagged" --limit 1 --json title,headRefName`,
+    ) || "[]",
   )
   if (tagged.length > 0) {
     const match = tagged[0].title.match(/release (\d+\.\d+\.\d+)/)
@@ -133,7 +140,9 @@ function detectTag() {
  * Get the previous tag before the given tag.
  */
 function getPreviousTag(currentTag) {
-  const previous = run(`git describe --tags --abbrev=0 "${currentTag}^" 2>/dev/null`)
+  const previous = run(
+    `git describe --tags --abbrev=0 "${currentTag}^" 2>/dev/null`,
+  )
   return previous || "v0.0.0"
 }
 
@@ -143,21 +152,27 @@ function getPreviousTag(currentTag) {
  */
 function findReleasePR(tag, prNumber = null) {
   if (prNumber) {
-    const info = run(`gh pr view ${prNumber} --json title,body,number,state 2>/dev/null`)
+    const info = run(
+      `gh pr view ${prNumber} --json title,body,number,state 2>/dev/null`,
+    )
     if (info) return JSON.parse(info)
   }
 
   // Search by label and branch pattern
   const version = tag.replace(/^v/, "")
   const byLabel = JSON.parse(
-    run(`gh pr list --label "autorelease: pending" --json title,body,number,state`) || "[]",
+    run(
+      `gh pr list --label "autorelease: pending" --json title,body,number,state`,
+    ) || "[]",
   )
   const match = byLabel.find((pr) => pr.title.includes(version))
   if (match) return match
 
   // Merged PR
   const merged = JSON.parse(
-    run(`gh pr list --state merged --label "autorelease: tagged" --limit 5 --json title,body,number,state`) || "[]",
+    run(
+      `gh pr list --state merged --label "autorelease: tagged" --limit 5 --json title,body,number,state`,
+    ) || "[]",
   )
   return merged.find((pr) => pr.title.includes(version)) || null
 }
@@ -295,10 +310,7 @@ function groupChangelogEntries(text) {
  */
 function linkify(text) {
   return text
-    .replace(
-      /(^|\s)#(\d+)/g,
-      `$1[#$2](https://github.com/${REPO}/pull/$2)`,
-    )
+    .replace(/(^|\s)#(\d+)/g, `$1[#$2](https://github.com/${REPO}/pull/$2)`)
     .replace(
       /\(([0-9a-f]{7,40})\)/g,
       `([$1](https://github.com/${REPO}/commit/$1))`,
@@ -322,7 +334,12 @@ function filterChangelog(changelog) {
 
 // --- Community Context ---
 
-async function getCommunityContext(prevRef, currentRef, changelog, maintainers = []) {
+async function getCommunityContext(
+  prevRef,
+  currentRef,
+  changelog,
+  maintainers = [],
+) {
   const logOutput = run(
     `git log ${prevRef}..${currentRef} --pretty=format:"AUTH:%an|%ae%nTRAIL:%(trailers:key=Co-authored-by,valueonly=true)"`,
   )
@@ -579,7 +596,7 @@ function patchAiSection(existingBody, newAiSection) {
  */
 function injectGasVersion(body, newGasInfo) {
   return body.replace(
-    /\*\*ℹ️ GAS Lib Version\*\*: \[?\d+\]?\([^)]*\)/,
+    /\*\*ℹ️ GAS Lib Version\*\*: .*/,
     `**ℹ️ GAS Lib Version**: ${newGasInfo}`,
   )
 }
@@ -588,14 +605,8 @@ function injectGasVersion(body, newGasInfo) {
  * Build a complete, structured release body from scratch.
  */
 function buildFullReleaseBody(params) {
-  const {
-    h1Title,
-    metadataBar,
-    aiSummary,
-    linkedBody,
-    depDiff,
-    version,
-  } = params
+  const { h1Title, metadataBar, aiSummary, linkedBody, depDiff, version } =
+    params
 
   // Split AI summary: first line is H1, rest is content
   let finalH1 = h1Title
@@ -671,11 +682,15 @@ async function announceInDiscussions(version, body) {
   const title = `🚀 Release ${version}`
 
   console.log(`Checking for existing announcements for ${version}...`)
-  const checkRaw = run(`gh api graphql -f query='{ repository(owner: "ahochsteger", name: "gmail-processor") { discussions(first: 10, categoryId: "${CAT_ID}", orderBy: {field: CREATED_AT, direction: DESC}) { nodes { title } } } }' --jq '.data.repository.discussions.nodes' 2>/dev/null`)
+  const checkRaw = run(
+    `gh api graphql -f query='{ repository(owner: "ahochsteger", name: "gmail-processor") { discussions(first: 10, categoryId: "${CAT_ID}", orderBy: {field: CREATED_AT, direction: DESC}) { nodes { title } } } }' --jq '.data.repository.discussions.nodes' 2>/dev/null`,
+  )
   try {
     const nodes = JSON.parse(checkRaw)
-    if (nodes.some(n => n.title === title)) {
-      console.log(`Announcement discussion "${title}" already exists. Skipping creation.`)
+    if (nodes.some((n) => n.title === title)) {
+      console.log(
+        `Announcement discussion "${title}" already exists. Skipping creation.`,
+      )
       return
     }
   } catch (e) {
@@ -704,11 +719,25 @@ async function announceInDiscussions(version, body) {
 
 // --- GAS Version Resolution ---
 
-function resolveGasInfo(version, dryRun, upcoming) {
+function resolveGasInfo(version, dryRun, upcoming, existingBody) {
   // In CI: build/gas/lib-version.txt is written by the deploy step
-  let gVersion = fs.existsSync(path.join(BASE_DIR, "build/gas/lib-version.txt"))
-    ? fs.readFileSync(path.join(BASE_DIR, "build/gas/lib-version.txt"), "utf8").trim()
-    : "LATEST"
+  let gVersion = "LATEST"
+  if (fs.existsSync(path.join(BASE_DIR, "build/gas/lib-version.txt"))) {
+    gVersion = fs
+      .readFileSync(path.join(BASE_DIR, "build/gas/lib-version.txt"), "utf8")
+      .trim()
+  } else if (existingBody) {
+    const match = existingBody.match(
+      /\*\*ℹ️ GAS Lib Version\*\*: \[?(\d+)\]?\(/,
+    )
+    if (match) {
+      gVersion = match[1]
+    }
+  }
+
+  if (gVersion === "LATEST") {
+    return "LATEST \*(pending deployment)\*"
+  }
 
   if (dryRun && upcoming && gVersion !== "LATEST") {
     const next = parseInt(gVersion) + 1
@@ -735,13 +764,17 @@ async function main() {
     // --- Tag Resolution ---
     const tag = tagArg || detectTag()
     if (!tag && mode !== "dry-run") {
-      console.error("ERROR: Could not detect release tag. Use --update-release <tag> or --publish <tag>.")
+      console.error(
+        "ERROR: Could not detect release tag. Use --update-release <tag> or --publish <tag>.",
+      )
       process.exit(1)
     }
     if (tag) console.log(`Target tag: ${tag}`)
 
     const version = tag ? tag.replace(/^v/, "") : "upcoming"
-    const prevTag = tag ? getPreviousTag(tag) : (run("git describe --tags --abbrev=0") || "v0.0.0")
+    const prevTag = tag
+      ? getPreviousTag(tag)
+      : run("git describe --tags --abbrev=0") || "v0.0.0"
     const currentRef = tag || "HEAD"
 
     // --- Source of Truth: Release PR ---
@@ -757,10 +790,12 @@ async function main() {
         process.exit(1)
       }
       if (!release.isDraft) {
-        console.warn(`WARNING: Release "${tag}" is not a draft. Proceeding with publish anyway.`)
+        console.warn(
+          `WARNING: Release "${tag}" is not a draft. Proceeding with publish anyway.`,
+        )
       }
       // Inject real GAS version into existing body and publish
-      const gasInfo = resolveGasInfo(version, false, false)
+      const gasInfo = resolveGasInfo(version, false, false, release.body)
       let finalBody = injectGasVersion(release.body || "", gasInfo)
       if (!finalBody.includes("_AI-Assisted: true_")) {
         finalBody += "\n\n---\n_AI-Assisted: true_"
@@ -786,18 +821,26 @@ async function main() {
           console.log(`Using existing release body for "${tag}"`)
           rawNotes = cleanChangelog(release.body)
         } else {
-          console.log(`Generating draft changelog from git (${prevTag}..${currentRef})...`)
-          rawNotes = run(`git log ${prevTag}..${currentRef} --pretty=format:"* %s (%h)"`)
+          console.log(
+            `Generating draft changelog from git (${prevTag}..${currentRef})...`,
+          )
+          rawNotes = run(
+            `git log ${prevTag}..${currentRef} --pretty=format:"* %s (%h)"`,
+          )
         }
       }
     } else {
       // Dry-run: use pending release PR
       const pending = JSON.parse(
-        run(`gh pr list --label "autorelease: pending" --json title,body,number`) || "[]",
+        run(
+          `gh pr list --label "autorelease: pending" --json title,body,number`,
+        ) || "[]",
       )
       if (pending.length > 0) {
         releasePR = pending[0]
-        console.log(`Using changelog from pending Release PR #${releasePR.number}`)
+        console.log(
+          `Using changelog from pending Release PR #${releasePR.number}`,
+        )
         rawNotes = cleanChangelog(releasePR.body)
       } else {
         console.log(`Generating draft changelog from git (${prevTag}..HEAD)...`)
@@ -815,13 +858,28 @@ async function main() {
     const docsDeps = getDependencyDiff(prevTag, currentRef, "docs/package.json")
     const depDiff = [...new Set([...rootDeps, ...docsDeps])].sort().join("\n")
 
-    const gasInfo = resolveGasInfo(version, mode === "dry-run", releasePR)
+    let releaseBodyToParse = ""
+    if (mode === "update-release") {
+      const draft = await fetchReleaseWithRetry(tag)
+      if (draft && draft.body) releaseBodyToParse = draft.body
+    }
+    const gasInfo = resolveGasInfo(
+      version,
+      mode === "dry-run",
+      releasePR,
+      releaseBodyToParse,
+    )
 
     const repoOwner = run(
       `gh repo view --json owner --template "{{.owner.login}}"`,
     ).toLowerCase()
     const maintainers = [repoOwner, "ahochsteger"]
-    const communityInfo = await getCommunityContext(prevTag, currentRef, rawNotes, maintainers)
+    const communityInfo = await getCommunityContext(
+      prevTag,
+      currentRef,
+      rawNotes,
+      maintainers,
+    )
     const docsContext = getDocumentationContext()
     const filteredChangelog = filterChangelog(rawNotes)
     const prContext = await getPRContext(rawNotes)
@@ -869,7 +927,9 @@ ${aiContext.docs_context}
     const releaseDate = headerMatch
       ? headerMatch[3]
       : new Date().toISOString().slice(0, 10)
-    const entriesBody = groupedNotes.replace(/^## \[.*?\]\(.*?\).*?\n+/, "").trim()
+    const entriesBody = groupedNotes
+      .replace(/^## \[.*?\]\(.*?\).*?\n+/, "")
+      .trim()
     const linkedBody = linkify(entriesBody)
 
     const h1Title = `# 🚀 Gmail Processor v${version}`
@@ -887,9 +947,17 @@ ${aiContext.docs_context}
     // --- Output ---
     if (mode === "dry-run") {
       console.log(`\n[SAFE PREVIEW] --- Proposed Release Notes ---`)
-      console.log(`(No changes made. Prompt saved to build/release-notes-prompt.md)\n`)
-      fs.writeFileSync(path.join(buildDir, "release-notes-preview.md"), fullBody)
-      fs.writeFileSync(path.join(buildDir, "release-notes-prompt.md"), resolvedPrompt)
+      console.log(
+        `(No changes made. Prompt saved to build/release-notes-prompt.md)\n`,
+      )
+      fs.writeFileSync(
+        path.join(buildDir, "release-notes-preview.md"),
+        fullBody,
+      )
+      fs.writeFileSync(
+        path.join(buildDir, "release-notes-prompt.md"),
+        resolvedPrompt,
+      )
       console.log(`Saved preview to build/release-notes-preview.md`)
       console.log(`Saved prompt to build/release-notes-prompt.md`)
     } else if (mode === "update-release") {
@@ -897,7 +965,10 @@ ${aiContext.docs_context}
       const existingRelease = await fetchReleaseWithRetry(tag)
       let finalBody = fullBody
 
-      if (existingRelease?.body && existingRelease.body.includes(AI_SECTION_START)) {
+      if (
+        existingRelease?.body &&
+        existingRelease.body.includes(AI_SECTION_START)
+      ) {
         // Existing body has delimiters from a previous run — patch AI section only
         const splitAi = aiSummary.startsWith("#")
           ? linkify(aiSummary.split("\n").slice(1).join("\n").trim())
@@ -905,18 +976,30 @@ ${aiContext.docs_context}
         const patched = patchAiSection(existingRelease.body, splitAi)
         if (patched) {
           finalBody = injectGasVersion(patched, gasInfo)
-          console.log(`Delimiter-aware patch: AI section replaced, manual edits preserved.`)
+          console.log(
+            `Delimiter-aware patch: AI section replaced, manual edits preserved.`,
+          )
         }
       } else if (existingRelease?.body) {
-        console.log(`No delimiters found in existing body — rebuilding full release notes.`)
+        console.log(
+          `No delimiters found in existing body — rebuilding full release notes.`,
+        )
       }
 
       console.log(`Patching draft release "${tag}"...`)
       writeReleaseBody(tag, finalBody)
-      fs.writeFileSync(path.join(buildDir, "release-notes-preview.md"), finalBody)
-      fs.writeFileSync(path.join(buildDir, "release-notes-prompt.md"), resolvedPrompt)
+      fs.writeFileSync(
+        path.join(buildDir, "release-notes-preview.md"),
+        finalBody,
+      )
+      fs.writeFileSync(
+        path.join(buildDir, "release-notes-prompt.md"),
+        resolvedPrompt,
+      )
       console.log(`Release "${tag}" updated successfully.`)
-      console.log(`Local copies saved to build/release-notes-{preview,prompt}.md`)
+      console.log(
+        `Local copies saved to build/release-notes-{preview,prompt}.md`,
+      )
     }
 
     console.log("Release notes processing complete!")

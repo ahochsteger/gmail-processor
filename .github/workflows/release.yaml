@@ -19,10 +19,16 @@ on:
         description: "PR number (for override)"
         type: string
         required: false
+      gas_version:
+        description: "GAS Lib Version override (e.g. 105)"
+        type: string
+        required: false
 
 jobs:
   release-notes:
     runs-on: ubuntu-latest
+    environment:
+      name: main
     permissions:
       contents: write
       discussions: write
@@ -30,6 +36,7 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
       CLASP_LIB_SCRIPT_ID: ${{ secrets.CLASP_LIB_SCRIPT_ID }}
+      GAS_LIB_VERSION: ${{ github.event.inputs.gas_version }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -45,7 +52,7 @@ jobs:
         if: ${{ github.event.inputs.job == 'preview' }}
         run: |
           npm run release:preview -- ${{ github.event.inputs.pr && format('--pr {0}', github.event.inputs.pr) || '' }}
-      
+
       - id: update-release-notes
         name: Update Release Notes
         if: ${{ github.event.inputs.job == 'update-release' }}
