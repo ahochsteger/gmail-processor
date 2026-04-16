@@ -1,11 +1,11 @@
 {
   "$schema": "https://raw.githubusercontent.com/jetpack-io/devbox/0.10.3/.schema/devbox.schema.json",
   "packages": [
-    "actionlint@latest",
+    "actionlint@1.7.12",
     "antlr@4.13.2",
     "gettext@0.25.1",
-    "gh@2.87.3",
-    "gojq@0.12.18",
+    "gh@2.89.0",
+    "gojq@0.12.19",
     "gomplate@4.3.3",
     "nodejs@24.12.0",
     "qpdf@12.3.2",
