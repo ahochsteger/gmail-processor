@@ -1,12 +1,7 @@
 {
-  "packages": {
-    ".": {
-      "component": "gmail-processor",
-      "release-type": "node",
-      "include-component-in-tag": false,
-      "draft": true
-    }
-  },
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+  "release-type": "node",
+  "include-component-in-tag": false,
   "changelog-sections": [
     { "type": "feat", "section": "Features", "hidden": false },
     { "type": "fix", "section": "Bug Fixes", "hidden": false },

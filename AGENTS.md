@@ -145,15 +145,18 @@ All commits must follow the [Conventional Commits](https://www.conventionalcommi
 
 | Type       | When to use                                            |
 | ---------- | ------------------------------------------------------ |
-| `feat`     | A new feature                                          |
+| `feat`     | A new feature (ONLY for user-visible improvements)     |
 | `fix`      | A bug fix                                              |
 | `docs`     | Documentation-only changes                             |
 | `style`    | Formatting, missing semicolons, etc. (no logic change) |
 | `refactor` | Code change that is neither a fix nor a feature        |
 | `perf`     | A performance improvement                              |
 | `test`     | Adding or updating tests                               |
-| `chore`    | Build process, dependency updates, tooling             |
+| `chore`    | Build process, tooling, internal maintenance           |
 | `ci`       | CI/CD configuration changes                            |
+
+> [!IMPORTANT]
+> **Versioning Guard**: NEVER use `feat` for non-user-facing features (like script improvements or internal tooling). Use `chore` or `ci` instead. `feat` triggers a minor version bump in the release pipeline, which should be reserved for functional improvements that benefit the library's end-users.
 
 ### Scope (optional)
 
@@ -197,8 +200,8 @@ In alignment with the 2026 EU AI Act and security best practices, we disclose AI
 **How to declare AI assistance:**
 
 - Add the `AI-Assisted: true` trailer to the end of your commit message. This trailer is **required** if AI was used for logic or generation.
-- (Optional) Add the `AI-Tool: <tool-name>` trailer (e.g., `Claude-Code`, `Copilot`, `Aider`).
-- (Optional) Add the `AI-Model: <model-version>` trailer (e.g., `claude-3-5-sonnet-20241022`).
+- Add the `AI-Tool: <tool-name>` trailer (e.g., `Antigravity`, `Aider`). This is **required** to identify the specific tool used.
+- (Optional) Add the `AI-Model: <model-version>` trailer (e.g., `gemini-2.0-pro-exp-02-05`).
 - Alternatively or additionally, include a brief mention in the PR description.
 - This ensures it's clear where AI tools were used for tedious, repetitive work or scaffolding, while acknowledging that the human developer remains responsible for reviewing, testing, and merging the code.
 

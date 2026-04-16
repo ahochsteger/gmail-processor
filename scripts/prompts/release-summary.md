@@ -4,24 +4,19 @@ Create a high-quality release announcement based ONLY on the provided technical 
 ## Rules & Instructions
 
 - **NO HALLUCINATIONS**: Do not mention features, projects, or users not found in the technical data. **Wrong information is strictly forbidden and is worse than missing information**.
-- **Technical Accuracy**: Do not guess or assume parameter or configuration names. Only mention specific keys (e.g., `incrementPrefix`, `incrementSuffix`) if they are explicitly mentioned in the **PR_SUMMARIES** or **CHANGELOG** sections. If the context mentions a feature but not the parameter names, describe the functional behavior instead of guessing the technical implementation details.
-- **Eliminate Redundancy**: Do not repeat the version number or provide a standalone "GAS Library Update" line in your summary. This metadata is already included in the header of the release notes.
-- **Unified Header**: Start your response with a single H1 title (`# 🚀 ...`) that includes the project name (Gmail Processor), the version, and a punchy one-line summary of major changes.
-- **Standardized Headings & Order**: You MUST use the following headings in this exact order:
-  - `### 🌟 Major Highlights`: Summarize the 1-3 most important functional features based on **PR_SUMMARIES**. Explain the direct value to users. Use the PR content to explain the "why".
-  - `### 🔧 Under the Hood`: Briefly mention technical progress and core technology jumps using the **CHANGELOG** and **DEPENDENCY_DIFF**. **MANDATORY**: If there is a **Major** or **Minor** version jump for core tools (e.g., TypeScript v6, ESLint v10, Docusaurus v3.10), explicitly highlight these as technical achievements.
-  - `### 🤝 The Community`: Warmly welcome new contributors from **COMMUNITY_INFO**. Mention specific Discussions/Issues resolved. Link contributors to their features by cross-referencing the **PR_SUMMARIES**.
-  - `### ⚠️ Impact & Actions`: Clearly list any breaking changes or configuration tasks required. **OMIT this section entirely** if no such actions are needed.
-- **Technical Completeness**: When mentioning configuration parameters or technical details, avoid giving the impression of an exhaustive list unless it truly is. Use phrases like "among other parameters" or "including..." to refer users to the documentation.
-- **The Community & Maintainers**:
-  - **Maintainer & Bot Exclusion**: Do NOT specifically thank or congratulate project maintainers (like Andreas Hochsteger) or automated bots (like Renovate, Snyk, GitHub Actions) for their own work. Reserve individual recognition for external human contributors, human issue reporters, and human discussion participants listed in **COMMUNITY_INFO**.
-  - Warmly welcome new contributors from **COMMUNITY_INFO**. Link their names to the `profile` URL provided.
-  - Mention specific Discussions or Issues that were resolved based on the **COMMUNITY_INFO** data.
-  - **Deep Linking**: If a highlight relates to a specific document or example listed in the **DOCUMENTATION_REFERENCE** section, you MUST provide a deep link to it using the provided URL.
-  - **Precision Attribution**: Distinguish between PR authors and issue/discussion reporters. Explicitly link them to their specific contribution (e.g., 'Special thanks to [User] for the suggestion/idea...' or 'Special thanks to [User] for implementing...').
-- **Section Integrity**: Ensure each technical improvement or fix is mentioned **exactly once**. Feature-linked community highlights should focus on the human impact/suggestion, while technical implementation details stay in **Under the Hood**.
-- **Tone**: Maintain a **neutral, objective, and professional tone**. Avoid dramatic or promotional superlatives like "highly requested," "major milestone," or "revolutionary" unless explicitly supported by interaction data or PR descriptions in the technical input.
-- **Style**: Clear and professional. Use emojis to make it engaging, but maintain a high-quality technical standard.
-- **NO @-MENTIONS**: NEVER use the `@` symbol for user mentions (e.g., do NOT use `@username`). This prevents redundant notifications for community members. Always link contributor names to their provided profile URLs instead.
-- **Linking**: Maintain existing PR numbers (#123) and commit hashes ((abc1234)) exactly as provided in the data.
-- **Trailer**: Do NOT include any "AI-Assisted" trailer in your response; it will be appended automatically by the system.
+- **Technical Accuracy**: Only mention specific keys (e.g., `incrementPrefix`) if they are explicitly in the **PR_SUMMARIES** or **CHANGELOG**. Describe functional behavior instead of guessing technical names.
+- **Selective Visibility (MANDATORY)**: You MUST OMIT any of the standard sections listed below if there is no relevant data for them. Do not provide placeholders or "No activity" messages. Aim for a concise, meaningful announcement.
+- **MANDATORY Hyperlinking**: Always use the provided URLs from the technical data to hyperlink mentioned features, documentation pages, roadmap issues, and human contributors. This ensures maximum transparency and easy navigation for both users and maintainers.
+- **Unified Header**: Start your response with a H1 title: `# 🚀 Gmail Processor v[VERSION] - [Punchy 3-7 word summary]`.
+- **Standardized Headings**: Use the following headings in this exact order:
+  - `### 🌟 Major Highlights`: Summarize 1-3 most important functional features (from `feat:` commits). Explain user value.
+  - `### 🐞 Bug Fixes & Refinements`: Summarize important fixes, security hardening, or documentation expansions. Focus on how these improve stability or clarity. If the release is a "Maintenance" release (provided in context), this should be the primary focus.
+  - `### ⚠️ Impact & Actions`: List breaking changes or required user actions.
+  - `### 📚 Documentation & Examples`: Summarize significant updates to the getting started guide, reference documentation, or new example scripts found in **DOCUMENTATION_REFERENCE**.
+  - `### 🔧 Under the Hood`: Focus on technical progress and core technology jumps. **MANDATORY**: Highlight **Major/Minor** version jumps for core tools (TypeScript, ESLint, lib-version updates). **CONCISE**: Summarize numerous patch dependency updates into a single collective line (e.g., "General dependency maintenance and security updates").
+  - `### 📊 Statistical Summary`: If `GIT_STATS` are provided, present them in a clean, professional manner (e.g., "This release includes modifications to 42 files with 150 insertions(+)").
+  - `### 🤝 The Community`: Warmly welcome and credit external human contributors listed in **COMMUNITY_INFO**. Link names to their `profile` URLs.
+  - `### 🔮 Looking Ahead`: If `ROADMAP_ITEMS` are provided, synthesize a brief, forward-looking summary of what the project is working on next. Distinguish between focused goals (tagged) and community priorities (trending).
+- **Tone**: Maintain a professional, objective tone. Adjust the excitement level: high for feature releases, solid/reassuring for maintenance releases.
+- **NO @-MENTIONS**: Never use the `@` symbol. Always use hyperlinked names for credit.
+- **Trailer**: Do NOT include any "AI-Assisted" trailer; it will be appended automatically.

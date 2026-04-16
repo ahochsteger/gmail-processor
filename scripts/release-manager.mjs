@@ -49,14 +49,49 @@ const mode = isPublish
     ? "update-release"
     : "preview"
 
-const possibleTag = args[1]
-const tagArg = possibleTag && !possibleTag.startsWith("--") ? possibleTag : null
+// Find the first argument that is not a flag and not a value for a preceding flag
+const flagsWithValue = ["--pr", "--roadmap-md-file", "--roadmap-issues-tag"]
+const tagArg = args.slice(1).find((arg, i) => {
+  const actualIdx = i + 1
+  const prevArg = args[actualIdx - 1]
+  return !arg.startsWith("--") && !flagsWithValue.includes(prevArg)
+}) || null
 
-const prOverride = args.find((_, i) => args[i - 1] === "--pr") || null
+const getFlagValue = (flag) => {
+  const idx = args.indexOf(flag)
+  return idx !== -1 && args[idx + 1] && !args[idx + 1].startsWith("--")
+    ? args[idx + 1]
+    : null
+}
+
+const showStats = args.includes("--stats")
+const roadmapMdFile = getFlagValue("--roadmap-md-file")
+const roadmapIssuesTag = getFlagValue("--roadmap-issues-tag")
+const roadmapIssuesTop = args.includes("--roadmap-issues-top")
+const roadmapIssuesAll = args.includes("--roadmap-issues") // Combined tag + top
+
+const prOverride = getFlagValue("--pr")
 
 const geminiApiKey = process.env.GEMINI_API_KEY
 
 // --- Core Utilities ---
+const ghDataCache = {}
+
+function formatTime() {
+  return new Date().toISOString()
+}
+
+function log(msg) {
+  console.log(`[${formatTime()}] ${msg}`)
+}
+
+function startTask(msg) {
+  log(`START: ${msg}`)
+}
+
+function endTask(msg, outcome = "") {
+  log(`END:   ${msg}${outcome ? ` (${outcome})` : ""}`)
+}
 
 /**
  * Execute a shell command and return stdout, or empty string on failure.
@@ -70,6 +105,98 @@ function run(cmd) {
   } catch {
     return ""
   }
+}
+
+/**
+ * Fetch git shortstat summary between two tags.
+ */
+function fetchGitStats(prev, current) {
+  if (!prev || !current) return null
+  return run(`git diff ${prev}..${current} --shortstat`)
+}
+
+/**
+ * Extract roadmap/WIP items from a markdown file.
+ * Returns the first 10 items from sections like "WIP", "TODO", "Tasks", or from the top of the file.
+ */
+function fetchRoadmapFromFile(filename) {
+  if (!fs.existsSync(filename)) return null
+  const content = fs.readFileSync(filename, "utf8")
+  const lines = content.split("\n")
+  const items = []
+  let capturing = false
+
+  for (const line of lines) {
+    const cleanLine = line.trim()
+    if (/^#+ (WIP|TODO|Tasks|Next Steps)/i.test(cleanLine)) {
+      capturing = true
+      continue
+    }
+    if (capturing && /^#+ /.test(cleanLine)) break // Next section
+    if (capturing && cleanLine.startsWith("- ")) {
+      items.push(cleanLine)
+    }
+    if (items.length >= 10) break
+  }
+
+  // Fallback to top of file if no section found
+  if (items.length === 0) {
+    for (const line of lines) {
+      const cleanLine = line.trim()
+      if (cleanLine.startsWith("- ")) items.push(cleanLine)
+      if (items.length >= 10) break
+    }
+  }
+
+  return items.length > 0 ? items.join("\n") : null
+}
+
+/**
+ * Fetch open roadmap issues from GitHub.
+ */
+function fetchRoadmapFromIssues(tag, includeTop) {
+  startTask("Fetch Roadmap Issues from GitHub")
+  const items = []
+
+  // 1. Fetch by tag
+  if (tag) {
+    const tagged = JSON.parse(
+      run(`gh issue list --label "${tag}" --json title,url --limit 10`) || "[]",
+    )
+    tagged.forEach((i) => items.push(`- ${i.title} (${i.url}) [TAG: ${tag}]`))
+  }
+
+  // 2. Fetch top involvement
+  if (includeTop) {
+    const allOpen = JSON.parse(
+      run(
+        `gh issue list --state open --json title,url,comments,reactionGroups --limit 50`,
+      ) || "[]",
+    )
+    // Sort by involvement (reactions + comments)
+    const sorted = allOpen
+      .map((i) => {
+        const reactions = (i.reactionGroups || []).reduce(
+          (sum, rg) => sum + (rg.users?.totalCount || 0),
+          0,
+        )
+        return {
+          ...i,
+          score: (i.comments?.length || 0) + reactions,
+        }
+      })
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 10)
+
+    sorted.forEach((i) => {
+      if (!items.some((existing) => existing.includes(i.url))) {
+        items.push(`- ${i.title} (${i.url}) [TRENDING]`)
+      }
+    })
+  }
+
+  endTask("Fetch Roadmap Issues from GitHub", `found ${items.length}`)
+  return items.length > 0 ? items.join("\n") : null
 }
 
 /**
@@ -96,7 +223,7 @@ async function fetchReleaseWithRetry(tag, maxAttempts = 5, delayMs = 10000) {
       }
     }
     if (attempt < maxAttempts) {
-      console.log(
+      log(
         `Release "${tag}" not found yet, retrying in ${delayMs / 1000}s... (${attempt}/${maxAttempts})`,
       )
       await sleep(delayMs)
@@ -199,10 +326,10 @@ function getVersionScale(prev, current) {
 }
 
 function getDependencyDiff(prevRef, currentRef, filePath) {
-  const prevContent = run(`git show ${prevRef}:${filePath}`)
-  const currentContent = fs.existsSync(path.join(BASE_DIR, filePath))
-    ? fs.readFileSync(path.join(BASE_DIR, filePath), "utf8")
-    : run(`git show ${currentRef}:${filePath}`)
+  const prevContent = run(`git show ${prevRef}:${filePath} 2>/dev/null`)
+  const currentContent = run(`git show ${currentRef}:${filePath} 2>/dev/null`)
+
+  if (!prevContent || !currentContent) return ""
 
   const prevDeps = getDeps(prevContent)
   const currentDeps = getDeps(currentContent)
@@ -427,11 +554,22 @@ async function getCommunityContext(
   ]
   const issues = []
   for (const num of linkedNumbers) {
-    const info = run(
-      `gh issue view ${num} --json title,number,author 2>/dev/null`,
-    )
-    if (info) {
-      const issue = JSON.parse(info)
+    if (ghDataCache[num]) {
+      log(`CACHE HIT: details for issue/PR #${num}`)
+    } else {
+      startTask(`Fetch details for issue/PR #${num}`)
+      const info = run(
+        `gh issue view ${num} --json title,body,number,author 2>/dev/null`,
+      )
+      if (info) ghDataCache[num] = JSON.parse(info)
+      endTask(
+        `Fetch details for issue/PR #${num}`,
+        info ? "success" : "not found",
+      )
+    }
+
+    const issue = ghDataCache[num]
+    if (issue) {
       const authorLogin = (issue.author?.login || "").toLowerCase()
       const authorName = (issue.author?.name || "").toLowerCase()
       const isBot =
@@ -483,10 +621,17 @@ async function getPRContext(changelog) {
   ]
   let context = ""
   for (const pr of prs) {
-    const info = run(
-      `gh pr view ${pr} --json title,body,author --template "{{.author.login}} ({{.author.name}}): {{.title}}: {{.body}}" 2>/dev/null`,
-    )
-    if (info) context += `\nPR #${pr} by ${info.slice(0, 2000)}...`
+    if (ghDataCache[pr] && ghDataCache[pr].body) {
+      log(`Using cached details for PR #${pr}`)
+    } else {
+      log(`Fetching details for PR #${pr}...`)
+      const info = run(`gh pr view ${pr} --json title,body,author 2>/dev/null`)
+      if (info) ghDataCache[pr] = { ...ghDataCache[pr], ...JSON.parse(info) }
+    }
+    const issue = ghDataCache[pr]
+    if (issue) {
+      context += `${issue.author?.login} (${issue.author?.name}): ${issue.title}: ${issue.body}\n\n`
+    }
   }
   return context
 }
@@ -530,9 +675,13 @@ async function generateAISummary(context) {
   const dataBlock = `
 ### TECHNICAL DATA
 - **VERSION**: ${context.version}
+- **RELEASE_TYPE**: ${context.release_type}
 - **GAS_LIBRARY**: ${context.gas_info}
 - **CHANGELOG**:
 ${context.changelog}
+
+- **GIT_STATS**:
+${context.stats || "None (or not requested)"}
 
 - **DEPENDENCY_DIFF**:
 ${context.dep_diff}
@@ -545,6 +694,9 @@ ${context.pr_context}
 
 - **DOCUMENTATION_REFERENCE**:
 ${context.docs_context}
+
+- **ROADMAP_ITEMS**:
+${context.roadmap || "None (or not requested)"}
 `
   const prompt = `${promptTemplate}\n\n${dataBlock}`
 
@@ -673,8 +825,8 @@ function publishDraft(tag) {
 async function announceInDiscussions(version, body) {
   const versionParts = version.replace(/^v/, "").split(".")
   const patch = parseInt(versionParts[2] || "0")
-  if (patch !== 0) {
-    console.log(`Skipping community announcement for patch version ${version}`)
+  if (patch !== 0 && !publish) {
+    log(`SKIP: Community announcement for patch version ${version}`)
     return
   }
 
@@ -715,26 +867,44 @@ async function announceInDiscussions(version, body) {
   fs.writeFileSync("vars.json", vars)
   run(`gh api graphql -f query='${query}' --input vars.json`)
   fs.unlinkSync("vars.json")
+  endTask(`Create community announcement for ${version}`, "success")
 }
 
 // --- GAS Version Resolution ---
 
 function resolveGasInfo(version, isPreview, upcoming, existingBody) {
   const envVersion = process.env.GAS_LIB_VERSION
-  let gVersion = envVersion || "LATEST"
+  // Priority 1: Environment override
+  if (envVersion && envVersion !== "LATEST") {
+    const scriptId =
+      process.env.CLASP_LIB_SCRIPT_ID ||
+      "1yhOQyl_xWtnGJn_bzlL7oA4d_q5KoMyZyWIqXDJX1SY7bi22_lpjMiQK"
+    return `[${envVersion}](https://script.google.com/macros/library/d/${scriptId}/${envVersion})`
+  }
 
+  let gVersion = "LATEST"
+
+  // Priority 2: Extract from existing body (essential for historic accuracy)
+  if (existingBody) {
+    // Improved regex to extract version from Apps Script library URLs
+    // Handles various markdown flavors and trailing characters
+    const match = existingBody.match(
+      /macros\/library\/d\/([a-zA-Z0-9_-]+)\/(\d+)/,
+    )
+    if (match) {
+      gVersion = match[2]
+      log(`EXTRACTED: GAS version ${gVersion} from existing body`)
+    } else {
+      log("DEBUG: Could not extract GAS version from existing body contents.")
+    }
+  }
+
+  // Priority 3: Fallback to local version file (for upcoming releases)
   if (gVersion === "LATEST") {
-    if (fs.existsSync(path.join(BASE_DIR, "build/gas/lib-version.txt"))) {
-      gVersion = fs
-        .readFileSync(path.join(BASE_DIR, "build/gas/lib-version.txt"), "utf8")
-        .trim()
-    } else if (existingBody) {
-      const match = existingBody.match(
-        /\*\*ℹ️ GAS Lib Version\*\*: \[?(\d+)\]?\(/,
-      )
-      if (match) {
-        gVersion = match[1]
-      }
+    const versionFile = path.join(BASE_DIR, "build/gas/lib-version.txt")
+    if (fs.existsSync(versionFile)) {
+      gVersion = fs.readFileSync(versionFile, "utf8").trim()
+      log(`FILE FALLBACK: GAS version ${gVersion} from lib-version.txt`)
     }
   }
 
@@ -751,37 +921,44 @@ function resolveGasInfo(version, isPreview, upcoming, existingBody) {
 // --- Main ---
 
 async function main() {
+  log(`Release manager starting in mode: ${mode}`)
   try {
     const buildDir = path.join(BASE_DIR, "build")
     if (!fs.existsSync(buildDir)) fs.mkdirSync(buildDir)
 
-    console.log(`Release manager starting in mode: ${mode}`)
-    console.log("Gathering release context...")
+    log("Gathering release context...")
 
     // --- Tag Resolution ---
+    startTask("Tag Resolution")
     const tag = tagArg || detectTag()
     if (!tag && mode !== "preview") {
-      console.error(
+      log(
         "ERROR: Could not detect release tag. Use --update-release <tag> or --publish <tag>.",
       )
       process.exit(1)
     }
-    if (tag) console.log(`Target tag: ${tag}`)
+    if (tag) log(`Target tag: ${tag}`)
 
     const version = tag ? tag.replace(/^v/, "") : "upcoming"
     const prevTag = tag
       ? getPreviousTag(tag)
       : run("git describe --tags --abbrev=0") || "v0.0.0"
     const currentRef = tag || "HEAD"
+    endTask("Tag Resolution", `prev=${prevTag}, current=${currentRef}`)
 
     // --- Source of Truth: Release PR ---
+    startTask("Sourcing Changelog")
     let rawNotes = ""
     let releasePR = null
 
     if (mode === "publish") {
       // In publish mode: fetch from existing draft release body (preserves manual edits)
-      console.log(`Fetching draft release for "${tag}"...`)
+      startTask(`Fetch draft release for "${tag}"`)
       const release = await fetchReleaseWithRetry(tag)
+      endTask(
+        `Fetch draft release for "${tag}"`,
+        release ? "success" : "failed",
+      )
       if (!release) {
         console.error(`ERROR: Could not fetch release "${tag}" after retries.`)
         process.exit(1)
@@ -798,10 +975,11 @@ async function main() {
         finalBody += "\n\n---\n_AI-Assisted: true_"
       }
       writeReleaseBody(tag, finalBody)
-      console.log(`Publishing release "${tag}"...`)
+      startTask(`Publish release "${tag}"`)
       publishDraft(tag)
       await announceInDiscussions(tag, finalBody)
-      console.log("Release published successfully!")
+      endTask(`Publish release "${tag}"`, "success")
+      log("Release published successfully!")
       return
     }
 
@@ -811,16 +989,21 @@ async function main() {
     if (tag) {
       releasePR = findReleasePR(tag, prOverride ? parseInt(prOverride) : null)
       if (releasePR) {
-        console.log(`Using changelog from Release PR #${releasePR.number}`)
+        log(`Using changelog from Release PR #${releasePR.number}`)
         rawNotes = cleanChangelog(releasePR.body)
       } else {
         // Fallback: existing release body or git log
+        startTask(`Fetch existing release for "${tag}"`)
         const release = await fetchReleaseWithRetry(tag)
+        endTask(
+          `Fetch existing release for "${tag}"`,
+          release ? "success" : "not found",
+        )
         if (release?.body) {
-          console.log(`Using existing release body for "${tag}"`)
+          log(`Using existing release body for "${tag}"`)
           rawNotes = cleanChangelog(release.body)
         } else {
-          console.log(
+          log(
             `Generating draft changelog from git (${prevTag}..${currentRef})...`,
           )
           rawNotes = run(
@@ -830,19 +1013,19 @@ async function main() {
       }
     } else if (mode === "preview") {
       // Upcoming preview: search for the pending autorelease PR
+      startTask("Scan for pending release PR")
       const pending = JSON.parse(
         run(
           `gh pr list --label "autorelease: pending" --json title,body,number`,
         ) || "[]",
       )
+      endTask("Scan for pending release PR", `count=${pending.length}`)
       if (pending.length > 0) {
         releasePR = pending[0]
-        console.log(
-          `Using changelog from pending Release PR #${releasePR.number}`,
-        )
+        log(`Using changelog from pending Release PR #${releasePR.number}`)
         rawNotes = cleanChangelog(releasePR.body)
       } else {
-        console.log(`Generating draft changelog from git (${prevTag}..HEAD)...`)
+        log(`Generating draft changelog from git (${prevTag}..HEAD)...`)
         rawNotes = run(`git log ${prevTag}..HEAD --pretty=format:"* %s (%h)"`)
       }
     }
@@ -850,6 +1033,7 @@ async function main() {
     const fullGitLog = run(
       `git log ${prevTag}..${currentRef} --pretty=format:"* %s (%h)"`,
     )
+    endTask("Source Changelog", `notesSize=${rawNotes.length}`)
 
     if (!rawNotes) {
       console.warn("WARNING: No raw changelog notes found. Using fallback.")
@@ -857,20 +1041,31 @@ async function main() {
     }
 
     // --- Ancillary Context ---
+    startTask("Gather Ancillary Context (Deps/Community/Docs)")
     const rootDeps = getDependencyDiff(prevTag, currentRef, "package.json")
     const docsDeps = getDependencyDiff(prevTag, currentRef, "docs/package.json")
     const depDiff = [...new Set([...rootDeps, ...docsDeps])].sort().join("\n")
 
-    let releaseBodyToParse = ""
-    if (mode === "update-release") {
-      const draft = await fetchReleaseWithRetry(tag)
-      if (draft && draft.body) releaseBodyToParse = draft.body
+    let existingBodyForGas = ""
+    if (tag) {
+      // For tagged releases, the published notes are the source of truth for GAS version.
+      // We explicitly ignore drafts to prevent re-extracting placeholder/outdated notes
+      // during the preview/update-release phases of upcoming releases.
+      const existingRelease = await fetchReleaseWithRetry(tag)
+      if (existingRelease && !existingRelease.isDraft) {
+        existingBodyForGas = existingRelease.body
+      }
     }
+
+    if (!existingBodyForGas && releasePR) {
+      existingBodyForGas = releasePR.body
+    }
+
     const gasInfo = resolveGasInfo(
       version,
       mode === "preview",
       releasePR,
-      releaseBodyToParse,
+      existingBodyForGas,
     )
 
     const repoOwner = run(
@@ -887,15 +1082,56 @@ async function main() {
     const filteredChangelog = filterChangelog(rawNotes)
     const prContext = await getPRContext(rawNotes)
 
+    // 1. Gather git stats
+    let stats = null
+    if (showStats) {
+      startTask(`Fetch git stats (${prevTag}..${currentRef})`)
+      stats = fetchGitStats(prevTag, currentRef)
+      endTask(`Fetch git stats`, stats ? "success" : "failed")
+    }
+
+    // 2. Gather roadmap
+    let roadmap = []
+    if (roadmapMdFile) {
+      startTask(`Fetch roadmap from file: ${roadmapMdFile}`)
+      const fileRoadmap = fetchRoadmapFromFile(roadmapMdFile)
+      if (fileRoadmap)
+        roadmap.push(`FROM FILE (${roadmapMdFile}):\n${fileRoadmap}`)
+      endTask(`Fetch roadmap from file`)
+    }
+    if (roadmapIssuesTag || roadmapIssuesTop || roadmapIssuesAll) {
+      const tag = roadmapIssuesAll ? "roadmap" : roadmapIssuesTag || null
+      const top = roadmapIssuesAll || roadmapIssuesTop
+      const issuesRoadmap = fetchRoadmapFromIssues(tag, top)
+      if (issuesRoadmap) roadmap.push(`FROM GITHUB ISSUES:\n${issuesRoadmap}`)
+    }
+    const consolidatedRoadmap = roadmap.length > 0 ? roadmap.join("\n\n") : null
+
+    endTask("Gather Ancillary Context (Deps/Community/Docs)")
+
     // --- Build AI Summary ---
+    startTask("AI Summary Generation")
+
+    // Detect release focus
+    const hasFeatures = (fullGitLog || rawNotes)
+      .toLowerCase()
+      .includes("### features")
+    const isMaintenance = version.split(".").pop() !== "0" && !hasFeatures
+    const releaseType = isMaintenance
+      ? "Maintenance (focus on stability and bug fixes)"
+      : "Feature (focus on new functionality)"
+
     const aiContext = {
       version,
+      release_type: releaseType,
       gas_info: gasInfo,
       changelog: fullGitLog || rawNotes, // AI sees EVERYTHING for better "Under the Hood"
+      stats: stats,
       dep_diff: depDiff || "No dependency changes.",
       community_info: JSON.stringify(communityInfo, null, 2),
       pr_context: prContext || "No additional PR context available.",
       docs_context: docsContext || "No specific documentation mapped.",
+      roadmap: consolidatedRoadmap,
     }
 
     // Render the resolved prompt for verification
@@ -903,9 +1139,13 @@ async function main() {
     const dataBlock = `
 ### TECHNICAL DATA
 - **VERSION**: ${aiContext.version}
+- **RELEASE_TYPE**: ${aiContext.release_type}
 - **GAS_LIBRARY**: ${aiContext.gas_info}
 - **CHANGELOG**:
 ${aiContext.changelog}
+
+- **GIT_STATS**:
+${aiContext.stats || "None (or not requested)"}
 
 - **DEPENDENCY_DIFF**:
 ${aiContext.dep_diff}
@@ -918,10 +1158,14 @@ ${aiContext.pr_context}
 
 - **DOCUMENTATION_REFERENCE**:
 ${aiContext.docs_context}
+
+- **ROADMAP_ITEMS**:
+${aiContext.roadmap || "None (or not requested)"}
 `
     const resolvedPrompt = `${promptTemplate}\n\n${dataBlock}`
 
     const aiSummary = await generateAISummary(aiContext)
+    endTask("AI Summary Generation", aiSummary ? "success" : "skipped")
 
     // --- Assemble Release Body ---
     const groupedNotes = groupChangelogEntries(rawNotes)
@@ -953,10 +1197,8 @@ ${aiContext.docs_context}
 
     // --- Output ---
     if (mode === "preview") {
-      console.log(`\n[SAFE PREVIEW] --- Proposed Release Notes ---`)
-      console.log(
-        `(No changes made. Prompt saved to build/release-notes-prompt.md)\n`,
-      )
+      log("\n[SAFE PREVIEW] --- Proposed Release Notes ---")
+      log("(No changes made. Prompt saved to build/release-notes-prompt.md)\n")
       fs.writeFileSync(
         path.join(buildDir, "release-notes-preview.md"),
         fullBody,
@@ -965,8 +1207,8 @@ ${aiContext.docs_context}
         path.join(buildDir, "release-notes-prompt.md"),
         resolvedPrompt,
       )
-      console.log(`Saved preview to build/release-notes-preview.md`)
-      console.log(`Saved prompt to build/release-notes-prompt.md`)
+      log(`Saved preview to build/release-notes-preview.md`)
+      log(`Saved prompt to build/release-notes-prompt.md`)
     } else if (mode === "update-release") {
       // Attempt delimiter-aware patch of existing release body
       const existingRelease = await fetchReleaseWithRetry(tag)
@@ -983,18 +1225,19 @@ ${aiContext.docs_context}
         const patched = patchAiSection(existingRelease.body, splitAi)
         if (patched) {
           finalBody = injectGasVersion(patched, gasInfo)
-          console.log(
-            `Delimiter-aware patch: AI section replaced, manual edits preserved.`,
+          log(
+            "Delimiter-aware patch: AI section replaced, manual edits preserved.",
           )
         }
       } else if (existingRelease?.body) {
-        console.log(
-          `No delimiters found in existing body — rebuilding full release notes.`,
+        log(
+          "No delimiters found in existing body — rebuilding full release notes.",
         )
       }
 
-      console.log(`Patching draft release "${tag}"...`)
+      startTask(`Patch draft release "${tag}"`)
       writeReleaseBody(tag, finalBody)
+      endTask(`Patch draft release "${tag}"`, "success")
       fs.writeFileSync(
         path.join(buildDir, "release-notes-preview.md"),
         finalBody,
@@ -1003,13 +1246,11 @@ ${aiContext.docs_context}
         path.join(buildDir, "release-notes-prompt.md"),
         resolvedPrompt,
       )
-      console.log(`Release "${tag}" updated successfully.`)
-      console.log(
-        `Local copies saved to build/release-notes-{preview,prompt}.md`,
-      )
+      log(`Release "${tag}" updated successfully.`)
+      log("Local copies saved to build/release-notes-{preview,prompt}.md")
     }
 
-    console.log("Release notes processing complete!")
+    log("Release notes processing complete!")
   } catch (error) {
     console.error("Failed to update release notes:", error)
     process.exit(1)
