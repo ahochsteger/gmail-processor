@@ -84,6 +84,11 @@ jobs:
           persist-credentials: false
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
+      - id: install-devbox
+        name: Install Devbox
+        uses: jetify-com/devbox-install-action@v0.15.0
+        with:
+          enable-cache: "true"
       - id: setup-nodejs
         name: Setup Node.js
         uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
@@ -133,9 +138,9 @@ jobs:
         name: Update Draft Release Notes
         run: |
           if [ "${{ github.event.inputs.dry_run }}" == "true" ]; then
-             npm run release:preview -- "${{ steps.create-draft-release.outputs.tag_name || 'latest' }}"
+             devbox run npm run release:preview -- "${{ steps.create-draft-release.outputs.tag_name || 'latest' }}"
           else
-             npm run release:update -- "${{ steps.create-draft-release.outputs.tag_name || 'latest' }}"
+             devbox run npm run release:update -- "${{ steps.create-draft-release.outputs.tag_name || 'latest' }}"
           fi
         env:
           CLASP_DEPLOYMENT_NAME: ${{ steps.create-draft-release.outputs.tag_name }}
@@ -145,7 +150,7 @@ jobs:
         if: ${{ !github.event.inputs.skip_release && steps.create-draft-release.outputs.release_created && steps.create-draft-release.outputs.patch != '0' }}
         name: Auto-publish Patch Release
         run: |
-          npm run release:publish -- "${{ steps.create-draft-release.outputs.tag_name }}"
+          devbox run npm run release:publish -- "${{ steps.create-draft-release.outputs.tag_name }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - id: deploy-docs

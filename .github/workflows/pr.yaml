@@ -65,6 +65,11 @@ jobs:
           persist-credentials: false
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
+      - id: install-devbox
+        name: Install Devbox
+        uses: jetify-com/devbox-install-action@v0.15.0
+        with:
+          enable-cache: "true"
       - id: setup-nodejs
         name: Setup Node.js
         uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
@@ -82,8 +87,8 @@ jobs:
         name: Maintenance Check (PRs)
         if: ${{ github.event_name == 'pull_request' }}
         run: |
-          npm run all:update
-          npm run lint-fix
+          devbox run npm run all:update
+          devbox run npm run lint-fix
           if [ -n "$(git status --porcelain)" ]; then
             echo "::error::Maintenance check failed: The generated artifacts (docs, examples, schema, etc.) are out of sync or formatting is incorrect."
             echo "::group::Git Status"
