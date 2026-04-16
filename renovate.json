@@ -28,42 +28,57 @@
     {
       "description": "Group @types packages",
       "groupName": "types packages",
-      "matchPackagePatterns": ["^@types/"]
+      "matchPackageNames": ["/^@types//"]
     },
     {
       "description": "Group @babel packages",
       "groupName": "babel monorepo",
-      "matchPackagePatterns": ["^@babel/"]
+      "matchPackageNames": ["/^@babel//"]
     },
     {
       "description": "Group Docusaurus and React-related packages as they are tightly coupled",
-      "matchPackageNames": ["react", "react-dom", "prism-react-renderer"],
-      "matchPackagePatterns": ["^@docusaurus/", "^@mdx-js/"],
+      "matchPackageNames": [
+        "react",
+        "react-dom",
+        "prism-react-renderer",
+        "/^@docusaurus//",
+        "/^@mdx-js//"
+      ],
       "groupName": "docusaurus packages"
     },
     {
       "description": "Group eslint and typescript-eslint packages",
       "groupName": "eslint packages",
-      "matchPackagePatterns": ["^@eslint/", "^@typescript-eslint/", "^eslint", "typescript-eslint"],
-      "semanticCommitType": "build"
+      "semanticCommitType": "build",
+      "matchPackageNames": [
+        "/^@eslint//",
+        "/^@typescript-eslint//",
+        "/^eslint/",
+        "/typescript-eslint/"
+      ]
     },
     {
       "description": "Group Jest packages and related test tools",
       "groupName": "jest packages",
-      "matchPackagePatterns": ["^jest", "^@types/jest", "ts-jest", "@swc/jest"],
-      "semanticCommitType": "build"
+      "semanticCommitType": "build",
+      "matchPackageNames": [
+        "/^jest/",
+        "/^@types/jest/",
+        "/ts-jest/",
+        "/@swc/jest/"
+      ]
     },
     {
       "description": "Group Prettier packages",
       "groupName": "prettier packages",
-      "matchPackagePatterns": ["^prettier"],
-      "semanticCommitType": "build"
+      "semanticCommitType": "build",
+      "matchPackageNames": ["/^prettier/"]
     },
     {
       "description": "Group Rollup packages and plugins",
       "groupName": "rollup packages",
-      "matchPackagePatterns": ["^@rollup/", "rollup"],
-      "semanticCommitType": "build"
+      "semanticCommitType": "build",
+      "matchPackageNames": ["/^@rollup//", "/rollup/"]
     },
     {
       "description": "Other non-major updates for infrastructure files",
@@ -119,4 +134,3 @@
     }
   ]
 }
-
