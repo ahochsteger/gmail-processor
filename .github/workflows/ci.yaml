@@ -123,29 +123,29 @@ jobs:
           npm run push
           echo "new_gas_version=$(cat build/gas/lib-version.txt)" >> "${GITHUB_OUTPUT}"
       - id: deploy-lib-release
-        if: ${{ !github.event.inputs.skip_deploy_lib_release && !github.event.inputs.skip_release && (steps.release.outputs.release_created || inputs.dry_run) }} # Check if a release was created
+        if: ${{ !github.event.inputs.skip_deploy_lib_release && !github.event.inputs.skip_release && (steps.create-draft-release.outputs.release_created || inputs.dry_run) }} # Check if a release was created
         name: Deploy Lib (Release)
         run: npm run deploy
         env:
-          CLASP_DEPLOYMENT_NAME: ${{ steps.release.outputs.tag_name }}
+          CLASP_DEPLOYMENT_NAME: ${{ steps.create-draft-release.outputs.tag_name }}
       - id: update-release-notes
-        if: ${{ !github.event.inputs.skip_release && (steps.release.outputs.release_created || github.event.inputs.dry_run) }}
+        if: ${{ !github.event.inputs.skip_release && (steps.create-draft-release.outputs.release_created || github.event.inputs.dry_run) }}
         name: Update Draft Release Notes
         run: |
           if [ "${{ github.event.inputs.dry_run }}" == "true" ]; then
-             npm run release:preview -- "${{ steps.release.outputs.tag_name || 'latest' }}"
+             npm run release:preview -- "${{ steps.create-draft-release.outputs.tag_name || 'latest' }}"
           else
-             npm run release:update -- "${{ steps.release.outputs.tag_name || 'latest' }}"
+             npm run release:update -- "${{ steps.create-draft-release.outputs.tag_name || 'latest' }}"
           fi
         env:
-          CLASP_DEPLOYMENT_NAME: ${{ steps.release.outputs.tag_name }}
+          CLASP_DEPLOYMENT_NAME: ${{ steps.create-draft-release.outputs.tag_name }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
       - id: auto-publish-patch
-        if: ${{ !github.event.inputs.skip_release && steps.release.outputs.release_created && steps.release.outputs.patch != '0' }}
+        if: ${{ !github.event.inputs.skip_release && steps.create-draft-release.outputs.release_created && steps.create-draft-release.outputs.patch != '0' }}
         name: Auto-publish Patch Release
         run: |
-          npm run release:publish -- "${{ steps.release.outputs.tag_name }}"
+          npm run release:publish -- "${{ steps.create-draft-release.outputs.tag_name }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - id: deploy-docs

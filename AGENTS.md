@@ -64,6 +64,8 @@ To keep the workspace in a sane state, specific commands MUST be executed after 
 | :----------------------- | :-------------------- | :--------------------------------------- |
 | `src/lib/`               | Rebuild & Update Docs | `npm run all:update && npm run test:lib` |
 | `src/examples/*.ts`      | Re-generate Examples  | `npm run update:examples`                |
+| `package.json`           | Node.js Pruning       | `npm run lint-prune`                     |
+| `devbox.json`            | Devbox Pruning        | `npm run lint:devbox:unused`             |
 | Root `*.md` files        | Sync Docs             | `npm run update:docs`                    |
 | `package.json`           | Total Reinstall       | `npm run all:reinstall`                  |
 | Documentation CSS/Config | Verify Build          | `npm run ci:docs`                        |
@@ -117,6 +119,10 @@ When you modify or create an example in `src/examples/**.ts`, the build process 
 ### Formatting
 
 - **Canonical Formatting**: Every file (JS, TS, JSON, MD, etc.) must be canonically formatted before committing to prevent style-only changes in the Git history.
+- **Alphabetical Ordering**: To maintain a clean and predictable structure, the following lists MUST be kept in alphabetical order:
+  - `package.json`: entries in the `scripts` object.
+  - `devbox.json`: entries in the `packages` list.
+  - Shell scripts: cases in `case` statements.
 - **Tooling**: Use `npm run lint-fix` (Prettier) for global formatting.
 
 ### Run-Mode Aware Actions
@@ -277,3 +283,26 @@ The `.github/workflows/release.yaml` workflow provides a UI for the following ta
 - `npm run release:notes`: Local dry-run preview.
 - `npm run release:update`: CI command to patch draft releases.
 - `npm run release:publish`: CI command to finalize and announce.
+
+## Dependency Management (Renovate)
+
+The project uses Renovate to automate dependency updates with a focus on noise reduction and logical grouping.
+
+### Grouping Strategy
+
+To keep the pull request volume manageable, dependencies are grouped into logical families in `renovate.json`:
+- **Core Tooling**: ESLint, Jest, Prettier, and Rollup are grouped to ensure the development environment remains stable.
+- **Frontend Stack**: Docusaurus, React, and MDX packages are grouped due to their tight coupling.
+- **Support**: Babel and Types packages have their own consolidation rules.
+
+### Maintenance Guidelines
+
+When adding new dependencies or modifying the project structure:
+1. **Identify Monorepos**: If you add a new family of packages (e.g., a new testing utility or a plugin system), add a corresponding rule in `renovate.json` using `matchPackagePatterns`.
+2. **Unified Validation**: Configuration validation is integrated into the linting pipeline. After any change to `renovate.json`, you MUST run:
+   ```bash
+   npm run all:lint
+   ```
+   This will validate Renovate (`lint:renovate`), GitHub Actions (`lint:actions`), and Devbox (`lint:devbox`) configurations.
+3. **Avoid Regex Slashes**: In `matchPackagePatterns`, use clean regex strings (e.g., `^@types/`) instead of Javascript-style slashes (`/^@types//`).
+

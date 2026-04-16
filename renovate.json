@@ -3,6 +3,7 @@
   "extends": ["config:recommended", "helpers:pinGitHubActionDigests"],
   "dependencyDashboard": true,
   "semanticCommits": "enabled",
+  "labels": ["dependencies"],
   "lockFileMaintenance": {
     "enabled": true,
     "schedule": ["before 5am on monday"]
@@ -11,7 +12,7 @@
   "schedule": ["before 5am on monday"],
   "packageRules": [
     {
-      "description": "Group all non-major dependencies",
+      "description": "Group all non-major dependencies into a single PR for noise reduction",
       "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
       "groupName": "non-major dependencies",
       "semanticCommitType": "chore",
@@ -22,73 +23,62 @@
       "groupName": "security",
       "matchUpdateTypes": ["vulnerability"],
       "addLabels": ["security"],
-      "priority": 100
+      "prPriority": 100
     },
     {
       "description": "Group @types packages",
       "groupName": "types packages",
-      "matchPackageNames": ["/^@types//"]
+      "matchPackagePatterns": ["^@types/"]
     },
     {
       "description": "Group @babel packages",
       "groupName": "babel monorepo",
-      "matchPackageNames": ["/^@babel//"]
+      "matchPackagePatterns": ["^@babel/"]
     },
     {
-      "description": "Group Docusaurus packages",
-      "matchPackageNames": [
-        "react",
-        "react-dom",
-        "prism-react-renderer",
-        "/^@docusaurus//",
-        "/^@mdx-js//"
-      ],
+      "description": "Group Docusaurus and React-related packages as they are tightly coupled",
+      "matchPackageNames": ["react", "react-dom", "prism-react-renderer"],
+      "matchPackagePatterns": ["^@docusaurus/", "^@mdx-js/"],
       "groupName": "docusaurus packages"
     },
     {
-      "description": "Group eslint packages",
+      "description": "Group eslint and typescript-eslint packages",
       "groupName": "eslint packages",
-      "matchPackageNames": [
-        "/^@eslint//",
-        "/^@typescript-eslint//",
-        "/^eslint/",
-        "/typescript-eslint/"
-      ]
+      "matchPackagePatterns": ["^@eslint/", "^@typescript-eslint/", "^eslint", "typescript-eslint"],
+      "semanticCommitType": "build"
     },
     {
-      "description": "Group Jest packages",
+      "description": "Group Jest packages and related test tools",
       "groupName": "jest packages",
-      "matchPackageNames": [
-        "/^jest/",
-        "/^@types/jest/",
-        "/ts-jest/",
-        "/@swc/jest/"
-      ]
+      "matchPackagePatterns": ["^jest", "^@types/jest", "ts-jest", "@swc/jest"],
+      "semanticCommitType": "build"
     },
     {
       "description": "Group Prettier packages",
       "groupName": "prettier packages",
-      "matchPackageNames": ["/^prettier/"]
+      "matchPackagePatterns": ["^prettier"],
+      "semanticCommitType": "build"
     },
     {
-      "description": "Group rollup packages",
+      "description": "Group Rollup packages and plugins",
       "groupName": "rollup packages",
-      "matchPackageNames": ["/^@rollup//", "/rollup/"]
+      "matchPackagePatterns": ["^@rollup/", "rollup"],
+      "semanticCommitType": "build"
     },
     {
-      "description": "Other non-major updates",
+      "description": "Other non-major updates for infrastructure files",
       "matchFileNames": [
         ".github/workflows/*.yaml",
         "devbox.json",
         ".devcontainer/Dockerfile"
       ],
-      "groupName": "other-non-major",
+      "groupName": "infrastructure-non-major",
       "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
       "automerge": true,
       "semanticCommitType": "build"
     },
     {
-      "description": "Other major updates",
+      "description": "Other major updates for infrastructure files",
       "matchFileNames": [
         ".github/workflows/*.yaml",
         "devbox.json",
@@ -120,7 +110,7 @@
       "semanticCommitType": "chore"
     },
     {
-      "description": "Docs docs major updates",
+      "description": "Docs major updates (excluding React which is in Docusaurus group)",
       "matchFileNames": ["docs/package.json"],
       "matchUpdateTypes": ["major"],
       "automerge": false,
@@ -129,3 +119,4 @@
     }
   ]
 }
+

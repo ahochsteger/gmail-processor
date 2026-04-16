@@ -216,6 +216,20 @@ case "${cmd}" in
   cleanup)
     cleanup
   ;;
+  deploy)
+    setupClaspIDs
+    CLASP_DEPLOYMENT_NAME="${CLASP_DEPLOYMENT_NAME:-$(git describe --tags)}"
+    checkGuardedAction "${cmd}"
+    if [[ "${DRY_RUN:-}" == "true" ]]; then
+      echo "DRYRUN: Would deploy to GAS (ID: ${CLASP_DEPLOYMENT_ID}, Name: ${CLASP_DEPLOYMENT_NAME})"
+      return 0
+    fi
+    runClasp deploy -i "${CLASP_DEPLOYMENT_ID}" -d "${CLASP_DEPLOYMENT_NAME}"
+    showLastGASVersion
+  ;;
+  last-version)
+    getLastGASVersion
+  ;;
   login)
     checkClaspCredsFile
     runClaspWithRunAuth login --creds ${CLASP_CLIENT_CREDS_FILE} || true # NOTE: Always exists with a false error but it's still creating the file correctly.
@@ -231,20 +245,26 @@ case "${cmd}" in
       --arg functionName "${functionName}" \
       --argjson logTimeSeconds "${logTimeSeconds}"
   ;;
+  push)
+    checkGuardedAction "${cmd}"
+    if [[ "${DRY_RUN:-}" == "true" ]]; then
+      echo "DRYRUN: Would push code to GAS (script: ${CLASP_SCRIPT_ID:-$(setupClaspIDs && echo $CLASP_SCRIPT_ID)})"
+      return 0
+    fi
+    if ! runClasp push --force; then
+      echo "::warning::Clasp push failed. If the output says 'Invalid ID', please check that your CLASP_SCRIPT_ID secret is a valid Google Apps Script project ID."
+      exit 1
+    fi
+    showLastGASVersion || true
+  ;;
+  release-info)
+    getReleaseInfo
+  ;;
   run)
     functionName="${1:?}"
     checkGuardedAction "${cmd}"
     checkRunAuthFile
     runClaspWithRunAuth run "${functionName}"
-  ;;
-  run-with-logs)
-    functionName="${1:?}"
-    logTimeSeconds="${2:-${CLASP_LOG_TIME_SECONDS}}"
-    checkGuardedAction "${cmd}"
-    checkRunAuthFile
-    runClaspWithRunAuth run "${functionName}"
-    sleep "${CLASP_LOG_WAIT_SECONDS}"
-    runClasp logs "${functionName}" "${logTimeSeconds}"
   ;;
   run-test)
     functionName="${1:?}"
@@ -277,28 +297,14 @@ case "${cmd}" in
       echo "Status: ${status}"
     fi
   ;;
-  push)
+  run-with-logs)
+    functionName="${1:?}"
+    logTimeSeconds="${2:-${CLASP_LOG_TIME_SECONDS}}"
     checkGuardedAction "${cmd}"
-    if [[ "${DRY_RUN:-}" == "true" ]]; then
-      echo "DRYRUN: Would push code to GAS (script: ${CLASP_SCRIPT_ID:-$(setupClaspIDs && echo $CLASP_SCRIPT_ID)})"
-      return 0
-    fi
-    if ! runClasp push --force; then
-      echo "::warning::Clasp push failed. If the output says 'Invalid ID', please check that your CLASP_SCRIPT_ID secret is a valid Google Apps Script project ID."
-      exit 1
-    fi
-    showLastGASVersion || true
-  ;;
-  deploy)
-    setupClaspIDs
-    CLASP_DEPLOYMENT_NAME="${CLASP_DEPLOYMENT_NAME:-$(git describe --tags)}"
-    checkGuardedAction "${cmd}"
-    if [[ "${DRY_RUN:-}" == "true" ]]; then
-      echo "DRYRUN: Would deploy to GAS (ID: ${CLASP_DEPLOYMENT_ID}, Name: ${CLASP_DEPLOYMENT_NAME})"
-      return 0
-    fi
-    runClasp deploy -i "${CLASP_DEPLOYMENT_ID}" -d "${CLASP_DEPLOYMENT_NAME}"
-    showLastGASVersion
+    checkRunAuthFile
+    runClaspWithRunAuth run "${functionName}"
+    sleep "${CLASP_LOG_WAIT_SECONDS}"
+    runClasp logs "${functionName}" "${logTimeSeconds}"
   ;;
   verify-lib-version)
     TAG_NAME="$2"
@@ -317,12 +323,6 @@ case "${cmd}" in
       echo "Latest version info: ${LAST_VERSION_INFO}"
       exit 1
     fi
-  ;;
-  release-info)
-    getReleaseInfo
-  ;;
-  last-version)
-    getLastGASVersion
   ;;
   versions)
     getMergedVersions

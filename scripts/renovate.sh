@@ -9,7 +9,7 @@ shift 1
 
 case "${cmd}" in
   test)
-    LOG_LEVEL=debug renovate --platform=local --repository-cache=reset 2>&1 \
+    LOG_LEVEL=debug npx -yrenovate --platform=local --repository-cache=reset 2>&1 \
     | awk '
       # BEGIN {
       #   print "{";
