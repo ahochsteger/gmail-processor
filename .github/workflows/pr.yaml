@@ -78,6 +78,23 @@ jobs:
         if: ${{ !inputs.skip_build_lib || inputs.trigger_push_lib || inputs.trigger_push_examples }}
         name: Build lib and examples
         run: npm run ci:build
+      - id: maintenance-check
+        name: Maintenance Check (PRs)
+        if: ${{ github.event_name == 'pull_request' }}
+        run: |
+          npm run all:update
+          npm run lint-fix
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "::error::Maintenance check failed: The generated artifacts (docs, examples, schema, etc.) are out of sync or formatting is incorrect."
+            echo "::group::Git Status"
+            git status --porcelain
+            echo "::endgroup::"
+            echo "::group::Git Diff"
+            git diff
+            echo "::endgroup::"
+            echo "To fix this locally, run: npm run all:pre-commit"
+            exit 1
+          fi
       - id: test
         if: ${{ !inputs.skip_test }}
         name: Test
