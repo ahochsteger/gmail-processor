@@ -51,11 +51,12 @@ const mode = isPublish
 
 // Find the first argument that is not a flag and not a value for a preceding flag
 const flagsWithValue = ["--pr", "--roadmap-md-file", "--roadmap-issues-tag"]
-const tagArg = args.slice(1).find((arg, i) => {
-  const actualIdx = i + 1
-  const prevArg = args[actualIdx - 1]
-  return !arg.startsWith("--") && !flagsWithValue.includes(prevArg)
-}) || null
+const tagArg =
+  args.slice(1).find((arg, i) => {
+    const actualIdx = i + 1
+    const prevArg = args[actualIdx - 1]
+    return !arg.startsWith("--") && !flagsWithValue.includes(prevArg)
+  }) || null
 
 const getFlagValue = (flag) => {
   const idx = args.indexOf(flag)
