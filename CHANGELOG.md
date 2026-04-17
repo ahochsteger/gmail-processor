@@ -1,5 +1,30 @@
 # Changelog
 
+## [2.17.1](https://github.com/ahochsteger/gmail-processor/compare/v2.17.0...v2.17.1) (2026-04-17)
+
+
+### Bug Fixes
+
+* **ci:** convert release-please config to manifest format ([e8cf505](https://github.com/ahochsteger/gmail-processor/commit/e8cf505df1e304f8e5814bf356936a4a74de83ac))
+* **ci:** fix detached HEAD error and harden maintenance auto-fixer ([7f112b1](https://github.com/ahochsteger/gmail-processor/commit/7f112b124d6b61f3b4dd1d1673ccedfded423127))
+* **ci:** mitigate script injection risk in maintenance auto-fixer ([5217c8a](https://github.com/ahochsteger/gmail-processor/commit/5217c8a99f6782d0737ad01dd7bdcdc65d5f365e))
+* **lib:** finalize environment modernization and restore deployment stability ([fcfdd3f](https://github.com/ahochsteger/gmail-processor/commit/fcfdd3fa346210548274be3c56a2f9849531a964))
+
+
+### Maintenance
+
+* **ci:** modernize pipeline and improve repository hygiene ([c739f25](https://github.com/ahochsteger/gmail-processor/commit/c739f2527fa593b4a42973c46ea54f86d1644f26))
+* **ci:** unify release workflows and centralize maintenance logic ([939b719](https://github.com/ahochsteger/gmail-processor/commit/939b7197100b8e700d91f54a29430c271d3dbab6))
+* **config:** migrate config renovate.json ([#654](https://github.com/ahochsteger/gmail-processor/issues/654)) ([769a92b](https://github.com/ahochsteger/gmail-processor/commit/769a92ba4a607b7e0aab516e32d34997b13f4236))
+* **deps:** lock file maintenance ([#664](https://github.com/ahochsteger/gmail-processor/issues/664)) ([b4143f6](https://github.com/ahochsteger/gmail-processor/commit/b4143f6a125666259e77f99bfee904e6f55a7581))
+* **deps:** pin dependencies ([#655](https://github.com/ahochsteger/gmail-processor/issues/655)) ([90e38db](https://github.com/ahochsteger/gmail-processor/commit/90e38dbcd1cef5d5eed62572e5c6044eae05df01))
+* **deps:** update actions/upload-artifact action to v7 ([#661](https://github.com/ahochsteger/gmail-processor/issues/661)) ([6e177bf](https://github.com/ahochsteger/gmail-processor/commit/6e177bf02e5783a5f749a07248403dda10aa69a8))
+* **deps:** update infrastructure-non-major ([#656](https://github.com/ahochsteger/gmail-processor/issues/656)) ([da3c27f](https://github.com/ahochsteger/gmail-processor/commit/da3c27feb1a4e98a52de15c522dfa2c3653af3e1))
+* **maintenance:** harden CI pipeline and renovate configuration ([bfe6fae](https://github.com/ahochsteger/gmail-processor/commit/bfe6faed47aac24b7a6df4d119f8993232d7433b))
+* **maintenance:** harden configuration and standardize ordering ([4712711](https://github.com/ahochsteger/gmail-processor/commit/4712711aa0a741054545bb5c78c0ece3ae0e3fd8))
+* **release:** enrich release notes with modular roadmap and statistics ([5b093f4](https://github.com/ahochsteger/gmail-processor/commit/5b093f405b23e96fe4e5954168688ab08d2b39dc))
+* standardize dependency management and release triggers ([8001f32](https://github.com/ahochsteger/gmail-processor/commit/8001f32cce78ee01d88d42429620bbfc61af4c8d))
+
 ## [2.17.0](https://github.com/ahochsteger/gmail-processor/compare/v2.16.0...v2.17.0) (2026-04-14)
 
 
