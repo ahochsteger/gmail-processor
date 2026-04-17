@@ -28,7 +28,7 @@ jobs:
       - name: Snyk Test (lib)
         if: env.ACT != 'true'
         continue-on-error: true
-        uses: snyk/actions/node@master
+        uses: snyk/actions/node@9adf32b1121593767fc3c057af55b55db032dc04 # master
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
@@ -36,7 +36,7 @@ jobs:
       - name: Snyk Test (docs)
         if: env.ACT != 'true'
         continue-on-error: true
-        uses: snyk/actions/node@master
+        uses: snyk/actions/node@9adf32b1121593767fc3c057af55b55db032dc04 # master
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
