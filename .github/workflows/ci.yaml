@@ -94,7 +94,6 @@ jobs:
           # Automated triggers (Push to main) should deploy to beta by default
           if [[ "${{ github.event_name }}" == "push" && "${{ github.ref }}" == "refs/heads/main" ]]; then
             DO_BETA_DEPLOY=true
-            DO_RELEASE=true
           fi
 
           # Handle Profiles
