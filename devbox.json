@@ -18,4 +18,3 @@
     "init_hook": ["echo 'Welcome to gmail-processor devbox!' > /dev/null"]
   }
 }
-
