@@ -38,10 +38,8 @@ sed -i -re '
   1s;^;// @ts-nocheck\n/* eslint-disable @typescript-eslint/no-unnecessary-condition */\n;
 ' "${PARSER_OUTDIR}"/*Lexer.ts
 
-# Format generated parser:
-npx prettier \
-  -w "${PARSER_OUTDIR}"/*.ts
+# Formatted later by npm run lint-fix
 
 # Lint generated parser:
 npx eslint \
-  --fix "${PARSER_OUTDIR}"/*.ts
+  --fix --no-warn-ignored "${PARSER_OUTDIR}"/*.ts

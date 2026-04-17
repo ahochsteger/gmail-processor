@@ -83,7 +83,7 @@ export class ExampleHandler {
 
   public static removeGeneratedFiles(specs: GenSpec[], baseSplit: string) {
     this.getGeneratedFiles(specs, baseSplit).forEach((filePath) => {
-      console.log(`  Removing file ${filePath} ...`)
+      // console.log(`  Removing file ${filePath} ...`)
       rmSync(filePath)
     })
   }
@@ -253,7 +253,7 @@ export class ExampleHandler {
     } else if (ext === ".md" || ext === ".mdx") {
       content = `<!-- ${header} -->\n\n${content}`
     }
-    console.log(`  Generating file '${file}' from template '${template}' ...`)
+    // console.log(`  Generating file '${file}' from template '${template}' ...`)
     mkdirSync(path.parse(file).dir, { recursive: true })
     writeFileSync(file, content)
   }
@@ -263,7 +263,7 @@ export class ExampleHandler {
       .replace("${category}", example.info.category)
       .replace("${name}", example.info.name)
     if (example.info?.skipGenerate?.find((e) => e === spec.type)) {
-      console.log(`  Skipping generation of ${file} ...`)
+      // console.log(`  Skipping generation of ${file} ...`)
       return
     }
     const template = this.getTemplate(example, spec)

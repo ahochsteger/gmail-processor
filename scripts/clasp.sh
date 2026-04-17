@@ -113,9 +113,7 @@ function buildExamples() {
   echo "const E2E_REPO_BRANCH = \"${currentBranch}\"" \
   >"${CLASP_DIR}/_data.js"
 
-  # Format example files:
-  npx prettier -w \
-    "${CLASP_DIR}"/*.js
+  # Formatted later by npm run lint-fix
 
   cp -pr package.json "${CLASP_DIR}/"
 }

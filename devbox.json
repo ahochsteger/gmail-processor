@@ -15,9 +15,7 @@
     "PATH": "$PATH:$PWD/node_modules/.bin"
   },
   "shell": {
-    "init_hook": ["echo 'Welcome to gmail-processor devbox!' > /dev/null"],
-    "scripts": {
-      "npm": ["npm run \"${@}\""]
-    }
+    "init_hook": ["echo 'Welcome to gmail-processor devbox!' > /dev/null"]
   }
 }
+

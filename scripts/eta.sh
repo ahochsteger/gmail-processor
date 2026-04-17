@@ -45,7 +45,5 @@ find src/examples -type f -name '*.ts' -printf "%P\n" \
   -f "${TEMPLATES_BASEDIR}/index.gtpl" \
 >"${EXAMPLE_SRC_BASEDIR}/index.ts"
 
-# Generate all example files:
+# Formatted later by npm run lint-fix
 npx ts-node scripts/update-examples.ts generate
-npx ts-node scripts/update-examples.ts ls-generated \
-| xargs npx prettier -w 

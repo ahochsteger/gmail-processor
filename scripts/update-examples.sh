@@ -63,6 +63,5 @@ npx ts-node scripts/eta.ts gas-all-tests \
 >"${GAS_EXAMPLES_BASEDIR}/all-tests.js"
 
 # Generate all example files:
+# Formatted later by npm run lint-fix
 npx ts-node scripts/update-examples.ts generate
-npx ts-node scripts/update-examples.ts ls-generated \
-| xargs npx prettier -w "${EXAMPLE_SRC_BASEDIR}/index.ts"

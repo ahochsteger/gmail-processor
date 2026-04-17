@@ -1,19 +1,39 @@
+# Build Artifacts
+.jest-cache/
 .scannerwork/
-.vscode/
-bak/
 build/
 coverage/
 dist/
 dist-examples/
+docs/.docusaurus/
+docs/build/
+
+# Dependency Managers
+.devbox/
+.devcontainer/
 node_modules/
-scratch/
-work/
-.env
-*.env
-*.bak*
-*.log
-!.vscode/settings.json
-debug.json
-docs/docs/community/CHANGELOG.md
+
+# Environment & Secrets
 .clasprc.json
 .client_creds.json
+.env
+*.env
+
+# Editor & System
+.vscode/
+*.bak*
+*.log
+bak/
+debug.json
+scratch/
+work/
+
+# Generated Documentation
+docs/docs/community/CHANGELOG.md
+
+# OS Specific
+.DS_Store
+Thumbs.db
+
+# Exceptions
+!.vscode/settings.json

@@ -2,16 +2,20 @@
 
 set -euo pipefail
 
+function log() {
+  echo -e "${1}" >&2
+}
+
 function deleteSecret() {
   local env="${1}"
   local secret="${2}"
-  echo -e "\nDeleting secret${env:+ for env ${env}} ${secret} ..."
+  log "\nDeleting secret${env:+ for env ${env}} ${secret} ..."
   gh secret delete ${env:+-e ${env}} "${secret}"
 }
 
 function getSecrets() {
   local env="${1}"
-  echo -e "\nListing ${env:-global} secrets ..."
+  log "\nListing ${env:-global} secrets ..."
   gh secret list ${env:+-e ${env}}
 }
 
@@ -33,9 +37,9 @@ function getLocalSecretNames() {
 
 function checkSecrets() {
   local env="${1:-}"
-  echo -e "\nMissing ${env:-global} github secrets:"
+  log "\nMissing ${env:-global} github secrets:"
   getMissingGithubSecretNames "${env}"
-  echo -e "\nObsolete ${env:-global} github secrets:"
+  log "\nObsolete ${env:-global} github secrets:"
   getObsoleteGithubSecretNames "${env}"
 }
 
@@ -59,11 +63,11 @@ function updateSecrets() {
 
 function syncSecrets() {
   local env="${1}"
-  echo -e "\nMissing ${env:-global} secrets:"
+  log "\nMissing ${env:-global} secrets:"
   getMissingGithubSecretNames "${env}"
-  echo -e "\nUpdating all ${env:-global} secrets:"
+  log "\nUpdating all ${env:-global} secrets:"
   updateSecrets "${env}"
-  echo -e "\nRemoving obsolete ${env:-global} secrets:"
+  log "\nRemoving obsolete ${env:-global} secrets:"
   for secret in $(getObsoleteGithubSecretNames "${env}"); do
     deleteSecret "${env}" "${secret}"
   done
@@ -97,7 +101,7 @@ case "${cmd}" in
     updateSecrets "${env}"
   ;;
   *)
-    echo "ERROR: Unsupported command '${cmd}'!"
+    log "ERROR: Unsupported command '${cmd}'!"
     exit 1
   ;;
 esac

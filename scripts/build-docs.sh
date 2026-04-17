@@ -14,4 +14,4 @@ sed -re 's/^# \[/## [/g' \
   <CHANGELOG.md \
 | sed -re '/^$/N;/^\n$/D' \
   >>"${changelog_outfile}"
-npm run build --prefix docs
+NODE_NO_WARNINGS=1 npm run build --prefix docs --silent

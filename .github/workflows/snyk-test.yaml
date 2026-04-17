@@ -24,6 +24,7 @@ jobs:
       - name: Install dependencies (lib)
         run: npm run setup:lib
       - name: Snyk Test (lib)
+        if: env.ACT != 'true'
         uses: snyk/actions/node@master
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
@@ -32,6 +33,7 @@ jobs:
       - name: Install dependencies (docs)
         run: npm run setup:docs
       - name: Snyk Test (docs)
+        if: env.ACT != 'true'
         uses: snyk/actions/node@master
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}

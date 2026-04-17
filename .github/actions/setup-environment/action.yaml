@@ -1,0 +1,50 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-action.json
+name: "Setup Environment"
+description: "Bootstraps a Pure Devbox environment with tiered caching"
+
+inputs:
+  devbox-cache:
+    description: "Enable Devbox Nix store caching"
+    required: false
+    default: "true"
+
+runs:
+  using: "composite"
+  steps:
+    - id: install-devbox
+      name: Install Devbox
+      uses: jetify-com/devbox-install-action@v0.15.0
+      with:
+        enable-cache: ${{ inputs.devbox-cache }}
+
+    - id: cache-npm
+      name: Cache NPM Global
+      uses: actions/cache@v4
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-npm-${{ hashFiles('package-lock.json', 'docs/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-npm-
+
+    - id: cache-jest
+      name: Cache Jest Transformations
+      uses: actions/cache@v4
+      with:
+        path: .jest-cache
+        key: ${{ runner.os }}-jest-${{ hashFiles('package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-jest-
+
+    - id: cache-docs
+      name: Cache Docusaurus Metadata
+      uses: actions/cache@v4
+      with:
+        path: docs/.docusaurus
+        key: ${{ runner.os }}-docs-${{ hashFiles('docs/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-docs-
+
+    - id: setup
+      name: Setup dependencies
+      shell: bash
+      run: npm run all:setup

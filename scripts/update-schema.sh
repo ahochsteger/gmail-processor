@@ -24,6 +24,7 @@ function genSchema() {
     --required \
     --titles \
     --validationKeywords \
+    2> >(grep -vE "initializer is expression|unknown initializer" >&2) \
   >"${schemaPath}/config-schema-${schemaName}.json"
   # | tee "${schemaPath}/config-schema-${schemaName}.json" \
   # | gojq -f scripts/update-schema.jq \

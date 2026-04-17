@@ -21,7 +21,7 @@ You are responsible for enforcing the standards defined in this manual. Do not a
 
 - **Canonical Formatting**: Use `npm run lint-fix` regularly.
 - **Alphabetical Ordering**: Maintain order in all lists and maintenance scripts.
-- **Project Hygiene**: Proactively use pruning tools (`npm run lint-prune`, `npm run lint:devbox:unused`) to keep the codebase lean.
+- **Project Hygiene**: Proactively use pruning and validation tools (`npm run lint-prune`, `npm run lint:devbox:unused`, `npm run lint:scripts`) to keep the codebase lean and reference-stable.
 
 ## Project Overview
 
@@ -81,17 +81,18 @@ To maintain testability and GAS compatibility, external service interactions are
 
 To keep the workspace in a sane state, specific commands MUST be executed after modifying certain types of files:
 
-| Affected Area            | Required Action       | Command                                  |
-| :----------------------- | :-------------------- | :--------------------------------------- |
-| `src/lib/`               | Rebuild & Update Docs | `npm run all:update && npm run test:lib` |
-| `src/examples/*.ts`      | Re-generate Examples  | `npm run update:examples`                |
-| `package.json`           | Node.js Pruning       | `npm run lint-prune`                     |
-| `devbox.json`            | Devbox Pruning        | `npm run lint:devbox:unused`             |
-| Root `*.md` files        | Sync Docs             | `npm run update:docs`                    |
-| `package.json`           | Total Reinstall       | `npm run all:reinstall`                  |
-| Documentation CSS/Config | Verify Build          | `npm run ci:docs`                        |
-| Deployment / Release     | Update Release Notes  | `npm run release:update`                 |
-| Release Preview          | Dry-run Release Notes | `npm run release:notes`                  |
+| Affected Area               | Required Action       | Command                                  |
+| :-------------------------- | :-------------------- | :--------------------------------------- |
+| `src/lib/`                  | Rebuild & Update Docs | `npm run all:update && npm run test:lib` |
+| `src/examples/*.ts`         | Re-generate Examples  | `npm run update:examples`                |
+| `package.json`              | Node.js Pruning       | `npm run lint-prune`                     |
+| `devbox.json`               | Devbox Pruning        | `npm run lint:devbox:unused`             |
+| Root `*.md` files           | Sync Docs             | `npm run update:docs`                    |
+| `package.json`              | Total Reinstall       | `npm run all:reinstall`                  |
+| Documentation CSS/Config    | Verify Build          | `npm run ci:docs`                        |
+| Deployment / Release        | Update Release Notes  | `npm run release:update`                 |
+| Release Preview             | Dry-run Release Notes | `npm run release:notes`                  |
+| `package.json` / `scripts/` | Script Integrity      | `npm run lint:scripts`                   |
 
 ## Generated Artifacts & Automation
 
@@ -142,10 +143,30 @@ When you modify or create an example in `src/examples/**.ts`, the build process 
 ### Formatting & Ordering
 
 - **Canonical Formatting**: Every file (JS, TS, JSON, MD, etc.) must be canonically formatted before committing to prevent style-only changes in the Git history. Use `npm run lint-fix` (Prettier) for global formatting.
-- **Alphabetical Ordering**: To maintain a clean and predictable structure, the following lists MUST be kept in alphabetical order:
-  - `package.json`: entries in the `scripts` object.
-  - `devbox.json`: entries in the `packages` list.
-  - Shell scripts: cases in `case` statements.
+
+#### Script & Reference Integrity
+
+To prevent regressions like "missing script" errors in the CI/CD pipeline, all script cross-references must be validated.
+
+- **Automated Validation**: Use `npm run lint:scripts` to audit `package.json` and the `scripts/` directory.
+- **Mandatory Check**: This tool MUST be run after any renaming or removal of npm scripts or files within the `scripts/` folder.
+- **Fail-Fast**: Any broken reference (direct call, wildcard, or file path) will fail the build and must be resolved immediately.
+
+#### Alphabetical Ordering
+
+- `package.json`: entries in the `scripts` object.
+- `.gitignore`: entries within each functional group (see below).
+- `devbox.json`: entries in the `packages` list.
+- Shell scripts: cases in `case` statements.
+
+### Git Ignore Conventions
+
+To prevent configuration bloat and improve maintenance, the `.gitignore` file must follow these rules:
+
+1.  **Functional Grouping**: Group entries by their source or purpose (e.g., `# Build Artifacts`, `# Environment & Secrets`).
+2.  **Alphabetical Sorting**: Entries MUST be sorted alphabetically within each functional group.
+3.  **Directory Slashing**: Always use a trailing slash for directory entries (e.g., `dist/` instead of `dist`) to differentiate them from files.
+4.  **Exceptions Section**: Consolidate all negated rules (starting with `!`) into a dedicated `# Exceptions` section at the very end of the file.
 
 ### Temporary Files
 
@@ -244,12 +265,11 @@ In alignment with the 2026 EU AI Act and security best practices, we disclose AI
    - Unit tests: `npm run test:lib` (uses Jest).
    - E2E tests: Located in `src/examples/`, run via GAS.
    - Mocking: Use `MockFactory` for GAS services in tests.
-2. **Pre-commit:** Always run `npm run all:pre-commit` before pushing. This runs:
-   - Formatting fix (`npm run lint-fix`).
-   - Linting (`npm run all:lint`).
-   - Build (`npm run all:build`).
-   - Tests (`npm run all:test`).
-   - Documentation updates (`npm run all:update`).
+2. **Pre-commit:** Always run `npm run all:pre-commit` (or `npm run all:pre-commit:fast` for a quicker loop skipping docs) before pushing. This runs within the **Devbox environment** (e.g., via `devbox shell` or `devbox run -- npm run ...`) and ensures:
+   - **Centralized Formatting**: Code is formatted via `npm run lint-fix`.
+   - **Validation**: Linting (`npm run all:lint`) and builds (`npm run all:build`) are checked.
+   - **Tests**: Full test suite (`npm run all:test`) is green.
+   - **Synchronization**: Artifacts are updated (`npm run all:update`).
 3. **Environment Maintenance:** If you encounter persistent dependency or environment issues, perform a total project reset:
    - Reset all lockfiles and environments: `npm run all:reinstall`.
 
@@ -258,6 +278,10 @@ In alignment with the 2026 EU AI Act and security best practices, we disclose AI
 - **Clasp**: For syncing code with Google Apps Script.
 - **Rollup**: For bundling the library.
 - **Prettier**: Code formatting (enforced via linting).
+- **Act**: For running GitHub Actions locally. Use the namespaced `npm run gh-act:ci:*` scripts to test specific workflow profiles locally before pushing.
+  - **Runner Image**: Ensure you use a comprehensive image (mapped via `.actrc`) to avoid "command not found" errors.
+  - **Secrets**: Requires a local `.secrets` file to provide credentials for CLASP and GCloud.
+  - **Local Testing**: To skip high-friction steps like Snyk scan, SonarQube, and Coveralls during local simulations, the `local-test` input (or the `ACT: true` environment variable) can be used. This is automatically handled by the unified `ci.yaml` and `snyk-test.yaml` workflows.
 
 ## Technical Resilience & Stability
 
