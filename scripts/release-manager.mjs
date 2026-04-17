@@ -826,7 +826,7 @@ function publishDraft(tag) {
 async function announceInDiscussions(version, body) {
   const versionParts = version.replace(/^v/, "").split(".")
   const patch = parseInt(versionParts[2] || "0")
-  if (patch !== 0 && !publish) {
+  if (patch !== 0) {
     log(`SKIP: Community announcement for patch version ${version}`)
     return
   }
