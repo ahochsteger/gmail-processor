@@ -255,7 +255,6 @@ In alignment with the 2026 EU AI Act and security best practices, we disclose AI
 
 - Add the `AI-Assisted: true` trailer to the end of your commit message. This trailer is **required** if AI was used for logic or generation.
 - Add the `AI-Tool: <tool-name>` trailer (e.g., `Antigravity`, `Aider`). This is **required** to identify the specific tool used.
-- (Optional) Add the `AI-Model: <model-version>` trailer (e.g., `gemini-2.0-pro-exp-02-05`).
 - Alternatively or additionally, include a brief mention in the PR description.
 - This ensures it's clear where AI tools were used for tedious, repetitive work or scaffolding, while acknowledging that the human developer remains responsible for reviewing, testing, and merging the code.
 

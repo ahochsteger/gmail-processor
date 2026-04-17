@@ -17,13 +17,13 @@
     {
       "description": "Group all non-major dependencies into a single PR for noise reduction",
       "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
-      "groupName": "non-major dependencies",
+      "groupName": "deps:all-non-major",
       "semanticCommitType": "chore",
       "automerge": true
     },
     {
       "description": "Security vulnerability updates",
-      "groupName": "security",
+      "groupName": "deps:security",
       "matchUpdateTypes": ["vulnerability"],
       "addLabels": ["security"],
       "prPriority": 100,
@@ -31,7 +31,7 @@
     },
     {
       "description": "Group @types packages",
-      "groupName": "types packages",
+      "groupName": "deps:types",
       "matchPackagePatterns": ["^@types/"],
       "automerge": true
     },
@@ -44,11 +44,11 @@
       "description": "Group Docusaurus and React-related packages as they are tightly coupled",
       "matchPackageNames": ["react", "react-dom", "prism-react-renderer"],
       "matchPackagePatterns": ["^@docusaurus/", "^@mdx-js/"],
-      "groupName": "docusaurus packages"
+      "groupName": "deps:docs-docusaurus"
     },
     {
       "description": "Group eslint and typescript-eslint packages",
-      "groupName": "eslint packages",
+      "groupName": "deps:dev-eslint",
       "semanticCommitType": "build",
       "matchPackagePatterns": [
         "^@eslint/",
@@ -60,20 +60,20 @@
     },
     {
       "description": "Group Jest packages and related test tools",
-      "groupName": "jest packages",
+      "groupName": "deps:dev-jest",
       "semanticCommitType": "build",
       "matchPackagePatterns": ["^jest", "^@types/jest", "ts-jest", "@swc/jest"]
     },
     {
       "description": "Group Prettier packages",
-      "groupName": "prettier packages",
+      "groupName": "deps:dev-prettier",
       "semanticCommitType": "build",
       "matchPackagePatterns": ["^prettier"],
       "automerge": true
     },
     {
       "description": "Group Rollup packages and plugins",
-      "groupName": "rollup packages",
+      "groupName": "deps:dev-rollup",
       "semanticCommitType": "build",
       "matchPackagePatterns": ["^@rollup/", "rollup"]
     },
@@ -84,7 +84,7 @@
         "devbox.json",
         ".devcontainer/Dockerfile"
       ],
-      "groupName": "infrastructure-non-major",
+      "groupName": "deps:infra-non-major",
       "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
       "automerge": true,
       "semanticCommitType": "build"
@@ -103,20 +103,23 @@
     {
       "description": "Lib non-major updates",
       "matchFileNames": ["package.json"],
-      "groupName": "libs-non-major",
+      "groupName": "deps:lib-non-major",
       "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+      "semanticCommitType": "chore",
       "automerge": true
     },
     {
       "description": "Lib major updates",
       "matchFileNames": ["package.json"],
       "matchUpdateTypes": ["major"],
+      "groupName": "deps:lib-major",
+      "semanticCommitType": "chore",
       "automerge": false
     },
     {
       "description": "Docs non-major updates",
       "matchFileNames": ["docs/package.json"],
-      "groupName": "docs-non-major",
+      "groupName": "deps:docs-non-major",
       "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
       "automerge": true,
       "semanticCommitType": "chore"
@@ -124,6 +127,7 @@
     {
       "description": "Docs major updates (excluding React which is in Docusaurus group)",
       "matchFileNames": ["docs/package.json"],
+      "groupName": "deps:docs-major",
       "matchUpdateTypes": ["major"],
       "automerge": false,
       "semanticCommitType": "chore",
