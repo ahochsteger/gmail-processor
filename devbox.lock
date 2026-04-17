@@ -297,51 +297,51 @@
         }
       }
     },
-    "gomplate@4.3.3": {
-      "last_modified": "2026-02-23T15:40:43Z",
-      "resolved": "github:NixOS/nixpkgs/80d901ec0377e19ac3f7bb8c035201e2e098cc97#gomplate",
+    "gomplate@5.0.0": {
+      "last_modified": "2026-03-21T07:29:51Z",
+      "resolved": "github:NixOS/nixpkgs/09061f748ee21f68a089cd5d91ec1859cd93d0be#gomplate",
       "source": "devbox-search",
-      "version": "4.3.3",
+      "version": "5.0.0",
       "systems": {
         "aarch64-darwin": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/h7mx147xwa54xhway7fvmix3y9mlxwzi-gomplate-4.3.3",
+              "path": "/nix/store/gwp7rl0gilnxds6vhn44a243h5d41rvs-gomplate-5.0.0",
               "default": true
             }
           ],
-          "store_path": "/nix/store/h7mx147xwa54xhway7fvmix3y9mlxwzi-gomplate-4.3.3"
+          "store_path": "/nix/store/gwp7rl0gilnxds6vhn44a243h5d41rvs-gomplate-5.0.0"
         },
         "aarch64-linux": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/iiyfcrnddpzvbx4jasblmiyba46j4jzj-gomplate-4.3.3",
+              "path": "/nix/store/rzcpvzk3vs47v3dva04z6hw3cjfiin29-gomplate-5.0.0",
               "default": true
             }
           ],
-          "store_path": "/nix/store/iiyfcrnddpzvbx4jasblmiyba46j4jzj-gomplate-4.3.3"
+          "store_path": "/nix/store/rzcpvzk3vs47v3dva04z6hw3cjfiin29-gomplate-5.0.0"
         },
         "x86_64-darwin": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/2r8y9mrfis4410pfjvig7g6lm2qhwvlv-gomplate-4.3.3",
+              "path": "/nix/store/gsa1qqa38l2anyafzkygr3cw1k2kz4jf-gomplate-5.0.0",
               "default": true
             }
           ],
-          "store_path": "/nix/store/2r8y9mrfis4410pfjvig7g6lm2qhwvlv-gomplate-4.3.3"
+          "store_path": "/nix/store/gsa1qqa38l2anyafzkygr3cw1k2kz4jf-gomplate-5.0.0"
         },
         "x86_64-linux": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/xm7ca21mgv5dycrcyvq87m3sppa4chhi-gomplate-4.3.3",
+              "path": "/nix/store/5xzrdv68q5i3kfhpvngn92qc4kmcr1jg-gomplate-5.0.0",
               "default": true
             }
           ],
-          "store_path": "/nix/store/xm7ca21mgv5dycrcyvq87m3sppa4chhi-gomplate-4.3.3"
+          "store_path": "/nix/store/5xzrdv68q5i3kfhpvngn92qc4kmcr1jg-gomplate-5.0.0"
         }
       }
     },
