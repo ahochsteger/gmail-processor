@@ -38,7 +38,7 @@ jobs:
       CLASP_LIB_SCRIPT_ID: ${{ secrets.CLASP_LIB_SCRIPT_ID }}
       GAS_LIB_VERSION: ${{ github.event.inputs.gas_version }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           fetch-depth: 0
       - uses: actions/setup-node@v4
