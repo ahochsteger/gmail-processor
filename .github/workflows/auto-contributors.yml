@@ -8,6 +8,10 @@ on:
 permissions:
   contents: write
 
+env:
+  ACT: false
+  DEVBOX_QUIET: 1
+
 jobs:
   auto-contributors:
     runs-on: ubuntu-latest
@@ -16,6 +20,9 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           fetch-depth: 0
+
+      - name: Setup Environment
+        uses: ./.github/actions/setup-environment
 
       - name: Extract missing contributors
         id: missing-contributors

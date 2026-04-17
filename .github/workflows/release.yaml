@@ -10,6 +10,9 @@ on:
           - preview
           - update-release
           - publish-release
+          - force-major
+          - force-minor
+          - force-patch
         default: publish-release
       tag:
         description: "Release tag (e.g. v2.17.0)"
@@ -23,52 +26,25 @@ on:
         description: "GAS Lib Version override (e.g. 105)"
         type: string
         required: false
+      environment:
+        description: "Environment context"
+        type: choice
+        options:
+          - beta
+          - prod
+        default: beta
+
+env:
+  ACT: false
+  DEVBOX_QUIET: 1
 
 jobs:
-  release-notes:
-    runs-on: ubuntu-latest
-    environment:
-      name: main
-    permissions:
-      contents: write
-      discussions: write
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-      CLASP_LIB_SCRIPT_ID: ${{ secrets.CLASP_LIB_SCRIPT_ID }}
-      GAS_LIB_VERSION: ${{ github.event.inputs.gas_version }}
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 24.x
-          cache: "npm"
-      - run: npm install
-
-      - id: preview-release-notes
-        name: Preview Release Notes
-        if: ${{ github.event.inputs.job == 'preview' }}
-        run: |
-          npm run release:preview -- ${{ github.event.inputs.pr && format('--pr {0}', github.event.inputs.pr) || '' }}
-
-      - id: update-release-notes
-        name: Update Release Notes
-        if: ${{ github.event.inputs.job == 'update-release' }}
-        run: |
-          npm run release:update -- "${{ github.event.inputs.tag }}" ${{ github.event.inputs.pr && format('--pr {0}', github.event.inputs.pr) || '' }}
-
-      - id: publish-release
-        name: Publish Release
-        if: ${{ github.event.inputs.job == 'publish-release' }}
-        run: |
-          npm run release:publish -- "${{ github.event.inputs.tag || 'latest' }}"
-
-      - id: upload-preview-artifact
-        name: Upload Preview Artifact
-        if: ${{ github.event.inputs.job == 'preview' }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: release-notes-preview
-          path: build/release-notes-*
+  release:
+    uses: ./.github/workflows/_release-worker.yaml
+    with:
+      job: ${{ github.event.inputs.job }}
+      environment: ${{ github.event.inputs.environment }}
+      tag: ${{ github.event.inputs.tag }}
+      pr: ${{ github.event.inputs.pr }}
+      gas_version: ${{ github.event.inputs.gas_version }}
+    secrets: inherit

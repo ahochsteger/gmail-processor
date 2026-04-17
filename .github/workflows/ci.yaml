@@ -78,18 +78,8 @@ jobs:
       enable_prod_deploy: ${{ steps.profile.outputs.enable_prod_deploy }}
       enable_release_please: ${{ steps.profile.outputs.enable_release_please }}
       release_dry_run: ${{ steps.profile.outputs.release_dry_run }}
-    env:
-      CLASP_ACCESS_TOKEN: ${{secrets.CLASP_ACCESS_TOKEN}}
-      CLASP_CLIENT_ID: ${{secrets.CLASP_CLIENT_ID}}
-      CLASP_CLIENT_SECRET: ${{secrets.CLASP_CLIENT_SECRET}}
-      CLASP_EXAMPLES_DEPLOYMENT_ID: ${{secrets.CLASP_EXAMPLES_DEPLOYMENT_ID}}
-      CLASP_EXAMPLES_SCRIPT_ID: ${{secrets.CLASP_EXAMPLES_SCRIPT_ID}}
-      CLASP_ID_TOKEN: ${{secrets.CLASP_ID_TOKEN}}
-      CLASP_LIB_DEPLOYMENT_ID: ${{secrets.CLASP_LIB_DEPLOYMENT_ID}}
-      CLASP_LIB_SCRIPT_ID: ${{secrets.CLASP_LIB_SCRIPT_ID}}
-      CLASP_REFRESH_TOKEN: ${{secrets.CLASP_REFRESH_TOKEN}}
-      GCLOUD_PROJECT_ID: ${{secrets.GCLOUD_PROJECT_ID}}
-      GCLOUD_PROJECT_NR: ${{secrets.GCLOUD_PROJECT_NR}}
+    # Environment secrets are now centralized in _release-worker.yaml
+    # They are only mapped here if explicitly needed by a local step.
     steps:
       - id: profile
         name: Map Workflow Profile
@@ -237,88 +227,29 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      - id: deploy-lib-beta
-        if: ${{ steps.profile.outputs.enable_beta_deploy == 'true' }}
-        name: Deploy Lib (Beta)
-        run: |
-          if [ -z "${CLASP_LIB_SCRIPT_ID}" ]; then
-            echo "::warning::CLASP_LIB_SCRIPT_ID is empty. Skipping push."
-            exit 0
-          fi
-          npm run push:lib
-      - id: deploy-examples-beta
-        if: ${{ steps.profile.outputs.enable_beta_deploy == 'true' }}
-        name: Deploy Examples (Beta)
-        run: |
-          if [ -z "${CLASP_EXAMPLES_SCRIPT_ID}" ]; then
-            echo "::warning::CLASP_EXAMPLES_SCRIPT_ID is empty. Skipping push."
-            exit 0
-          fi
-          npm run push:examples
+
+  beta-deploy:
+    name: "Beta Deployment"
+    needs: qa
+    if: ${{ github.event_name != 'pull_request' && needs.qa.outputs.enable_beta_deploy == 'true' }}
+    uses: ./.github/workflows/_release-worker.yaml
+    with:
+      job: beta-deploy
+      environment: beta
+    secrets: inherit
 
   release:
     name: "Production Release"
     needs: qa
-    # Use outputs from qa job
     if: ${{ github.event_name != 'pull_request' && (needs.qa.outputs.release_created == 'true' || needs.qa.outputs.enable_prod_deploy == 'true') }}
-    runs-on: ubuntu-latest
-    environment:
-      name: prod
-    permissions:
-      contents: write
-      pull-requests: write
-    env:
-      CLASP_ACCESS_TOKEN: ${{secrets.CLASP_ACCESS_TOKEN}}
-      CLASP_CLIENT_ID: ${{secrets.CLASP_CLIENT_ID}}
-      CLASP_CLIENT_SECRET: ${{secrets.CLASP_CLIENT_SECRET}}
-      CLASP_EXAMPLES_DEPLOYMENT_ID: ${{secrets.CLASP_EXAMPLES_DEPLOYMENT_ID}}
-      CLASP_EXAMPLES_SCRIPT_ID: ${{secrets.CLASP_EXAMPLES_SCRIPT_ID}}
-      CLASP_ID_TOKEN: ${{secrets.CLASP_ID_TOKEN}}
-      CLASP_LIB_DEPLOYMENT_ID: ${{secrets.CLASP_LIB_DEPLOYMENT_ID}}
-      CLASP_LIB_SCRIPT_ID: ${{secrets.CLASP_LIB_SCRIPT_ID}}
-      CLASP_REFRESH_TOKEN: ${{secrets.CLASP_REFRESH_TOKEN}}
-      GCLOUD_PROJECT_ID: ${{secrets.GCLOUD_PROJECT_ID}}
-      GCLOUD_PROJECT_NR: ${{secrets.GCLOUD_PROJECT_NR}}
-      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-    steps:
-      - id: checkout
-        name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
-        with:
-          persist-credentials: false
-          token: ${{ secrets.GITHUB_TOKEN }}
-          fetch-depth: 0
-      - id: setup-env
-        name: Setup Environment
-        uses: ./.github/actions/setup-environment
-      - id: deploy-lib-release
-        if: ${{ needs.qa.outputs.release_created == 'true' || (needs.qa.outputs.enable_prod_deploy == 'true' && needs.qa.outputs.release_dry_run == 'false') }}
-        name: Deploy Lib (Release)
-        run: npm run deploy
-        env:
-          CLASP_DEPLOYMENT_NAME: ${{ needs.qa.outputs.tag_name }}
-      - id: update-release-notes
-        if: ${{ needs.qa.outputs.enable_release_please == 'true' }}
-        name: Update Draft Release Notes
-        run: |
-          if [ "${{ needs.qa.outputs.release_dry_run }}" == "true" ]; then
-             npm run release:preview -- "${{ needs.qa.outputs.tag_name || 'latest' }}"
-          else
-             npm run release:update -- "${{ needs.qa.outputs.tag_name || 'latest' }}"
-          fi
-        env:
-          CLASP_DEPLOYMENT_NAME: ${{ needs.qa.outputs.tag_name }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - id: auto-publish-patch
-        if: ${{ needs.qa.outputs.release_created == 'true' && needs.qa.outputs.patch != '0' && needs.qa.outputs.release_dry_run == 'false' }}
-        name: Auto-publish Patch Release
-        run: |
-          npm run release:publish -- "${{ needs.qa.outputs.tag_name }}"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - id: deploy-docs
-        if: ${{ needs.qa.outputs.enable_build_docs == 'true' && (github.event_name == 'push' && github.ref == 'refs/heads/main') }}
-        name: Deploy docs
-        uses: JamesIves/github-pages-deploy-action@d92aa235d04922e8f08b40ce78cc5442fcfbfa2f # v4
-        with:
-          folder: docs/build
+    uses: ./.github/workflows/_release-worker.yaml
+    with:
+      job: ci-release
+      environment: prod
+      tag: ${{ needs.qa.outputs.tag_name }}
+      release_created: ${{ needs.qa.outputs.release_created == 'true' }}
+      patch_count: ${{ needs.qa.outputs.patch }}
+      is_dry_run: ${{ needs.qa.outputs.release_dry_run == 'true' }}
+      enable_release_please: ${{ needs.qa.outputs.enable_release_please == 'true' }}
+      enable_build_docs: ${{ needs.qa.outputs.enable_build_docs == 'true' }}
+    secrets: inherit

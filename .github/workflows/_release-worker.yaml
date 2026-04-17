@@ -1,0 +1,171 @@
+name: Release Worker
+
+on:
+  workflow_call:
+    inputs:
+      job:
+        description: "Job to run (preview, update, publish, deploy, force-*, ci-release)"
+        required: true
+        type: string
+      environment:
+        description: "Execution environment (beta, prod)"
+        required: true
+        type: string
+      tag:
+        description: "Release tag"
+        required: false
+        type: string
+      pr:
+        description: "PR number override"
+        required: false
+        type: string
+      gas_version:
+        description: "GAS Lib Version override"
+        required: false
+        type: string
+      # Automated release flags (from CI)
+      release_created:
+        required: false
+        type: boolean
+        default: false
+      patch_count:
+        required: false
+        type: string
+        default: "0"
+      is_dry_run:
+        required: false
+        type: boolean
+        default: false
+      enable_release_please:
+        required: false
+        type: boolean
+        default: false
+      enable_build_docs:
+        required: false
+        type: boolean
+        default: false
+
+env:
+  ACT: false
+  DEVBOX_QUIET: 1
+
+jobs:
+  run:
+    name: "${{ inputs.job }} (${{ inputs.environment }})"
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ inputs.environment }}
+    permissions:
+      contents: write
+      pull-requests: write
+      discussions: write
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      CLASP_ACCESS_TOKEN: ${{ secrets.CLASP_ACCESS_TOKEN }}
+      CLASP_CLIENT_ID: ${{ secrets.CLASP_CLIENT_ID }}
+      CLASP_CLIENT_SECRET: ${{ secrets.CLASP_CLIENT_SECRET }}
+      CLASP_EXAMPLES_DEPLOYMENT_ID: ${{ secrets.CLASP_EXAMPLES_DEPLOYMENT_ID }}
+      CLASP_EXAMPLES_SCRIPT_ID: ${{ secrets.CLASP_EXAMPLES_SCRIPT_ID }}
+      CLASP_ID_TOKEN: ${{ secrets.CLASP_ID_TOKEN }}
+      CLASP_LIB_DEPLOYMENT_ID: ${{ secrets.CLASP_LIB_DEPLOYMENT_ID }}
+      CLASP_LIB_SCRIPT_ID: ${{ secrets.CLASP_LIB_SCRIPT_ID }}
+      CLASP_REFRESH_TOKEN: ${{ secrets.CLASP_REFRESH_TOKEN }}
+      GCLOUD_PROJECT_ID: ${{ secrets.GCLOUD_PROJECT_ID }}
+      GCLOUD_PROJECT_NR: ${{ secrets.GCLOUD_PROJECT_NR }}
+      CLASP_DEPLOYMENT_NAME: ${{ inputs.tag }}
+      GAS_LIB_VERSION: ${{ inputs.gas_version }}
+    steps:
+      - id: checkout
+        name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        with:
+          fetch-depth: 0
+
+      - id: setup-env
+        name: Setup Environment
+        uses: ./.github/actions/setup-environment
+
+      # --- Maintenance & Support ---
+
+      - id: sync-gas-version
+        name: Synchronize GAS Version
+        if: ${{ !startsWith(inputs.job, 'force-') && (inputs.job != 'ci-release' || !inputs.release_created) }}
+        run: |
+          npm run release:info
+
+      - id: force-release
+        name: Force Release Trigger
+        if: ${{ startsWith(inputs.job, 'force-') }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          npm run release:${{ inputs.job }}
+          git push
+
+      # --- Deployment ---
+
+      - id: beta-deploy
+        if: ${{ inputs.job == 'beta-deploy' }}
+        name: Deploy Beta (Lib & Examples)
+        run: |
+          npm run push:lib
+          npm run push:examples
+
+      - id: deploy-lib-release
+        if: ${{ inputs.job == 'ci-release' && (inputs.release_created || (inputs.environment == 'prod' && !inputs.is_dry_run)) }}
+        name: Deploy Lib (Release)
+        run: npm run deploy
+        env:
+          CLASP_DEPLOYMENT_NAME: ${{ inputs.tag }}
+
+      # --- Release Notes Management ---
+
+      - id: preview-release-notes
+        name: Preview Release Notes
+        if: ${{ inputs.job == 'preview' }}
+        run: |
+          npm run release:preview -- ${{ inputs.pr && format('--pr {0}', inputs.pr) || '' }}
+
+      - id: update-release-notes
+        name: Update Release Notes
+        if: ${{ inputs.job == 'update-release' || (inputs.job == 'ci-release' && inputs.enable_release_please) }}
+        run: |
+          if [ "${{ inputs.is_dry_run }}" == "true" ]; then
+             npm run release:preview -- "${{ inputs.tag || 'latest' }}"
+          else
+             npm run release:update -- "${{ inputs.tag || 'latest' }}" ${{ inputs.pr && format('--pr {0}', inputs.pr) || '' }}
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - id: publish-release
+        name: Publish Release
+        if: ${{ inputs.job == 'publish-release' }}
+        run: |
+          npm run release:publish -- "${{ inputs.tag || 'latest' }}"
+
+      - id: auto-publish-patch
+        if: ${{ inputs.job == 'ci-release' && inputs.release_created && inputs.patch_count != '0' && !inputs.is_dry_run }}
+        name: Auto-publish Patch Release
+        run: |
+          npm run release:publish -- "${{ inputs.tag }}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # --- Documentation ---
+
+      - id: deploy-docs
+        if: ${{ inputs.job == 'ci-release' && inputs.enable_build_docs && github.ref == 'refs/heads/main' }}
+        name: Deploy docs
+        uses: JamesIves/github-pages-deploy-action@d92aa235d04922e8f08b40ce78cc5442fcfbfa2f # v4
+        with:
+          folder: docs/build
+
+      - id: upload-preview-artifact
+        name: Upload Preview Artifact
+        if: ${{ inputs.job == 'preview' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-notes-preview-${{ inputs.environment }}
+          path: build/release-notes-*
