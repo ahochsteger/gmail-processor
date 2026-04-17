@@ -35,9 +35,30 @@ on:
         type: boolean
         default: false
 
+env:
+  ACT: false
+  DEVBOX_QUIET: 1
+  DEVBOX_NO_LOG_PROGRESS: 1
+  NIX_INSTALLER_NO_PROGRESS: 1
+  NPM_CONFIG_PROGRESS: "false"
+
 jobs:
+  integrity:
+    name: "Integrity Check"
+    if: ${{ github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+      - id: setup-env
+        name: Setup Environment
+        uses: ./.github/actions/setup-environment
+      - id: maintenance-verify
+        name: Verify Maintenance Scripts
+        run: devbox run npm run all:maintenance
+
   qa:
     name: "QA & Beta Test"
+    needs: integrity
     runs-on: ubuntu-latest
     environment:
       name: beta
@@ -49,18 +70,15 @@ jobs:
       tag_name: ${{ steps.create-draft-release.outputs.tag_name }}
       patch: ${{ steps.create-draft-release.outputs.patch }}
       # Profile Flags
-      do_build_lib: ${{ steps.profile.outputs.do_build_lib }}
-      do_build_docs: ${{ steps.profile.outputs.do_build_docs }}
-      do_test: ${{ steps.profile.outputs.do_test }}
-      do_qa: ${{ steps.profile.outputs.do_qa }}
-      do_beta_deploy: ${{ steps.profile.outputs.do_beta_deploy }}
-      do_release: ${{ steps.profile.outputs.do_release }}
-      is_dry_run: ${{ steps.profile.outputs.is_dry_run }}
+      enable_build_lib: ${{ steps.profile.outputs.enable_build_lib }}
+      enable_build_docs: ${{ steps.profile.outputs.enable_build_docs }}
+      enable_test: ${{ steps.profile.outputs.enable_test }}
+      enable_qa: ${{ steps.profile.outputs.enable_qa }}
+      enable_beta_deploy: ${{ steps.profile.outputs.enable_beta_deploy }}
+      enable_prod_deploy: ${{ steps.profile.outputs.enable_prod_deploy }}
+      enable_release_please: ${{ steps.profile.outputs.enable_release_please }}
+      release_dry_run: ${{ steps.profile.outputs.release_dry_run }}
     env:
-      DEVBOX_QUIET: 1
-      DEVBOX_NO_LOG_PROGRESS: 1
-      NIX_INSTALLER_NO_PROGRESS: 1
-      NPM_CONFIG_PROGRESS: "false"
       CLASP_ACCESS_TOKEN: ${{secrets.CLASP_ACCESS_TOKEN}}
       CLASP_CLIENT_ID: ${{secrets.CLASP_CLIENT_ID}}
       CLASP_CLIENT_SECRET: ${{secrets.CLASP_CLIENT_SECRET}}
@@ -78,13 +96,14 @@ jobs:
         shell: bash
         run: |
           # Default Values
-          DO_BUILD_LIB=true
-          DO_BUILD_DOCS=true
-          DO_TEST=true
-          DO_QA=true
-          DO_BETA_DEPLOY=false
-          DO_RELEASE=false
-          IS_DRY_RUN="${{ inputs.dry_run || 'false' }}"
+          ENABLE_BUILD_LIB=true
+          ENABLE_BUILD_DOCS=true
+          ENABLE_TEST=true
+          ENABLE_QA=true
+          ENABLE_BETA_DEPLOY=false
+          ENABLE_PROD_DEPLOY=false
+          ENABLE_RELEASE_PLEASE=false
+          RELEASE_DRY_RUN="${{ inputs.dry_run || 'false' }}"
           IS_LOCAL_TEST="false"
 
           if [[ "${{ inputs.local_test }}" == "true" || "${{ env.ACT }}" == "true" ]]; then
@@ -93,67 +112,72 @@ jobs:
 
           # Automated triggers (Push to main) should deploy to beta by default
           if [[ "${{ github.event_name }}" == "push" && "${{ github.ref }}" == "refs/heads/main" ]]; then
-            DO_BETA_DEPLOY=true
+            ENABLE_BETA_DEPLOY=true
+            ENABLE_RELEASE_PLEASE=true
           fi
 
           # Handle Profiles
           case "${{ inputs.run_mode || 'default' }}" in
             fast-qa)
-              DO_BUILD_DOCS=false
-              DO_QA=false
+              ENABLE_BUILD_DOCS=false
+              ENABLE_QA=false
               ;;
             docs-only)
-              DO_BUILD_LIB=false
-              DO_TEST=false
-              DO_QA=false
+              ENABLE_BUILD_LIB=false
+              ENABLE_TEST=false
+              ENABLE_QA=false
               ;;
             tests-only)
-              DO_BUILD_DOCS=false
-              DO_QA=false
+              ENABLE_BUILD_DOCS=false
+              ENABLE_QA=false
               ;;
             beta-deploy)
-              DO_BETA_DEPLOY=true
+              ENABLE_BETA_DEPLOY=true
               ;;
             release-dry)
-              DO_RELEASE=true
-              IS_DRY_RUN=true
+              ENABLE_RELEASE_PLEASE=true
+              RELEASE_DRY_RUN=true
               ;;
             release-prod)
-              DO_RELEASE=true
-              IS_DRY_RUN=false
+              ENABLE_RELEASE_PLEASE=true
+              ENABLE_PROD_DEPLOY=true
+              RELEASE_DRY_RUN=false
               ;;
           esac
 
           # Local Test Adjustments
           if [[ "${IS_LOCAL_TEST}" == "true" ]]; then
-            DO_QA=false
-            DO_RELEASE=false
-            DO_BETA_DEPLOY=false
+            ENABLE_QA=false
+            ENABLE_RELEASE_PLEASE=false
+            ENABLE_BETA_DEPLOY=false
+            ENABLE_PROD_DEPLOY=false
           fi
 
           # Force Overrides
-          if [[ "${{ inputs.skip_test }}" == "true" ]]; then DO_TEST=false; fi
+          if [[ "${{ inputs.skip_test }}" == "true" ]]; then ENABLE_TEST=false; fi
 
           # Output Mapping
           {
-            echo "do_build_lib=${DO_BUILD_LIB}"
-            echo "do_build_docs=${DO_BUILD_DOCS}"
-            echo "do_test=${DO_TEST}"
-            echo "do_qa=${DO_QA}"
-            echo "do_beta_deploy=${DO_BETA_DEPLOY}"
-            echo "do_release=${DO_RELEASE}"
-            echo "is_dry_run=${IS_DRY_RUN}"
+            echo "enable_build_lib=${ENABLE_BUILD_LIB}"
+            echo "enable_build_docs=${ENABLE_BUILD_DOCS}"
+            echo "enable_test=${ENABLE_TEST}"
+            echo "enable_qa=${ENABLE_QA}"
+            echo "enable_beta_deploy=${ENABLE_BETA_DEPLOY}"
+            echo "enable_prod_deploy=${ENABLE_PROD_DEPLOY}"
+            echo "enable_release_please=${ENABLE_RELEASE_PLEASE}"
+            echo "release_dry_run=${RELEASE_DRY_RUN}"
           } >> "$GITHUB_OUTPUT"
 
           # Summary for Logs
           echo "::group::Workflow Profile: ${{ inputs.run_mode || 'automated' }}"
-          echo "Build Lib: ${DO_BUILD_LIB}"
-          echo "Build Docs: ${DO_BUILD_DOCS}"
-          echo "Run Tests: ${DO_TEST}"
-          echo "Run QA: ${DO_QA}"
-          echo "Deploy Beta: ${DO_BETA_DEPLOY}"
-          echo "Process Release: ${DO_RELEASE}"
-          echo "Dry Run: ${IS_DRY_RUN}"
+          echo "Build Lib: ${ENABLE_BUILD_LIB}"
+          echo "Build Docs: ${ENABLE_BUILD_DOCS}"
+          echo "Run Tests: ${ENABLE_TEST}"
+          echo "Run QA: ${ENABLE_QA}"
+          echo "Deploy Beta: ${ENABLE_BETA_DEPLOY}"
+          echo "Deploy Prod: ${ENABLE_PROD_DEPLOY}"
+          echo "Enable Release-Please: ${ENABLE_RELEASE_PLEASE}"
+          echo "Release Dry-Run: ${RELEASE_DRY_RUN}"
           echo "::endgroup::"
 
       - id: checkout
@@ -168,55 +192,53 @@ jobs:
         uses: ./.github/actions/setup-environment
       - id: create-draft-release
         name: Create Draft Release
-        if: ${{ github.event_name != 'pull_request' && (steps.profile.outputs.do_release == 'true') }}
+        if: ${{ github.event_name != 'pull_request' && (steps.profile.outputs.enable_release_please == 'true') }}
         uses: googleapis/release-please-action@5c625bfb5d1ff62eadeeb3772007f7f66fdcf071 # v4
       - id: build-lib
-        if: ${{ steps.profile.outputs.do_build_lib == 'true' || steps.profile.outputs.do_beta_deploy == 'true' }}
+        if: ${{ steps.profile.outputs.enable_build_lib == 'true' || steps.profile.outputs.enable_beta_deploy == 'true' }}
         name: Build lib and examples
         run: devbox run npm run ci:build
-      - id: maintenance-check
-        name: Maintenance Check (PRs)
+      - id: maintenance-fix
+        name: Maintenance Auto-Fix (PRs)
         if: ${{ github.event_name == 'pull_request' }}
         run: |
           devbox run npm run all:update
           devbox run npm run lint-fix
           if [ -n "$(git status --porcelain)" ]; then
             if [ "${ACT}" == "true" ]; then
-              echo "::warning::Maintenance check reported drift, but skipping failure in local 'act' run."
+              echo "::warning::Maintenance drift detected, but skipping auto-commit in local 'act' run."
+              git status --porcelain
+              git --no-pager diff
             else
-              echo "::error::Maintenance check failed: The generated artifacts (docs, examples, schema, etc.) are out of sync or formatting is incorrect."
-              echo "To fix this locally, run: npm run all:pre-commit"
-              EXIT_CODE=1
+              git config user.name "github-actions[bot]"
+              git config user.email "github-actions[bot]@users.noreply.github.com"
+              git add .
+              git commit -m "chore(ci): auto-sync maintenance artifacts [skip ci]"
+              git push
+              echo "::notice::Maintenance drift detected and automatically fixed via auto-commit."
             fi
-            echo "::group::Git Status"
-            git status --porcelain
-            echo "::endgroup::"
-            echo "::group::Git Diff"
-            git --no-pager diff
-            echo "::endgroup::"
-            exit ${EXIT_CODE:-0}
           fi
       - id: test
-        if: ${{ steps.profile.outputs.do_test == 'true' }}
+        if: ${{ steps.profile.outputs.enable_test == 'true' }}
         name: Test
         run: devbox run npm run ci:test
       - id: build-docs
-        if: ${{ steps.profile.outputs.do_build_docs == 'true' }}
+        if: ${{ steps.profile.outputs.enable_build_docs == 'true' }}
         name: Build docs
         run: devbox run npm run ci:docs
       - id: qa-coveralls
-        if: ${{ steps.profile.outputs.do_qa == 'true' }}
+        if: ${{ steps.profile.outputs.enable_qa == 'true' }}
         name: QA Coveralls
         uses: coverallsapp/github-action@5cbfd81b66ca5d10c19b062c04de0199c215fb6e # v2
       - id: qa-sonarqube
-        if: ${{ steps.profile.outputs.do_qa == 'true' }}
+        if: ${{ steps.profile.outputs.enable_qa == 'true' }}
         name: QA SonarQube
         uses: SonarSource/sonarqube-scan-action@299e4b793aaa83bf2aba7c9c14bedbb485688ec4 # v7
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       - id: deploy-lib-beta
-        if: ${{ steps.profile.outputs.do_beta_deploy == 'true' }}
+        if: ${{ steps.profile.outputs.enable_beta_deploy == 'true' }}
         name: Deploy Lib (Beta)
         run: |
           if [ -z "${CLASP_LIB_SCRIPT_ID}" ]; then
@@ -225,7 +247,7 @@ jobs:
           fi
           npm run push:lib
       - id: deploy-examples-beta
-        if: ${{ steps.profile.outputs.do_beta_deploy == 'true' }}
+        if: ${{ steps.profile.outputs.enable_beta_deploy == 'true' }}
         name: Deploy Examples (Beta)
         run: |
           if [ -z "${CLASP_EXAMPLES_SCRIPT_ID}" ]; then
@@ -238,7 +260,7 @@ jobs:
     name: "Production Release"
     needs: qa
     # Use outputs from qa job
-    if: ${{ github.event_name != 'pull_request' && (needs.qa.outputs.release_created == 'true' || needs.qa.outputs.do_release == 'true') }}
+    if: ${{ github.event_name != 'pull_request' && (needs.qa.outputs.release_created == 'true' || needs.qa.outputs.enable_prod_deploy == 'true') }}
     runs-on: ubuntu-latest
     environment:
       name: prod
@@ -270,16 +292,16 @@ jobs:
         name: Setup Environment
         uses: ./.github/actions/setup-environment
       - id: deploy-lib-release
-        if: ${{ needs.qa.outputs.release_created == 'true' || (needs.qa.outputs.do_release == 'true' && needs.qa.outputs.is_dry_run == 'false') }}
+        if: ${{ needs.qa.outputs.release_created == 'true' || (needs.qa.outputs.enable_prod_deploy == 'true' && needs.qa.outputs.release_dry_run == 'false') }}
         name: Deploy Lib (Release)
         run: npm run deploy
         env:
           CLASP_DEPLOYMENT_NAME: ${{ needs.qa.outputs.tag_name }}
       - id: update-release-notes
-        if: ${{ needs.qa.outputs.do_release == 'true' }}
+        if: ${{ needs.qa.outputs.enable_release_please == 'true' }}
         name: Update Draft Release Notes
         run: |
-          if [ "${{ needs.qa.outputs.is_dry_run }}" == "true" ]; then
+          if [ "${{ needs.qa.outputs.release_dry_run }}" == "true" ]; then
              npm run release:preview -- "${{ needs.qa.outputs.tag_name || 'latest' }}"
           else
              npm run release:update -- "${{ needs.qa.outputs.tag_name || 'latest' }}"
@@ -288,14 +310,14 @@ jobs:
           CLASP_DEPLOYMENT_NAME: ${{ needs.qa.outputs.tag_name }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - id: auto-publish-patch
-        if: ${{ needs.qa.outputs.release_created == 'true' && needs.qa.outputs.patch != '0' && needs.qa.outputs.is_dry_run == 'false' }}
+        if: ${{ needs.qa.outputs.release_created == 'true' && needs.qa.outputs.patch != '0' && needs.qa.outputs.release_dry_run == 'false' }}
         name: Auto-publish Patch Release
         run: |
           npm run release:publish -- "${{ needs.qa.outputs.tag_name }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - id: deploy-docs
-        if: ${{ needs.qa.outputs.do_build_docs == 'true' && (github.event_name == 'push' && github.ref == 'refs/heads/main') }}
+        if: ${{ needs.qa.outputs.enable_build_docs == 'true' && (github.event_name == 'push' && github.ref == 'refs/heads/main') }}
         name: Deploy docs
         uses: JamesIves/github-pages-deploy-action@d92aa235d04922e8f08b40ce78cc5442fcfbfa2f # v4
         with:
