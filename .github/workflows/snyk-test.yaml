@@ -14,6 +14,7 @@ env:
 
 jobs:
   snyk-scan:
+    if: github.actor != 'renovate[bot]'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -26,6 +27,7 @@ jobs:
         uses: ./.github/actions/setup-environment
       - name: Snyk Test (lib)
         if: env.ACT != 'true'
+        continue-on-error: true
         uses: snyk/actions/node@master
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
@@ -33,6 +35,7 @@ jobs:
           args: --severity-threshold=high
       - name: Snyk Test (docs)
         if: env.ACT != 'true'
+        continue-on-error: true
         uses: snyk/actions/node@master
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}

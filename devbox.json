@@ -6,10 +6,7 @@
     "gettext@0.25.1",
     "gh@2.89.0",
     "gojq@0.12.19",
-    "gomplate@4.3.3",
-    "nodejs@24.12.0",
-    "qpdf@12.3.2",
-    "wkhtmltopdf-bin@0"
+    "nodejs@24.12.0"
   ],
   "env": {
     "PATH": "$PATH:$PWD/node_modules/.bin"

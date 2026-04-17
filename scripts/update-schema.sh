@@ -26,12 +26,6 @@ function genSchema() {
     --validationKeywords \
     2> >(grep -vE "initializer is expression|unknown initializer" >&2) \
   >"${schemaPath}/config-schema-${schemaName}.json"
-  # | tee "${schemaPath}/config-schema-${schemaName}.json" \
-  # | gojq -f scripts/update-schema.jq \
-  # >"${schemaPath}/config-schema-${schemaName}-annotated.json"
-  # npx wetzel -w \
-  #   "${schemaPath}/config-schema-${schemaName}.json" \
-  #   >"docs/config-schema-${schemaName}.md"
 }
 
 genSchema V1Config v1 "GMail2GDrive Config (v1)"

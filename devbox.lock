@@ -246,8 +246,8 @@
       }
     },
     "github:NixOS/nixpkgs/nixpkgs-unstable": {
-      "last_modified": "2026-04-11T06:17:25Z",
-      "resolved": "github:NixOS/nixpkgs/13043924aaa7375ce482ebe2494338e058282925?lastModified=1775888245&narHash=sha256-nwASzrRDD1JBEu%2Fo8ekKYEXm%2FoJW6EMCzCRdrwcLe90%3D"
+      "last_modified": "2026-04-15T12:22:54Z",
+      "resolved": "github:NixOS/nixpkgs/566acc07c54dc807f91625bb286cb9b321b5f42a?lastModified=1776255774&narHash=sha256-psVTpH6PK3q1htMJpmdz1hLF5pQgEshu7gQWgKO6t6Y%3D"
     },
     "gojq@0.12.19": {
       "last_modified": "2026-04-02T10:35:47Z",
@@ -294,54 +294,6 @@
             }
           ],
           "store_path": "/nix/store/yvi0hpwrgln317ysl48ambd373d25c6f-gojq-0.12.19"
-        }
-      }
-    },
-    "gomplate@4.3.3": {
-      "last_modified": "2026-02-23T15:40:43Z",
-      "resolved": "github:NixOS/nixpkgs/80d901ec0377e19ac3f7bb8c035201e2e098cc97#gomplate",
-      "source": "devbox-search",
-      "version": "4.3.3",
-      "systems": {
-        "aarch64-darwin": {
-          "outputs": [
-            {
-              "name": "out",
-              "path": "/nix/store/h7mx147xwa54xhway7fvmix3y9mlxwzi-gomplate-4.3.3",
-              "default": true
-            }
-          ],
-          "store_path": "/nix/store/h7mx147xwa54xhway7fvmix3y9mlxwzi-gomplate-4.3.3"
-        },
-        "aarch64-linux": {
-          "outputs": [
-            {
-              "name": "out",
-              "path": "/nix/store/iiyfcrnddpzvbx4jasblmiyba46j4jzj-gomplate-4.3.3",
-              "default": true
-            }
-          ],
-          "store_path": "/nix/store/iiyfcrnddpzvbx4jasblmiyba46j4jzj-gomplate-4.3.3"
-        },
-        "x86_64-darwin": {
-          "outputs": [
-            {
-              "name": "out",
-              "path": "/nix/store/2r8y9mrfis4410pfjvig7g6lm2qhwvlv-gomplate-4.3.3",
-              "default": true
-            }
-          ],
-          "store_path": "/nix/store/2r8y9mrfis4410pfjvig7g6lm2qhwvlv-gomplate-4.3.3"
-        },
-        "x86_64-linux": {
-          "outputs": [
-            {
-              "name": "out",
-              "path": "/nix/store/xm7ca21mgv5dycrcyvq87m3sppa4chhi-gomplate-4.3.3",
-              "default": true
-            }
-          ],
-          "store_path": "/nix/store/xm7ca21mgv5dycrcyvq87m3sppa4chhi-gomplate-4.3.3"
         }
       }
     },
@@ -423,140 +375,6 @@
             }
           ],
           "store_path": "/nix/store/9z1v3wyrxp6fpyzw21lcakd5w7aknzyc-nodejs-24.12.0"
-        }
-      }
-    },
-    "qpdf@12.3.2": {
-      "last_modified": "2026-04-07T16:32:49Z",
-      "resolved": "github:NixOS/nixpkgs/dfd9566f82a6e1d55c30f861879186440614696e#qpdf",
-      "source": "devbox-search",
-      "version": "12.3.2",
-      "systems": {
-        "aarch64-darwin": {
-          "outputs": [
-            {
-              "name": "bin",
-              "path": "/nix/store/9533dvn7r9p41hphb05ypy904llypmg3-qpdf-12.3.2-bin",
-              "default": true
-            },
-            {
-              "name": "man",
-              "path": "/nix/store/92nj83dl3ajbmkyvhbg8y7j52dw2fpmn-qpdf-12.3.2-man",
-              "default": true
-            },
-            {
-              "name": "doc",
-              "path": "/nix/store/c5ckvm7wv5jsr79c715mz7bbv6asbc4k-qpdf-12.3.2-doc"
-            },
-            {
-              "name": "lib",
-              "path": "/nix/store/knlm7flav387cyyvmmgg219pcsapccvr-qpdf-12.3.2-lib"
-            },
-            {
-              "name": "out",
-              "path": "/nix/store/61y4lymagnlr8145zw3ly1x72d3qzzvp-qpdf-12.3.2"
-            }
-          ],
-          "store_path": "/nix/store/9533dvn7r9p41hphb05ypy904llypmg3-qpdf-12.3.2-bin"
-        },
-        "aarch64-linux": {
-          "outputs": [
-            {
-              "name": "bin",
-              "path": "/nix/store/f2qy0am39n3my1fcx69pp8qj0fyjv5r6-qpdf-12.3.2-bin",
-              "default": true
-            },
-            {
-              "name": "man",
-              "path": "/nix/store/5qmbrgks9v84r9p2s1hqbagiwr7rlvpa-qpdf-12.3.2-man",
-              "default": true
-            },
-            {
-              "name": "doc",
-              "path": "/nix/store/w2275m44hs4q0mvayqvcx7rylm22nmc3-qpdf-12.3.2-doc"
-            },
-            {
-              "name": "lib",
-              "path": "/nix/store/rviigdpk5rw5hj9r96zl86mgk4kpfxyv-qpdf-12.3.2-lib"
-            },
-            {
-              "name": "out",
-              "path": "/nix/store/2qly5v322hsgrg80knhjgrs0rp06y44f-qpdf-12.3.2"
-            }
-          ],
-          "store_path": "/nix/store/f2qy0am39n3my1fcx69pp8qj0fyjv5r6-qpdf-12.3.2-bin"
-        },
-        "x86_64-darwin": {
-          "outputs": [
-            {
-              "name": "bin",
-              "path": "/nix/store/kcw5l5jxdyyh9204hnp44203fs36dbzw-qpdf-12.3.2-bin",
-              "default": true
-            },
-            {
-              "name": "man",
-              "path": "/nix/store/grsjisqvafbscz8pplrnhkr5cr9z9321-qpdf-12.3.2-man",
-              "default": true
-            },
-            {
-              "name": "out",
-              "path": "/nix/store/4ffz1m1v98wlhyvzwwmw85mvqapbs28s-qpdf-12.3.2"
-            },
-            {
-              "name": "doc",
-              "path": "/nix/store/xjpzbykgdmdb9ijvac4nnbc8r3npx3yz-qpdf-12.3.2-doc"
-            },
-            {
-              "name": "lib",
-              "path": "/nix/store/pa9jxsg54sblz8j0m6g35ly5mdbvxz2w-qpdf-12.3.2-lib"
-            }
-          ],
-          "store_path": "/nix/store/kcw5l5jxdyyh9204hnp44203fs36dbzw-qpdf-12.3.2-bin"
-        },
-        "x86_64-linux": {
-          "outputs": [
-            {
-              "name": "bin",
-              "path": "/nix/store/idz3hpv1k4vvnc6h1569iwaxpaww2wqm-qpdf-12.3.2-bin",
-              "default": true
-            },
-            {
-              "name": "man",
-              "path": "/nix/store/k72ai1k27yrl0iaybk9764xwkb1gvsxl-qpdf-12.3.2-man",
-              "default": true
-            },
-            {
-              "name": "doc",
-              "path": "/nix/store/dc0011nhgf28w48id6j4wgv9zg7i49b5-qpdf-12.3.2-doc"
-            },
-            {
-              "name": "lib",
-              "path": "/nix/store/b8hs3k92mkcdxbwishgcmmi3pq4zvg0l-qpdf-12.3.2-lib"
-            },
-            {
-              "name": "out",
-              "path": "/nix/store/cwidg78bqc73asdbzv5p67dw0kg4lk2n-qpdf-12.3.2"
-            }
-          ],
-          "store_path": "/nix/store/idz3hpv1k4vvnc6h1569iwaxpaww2wqm-qpdf-12.3.2-bin"
-        }
-      }
-    },
-    "wkhtmltopdf-bin@0": {
-      "last_modified": "2024-07-07T07:43:47Z",
-      "resolved": "github:NixOS/nixpkgs/b60793b86201040d9dee019a05089a9150d08b5b#wkhtmltopdf-bin",
-      "source": "devbox-search",
-      "version": "0.12.6-3",
-      "systems": {
-        "x86_64-linux": {
-          "outputs": [
-            {
-              "name": "out",
-              "path": "/nix/store/2k9r02kjzr0mm6zdjwsc7gv6pfyhfzzi-wkhtmltopdf-bin-0.12.6-3",
-              "default": true
-            }
-          ],
-          "store_path": "/nix/store/2k9r02kjzr0mm6zdjwsc7gv6pfyhfzzi-wkhtmltopdf-bin-0.12.6-3"
         }
       }
     }

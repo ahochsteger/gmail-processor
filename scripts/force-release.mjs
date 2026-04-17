@@ -33,12 +33,16 @@ const level = process.argv[2] || "patch"
 const validLevels = ["major", "minor", "patch"]
 
 if (!validLevels.includes(level)) {
-  error(`Invalid increment level: "${level}". Valid levels: ${validLevels.join(", ")}`)
+  error(
+    `Invalid increment level: "${level}". Valid levels: ${validLevels.join(", ")}`,
+  )
 }
 
 async function main() {
   if (!fs.existsSync(MANIFEST_PATH)) {
-    error(`${MANIFEST_PATH} not found. Ensure you are running this from the repository root.`)
+    error(
+      `${MANIFEST_PATH} not found. Ensure you are running this from the repository root.`,
+    )
   }
 
   let manifest
@@ -86,7 +90,9 @@ async function main() {
     log(`SUCCESS: Created force-${level} commit for ${nextVersion}`)
     log("Push this commit to trigger the release-please PR.")
   } catch (err) {
-    error("Failed to create git commit. Ensure you have git installed and are in a git repository.")
+    error(
+      "Failed to create git commit. Ensure you have git installed and are in a git repository.",
+    )
   }
 }
 
