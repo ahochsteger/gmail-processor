@@ -4,7 +4,8 @@
   "packages": {
     ".": {
       "release-type": "node",
-      "package-name": "gmail-processor"
+      "package-name": "gmail-processor",
+      "draft": true
     }
   },
   "changelog-sections": [

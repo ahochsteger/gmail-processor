@@ -1,0 +1,40 @@
+#!/bin/sh
+# AI-Assisted Push Detection
+
+# Check if we are in a human-authorized session
+if [ "${ALLOW_AI_PUSH}" = "true" ]; then
+  echo "AI-Assisted push authorized by human maintainer."
+  exit 0
+fi
+
+# Get the range of commits being pushed
+# See: https://git-scm.com/docs/githooks#_pre_push
+while read local_ref local_sha remote_ref remote_sha
+do
+  if [ "$local_sha" = "0000000000000000000000000000000000000000" ]; then
+    # Handle deletion
+    continue
+  fi
+
+  if [ "$remote_sha" = "0000000000000000000000000000000000000000" ]; then
+    # New branch, check all commits on local_sha not in origin/main
+    range="origin/main..$local_sha"
+  else
+    range="$remote_sha..$local_sha"
+  fi
+
+  # Check for AI attribution in the commit messages
+  if git log "$range" --format=%B | grep -Eq "AI-Assisted: true|AI-Tool:" ; then
+    echo "--------------------------------------------------------------------------------"
+    echo "CRITICAL SAFETY WARNING: AI attribution detected in push range: $range"
+    echo "As per the 'Safe Git Protocol' (AGENTS.md), AI agents are strictly forbidden"
+    echo "from performing Git pushes."
+    echo ""
+    echo "If you are a HUMAN maintainer, please set ALLOW_AI_PUSH=true to proceed."
+    echo "Example: ALLOW_AI_PUSH=true git push"
+    echo "--------------------------------------------------------------------------------"
+    exit 1
+  fi
+done
+
+exit 0

@@ -9,6 +9,19 @@ if ! echo "${commit_msg}" | grep -Eq "^(build|chore|ci|docs|feat|feat!|fix|perf|
 
     exit 1 
 
-fi 
+# AI-Assisted Change Detection
+if echo "${commit_msg}" | grep -Eq "AI-Assisted: true|AI-Tool:" ; then
+  if [ "${ALLOW_AI_COMMIT}" != "true" ]; then
+    echo "--------------------------------------------------------------------------------"
+    echo "CRITICAL SAFETY WARNING: AI attribution detected in commit message."
+    echo "As per the 'Safe Git Protocol' (AGENTS.md), AI agents are strictly forbidden"
+    echo "from performing Git modifications."
+    echo ""
+    echo "If you are a HUMAN maintainer, please set ALLOW_AI_COMMIT=true to proceed."
+    echo "Example: ALLOW_AI_COMMIT=true git commit -m \"...\""
+    echo "--------------------------------------------------------------------------------"
+    exit 1
+  fi
+fi
 
 echo "Commit message is valid!"

@@ -145,13 +145,6 @@ jobs:
         run: |
           npm run release:publish -- "${{ inputs.tag || 'latest' }}"
 
-      - id: auto-publish-patch
-        if: ${{ inputs.job == 'ci-release' && inputs.release_created && inputs.patch_count != '0' && !inputs.is_dry_run }}
-        name: Auto-publish Patch Release
-        run: |
-          npm run release:publish -- "${{ inputs.tag }}"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # --- Documentation ---
 

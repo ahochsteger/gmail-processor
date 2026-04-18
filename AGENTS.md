@@ -1,6 +1,12 @@
 # AI Agent Guidelines for Gmail Processor
 
-This document provides essential information for AI agents to understand the project's structure, architecture, and conventions, ensuring changes are consistent with the established patterns.
+This document provides essential information for AI agents to understand the project's structure, architecture, and conventions.
+
+> [!CAUTION]
+> **Strict Safe Git Protocol**: AI agents are strictly PROHIBITED from modifying the Git database.
+> - **Zero-Push/Commit Policy**: You MUST NOT run `git add`, `git commit`, `git push`, or any other state-modifying Git commands.
+> - **Local Prep Only**: You are only permitted to prepare and preview local file changes (HTML, JS, CSS, TS, JSON, MD, etc.).
+> - **Human-Decision Mandatory**: All Git write operations are exclusively reserved for human maintainers after manual review of your prepared changes.
 
 ## Agent Mission & Knowledge Continuity
 
