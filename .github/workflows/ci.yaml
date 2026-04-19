@@ -69,6 +69,7 @@ jobs:
       release_created: ${{ steps.create-draft-release.outputs.release_created }}
       tag_name: ${{ steps.create-draft-release.outputs.tag_name }}
       patch: ${{ steps.create-draft-release.outputs.patch }}
+      release_pr: ${{ steps.create-draft-release.outputs.pr }}
       # Profile Flags
       enable_build_lib: ${{ steps.profile.outputs.enable_build_lib }}
       enable_build_docs: ${{ steps.profile.outputs.enable_build_docs }}
@@ -254,4 +255,15 @@ jobs:
       is_dry_run: ${{ needs.qa.outputs.release_dry_run == 'true' }}
       enable_release_please: ${{ needs.qa.outputs.enable_release_please == 'true' }}
       enable_build_docs: ${{ needs.qa.outputs.enable_build_docs == 'true' }}
+    secrets: inherit
+
+  enrich-release:
+    name: "Enrich Release Notes"
+    needs: qa
+    if: ${{ github.event_name != 'pull_request' && needs.qa.outputs.enable_release_please == 'true' && needs.qa.outputs.release_pr != '' && needs.qa.outputs.release_pr != 'null' && needs.qa.outputs.release_created != 'true' }}
+    uses: ./.github/workflows/_release-worker.yaml
+    with:
+      job: update-release
+      environment: prod
+      pr: ${{ fromJSON(needs.qa.outputs.release_pr).number }}
     secrets: inherit

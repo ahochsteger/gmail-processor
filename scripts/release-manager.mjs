@@ -129,13 +129,28 @@ function fetchRoadmapFromFile(filename) {
 
   for (const line of lines) {
     const cleanLine = line.trim()
-    if (/^#+ (WIP|TODO|Tasks|Next Steps)/i.test(cleanLine)) {
-      capturing = true
-      continue
+    const headerMatch = cleanLine.match(/^(#+)\s+(.*)$/)
+    if (headerMatch) {
+      const level = headerMatch[1].length
+      const title = headerMatch[2]
+      if (/^(WIP|TODO|Tasks|Next Steps|Phase)/i.test(title)) {
+        capturing = true
+        continue
+      } else if (capturing && level <= 2) {
+        // Break on major sections, but allow sub-sections (level 3+)
+        break
+      }
     }
-    if (capturing && /^#+ /.test(cleanLine)) break // Next section
-    if (capturing && cleanLine.startsWith("- ")) {
-      items.push(cleanLine)
+    if (capturing && (cleanLine.startsWith("- ") || cleanLine.startsWith("| **"))) {
+      let item = cleanLine
+      if (cleanLine.startsWith("| **")) {
+        // Extract content between bold markers in the first column
+        const match = cleanLine.match(/\|\s*\*\*(.*?)\*\*\s*(?:—|:)?\s*(.*?)\s*\|/)
+        if (match) {
+          item = `- ${match[1]}${match[2] ? `: ${match[2]}` : ""}`
+        }
+      }
+      items.push(item)
     }
     if (items.length >= 10) break
   }
@@ -1093,11 +1108,15 @@ async function main() {
 
     // 2. Gather roadmap
     let roadmap = []
-    if (roadmapMdFile) {
-      startTask(`Fetch roadmap from file: ${roadmapMdFile}`)
-      const fileRoadmap = fetchRoadmapFromFile(roadmapMdFile)
+    const defaultRoadmapFile = "ROADMAP.md"
+    const activeRoadmapFile =
+      roadmapMdFile || (fs.existsSync(defaultRoadmapFile) ? defaultRoadmapFile : null)
+
+    if (activeRoadmapFile) {
+      startTask(`Fetch roadmap from file: ${activeRoadmapFile}`)
+      const fileRoadmap = fetchRoadmapFromFile(activeRoadmapFile)
       if (fileRoadmap)
-        roadmap.push(`FROM FILE (${roadmapMdFile}):\n${fileRoadmap}`)
+        roadmap.push(`FROM FILE (${activeRoadmapFile}):\n${fileRoadmap}`)
       endTask(`Fetch roadmap from file`)
     }
     if (roadmapIssuesTag || roadmapIssuesTop || roadmapIssuesAll) {
