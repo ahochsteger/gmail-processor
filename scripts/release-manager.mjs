@@ -141,11 +141,16 @@ function fetchRoadmapFromFile(filename) {
         break
       }
     }
-    if (capturing && (cleanLine.startsWith("- ") || cleanLine.startsWith("| **"))) {
+    if (
+      capturing &&
+      (cleanLine.startsWith("- ") || cleanLine.startsWith("| **"))
+    ) {
       let item = cleanLine
       if (cleanLine.startsWith("| **")) {
         // Extract content between bold markers in the first column
-        const match = cleanLine.match(/\|\s*\*\*(.*?)\*\*\s*(?:—|:)?\s*(.*?)\s*\|/)
+        const match = cleanLine.match(
+          /\|\s*\*\*(.*?)\*\*\s*(?:—|:)?\s*(.*?)\s*\|/,
+        )
         if (match) {
           item = `- ${match[1]}${match[2] ? `: ${match[2]}` : ""}`
         }
@@ -1110,7 +1115,8 @@ async function main() {
     let roadmap = []
     const defaultRoadmapFile = "ROADMAP.md"
     const activeRoadmapFile =
-      roadmapMdFile || (fs.existsSync(defaultRoadmapFile) ? defaultRoadmapFile : null)
+      roadmapMdFile ||
+      (fs.existsSync(defaultRoadmapFile) ? defaultRoadmapFile : null)
 
     if (activeRoadmapFile) {
       startTask(`Fetch roadmap from file: ${activeRoadmapFile}`)

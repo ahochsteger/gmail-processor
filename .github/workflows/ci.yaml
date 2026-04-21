@@ -34,6 +34,10 @@ on:
         description: "Dry-run release override (Safe)"
         type: boolean
         default: false
+      enable_maintenance_fix:
+        description: "Enable automated maintenance auto-fix (DANGEROUS)"
+        type: boolean
+        default: false
 
 env:
   ACT: false
@@ -79,6 +83,7 @@ jobs:
       enable_prod_deploy: ${{ steps.profile.outputs.enable_prod_deploy }}
       enable_release_please: ${{ steps.profile.outputs.enable_release_please }}
       release_dry_run: ${{ steps.profile.outputs.release_dry_run }}
+      enable_maintenance_fix: ${{ steps.profile.outputs.enable_maintenance_fix }}
     # Environment secrets are now centralized in _release-worker.yaml
     # They are only mapped here if explicitly needed by a local step.
     steps:
@@ -157,6 +162,7 @@ jobs:
             echo "enable_prod_deploy=${ENABLE_PROD_DEPLOY}"
             echo "enable_release_please=${ENABLE_RELEASE_PLEASE}"
             echo "release_dry_run=${RELEASE_DRY_RUN}"
+            echo "enable_maintenance_fix=${{ inputs.enable_maintenance_fix || 'false' }}"
           } >> "$GITHUB_OUTPUT"
 
           # Summary for Logs
@@ -191,7 +197,7 @@ jobs:
         run: devbox run npm run ci:build
       - id: maintenance-fix
         name: Maintenance Auto-Fix (PRs)
-        if: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository }}
+        if: ${{ steps.profile.outputs.enable_maintenance_fix == 'true' && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository }}
         env:
           HEAD_REF: ${{ github.head_ref }}
         run: |

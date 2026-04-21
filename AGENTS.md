@@ -4,6 +4,7 @@ This document provides essential information for AI agents to understand the pro
 
 > [!CAUTION]
 > **Strict Safe Git Protocol**: AI agents are strictly PROHIBITED from modifying the Git database.
+>
 > - **Zero-Push/Commit Policy**: You MUST NOT run `git add`, `git commit`, `git push`, or any other state-modifying Git commands.
 > - **Local Prep Only**: You are only permitted to prepare and preview local file changes (HTML, JS, CSS, TS, JSON, MD, etc.).
 > - **Human-Decision Mandatory**: All Git write operations are exclusively reserved for human maintainers after manual review of your prepared changes.
@@ -353,8 +354,9 @@ The project uses Renovate to automate dependency updates with a focus on noise r
 
 #### Maintenance Automation (CI)
 
-The CI pipeline (`ci.yaml`) includes a **Maintenance Check** step that triggers on all Pull Requests (including Renovate). It ensures that the project remains in a synchronized state:
+The CI pipeline (`ci.yaml`) includes a **Maintenance Auto-Fix** step that can automatically synchronize artifacts.
 
-- Automatically runs `npm run all:update` and `npm run lint-fix`.
-- Fails the build if any files are out of sync or formatting has drifted.
-- **Action Required**: If a Renovate PR fails this check, run `npm run all:pre-commit` locally to synchronize artifacts and push the changes.
+- **Toggle**: This feature is controlled by the `enable_maintenance_fix` workflow input and is **DISABLED** by default to ensure pipeline stability.
+- **Auto-Fix Logic**: When enabled, it runs `npm run all:update` and `npm run lint-fix`, then auto-commits and pushes changes back to the PR branch.
+- **Permission Requirement**: Note that the CI DOES NOT have `workflows: write` permission for security reasons. If maintenance scripts (like `lint-fix`) modify any files in `.github/workflows/`, the auto-commit will fail, and those changes must be pushed manually by a human.
+- **Manual Action Required**: Since auto-fix is disabled by default (and restricted for workflow files), if a PR (e.g., from Renovate) fails the integrity check or shows drift, you MUST run `npm run all:pre-commit` locally and push the changes manually.
