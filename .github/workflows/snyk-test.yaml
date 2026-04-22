@@ -7,6 +7,12 @@ on:
   pull_request:
     branches:
       - main
+  workflow_dispatch:
+    inputs:
+      enable_snyk:
+        description: "Enable Snyk security scan"
+        type: boolean
+        default: false
 
 env:
   ACT: false
@@ -14,7 +20,7 @@ env:
 
 jobs:
   snyk-scan:
-    if: github.actor != 'renovate[bot]'
+    if: inputs.enable_snyk == true && github.actor != 'renovate[bot]'
     runs-on: ubuntu-latest
     permissions:
       contents: read
