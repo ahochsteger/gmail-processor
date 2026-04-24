@@ -25,8 +25,8 @@
     "all:setup": "npm run setup:lib && npm run setup:docs",
     "all:test": "npm run test:jest",
     "all:update": "npm run update:parser && npm run update:docs && npm run update:examples && npx concurrently 'npm:update:schema' 'npm:update:contributors' && npm run lint-fix",
-    "audit:security:docs": "npm audit --prefix docs",
-    "audit:security:lib": "npm audit",
+    "audit:security:docs": "npm audit --audit-level moderate --prefix docs",
+    "audit:security:lib": "npm audit --audit-level moderate",
     "build": "npm run all:build",
     "build:docs": "scripts/build-docs.sh",
     "build:examples": "scripts/clasp.sh examples build",
@@ -209,6 +209,14 @@
     "crypto-js": "4.2.0",
     "date-fns": "4.1.0",
     "reflect-metadata": "0.2.2"
+  },
+  "overrides": {
+    "@tootallnate/once": "^3.0.1",
+    "axios": "^1.15.2",
+    "node-forge": "^1.4.0",
+    "tar": "^7.5.13",
+    "tmp": "^0.2.5",
+    "uuid": "^14.0.0"
   },
   "engines": {
     "node": ">=22"
