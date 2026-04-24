@@ -19,7 +19,7 @@ runs:
 
     - id: cache-npm
       name: Cache NPM Global
-      uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+      uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
       with:
         path: ~/.npm
         key: ${{ runner.os }}-npm-${{ hashFiles('package-lock.json', 'docs/package-lock.json') }}
@@ -28,7 +28,7 @@ runs:
 
     - id: cache-jest
       name: Cache Jest Transformations
-      uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+      uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
       with:
         path: .jest-cache
         key: ${{ runner.os }}-jest-${{ hashFiles('package-lock.json') }}
@@ -37,7 +37,7 @@ runs:
 
     - id: cache-docs
       name: Cache Docusaurus Metadata
-      uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+      uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
       with:
         path: docs/.docusaurus
         key: ${{ runner.os }}-docs-${{ hashFiles('docs/package-lock.json') }}
