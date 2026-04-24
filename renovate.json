@@ -9,10 +9,12 @@
   "labels": ["dependencies"],
   "lockFileMaintenance": {
     "enabled": true,
-    "schedule": ["before 5am on monday"]
+    "schedule": ["before 8am on saturday"]
   },
   "osvVulnerabilityAlerts": true,
-  "schedule": ["before 5am on monday"],
+  "minimumReleaseAge": "7 days",
+  "internalChecksFilter": "strict",
+  "schedule": ["before 8am on saturday"],
   "packageRules": [
     {
       "description": "Group all non-major dependencies into a single PR for noise reduction",
@@ -27,6 +29,7 @@
       "matchUpdateTypes": ["vulnerability"],
       "addLabels": ["security"],
       "prPriority": 100,
+      "minimumReleaseAge": "0 days",
       "automerge": true
     },
     {

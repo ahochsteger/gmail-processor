@@ -217,6 +217,10 @@ jobs:
               echo "::notice::Maintenance drift detected and automatically fixed via auto-commit."
             fi
           fi
+      - id: audit-security
+        if: ${{ steps.profile.outputs.enable_qa == 'true' }}
+        name: Audit Security
+        run: devbox run npm run all:audit-security
       - id: test
         if: ${{ steps.profile.outputs.enable_test == 'true' }}
         name: Test
