@@ -190,7 +190,7 @@ jobs:
       - id: create-draft-release
         name: Create Draft Release
         if: ${{ github.event_name != 'pull_request' && (steps.profile.outputs.enable_release_please == 'true') }}
-        uses: googleapis/release-please-action@5c625bfb5d1ff62eadeeb3772007f7f66fdcf071 # v4
+        uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7 # v5
       - id: build-lib
         if: ${{ steps.profile.outputs.enable_build_lib == 'true' || steps.profile.outputs.enable_beta_deploy == 'true' }}
         name: Build lib and examples
