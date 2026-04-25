@@ -312,11 +312,10 @@ The release process is managed by `scripts/release-manager.mjs`, which orchestra
 
 ### Release Workflow Lifecycle
 
-1.  **PR & Draft Creation**: `release-please` automatically opens a Pull Request and creates a **GitHub Draft Release**. This release is invisible to the public and serves as the staging area.
+1.  **PR & Draft Creation**: `release-please` automatically opens a **Draft Pull Request** and creates a **GitHub Draft Release**. This release is invisible to the public and serves as the staging area.
 2.  **AI Enrichment**: The `release-manager.mjs` script (triggered by CI or manually) patches the draft release with AI-generated summaries, community context, and technical metadata.
-3.  **Automatic Patch Publishing**: If the release is strictly a patch update (e.g. `v2.18.1`), CI automatically publishes the release and closes the loop without human intervention.
-4.  **Manual Verification (Minor/Major)**: For feature releases, maintainers can preview the draft release and make manual edits.
-5.  **Final Publication**: Publication for Minor/Major releases is a deliberate manual step that removes the 'draft' status and triggers community announcements.
+3.  **Manual Verification**: All releases (Patch, Minor, Major) require manual review. The maintainer must click "Ready for review" on the Draft PR, merge it, and then preview the draft release.
+4.  **Final Publication**: Publication is a deliberate manual step that removes the 'draft' status from the release and triggers community announcements.
 
 ### Core Architecture & Hardening
 

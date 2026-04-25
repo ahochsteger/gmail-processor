@@ -5,7 +5,9 @@
     ".": {
       "release-type": "node",
       "package-name": "gmail-processor",
-      "draft": true
+      "draft": true,
+      "force-tag-creation": true,
+      "draft-pull-request": true
     }
   },
   "changelog-sections": [
