@@ -1,5 +1,35 @@
 # Changelog
 
+## [2.17.2](https://github.com/ahochsteger/gmail-processor/compare/v2.17.1...v2.17.2) (2026-04-25)
+
+
+### Bug Fixes
+
+* **deps:** resolve high-severity vulnerabilities via dependency overrides ([959411a](https://github.com/ahochsteger/gmail-processor/commit/959411a77187c27aaefd50ca1371c79d0015da21))
+* **scripts:** remove undefined variable from patch check in release-manager ([#666](https://github.com/ahochsteger/gmail-processor/issues/666)) ([27bc24b](https://github.com/ahochsteger/gmail-processor/commit/27bc24b7f5ca4ba5e21f724e2af4a6008a452b61))
+
+
+### Maintenance
+
+* **ci:** automate draft release enrichment and roadmap integration ([a6c667c](https://github.com/ahochsteger/gmail-processor/commit/a6c667ca3c6a438df45461ae7db9a18a739d4e12))
+* **ci:** harden supply chain security and replace Snyk with npm audit ([335f19a](https://github.com/ahochsteger/gmail-processor/commit/335f19abdc7a11a72634951cac94993b4d16d45f))
+* **ci:** implement Safe Git Protocol and Draft-First release workflow ([0d20db0](https://github.com/ahochsteger/gmail-processor/commit/0d20db08e4d074e5ab7fd5343d841552c41e3f62))
+* **deps:** lock file maintenance ([#673](https://github.com/ahochsteger/gmail-processor/issues/673)) ([080148f](https://github.com/ahochsteger/gmail-processor/commit/080148f20503c03c1f5b66f8d496ce1cda934310))
+* **deps:** update actions/cache action to v5 ([#670](https://github.com/ahochsteger/gmail-processor/issues/670)) ([97f6762](https://github.com/ahochsteger/gmail-processor/commit/97f6762d90afe7eaaed3f2225e86e336f572c6ce))
+* **deps:** update dependency picomatch to v4 ([#671](https://github.com/ahochsteger/gmail-processor/issues/671)) ([7a04ae5](https://github.com/ahochsteger/gmail-processor/commit/7a04ae5b8a12d664a258eeca9e908a1c6b7a2e4f))
+* **deps:** update deps:docs-non-major ([#669](https://github.com/ahochsteger/gmail-processor/issues/669)) ([216e90e](https://github.com/ahochsteger/gmail-processor/commit/216e90ee3415758a328f582f509134752b646a89))
+* **deps:** update deps:lib-non-major ([#668](https://github.com/ahochsteger/gmail-processor/issues/668)) ([b0c1315](https://github.com/ahochsteger/gmail-processor/commit/b0c1315bfbeec079c5a3f157a9e75c110d58c5a9))
+* **deps:** update googleapis/release-please-action action to v5 ([#672](https://github.com/ahochsteger/gmail-processor/issues/672)) ([1d65b95](https://github.com/ahochsteger/gmail-processor/commit/1d65b95bef3246166045d0e76cec0ef1e761bf6c))
+* include lint-fix in all:update script ([5581b15](https://github.com/ahochsteger/gmail-processor/commit/5581b15586fc87f030d07d4eae7b11a415d3755c))
+* **release:** expand changelog visibility and update docs patch ([96a13ce](https://github.com/ahochsteger/gmail-processor/commit/96a13ce48d40591b7efd7ee1a444ed636701759b))
+
+
+### CI/CD Pipeline
+
+* add enable_snyk toggle and disable by default ([b730548](https://github.com/ahochsteger/gmail-processor/commit/b73054841bf4644a368953778808594775ac5d8c))
+* add maintenance toggle and formalize /commit-message skill ([72ccbf9](https://github.com/ahochsteger/gmail-processor/commit/72ccbf95df74e723c3ea29e3c62752ce362c258c))
+* **release:** enforce manual review for all releases and use draft PRs ([7dc970a](https://github.com/ahochsteger/gmail-processor/commit/7dc970a0216d3e0a4fa0a451fa5c34c8464d2015))
+
 ## [2.17.1](https://github.com/ahochsteger/gmail-processor/compare/v2.17.0...v2.17.1) (2026-04-17)
 
 
