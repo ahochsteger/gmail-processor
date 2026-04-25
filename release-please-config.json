@@ -9,16 +9,16 @@
     }
   },
   "changelog-sections": [
-    { "type": "feat", "section": "Features" },
-    { "type": "fix", "section": "Bug Fixes" },
-    { "type": "perf", "section": "Performance Improvements" },
-    { "type": "docs", "section": "Documentation" },
-    { "type": "revert", "section": "Reverts" },
+    { "type": "feat", "section": "Features", "hidden": false },
+    { "type": "fix", "section": "Bug Fixes", "hidden": false },
+    { "type": "perf", "section": "Performance Improvements", "hidden": false },
+    { "type": "docs", "section": "Documentation", "hidden": false },
+    { "type": "revert", "section": "Reverts", "hidden": false },
     { "type": "chore", "section": "Maintenance", "hidden": false },
     { "type": "build", "section": "Maintenance", "hidden": false },
-    { "type": "refactor", "section": "Refactorings", "hidden": true },
-    { "type": "test", "section": "Tests", "hidden": true },
-    { "type": "ci", "section": "CI/CD Pipeline", "hidden": true }
+    { "type": "refactor", "section": "Refactorings", "hidden": false },
+    { "type": "test", "section": "Tests", "hidden": false },
+    { "type": "ci", "section": "CI/CD Pipeline", "hidden": false }
   ],
   "pull-request-header": "",
   "pull-request-footer": ""
