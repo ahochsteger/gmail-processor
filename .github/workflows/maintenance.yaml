@@ -33,6 +33,8 @@ on:
 
 env:
   ACT: false
+  DEVBOX_NO_LOG_PROGRESS: 1
+  NIX_CONFIG: "quiet = true"
   DEVBOX_QUIET: 1
 
 jobs:
@@ -46,4 +48,4 @@ jobs:
         uses: ./.github/actions/setup-environment
 
       - name: Run script
-        run: devbox run npm run ${{ github.event.inputs.script }}
+        run: devbox --quiet run npm run ${{ github.event.inputs.script }}

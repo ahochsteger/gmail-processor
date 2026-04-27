@@ -41,13 +41,13 @@ on:
 
 env:
   ACT: false
-  DEVBOX_QUIET: 1
   DEVBOX_NO_LOG_PROGRESS: 1
+  NIX_CONFIG: "quiet = true"
   NIX_INSTALLER_NO_PROGRESS: 1
   NPM_CONFIG_PROGRESS: "false"
 
 jobs:
-  qa:
+  ci:
     name: "QA & Beta Test"
     if: ${{ github.event_name == 'push' || github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
@@ -176,7 +176,7 @@ jobs:
         uses: ./.github/actions/setup-environment
       - id: maintenance-verify
         name: Verify Maintenance Scripts
-        run: devbox run npm run all:maintenance
+        run: devbox --quiet run npm run all:maintenance
       - id: create-draft-release
         name: Create Draft Release
         if: ${{ github.event_name != 'pull_request' && (steps.profile.outputs.enable_release_please == 'true') }}
@@ -184,15 +184,21 @@ jobs:
       - id: build-lib
         if: ${{ steps.profile.outputs.enable_build_lib == 'true' || steps.profile.outputs.enable_beta_deploy == 'true' }}
         name: Build lib and examples
-        run: devbox run npm run ci:build
+        run: devbox --quiet run npm run ci:build
+      - name: Upload GAS artifacts
+        if: ${{ env.ACT != 'true' && (steps.profile.outputs.enable_build_lib == 'true' || steps.profile.outputs.enable_beta_deploy == 'true') }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: gas-artifacts
+          path: build/gas
       - id: maintenance-fix
         name: Maintenance Auto-Fix (PRs)
         if: ${{ steps.profile.outputs.enable_maintenance_fix == 'true' && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository }}
         env:
           HEAD_REF: ${{ github.head_ref }}
         run: |
-          devbox run npm run all:update
-          devbox run npm run lint-fix
+          devbox --quiet run npm run all:update
+          devbox --quiet run npm run lint-fix
           if [ -n "$(git status --porcelain)" ]; then
             if [ "${ACT}" == "true" ]; then
               echo "::warning::Maintenance drift detected, but skipping auto-commit in local 'act' run."
@@ -210,15 +216,21 @@ jobs:
       - id: audit-security
         if: ${{ steps.profile.outputs.enable_qa == 'true' }}
         name: Audit Security
-        run: devbox run npm run all:audit-security
+        run: devbox --quiet run npm run all:audit-security
       - id: test
         if: ${{ steps.profile.outputs.enable_test == 'true' }}
         name: Test
-        run: devbox run npm run ci:test
+        run: devbox --quiet run npm run ci:test
       - id: build-docs
         if: ${{ steps.profile.outputs.enable_build_docs == 'true' }}
         name: Build docs
-        run: devbox run npm run ci:docs
+        run: devbox --quiet run npm run ci:docs
+      - name: Upload Docs artifacts
+        if: ${{ env.ACT != 'true' && steps.profile.outputs.enable_build_docs == 'true' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: docs-artifacts
+          path: docs/build
       - id: qa-coveralls
         if: ${{ steps.profile.outputs.enable_qa == 'true' }}
         name: QA Coveralls
@@ -235,7 +247,7 @@ jobs:
         if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
         run: |
           USERS=""
-          OUTPUT=$(devbox run npx all-contributors-cli check || true)
+          OUTPUT=$(devbox --quiet run npx all-contributors-cli check || true)
           if echo "$OUTPUT" | grep -q "Missing contributors in .all-contributorsrc:"; then
             MISSING_LINE=$(echo "$OUTPUT" | grep -A 1 "Missing contributors in .all-contributorsrc:" | tail -n 1)
             IFS=',' read -r -a array <<< "$MISSING_LINE"
@@ -248,7 +260,7 @@ jobs:
           fi
           if [ -n "$USERS" ]; then
             for user in $USERS; do
-              devbox run npx all-contributors-cli add "$user" code || true
+              devbox --quiet run npx all-contributors-cli add "$user" code || true
             done
             git config --global user.name 'github-actions[bot]'
             git config --global user.email 'github-actions[bot]@users.noreply.github.com'
@@ -259,8 +271,8 @@ jobs:
 
   beta-deploy:
     name: "Beta Deployment"
-    needs: qa
-    if: ${{ github.event_name != 'pull_request' && needs.qa.outputs.enable_beta_deploy == 'true' }}
+    needs: ci
+    if: ${{ github.event_name != 'pull_request' && needs.ci.outputs.enable_beta_deploy == 'true' }}
     uses: ./.github/workflows/_release-worker.yaml
     with:
       job: beta-deploy
@@ -269,27 +281,27 @@ jobs:
 
   release:
     name: "Production Release"
-    needs: qa
-    if: ${{ github.event_name != 'pull_request' && (needs.qa.outputs.release_created == 'true' || needs.qa.outputs.enable_prod_deploy == 'true') }}
+    needs: ci
+    if: ${{ github.event_name != 'pull_request' && (needs.ci.outputs.release_created == 'true' || needs.ci.outputs.enable_prod_deploy == 'true') }}
     uses: ./.github/workflows/_release-worker.yaml
     with:
       job: ci-release
       environment: prod
-      tag: ${{ needs.qa.outputs.tag_name }}
-      release_created: ${{ needs.qa.outputs.release_created == 'true' }}
-      patch_count: ${{ needs.qa.outputs.patch }}
-      is_dry_run: ${{ needs.qa.outputs.release_dry_run == 'true' }}
-      enable_release_please: ${{ needs.qa.outputs.enable_release_please == 'true' }}
-      enable_build_docs: ${{ needs.qa.outputs.enable_build_docs == 'true' }}
+      tag: ${{ needs.ci.outputs.tag_name }}
+      release_created: ${{ needs.ci.outputs.release_created == 'true' }}
+      patch_count: ${{ needs.ci.outputs.patch }}
+      is_dry_run: ${{ needs.ci.outputs.release_dry_run == 'true' }}
+      enable_release_please: ${{ needs.ci.outputs.enable_release_please == 'true' }}
+      enable_build_docs: ${{ needs.ci.outputs.enable_build_docs == 'true' }}
     secrets: inherit
 
   enrich-release:
     name: "Enrich Release Notes"
-    needs: qa
-    if: ${{ github.event_name != 'pull_request' && needs.qa.outputs.enable_release_please == 'true' && needs.qa.outputs.release_pr != '' && needs.qa.outputs.release_pr != 'null' && needs.qa.outputs.release_created != 'true' }}
+    needs: ci
+    if: ${{ github.event_name != 'pull_request' && needs.ci.outputs.enable_release_please == 'true' && needs.ci.outputs.release_pr != '' && needs.ci.outputs.release_pr != 'null' && needs.ci.outputs.release_created != 'true' }}
     uses: ./.github/workflows/_release-worker.yaml
     with:
       job: update-release
       environment: prod
-      pr: ${{ fromJSON(needs.qa.outputs.release_pr).number }}
+      pr: ${{ fromJSON(needs.ci.outputs.release_pr).number }}
     secrets: inherit

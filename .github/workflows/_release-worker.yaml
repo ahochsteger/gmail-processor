@@ -47,7 +47,8 @@ on:
 
 env:
   ACT: false
-  DEVBOX_QUIET: 1
+  DEVBOX_NO_LOG_PROGRESS: 1
+  NIX_CONFIG: "quiet = true"
 
 jobs:
   run:
@@ -86,13 +87,29 @@ jobs:
         name: Setup Environment
         uses: ./.github/actions/setup-environment
 
+      - name: Download GAS artifacts
+        if: ${{ env.ACT != 'true' }}
+        uses: actions/download-artifact@v4
+        with:
+          name: gas-artifacts
+          path: build/gas
+        continue-on-error: true
+
+      - name: Download Docs artifacts
+        if: ${{ env.ACT != 'true' }}
+        uses: actions/download-artifact@v4
+        with:
+          name: docs-artifacts
+          path: docs/build
+        continue-on-error: true
+
       # --- Maintenance & Support ---
 
       - id: sync-gas-version
         name: Synchronize GAS Version
         if: ${{ !startsWith(inputs.job, 'force-') && (inputs.job != 'ci-release' || !inputs.release_created) }}
         run: |
-          devbox run npm run release:info
+          devbox --quiet run npm run release:info
 
       - id: force-release
         name: Force Release Trigger
@@ -100,7 +117,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          devbox run npm run release:${{ inputs.job }}
+          devbox --quiet run npm run release:${{ inputs.job }}
           git push
 
       # --- Deployment ---
@@ -109,17 +126,21 @@ jobs:
         if: ${{ inputs.job == 'beta-deploy' }}
         name: Deploy Beta (Lib & Examples)
         run: |
-          devbox run npm run ci:build
-          devbox run npm run push:lib
-          devbox run npm run push:examples
+          if [ ! -d "build/gas/lib" ]; then
+            devbox --quiet run npm run ci:build
+          fi
+          devbox --quiet run npm run push:lib
+          devbox --quiet run npm run push:examples
 
       - id: deploy-lib-release
         if: ${{ inputs.job == 'ci-release' && (inputs.release_created || (inputs.environment == 'prod' && !inputs.is_dry_run)) }}
         name: Deploy Lib (Release)
         run: |
-          devbox run npm run ci:build
-          devbox run npm run all:push
-          devbox run npm run deploy
+          if [ ! -d "build/gas/lib" ]; then
+            devbox --quiet run npm run ci:build
+          fi
+          devbox --quiet run npm run all:push
+          devbox --quiet run npm run deploy
         env:
           CLASP_DEPLOYMENT_NAME: ${{ inputs.tag }}
 
@@ -129,16 +150,16 @@ jobs:
         name: Preview Release Notes
         if: ${{ inputs.job == 'preview' }}
         run: |
-          devbox run npm run release:preview -- ${{ inputs.pr && format('--pr {0}', inputs.pr) || '' }}
+          devbox --quiet run npm run release:preview -- ${{ inputs.pr && format('--pr {0}', inputs.pr) || '' }}
 
       - id: update-release-notes
         name: Update Release Notes
         if: ${{ inputs.job == 'update-release' || (inputs.job == 'ci-release' && inputs.enable_release_please) }}
         run: |
           if [ "${{ inputs.is_dry_run }}" == "true" ]; then
-             devbox run npm run release:preview -- "${{ inputs.tag || 'latest' }}"
+             devbox --quiet run npm run release:preview -- "${{ inputs.tag || 'latest' }}"
           else
-             devbox run npm run release:update -- "${{ inputs.tag || 'latest' }}" ${{ inputs.pr && format('--pr {0}', inputs.pr) || '' }}
+             devbox --quiet run npm run release:update -- "${{ inputs.tag || 'latest' }}" ${{ inputs.pr && format('--pr {0}', inputs.pr) || '' }}
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -147,14 +168,17 @@ jobs:
         name: Publish Release
         if: ${{ inputs.job == 'publish-release' }}
         run: |
-          devbox run npm run release:publish -- "${{ inputs.tag || 'latest' }}"
+          devbox --quiet run npm run release:publish -- "${{ inputs.tag || 'latest' }}"
 
       # --- Documentation ---
 
       - id: build-docs
         if: ${{ inputs.job == 'ci-release' && inputs.enable_build_docs && github.ref == 'refs/heads/main' }}
         name: Build docs
-        run: devbox run npm run ci:docs
+        run: |
+          if [ ! -d "docs/build" ]; then
+            devbox --quiet run npm run ci:docs
+          fi
 
       - id: deploy-docs
         if: ${{ inputs.job == 'ci-release' && inputs.enable_build_docs && github.ref == 'refs/heads/main' }}
