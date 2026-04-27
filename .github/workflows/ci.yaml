@@ -47,22 +47,9 @@ env:
   NPM_CONFIG_PROGRESS: "false"
 
 jobs:
-  integrity:
-    name: "Integrity Check"
-    if: ${{ github.event_name == 'push' || github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch' }}
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
-      - id: setup-env
-        name: Setup Environment
-        uses: ./.github/actions/setup-environment
-      - id: maintenance-verify
-        name: Verify Maintenance Scripts
-        run: devbox run npm run all:maintenance
-
   qa:
     name: "QA & Beta Test"
-    needs: integrity
+    if: ${{ github.event_name == 'push' || github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
     environment:
       name: beta
@@ -187,6 +174,9 @@ jobs:
       - id: setup-env
         name: Setup Environment
         uses: ./.github/actions/setup-environment
+      - id: maintenance-verify
+        name: Verify Maintenance Scripts
+        run: devbox run npm run all:maintenance
       - id: create-draft-release
         name: Create Draft Release
         if: ${{ github.event_name != 'pull_request' && (steps.profile.outputs.enable_release_please == 'true') }}
@@ -240,6 +230,32 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      - id: auto-contributors
+        name: Auto-add Missing Contributors
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+        run: |
+          USERS=""
+          OUTPUT=$(devbox run npx all-contributors-cli check || true)
+          if echo "$OUTPUT" | grep -q "Missing contributors in .all-contributorsrc:"; then
+            MISSING_LINE=$(echo "$OUTPUT" | grep -A 1 "Missing contributors in .all-contributorsrc:" | tail -n 1)
+            IFS=',' read -r -a array <<< "$MISSING_LINE"
+            for user in "${array[@]}"; do
+              user=$(echo "$user" | xargs)
+              if [[ ! "$user" =~ \[bot\] ]] && [[ "$user" != *"-bot"* ]] && [[ "$user" != *"bot-"* ]] && [[ "$user" != "dependabot" ]]; then
+                USERS="$USERS $user"
+              fi
+            done
+          fi
+          if [ -n "$USERS" ]; then
+            for user in $USERS; do
+              devbox run npx all-contributors-cli add "$user" code || true
+            done
+            git config --global user.name 'github-actions[bot]'
+            git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+            git add README.md .all-contributorsrc
+            git commit -m "docs: add missing contributors [skip ci]" || echo "No changes to commit"
+            git push
+          fi
 
   beta-deploy:
     name: "Beta Deployment"

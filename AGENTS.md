@@ -287,7 +287,7 @@ In alignment with the 2026 EU AI Act and security best practices, we disclose AI
 - **Act**: For running GitHub Actions locally. Use the namespaced `npm run gh-act:ci:*` scripts to test specific workflow profiles locally before pushing.
   - **Runner Image**: Ensure you use a comprehensive image (mapped via `.actrc`) to avoid "command not found" errors.
   - **Secrets**: Requires a local `.secrets` file to provide credentials for CLASP and GCloud.
-  - **Local Testing**: To skip high-friction steps like Snyk scan, SonarQube, and Coveralls during local simulations, the `local-test` input (or the `ACT: true` environment variable) can be used. This is automatically handled by the unified `ci.yaml` and `snyk-test.yaml` workflows.
+  - **Local Testing**: To skip high-friction steps like Snyk scan, SonarQube, and Coveralls during local simulations, the `local-test` input (or the `ACT: true` environment variable) can be used. This is automatically handled by the unified `ci.yaml` workflow.
 
 ## Technical Resilience & Stability
 

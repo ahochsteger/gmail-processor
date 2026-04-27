@@ -24,7 +24,7 @@
     "all:repush": "npx concurrently 'npm:repush:*'",
     "all:setup": "npm run setup:lib && npm run setup:docs",
     "all:test": "npm run test:jest",
-    "all:update": "npm run update:parser && npm run update:docs && npm run update:examples && npx concurrently 'npm:update:schema' 'npm:update:contributors' && npm run lint-fix",
+    "all:update": "npm run update:parser && npm run update:docs && npm run update:examples && npm run update:maintenance && npx concurrently 'npm:update:schema' 'npm:update:contributors' && npm run lint-fix",
     "audit:security:docs": "npm audit --audit-level moderate --prefix docs",
     "audit:security:lib": "npm audit --audit-level moderate",
     "build": "npm run all:build",
@@ -127,6 +127,7 @@
     "update:contributors": "npx all-contributors generate",
     "update:docs": "TZ=Etc/UTC scripts/update-docs.sh",
     "update:examples": "TZ=Etc/UTC scripts/update-examples.sh",
+    "update:maintenance": "gojq -r '.scripts | keys | map(select(test(\"^all:\"))) | sort' package.json | npx ts-node scripts/eta.ts maintenance > .github/workflows/maintenance.yaml",
     "update:parser": "scripts/update-parser.sh",
     "update:schema": "TZ=Etc/UTC scripts/update-schema.sh"
   },

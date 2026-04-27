@@ -1,0 +1,49 @@
+name: Maintenance Runner
+
+on:
+  workflow_dispatch:
+    inputs:
+      script:
+        description: "npm script to run"
+        required: true
+        type: choice
+        options:
+          - "all:audit-security"
+          - "all:build"
+          - "all:ci"
+          - "all:clean"
+          - "all:deploy"
+          - "all:lint"
+          - "all:locks-clean"
+          - "all:maintenance"
+          - "all:packages-outdated"
+          - "all:pre-commit"
+          - "all:pre-commit:fast"
+          - "all:pre-push"
+          - "all:push"
+          - "all:rebuild"
+          - "all:rebuild:fast"
+          - "all:redeploy"
+          - "all:reinstall"
+          - "all:release-dry-run"
+          - "all:repush"
+          - "all:setup"
+          - "all:test"
+          - "all:update"
+
+env:
+  ACT: false
+  DEVBOX_QUIET: 1
+
+jobs:
+  run-maintenance:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+
+      - name: Setup Environment
+        uses: ./.github/actions/setup-environment
+
+      - name: Run script
+        run: devbox run npm run ${{ github.event.inputs.script }}

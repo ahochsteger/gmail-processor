@@ -92,7 +92,7 @@ jobs:
         name: Synchronize GAS Version
         if: ${{ !startsWith(inputs.job, 'force-') && (inputs.job != 'ci-release' || !inputs.release_created) }}
         run: |
-          npm run release:info
+          devbox run npm run release:info
 
       - id: force-release
         name: Force Release Trigger
@@ -100,7 +100,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          npm run release:${{ inputs.job }}
+          devbox run npm run release:${{ inputs.job }}
           git push
 
       # --- Deployment ---
@@ -109,13 +109,17 @@ jobs:
         if: ${{ inputs.job == 'beta-deploy' }}
         name: Deploy Beta (Lib & Examples)
         run: |
-          npm run push:lib
-          npm run push:examples
+          devbox run npm run ci:build
+          devbox run npm run push:lib
+          devbox run npm run push:examples
 
       - id: deploy-lib-release
         if: ${{ inputs.job == 'ci-release' && (inputs.release_created || (inputs.environment == 'prod' && !inputs.is_dry_run)) }}
         name: Deploy Lib (Release)
-        run: npm run deploy
+        run: |
+          devbox run npm run ci:build
+          devbox run npm run all:push
+          devbox run npm run deploy
         env:
           CLASP_DEPLOYMENT_NAME: ${{ inputs.tag }}
 
@@ -125,16 +129,16 @@ jobs:
         name: Preview Release Notes
         if: ${{ inputs.job == 'preview' }}
         run: |
-          npm run release:preview -- ${{ inputs.pr && format('--pr {0}', inputs.pr) || '' }}
+          devbox run npm run release:preview -- ${{ inputs.pr && format('--pr {0}', inputs.pr) || '' }}
 
       - id: update-release-notes
         name: Update Release Notes
         if: ${{ inputs.job == 'update-release' || (inputs.job == 'ci-release' && inputs.enable_release_please) }}
         run: |
           if [ "${{ inputs.is_dry_run }}" == "true" ]; then
-             npm run release:preview -- "${{ inputs.tag || 'latest' }}"
+             devbox run npm run release:preview -- "${{ inputs.tag || 'latest' }}"
           else
-             npm run release:update -- "${{ inputs.tag || 'latest' }}" ${{ inputs.pr && format('--pr {0}', inputs.pr) || '' }}
+             devbox run npm run release:update -- "${{ inputs.tag || 'latest' }}" ${{ inputs.pr && format('--pr {0}', inputs.pr) || '' }}
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -143,9 +147,14 @@ jobs:
         name: Publish Release
         if: ${{ inputs.job == 'publish-release' }}
         run: |
-          npm run release:publish -- "${{ inputs.tag || 'latest' }}"
+          devbox run npm run release:publish -- "${{ inputs.tag || 'latest' }}"
 
       # --- Documentation ---
+
+      - id: build-docs
+        if: ${{ inputs.job == 'ci-release' && inputs.enable_build_docs && github.ref == 'refs/heads/main' }}
+        name: Build docs
+        run: devbox run npm run ci:docs
 
       - id: deploy-docs
         if: ${{ inputs.job == 'ci-release' && inputs.enable_build_docs && github.ref == 'refs/heads/main' }}

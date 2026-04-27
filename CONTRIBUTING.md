@@ -251,6 +251,7 @@ Helpful resources about development for Google Apps Script:
 ## Maintenance Guide
 
 The project uses a semantic naming convention for maintenance scripts to ensure they are isolated from standard build lifecycles.
+These scripts can also be triggered manually via the GitHub Actions UI using the **Maintenance Runner** workflow (`maintenance.yaml`), which dynamically lists available tasks directly from `package.json`.
 
 ### Total Environment Reset
 
