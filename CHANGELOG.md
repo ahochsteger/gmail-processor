@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.17.3](https://github.com/ahochsteger/gmail-processor/compare/v2.17.2...v2.17.3) (2026-04-27)
+
+
+### Maintenance
+
+* **ci:** optimize pipeline with artifact reuse and job renaming ([b53e9d9](https://github.com/ahochsteger/gmail-processor/commit/b53e9d9867884f62dfa882d79a3b6ab8467f1f03))
+* **release:** harden release notes prompt against hallucinations ([cb1789c](https://github.com/ahochsteger/gmail-processor/commit/cb1789cc6f55d1a025ccc8d988833e36833a728e))
+
+
+### CI/CD Pipeline
+
+* modernize release pipeline and maintenance workflows ([a7e0a5a](https://github.com/ahochsteger/gmail-processor/commit/a7e0a5a321cf65e36647c62f283d6e202b82f4c0))
+
 ## [2.17.2](https://github.com/ahochsteger/gmail-processor/compare/v2.17.1...v2.17.2) (2026-04-25)
 
 
