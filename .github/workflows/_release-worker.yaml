@@ -89,7 +89,7 @@ jobs:
 
       - name: Download GAS artifacts
         if: ${{ env.ACT != 'true' }}
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
         with:
           name: gas-artifacts
           path: build/gas
@@ -97,7 +97,7 @@ jobs:
 
       - name: Download Docs artifacts
         if: ${{ env.ACT != 'true' }}
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
         with:
           name: docs-artifacts
           path: docs/build
