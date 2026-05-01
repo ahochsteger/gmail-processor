@@ -187,7 +187,7 @@ jobs:
         run: devbox --quiet run npm run ci:build
       - name: Upload GAS artifacts
         if: ${{ env.ACT != 'true' && (steps.profile.outputs.enable_build_lib == 'true' || steps.profile.outputs.enable_beta_deploy == 'true') }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: gas-artifacts
           path: build/gas
@@ -227,7 +227,7 @@ jobs:
         run: devbox --quiet run npm run ci:docs
       - name: Upload Docs artifacts
         if: ${{ env.ACT != 'true' && steps.profile.outputs.enable_build_docs == 'true' }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: docs-artifacts
           path: docs/build
