@@ -161,7 +161,7 @@ To prevent regressions like "missing script" errors in the CI/CD pipeline, all s
 
 #### Alphabetical Ordering
 
-- `package.json`: entries in the `scripts` object.
+- `package.json`: entries in the `scripts`, `dependencies`, `devDependencies`, and `overrides` objects.
 - `.gitignore`: entries within each functional group (see below).
 - `devbox.json`: entries in the `packages` list.
 - Shell scripts: cases in `case` statements.
@@ -341,6 +341,35 @@ The `.github/workflows/release.yaml` workflow provides a UI for the following ta
 - `npm run release:notes`: Local dry-run preview.
 - `npm run release:update`: CI command to patch draft releases.
 - `npm run release:publish`: CI command to finalize and announce.
+
+## Advanced Dependency Management
+
+The project uses a custom, industrial-grade dependency maintenance system to ensure stability and security while minimizing maintenance noise.
+
+### 1. Release Cool-down Policy
+
+To avoid "version zero" bugs and unstable releases, all automated updates strictly follow a release cool-down period.
+
+- **Source of Truth**: The `minimumReleaseAge` setting in `renovate.json`.
+- **Enforcement**: The `scripts/npm-packages.sh` script automatically calculates the cut-off date.
+- **Override**: Use the `RELEASE_COOLDOWN_DAYS` environment variable to bypass the default period if an immediate update is required.
+
+### 2. Dynamic Security Overrides
+
+Rather than manual tracking, security vulnerabilities are handled via automated injection.
+
+- **Process**: `npm run all:packages-update` performs a clean `npm update`, audits the tree, and automatically generates required `overrides` for vulnerable packages (still respecting the cool-down period).
+- **Validation**: Every override is validated via a fresh `npm install` and `npm audit` before being committed.
+- **Hygiene**: The system automatically strips old overrides that are no longer necessary.
+
+### 3. Usage & Triggers
+
+| Goal                | Command                       | Context                                                              |
+| :------------------ | :---------------------------- | :------------------------------------------------------------------- |
+| **Safe Update**     | `npm run all:packages-update` | Performs natural updates and generates security overrides.           |
+| **Manual Override** | `npm run packages:update:lib` | Targets a specific workspace (root or docs).                         |
+| **Security Audit**  | `npm run all:audit-security`  | Verifies that the current tree is clean.                             |
+| **Integrity Check** | `npm run lint:scripts`        | Ensures all script references are valid after renames or reordering. |
 
 ### Dependency Management (Renovate)
 

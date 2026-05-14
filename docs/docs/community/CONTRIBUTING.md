@@ -275,15 +275,24 @@ These scripts can also be triggered manually via the GitHub Actions UI using the
 | `locks:clean:devbox`  | -                   | Removes the `.devbox` directory and `devbox.lock`.                 |
 | `locks:update:devbox` | -                   | Runs `devbox update` to refresh the environment lockfile.          |
 
+### Package & Dependency Updates
+
+| Script                 | Namespace              | Description                                                                              |
+| :--------------------- | :--------------------- | :--------------------------------------------------------------------------------------- |
+| `all:packages-update`  | `npm:packages:update:*`| **Automated Update**. Performs a clean update and injects security overrides.             |
+| `all:packages-outdated`| `npm:packages:outdated:*`| Checks for outdated packages while respecting the cool-down period.                      |
+| `packages:update:lib`  | -                      | Specifically updates the root library and generates overrides.                           |
+| `packages:update:docs` | -                      | Specifically updates the documentation workspace.                                        |
+
 ### Typical Maintenance Workflow
 
 Follow this procedure when performing periodic dependency updates or fixing security vulnerabilities:
 
 1.  **Baseline**: Ensure your environment is fresh via `npm run all:reinstall`.
 2.  **Audit**: Check for outdated packages (`npm run all:packages-outdated`).
-3.  **Update**: Modify `package.json` versions or `overrides`.
-4.  **Regenerate & Verify**: Run `npm run all:reinstall` and `npm run all:ci`.
-5.  **Audit Security**: Run `npm run all:audit-security`.
+3.  **Update**: Use the automated system (`npm run all:packages-update`). This will automatically handle `overrides` for security issues.
+4.  **Verify**: Run `npm run all:ci` to ensure everything is still working correctly.
+5.  **Audit Security**: Run `npm run all:audit-security` to confirm all issues are resolved.
 
 > [!CAUTION]
 > **Documentation Build Sensitivity**: The documentation workspace uses a complex Webpack 5 / Docusaurus 3 setup that is sensitive to `ajv` version conflicts. Always verify the `ci:docs` task specifically after modifying any `ajv` or `schema-utils` related dependencies.
