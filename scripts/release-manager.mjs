@@ -906,15 +906,28 @@ async function announceInDiscussions(version, body) {
 
   const REPO_ID = "MDEwOlJlcG9zaXRvcnk4MTI4Mjc3"
 
-  const vars = JSON.stringify({
-    repositoryId: REPO_ID,
-    categoryId: CAT_ID,
-    title,
-    body,
+  const payload = JSON.stringify({
+    query,
+    variables: {
+      repositoryId: REPO_ID,
+      categoryId: CAT_ID,
+      title,
+      body,
+    },
   })
-  fs.writeFileSync("vars.json", vars)
-  run(`gh api graphql -f query='${query}' --input vars.json`)
-  fs.unlinkSync("vars.json")
+  fs.writeFileSync("payload.json", payload)
+  try {
+    execSync(`gh api graphql --input payload.json`, {
+      encoding: "utf8",
+      stdio: "pipe",
+    })
+  } catch (error) {
+    console.error(
+      `Failed to create discussion: ${error.message}\n${error.stderr || ""}`,
+    )
+  } finally {
+    if (fs.existsSync("payload.json")) fs.unlinkSync("payload.json")
+  }
   endTask(`Create community announcement for ${version}`, "success")
 }
 
