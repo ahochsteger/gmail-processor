@@ -47,4 +47,5 @@ jobs:
       tag: ${{ github.event.inputs.tag }}
       pr: ${{ github.event.inputs.pr }}
       gas_version: ${{ github.event.inputs.gas_version }}
+      enable_build_docs: true
     secrets: inherit

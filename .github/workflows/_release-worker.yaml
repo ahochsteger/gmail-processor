@@ -173,7 +173,7 @@ jobs:
       # --- Documentation ---
 
       - id: build-docs
-        if: ${{ inputs.job == 'ci-release' && inputs.enable_build_docs && github.ref == 'refs/heads/main' }}
+        if: ${{ (inputs.job == 'ci-release' || inputs.job == 'publish-release' || startsWith(inputs.job, 'force-')) && inputs.enable_build_docs && github.ref == 'refs/heads/main' }}
         name: Build docs
         run: |
           if [ ! -d "docs/build" ]; then
@@ -181,7 +181,7 @@ jobs:
           fi
 
       - id: deploy-docs
-        if: ${{ inputs.job == 'ci-release' && inputs.enable_build_docs && github.ref == 'refs/heads/main' }}
+        if: ${{ (inputs.job == 'ci-release' || inputs.job == 'publish-release' || startsWith(inputs.job, 'force-')) && inputs.enable_build_docs && github.ref == 'refs/heads/main' }}
         name: Deploy docs
         uses: JamesIves/github-pages-deploy-action@d92aa235d04922e8f08b40ce78cc5442fcfbfa2f # v4
         with:
