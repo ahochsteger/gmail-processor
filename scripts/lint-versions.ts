@@ -86,14 +86,31 @@ function lintNodeVersion() {
     )
   }
 
+  // 7. Check overrides consistency
+  const lock = readJsonFile("package-lock.json")
+  Object.entries(pkg.overrides || {}).forEach(([name, version]) => {
+    const overrideVersion = version as string
+    if (overrideVersion.includes("^") || overrideVersion.includes("~")) {
+      error(
+        `Override for '${name}' should be strictly pinned, but found '${overrideVersion}'`,
+      )
+    }
+    const actualVersion = lock.packages[`node_modules/${name}`]?.version
+    if (actualVersion && actualVersion !== overrideVersion.replace(/^[^0-9]*/, "")) {
+      error(
+        `Override for '${name}' is set to '${overrideVersion}', but lockfile has '${actualVersion}'`,
+      )
+    }
+  })
+
   if (hasErrors) {
     console.error(
-      "\nVersion drift detected! Please ensure devbox.json, package.json, docs/package.json, and renovate.json are aligned.",
+      "\nVersion drift detected! Please ensure devbox.json, package.json, package-lock.json, docs/package.json, and renovate.json are aligned.",
     )
     process.exit(1)
   } else {
     console.log(
-      `[SUCCESS] Node.js major version ${majorVersion} and TypeScript versions are perfectly aligned across all configuration files.`,
+      `[SUCCESS] Node.js major version ${majorVersion}, TypeScript, and Overrides are perfectly aligned across all configuration files.`,
     )
   }
 }

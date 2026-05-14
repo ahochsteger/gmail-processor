@@ -80,10 +80,10 @@
   "license": "Apache-2.0",
   "name": "gmail-processor",
   "overrides": {
-    "@tootallnate/once": "^3.0.1",
-    "axios": "^1.16.0",
-    "tar": "^7.5.14",
-    "tmp": "^0.2.5",
+    "@tootallnate/once": "3.0.1",
+    "axios": "1.16.0",
+    "tar": "7.5.14",
+    "tmp": "0.2.5",
     "yargs": "17.7.2"
   },
   "private": true,

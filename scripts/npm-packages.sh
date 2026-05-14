@@ -166,7 +166,7 @@ elif [[ "$COMMAND" == "update" ]]; then
             
             if [[ -n "$LATEST" ]]; then
                 echo " -> Queuing override: $PKG @ ^$LATEST"
-                OVERRIDES_JSON=$(echo "$OVERRIDES_JSON" | gojq ". + {\"$PKG\": \"^$LATEST\"}")
+                OVERRIDES_JSON=$(echo "$OVERRIDES_JSON" | gojq ". + {\"$PKG\": \"$LATEST\"}")
             fi
         done
     
