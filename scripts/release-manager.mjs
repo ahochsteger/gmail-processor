@@ -232,6 +232,11 @@ function sleep(ms) {
  * Handles propagation delay after release-please creates the release.
  */
 async function fetchReleaseWithRetry(tag, maxAttempts = 5, delayMs = 10000) {
+  // Never wait/retry during a safe preview
+  if (mode === "preview") {
+    maxAttempts = 1
+    delayMs = 0
+  }
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
     const result = run(
       `gh release view "${tag}" --json tagName,body,isDraft,url 2>/dev/null`,
@@ -951,7 +956,18 @@ async function main() {
 
     // --- Tag Resolution ---
     startTask("Tag Resolution")
-    const tag = tagArg || detectTag()
+    let tag = tagArg || detectTag()
+
+    // Resolve "latest" to actual tag to prevent fetch timeouts
+    if (tag === "latest") {
+      log(`Tag "latest" provided, resolving actual tag...`)
+      const detected = detectTag()
+      if (detected) {
+        tag = detected
+        log(`Resolved "latest" to: ${tag}`)
+      }
+    }
+
     if (!tag && mode !== "preview") {
       log(
         "ERROR: Could not detect release tag. Use --update-release <tag> or --publish <tag>.",
