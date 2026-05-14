@@ -294,14 +294,3 @@ jobs:
       enable_release_please: ${{ needs.ci.outputs.enable_release_please == 'true' }}
       enable_build_docs: ${{ needs.ci.outputs.enable_build_docs == 'true' }}
     secrets: inherit
-
-  enrich-release:
-    name: "Enrich Release Notes"
-    needs: ci
-    if: ${{ github.event_name != 'pull_request' && needs.ci.outputs.enable_release_please == 'true' && needs.ci.outputs.release_pr != '' && needs.ci.outputs.release_pr != 'null' && needs.ci.outputs.release_created != 'true' }}
-    uses: ./.github/workflows/_release-worker.yaml
-    with:
-      job: update-release
-      environment: prod
-      pr: ${{ fromJSON(needs.ci.outputs.release_pr).number }}
-    secrets: inherit

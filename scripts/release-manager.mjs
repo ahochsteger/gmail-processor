@@ -833,16 +833,38 @@ _AI-Assisted: true_`.trim()
 function writeReleaseBody(tag, body) {
   const tmpFile = path.join(BASE_DIR, "build", ".release-notes-tmp.md")
   fs.writeFileSync(tmpFile, body)
-  const result = run(`gh release edit "${tag}" --notes-file "${tmpFile}"`)
-  fs.unlinkSync(tmpFile)
-  return result
+  try {
+    const result = execSync(
+      `gh release edit "${tag}" --notes-file "${tmpFile}"`,
+      {
+        encoding: "utf8",
+        stdio: "pipe",
+      },
+    ).trim()
+    fs.unlinkSync(tmpFile)
+    return result
+  } catch (error) {
+    if (fs.existsSync(tmpFile)) fs.unlinkSync(tmpFile)
+    throw new Error(
+      `Failed to update release "${tag}": ${error.message}\n${error.stderr || ""}`,
+    )
+  }
 }
 
 /**
  * Publish a draft release (set draft=false).
  */
 function publishDraft(tag) {
-  run(`gh release edit "${tag}" --draft=false --latest`)
+  try {
+    execSync(`gh release edit "${tag}" --draft=false --latest`, {
+      encoding: "utf8",
+      stdio: "pipe",
+    })
+  } catch (error) {
+    throw new Error(
+      `Failed to publish release "${tag}": ${error.message}\n${error.stderr || ""}`,
+    )
+  }
 }
 
 /**
