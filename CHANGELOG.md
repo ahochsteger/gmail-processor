@@ -1,5 +1,41 @@
 # Changelog
 
+## [2.17.3](https://github.com/ahochsteger/gmail-processor/compare/v2.17.2...v2.17.3) (2026-05-14)
+
+
+### Bug Fixes
+
+* **docs:** format latest release link and label with version prefix ([2c09c4d](https://github.com/ahochsteger/gmail-processor/commit/2c09c4d06cdc1f2ab610060e4580e97f0e40000b))
+* **release:** optimize tag resolution and eliminate preview timeouts ([3858170](https://github.com/ahochsteger/gmail-processor/commit/38581706c3e896c5fc7ca31aa991d04437c90882))
+* **release:** resolve graphql mutation format for announcements ([121b215](https://github.com/ahochsteger/gmail-processor/commit/121b21541440cdfc01dc6344323cf3285b124bf3))
+
+
+### Maintenance
+
+* align Node.js engines and implement strict consistency checks ([96a9dc7](https://github.com/ahochsteger/gmail-processor/commit/96a9dc725e33e6349468223f70b8528e39ec95f6))
+* **ci:** optimize pipeline with artifact reuse and job renaming ([b53e9d9](https://github.com/ahochsteger/gmail-processor/commit/b53e9d9867884f62dfa882d79a3b6ab8467f1f03))
+* **deps:** enforce strict pinning for dependency overrides ([47d8b4d](https://github.com/ahochsteger/gmail-processor/commit/47d8b4d6372c18ae2bc58c9363e57867cc4dde34))
+* **deps:** industrialize dependency maintenance workflow ([26278ce](https://github.com/ahochsteger/gmail-processor/commit/26278ce1de945e848d82ee3b56c4c032a12101f3))
+* **deps:** update dependency gh to v2.92.0 ([#676](https://github.com/ahochsteger/gmail-processor/issues/676)) ([f5df42e](https://github.com/ahochsteger/gmail-processor/commit/f5df42ebbb9fc48970ee1bf56a11c69c0acc5549))
+* **deps:** update dependency knip to v6.6.3 ([#681](https://github.com/ahochsteger/gmail-processor/issues/681)) ([8b9a3a9](https://github.com/ahochsteger/gmail-processor/commit/8b9a3a9fd7464402290e292e388b37cf304d4a10))
+* **deps:** update deps:docs-non-major ([#678](https://github.com/ahochsteger/gmail-processor/issues/678)) ([28d0fd0](https://github.com/ahochsteger/gmail-processor/commit/28d0fd080548ddc0c40386dca4339b8d1c86415c))
+* **deps:** update deps:docs-non-major ([#682](https://github.com/ahochsteger/gmail-processor/issues/682)) ([aba4eab](https://github.com/ahochsteger/gmail-processor/commit/aba4eab23f2697a83fa0d8f989b332317698ee97))
+* **deps:** update deps:lib-non-major ([#677](https://github.com/ahochsteger/gmail-processor/issues/677)) ([5a251f1](https://github.com/ahochsteger/gmail-processor/commit/5a251f10cef7b93504e0cea0e6b41613d4e219ab))
+* **deps:** update deps:lib-non-major ([#683](https://github.com/ahochsteger/gmail-processor/issues/683)) ([e733cf6](https://github.com/ahochsteger/gmail-processor/commit/e733cf651723b3cecbdd24d4bd2da169efdb91d7))
+* **deps:** update github artifact actions ([#679](https://github.com/ahochsteger/gmail-processor/issues/679)) ([d346a7f](https://github.com/ahochsteger/gmail-processor/commit/d346a7f962dea2b05c97a40439b9965859ddd25d))
+* **deps:** update sonarsource/sonarqube-scan-action action to v8 ([#684](https://github.com/ahochsteger/gmail-processor/issues/684)) ([efe3054](https://github.com/ahochsteger/gmail-processor/commit/efe30541638f82c3f91992ad98c0a24dc7d630f0))
+* **maintenance:** industrialize dependency management and update docs ([3ebff21](https://github.com/ahochsteger/gmail-processor/commit/3ebff21cbcf5b7518a0ad9f48b7b5bb3174839ae))
+* **maintenance:** upgrade yq to yq-go v4.53.2 in devbox ([dbb8d46](https://github.com/ahochsteger/gmail-processor/commit/dbb8d46a812c1c6f8563b2ed72f4958666247a7c))
+* **parser:** simplify parser generation and linter bypass ([8127a70](https://github.com/ahochsteger/gmail-processor/commit/8127a704706c8f8e2228986daa39d3b875ec90b6))
+* **release:** harden release notes prompt against hallucinations ([cb1789c](https://github.com/ahochsteger/gmail-processor/commit/cb1789cc6f55d1a025ccc8d988833e36833a728e))
+
+
+### CI/CD Pipeline
+
+* enable documentation deployment for manual release publication ([c06b205](https://github.com/ahochsteger/gmail-processor/commit/c06b205925516a424b93341b648a6439e6c2c5b7))
+* modernize release pipeline and maintenance workflows ([a7e0a5a](https://github.com/ahochsteger/gmail-processor/commit/a7e0a5a321cf65e36647c62f283d6e202b82f4c0))
+* **release:** remove redundant enrich-release job and enforce error handling ([7055535](https://github.com/ahochsteger/gmail-processor/commit/7055535d55246c27ee1cb9536e624b313027b29d))
+
 ## [2.17.2](https://github.com/ahochsteger/gmail-processor/compare/v2.17.1...v2.17.2) (2026-04-25)
 
 
