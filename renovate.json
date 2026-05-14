@@ -135,6 +135,18 @@
       "automerge": false,
       "semanticCommitType": "chore",
       "excludePackageNames": ["react", "react-dom"]
+    },
+    {
+      "description": "Keep @types/node major version in sync with devbox nodejs",
+      "matchPackageNames": ["@types/node"],
+      "allowedVersions": "24.x"
+    },
+    {
+      "description": "Group typescript updates to ensure cross-workspace alignment",
+      "matchPackageNames": ["typescript"],
+      "groupName": "deps:dev-typescript",
+      "semanticCommitType": "build",
+      "automerge": true
     }
   ]
 }

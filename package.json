@@ -27,7 +27,7 @@
     "@types/google-apps-script": "2.0.8",
     "@types/jest": "30.0.0",
     "@types/jest-when": "3.5.5",
-    "@types/node": "25.6.0",
+    "@types/node": "24.12.4",
     "@types/sha1": "1.1.5",
     "@typescript-eslint/eslint-plugin": "8.59.2",
     "@typescript-eslint/parser": "8.59.2",
@@ -64,7 +64,7 @@
     "typescript-json-schema": "0.67.2"
   },
   "engines": {
-    "node": ">=22"
+    "node": "24.x"
   },
   "keywords": [
     "attachment",
@@ -83,7 +83,8 @@
     "@tootallnate/once": "^3.0.1",
     "axios": "^1.16.0",
     "tar": "^7.5.14",
-    "tmp": "^0.2.5"
+    "tmp": "^0.2.5",
+    "yargs": "17.7.2"
   },
   "private": true,
   "repository": {
@@ -98,7 +99,7 @@
     "all:deploy": "npx concurrently 'npm:deploy:*'",
     "all:lint": "npx concurrently 'npm:lint:*'",
     "all:locks-clean": "npx concurrently 'npm:locks:clean:*'",
-    "all:maintenance": "npm run lint:scripts && npm run lint:devbox:unused && npm run lint:renovate && npm run lint:actions && npm run lint-prune",
+    "all:maintenance": "npm run lint:scripts && npm run lint:versions && npm run lint:devbox:unused && npm run lint:renovate && npm run lint:actions && npm run lint-prune",
     "all:packages-outdated": "npx concurrently 'npm:packages:outdated:*'",
     "all:packages-update": "npx concurrently 'npm:packages:update:*'",
     "all:pre-commit": "npm run all:update && npm run all:rebuild && npm run lint-fix && npm run all:lint && npm run all:test",
@@ -166,6 +167,7 @@
     "lint:lib": "scripts/lint-code.sh",
     "lint:renovate": "npx -p renovate renovate-config-validator > /dev/null && echo \"INFO: Config validated successfully\" || npx -p renovate renovate-config-validator",
     "lint:scripts": "npx ts-node scripts/lint-scripts.ts",
+    "lint:versions": "npx ts-node scripts/lint-versions.ts",
     "locks:clean:devbox": "rm -rf .devbox devbox.lock || true",
     "locks:clean:docs": "rm -rf docs/node_modules docs/package-lock.json",
     "locks:clean:lib": "rm -rf node_modules package-lock.json",

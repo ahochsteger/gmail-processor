@@ -37,7 +37,7 @@
     "@mdx-js/loader": "3.1.1",
     "@types/google-apps-script": "2.0.8",
     "@types/jest": "30.0.0",
-    "@types/node": "25.6.0",
+    "@types/node": "24.12.4",
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
     "eslint-import-resolver-typescript": "4.4.4",
@@ -48,7 +48,7 @@
     "typescript-eslint": "8.59.2"
   },
   "engines": {
-    "node": ">=20.0"
+    "node": "24.x"
   },
   "name": "gmail-processor-docs",
   "overrides": {
