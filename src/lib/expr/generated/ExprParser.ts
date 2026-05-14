@@ -1,6 +1,4 @@
 // @ts-nocheck
-/* eslint-disable @typescript-eslint/no-unnecessary-condition */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 
 import * as antlr from "antlr4ng"
 

@@ -1,5 +1,4 @@
 // @ts-nocheck
-/* eslint-disable @typescript-eslint/no-unnecessary-condition */
 
 import * as antlr from "antlr4ng"
 

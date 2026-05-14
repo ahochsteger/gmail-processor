@@ -1,5 +1,4 @@
 // @ts-nocheck
-/* eslint-disable @typescript-eslint/no-unused-vars */
 
 import {
   ErrorNode,
@@ -204,8 +203,8 @@ export class ExprParserListener implements ParseTreeListener {
    */
   exitLegacyPlaceholderExpr?: (ctx: LegacyPlaceholderExprContext) => void
 
-  visitTerminal(_node: TerminalNode): void {}
-  visitErrorNode(_node: ErrorNode): void {}
-  enterEveryRule(_node: ParserRuleContext): void {}
-  exitEveryRule(_node: ParserRuleContext): void {}
+  visitTerminal(node: TerminalNode): void {}
+  visitErrorNode(node: ErrorNode): void {}
+  enterEveryRule(node: ParserRuleContext): void {}
+  exitEveryRule(node: ParserRuleContext): void {}
 }

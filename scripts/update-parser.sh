@@ -25,21 +25,9 @@ rm -rf "${PARSER_OUTDIR:?}"
 generate Expr
 echo "done."
 
-# Satisfy eslint errors:
-echo "Fixing linter issues:"
-sed -i -re '
-  1s;^;// @ts-nocheck\n/* eslint-disable @typescript-eslint/no-unnecessary-condition */\n/* eslint-disable @typescript-eslint/no-unused-vars */\n;
-' "${PARSER_OUTDIR}"/*Parser.ts
-sed -i -re '
-  1s;^;// @ts-nocheck\n/* eslint-disable @typescript-eslint/no-unused-vars */\n;
-  s#\(node: #(_node: #g
-' "${PARSER_OUTDIR}"/*ParserListener.ts
-sed -i -re '
-  1s;^;// @ts-nocheck\n/* eslint-disable @typescript-eslint/no-unnecessary-condition */\n;
-' "${PARSER_OUTDIR}"/*Lexer.ts
+# Bypass TypeScript compiler checks for generated code:
+echo "Injecting @ts-nocheck to bypass compiler errors:"
+sed -i -e '1s;^;// @ts-nocheck\n;' "${PARSER_OUTDIR}"/*.ts
 
-# Formatted later by npm run lint-fix
-
-# Lint generated parser:
-npx eslint \
-  --fix --no-warn-ignored "${PARSER_OUTDIR}"/*.ts
+# Format generated parser:
+npx eslint --fix --no-warn-ignored "${PARSER_OUTDIR}"/*.ts
