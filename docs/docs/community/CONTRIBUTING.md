@@ -277,12 +277,12 @@ These scripts can also be triggered manually via the GitHub Actions UI using the
 
 ### Package & Dependency Updates
 
-| Script                 | Namespace              | Description                                                                              |
-| :--------------------- | :--------------------- | :--------------------------------------------------------------------------------------- |
-| `all:packages-update`  | `npm:packages:update:*`| **Automated Update**. Performs a clean update and injects security overrides.             |
-| `all:packages-outdated`| `npm:packages:outdated:*`| Checks for outdated packages while respecting the cool-down period.                      |
-| `packages:update:lib`  | -                      | Specifically updates the root library and generates overrides.                           |
-| `packages:update:docs` | -                      | Specifically updates the documentation workspace.                                        |
+| Script                  | Namespace                 | Description                                                                   |
+| :---------------------- | :------------------------ | :---------------------------------------------------------------------------- |
+| `all:packages-update`   | `npm:packages:update:*`   | **Automated Update**. Performs a clean update and injects security overrides. |
+| `all:packages-outdated` | `npm:packages:outdated:*` | Checks for outdated packages while respecting the cool-down period.           |
+| `packages:update:lib`   | -                         | Specifically updates the root library and generates overrides.                |
+| `packages:update:docs`  | -                         | Specifically updates the documentation workspace.                             |
 
 ### Typical Maintenance Workflow
 

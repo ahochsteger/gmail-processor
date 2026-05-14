@@ -68,10 +68,68 @@ elif [[ "$COMMAND" == "update" ]]; then
     # Strip existing overrides
     gojq 'del(.overrides)' "$PACKAGE_JSON" > temp.json && mv temp.json "$PACKAGE_JSON"
     
-    echo "Step 2: Performing natural update in-place..."
-    if ! npm update "${ARGS[@]}" --quiet --before "$BEFORE" --no-fund --legacy-peer-deps > install.log 2>&1; then
+    UPDATE_LEVEL=${NPM_UPDATE_LEVEL:-minor}
+    echo "Step 2: Identifying and bumping direct dependencies in package.json (Level: $UPDATE_LEVEL)..."
+    
+    OUTDATED_JSON=$(npm outdated --json --before "$BEFORE" 2>/dev/null || echo "{}")
+    gojq --argjson outdated "$OUTDATED_JSON" --arg level "$UPDATE_LEVEL" '
+      def pin(v): v | sub("^[^0-9]*"; "");
+      def get_major(v): (pin(v) | split(".") | .[0]) // "0";
+      def get_minor(v): (pin(v) | split(".") | .[1]) // "0";
+      
+      def is_allowed($old_ver; $latest_ver; $level):
+        get_major($old_ver) as $old_major |
+        get_major($latest_ver) as $latest_major |
+        get_minor($old_ver) as $old_minor |
+        get_minor($latest_ver) as $latest_minor |
+        if $level == "major" then true
+        elif $level == "minor" then $old_major == $latest_major
+        elif $level == "patch" then ($old_major == $latest_major and $old_minor == $latest_minor)
+        else false end;
+
+      def bump_all(deps):
+        if deps == null then {logs: [], deps: null} else
+          deps | to_entries | reduce .[] as $entry ({logs: [], deps: {}};
+            $entry.key as $pkg |
+            $entry.value as $old_val |
+            pin($old_val) as $old_ver |
+            
+            if $outdated[$pkg] then
+              $outdated[$pkg].latest as $latest_ver |
+              if is_allowed($old_ver; $latest_ver; $level) then
+                if $old_val != $latest_ver then
+                  .logs += [" -> Bumping \($pkg): \($old_val) -> \($latest_ver)"] |
+                  .deps += {($pkg): $latest_ver}
+                else .deps += {($pkg): $old_val} end
+              else
+                .logs += [" -> Skipping \($level) update \($pkg): \($old_val) -> \($latest_ver)"] |
+                .deps += {($pkg): $old_ver}
+              end
+            else
+              if $old_val != $old_ver then
+                .logs += [" -> Pinning \($pkg): \($old_val) -> \($old_ver)"] |
+                .deps += {($pkg): $old_ver}
+              else .deps += {($pkg): $old_val} end
+            end
+          )
+        end;
+      
+      bump_all(.dependencies) as $d |
+      bump_all(.devDependencies) as $dv |
+      {
+        package: (.dependencies = $d.deps | .devDependencies = $dv.deps),
+        logs: ($d.logs + $dv.logs)
+      }
+    ' "$PACKAGE_JSON" > result.json
+    
+    gojq -r '.logs[]' result.json
+    gojq '.package' result.json > "$PACKAGE_JSON"
+    rm result.json
+    
+    echo "Step 3: Performing natural update and synchronizing lockfile..."
+    if ! npm install "${ARGS[@]}" --quiet --before "$BEFORE" --no-fund --legacy-peer-deps > install.log 2>&1; then
         echo "--------------------------------------------------------------------------------"
-        echo "ERROR: npm update failed! The dependency tree is broken without overrides."
+        echo "ERROR: npm install failed! The dependency tree is broken without overrides."
         echo "See details below:"
         echo "--------------------------------------------------------------------------------"
         tail -n 15 install.log
@@ -79,7 +137,7 @@ elif [[ "$COMMAND" == "update" ]]; then
         exit 1
     fi
     
-    echo "Step 3: Auditing natural dependency tree..."
+    echo "Step 4: Auditing natural dependency tree..."
     npm audit --audit-level="$AUDIT_LEVEL" --json > audit.json 2>/dev/null
     
     AUDIT_ERROR=$(gojq -r 'if .error then .error.summary else empty end' audit.json)
@@ -112,7 +170,7 @@ elif [[ "$COMMAND" == "update" ]]; then
             fi
         done
     
-        echo "Step 4: Injecting new overrides and validating..."
+        echo "Step 5: Injecting new overrides and validating..."
         gojq ".overrides = $OVERRIDES_JSON" "$PACKAGE_JSON" > temp.json && mv temp.json "$PACKAGE_JSON"
         
         if ! npm install --quiet --no-fund --legacy-peer-deps > install_validation.log 2>&1; then

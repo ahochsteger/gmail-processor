@@ -364,14 +364,24 @@ Rather than manual tracking, security vulnerabilities are handled via automated 
 
 ### 3. Usage & Triggers
 
-| Goal                | Command                       | Context                                                              |
-| :------------------ | :---------------------------- | :------------------------------------------------------------------- |
-| **Safe Update**     | `npm run all:packages-update` | Performs natural updates and generates security overrides.           |
-| **Manual Override** | `npm run packages:update:lib` | Targets a specific workspace (root or docs).                         |
-| **Security Audit**  | `npm run all:audit-security`  | Verifies that the current tree is clean.                             |
-| **Integrity Check** | `npm run lint:scripts`        | Ensures all script references are valid after renames or reordering. |
+| Goal                | Command                       | Context                                                                       |
+| :------------------ | :---------------------------- | :---------------------------------------------------------------------------- |
+| **Safe Update**     | `npm run all:packages-update` | Performs natural updates, enforces pinning, and generates security overrides. |
+| **Manual Override** | `npm run packages:update:lib` | Targets a specific workspace (root or docs).                                  |
+| **Security Audit**  | `npm run all:audit-security`  | Verifies that the current tree is clean.                                      |
+| **Integrity Check** | `npm run lint:scripts`        | Ensures all script references are valid after renames or reordering.          |
 
-### Dependency Management (Renovate)
+### 4. Version Pinning & Update Policy
+
+To ensure fully reproducible builds and environment stability, the project enforces strict version pinning.
+
+- **Strict Pinning**: All dependencies in `package.json` MUST be pinned to exact versions (no `^` or `~` prefixes). The `npm run all:packages-update` script automatically enforces this.
+- **Update Level Control**: By default, only **minor** and **patch** updates are performed.
+  - **Patch Updates**: Only allowed if `NPM_UPDATE_LEVEL=patch` is set (skips minor/major updates).
+  - **Major Updates**: Only allowed if `NPM_UPDATE_LEVEL=major` is set.
+- **Reproducibility**: This combination of pinning and controlled updates ensures that the local environment, CI pipeline, and GAS deployment remain in lock-step.
+
+### 5. Dependency Management (Renovate)
 
 The project uses Renovate to automate dependency updates with a focus on noise reduction and logical grouping.
 
