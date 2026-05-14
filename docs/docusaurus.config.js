@@ -90,9 +90,9 @@ const config = {
           // {to: '/blog', label: 'Blog', position: 'left'},
           { to: '/playground', label: 'Playground', position: 'left' },
           {
-            href: `https://github.com/ahochsteger/gmail-processor/releases/${version}`,
+            href: `https://github.com/ahochsteger/gmail-processor/releases/tag/v${version}`,
             position: 'right',
-            label: `Latest Release: ${version}`,
+            label: `Latest Release: v${version}`,
           },
           {
             href: 'https://github.com/ahochsteger/gmail-processor',
