@@ -35,6 +35,8 @@ env:
   DEVBOX_NO_LOG_PROGRESS: 1
   DEVBOX_QUIET: 1
   NIX_CONFIG: "quiet = true"
+permissions:
+  contents: read
 jobs:
   run-maintenance:
     runs-on: ubuntu-latest

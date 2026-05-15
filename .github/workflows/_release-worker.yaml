@@ -49,6 +49,8 @@ env:
   ACT: false
   DEVBOX_NO_LOG_PROGRESS: 1
   NIX_CONFIG: "quiet = true"
+permissions:
+  contents: read
 
 jobs:
   run:

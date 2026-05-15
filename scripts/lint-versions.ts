@@ -1,7 +1,7 @@
-import * as fs from "fs"
-import * as path from "path"
-import * as os from "os"
 import { execSync } from "child_process"
+import * as fs from "fs"
+import * as os from "os"
+import * as path from "path"
 
 function readJsonFile(filePath: string): any {
   return JSON.parse(fs.readFileSync(path.resolve(filePath), "utf8"))
@@ -98,7 +98,10 @@ function lintNodeVersion() {
       )
     }
     const actualVersion = lock.packages[`node_modules/${name}`]?.version
-    if (actualVersion && actualVersion !== overrideVersion.replace(/^[^0-9]*/, "")) {
+    if (
+      actualVersion &&
+      actualVersion !== overrideVersion.replace(/^[^0-9]*/, "")
+    ) {
       error(
         `Override for '${name}' is set to '${overrideVersion}', but lockfile has '${actualVersion}'`,
       )
@@ -111,7 +114,9 @@ function lintNodeVersion() {
   const beforeDate = new Date()
   beforeDate.setDate(beforeDate.getDate() - days)
   const beforeStr = beforeDate.toISOString()
-  console.log(`[INFO] Verifying release cool-down (${days} days, cutoff: ${beforeStr})...`)
+  console.log(
+    `[INFO] Verifying release cool-down (${days} days, cutoff: ${beforeStr})...`,
+  )
 
   const findCulprits = (dir: string, cutoff: string) => {
     const packageJson = readJsonFile(path.join(dir, "package.json"))
@@ -120,11 +125,15 @@ function lintNodeVersion() {
       ...packageJson.devDependencies,
     }
 
-    console.log(`[INFO] Inspecting direct dependencies in ${dir} to find culprits...`)
+    console.log(
+      `[INFO] Inspecting direct dependencies in ${dir} to find culprits...`,
+    )
     for (const [name, version] of Object.entries(allDeps)) {
       const pinned = (version as string).replace(/^[^0-9]*/, "")
       try {
-        const timeJson = execSync(`npm view ${name} time --json`, { stdio: "pipe" }).toString()
+        const timeJson = execSync(`npm view ${name} time --json`, {
+          stdio: "pipe",
+        }).toString()
         const times = JSON.parse(timeJson)
         const pubTime = times[pinned]
         if (pubTime && pubTime > cutoff) {
@@ -145,7 +154,10 @@ function lintNodeVersion() {
       if (fs.existsSync(pkgPath)) {
         const tempPkg = readJsonFile(pkgPath)
         delete tempPkg.overrides
-        fs.writeFileSync(path.join(tempDir, "package.json"), JSON.stringify(tempPkg, null, 2))
+        fs.writeFileSync(
+          path.join(tempDir, "package.json"),
+          JSON.stringify(tempPkg, null, 2),
+        )
         if (fs.existsSync(".npmrc")) {
           fs.copyFileSync(".npmrc", path.join(tempDir, ".npmrc"))
         }
@@ -159,7 +171,9 @@ function lintNodeVersion() {
         // We found a violation. Now let's be helpful and find exactly which ones.
         findCulprits(dir, beforeStr)
       } else {
-        error(`Failed to verify release cool-down in ${dir}: ${e.message}\n${stderr}`)
+        error(
+          `Failed to verify release cool-down in ${dir}: ${e.message}\n${stderr}`,
+        )
       }
     } finally {
       fs.rmSync(tempDir, { recursive: true, force: true })

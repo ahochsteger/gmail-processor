@@ -37,9 +37,14 @@ on:
 env:
   ACT: false
   DEVBOX_QUIET: 1
-
+permissions:
+  contents: read
 jobs:
   release:
+    permissions:
+      contents: write
+      pull-requests: write
+      discussions: write
     uses: ./.github/workflows/_release-worker.yaml
     with:
       job: ${{ github.event.inputs.job }}

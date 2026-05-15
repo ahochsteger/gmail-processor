@@ -39,6 +39,9 @@ on:
         type: boolean
         default: false
 
+permissions:
+  contents: read
+
 env:
   ACT: false
   DEVBOX_NO_LOG_PROGRESS: 1
@@ -274,6 +277,10 @@ jobs:
     needs: ci
     if: ${{ github.event_name != 'pull_request' && needs.ci.outputs.enable_beta_deploy == 'true' }}
     uses: ./.github/workflows/_release-worker.yaml
+    permissions:
+      contents: write
+      pull-requests: write
+      discussions: write
     with:
       job: beta-deploy
       environment: beta
@@ -284,6 +291,10 @@ jobs:
     needs: ci
     if: ${{ github.event_name != 'pull_request' && (needs.ci.outputs.release_created == 'true' || needs.ci.outputs.enable_prod_deploy == 'true') }}
     uses: ./.github/workflows/_release-worker.yaml
+    permissions:
+      contents: write
+      pull-requests: write
+      discussions: write
     with:
       job: ci-release
       environment: prod
