@@ -153,16 +153,12 @@ elif [[ "$COMMAND" == "update" ]]; then
         echo "Result: No high-level vulnerabilities found. Overrides are not required."
         rm -f "${PACKAGE_JSON}.bak" "${PACKAGE_LOCK}.bak" audit.json install.log
     else
-        echo "Result: Vulnerabilities detected. Generating required overrides (respecting cool-down)..."
+        echo "Result: Vulnerabilities detected. Generating required overrides (bypassing cool-down for security)..."
         
         OVERRIDES_JSON="{}"
         
         for PKG in $VULN_PKGS; do
-            LATEST=$(npm view "$PKG" --json 2>/dev/null | gojq -r "(.versions | reverse) as \$v | .time as \$t | \$v | map(select(\$t[.] < \"$BEFORE\")) | .[0]")
-            
-            if [[ "$LATEST" == "null" || -z "$LATEST" ]]; then
-                LATEST=$(npm view "$PKG" version 2>/dev/null)
-            fi
+            LATEST=$(npm view "$PKG" version 2>/dev/null)
             
             if [[ -n "$LATEST" ]]; then
                 echo " -> Queuing override: $PKG @ ^$LATEST"

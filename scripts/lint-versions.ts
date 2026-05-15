@@ -143,7 +143,9 @@ function lintNodeVersion() {
     try {
       const pkgPath = path.join(dir, "package.json")
       if (fs.existsSync(pkgPath)) {
-        fs.copyFileSync(pkgPath, path.join(tempDir, "package.json"))
+        const tempPkg = readJsonFile(pkgPath)
+        delete tempPkg.overrides
+        fs.writeFileSync(path.join(tempDir, "package.json"), JSON.stringify(tempPkg, null, 2))
         if (fs.existsSync(".npmrc")) {
           fs.copyFileSync(".npmrc", path.join(tempDir, ".npmrc"))
         }
