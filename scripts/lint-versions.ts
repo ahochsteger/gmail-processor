@@ -1,5 +1,7 @@
 import * as fs from "fs"
 import * as path from "path"
+import * as os from "os"
+import { execSync } from "child_process"
 
 function readJsonFile(filePath: string): any {
   return JSON.parse(fs.readFileSync(path.resolve(filePath), "utf8"))
@@ -103,14 +105,76 @@ function lintNodeVersion() {
     }
   })
 
+  // 8. Check release cool-down consistency
+  const daysMatch = renovate.minimumReleaseAge?.match(/(\d+) days/)
+  const days = daysMatch ? parseInt(daysMatch[1]) : 7
+  const beforeDate = new Date()
+  beforeDate.setDate(beforeDate.getDate() - days)
+  const beforeStr = beforeDate.toISOString().split("T")[0]
+  console.log(`[INFO] Verifying release cool-down (${days} days, cutoff: ${beforeStr})...`)
+
+  const findCulprits = (dir: string, cutoff: string) => {
+    const packageJson = readJsonFile(path.join(dir, "package.json"))
+    const allDeps = {
+      ...packageJson.dependencies,
+      ...packageJson.devDependencies,
+    }
+
+    console.log(`[INFO] Inspecting direct dependencies in ${dir} to find culprits...`)
+    for (const [name, version] of Object.entries(allDeps)) {
+      const pinned = (version as string).replace(/^[^0-9]*/, "")
+      try {
+        const timeJson = execSync(`npm view ${name} time --json`, { stdio: "pipe" }).toString()
+        const times = JSON.parse(timeJson)
+        const pubTime = times[pinned]
+        if (pubTime && pubTime > cutoff) {
+          error(
+            `Release cool-down violation in ${dir}: ${name}@${pinned} was published on ${pubTime.split("T")[0]}, which is after the cutoff ${cutoff}.`,
+          )
+        }
+      } catch (e) {
+        // Skip packages that fail npm view (e.g. private or local)
+      }
+    }
+  }
+
+  const verifyCoolDown = (dir: string) => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "npm-check-"))
+    try {
+      const pkgPath = path.join(dir, "package.json")
+      if (fs.existsSync(pkgPath)) {
+        fs.copyFileSync(pkgPath, path.join(tempDir, "package.json"))
+        if (fs.existsSync(".npmrc")) {
+          fs.copyFileSync(".npmrc", path.join(tempDir, ".npmrc"))
+        }
+
+        const cmd = `npm install --package-lock-only --before ${beforeStr} --no-audit --ignore-scripts --legacy-peer-deps --quiet`
+        execSync(cmd, { cwd: tempDir, stdio: "pipe" })
+      }
+    } catch (e: any) {
+      const stderr = e.stderr?.toString() || ""
+      if (stderr.includes("ETARGET") || stderr.includes("notarget")) {
+        // We found a violation. Now let's be helpful and find exactly which ones.
+        findCulprits(dir, beforeStr)
+      } else {
+        error(`Failed to verify release cool-down in ${dir}: ${e.message}\n${stderr}`)
+      }
+    } finally {
+      fs.rmSync(tempDir, { recursive: true, force: true })
+    }
+  }
+
+  verifyCoolDown(".")
+  verifyCoolDown("docs")
+
   if (hasErrors) {
     console.error(
-      "\nVersion drift detected! Please ensure devbox.json, package.json, package-lock.json, docs/package.json, and renovate.json are aligned.",
+      "\nVersion drift or cool-down violation detected! Please ensure dependencies respect the Renovate releaseAge policy.",
     )
     process.exit(1)
   } else {
     console.log(
-      `[SUCCESS] Node.js major version ${majorVersion}, TypeScript, and Overrides are perfectly aligned across all configuration files.`,
+      `[SUCCESS] Node.js major version ${majorVersion}, TypeScript, Overrides, and Release Cool-down are perfectly aligned across all configuration files.`,
     )
   }
 }

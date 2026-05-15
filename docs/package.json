@@ -37,7 +37,7 @@
     "@mdx-js/loader": "3.1.1",
     "@types/google-apps-script": "2.0.8",
     "@types/jest": "30.0.0",
-    "@types/node": "24.12.4",
+    "@types/node": "24.12.3",
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
     "eslint-import-resolver-typescript": "4.4.4",

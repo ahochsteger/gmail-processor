@@ -27,7 +27,7 @@
     "@types/google-apps-script": "2.0.8",
     "@types/jest": "30.0.0",
     "@types/jest-when": "3.5.5",
-    "@types/node": "24.12.4",
+    "@types/node": "24.12.3",
     "@types/sha1": "1.1.5",
     "@typescript-eslint/eslint-plugin": "8.59.2",
     "@typescript-eslint/parser": "8.59.2",
