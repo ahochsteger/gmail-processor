@@ -13,7 +13,7 @@ if [[ ! "$DAYS" =~ ^[0-9]+$ ]]; then
   DAYS=7
 fi
 
-BEFORE=$(date -d "-$DAYS days" +%Y-%m-%d)
+BEFORE=$(date -d "-$DAYS days" -Iseconds)
 echo "INFO: Using $DAYS days release cool-down (Before: $BEFORE)"
 
 COMMAND=$1

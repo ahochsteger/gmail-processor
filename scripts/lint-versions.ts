@@ -110,7 +110,7 @@ function lintNodeVersion() {
   const days = daysMatch ? parseInt(daysMatch[1]) : 7
   const beforeDate = new Date()
   beforeDate.setDate(beforeDate.getDate() - days)
-  const beforeStr = beforeDate.toISOString().split("T")[0]
+  const beforeStr = beforeDate.toISOString()
   console.log(`[INFO] Verifying release cool-down (${days} days, cutoff: ${beforeStr})...`)
 
   const findCulprits = (dir: string, cutoff: string) => {
