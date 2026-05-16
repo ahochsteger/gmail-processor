@@ -1,26 +1,18 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {
-  EnvContext,
-  EnvInfo,
-  // MetaInfo,
-  // MetaInfoType,
-  // newMetaInfo,
-  ProcessingResult,
-  ProcessingStatus,
-  RunMode,
-} from "./Context"
+import type { EnvContext, EnvInfo } from "./Context"
+import { ProcessingResult, ProcessingStatus, RunMode } from "./Context"
 import { EnvProvider } from "./EnvProvider"
 import { ActionRegistration } from "./actions/ActionRegistry"
 import { ConflictStrategy } from "./adapter/GDriveAdapter"
 import { ProcessingStage } from "./config/ActionConfig"
-import { Config } from "./config/Config"
+import type { Config } from "./config/Config"
 import { MessageFlag } from "./config/MessageFlag"
 import {
   LogLevel,
   LogRedactionMode,
   MarkProcessedMethod,
 } from "./config/SettingsConfig"
-import { V1Config } from "./config/v1/V1Config"
+import type { V1Config } from "./config/v1/V1Config"
 import { V1ToV2Converter } from "./config/v1/V1ToV2Converter"
 import { E2E, newE2EGlobalConfig } from "./e2e/E2E"
 import { E2EDefaults } from "./e2e/E2EDefaults"
@@ -28,26 +20,21 @@ import { GmailProcessor } from "./processors/GmailProcessor"
 
 // Re-export everything that should be accessible from the lib
 export {
-  Config,
   ConflictStrategy,
   E2E,
   E2EDefaults,
-  EnvInfo,
   EnvProvider,
   LogLevel,
   LogRedactionMode,
   MarkProcessedMethod,
   MessageFlag,
   newE2EGlobalConfig,
-  // MetaInfo,
-  // MetaInfoType,
-  // newMetaInfo,
   ProcessingResult,
   ProcessingStage,
   ProcessingStatus,
   RunMode,
-  V1Config,
 }
+export type { Config, EnvInfo, V1Config }
 
 /**
  * Run Gmail Processor with the given config
@@ -86,7 +73,6 @@ export function convertV1Config(v1config: V1Config): Config {
 }
 
 // Re-export classes that should be accessible in Google Apps Script:
-;(globalThis as any).Config = Config
 ;(globalThis as any).ConflictStrategy = ConflictStrategy
 ;(globalThis as any).E2E = E2E
 ;(globalThis as any).E2EDefaults = E2EDefaults
@@ -99,7 +85,6 @@ export function convertV1Config(v1config: V1Config): Config {
 ;(globalThis as any).ProcessingStage = ProcessingStage
 ;(globalThis as any).ProcessingStatus = ProcessingStatus
 ;(globalThis as any).RunMode = RunMode
-;(globalThis as any).V1Config = V1Config
 ;(globalThis as any).convertV1Config = convertV1Config
 ;(globalThis as any).newE2EGlobalConfig = newE2EGlobalConfig
 ;(globalThis as any).run = run

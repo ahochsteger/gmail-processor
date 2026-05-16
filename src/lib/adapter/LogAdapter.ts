@@ -6,7 +6,7 @@ import {
   ProcessingContext,
   ThreadContext,
 } from "../Context"
-import { GlobalActionLoggingBase } from "../actions/GlobalActions"
+import { GlobalActionLoggingBase } from "../config/ActionConfig"
 import {
   LOG_LEVEL_NAME,
   LOG_LOCATION_NAME,
@@ -49,6 +49,7 @@ export class LogAdapter extends BaseAdapter {
         logConfigField?.ctxValues?.[ctx.type] ??
         logConfigField?.value ??
         `\${${name}}`,
+      ctxValues: {},
     }
     return field
   }

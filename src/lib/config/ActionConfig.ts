@@ -1,192 +1,110 @@
-import { Expose, plainToInstance } from "class-transformer"
-import "reflect-metadata"
-import { AttachmentActionConfigType } from "../actions/AttachmentActions"
-import { GlobalActionConfigType } from "../actions/GlobalActions"
-import { MessageActionConfigType } from "../actions/MessageActions"
-import { ThreadActionConfigType } from "../actions/ThreadActions"
-import { ConflictStrategy } from "../adapter/GDriveAdapter"
+import { z } from "zod"
 import { essentialObject } from "../utils/ConfigUtils"
-import { RequiredDeep } from "../utils/Utility.types"
+import { ProcessingStage } from "./ActionConfigTypes"
 
-/**
- * The stage of action processing
- */
-export enum ProcessingStage {
-  /** The stage before processing the main object (thread, message, attachment) */
-  PRE_MAIN = "pre-main",
-  /** The stage during processing the main object (thread, message, attachment) */
-  MAIN = "main",
-  /** The stage after processing the main object (thread, message, attachment) */
-  POST_MAIN = "post-main",
-}
+export { ConflictStrategy, ProcessingStage } from "./ActionConfigTypes"
+export type {
+  ActionBaseConfig,
+  AttachmentActionConfigType,
+  AttachmentContextActionConfigType,
+  AttachmentExtractTextArgs,
+  GlobalActionConfigType,
+  GlobalActionLoggingBase,
+  MessageActionConfigType,
+  MessageActionExportArgs,
+  MessageActionForwardArgs,
+  MessageActionStoreFromUrlArgs,
+  MessageActionStorePDFArgs,
+  MessageContextActionConfigType,
+  StoreActionBaseArgs,
+  StoreDecryptedPdfActionArgs,
+  ThreadActionArgsStorePDF,
+  ThreadActionConfigType,
+  ThreadActionExportArgs,
+  ThreadActionLabelArgs,
+  ThreadContextActionConfigType,
+} from "./ActionConfigTypes"
 
-export type ActionBaseConfig<TName extends string = string, TArgs = unknown> = {
-  args?: TArgs
-  description?: string
-  name: TName
-  processingStage?: ProcessingStage
-}
-
-export abstract class ActionConfig<
-  TActionConfig extends ActionBaseConfig = ActionBaseConfig,
-> {
+export const ActionConfigSchema = z.object({
   /**
    * The arguments for a certain action
    */
-  @Expose()
-  args?: TActionConfig["args"]
+  args: z.any().default({}).describe("The arguments for a certain action"),
 
   /**
    * The description for the action
    */
-  @Expose()
-  description? = ""
+  description: z
+    .string()
+    .default("")
+    .describe("The description for the action"),
 
   /**
    * The name of the action to be executed
    */
-  @Expose()
-  name: TActionConfig["name"] = ""
+  name: z.string().min(1).describe("The name of the action to be executed"),
 
   /**
    * The processing stage in which the action should run (during main processing stage or pre-main/post-main)
    */
-  @Expose()
-  processingStage? = ProcessingStage.POST_MAIN
-}
-
-export type StoreActionBaseArgs = {
-  /**
-   * The location (path + filename) of the Google Drive file.
-   * For shared folders or Team Drives prepend the location with the folder ID like `{id:<folderId>}/...`.
-   * Supports placeholder substitution.
-   */
-  location: string
-  /**
-   * The strategy to be used in case a file already exists at the desired location.
-   */
-  conflictStrategy: ConflictStrategy
-  /**
-   * The prefix to be used for the increment number in case of ConflictStrategy.INCREMENT.
-   * Typical naming conventions: `_` for file_1.txt, ` (` for file (1).txt
-   * Default: ` (`
-   */
-  incrementPrefix?: string
-  /**
-   * The suffix to be used for the increment number in case of ConflictStrategy.INCREMENT.
-   * Typical naming conventions: empty string for file_1.txt, `)` for file (1).txt
-   * Default: `)`
-   */
-  incrementSuffix?: string
-  /**
-   * The starting number to be used for the increment number in case of ConflictStrategy.INCREMENT.
-   * Default: `1`
-   */
-  incrementStart?: number
-  /**
-   * The description to be attached to the Google Drive file.
-   * Supports placeholder substitution.
-   */
-  description?: string
-  /**
-   * Convert to a Google file type using one of the <a href="https://developers.google.com/drive/api/guides/mime-types?hl=en">supported mime-types by Google Drive</a>, like:
-   * * `application/vnd.google-apps.document`: Google Docs
-   * * `application/vnd.google-apps.presentation`: Google Slides
-   * * `application/vnd.google-apps.spreadsheet`: Google Sheets
-   */
-  toMimeType?: string
-}
-
-export type StoreDecryptedPdfActionArgs = StoreActionBaseArgs & {
-  /**
-   * The password to be used for PDF decryption.
-   */
-  password: string
-}
-
-export type AttachmentExtractTextArgs = {
-  /**
-   * Hints at the language to use for OCR. Valid values are BCP 47 codes.
-   * Default: (unset, auto-detects the language)
-   */
-  language?: string
-  /**
-   * The location of the (temporary) Google Docs file containing the extracted OCR text, in case it should be stored in addition to further processing.
-   * Supports placeholder substitution.
-   * Default: (unset)
-   */
-  docsFileLocation?: string
-  /**
-   * A regular expression that defines which values should be extracted.
-   * It is recommended to use the named group syntax `(?<name>...)` to reference the extracted values using names like `{{attachment.extracted.name}}`.
-   */
-  extract?: string
-}
-
-export type CustomActionConfigType = ActionBaseConfig<`custom.${string}`>
-
-export type ProcessingContextActionConfigType =
-  | CustomActionConfigType
-  | GlobalActionConfigType
-export type ThreadContextActionConfigType =
-  | ProcessingContextActionConfigType
-  | ThreadActionConfigType
-export type MessageContextActionConfigType =
-  | ThreadContextActionConfigType
-  | MessageActionConfigType
-export type AttachmentContextActionConfigType =
-  | MessageContextActionConfigType
-  | AttachmentActionConfigType
+  processingStage: z
+    .nativeEnum(ProcessingStage)
+    .default(ProcessingStage.POST_MAIN)
+    .describe(
+      "The processing stage in which the action should run (during main processing stage or pre-main/post-main)",
+    ),
+})
 
 /**
  * Represents a config to perform a actions for a GMail thread.
  */
-export class ThreadActionConfig extends ActionConfig<ThreadContextActionConfigType> {}
-export type RequiredThreadActionConfig = RequiredDeep<ThreadActionConfig>
+export const ThreadActionConfigSchema = ActionConfigSchema
+export type ThreadActionConfig = z.input<typeof ThreadActionConfigSchema>
+export type RequiredThreadActionConfig = z.output<
+  typeof ThreadActionConfigSchema
+>
 
 /**
  * Represents a config to perform a actions for a GMail message.
  */
-export class MessageActionConfig extends ActionConfig<MessageContextActionConfigType> {}
-export type RequiredMessageActionConfig = RequiredDeep<MessageActionConfig>
+export const MessageActionConfigSchema = ActionConfigSchema
+export type MessageActionConfig = z.input<typeof MessageActionConfigSchema>
+export type RequiredMessageActionConfig = z.output<
+  typeof MessageActionConfigSchema
+>
 
 /**
  * Represents a config to perform a actions for a GMail attachment.
  */
-export class AttachmentActionConfig extends ActionConfig<AttachmentContextActionConfigType> {}
-export type RequiredAttachmentActionConfig =
-  RequiredDeep<AttachmentActionConfig>
+export const AttachmentActionConfigSchema = ActionConfigSchema
+export type AttachmentActionConfig = z.input<
+  typeof AttachmentActionConfigSchema
+>
+export type RequiredAttachmentActionConfig = z.output<
+  typeof AttachmentActionConfigSchema
+>
 
 export type ActionConfigType =
   | ThreadActionConfig
   | MessageActionConfig
   | AttachmentActionConfig
 
-function newThreadActionConfig(
+export function newThreadActionConfig(
   json: ThreadActionConfig,
 ): RequiredThreadActionConfig {
-  return plainToInstance(ThreadActionConfig, json, {
-    exposeDefaultValues: true,
-    exposeUnsetFields: false,
-  }) as RequiredThreadActionConfig
+  return ThreadActionConfigSchema.parse(json)
 }
 
-function newMessageActionConfig(
+export function newMessageActionConfig(
   json: MessageActionConfig,
 ): RequiredMessageActionConfig {
-  return plainToInstance(MessageActionConfig, json, {
-    exposeDefaultValues: true,
-    exposeUnsetFields: false,
-  }) as RequiredMessageActionConfig
+  return MessageActionConfigSchema.parse(json)
 }
 
-function newAttachmentActionConfig(
+export function newAttachmentActionConfig(
   json: AttachmentActionConfig,
 ): RequiredAttachmentActionConfig {
-  return plainToInstance(AttachmentActionConfig, json, {
-    exposeDefaultValues: true,
-    exposeUnsetFields: false,
-  }) as RequiredAttachmentActionConfig
+  return AttachmentActionConfigSchema.parse(json)
 }
 
 export function essentialThreadActionConfig(

@@ -1,6 +1,5 @@
 import { PDFDocument } from "@cantoo/pdf-lib"
 import {
-  ActionBaseConfig,
   AttachmentExtractTextArgs,
   StoreActionBaseArgs,
   StoreDecryptedPdfActionArgs,
@@ -180,12 +179,3 @@ export class AttachmentActions implements ActionProvider<AttachmentContext> {
     }
   }
 }
-
-export type AttachmentActionConfigType =
-  | ActionBaseConfig<"attachment.noop">
-  | ActionBaseConfig<"attachment.extractText", AttachmentExtractTextArgs>
-  | ActionBaseConfig<"attachment.store", StoreActionBaseArgs>
-  | ActionBaseConfig<
-      "attachment.storeDecryptedPdf",
-      StoreDecryptedPdfActionArgs
-    >

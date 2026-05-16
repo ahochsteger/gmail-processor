@@ -36,7 +36,11 @@ function initAllTests() {
   )
 }
 
-async function runAllTests(skipInit = true, testRunId = undefined) {
+async function runAllTests(
+  skipInit = true,
+  testRunId = undefined,
+  testRunTimestamp = undefined,
+) {
   return await GmailProcessorLib.E2E.runAllTests(
     getTestConfigs(),
     skipInit,
@@ -47,11 +51,22 @@ async function runAllTests(skipInit = true, testRunId = undefined) {
       propertiesService: PropertiesService,
     }),
     testRunId,
+    testRunTimestamp,
   )
 }
 
 async function initAndRunAllTests() {
-  const testRunId = initAllTests()
-  Utilities.sleep(5000)
-  return JSON.stringify(await runAllTests(true, testRunId))
+  const testRunInfo = GmailProcessorLib.E2E.ensureTestData(
+    getTestConfigs(),
+    E2E_REPO_BRANCH,
+    GmailProcessorLib.EnvProvider.defaultContext({
+      runMode: GmailProcessorLib.RunMode.DANGEROUS,
+      cacheService: CacheService,
+      propertiesService: PropertiesService,
+    }),
+  )
+  Utilities.sleep(2000)
+  return JSON.stringify(
+    await runAllTests(true, testRunInfo.runId, testRunInfo.timestamp),
+  )
 }

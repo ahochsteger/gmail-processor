@@ -3,7 +3,7 @@ import { GDriveAdapter } from "./adapter/GDriveAdapter"
 import { GmailAdapter } from "./adapter/GmailAdapter"
 import { LogAdapter } from "./adapter/LogAdapter"
 import { SpreadsheetAdapter } from "./adapter/SpreadsheetAdapter"
-import { ActionConfig } from "./config/ActionConfig"
+import { ActionBaseConfig } from "./config/ActionConfig"
 import { RequiredAttachmentConfig } from "./config/AttachmentConfig"
 import { AttachmentMatchConfig } from "./config/AttachmentMatchConfig"
 import { RequiredConfig } from "./config/Config"
@@ -179,7 +179,7 @@ export class ProcessingError extends Error {
 }
 
 export type ActionExecution = {
-  config: ActionConfig
+  config: ActionBaseConfig
   result?: ActionReturnType
 }
 

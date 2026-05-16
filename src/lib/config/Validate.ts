@@ -1,11 +1,24 @@
-import Ajv from "ajv"
-import { Config } from "./Config"
-import * as schema from "./config-schema-v2.json"
+import { ConfigSchema, RequiredConfig } from "./Config"
 
-const ajv = new Ajv({
-  allErrors: true,
-  removeAdditional: true,
-  strict: false,
-  useDefaults: true,
-})
-export const validateConfig = ajv.compile<Config>(schema, true)
+export interface ValidationError {
+  message: string
+  path: string
+}
+
+export type ValidationResult<T> =
+  | { success: true; data: T }
+  | { success: false; errors: ValidationError[] }
+
+export function validateConfig(config: any): ValidationResult<RequiredConfig> {
+  const result = ConfigSchema.strict().safeParse(config)
+  if (result.success) {
+    return { success: true, data: result.data }
+  }
+  return {
+    success: false,
+    errors: result.error.issues.map((e) => ({
+      message: e.message,
+      path: e.path.join("."),
+    })),
+  }
+}

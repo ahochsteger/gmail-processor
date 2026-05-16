@@ -12,6 +12,7 @@ on:
           - "all:ci"
           - "all:clean"
           - "all:deploy"
+          - "all:format"
           - "all:lint"
           - "all:locks-clean"
           - "all:maintenance"

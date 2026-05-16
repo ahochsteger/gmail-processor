@@ -5,7 +5,7 @@ import {
   ProcessingContext,
   ThreadContext,
 } from "../Context"
-import { GlobalActionLoggingBase } from "../actions/GlobalActions"
+import { GlobalActionLoggingBase } from "../config/ActionConfig"
 import { SettingsConfig } from "../config/SettingsConfig"
 import { PatternUtil } from "../utils/PatternUtil"
 import { BaseAdapter } from "./BaseAdapter"

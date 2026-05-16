@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { plainToInstance } from "class-transformer"
 import { ConfigMocks } from "../../test/mocks/ConfigMocks"
 import {
   Config,
+  ConfigSchema,
   ProcessingConfig,
   configToJson,
   essentialConfig,
@@ -277,7 +277,7 @@ it("should exercise LogFieldContextConfig properties", () => {
 })
 
 it("should initialize default message and attachment handlers in Config", () => {
-  const cfg = new Config()
+  const cfg = ConfigSchema.parse({})
   expect(cfg.messages).toEqual([])
   expect(cfg.attachments).toEqual([])
 })
@@ -286,7 +286,7 @@ it("should handle partial plainToInstance for Config", () => {
   const plain = {
     threads: [{}],
   }
-  const cfg = plainToInstance(Config, plain, { exposeDefaultValues: true })
+  const cfg = ConfigSchema.parse(plain)
   expect(cfg.messages).toEqual([])
   expect(cfg.attachments).toEqual([])
   expect(cfg.threads).toHaveLength(1)

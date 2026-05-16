@@ -10,8 +10,8 @@ import { info, migrationConfig } from "./migrationAdvanced"
 
 describe(`Example ${info.name}`, () => {
   it(`should successfully validate migration example config ${info.name}`, () => {
-    validateV1Config(migrationConfig)
-    expect(validateV1Config.errors).toBeNull()
+    const result = validateV1Config(migrationConfig)
+    expect(result.success).toBe(true)
   })
   it(`should successfully run migration example ${info.name}`, () => {
     const convertedConfig = GmailProcessorLib.convertV1Config(migrationConfig)
@@ -21,6 +21,7 @@ describe(`Example ${info.name}`, () => {
   })
   it(`should successfully validate converted migration example ${info.name}`, () => {
     const convertedConfig = GmailProcessorLib.convertV1Config(migrationConfig)
-    validateConfig(convertedConfig)
+    const result = validateConfig(convertedConfig)
+    expect(result.success).toBe(true)
   })
 })

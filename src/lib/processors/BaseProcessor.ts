@@ -18,7 +18,7 @@ import {
   newMetaInfo,
 } from "../Context"
 import { ActionArgsType, ActionReturnType } from "../actions/ActionRegistry"
-import { ActionConfig, ProcessingStage } from "../config/ActionConfig"
+import { ActionBaseConfig, ProcessingStage } from "../config/ActionConfig"
 import { AttachmentMatchConfig } from "../config/AttachmentMatchConfig"
 import { OrderableEntityConfig } from "../config/CommonConfig"
 import { MessageMatchConfig } from "../config/MessageMatchConfig"
@@ -54,7 +54,7 @@ export type TraceEntry = {
 }
 
 export type ProcessingTrace = {
-  action: ActionConfig
+  action: ActionBaseConfig
   traces: {
     thread?: TraceEntry
     message?: TraceEntry
@@ -295,7 +295,7 @@ export abstract class BaseProcessor {
 
   protected static getProcessingTrace(
     ctx: ProcessingContext,
-    action: ActionConfig,
+    action: ActionBaseConfig,
     actionResult: ActionReturnType,
   ): ProcessingTrace {
     const procTrace: ProcessingTrace = {
@@ -334,7 +334,7 @@ export abstract class BaseProcessor {
   protected static handleActionResult(
     ctx: ProcessingContext,
     result: ProcessingResult,
-    action: ActionConfig,
+    action: ActionBaseConfig,
     actionResult: ActionReturnType,
   ): ProcessingResult {
     // result.executedActions.push({config:action, result:actionResult}) // TODO: Include action result here!
@@ -359,7 +359,7 @@ export abstract class BaseProcessor {
     ctx: ProcessingContext,
     processingStage: ProcessingStage,
     result: ProcessingResult,
-    ...actionSets: ActionConfig[][]
+    ...actionSets: ActionBaseConfig[][]
   ): ProcessingResult {
     actionSets.forEach((actions) => {
       actions
@@ -370,7 +370,7 @@ export abstract class BaseProcessor {
             actionResult = ctx.proc.actionRegistry.executeAction(
               ctx,
               action.name,
-              action.args as ActionArgsType,
+              (action.args ?? {}) as ActionArgsType,
             )
             if (actionResult.actionMeta) {
               this.updateContextMeta(ctx, actionResult.actionMeta)

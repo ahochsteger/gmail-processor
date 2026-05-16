@@ -4,7 +4,7 @@ import { validateV1Config } from "./V1Validate"
 
 describe("validate()", () => {
   it("should validate a minimum compliant v1 config without errors", () => {
-    validateV1Config({
+    const result = validateV1Config({
       processedLabel: "gmail2gdrive/client-test",
       sleepTime: 100,
       maxRuntime: 280,
@@ -17,10 +17,10 @@ describe("validate()", () => {
         },
       ],
     })
-    expect(validateV1Config.errors).toBeFalsy()
+    expect(result.success).toBe(true)
   })
   it("should validate compliant v1 config without errors", () => {
-    validateV1Config({
+    const result = validateV1Config({
       processedLabel: "gmail2gdrive/client-test",
       sleepTime: 100,
       maxRuntime: 280,
@@ -44,15 +44,18 @@ describe("validate()", () => {
         },
       ],
     })
-    expect(validateV1Config.errors).toBeFalsy()
+    expect(result.success).toBe(true)
   })
   it("should report missing rules", () => {
-    validateV1Config({})
-    expect(validateV1Config.errors?.length).toEqual(6)
+    const result = validateV1Config({})
+    expect(result.success).toBe(false)
+    if (!result.success) {
+      expect(result.errors?.length).toEqual(6)
+    }
   })
   it("should validate all MockFactory v1 config JSON without errors", () => {
-    validateV1Config(ConfigMocks.newDefaultV1ConfigJson())
-    expect(validateV1Config.errors).toBeNull()
+    const result = validateV1Config(ConfigMocks.newDefaultV1ConfigJson())
+    expect(result.success).toBe(true)
   })
 })
 

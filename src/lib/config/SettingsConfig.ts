@@ -1,11 +1,6 @@
-import { Expose, Type, plainToInstance } from "class-transformer"
-import "reflect-metadata"
+import { z } from "zod"
 import { essentialObject } from "../utils/ConfigUtils"
-import { RequiredDeep } from "../utils/Utility.types"
 
-// TODO: Use these constants in SettingsConfig below, when typescript-json-schema bug is resolved.
-// See https://github.com/YousefED/typescript-json-schema/issues/336#issuecomment-1528969616
-// PR: https://github.com/YousefED/typescript-json-schema/pull/600
 export const DEFAULT_SETTING_MAX_BATCH_SIZE = 10
 export const DEFAULT_SETTING_MAX_RUNTIME = 280
 export const DEFAULT_SETTING_SLEEP_TIME_THREADS = 100
@@ -66,42 +61,79 @@ export enum MarkProcessedMethod {
    * - Since it marks messages as read it may not be applicable in all cases.
    */
   MARK_MESSAGE_READ = "mark-read",
-  // /**
-  //  * (Experimental) Adds labels to threads that track processed threads, messages or attachments.
-  //  * This is the most flexible method, since it can track each state in a label.
-  //  */
-  // ADD_LABEL_METADATA = "add-label-metadata",
 }
 
 /**
  * Represents the context-dependant value mapping.
  */
-export class LogFieldContextConfig {
+export const LogFieldContextConfigSchema = z.object({
   /** The value to be used for attachment context. Supports placeholder substitution. */
-  attachment?: string
+  attachment: z
+    .string()
+    .optional()
+    .describe(
+      "The value to be used for attachment context. Supports placeholder substitution.",
+    ),
   /** The value to be used for environment context. Supports placeholder substitution. */
-  env?: string
+  env: z
+    .string()
+    .optional()
+    .describe(
+      "The value to be used for environment context. Supports placeholder substitution.",
+    ),
   /** The value to be used for message context. Supports placeholder substitution. */
-  message?: string
+  message: z
+    .string()
+    .optional()
+    .describe(
+      "The value to be used for message context. Supports placeholder substitution.",
+    ),
   /** The value to be used for processing context. Supports placeholder substitution. */
-  proc?: string
+  proc: z
+    .string()
+    .optional()
+    .describe(
+      "The value to be used for processing context. Supports placeholder substitution.",
+    ),
   /** The value to be used for thread context. Supports placeholder substitution. */
-  thread?: string
-}
+  thread: z
+    .string()
+    .optional()
+    .describe(
+      "The value to be used for thread context. Supports placeholder substitution.",
+    ),
+})
+export type LogFieldContextConfig = z.infer<typeof LogFieldContextConfigSchema>
 
 /**
  * Represents a log field configuration.
  */
-export class LogFieldConfig {
+export const LogFieldConfigSchema = z.object({
   /** The name of the log field that can be referenced from the list of log fields. */
-  name: string = ""
+  name: z
+    .string()
+    .default("")
+    .describe(
+      "The name of the log field that can be referenced from the list of log fields.",
+    ),
   /** The title of the log field that is used as the headline of the log sheet. */
-  title: string = ""
+  title: z
+    .string()
+    .default("")
+    .describe(
+      "The title of the log field that is used as the headline of the log sheet.",
+    ),
   /** The value of the log field. Supports placeholder substitution. */
-  value?: string = undefined
+  value: z
+    .string()
+    .optional()
+    .describe("The value of the log field. Supports placeholder substitution."),
   /** The context-dependent values. It allows different values depending on the context type. */
-  ctxValues?: LogFieldContextConfig = {}
-}
+  ctxValues: LogFieldContextConfigSchema.default({}).describe(
+    "The context-dependent values. It allows different values depending on the context type.",
+  ),
+})
+export type LogFieldConfig = z.infer<typeof LogFieldConfigSchema>
 
 /**
  * Specifies how sensitive data should be redacted for logging.
@@ -118,212 +150,276 @@ export enum LogRedactionMode {
 /**
  * Represents a settings config that affect the way GmailProcessor works.
  */
-export class SettingsConfig {
+export const SettingsConfigSchema = z.object({
   /**
    * Default format string for timestamp formatting.
    * See [date-fns format strings](https://date-fns.org/docs/format).
    */
-  defaultTimestampFormat? = "yyyy-MM-dd HH:mm:ss"
+  defaultTimestampFormat: z
+    .string()
+    .default("yyyy-MM-dd HH:mm:ss")
+    .describe(
+      "Default format string for timestamp formatting. See [date-fns format strings](https://date-fns.org/docs/format).",
+    ),
   /**
    * Default separator to be used when joining arrays in string substitution.
    */
-  defaultArrayJoinSeparator? = ","
+  defaultArrayJoinSeparator: z
+    .string()
+    .default(",")
+    .describe(
+      "Default separator to be used when joining arrays in string substitution.",
+    ),
   /**
    * Location of the spreadsheet log file. Enables logging to a spreadsheet if not empty.
    * Example: `GmailProcessor/logsheet-{{date.now|formatDate('yyyy-MM')}}`
    */
-  @Expose()
-  logSheetLocation? = ""
+  logSheetLocation: z
+    .string()
+    .default("")
+    .describe(
+      "Location of the spreadsheet log file. Enables logging to a spreadsheet if not empty. Example: `GmailProcessor/logsheet-{{date.now|formatDate('yyyy-MM')}}`",
+    ),
   /**
    * The list of field names to be used for log sheet logging.
    * All context placeholder names can be referenced as well as special fields defined for logging.
    */
-  @Expose()
-  logFields?: string[] = [
-    "log.timestamp",
-    "log.level",
-    "log.location",
-    "log.message",
-    "object.id",
-    "object.date",
-    "object.subject",
-    "object.from",
-    "object.url",
-    "attachment.name",
-    "attachment.size",
-    "attachment.contentType",
-    "stored.location",
-    "stored.url",
-    "stored.downloadUrl",
-  ]
+  logFields: z
+    .array(z.string())
+    .default([
+      "log.timestamp",
+      "log.level",
+      "log.location",
+      "log.message",
+      "object.id",
+      "object.date",
+      "object.subject",
+      "object.from",
+      "object.url",
+      "attachment.name",
+      "attachment.size",
+      "attachment.contentType",
+      "stored.location",
+      "stored.url",
+      "stored.downloadUrl",
+    ])
+    .describe(
+      "The list of field names to be used for log sheet logging. All context placeholder names can be referenced as well as special fields defined for logging.",
+    ),
   /**
    * Defines additional fields that can be used in addition to the built-in ones for log sheet logging.
    */
-  @Expose()
-  @Type(() => LogFieldConfig)
-  logConfig?: LogFieldConfig[] = [
-    {
-      name: "log.timestamp",
-      title: "Timestamp",
-      value: "{{date.now|formatDate('yyyy-MM-dd HH:mm:ss.SSS')}}",
-    },
-    {
-      name: "log.level",
-      title: "Log Level",
-    },
-    {
-      name: "log.message",
-      title: "Log Message",
-    },
-    {
-      name: "context.type",
-      title: "Context Type",
-    },
-    {
-      name: "object.id",
-      title: "ID",
-      ctxValues: {
-        attachment: "{{attachment.hash}}",
-        message: "{{message.id}}",
-        thread: "{{thread.id}}",
+  logConfig: z
+    .array(LogFieldConfigSchema)
+    .default([
+      {
+        name: "log.timestamp",
+        title: "Timestamp",
+        value: "{{date.now|formatDate('yyyy-MM-dd HH:mm:ss.SSS')}}",
+        ctxValues: {},
       },
-    },
-    {
-      name: "object.url",
-      title: "GMail URL",
-      ctxValues: {
-        attachment: "{{message.url}}",
-        message: "{{message.url}}",
-        thread: "{{thread.url}}",
+      {
+        name: "log.level",
+        title: "Log Level",
+        ctxValues: {},
       },
-    },
-    {
-      name: "object.date",
-      title: "Message Date",
-      ctxValues: {
-        attachment: "{{message.date}}",
-        message: "{{message.date}}",
-        thread: "{{thread.lastMessageDate}}",
+      {
+        name: "log.message",
+        title: "Log Message",
+        ctxValues: {},
       },
-    },
-    {
-      name: "object.subject",
-      title: "Subject",
-      ctxValues: {
-        attachment: "{{message.subject}}",
-        message: "{{message.subject}}",
-        thread: "{{thread.firstMessageSubject}}",
+      {
+        name: "context.type",
+        title: "Context Type",
+        ctxValues: {},
       },
-    },
-    {
-      name: "object.from",
-      title: "From",
-      ctxValues: {
-        attachment: "{{message.from}}",
-        message: "{{message.from}}",
+      {
+        name: "object.id",
+        title: "ID",
+        ctxValues: {
+          attachment: "{{attachment.hash}}",
+          message: "{{message.id}}",
+          thread: "{{thread.id}}",
+        },
       },
-    },
-    {
-      name: "attachment.name",
-      title: "Attachment Name",
-    },
-    {
-      name: "attachment.contentType",
-      title: "Content Type",
-    },
-    {
-      name: "attachment.size",
-      title: "Attachment Size",
-    },
-    {
-      name: "stored.location",
-      title: "Stored Location",
-      ctxValues: {
-        attachment: "{{attachment.stored.location}}",
+      {
+        name: "object.url",
+        title: "GMail URL",
+        ctxValues: {
+          attachment: "{{message.url}}",
+          message: "{{message.url}}",
+          thread: "{{thread.url}}",
+        },
       },
-    },
-    {
-      name: "stored.url",
-      title: "Stored URL",
-      ctxValues: {
-        attachment: "{{attachment.stored.url}}",
+      {
+        name: "object.date",
+        title: "Message Date",
+        ctxValues: {
+          attachment: "{{message.date}}",
+          message: "{{message.date}}",
+          thread: "{{thread.lastMessageDate}}",
+        },
       },
-    },
-    {
-      name: "stored.downloadUrl",
-      title: "Download URL",
-      ctxValues: {
-        attachment: "{{attachment.stored.downloadUrl}}",
+      {
+        name: "object.subject",
+        title: "Subject",
+        ctxValues: {
+          attachment: "{{message.subject}}",
+          message: "{{message.subject}}",
+          thread: "{{thread.firstMessageSubject}}",
+        },
       },
-    },
-  ]
+      {
+        name: "object.from",
+        title: "From",
+        ctxValues: {
+          attachment: "{{message.from}}",
+          message: "{{message.from}}",
+        },
+      },
+      {
+        name: "attachment.name",
+        title: "Attachment Name",
+        ctxValues: {},
+      },
+      {
+        name: "attachment.contentType",
+        title: "Content Type",
+        ctxValues: {},
+      },
+      {
+        name: "attachment.size",
+        title: "Attachment Size",
+        ctxValues: {},
+      },
+      {
+        name: "stored.location",
+        title: "Stored Location",
+        ctxValues: {
+          attachment: "{{attachment.stored.location}}",
+        },
+      },
+      {
+        name: "stored.url",
+        title: "Stored URL",
+        ctxValues: {
+          attachment: "{{attachment.stored.url}}",
+        },
+      },
+      {
+        name: "stored.downloadUrl",
+        title: "Download URL",
+        ctxValues: {
+          attachment: "{{attachment.stored.downloadUrl}}",
+        },
+      },
+    ])
+    .describe(
+      "Defines additional fields that can be used in addition to the built-in ones for log sheet logging.",
+    ),
   /**
    * Filter logs to given level or higher.
    */
-  logLevel? = LogLevel.INFO
+  logLevel: z
+    .nativeEnum(LogLevel)
+    .default(LogLevel.INFO)
+    .describe("Filter logs to given level or higher."),
   /**
    * Specifies how sensitive information should be redacted for logging.
    */
-  logSensitiveRedactionMode? = LogRedactionMode.AUTO
+  logSensitiveRedactionMode: z
+    .nativeEnum(LogRedactionMode)
+    .default(LogRedactionMode.AUTO)
+    .describe(
+      "Specifies how sensitive information should be redacted for logging.",
+    ),
   /**
    * Enables trace logging into the logsheet.
    * This automatically loggs useful information for debugging without placing `global.sheetLog`
    */
-  logSheetTracing?: boolean = false
+  logSheetTracing: z
+    .boolean()
+    .default(false)
+    .describe(
+      "Enables trace logging into the logsheet. This automatically loggs useful information for debugging without placing `global.sheetLog`.",
+    ),
   /**
    * The maximum batch size of threads to process in a single run to respect Google processing limits
    */
-  @Expose()
-  maxBatchSize? = 10
+  maxBatchSize: z
+    .number()
+    .default(DEFAULT_SETTING_MAX_BATCH_SIZE)
+    .describe(
+      "The maximum batch size of threads to process in a single run to respect Google processing limits",
+    ),
   /**
    * The maximum runtime in seconds for a single run to respect Google processing limits
    */
-  @Expose()
-  maxRuntime? = 280
+  maxRuntime: z
+    .number()
+    .default(DEFAULT_SETTING_MAX_RUNTIME)
+    .describe(
+      "The maximum runtime in seconds for a single run to respect Google processing limits",
+    ),
   /**
    * The label to be added to processed GMail threads (only for markProcessedMode="label").
    */
-  @Expose()
-  markProcessedLabel? = ""
+  markProcessedLabel: z
+    .string()
+    .default("")
+    .describe(
+      'The label to be added to processed GMail threads (only for markProcessedMode="label").',
+    ),
   /**
    * The method to mark processed threads/messages.
    */
-  @Expose()
-  markProcessedMethod?: MarkProcessedMethod =
-    MarkProcessedMethod.MARK_MESSAGE_READ
+  markProcessedMethod: z
+    .nativeEnum(MarkProcessedMethod)
+    .default(MarkProcessedMethod.MARK_MESSAGE_READ)
+    .describe("The method to mark processed threads/messages."),
   /**
    * The sleep time in milliseconds between processing each thread
    */
-  @Expose()
-  sleepTimeThreads? = 100
+  sleepTimeThreads: z
+    .number()
+    .default(DEFAULT_SETTING_SLEEP_TIME_THREADS)
+    .describe("The sleep time in milliseconds between processing each thread"),
   /**
    * The sleep time in milliseconds between processing each message
    */
-  @Expose()
-  sleepTimeMessages? = 0
+  sleepTimeMessages: z
+    .number()
+    .default(0)
+    .describe("The sleep time in milliseconds between processing each message"),
   /**
    * The sleep time in milliseconds between processing each attachment
    */
-  @Expose()
-  sleepTimeAttachments? = 0
+  sleepTimeAttachments: z
+    .number()
+    .default(0)
+    .describe(
+      "The sleep time in milliseconds between processing each attachment",
+    ),
   /**
    * The timezone to be used for date/time operations.
    * Value `default` uses the <a href="https://developers.google.com/apps-script/reference/base/session#getscripttimezone">script timezone</a>.
    * @deprecated Timezone should be set in project settings or `appscript.json` of Google Apps Script instead. Will be removed in the future.
    */
-  @Expose()
-  timezone?: string = "default"
-}
+  timezone: z
+    .string()
+    .default("default")
+    .describe(
+      "The timezone to be used for date/time operations. Value `default` uses the script timezone. @deprecated Timezone should be set in project settings or `appscript.json` of Google Apps Script instead. Will be removed in the future.",
+    ),
+})
 
-type RequiredSettingsConfig = RequiredDeep<SettingsConfig>
+export type SettingsConfig = z.input<typeof SettingsConfigSchema>
+export type RequiredSettingsConfig = z.output<typeof SettingsConfigSchema>
 
 export function newSettingsConfig(
   json: SettingsConfig = {},
 ): RequiredSettingsConfig {
-  return plainToInstance(SettingsConfig, json, {
-    exposeDefaultValues: true,
-    exposeUnsetFields: false,
-  }) as RequiredSettingsConfig
+  return SettingsConfigSchema.parse(json)
 }
 
 export function essentialSettingsConfig(

@@ -1,22 +1,17 @@
-import { Expose, Type, plainToInstance } from "class-transformer"
-import "reflect-metadata"
+import { z } from "zod"
 import { essentialObject } from "../utils/ConfigUtils"
-import { RequiredDeep } from "../utils/Utility.types"
 import {
-  MessageActionConfig,
-  MessageContextActionConfigType,
+  MessageActionConfigSchema,
   essentialMessageActionConfig,
 } from "./ActionConfig"
 import {
-  AttachmentConfig,
+  AttachmentConfigSchema,
   essentialAttachmentConfig,
-  normalizeAttachmentConfigs,
 } from "./AttachmentConfig"
 import { OrderDirection } from "./CommonConfig"
 import {
-  MessageMatchConfig,
+  MessageMatchConfigSchema,
   essentialMessageMatchConfig,
-  newMessageMatchConfig,
 } from "./MessageMatchConfig"
 
 /**
@@ -44,71 +39,70 @@ export enum MessageOrderField {
 /**
  * Represents a config to handle a certain GMail message
  */
-export class MessageConfig {
+export const MessageConfigSchema = z.object({
   /**
    * The list actions to be executed for their respective handler scopes
    */
-  @Expose()
-  @Type(() => MessageActionConfig)
-  actions?: MessageContextActionConfigType[] = []
+  actions: z
+    .array(MessageActionConfigSchema)
+    .default([])
+    .describe(
+      "The list actions to be executed for their respective handler scopes",
+    ),
   /**
    * The description of the message handler config
    */
-  @Expose()
-  description? = ""
+  description: z
+    .string()
+    .default("")
+    .describe("The description of the message handler config"),
   /**
    * The list of handler that define the way attachments are processed
    */
-  @Expose()
-  @Type(() => AttachmentConfig)
-  attachments?: AttachmentConfig[] = []
+  attachments: z
+    .array(AttachmentConfigSchema)
+    .default([])
+    .describe(
+      "The list of handler that define the way attachments are processed",
+    ),
   /**
    * Specifies which attachments match for further processing
    */
-  @Expose()
-  @Type(() => MessageMatchConfig)
-  match? = new MessageMatchConfig()
+  match: MessageMatchConfigSchema.default(() =>
+    MessageMatchConfigSchema.parse({}),
+  ).describe("Specifies which attachments match for further processing"),
   /**
    * The unique name of the message config (will be generated if not set)
    */
-  @Expose()
-  name? = ""
+  name: z
+    .string()
+    .default("")
+    .describe(
+      "The unique name of the message config (will be generated if not set)",
+    ),
   /**
    * The field to order messages by for processing.
    */
-  @Expose()
-  orderBy?: MessageOrderField = undefined
+  orderBy: z
+    .nativeEnum(MessageOrderField)
+    .optional()
+    .describe("The field to order messages by for processing."),
   /**
    * The direction to order messages for processing.
    */
-  @Expose()
-  orderDirection?: OrderDirection = undefined
-}
+  orderDirection: z
+    .nativeEnum(OrderDirection)
+    .optional()
+    .describe("The direction to order messages for processing."),
+})
 
-export type RequiredMessageConfig = RequiredDeep<MessageConfig>
+export type MessageConfig = z.input<typeof MessageConfigSchema>
+export type RequiredMessageConfig = z.output<typeof MessageConfigSchema>
 
 export function newMessageConfig(
   json: MessageConfig = {},
 ): RequiredMessageConfig {
-  return plainToInstance(MessageConfig, normalizeMessageConfig(json), {
-    exposeDefaultValues: true,
-    exposeUnsetFields: false,
-  }) as RequiredMessageConfig
-}
-
-export function normalizeMessageConfig(config: MessageConfig): MessageConfig {
-  config.attachments = normalizeAttachmentConfigs(config.attachments ?? [])
-  config.match = newMessageMatchConfig(config.match)
-  return config
-}
-
-export function normalizeMessageConfigs(
-  configs: MessageConfig[],
-): MessageConfig[] {
-  for (const config of configs) {
-    normalizeMessageConfig(config)
-  }
-  return configs
+  return MessageConfigSchema.parse(json)
 }
 
 export function essentialMessageConfig(config: MessageConfig): MessageConfig {

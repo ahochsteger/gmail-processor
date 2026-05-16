@@ -15,7 +15,7 @@ import {
   ActionRegistry,
   ActionReturnType,
 } from "../actions/ActionRegistry"
-import { ActionConfig, ProcessingStage } from "../config/ActionConfig"
+import { ActionBaseConfig, ProcessingStage } from "../config/ActionConfig"
 import { PatternUtil } from "../utils/PatternUtil"
 import { BaseProcessor } from "./BaseProcessor"
 
@@ -24,7 +24,7 @@ class TestProcessor extends BaseProcessor {
     ctx: ProcessingContext,
     stage: ProcessingStage,
     result: ProcessingResult,
-    actionSets: ActionConfig[],
+    actionSets: ActionBaseConfig[],
   ): ProcessingResult {
     return this.executeActions(ctx, stage, result, actionSets)
   }

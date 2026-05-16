@@ -161,10 +161,10 @@ _Goal: Improve CI/CD, formalize project governance, and position for future grow
 
 ## Open Issues Reference
 
-| Issue                                                             | Title                                 | Phase              | Status |
-| :---------------------------------------------------------------- | :------------------------------------ | :----------------- | :----- |
-| [#520](https://github.com/ahochsteger/gmail-processor/issues/520) | Replace class-transformer with Zod    | Phase 2            | Open   |
-| [#526](https://github.com/ahochsteger/gmail-processor/issues/526) | Docs build decoupling                 | Phase 4            | Open   |
-| [#531](https://github.com/ahochsteger/gmail-processor/issues/531) | Custom actions question               | Phase 3 (via #540) | Open   |
-| [#540](https://github.com/ahochsteger/gmail-processor/issues/540) | Custom action example with actionMeta | Phase 3            | Open   |
-| [#232](https://github.com/ahochsteger/gmail-processor/issues/232) | Dependency Dashboard (Renovate)       | Ongoing            | Open   |
+| Issue                                                             | Title                                 | Phase              | Status      |
+| :---------------------------------------------------------------- | :------------------------------------ | :----------------- | :---------- |
+| [#520](https://github.com/ahochsteger/gmail-processor/issues/520) | Replace class-transformer with Zod    | Phase 2            | In Progress |
+| [#526](https://github.com/ahochsteger/gmail-processor/issues/526) | Docs build decoupling                 | Phase 4            | Open        |
+| [#531](https://github.com/ahochsteger/gmail-processor/issues/531) | Custom actions question               | Phase 3 (via #540) | Open        |
+| [#540](https://github.com/ahochsteger/gmail-processor/issues/540) | Custom action example with actionMeta | Phase 3            | Open        |
+| [#232](https://github.com/ahochsteger/gmail-processor/issues/232) | Dependency Dashboard (Renovate)       | Ongoing            | Open        |

@@ -1,5 +1,8 @@
-import { ExportOptionsType } from "../adapter/GmailExportAdapter"
-import { ActionBaseConfig, StoreActionBaseArgs } from "../config/ActionConfig"
+import {
+  ThreadActionArgsStorePDF,
+  ThreadActionExportArgs,
+  ThreadActionLabelArgs,
+} from "../config/ActionConfig"
 import { ThreadContext } from "../Context"
 import { destructiveAction, writingAction } from "../utils/Decorators"
 import {
@@ -7,25 +10,6 @@ import {
   ActionProvider,
   ActionReturnType,
 } from "./ActionRegistry"
-
-export type ThreadActionLabelArgs = {
-  /** The name of the label. */
-  name: string
-}
-
-export type ThreadActionConfigLabel<TName extends string = string> =
-  ActionBaseConfig<TName, ThreadActionLabelArgs>
-
-export type ThreadActionExportArgs = StoreActionBaseArgs & ExportOptionsType
-export type ThreadActionConfigExport<TName extends string = string> =
-  ActionBaseConfig<TName, ThreadActionExportArgs>
-
-export type ThreadActionArgsStorePDF = StoreActionBaseArgs & {
-  /** Skip the header if `true`. */
-  skipHeader?: boolean
-}
-export type ThreadActionConfigStorePDF<TName extends string = string> =
-  ActionBaseConfig<TName, ThreadActionArgsStorePDF>
 
 export class ThreadActions implements ActionProvider<ThreadContext> {
   [key: string]: ActionFunction<ThreadContext>
@@ -202,19 +186,3 @@ export class ThreadActions implements ActionProvider<ThreadContext> {
     )
   }
 }
-
-export type ThreadActionConfigType =
-  | ActionBaseConfig<"thread.noop">
-  | ThreadActionConfigLabel<"thread.addLabel">
-  | ThreadActionConfigExport<"thread.exportAsHtml">
-  | ThreadActionConfigExport<"thread.exportAsPdf">
-  | ThreadActionConfigLabel<"thread.removeLabel">
-  | ThreadActionConfigStorePDF<"thread.storePDF">
-  | ActionBaseConfig<"thread.markImportant">
-  | ActionBaseConfig<"thread.markRead">
-  | ActionBaseConfig<"thread.markUnimportant">
-  | ActionBaseConfig<"thread.markUnread">
-  | ActionBaseConfig<"thread.moveToArchive">
-  | ActionBaseConfig<"thread.moveToInbox">
-  | ActionBaseConfig<"thread.moveToSpam">
-  | ActionBaseConfig<"thread.moveToTrash">

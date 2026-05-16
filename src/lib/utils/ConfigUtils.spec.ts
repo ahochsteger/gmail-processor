@@ -1,4 +1,4 @@
-import { essentialObject } from "./ConfigUtils"
+import { essentialObject, stripDefaults } from "./ConfigUtils"
 
 describe("essentialObject", () => {
   it("should remove properties that match default values", () => {
@@ -131,5 +131,36 @@ describe("essentialObject", () => {
     const result = essentialObject(obj, defaultObj as any, propEssentialMap)
     // sub becomes {a: 1} which matches defaultObj.sub
     expect(result).toEqual({})
+  })
+})
+
+describe("stripDefaults", () => {
+  it("should remove properties that match default values", () => {
+    const obj = { a: 1, b: 2 }
+    const defaultObj = { a: 1, b: 0 }
+    const result = stripDefaults(obj, defaultObj)
+    expect(result).toEqual({ b: 2 })
+    expect(result.a).toBeUndefined()
+  })
+
+  it("should handle nested objects", () => {
+    const obj = { a: { x: 1, y: 2 }, b: 3 }
+    const defaultObj = { a: { x: 1, y: 0 }, b: 3 }
+    const result = stripDefaults(obj, defaultObj)
+    expect(result).toEqual({ a: { y: 2 } })
+  })
+
+  it("should remove nested object if it becomes empty", () => {
+    const obj = { a: { x: 1 }, b: 2 }
+    const defaultObj = { a: { x: 1 }, b: 0 }
+    const result = stripDefaults(obj, defaultObj)
+    expect(result).toEqual({ b: 2 })
+  })
+
+  it("should handle arrays (using JSON.stringify)", () => {
+    const obj = { a: [1, 2], b: [3] }
+    const defaultObj = { a: [1, 2], b: [] }
+    const result = stripDefaults(obj, defaultObj)
+    expect(result).toEqual({ b: [3] })
   })
 })

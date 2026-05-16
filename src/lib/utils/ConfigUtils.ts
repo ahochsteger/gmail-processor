@@ -36,3 +36,21 @@ export function essentialObject<T extends object = any>(
   })
   return obj
 }
+export function stripDefaults<T extends object = any>(
+  obj: T,
+  defaultObj: T,
+): T {
+  Object.keys(obj).forEach((key: string) => {
+    const val = obj[key as keyof T]
+    const defaultVal = defaultObj[key as keyof T]
+    if (typeof val === "object" && val !== null && !Array.isArray(val)) {
+      stripDefaults(val as any, defaultVal as any)
+      if (Object.keys(val).length === 0) {
+        delete obj[key as keyof T]
+      }
+    } else if (JSON.stringify(val) === JSON.stringify(defaultVal)) {
+      delete obj[key as keyof T]
+    }
+  })
+  return obj
+}

@@ -13,6 +13,6 @@ export enum OrderDirection {
 }
 
 export type OrderableEntityConfig<T extends string> = {
-  orderBy: T
-  orderDirection: OrderDirection
+  orderBy?: T
+  orderDirection?: OrderDirection
 }

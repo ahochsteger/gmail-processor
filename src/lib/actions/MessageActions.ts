@@ -1,6 +1,10 @@
 import { FileContent } from "../adapter/GDriveAdapter"
-import { ExportOptionsType } from "../adapter/GmailExportAdapter"
-import { ActionBaseConfig, StoreActionBaseArgs } from "../config/ActionConfig"
+import {
+  MessageActionExportArgs,
+  MessageActionForwardArgs,
+  MessageActionStoreFromUrlArgs,
+  MessageActionStorePDFArgs,
+} from "../config/ActionConfig"
 import { MessageContext } from "../Context"
 import { destructiveAction, writingAction } from "../utils/Decorators"
 import { PatternUtil } from "../utils/PatternUtil"
@@ -16,40 +20,6 @@ export type MessageReturnType = ActionReturnType & {
 export type FileReturnType = ActionReturnType & {
   file?: GoogleAppsScript.Drive.File
 }
-
-export type MessageActionForwardArgs = {
-  /** The recipient of the forwarded message. */
-  to: string
-}
-export type MessageActionConfigForward<TName extends string = string> =
-  ActionBaseConfig<TName, MessageActionForwardArgs>
-export type MessageActionStorePDFArgs = StoreActionBaseArgs & {
-  /**
-   * Skip the header if `true`.
-   */
-  skipHeader?: boolean
-}
-export type MessageActionConfigStorePDF<TName extends string = string> =
-  ActionBaseConfig<TName, MessageActionStorePDFArgs>
-export type MessageActionExportArgs = StoreActionBaseArgs & ExportOptionsType
-export type MessageActionConfigExport<TName extends string = string> =
-  ActionBaseConfig<TName, MessageActionExportArgs>
-export type MessageActionStoreFromUrlArgs = StoreActionBaseArgs & {
-  /**
-   * The URL of the document to be stored.
-   * To extract the URL from the message body use a message body matcher like `"(?<url>https://...)"` and `"{{message.body.match.url}}"` as the URL value.
-   * NOTE: Take care to narrow down the regex as good as possible to extract valid URLs.
-   * Use tools like [regex101.com](https://regex101.com) for testing on example messages.
-   */
-  url: string
-  /**
-   * The header to pass to the URL. May be used to pass an authentication token.
-   * Supports placeholder substitution.
-   */
-  headers?: Record<string, string>
-}
-export type MessageActionConfigStoreFromURL<TName extends string = string> =
-  ActionBaseConfig<TName, MessageActionStoreFromUrlArgs>
 
 export class MessageActions implements ActionProvider<MessageContext> {
   [key: string]: ActionFunction<MessageContext>
@@ -236,16 +206,3 @@ export class MessageActions implements ActionProvider<MessageContext> {
     }
   }
 }
-
-export type MessageActionConfigType =
-  | ActionBaseConfig<"message.noop">
-  | MessageActionConfigForward<"message.forward">
-  | MessageActionConfigStoreFromURL<"message.storeFromURL">
-  | MessageActionConfigExport<"message.exportAsHtml">
-  | MessageActionConfigExport<"message.exportAsPdf">
-  | MessageActionConfigStorePDF<"message.storePDF">
-  | ActionBaseConfig<"message.markRead">
-  | ActionBaseConfig<"message.markUnread">
-  | ActionBaseConfig<"message.moveToTrash">
-  | ActionBaseConfig<"message.star">
-  | ActionBaseConfig<"message.unstar">

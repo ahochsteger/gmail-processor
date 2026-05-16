@@ -1,88 +1,104 @@
-import {
-  Expose,
-  Type,
-  instanceToPlain,
-  plainToInstance,
-} from "class-transformer"
-import "reflect-metadata"
-import { essentialObject } from "../utils/ConfigUtils"
-import { RequiredDeep } from "../utils/Utility.types"
+import { z } from "zod"
+import { essentialObject, stripDefaults } from "../utils/ConfigUtils"
 import { ProcessingStage } from "./ActionConfig"
-import { AttachmentConfig, essentialAttachmentConfig } from "./AttachmentConfig"
 import {
-  GlobalConfig,
+  AttachmentConfigSchema,
+  essentialAttachmentConfig,
+} from "./AttachmentConfig"
+import {
+  GlobalConfigSchema,
   essentialGlobalConfig,
   normalizeGlobalConfig,
 } from "./GlobalConfig"
-import { MessageConfig, essentialMessageConfig } from "./MessageConfig"
+import { MessageConfigSchema, essentialMessageConfig } from "./MessageConfig"
 import { MessageFlag } from "./MessageFlag"
 import {
   MarkProcessedMethod,
-  SettingsConfig,
+  SettingsConfigSchema,
   essentialSettingsConfig,
 } from "./SettingsConfig"
 import {
-  ThreadConfig,
+  ThreadConfigSchema,
   essentialThreadConfig,
-  normalizeThreadConfigs,
+  normalizeThreadConfig,
 } from "./ThreadConfig"
 
 /**
  * Represents a configuration for GmailProcessor in normalized form for processing
  */
-export class ProcessingConfig {
+export const ProcessingConfigSchema = z.object({
   /**
    * The description of the GmailProcessor config
    */
-  @Expose()
-  description? = ""
+  description: z
+    .string()
+    .default("")
+    .describe("The description of the GmailProcessor config"),
   /**
    * The global configuration that defines matching for all threads as well as actions for all threads, messages or attachments.
    */
-  @Expose()
-  @Type(() => GlobalConfig)
-  global? = new GlobalConfig()
+  global: GlobalConfigSchema.default(() =>
+    GlobalConfigSchema.parse({}),
+  ).describe(
+    "The global configuration that defines matching for all threads as well as actions for all threads, messages or attachments.",
+  ),
   /**
    * The list of handler that define the way nested threads, messages or attachments are processed
    */
-  @Expose()
-  @Type(() => ThreadConfig)
-  threads?: ThreadConfig[] = []
+  threads: z
+    .array(ThreadConfigSchema)
+    .default([])
+    .describe(
+      "The list of handler that define the way nested threads, messages or attachments are processed",
+    ),
   /**
    * Represents a settings config that affect the way GmailProcessor works.
    */
-  @Expose()
-  @Type(() => SettingsConfig)
-  settings? = new SettingsConfig()
-}
+  settings: SettingsConfigSchema.default(() =>
+    SettingsConfigSchema.parse({}),
+  ).describe(
+    "Represents a settings config that affect the way GmailProcessor works.",
+  ),
+})
 
 /**
  * The input configuration for Gmail Processor.
  */
-export class Config extends ProcessingConfig {
+export const ConfigSchema = ProcessingConfigSchema.extend({
   /**
    * The list of handler that define the way nested messages or attachments are processed
    */
-  @Expose()
-  @Type(() => MessageConfig)
-  messages?: MessageConfig[] = []
+  messages: z
+    .array(MessageConfigSchema)
+    .default([])
+    .describe(
+      "The list of handler that define the way nested messages or attachments are processed",
+    ),
   /**
    * The list of handler that define the way attachments are processed
    */
-  @Expose()
-  @Type(() => AttachmentConfig)
-  attachments?: AttachmentConfig[] = []
-}
+  attachments: z
+    .array(AttachmentConfigSchema)
+    .default([])
+    .describe(
+      "The list of handler that define the way attachments are processed",
+    ),
+})
 
-export type RequiredConfig = RequiredDeep<ProcessingConfig>
+export type Config = z.input<typeof ConfigSchema>
+export type ProcessingConfig = z.input<typeof ProcessingConfigSchema>
+export type RequiredConfig = z.output<typeof ProcessingConfigSchema>
 
 export function configToJson<T = ProcessingConfig>(
   config: T,
   withDefaults = false,
 ): Config {
-  return instanceToPlain(config, {
-    exposeDefaultValues: withDefaults,
-  })
+  let json = JSON.parse(JSON.stringify(config)) as Config
+  if (!withDefaults) {
+    const defaultConfig = ProcessingConfigSchema.parse({})
+    json = stripDefaults(json, defaultConfig as any)
+  }
+  return json
 }
 
 export function newConfig(json: Config): RequiredConfig {
@@ -92,10 +108,7 @@ export function newConfig(json: Config): RequiredConfig {
       "No markProcessedMethod not set in settings! Make sure to choose from one of the available methods.",
     )
   }
-  const config = plainToInstance(ProcessingConfig, normalizeConfig(json), {
-    exposeDefaultValues: true,
-    exposeUnsetFields: false,
-  })
+  const config = ProcessingConfigSchema.parse(normalizeConfig(json))
 
   // Validate resulting config:
   if (!config.threads || config.threads.length < 1) {
@@ -104,12 +117,10 @@ export function newConfig(json: Config): RequiredConfig {
     )
   }
 
-  return config as RequiredConfig
+  return config
 }
 
 export function normalizeConfig(config: Config): Config {
-  config.threads = config.threads ?? []
-
   // Normalize top-level attachments config:
   if (config.attachments !== undefined && config.attachments.length > 0) {
     config.messages = config.messages ?? []
@@ -119,6 +130,7 @@ export function normalizeConfig(config: Config): Config {
 
   // Normalize top-level messages config:
   if (config.messages !== undefined && config.messages.length > 0) {
+    config.threads = config.threads ?? []
     config.threads.push({ messages: config.messages })
     delete config.messages
   }
@@ -127,16 +139,22 @@ export function normalizeConfig(config: Config): Config {
   config.settings = config.settings ?? {}
   config.global = normalizeGlobalConfig(config.global ?? {})
   const g = config.global
-  const gt = g.thread!
-  const gm = g.message!
-  const ga = g.attachment!
+  g.thread = g.thread ?? {}
+  g.message = g.message ?? {}
+  g.attachment = g.attachment ?? {}
+  const gt = g.thread
+  const gm = g.message
+  const ga = g.attachment
   gt.actions = gt.actions ?? []
   gm.actions = gm.actions ?? []
   ga.actions = ga.actions ?? []
   switch (config.settings.markProcessedMethod) {
     case MarkProcessedMethod.ADD_THREAD_LABEL:
       if (config.settings.markProcessedLabel) {
-        gt.match!.query += ` -label:${config.settings.markProcessedLabel}`
+        gt.match = gt.match ?? {}
+        gt.match.query =
+          (gt.match.query ?? "") +
+          ` -label:${config.settings.markProcessedLabel}`
         gt.actions.push({
           name: "thread.addLabel",
           args: {
@@ -150,14 +168,18 @@ export function normalizeConfig(config: Config): Config {
       // Do nothing!
       break
     case MarkProcessedMethod.MARK_MESSAGE_READ:
-      gm.match!.is = (gm.match!.is ?? []).concat([MessageFlag.UNREAD])
+      gm.match = gm.match ?? {}
+      gm.match.is = (gm.match.is ?? []).concat([MessageFlag.UNREAD])
       gm.actions.push({
         name: "message.markRead",
         processingStage: ProcessingStage.POST_MAIN,
       })
       break
   }
-  config.threads = normalizeThreadConfigs(config.threads)
+
+  // Normalize all thread configs:
+  config.threads = (config.threads ?? []).map((t) => normalizeThreadConfig(t))
+
   return config
 }
 

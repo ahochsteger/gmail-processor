@@ -1,62 +1,98 @@
-import { plainToInstance } from "class-transformer"
+import { z } from "zod"
 import { essentialObject } from "../utils/ConfigUtils"
-import { RequiredDeep } from "../utils/Utility.types"
 import { MessageFlag } from "./MessageFlag"
 
 /**
  * Represents a config to match a certain GMail message
  */
-export class MessageMatchConfig {
+export const MessageMatchConfigSchema = z.object({
   /**
    * A RegEx matching the body of messages.
    * Use `(?s)` at the beginning of the regex if you want `.` to match a newline.
    */
-  body? = ".*"
+  body: z
+    .string()
+    .default(".*")
+    .describe(
+      "A RegEx matching the body of messages. Use `(?s)` at the beginning of the regex if you want `.` to match a newline.",
+    ),
   /**
    * A RegEx matching the sender email address of messages
    */
-  from? = ".*"
+  from: z
+    .string()
+    .default(".*")
+    .describe("A RegEx matching the sender email address of messages"),
   /**
    * A list of properties matching messages should have
    */
-  is?: MessageFlag[] = []
+  is: z
+    .array(z.nativeEnum(MessageFlag))
+    .default([])
+    .describe("A list of properties matching messages should have"),
   /**
    * An RFC 3339 date/time format matching messages older than the given date/time
    */
-  newerThan? = ""
+  newerThan: z
+    .string()
+    .default("")
+    .describe(
+      "An RFC 3339 date/time format matching messages older than the given date/time",
+    ),
   /**
    * An RFC 3339 date/time format matching messages older than the given date/time
    */
-  olderThan? = ""
+  olderThan: z
+    .string()
+    .default("")
+    .describe(
+      "An RFC 3339 date/time format matching messages older than the given date/time",
+    ),
   /**
    * A RegEx matching the plain body of messages.
    * Use `(?s)` at the beginning of the regex if you want `.` to match a newline.
    */
-  plainBody? = ".*"
+  plainBody: z
+    .string()
+    .default(".*")
+    .describe(
+      "A RegEx matching the plain body of messages. Use `(?s)` at the beginning of the regex if you want `.` to match a newline.",
+    ),
   /**
    * A RegEx matching the raw headers of messages.
    * Use `(?s)` at the beginning of the regex if you want `.` to match a newline.
    */
-  rawHeaders? = ".*"
+  rawHeaders: z
+    .string()
+    .default(".*")
+    .describe(
+      "A RegEx matching the raw headers of messages. Use `(?s)` at the beginning of the regex if you want `.` to match a newline.",
+    ),
   /**
    * A RegEx matching the subject of messages
    */
-  subject? = ".*"
+  subject: z
+    .string()
+    .default(".*")
+    .describe("A RegEx matching the subject of messages"),
   /**
    * A RegEx matching the recipient email address of messages
    */
-  to? = ".*"
-}
+  to: z
+    .string()
+    .default(".*")
+    .describe("A RegEx matching the recipient email address of messages"),
+})
 
-export type RequiredMessageMatchConfig = RequiredDeep<MessageMatchConfig>
+export type MessageMatchConfig = z.input<typeof MessageMatchConfigSchema>
+export type RequiredMessageMatchConfig = z.output<
+  typeof MessageMatchConfigSchema
+>
 
 export function newMessageMatchConfig(
   json: MessageMatchConfig = {},
 ): RequiredMessageMatchConfig {
-  return plainToInstance(MessageMatchConfig, json, {
-    exposeDefaultValues: true,
-    exposeUnsetFields: false,
-  }) as RequiredMessageMatchConfig
+  return MessageMatchConfigSchema.parse(json)
 }
 
 export function essentialMessageMatchConfig(

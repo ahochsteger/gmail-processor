@@ -1,5 +1,5 @@
 import { ProcessingContext } from "../Context"
-import { GlobalActionLoggingBase } from "../actions/GlobalActions"
+import { GlobalActionLoggingBase } from "../config/ActionConfig"
 import { LogLevel, LogRedactionMode } from "../config/SettingsConfig"
 
 const levels = Object.values(LogLevel)

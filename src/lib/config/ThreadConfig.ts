@@ -1,23 +1,18 @@
-import { Expose, Type, plainToInstance } from "class-transformer"
-import "reflect-metadata"
+import { z } from "zod"
 import { essentialObject } from "../utils/ConfigUtils"
-import { RequiredDeep } from "../utils/Utility.types"
 import {
-  ThreadActionConfig,
-  ThreadContextActionConfigType,
+  ThreadActionConfigSchema,
   essentialThreadActionConfig,
 } from "./ActionConfig"
-import { AttachmentConfig, essentialAttachmentConfig } from "./AttachmentConfig"
+import {
+  AttachmentConfigSchema,
+  essentialAttachmentConfig,
+} from "./AttachmentConfig"
 import { OrderDirection } from "./CommonConfig"
+import { MessageConfigSchema, essentialMessageConfig } from "./MessageConfig"
 import {
-  MessageConfig,
-  essentialMessageConfig,
-  normalizeMessageConfigs,
-} from "./MessageConfig"
-import {
-  ThreadMatchConfig,
+  ThreadMatchConfigSchema,
   essentialThreadMatchConfig,
-  newThreadMatchConfig,
 } from "./ThreadMatchConfig"
 
 /**
@@ -41,60 +36,78 @@ export enum ThreadOrderField {
 /**
  * Represents a config handle a certain GMail thread
  */
-export class ThreadConfig {
+export const ThreadConfigSchema = z.object({
   /**
    * The list actions to be executed for their respective handler scopes
    */
-  @Expose()
-  @Type(() => ThreadActionConfig)
-  actions?: ThreadContextActionConfigType[] = []
+  actions: z
+    .array(ThreadActionConfigSchema)
+    .default([])
+    .describe(
+      "The list actions to be executed for their respective handler scopes",
+    ),
   /**
    * The description of the thread handler config
    */
-  @Expose()
-  description? = ""
+  description: z
+    .string()
+    .default("")
+    .describe("The description of the thread handler config"),
   /**
    * The list of handler that define the way nested messages or attachments are processed
    */
-  @Expose()
-  @Type(() => MessageConfig)
-  messages?: MessageConfig[] = []
+  messages: z
+    .array(MessageConfigSchema)
+    .default([])
+    .describe(
+      "The list of handler that define the way nested messages or attachments are processed",
+    ),
   /**
    * The list of handler that define the way attachments are processed
+   * @deprecated Use `messages.attachments` instead.
    */
-  @Expose()
-  @Type(() => AttachmentConfig)
-  attachments?: AttachmentConfig[] = []
+  attachments: z
+    .array(AttachmentConfigSchema)
+    .optional()
+    .describe(
+      "The list of handler that define the way attachments are processed",
+    ),
   /**
    * Specifies which threads match for further processing
    */
-  @Expose()
-  @Type(() => ThreadMatchConfig)
-  match? = new ThreadMatchConfig()
+  match: ThreadMatchConfigSchema.default(() =>
+    ThreadMatchConfigSchema.parse({}),
+  ).describe("Specifies which threads match for further processing"),
   /**
    * The unique name of the thread config (will be generated if not set)
    */
-  @Expose()
-  name? = ""
+  name: z
+    .string()
+    .default("")
+    .describe(
+      "The unique name of the thread config (will be generated if not set)",
+    ),
   /**
    * The field to order threads by for processing.
    */
-  @Expose()
-  orderBy?: ThreadOrderField = undefined
+  orderBy: z
+    .nativeEnum(ThreadOrderField)
+    .optional()
+    .describe("The field to order threads by for processing."),
   /**
    * The direction to order threads for processing.
    */
-  @Expose()
-  orderDirection?: OrderDirection = undefined
-}
+  orderDirection: z
+    .nativeEnum(OrderDirection)
+    .optional()
+    .describe("The direction to order threads for processing."),
+})
 
-export type RequiredThreadConfig = RequiredDeep<ThreadConfig>
+export type ThreadConfig = z.input<typeof ThreadConfigSchema>
+export type RequiredThreadConfig = z.output<typeof ThreadConfigSchema>
 
 export function newThreadConfig(json: ThreadConfig = {}): RequiredThreadConfig {
-  return plainToInstance(ThreadConfig, normalizeThreadConfig(json), {
-    exposeDefaultValues: true,
-    exposeUnsetFields: false,
-  }) as RequiredThreadConfig
+  return ThreadConfigSchema.parse(normalizeThreadConfig(json))
 }
 
 export function normalizeThreadConfig(config: ThreadConfig): ThreadConfig {
@@ -106,18 +119,7 @@ export function normalizeThreadConfig(config: ThreadConfig): ThreadConfig {
     delete config.attachments
   }
 
-  config.messages = normalizeMessageConfigs(config.messages)
-  config.match = config.match ?? newThreadMatchConfig()
   return config
-}
-
-export function normalizeThreadConfigs(
-  configs: ThreadConfig[],
-): ThreadConfig[] {
-  for (const config of configs) {
-    normalizeThreadConfig(config)
-  }
-  return configs
 }
 
 export function essentialThreadConfig(config: ThreadConfig): ThreadConfig {

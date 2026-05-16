@@ -73,9 +73,10 @@ export class E2EAssertionHelper {
   }
 
   public matches(actual: unknown, expected: unknown): boolean {
-    return E2E.isRegExp(expected)
-      ? expected.test(String(actual))
-      : actual === expected
+    if (E2E.isRegExp(expected)) {
+      return expected.test(String(actual))
+    }
+    return JSON.stringify(actual) === JSON.stringify(expected)
   }
 
   public findAction(
@@ -87,6 +88,9 @@ export class E2EAssertionHelper {
       .slice(fromIndex)
       .find((a) => {
         if (a.config.name !== name) return false
+        this.ctx.log.info(
+          `E2E.findAction(): Found action '${name}', checking args ...`,
+        )
         if (args) {
           for (const [key, expectedValue] of Object.entries(args)) {
             let actualValue: unknown
@@ -103,7 +107,12 @@ export class E2EAssertionHelper {
                 `Ambiguous key '${key}' in findAction(). Use 'arg.' or 'meta.' prefix.`,
               )
             }
-            if (!this.matches(actualValue, expectedValue)) return false
+            if (!this.matches(actualValue, expectedValue)) {
+              this.ctx.log.info(
+                `E2E.findAction(): FAILED match for action '${name}' key '${key}': actual='${JSON.stringify(actualValue)}', expected='${JSON.stringify(expectedValue)}'`,
+              )
+              return false
+            }
           }
         }
         return true
@@ -123,9 +132,20 @@ export class E2EAssertionHelper {
 
   public expectActionExecuted(
     action: ActionExecution | undefined,
-    message: string,
+    name: string,
   ): boolean {
-    return this.expect(this.ctx, !!action, true, `${message} exists`)
+    const match = this.expect(
+      this.ctx,
+      !!action,
+      true,
+      `Action '${name}' was executed`,
+    )
+    if (!match) {
+      this.ctx.log.info(
+        `E2E.expectActionExecuted(): Available executed actions: ${this.procResult.executedActions.map((a) => a.config.name).join(", ") || "None"}`,
+      )
+    }
+    return match
   }
 
   public expectActionMeta(
@@ -135,7 +155,18 @@ export class E2EAssertionHelper {
     message?: string,
   ): boolean {
     const actual = this.getMetaValue(action, key)
-    return this.expect(this.ctx, actual, expected, message ?? key)
+    const match = this.expect(this.ctx, actual, expected, message ?? key)
+    if (!match) {
+      this.ctx.log.info(
+        `E2E.expectActionMeta(): FAILED: key='${key}', actual='${JSON.stringify(actual)}', expected='${JSON.stringify(expected)}'`,
+      )
+      if (action?.result?.actionMeta) {
+        this.ctx.log.info(
+          `E2E.expectActionMeta(): Available actionMeta keys: ${Object.keys(action.result.actionMeta).join(", ")}`,
+        )
+      }
+    }
+    return match
   }
 
   public expectActionOrder(
@@ -548,6 +579,7 @@ export class E2E {
       runMode: RunMode.DANGEROUS,
     }),
     testRunId?: string,
+    testRunTimestamp?: string,
   ): Promise<E2EResult> {
     const activeTestRunId = testRunId ?? this.getTestRunId(ctx)
     ctx.log.info(
@@ -616,6 +648,17 @@ export class E2E {
               E2EDefaults.driveTestBasePath(testConfig.info, activeTestRunId),
             )
           }
+          if (testRunTimestamp) {
+            const datePart = ctx.env.utilities.formatDate(
+              new Date(testRunTimestamp),
+              ctx.env.session.getScriptTimeZone(),
+              "yyyy-MM-dd",
+            )
+            runConfigStr = runConfigStr.replace(
+              /\{\{date\.now\|formatDate\('yyyy-MM-dd'\)\}\}/g,
+              datePart,
+            )
+          }
           testRunConfig = JSON.parse(runConfigStr) as Config
         }
         processingResult = GmailProcessor.runWithJson(
@@ -643,19 +686,6 @@ export class E2E {
           ),
         )
         ctx.log.info(`E2E.runTests(): Action promises finished.`)
-
-        // Diagnostic logging: Trace all metadata currently in context
-        ctx.log.info(`E2E.runTests(): Current Context Meta Keys:`)
-        const meta = (ctx as any).meta ?? {}
-        Object.keys(meta).forEach((k) => {
-          const entry = meta[k]
-          const val = entry?.value
-          const displayVal =
-            typeof val === "function" ? "()=>..." : JSON.stringify(val)
-          ctx.log.info(
-            `  - ${k}: ${displayVal} (Raw: ${JSON.stringify(entry)})`,
-          )
-        })
       }
 
       if (processingResult.status === ProcessingStatus.ERROR) {
@@ -705,11 +735,13 @@ export class E2E {
     ctx.log.info(
       `E2E.initAllTests(): Started with test run id '${activeTestRunId}'.`,
     )
+    let totalMails = 0
     testConfigs.forEach((testConfig) => {
+      totalMails += testConfig.initConfig?.mails.length ?? 0
       this.initTests(testConfig, branch, ctx, activeTestRunId)
     })
     const globals = newE2EGlobalConfig(ctx, branch, undefined, activeTestRunId)
-    this.initWait(globals, ctx)
+    this.initWait(globals, ctx, totalMails)
     ctx.log.info(`E2E.initAllTests(): Finished.`)
     return activeTestRunId
   }
@@ -722,6 +754,7 @@ export class E2E {
       runMode: RunMode.DANGEROUS,
     }),
     testRunId?: string,
+    testRunTimestamp?: string,
   ): Promise<E2EResult> {
     const activeTestRunId = testRunId ?? this.getTestRunId(ctx)
     ctx.log.info(
@@ -729,7 +762,14 @@ export class E2E {
     )
     const results = await Promise.all(
       testConfigs.map((testConfig) =>
-        this.runTests(testConfig, skipInit, branch, ctx, activeTestRunId),
+        this.runTests(
+          testConfig,
+          skipInit,
+          branch,
+          ctx,
+          activeTestRunId,
+          testRunTimestamp,
+        ),
       ),
     )
     const statusMap = this.statusMapFromResults(results)
@@ -745,5 +785,192 @@ export class E2E {
     ctx.log.info(`E2E.runAllTests(): JSON Result: ${JSON.stringify(result)}`)
     ctx.log.info(`E2E.runAllTests(): Finished.`)
     return result
+  }
+
+  public static generateDataHash(testConfigs: E2ETestConfig[]): string {
+    const data = JSON.stringify(testConfigs.map((c) => c.initConfig))
+    const digest = Utilities.computeDigest(
+      Utilities.DigestAlgorithm.SHA_256,
+      data,
+    )
+    return digest
+      .map((b) => (b < 0 ? b + 256 : b).toString(16).padStart(2, "0"))
+      .join("")
+  }
+
+  private static getFolderFromPath(
+    gdriveApp: GoogleAppsScript.Drive.DriveApp,
+    path: string,
+  ): GoogleAppsScript.Drive.Folder | undefined {
+    let folderPath = path
+    if (folderPath.startsWith("/")) folderPath = folderPath.slice(1)
+    if (folderPath.endsWith("/")) folderPath = folderPath.slice(0, -1)
+    const segments = folderPath ? folderPath.split("/") : []
+    let currentFolder = gdriveApp.getRootFolder()
+    for (const segment of segments) {
+      const folders = currentFolder.getFoldersByName(segment)
+      if (folders.hasNext()) {
+        currentFolder = folders.next()
+      } else {
+        return undefined
+      }
+    }
+    return currentFolder
+  }
+
+  public static resetTests(
+    testConfigs: E2ETestConfig[],
+    branch = "main",
+    ctx: EnvContext = EnvProvider.defaultContext({
+      runMode: RunMode.DANGEROUS,
+    }),
+    testRunId: string,
+    timestamp: string,
+  ) {
+    ctx.log.info(
+      `E2E.resetTests(): Resetting test data for test run id '${testRunId}'...`,
+    )
+    const globals = newE2EGlobalConfig(ctx, branch, undefined, testRunId)
+    const query = `subject:"${globals.subjectPrefix}"`
+    const threads = ctx.env.gmailApp.search(query)
+
+    // Find labels to remove if configured
+    const labelsToRemove: string[] = []
+    testConfigs.forEach((c) => {
+      const label = c.runConfig?.settings?.markProcessedLabel
+      if (label && !labelsToRemove.includes(label)) {
+        labelsToRemove.push(label)
+      }
+    })
+
+    const gmailLabels = labelsToRemove
+      .map((l) => ctx.env.gmailApp.getUserLabelByName(l))
+      .filter((l) => l !== null) as GoogleAppsScript.Gmail.GmailLabel[]
+
+    threads.forEach((thread) => {
+      thread.markUnread()
+      thread.getMessages().forEach((m) => m.markUnread())
+      gmailLabels.forEach((l) => thread.removeLabel(l))
+    })
+
+    // Reset drive folders by finding and trashing the specific run folders
+    const datePart = ctx.env.utilities.formatDate(
+      new Date(timestamp),
+      ctx.env.session.getScriptTimeZone(),
+      "yyyy-MM-dd",
+    )
+    const runFolderName = `${datePart}-${testRunId}`
+    const basePathFolder = this.getFolderFromPath(
+      ctx.env.gdriveApp,
+      E2EDefaults.DRIVE_TESTS_BASE_PATH,
+    )
+    if (basePathFolder) {
+      const runFolders = basePathFolder.getFoldersByName(runFolderName)
+      while (runFolders.hasNext()) {
+        const folder = runFolders.next()
+        ctx.log.info(
+          `E2E.resetTests(): Trashing drive folder '${folder.getName()}'...`,
+        )
+        folder.setTrashed(true)
+      }
+    }
+
+    ctx.log.info(
+      `E2E.resetTests(): Finished resetting ${threads.length} threads.`,
+    )
+  }
+
+  public static ensureTestData(
+    testConfigs: E2ETestConfig[],
+    branch = "main",
+    ctx: EnvContext = EnvProvider.defaultContext({
+      runMode: RunMode.DANGEROUS,
+    }),
+    testRunId?: string,
+  ): { runId: string; timestamp: string } {
+    const properties = ctx.env.propertiesService?.getUserProperties()
+    if (!properties) {
+      ctx.log.warn(
+        "E2E.ensureTestData(): PropertiesService not available, falling back to initAllTests.",
+      )
+      const newRunId = this.initAllTests(testConfigs, branch, ctx, testRunId)
+      return { runId: newRunId, timestamp: new Date().toISOString() }
+    }
+
+    const currentHash = this.generateDataHash(testConfigs)
+    const storedMetadataStr = properties.getProperty("E2E_METADATA")
+    let storedMetadata: {
+      runId: string
+      timestamp: string
+      dataHash: string
+    } | null = null
+
+    if (storedMetadataStr) {
+      try {
+        storedMetadata = JSON.parse(storedMetadataStr)
+      } catch (e) {
+        ctx.log.warn("E2E.ensureTestData(): Invalid stored metadata, ignoring.")
+      }
+    }
+
+    // Check if we can reuse
+    if (storedMetadata && storedMetadata.dataHash === currentHash) {
+      const globals = newE2EGlobalConfig(
+        ctx,
+        branch,
+        undefined,
+        storedMetadata.runId,
+      )
+      const query = `subject:"${globals.subjectPrefix}"`
+      const expectedCount = testConfigs.reduce(
+        (acc, c) => acc + (c.initConfig?.mails.length ?? 0),
+        0,
+      )
+      const threads = ctx.env.gmailApp.search(query)
+
+      if (threads.length >= expectedCount) {
+        ctx.log.info(
+          `E2E.ensureTestData(): Data hash matches and emails exist. Reusing test run id '${storedMetadata.runId}'...`,
+        )
+        this.resetTests(
+          testConfigs,
+          branch,
+          ctx,
+          storedMetadata.runId,
+          storedMetadata.timestamp,
+        )
+        return {
+          runId: storedMetadata.runId,
+          timestamp: storedMetadata.timestamp,
+        }
+      } else {
+        ctx.log.info(
+          `E2E.ensureTestData(): Data hash matches but emails missing (${threads.length}/${expectedCount}). Re-initializing...`,
+        )
+      }
+    } else {
+      ctx.log.info(
+        `E2E.ensureTestData(): Data hash mismatch or no stored metadata. Re-initializing...`,
+      )
+    }
+
+    const activeTestRunId = this.initAllTests(
+      testConfigs,
+      branch,
+      ctx,
+      testRunId,
+    )
+    const newTimestamp = new Date().toISOString()
+
+    properties.setProperty(
+      "E2E_METADATA",
+      JSON.stringify({
+        runId: activeTestRunId,
+        timestamp: newTimestamp,
+        dataHash: currentHash,
+      }),
+    )
+
+    return { runId: activeTestRunId, timestamp: newTimestamp }
   }
 }

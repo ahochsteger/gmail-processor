@@ -1,6 +1,5 @@
 import { ProcessingContext } from "../Context"
-import { ActionBaseConfig } from "../config/ActionConfig"
-import { LogLevel } from "../config/SettingsConfig"
+import { GlobalActionLoggingBase } from "../config/ActionConfig"
 import { writingAction } from "../utils/Decorators"
 import { PatternUtil } from "../utils/PatternUtil"
 import {
@@ -8,21 +7,6 @@ import {
   ActionProvider,
   ActionReturnType,
 } from "./ActionRegistry"
-
-export type GlobalActionLoggingBase = {
-  /**
-   * The level of the log message (default: `info`).
-   */
-  level?: LogLevel
-  /**
-   * The location of the log message
-   */
-  location?: string
-  /**
-   * The message to be logged.
-   */
-  message: string
-}
 
 export class GlobalActions implements ActionProvider<ProcessingContext> {
   [key: string]: ActionFunction<ProcessingContext>
@@ -72,9 +56,3 @@ export class GlobalActions implements ActionProvider<ProcessingContext> {
     }
   }
 }
-
-export type GlobalActionConfigType =
-  | ActionBaseConfig<"global.noop">
-  | ActionBaseConfig<"global.log", GlobalActionLoggingBase>
-  | ActionBaseConfig<"global.panic", GlobalActionLoggingBase>
-  | ActionBaseConfig<"global.sheetLog", GlobalActionLoggingBase>

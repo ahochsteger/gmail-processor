@@ -142,8 +142,13 @@ When you modify or create an example in `src/examples/**.ts`, the build process 
 
 ### Configuration Management
 
-- Use `class-transformer` decorators (`@Expose`, `@Type`) for configuration classes in `src/lib/config/`.
-- Maintain the JSON schema (`config-schema-v2.json`) whenever config classes change.
+- Use Zod schemas in `src/lib/config/` for configuration validation, defaults, and type inference.
+- Maintain the JSON schema (`config-schema-v2.json`) whenever config schemas change.
+
+### Documentation & JSDoc
+
+- **Action Arguments**: All action argument types in `src/lib/config/ActionConfigTypes.ts` MUST have comprehensive JSDoc `/** */` comments on every field. These comments are the **source of truth** for the generated `actions.mdx` documentation.
+- **Persistence**: When refactoring or moving types, ensure that all JSDoc comments are preserved. Losing these comments breaks the automated documentation pipeline.
 
 ## Repository Hygiene
 

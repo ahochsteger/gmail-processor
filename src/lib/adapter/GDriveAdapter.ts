@@ -6,31 +6,16 @@ import {
   RunMode,
   newMetaInfo,
 } from "../Context"
-import {
+import type {
   AttachmentExtractTextArgs,
   StoreActionBaseArgs,
 } from "../config/ActionConfig"
+import { ConflictStrategy } from "../config/ActionConfig"
 import { SettingsConfig } from "../config/SettingsConfig"
 import { PatternUtil } from "../utils/PatternUtil"
 import { BaseAdapter } from "./BaseAdapter"
-
-/** Strategy that defines how to deal in case of conflicts with already existing files at the desired location in Google Drive. */
-export enum ConflictStrategy {
-  /** Create a backup of the existing file by renaming it. */
-  BACKUP = "backup",
-  /** Terminate processing with an error. */
-  ERROR = "error",
-  /** Increment the file name if a file already exists. */
-  INCREMENT = "increment",
-  /** Keep the existing file and create the new one with the same name. */
-  KEEP = "keep",
-  /** Replace the existing file with the new one. */
-  REPLACE = "replace",
-  /** Skip creating the new file and keep the existing one. */
-  SKIP = "skip",
-  /** Update the existing file with the contents of the new one (keep it's file ID). */
-  UPDATE = "update",
-}
+export { ConflictStrategy }
+export type { AttachmentExtractTextArgs, StoreActionBaseArgs }
 
 export type LocationInfo = {
   filename: string

@@ -8,28 +8,34 @@ import { validateConfig } from "./Validate"
 
 describe("validate()", () => {
   it("should validate a minimum compliant v2 config without errors", () => {
-    validateConfig({})
-    expect(validateConfig.errors).toBeNull()
+    const result = validateConfig({})
+    expect(result.success).toBe(true)
   })
   it("should validate all MockFactory config JSON without errors", () => {
-    validateConfig({
+    let result = validateConfig({
       global: {
         thread: { actions: [ConfigMocks.newDefaultThreadActionConfigJson()] },
       },
     })
-    expect(validateConfig.errors).toBeNull()
-    validateConfig({
+    expect(result.success).toBe(true)
+    result = validateConfig({
       attachments: [ConfigMocks.newDefaultAttachmentConfigJson()],
     })
-    expect(validateConfig.errors).toBeNull()
-    validateConfig(ConfigMocks.newDefaultConfigJson())
-    expect(validateConfig.errors).toBeNull()
-    validateConfig({ messages: [ConfigMocks.newDefaultMessageConfigJson()] })
-    expect(validateConfig.errors).toBeNull()
-    validateConfig({ settings: ConfigMocks.newDefaultSettingsConfigJson() })
-    expect(validateConfig.errors).toBeNull()
-    validateConfig({ threads: [ConfigMocks.newDefaultThreadConfigJson()] })
-    expect(validateConfig.errors).toBeNull()
+    expect(result.success).toBe(true)
+    result = validateConfig(ConfigMocks.newDefaultConfigJson())
+    expect(result.success).toBe(true)
+    result = validateConfig({
+      messages: [ConfigMocks.newDefaultMessageConfigJson()],
+    })
+    expect(result.success).toBe(true)
+    result = validateConfig({
+      settings: ConfigMocks.newDefaultSettingsConfigJson(),
+    })
+    expect(result.success).toBe(true)
+    result = validateConfig({
+      threads: [ConfigMocks.newDefaultThreadConfigJson()],
+    })
+    expect(result.success).toBe(true)
   })
   it("should report additional properties", () => {
     const config = {
@@ -38,17 +44,14 @@ describe("validate()", () => {
     }
     const expected = [
       {
-        instancePath: "",
-        keyword: "additionalProperties",
-        params: { additionalProperty: "rules" },
-      },
-      {
-        instancePath: "",
-        keyword: "additionalProperties",
-        params: { additionalProperty: "additional" },
+        message: 'Unrecognized keys: "rules", "additional"',
+        path: "",
       },
     ]
-    validateConfig(config)
-    expect(validateConfig.errors).toMatchObject(expected)
+    const result = validateConfig(config)
+    expect(result.success).toBe(false)
+    if (!result.success) {
+      expect(result.errors).toMatchObject(expected)
+    }
   })
 })

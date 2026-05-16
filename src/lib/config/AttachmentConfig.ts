@@ -1,16 +1,12 @@
-import { Expose, Type, plainToInstance } from "class-transformer"
-import "reflect-metadata"
+import { z } from "zod"
 import { essentialObject } from "../utils/ConfigUtils"
-import { RequiredDeep } from "../utils/Utility.types"
 import {
-  AttachmentActionConfig,
-  AttachmentContextActionConfigType,
+  AttachmentActionConfigSchema,
   essentialAttachmentActionConfig,
 } from "./ActionConfig"
 import {
-  AttachmentMatchConfig,
+  AttachmentMatchConfigSchema,
   essentialAttachmentMatchConfig,
-  newAttachmentMatchConfig,
 } from "./AttachmentMatchConfig"
 import { OrderDirection } from "./CommonConfig"
 
@@ -35,66 +31,61 @@ export enum AttachmentOrderField {
 /**
  * Represents a config to handle a certain GMail attachment
  */
-export class AttachmentConfig {
+export const AttachmentConfigSchema = z.object({
   /**
    * The list actions to be executed for their respective handler scopes
    */
-  @Expose()
-  @Type(() => AttachmentActionConfig)
-  actions?: AttachmentContextActionConfigType[] = []
+  actions: z
+    .array(AttachmentActionConfigSchema)
+    .default([])
+    .describe(
+      "The list actions to be executed for their respective handler scopes",
+    ),
   /**
    * The description of the attachment handler config
    */
-  @Expose()
-  description? = ""
+  description: z
+    .string()
+    .default("")
+    .describe("The description of the attachment handler config"),
   /**
    * Specifies which attachments match for further processing
    */
-  @Expose()
-  @Type(() => AttachmentMatchConfig)
-  match? = new AttachmentMatchConfig()
+  match: AttachmentMatchConfigSchema.default(() =>
+    AttachmentMatchConfigSchema.parse({}),
+  ).describe("Specifies which attachments match for further processing"),
   /**
    * The unique name of the attachment config (will be generated if not set)
    */
-  @Expose()
-  name? = ""
+  name: z
+    .string()
+    .default("")
+    .describe(
+      "The unique name of the attachment config (will be generated if not set)",
+    ),
   /**
    * The field to order attachments by for processing.
    */
-  @Expose()
-  orderBy?: AttachmentOrderField = undefined
+  orderBy: z
+    .nativeEnum(AttachmentOrderField)
+    .optional()
+    .describe("The field to order attachments by for processing."),
   /**
    * The direction to order attachments for processing.
    */
-  @Expose()
-  orderDirection?: OrderDirection = undefined
-}
+  orderDirection: z
+    .nativeEnum(OrderDirection)
+    .optional()
+    .describe("The direction to order attachments for processing."),
+})
 
-export type RequiredAttachmentConfig = RequiredDeep<AttachmentConfig>
+export type AttachmentConfig = z.input<typeof AttachmentConfigSchema>
+export type RequiredAttachmentConfig = z.output<typeof AttachmentConfigSchema>
 
 export function newAttachmentConfig(
   json: AttachmentConfig = {},
 ): RequiredAttachmentConfig {
-  return plainToInstance(AttachmentConfig, normalizeAttachmentConfig(json), {
-    exposeDefaultValues: true,
-    exposeUnsetFields: false,
-  }) as RequiredAttachmentConfig
-}
-
-export function normalizeAttachmentConfig(
-  config: AttachmentConfig,
-): AttachmentConfig {
-  config.match = config.match ?? newAttachmentMatchConfig()
-  return config
-}
-
-export function normalizeAttachmentConfigs(
-  configs: AttachmentConfig[],
-): AttachmentConfig[] {
-  for (const config of configs) {
-    normalizeAttachmentConfig(config)
-  }
-  return configs
+  return AttachmentConfigSchema.parse(json)
 }
 
 export function essentialAttachmentConfig(

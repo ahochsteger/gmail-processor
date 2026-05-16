@@ -22,7 +22,7 @@ describe(`Example ${info.name}`, () => {
     expect(result.processedThreadConfigs).toEqual(runConfig.threads?.length)
   })
   it(`should successfully validate example ${info.name}`, () => {
-    validateConfig(runConfig)
-    expect(validateConfig.errors).toBeNull()
+    const result = validateConfig(runConfig)
+    expect(result.success).toBe(true)
   })
 })

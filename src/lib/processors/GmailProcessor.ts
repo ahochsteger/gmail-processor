@@ -62,11 +62,11 @@ export class GmailProcessor extends BaseProcessor {
     }
     ;(ctx.proc.config.global.variables as VariableEntry[]).forEach(
       (entry: VariableEntry) => {
-        let value: string | null = entry.value
+        let value: string | null = entry.value ?? null
         if (entry.type === "property") {
           value = ctx.env.propertiesService
             .getScriptProperties()
-            .getProperty(entry.value)
+            .getProperty(entry.value ?? "")
           if (value === null) {
             ctx.log.warn(
               `Script property '${entry.value}' for variable '${entry.key}' is not set!`,

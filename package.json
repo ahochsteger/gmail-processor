@@ -2,12 +2,10 @@
   "dependencies": {
     "@cantoo/pdf-lib": "2.6.5",
     "addressparser": "1.0.1",
-    "ajv": "8.20.0",
     "antlr4ng": "3.0.16",
-    "class-transformer": "0.5.1",
     "crypto-js": "4.2.0",
     "date-fns": "4.1.0",
-    "reflect-metadata": "0.2.2"
+    "zod": "4.4.3"
   },
   "description": "Gmail Processor is an open-source project that automates the processing of Gmail messages and attachments using Google Apps Script and execute actions (e.g. store attachments in a GDrive folder, log information in a spreadsheet) depending on matching criteria.",
   "devDependencies": {
@@ -60,8 +58,7 @@
     "type-fest": "5.6.0",
     "typedoc": "0.28.19",
     "typescript": "6.0.3",
-    "typescript-eslint": "8.59.2",
-    "typescript-json-schema": "0.67.2"
+    "typescript-eslint": "8.59.2"
   },
   "engines": {
     "node": "24.x"
@@ -97,13 +94,14 @@
     "all:ci": "npm run ci:build && npm run ci:test && npm run ci:docs",
     "all:clean": "npx concurrently 'npm:clean:*'",
     "all:deploy": "npx concurrently 'npm:deploy:*'",
+    "all:format": "npx concurrently 'npm:format:*'",
     "all:lint": "npx concurrently 'npm:lint:*'",
     "all:locks-clean": "npx concurrently 'npm:locks:clean:*'",
     "all:maintenance": "npm run lint:scripts && npm run lint:versions && npm run lint:devbox:unused && npm run lint:renovate && npm run lint:actions && npm run lint-prune",
     "all:packages-outdated": "npx concurrently 'npm:packages:outdated:*'",
     "all:packages-update": "npx concurrently 'npm:packages:update:*'",
-    "all:pre-commit": "npm run all:update && npm run all:rebuild && npm run lint-fix && npm run all:lint && npm run all:test",
-    "all:pre-commit:fast": "npm run all:update && npm run all:rebuild:fast && npm run lint-fix && npm run all:lint && npm run all:test",
+    "all:pre-commit": "npm run all:update && npm run all:rebuild && npm run all:format && npm run all:lint && npm run all:test",
+    "all:pre-commit:fast": "npm run all:update && npm run all:rebuild:fast && npm run all:format && npm run all:lint && npm run all:test",
     "all:pre-push": "npm run all:pre-commit && npm run push && npm run e2e",
     "all:push": "npx concurrently 'npm:push:*'",
     "all:rebuild": "npm run all:clean && npm run all:build",
@@ -114,7 +112,7 @@
     "all:repush": "npx concurrently 'npm:repush:*'",
     "all:setup": "npm run setup:lib && npm run setup:docs",
     "all:test": "npm run test:jest",
-    "all:update": "npm run update:parser && npm run update:docs && npm run update:examples && npm run update:maintenance && npx concurrently 'npm:update:schema' 'npm:update:contributors' && npm run lint-fix",
+    "all:update": "npm run update:parser && npm run update:docs && npm run update:examples && npm run update:maintenance && npx concurrently 'npm:update:schema' 'npm:update:contributors' && npm run all:format",
     "audit:security:docs": "npm audit --audit-level moderate --prefix docs",
     "audit:security:lib": "npm audit --audit-level moderate",
     "build": "npm run all:build",
@@ -141,6 +139,10 @@
     "e2e:logs": "scripts/clasp.sh examples logs",
     "e2e:run": "scripts/clasp.sh examples run",
     "e2e:run-all": "scripts/clasp.sh examples run-test runAllTests",
+    "format:docs": "prettier -w docs",
+    "format:examples": "prettier -w src/examples src/gas/examples",
+    "format:lib": "prettier -w src/lib src/test",
+    "format:other": "prettier -w --ignore-path .gitignore --ignore-path .prettierignore --ignore-path .prettierignore_other .",
     "gh-act:ci": "npm run gh-act:ci:dispatch",
     "gh-act:ci:beta": "act workflow_dispatch -W .github/workflows/ci.yaml --input run_mode=beta-deploy",
     "gh-act:ci:dispatch": "act workflow_dispatch -W .github/workflows/ci.yaml",
@@ -155,7 +157,6 @@
     "gh-act:release": "act workflow_dispatch -W .github/workflows/release.yaml",
     "lint": "npm run all:lint",
     "lint-code": "npm run lint:lib",
-    "lint-fix": "prettier -w . --log-level warn",
     "lint-inspect": "npx eslint --inspect-config",
     "lint-prune": "npx knip || true",
     "lint:actions": "actionlint",
@@ -185,7 +186,7 @@
     "push:examples": "scripts/clasp.sh examples push",
     "push:lib": "scripts/clasp.sh lib push",
     "rebuild": "npm run all:rebuild",
-    "rebuild:docs": "npm run clean:docs && npm run build:docs",
+    "rebuild:docs": "npm run clean:docs && npm run update:docs && npm run build:docs",
     "rebuild:examples": "npm run clean:examples && npm run update:examples && npm run build:examples",
     "rebuild:lib": "npm run clean:lib && npm run build:lib",
     "redeploy": "npm run all:redeploy",
@@ -220,12 +221,12 @@
     "test:jest": "TZ=Etc/UTC npx jest --reporters=summary --silent",
     "test:lib": "TZ=Etc/UTC npx jest --reporters=summary --silent --testPathPatterns src/lib src/test",
     "update": "npm run all:update",
-    "update:contributors": "npx all-contributors generate",
-    "update:docs": "TZ=Etc/UTC scripts/update-docs.sh",
-    "update:examples": "TZ=Etc/UTC scripts/update-examples.sh",
+    "update:contributors": "npx all-contributors generate && npm run format:other",
+    "update:docs": "TZ=Etc/UTC scripts/update-docs.sh && npm run format:docs",
+    "update:examples": "TZ=Etc/UTC scripts/update-examples.sh && npm run format:examples",
     "update:maintenance": "yq -i '.on.workflow_dispatch.inputs.script.options = (load(\"package.json\") | .scripts | with_entries(select(.key | test(\"^all:\"))) | keys | sort)' .github/workflows/maintenance.yaml",
-    "update:parser": "scripts/update-parser.sh",
-    "update:schema": "TZ=Etc/UTC scripts/update-schema.sh"
+    "update:parser": "scripts/update-parser.sh && npm run format:lib",
+    "update:schema": "TZ=Etc/UTC scripts/update-schema.sh && npm run format:lib"
   },
   "version": "2.17.3"
 }
