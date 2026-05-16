@@ -41,7 +41,7 @@
     "eslint-plugin-prettier": "5.5.5",
     "eslint-plugin-tsdoc": "0.5.2",
     "eta": "4.6.0",
-    "jest": "30.4.0",
+    "jest": "30.4.2",
     "jest-mock-extended": "4.0.1",
     "jest-when": "4.0.3",
     "jscpd": "4.0.9",
@@ -82,7 +82,7 @@
   "overrides": {
     "@tootallnate/once": "3.0.1",
     "axios": "1.16.0",
-    "tar": "7.5.14",
+    "tar": "7.5.15",
     "tmp": "0.2.5",
     "yargs": "17.7.2"
   },
