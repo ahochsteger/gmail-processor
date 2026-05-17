@@ -1,5 +1,30 @@
 # Changelog
 
+## [2.17.4](https://github.com/ahochsteger/gmail-processor/compare/v2.17.3...v2.17.4) (2026-05-17)
+
+
+### Maintenance
+
+* **ci:** fix workspace dependency hoisting and patch-package resolution in CI ([2238fe4](https://github.com/ahochsteger/gmail-processor/commit/2238fe4b27d25808689f89fa1c4f200ea95e717a))
+* **ci:** simplify workspace security audits and override serialize-javascript vulnerability ([765c392](https://github.com/ahochsteger/gmail-processor/commit/765c392d21b422c17a685b21a5404a26c2d9e46f))
+* **deps:** update deps:lib-non-major ([#686](https://github.com/ahochsteger/gmail-processor/issues/686)) ([3bba6a7](https://github.com/ahochsteger/gmail-processor/commit/3bba6a72c67dec60fedfaf35db2c93d1e41e78ca))
+* **e2e:** optimize test data reuse and fix build clean race conditions ([304244e](https://github.com/ahochsteger/gmail-processor/commit/304244e40be69138c69cfb7b434bed0bdef6f318))
+* enhance version linting and resolve cool-down violation ([0a938b7](https://github.com/ahochsteger/gmail-processor/commit/0a938b7cb6fe046b36f51bcc663c15041b8fbed7))
+* **maintenance:** align cool-down period with precise timestamps ([34a7337](https://github.com/ahochsteger/gmail-processor/commit/34a73378671d927c4e2fa5a499a7e710ac6636b8))
+* **maintenance:** bypass cool-down for security overrides ([dcb267d](https://github.com/ahochsteger/gmail-processor/commit/dcb267d3a0905bf5671e75a724a5e62b562445ed))
+
+
+### Refactorings
+
+* **config:** migrate validation and serialization from class-transformer/ajv to Zod v4 ([bec27c6](https://github.com/ahochsteger/gmail-processor/commit/bec27c6daee7466441d1c29a36008068c72016df))
+* **docs:** decouple Docusaurus docs from library source using npm workspaces ([d31f044](https://github.com/ahochsteger/gmail-processor/commit/d31f04435e373bd7187f59648596b2c6d17b3d16))
+* **e2e:** decouple mock framework, eliminate circular dependencies, and optimize E2E metadata caching ([4398fc0](https://github.com/ahochsteger/gmail-processor/commit/4398fc0a562260a393ce9b6b1b0127c4875e98a8))
+
+
+### CI/CD Pipeline
+
+* **workflow:** add explicit permissions to workflows for security ([b80f395](https://github.com/ahochsteger/gmail-processor/commit/b80f39525bfc5f5394dbf5f261f1d1a1e6d45ed7))
+
 ## [2.17.3](https://github.com/ahochsteger/gmail-processor/compare/v2.17.2...v2.17.3) (2026-05-14)
 
 
