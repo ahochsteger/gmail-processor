@@ -3,6 +3,31 @@
 // Template: src/templates/gas-test.eta
 // Source: src/examples/advanced/headerMatching.ts
 
+async function headerMatchingTest() {
+  const testConfig = headerMatchingTestConfig()
+  const testRunInfo = GmailProcessorLib.E2E.ensureTestData(
+    [testConfig],
+    E2E_REPO_BRANCH,
+    GmailProcessorLib.EnvProvider.defaultContext({
+      runMode: GmailProcessorLib.RunMode.DANGEROUS,
+      cacheService: CacheService,
+      propertiesService: PropertiesService,
+    }),
+  )
+  return await GmailProcessorLib.E2E.runTests(
+    testConfig,
+    true,
+    E2E_REPO_BRANCH,
+    GmailProcessorLib.EnvProvider.defaultContext({
+      runMode: GmailProcessorLib.RunMode.DANGEROUS,
+      cacheService: CacheService,
+      propertiesService: PropertiesService,
+    }),
+    testRunInfo.runId,
+    testRunInfo.timestamp,
+  )
+}
+
 function headerMatchingTestConfig() {
   /** This example demonstrates how to use the `rawHeaders` property in the message matching configuration.
    * It allows matching messages based on the content of their raw headers using regular expressions.
@@ -115,18 +140,4 @@ function headerMatchingTestConfig() {
     tests,
   }
   return testConfig
-}
-
-async function headerMatchingTest() {
-  const testConfig = headerMatchingTestConfig()
-  return await GmailProcessorLib.E2E.runTests(
-    testConfig,
-    false,
-    E2E_REPO_BRANCH,
-    GmailProcessorLib.EnvProvider.defaultContext({
-      runMode: GmailProcessorLib.RunMode.DANGEROUS,
-      cacheService: CacheService,
-      propertiesService: PropertiesService,
-    }),
-  )
 }

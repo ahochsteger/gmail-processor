@@ -2,7 +2,7 @@
 
 import { parseDuration, unit } from "./ParseDuration"
 
-let { d, h, m, mo, ms, s, y } = unit
+const { d, h, m, mo, ms, s, y } = unit
 
 describe("parseDuration()", () => {
   it("should parse ms, millisecond, milliseconds", () => {

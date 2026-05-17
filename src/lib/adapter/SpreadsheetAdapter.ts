@@ -56,7 +56,7 @@ export class SpreadsheetAdapter extends BaseAdapter {
         this.logSpreadsheet = this.spreadsheetApp.openById(this.logSheetId)
       } catch (e) {
         this.ctx.log.warn(
-          `Error opening logSheet (ID:${this.logSheetId}): ${e}`,
+          `Error opening logSheet (ID:${this.logSheetId}): ${String(e)}`,
         )
       }
     } else {
@@ -95,7 +95,7 @@ export class SpreadsheetAdapter extends BaseAdapter {
         return this.logSheet
       } catch (e) {
         this.ctx.log.warn(
-          `Error opening logSheet (ID:${this.logSheetId}): ${e}`,
+          `Error opening logSheet (ID:${this.logSheetId}): ${String(e)}`,
         )
       }
     }

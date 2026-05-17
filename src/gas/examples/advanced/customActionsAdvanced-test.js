@@ -3,6 +3,31 @@
 // Template: src/templates/gas-test.eta
 // Source: src/examples/advanced/customActionsAdvanced.ts
 
+async function customActionsAdvancedTest() {
+  const testConfig = customActionsAdvancedTestConfig()
+  const testRunInfo = GmailProcessorLib.E2E.ensureTestData(
+    [testConfig],
+    E2E_REPO_BRANCH,
+    GmailProcessorLib.EnvProvider.defaultContext({
+      runMode: GmailProcessorLib.RunMode.DANGEROUS,
+      cacheService: CacheService,
+      propertiesService: PropertiesService,
+    }),
+  )
+  return await GmailProcessorLib.E2E.runTests(
+    testConfig,
+    true,
+    E2E_REPO_BRANCH,
+    GmailProcessorLib.EnvProvider.defaultContext({
+      runMode: GmailProcessorLib.RunMode.DANGEROUS,
+      cacheService: CacheService,
+      propertiesService: PropertiesService,
+    }),
+    testRunInfo.runId,
+    testRunInfo.timestamp,
+  )
+}
+
 function customActionsAdvancedTestConfig() {
   /**
    * This example demonstrates how to use `actionMeta` in custom actions to pass data to subsequent actions.
@@ -148,18 +173,4 @@ function customActionsAdvancedTestConfig() {
     tests,
   }
   return testConfig
-}
-
-async function customActionsAdvancedTest() {
-  const testConfig = customActionsAdvancedTestConfig()
-  return await GmailProcessorLib.E2E.runTests(
-    testConfig,
-    false,
-    E2E_REPO_BRANCH,
-    GmailProcessorLib.EnvProvider.defaultContext({
-      runMode: GmailProcessorLib.RunMode.DANGEROUS,
-      cacheService: CacheService,
-      propertiesService: PropertiesService,
-    }),
-  )
 }

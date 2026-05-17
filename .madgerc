@@ -1,0 +1,10 @@
+{
+  "detectiveOptions": {
+    "ts": {
+      "skipTypeImports": true
+    }
+  },
+  "excludeRegExp": [
+    "lib/expr/generated/"
+  ]
+}

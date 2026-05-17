@@ -19,6 +19,7 @@ import {
   MetaInfoType as MIT,
   newProcessingResult,
   ProcessingResult,
+  updateContextMeta,
 } from "../Context"
 import { PatternUtil } from "../utils/PatternUtil"
 import { BaseProcessor, MatchRule } from "./BaseProcessor"
@@ -35,7 +36,7 @@ export class AttachmentProcessor extends BaseProcessor {
       attachmentMeta: {},
     }
     attachmentContext.attachmentMeta = this.buildMetaInfo(attachmentContext)
-    this.updateContextMeta(attachmentContext)
+    updateContextMeta(attachmentContext)
     return attachmentContext
   }
 

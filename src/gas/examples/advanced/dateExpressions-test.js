@@ -3,6 +3,31 @@
 // Template: src/templates/gas-test.eta
 // Source: src/examples/advanced/dateExpressions.ts
 
+async function dateExpressionsTest() {
+  const testConfig = dateExpressionsTestConfig()
+  const testRunInfo = GmailProcessorLib.E2E.ensureTestData(
+    [testConfig],
+    E2E_REPO_BRANCH,
+    GmailProcessorLib.EnvProvider.defaultContext({
+      runMode: GmailProcessorLib.RunMode.DANGEROUS,
+      cacheService: CacheService,
+      propertiesService: PropertiesService,
+    }),
+  )
+  return await GmailProcessorLib.E2E.runTests(
+    testConfig,
+    true,
+    E2E_REPO_BRANCH,
+    GmailProcessorLib.EnvProvider.defaultContext({
+      runMode: GmailProcessorLib.RunMode.DANGEROUS,
+      cacheService: CacheService,
+      propertiesService: PropertiesService,
+    }),
+    testRunInfo.runId,
+    testRunInfo.timestamp,
+  )
+}
+
 function dateExpressionsTestConfig() {
   const info = {
     name: "dateExpressions",
@@ -100,18 +125,4 @@ function dateExpressionsTestConfig() {
     tests,
   }
   return testConfig
-}
-
-async function dateExpressionsTest() {
-  const testConfig = dateExpressionsTestConfig()
-  return await GmailProcessorLib.E2E.runTests(
-    testConfig,
-    false,
-    E2E_REPO_BRANCH,
-    GmailProcessorLib.EnvProvider.defaultContext({
-      runMode: GmailProcessorLib.RunMode.DANGEROUS,
-      cacheService: CacheService,
-      propertiesService: PropertiesService,
-    }),
-  )
 }

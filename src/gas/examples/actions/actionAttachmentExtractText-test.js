@@ -3,6 +3,31 @@
 // Template: src/templates/gas-test.eta
 // Source: src/examples/actions/actionAttachmentExtractText.ts
 
+async function actionAttachmentExtractTextTest() {
+  const testConfig = actionAttachmentExtractTextTestConfig()
+  const testRunInfo = GmailProcessorLib.E2E.ensureTestData(
+    [testConfig],
+    E2E_REPO_BRANCH,
+    GmailProcessorLib.EnvProvider.defaultContext({
+      runMode: GmailProcessorLib.RunMode.DANGEROUS,
+      cacheService: CacheService,
+      propertiesService: PropertiesService,
+    }),
+  )
+  return await GmailProcessorLib.E2E.runTests(
+    testConfig,
+    true,
+    E2E_REPO_BRANCH,
+    GmailProcessorLib.EnvProvider.defaultContext({
+      runMode: GmailProcessorLib.RunMode.DANGEROUS,
+      cacheService: CacheService,
+      propertiesService: PropertiesService,
+    }),
+    testRunInfo.runId,
+    testRunInfo.timestamp,
+  )
+}
+
 function actionAttachmentExtractTextTestConfig() {
   /**
    * This example demonstrates the use of the action `attachment.extractText` to extract matching text from the content of an attachment for use in later actions (e.g. use as part of the filename for `attachment.store`).
@@ -143,18 +168,4 @@ function actionAttachmentExtractTextTestConfig() {
     tests,
   }
   return testConfig
-}
-
-async function actionAttachmentExtractTextTest() {
-  const testConfig = actionAttachmentExtractTextTestConfig()
-  return await GmailProcessorLib.E2E.runTests(
-    testConfig,
-    false,
-    E2E_REPO_BRANCH,
-    GmailProcessorLib.EnvProvider.defaultContext({
-      runMode: GmailProcessorLib.RunMode.DANGEROUS,
-      cacheService: CacheService,
-      propertiesService: PropertiesService,
-    }),
-  )
 }

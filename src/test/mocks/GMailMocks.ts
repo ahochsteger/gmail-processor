@@ -1,7 +1,7 @@
 import { MockProxy, mock } from "jest-mock-extended"
 import { sha1Hex } from "../../lib/utils/Converter"
 import { RequiredDeep } from "../../lib/utils/Utility.types"
-import { Mocks } from "./MockFactory"
+import type { Mocks } from "./MockFactory"
 
 export type IndexType = [thread: number, message: number, attachment: number]
 

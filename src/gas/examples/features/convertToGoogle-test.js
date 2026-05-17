@@ -3,6 +3,31 @@
 // Template: src/templates/gas-test.eta
 // Source: src/examples/features/convertToGoogle.ts
 
+async function convertToGoogleTest() {
+  const testConfig = convertToGoogleTestConfig()
+  const testRunInfo = GmailProcessorLib.E2E.ensureTestData(
+    [testConfig],
+    E2E_REPO_BRANCH,
+    GmailProcessorLib.EnvProvider.defaultContext({
+      runMode: GmailProcessorLib.RunMode.DANGEROUS,
+      cacheService: CacheService,
+      propertiesService: PropertiesService,
+    }),
+  )
+  return await GmailProcessorLib.E2E.runTests(
+    testConfig,
+    true,
+    E2E_REPO_BRANCH,
+    GmailProcessorLib.EnvProvider.defaultContext({
+      runMode: GmailProcessorLib.RunMode.DANGEROUS,
+      cacheService: CacheService,
+      propertiesService: PropertiesService,
+    }),
+    testRunInfo.runId,
+    testRunInfo.timestamp,
+  )
+}
+
 function convertToGoogleTestConfig() {
   /**
    * This example shows how to convert MS Office attachments into Google formats.
@@ -202,18 +227,4 @@ function convertToGoogleTestConfig() {
     tests,
   }
   return testConfig
-}
-
-async function convertToGoogleTest() {
-  const testConfig = convertToGoogleTestConfig()
-  return await GmailProcessorLib.E2E.runTests(
-    testConfig,
-    false,
-    E2E_REPO_BRANCH,
-    GmailProcessorLib.EnvProvider.defaultContext({
-      runMode: GmailProcessorLib.RunMode.DANGEROUS,
-      cacheService: CacheService,
-      propertiesService: PropertiesService,
-    }),
-  )
 }

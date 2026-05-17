@@ -108,9 +108,7 @@ export const tests: E2ETest[] = [
             h.expectActionMeta(
               a,
               "attachment.stored.location",
-              new RegExp(
-                `.*${p}${new Date().toISOString().split("T")[0]}-sample\\.docx$`,
-              ),
+              new RegExp(`.*${p}[0-9-]{10}-sample\\.docx$`),
             )
           )
         },

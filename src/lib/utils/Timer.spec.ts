@@ -1,5 +1,6 @@
 import { ConfigMocks } from "../../test/mocks/ConfigMocks"
 import { ContextMocks } from "../../test/mocks/ContextMocks"
+import "../../test/mocks/MockFactory"
 import { ProcessingContext } from "../Context"
 import { DEFAULT_SETTING_MAX_RUNTIME } from "../config/SettingsConfig"
 import { Timer } from "./Timer"

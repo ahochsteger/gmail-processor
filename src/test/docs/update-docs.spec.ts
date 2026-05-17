@@ -40,10 +40,10 @@ function genMetaInfoDocs(contextType: PlaceholderContextType, m: MetaInfo) {
   data.push
   Object.keys(m)
     .sort()
-    .forEach((k, _idx, _arr) => {
+    .forEach((k) => {
       const stringValue = PatternUtil.stringValue(ctx, k, m)
       if (!m[k]) return
-      let deprInfo = m[k].deprecationInfo ?? ""
+      const deprInfo = m[k].deprecationInfo ?? ""
       let desc = m[k].description
       if (m[k].type === MetaInfoType.DATE) desc += ` ${dateInfo}`
       if (m[k].type === MetaInfoType.VARIABLE) desc += ` ${variableInfo}`

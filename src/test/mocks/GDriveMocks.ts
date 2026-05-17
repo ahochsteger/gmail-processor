@@ -6,7 +6,7 @@ import {
   FolderData,
   GDriveData,
 } from "./GDriveData"
-import { Mocks } from "./MockFactory"
+import type { Mocks } from "./MockFactory"
 
 export const E2E_BASE_FOLDER_ID = "GmailProcessor-Tests-id"
 export const E2E_BASE_FOLDER_NAME = "GmailProcessor-Tests"

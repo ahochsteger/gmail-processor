@@ -96,7 +96,7 @@ export function configToJson<T = ProcessingConfig>(
   let json = JSON.parse(JSON.stringify(config)) as Config
   if (!withDefaults) {
     const defaultConfig = ProcessingConfigSchema.parse({})
-    json = stripDefaults(json, defaultConfig as any)
+    json = stripDefaults(json, defaultConfig as Config)
   }
   return json
 }
@@ -111,7 +111,7 @@ export function newConfig(json: Config): RequiredConfig {
   const config = ProcessingConfigSchema.parse(normalizeConfig(json))
 
   // Validate resulting config:
-  if (!config.threads || config.threads.length < 1) {
+  if (config.threads.length < 1) {
     throw new Error(
       "No thread configuration found! Make sure there is at least one thread configuration present!",
     )

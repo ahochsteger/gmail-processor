@@ -7,6 +7,7 @@ import {
   ProcessingStatus,
   newMetaInfo,
   newProcessingResult,
+  updateContextMeta,
 } from "../Context"
 import {
   ActionArgsType,
@@ -209,25 +210,25 @@ describe("Hierarchical Metadata Synchronization", () => {
     const mocks = MockFactory.newMocks()
 
     // Test ProcessingContext
-    BaseProcessor.updateContextMeta(mocks.processingContext, {
+    updateContextMeta(mocks.processingContext, {
       "proc.key": newMetaInfo(MetaInfoType.STRING, "proc-val", "", ""),
     })
     expect(mocks.processingContext.meta["proc.key"]?.value).toBe("proc-val")
 
     // Test ThreadContext
-    BaseProcessor.updateContextMeta(mocks.threadContext, {
+    updateContextMeta(mocks.threadContext, {
       "thread.key": newMetaInfo(MetaInfoType.STRING, "thread-val", "", ""),
     })
     expect(mocks.threadContext.meta["thread.key"]?.value).toBe("thread-val")
 
     // Test MessageContext
-    BaseProcessor.updateContextMeta(mocks.messageContext, {
+    updateContextMeta(mocks.messageContext, {
       "message.key": newMetaInfo(MetaInfoType.STRING, "message-val", "", ""),
     })
     expect(mocks.messageContext.meta["message.key"]?.value).toBe("message-val")
 
     // Test AttachmentContext
-    BaseProcessor.updateContextMeta(mocks.attachmentContext, {
+    updateContextMeta(mocks.attachmentContext, {
       "attachment.key": newMetaInfo(
         MetaInfoType.STRING,
         "attachment-val",
@@ -242,7 +243,7 @@ describe("Hierarchical Metadata Synchronization", () => {
 
   it("should update metadata for environment context", () => {
     const mocks = MockFactory.newMocks()
-    BaseProcessor.updateContextMeta(mocks.envContext, {
+    updateContextMeta(mocks.envContext, {
       "env.key": newMetaInfo(MetaInfoType.STRING, "env-val", "", ""),
     })
     expect(mocks.envContext.meta["env.key"]?.value).toBe("env-val")

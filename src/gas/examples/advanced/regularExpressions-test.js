@@ -3,6 +3,31 @@
 // Template: src/templates/gas-test.eta
 // Source: src/examples/advanced/regularExpressions.ts
 
+async function regularExpressionsTest() {
+  const testConfig = regularExpressionsTestConfig()
+  const testRunInfo = GmailProcessorLib.E2E.ensureTestData(
+    [testConfig],
+    E2E_REPO_BRANCH,
+    GmailProcessorLib.EnvProvider.defaultContext({
+      runMode: GmailProcessorLib.RunMode.DANGEROUS,
+      cacheService: CacheService,
+      propertiesService: PropertiesService,
+    }),
+  )
+  return await GmailProcessorLib.E2E.runTests(
+    testConfig,
+    true,
+    E2E_REPO_BRANCH,
+    GmailProcessorLib.EnvProvider.defaultContext({
+      runMode: GmailProcessorLib.RunMode.DANGEROUS,
+      cacheService: CacheService,
+      propertiesService: PropertiesService,
+    }),
+    testRunInfo.runId,
+    testRunInfo.timestamp,
+  )
+}
+
 function regularExpressionsTestConfig() {
   /**
    * This example demonstrates how to use regular expressions in the configuration.
@@ -104,9 +129,7 @@ function regularExpressionsTestConfig() {
               h.expectActionMeta(
                 a,
                 "attachment.stored.location",
-                new RegExp(
-                  `.*${p}${new Date().toISOString().split("T")[0]}-sample\\.docx$`,
-                ),
+                new RegExp(`.*${p}[0-9-]{10}-sample\\.docx$`),
               )
             )
           },
@@ -123,18 +146,4 @@ function regularExpressionsTestConfig() {
     tests,
   }
   return testConfig
-}
-
-async function regularExpressionsTest() {
-  const testConfig = regularExpressionsTestConfig()
-  return await GmailProcessorLib.E2E.runTests(
-    testConfig,
-    false,
-    E2E_REPO_BRANCH,
-    GmailProcessorLib.EnvProvider.defaultContext({
-      runMode: GmailProcessorLib.RunMode.DANGEROUS,
-      cacheService: CacheService,
-      propertiesService: PropertiesService,
-    }),
-  )
 }

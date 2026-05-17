@@ -311,6 +311,39 @@ If the NPM or Devbox environment becomes corrupted:
 
 - **Guideline**: Use `npm run all:reinstall`. This is the project's "Total Reset" button, which destructively cleans all lockfiles (including `devbox.lock`) and re-resolves the entire environment.
 
+### Mock Framework Decoupling & Test Isolation
+
+To maintain environment stability, avoid test runner race conditions, and preserve perfect mock isolation:
+
+- **Isolated Startup (`jest.setup.ts`)**: Keep `jest.setup.ts` isolated and free of global class/factory imports (such as `MockFactory.ts`). Global imports during Jest's setup phase force early evaluation of library modules before spec files can register their `jest.mock()` hooks. This bypasses Jest mocks (e.g., `@cantoo/pdf-lib` in `AttachmentActions.spec.ts`) and executes raw code on unconfigured environments.
+- **Lazy Mock Registration**: Statically import `MockFactory` locally within specific spec files (`Timer.spec.ts`, `RegexUtils.spec.ts`, `PatternUtil.spec.ts`) where mock-context registration is needed. This registers the factory lazily at execution time and protects module-mock isolation.
+- **Decoupled Mock Subclassing**: Always define raw mocked services in the leaf file `EnvMocks.ts` with zero external dependencies. The full context `Mocks` in `MockFactory.ts` subclasses `EnvMocks` and registers itself to `ContextMocks.mockFactoryRef` dynamically. `ContextMocks` then resolves fallbacks lazily, keeping a clean Directed Acyclic Graph (DAG) for compiled test code.
+
+### Circular Dependency Prevention Policy
+
+We enforce a strict **Zero Circular Dependency** policy across the entire workspace (both library and test files):
+
+- **TypeScript Type-Only Imports**: Always use `import type` when importing interfaces, types, or classes purely for type annotations or signatures. This ensures references are completely erased during TypeScript compilation.
+- **Fail-Fast Enforcement**: The circular dependency analysis (`npx madge`) is integrated directly into the `lint-code` pipeline. Any new circular dependencies will immediately fail the local checks and CI pipeline.
+
+### ESLint Coding Conventions & Strictness Patterns
+
+To prevent regressions and maintain a clean static analysis status, adhere to the following patterns when writing or refactoring library code:
+
+- **Strict Type Safety (`no-explicit-any`)**:
+  - Avoid broad `any` typings. Use strict `unknown` for raw, untrusted parameters (such as configuration files during schema validation or parsing).
+  - Use exact types (e.g., `Promise<ActionReturnType>[]` instead of `Promise<any>[]`) for tracking internal async tasks.
+- **Unnecessary Condition Prevention (`no-unnecessary-condition`)**:
+  - **Optional Chaining**: Never use optional chaining (`?.`) on properties that are typed as non-optional or are statically guaranteed to exist (e.g., `ctx.meta` or `ctxValues`).
+  - **Redundant Coalescing**: Remove `?? ""` coalescing guards on variables whose TypeScript types are non-nullable and already defined as strings (e.g., action arguments with default schemas).
+  - **Looping Constructs**: Standard infinite loops like `while (true)` trigger conditional warnings because `true` is statically known to be truthy. Use the structural loop construct `for (;;)` instead to completely avoid conditional statements.
+  - **Mapping & Filtering**: When checking runtime validity of mapped list entities, avoid explicit conditional operators on types TypeScript infers as always truthy (e.g., `.filter(l => !!l)`). Instead, use standard functional filters like `.filter(Boolean)` which cleanly bypass the linter's condition parsing.
+- **Template Literal Integrity (`restrict-template-expressions`)**:
+  - **Caught Errors**: Catch blocks yield `unknown` types. In template strings, wrap caught exceptions in `String(e)` to enforce safe, string-compliant rendering without explicit `any` casting.
+  - **Switch Cases Coverage**: Enums with total branch coverage narrow the `default:` branch variable to `never`. To print or log the unmatched default value, cast it as a `string` (e.g., `${conflictStrategy as string}`) inside template literal statements.
+- **Unused Variable Enforcement (`no-unused-vars`)**:
+  - Utilize modern ES2019 **optional catch binding** (`catch { ... }` instead of `catch (e) { ... }`) when the caught error parameter is not explicitly referenced in the block.
+
 ## Modernized Release Pipeline
 
 The release process is managed by `scripts/release-manager.mjs`, which orchestrates high-fidelity, community-centric release notes using a **Draft-First (Option C+)** workflow.

@@ -1,9 +1,7 @@
 import {
   AttachmentContext,
   AttachmentInfo,
-  Context,
   ContextType,
-  EnvContext,
   MetaInfoType as MIT,
   MessageContext,
   MessageInfo,
@@ -15,7 +13,7 @@ import {
   ThreadContext,
   ThreadInfo,
   newMetaInfo as mi,
-  newMetaInfo,
+  updateContextMeta,
 } from "../Context"
 import { ActionArgsType, ActionReturnType } from "../actions/ActionRegistry"
 import { ActionBaseConfig, ProcessingStage } from "../config/ActionConfig"
@@ -137,104 +135,6 @@ export abstract class BaseProcessor {
       return `${msg.slice(0, 100)}...`
     } else {
       return msg
-    }
-  }
-
-  private static updateEnvContextMeta(
-    ctx: EnvContext,
-    addMeta: MetaInfo = {},
-  ): MetaInfo {
-    ctx.envMeta = { ...ctx.envMeta, ...addMeta }
-    ctx.meta = { ...ctx.meta, ...addMeta }
-    return ctx.envMeta
-  }
-
-  private static updateProcessingContextMeta(
-    ctx: ProcessingContext,
-    addMeta: MetaInfo = {},
-  ): MetaInfo {
-    ctx.procMeta = { ...ctx.procMeta, ...addMeta }
-    ctx.meta = { ...ctx.meta, ...addMeta }
-    return {
-      ...ctx.envMeta,
-      ...ctx.procMeta,
-    }
-  }
-
-  private static updateThreadContextMeta(
-    ctx: ThreadContext,
-    addMeta: MetaInfo = {},
-  ): MetaInfo {
-    ctx.threadMeta = { ...ctx.threadMeta, ...addMeta }
-    ctx.meta = { ...ctx.meta, ...addMeta }
-    return {
-      ...ctx.envMeta,
-      ...ctx.procMeta,
-      ...ctx.threadMeta,
-    }
-  }
-
-  private static updateMessageContextMeta(
-    ctx: MessageContext,
-    addMeta: MetaInfo = {},
-  ): MetaInfo {
-    ctx.messageMeta = { ...ctx.messageMeta, ...addMeta }
-    ctx.meta = { ...ctx.meta, ...addMeta }
-    return {
-      ...ctx.envMeta,
-      ...ctx.procMeta,
-      ...ctx.threadMeta,
-      ...ctx.messageMeta,
-    }
-  }
-
-  private static updateAttachmentContextMeta(
-    ctx: AttachmentContext,
-    addMeta: MetaInfo = {},
-  ): MetaInfo {
-    ctx.attachmentMeta = { ...ctx.attachmentMeta, ...addMeta }
-    ctx.meta = { ...ctx.meta, ...addMeta }
-    return {
-      ...ctx.envMeta,
-      ...ctx.procMeta,
-      ...ctx.threadMeta,
-      ...ctx.messageMeta,
-      ...ctx.attachmentMeta,
-    }
-  }
-
-  public static updateContextMeta(ctx: Context, addMeta: MetaInfo = {}) {
-    switch (ctx.type) {
-      case ContextType.ENV:
-        ctx.meta = this.updateEnvContextMeta(ctx as EnvContext, addMeta)
-        break
-      case ContextType.PROCESSING:
-        ctx.meta = this.updateProcessingContextMeta(
-          ctx as ProcessingContext,
-          addMeta,
-        )
-        break
-      case ContextType.THREAD:
-        ctx.meta = this.updateThreadContextMeta(ctx as ThreadContext, addMeta)
-        break
-      case ContextType.MESSAGE:
-        ctx.meta = this.updateMessageContextMeta(ctx as MessageContext, addMeta)
-        break
-      case ContextType.ATTACHMENT:
-        ctx.meta = this.updateAttachmentContextMeta(
-          ctx as AttachmentContext,
-          addMeta,
-        )
-        break
-    }
-    ctx.meta = {
-      ...ctx.meta,
-      "context.type": newMetaInfo(
-        MIT.STRING,
-        ctx.type,
-        "Context Type",
-        "The type of context.",
-      ),
     }
   }
 
@@ -373,7 +273,7 @@ export abstract class BaseProcessor {
               (action.args ?? {}) as ActionArgsType,
             )
             if (actionResult.actionMeta) {
-              this.updateContextMeta(ctx, actionResult.actionMeta)
+              updateContextMeta(ctx, actionResult.actionMeta)
             }
           } catch (err) {
             actionResult = {

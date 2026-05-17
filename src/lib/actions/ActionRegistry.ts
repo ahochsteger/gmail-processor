@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { MetaInfo, ProcessingContext } from "../Context"
-import { BaseProcessor } from "../processors/BaseProcessor"
+import type { MetaInfo, ProcessingContext } from "../Context"
+import { updateContextMeta } from "../Context"
 
 export type JsonPrimitive = number | string | boolean | null
 export type JsonObject = { [key in string]?: JsonValue }
@@ -159,7 +159,7 @@ export class ActionRegistry {
           .then((actualResult) => {
             Object.assign(result, actualResult)
             if (actualResult.actionMeta) {
-              BaseProcessor.updateContextMeta(context, actualResult.actionMeta)
+              updateContextMeta(context, actualResult.actionMeta)
             }
             return actualResult
           })

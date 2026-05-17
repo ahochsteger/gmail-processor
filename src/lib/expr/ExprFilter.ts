@@ -55,7 +55,7 @@ import {
   startOfYear,
   startOfYesterday,
 } from "date-fns"
-import { DateType, ValueType } from "./ExprEvaluator"
+import type { DateType, ValueType } from "./ExprEvaluator"
 import { parseDuration } from "./ParseDuration"
 
 export const defaultDateFormat = "yyyy-MM-dd HH:mm:ss"

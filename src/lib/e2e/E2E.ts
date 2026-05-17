@@ -6,12 +6,12 @@ import {
   ProcessingStatus,
   RunMode,
   newProcessingResult,
+  updateContextMeta,
 } from "../Context"
 import { EnvProvider } from "../EnvProvider"
 import { Config } from "../config/Config"
 import { V1Config } from "../config/v1/V1Config"
 import { V1ToV2Converter } from "../config/v1/V1ToV2Converter"
-import { BaseProcessor } from "../processors/BaseProcessor"
 import { GmailProcessor } from "../processors/GmailProcessor"
 import { PatternUtil } from "../utils/PatternUtil"
 import { E2EDefaults } from "./E2EDefaults"
@@ -65,8 +65,7 @@ export class E2EAssertionHelper {
   ): unknown {
     const searchKey = key.startsWith("meta.") ? key.substring(5) : key
     const metaEntry =
-      action?.result?.actionMeta?.[searchKey] ??
-      (this.ctx as any).meta?.[searchKey]
+      action?.result?.actionMeta?.[searchKey] ?? this.ctx.meta[searchKey]
     return metaEntry && typeof metaEntry === "object" && "value" in metaEntry
       ? metaEntry.value
       : metaEntry
@@ -97,7 +96,7 @@ export class E2EAssertionHelper {
             if (key.startsWith("arg.")) {
               const argKey = key.substring(4)
               actualValue = Reflect.get(
-                (a.config.args as Record<string, unknown>) ?? {},
+                (a.config.args ?? {}) as Record<string, unknown>,
                 argKey,
               )
             } else if (key.startsWith("meta.")) {
@@ -292,7 +291,7 @@ export class E2E {
 
     if (!match) {
       if (typeof actual === "function") {
-        actual = (actual as any)()
+        actual = (actual as () => unknown)()
       }
       const expStr = this.isRegExp(expected)
         ? expected.toString()
@@ -581,7 +580,35 @@ export class E2E {
     testRunId?: string,
     testRunTimestamp?: string,
   ): Promise<E2EResult> {
-    const activeTestRunId = testRunId ?? this.getTestRunId(ctx)
+    let activeTestRunId = testRunId
+    let activeTimestamp = testRunTimestamp
+
+    if (!activeTestRunId) {
+      const category = testConfig.info.category
+      const name = testConfig.info.name
+      const currentHash = this.generateDataHash([testConfig], ctx)
+      const shortHash = currentHash.substring(0, 8)
+      const propertyKey = `E2E_METADATA_${category}_${name}_${shortHash}`
+      const propertiesService = ctx.env.propertiesService as
+        | GoogleAppsScript.Properties.PropertiesService
+        | undefined
+      const properties = propertiesService?.getUserProperties()
+      const storedMetadataStr = properties?.getProperty(propertyKey)
+      if (storedMetadataStr) {
+        try {
+          const storedMetadata = JSON.parse(storedMetadataStr)
+          activeTestRunId = storedMetadata.runId
+          activeTimestamp = storedMetadata.timestamp
+        } catch {
+          // Fallback handled below
+        }
+      }
+    }
+
+    if (!activeTestRunId) {
+      activeTestRunId = this.getTestRunId(ctx)
+    }
+
     ctx.log.info(
       `E2E.runTests(): Started with test run id '${activeTestRunId}'.`,
     )
@@ -648,9 +675,9 @@ export class E2E {
               E2EDefaults.driveTestBasePath(testConfig.info, activeTestRunId),
             )
           }
-          if (testRunTimestamp) {
+          if (activeTimestamp) {
             const datePart = ctx.env.utilities.formatDate(
-              new Date(testRunTimestamp),
+              new Date(activeTimestamp),
               ctx.env.session.getScriptTimeZone(),
               "yyyy-MM-dd",
             )
@@ -679,7 +706,7 @@ export class E2E {
           processingResult.actionPromises.map((p) =>
             p.then((actualResult) => {
               if (actualResult.actionMeta) {
-                BaseProcessor.updateContextMeta(ctx, actualResult.actionMeta)
+                updateContextMeta(ctx, actualResult.actionMeta)
               }
               return actualResult
             }),
@@ -787,10 +814,20 @@ export class E2E {
     return result
   }
 
-  public static generateDataHash(testConfigs: E2ETestConfig[]): string {
-    const data = JSON.stringify(testConfigs.map((c) => c.initConfig))
-    const digest = Utilities.computeDigest(
-      Utilities.DigestAlgorithm.SHA_256,
+  public static generateDataHash(
+    testConfigs: E2ETestConfig[],
+    ctx?: EnvContext,
+  ): string {
+    const data = JSON.stringify(
+      testConfigs.map((c) => ({
+        name: c.info.name,
+        category: c.info.category,
+        initConfig: c.initConfig,
+      })),
+    )
+    const utilities = ctx?.env.utilities ?? Utilities
+    const digest = utilities.computeDigest(
+      utilities.DigestAlgorithm.SHA_256,
       data,
     )
     return digest
@@ -845,7 +882,7 @@ export class E2E {
 
     const gmailLabels = labelsToRemove
       .map((l) => ctx.env.gmailApp.getUserLabelByName(l))
-      .filter((l) => l !== null) as GoogleAppsScript.Gmail.GmailLabel[]
+      .filter(Boolean) as GoogleAppsScript.Gmail.GmailLabel[]
 
     threads.forEach((thread) => {
       thread.markUnread()
@@ -880,6 +917,38 @@ export class E2E {
     )
   }
 
+  private static pruneObsoleteProperties(
+    properties: GoogleAppsScript.Properties.Properties,
+    ctx: EnvContext,
+  ): void {
+    try {
+      const allProps = properties.getProperties()
+      const now = new Date().getTime()
+      const maxAgeMs = 30 * 24 * 60 * 60 * 1000 // 30 days
+
+      for (const key of Object.keys(allProps)) {
+        if (key.startsWith("E2E_METADATA_")) {
+          try {
+            const metadata = JSON.parse(allProps[key])
+            const timestamp = new Date(metadata.timestamp).getTime()
+            if (now - timestamp > maxAgeMs) {
+              ctx.log.info(
+                `E2E.pruneObsoleteProperties(): Pruning obsolete E2E metadata key '${key}' older than 7 days...`,
+              )
+              properties.deleteProperty(key)
+            }
+          } catch {
+            properties.deleteProperty(key)
+          }
+        }
+      }
+    } catch (e) {
+      ctx.log.warn(
+        `E2E.pruneObsoleteProperties(): Failed to prune: ${String(e)}`,
+      )
+    }
+  }
+
   public static ensureTestData(
     testConfigs: E2ETestConfig[],
     branch = "main",
@@ -888,7 +957,10 @@ export class E2E {
     }),
     testRunId?: string,
   ): { runId: string; timestamp: string } {
-    const properties = ctx.env.propertiesService?.getUserProperties()
+    const propertiesService = ctx.env.propertiesService as
+      | GoogleAppsScript.Properties.PropertiesService
+      | undefined
+    const properties = propertiesService?.getUserProperties()
     if (!properties) {
       ctx.log.warn(
         "E2E.ensureTestData(): PropertiesService not available, falling back to initAllTests.",
@@ -897,80 +969,107 @@ export class E2E {
       return { runId: newRunId, timestamp: new Date().toISOString() }
     }
 
-    const currentHash = this.generateDataHash(testConfigs)
-    const storedMetadataStr = properties.getProperty("E2E_METADATA")
-    let storedMetadata: {
-      runId: string
-      timestamp: string
-      dataHash: string
-    } | null = null
+    // Prune old entries
+    this.pruneObsoleteProperties(properties, ctx)
 
-    if (storedMetadataStr) {
-      try {
-        storedMetadata = JSON.parse(storedMetadataStr)
-      } catch (e) {
-        ctx.log.warn("E2E.ensureTestData(): Invalid stored metadata, ignoring.")
+    const pendingConfigs: E2ETestConfig[] = []
+    let resolvedRunId = testRunId
+    let resolvedTimestamp = new Date().toISOString()
+
+    for (const testConfig of testConfigs) {
+      const category = testConfig.info.category
+      const name = testConfig.info.name
+      const currentHash = this.generateDataHash([testConfig], ctx)
+      const shortHash = currentHash.substring(0, 8)
+      const propertyKey = `E2E_METADATA_${category}_${name}_${shortHash}`
+
+      let storedMetadata: {
+        runId: string
+        timestamp: string
+        dataHash: string
+      } | null = null
+
+      const storedMetadataStr = properties.getProperty(propertyKey)
+      if (storedMetadataStr) {
+        try {
+          storedMetadata = JSON.parse(storedMetadataStr)
+        } catch {
+          ctx.log.warn(
+            `E2E.ensureTestData(): Invalid stored metadata for '${category}/${name}', ignoring.`,
+          )
+        }
+      }
+
+      let isReused = false
+      if (storedMetadata && storedMetadata.dataHash === currentHash) {
+        const globals = newE2EGlobalConfig(
+          ctx,
+          branch,
+          testConfig.globals,
+          storedMetadata.runId,
+        )
+        const query = `subject:"${globals.subjectPrefix}"`
+        const expectedCount = testConfig.initConfig?.mails.length ?? 0
+        const threads = ctx.env.gmailApp.search(query)
+
+        if (threads.length >= expectedCount) {
+          ctx.log.info(
+            `E2E.ensureTestData(): Data hash matches and emails exist for '${category}/${name}'. Reusing test run id '${storedMetadata.runId}'...`,
+          )
+          this.resetTests(
+            [testConfig],
+            branch,
+            ctx,
+            storedMetadata.runId,
+            storedMetadata.timestamp,
+          )
+          // Store resolved run info
+          resolvedRunId = storedMetadata.runId
+          resolvedTimestamp = storedMetadata.timestamp
+          isReused = true
+        }
+      }
+
+      if (!isReused) {
+        pendingConfigs.push(testConfig)
       }
     }
 
-    // Check if we can reuse
-    if (storedMetadata && storedMetadata.dataHash === currentHash) {
-      const globals = newE2EGlobalConfig(
-        ctx,
-        branch,
-        undefined,
-        storedMetadata.runId,
-      )
-      const query = `subject:"${globals.subjectPrefix}"`
-      const expectedCount = testConfigs.reduce(
+    if (pendingConfigs.length > 0) {
+      const batchRunId =
+        testRunId ?? this.initAllTests(pendingConfigs, branch, ctx)
+      const batchTimestamp = new Date().toISOString()
+
+      // Store resolved run info for new tests
+      for (const testConfig of pendingConfigs) {
+        const category = testConfig.info.category
+        const name = testConfig.info.name
+        const currentHash = this.generateDataHash([testConfig], ctx)
+        const shortHash = currentHash.substring(0, 8)
+        const propertyKey = `E2E_METADATA_${category}_${name}_${shortHash}`
+
+        properties.setProperty(
+          propertyKey,
+          JSON.stringify({
+            runId: batchRunId,
+            timestamp: batchTimestamp,
+            dataHash: currentHash,
+          }),
+        )
+      }
+
+      // Wait/poll for all newly sent emails together in a single wait interval
+      const globals = newE2EGlobalConfig(ctx, branch, undefined, batchRunId)
+      const expectedCount = pendingConfigs.reduce(
         (acc, c) => acc + (c.initConfig?.mails.length ?? 0),
         0,
       )
-      const threads = ctx.env.gmailApp.search(query)
+      this.initWait(globals, ctx, expectedCount)
 
-      if (threads.length >= expectedCount) {
-        ctx.log.info(
-          `E2E.ensureTestData(): Data hash matches and emails exist. Reusing test run id '${storedMetadata.runId}'...`,
-        )
-        this.resetTests(
-          testConfigs,
-          branch,
-          ctx,
-          storedMetadata.runId,
-          storedMetadata.timestamp,
-        )
-        return {
-          runId: storedMetadata.runId,
-          timestamp: storedMetadata.timestamp,
-        }
-      } else {
-        ctx.log.info(
-          `E2E.ensureTestData(): Data hash matches but emails missing (${threads.length}/${expectedCount}). Re-initializing...`,
-        )
-      }
-    } else {
-      ctx.log.info(
-        `E2E.ensureTestData(): Data hash mismatch or no stored metadata. Re-initializing...`,
-      )
+      resolvedRunId = batchRunId
+      resolvedTimestamp = batchTimestamp
     }
 
-    const activeTestRunId = this.initAllTests(
-      testConfigs,
-      branch,
-      ctx,
-      testRunId,
-    )
-    const newTimestamp = new Date().toISOString()
-
-    properties.setProperty(
-      "E2E_METADATA",
-      JSON.stringify({
-        runId: activeTestRunId,
-        timestamp: newTimestamp,
-        dataHash: currentHash,
-      }),
-    )
-
-    return { runId: activeTestRunId, timestamp: newTimestamp }
+    return { runId: resolvedRunId ?? "suite", timestamp: resolvedTimestamp }
   }
 }

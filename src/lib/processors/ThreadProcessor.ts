@@ -9,6 +9,7 @@ import {
   ThreadInfo,
   newMetaInfo as mi,
   newProcessingResult,
+  updateContextMeta,
 } from "../Context"
 import { ProcessingStage } from "../config/ActionConfig"
 import { OrderDirection, OrderableEntityConfig } from "../config/CommonConfig"
@@ -34,7 +35,7 @@ export class ThreadProcessor extends BaseProcessor {
       threadMeta: {},
     }
     threadContext.threadMeta = this.buildMetaInfo(threadContext)
-    this.updateContextMeta(threadContext)
+    updateContextMeta(threadContext)
     return threadContext
   }
 

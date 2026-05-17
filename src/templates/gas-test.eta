@@ -2,16 +2,10 @@
 // Template: <%= it.templateFilePath %>
 // Source: <%= it.exampleSourcePath %>
 
-function <%= it.example.info.name %>TestConfig() {
-<%~ it.indent(it.genE2eTestCode(it.exampleSourcePath)) %>
-  return testConfig
-}
-
 async function <%= it.example.info.name %>Test() {
   const testConfig = <%= it.example.info.name %>TestConfig()
-  return await GmailProcessorLib.E2E.runTests(
-    testConfig,
-    false,
+  const testRunInfo = GmailProcessorLib.E2E.ensureTestData(
+    [testConfig],
     E2E_REPO_BRANCH,
     GmailProcessorLib.EnvProvider.defaultContext({
       runMode: GmailProcessorLib.RunMode.DANGEROUS,
@@ -19,4 +13,21 @@ async function <%= it.example.info.name %>Test() {
       propertiesService: PropertiesService
     })
   )
+  return await GmailProcessorLib.E2E.runTests(
+    testConfig,
+    true,
+    E2E_REPO_BRANCH,
+    GmailProcessorLib.EnvProvider.defaultContext({
+      runMode: GmailProcessorLib.RunMode.DANGEROUS,
+      cacheService: CacheService,
+      propertiesService: PropertiesService
+    }),
+    testRunInfo.runId,
+    testRunInfo.timestamp
+  )
+}
+
+function <%= it.example.info.name %>TestConfig() {
+<%~ it.indent(it.genE2eTestCode(it.exampleSourcePath)) %>
+  return testConfig
 }

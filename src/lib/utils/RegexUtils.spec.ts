@@ -1,4 +1,5 @@
 import { ContextMocks } from "../../test/mocks/ContextMocks"
+import "../../test/mocks/MockFactory"
 import { RegexUtils } from "./RegexUtils"
 
 describe("escape()", () => {

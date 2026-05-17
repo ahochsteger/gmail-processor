@@ -9,6 +9,7 @@ import {
   ProcessingStatus,
   newMetaInfo as mi,
   newProcessingResult,
+  updateContextMeta,
 } from "../Context"
 import {
   ActionProvider,
@@ -47,7 +48,7 @@ export class GmailProcessor extends BaseProcessor {
       procMeta: {},
     }
     processingContext.procMeta = this.buildMetaInfo(processingContext)
-    this.updateContextMeta(processingContext)
+    updateContextMeta(processingContext)
     return processingContext
   }
 
@@ -199,7 +200,7 @@ export class GmailProcessor extends BaseProcessor {
       config.threads,
       newProcessingResult(),
     )
-    result.actionPromises = processingContext.proc.actionPromises ?? []
+    result.actionPromises = processingContext.proc.actionPromises
 
     this.reportResults(ctx, result, reportFormat)
     ctx.log.trace(processingContext, {

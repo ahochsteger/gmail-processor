@@ -33,15 +33,16 @@ describe("EnvProvider", () => {
       "UrlFetchApp",
       "PropertiesService",
     ]
+    const globalRecord = global as Record<string, unknown>
     mockGlobals.forEach((g) => {
-      ;(global as any)[g] = {}
+      globalRecord[g] = {}
     })
-    ;(global as any).Session.getScriptTimeZone = jest
-      .fn()
-      .mockReturnValue("UTC")
-    ;(global as any).Session.getActiveUser = jest
-      .fn()
-      .mockReturnValue({ getEmail: () => "test@example.com" })
+    globalRecord.Session = {
+      getScriptTimeZone: jest.fn().mockReturnValue("UTC"),
+      getActiveUser: jest
+        .fn()
+        .mockReturnValue({ getEmail: () => "test@example.com" }),
+    }
 
     const ctx = EnvProvider.defaultContext({ runMode: RunMode.DANGEROUS })
 
@@ -51,7 +52,7 @@ describe("EnvProvider", () => {
 
     // Cleanup globals
     mockGlobals.forEach((g) => {
-      delete (global as any)[g]
+      delete globalRecord[g]
     })
   })
 })

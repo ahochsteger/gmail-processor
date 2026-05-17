@@ -2,7 +2,7 @@ import { ValidationResult } from "../Validate"
 import { RequiredV1Config, V1ConfigSchema } from "./V1Config"
 
 export function validateV1Config(
-  config: any,
+  config: unknown,
 ): ValidationResult<RequiredV1Config> {
   const result = V1ConfigSchema.strict().safeParse(config)
   if (result.success) {

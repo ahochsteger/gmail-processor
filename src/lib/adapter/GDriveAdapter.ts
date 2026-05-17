@@ -107,7 +107,7 @@ export class DriveUtils {
               ? locationInfo.filename.substring(extensionIndex)
               : ""
 
-            while (true) {
+            for (;;) {
               currentFilename = `${baseName}${incrementPrefix}${nextIndex}${incrementSuffix}${extension}`
               const existingIncrementedFiles =
                 parentFolder.getFilesByName(currentFilename)
@@ -169,7 +169,7 @@ export class DriveUtils {
         }
         default:
           ctx.log.warn(
-            `Unknown conflict strategy '${conflictStrategy}'. Defaulting to KEEP.`,
+            `Unknown conflict strategy '${conflictStrategy as string}'. Defaulting to KEEP.`,
           )
           file = this.createFileInParent(
             ctx,

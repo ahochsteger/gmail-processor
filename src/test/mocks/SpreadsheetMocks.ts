@@ -1,5 +1,5 @@
 import { LOGSHEET_FILE_ID } from "./GDriveMocks"
-import { Mocks } from "./MockFactory"
+import type { Mocks } from "./MockFactory"
 
 export class SpreadsheetMocks {
   public static setupAllMocks(mocks: Mocks) {

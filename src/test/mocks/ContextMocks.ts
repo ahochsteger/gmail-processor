@@ -22,30 +22,35 @@ import { ThreadProcessor } from "../../lib/processors/ThreadProcessor"
 import { Logger } from "../../lib/utils/Logger"
 import { Timer } from "../../lib/utils/Timer"
 import { ConfigMocks } from "./ConfigMocks"
+import { EnvMocks } from "./EnvMocks"
 import { GMailMocks, ThreadData } from "./GMailMocks"
-import { MockFactory } from "./MockFactory"
+import type { Mocks } from "./MockFactory"
 
 export class ContextMocks {
+  public static mockFactoryRef?: { newMocks: () => Mocks }
+
   public static newEnvContextMock(
-    mocks = MockFactory.newMocks(),
+    mocks?: EnvMocks,
     runMode = RunMode.DANGEROUS,
   ) {
+    const resolvedMocks =
+      mocks ?? ContextMocks.mockFactoryRef?.newMocks() ?? new EnvMocks()
     const envContext: EnvContext = {
       type: ContextType.ENV,
       env: {
-        documentApp: mocks.documentApp,
-        driveApi: mocks.driveApi,
-        gmailApp: mocks.gmailApp,
-        gdriveApp: mocks.gdriveApp,
-        mailApp: mocks.mailApp,
-        spreadsheetApp: mocks.spreadsheetApp,
-        cacheService: mocks.cacheService,
-        utilities: mocks.utilities,
+        documentApp: resolvedMocks.documentApp,
+        driveApi: resolvedMocks.driveApi,
+        gmailApp: resolvedMocks.gmailApp,
+        gdriveApp: resolvedMocks.gdriveApp,
+        mailApp: resolvedMocks.mailApp,
+        spreadsheetApp: resolvedMocks.spreadsheetApp,
+        cacheService: resolvedMocks.cacheService,
+        utilities: resolvedMocks.utilities,
         runMode,
-        session: mocks.session,
-        timezone: mocks.session.getScriptTimeZone() || "Etc/UTC",
-        urlFetchApp: mocks.urlFetchApp,
-        propertiesService: mocks.propertiesService,
+        session: resolvedMocks.session,
+        timezone: resolvedMocks.session.getScriptTimeZone() || "Etc/UTC",
+        urlFetchApp: resolvedMocks.urlFetchApp,
+        propertiesService: resolvedMocks.propertiesService,
       },
       envMeta: {},
       log: new Logger(),

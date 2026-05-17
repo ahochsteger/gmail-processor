@@ -1,17 +1,17 @@
-import { ActionRegistry, ActionReturnType } from "./actions/ActionRegistry"
-import { GDriveAdapter } from "./adapter/GDriveAdapter"
-import { GmailAdapter } from "./adapter/GmailAdapter"
-import { LogAdapter } from "./adapter/LogAdapter"
-import { SpreadsheetAdapter } from "./adapter/SpreadsheetAdapter"
-import { ActionBaseConfig } from "./config/ActionConfig"
-import { RequiredAttachmentConfig } from "./config/AttachmentConfig"
-import { AttachmentMatchConfig } from "./config/AttachmentMatchConfig"
-import { RequiredConfig } from "./config/Config"
-import { RequiredMessageConfig } from "./config/MessageConfig"
-import { MessageMatchConfig } from "./config/MessageMatchConfig"
-import { RequiredThreadConfig } from "./config/ThreadConfig"
-import { Logger } from "./utils/Logger"
-import { Timer } from "./utils/Timer"
+import type { ActionRegistry, ActionReturnType } from "./actions/ActionRegistry"
+import type { GDriveAdapter } from "./adapter/GDriveAdapter"
+import type { GmailAdapter } from "./adapter/GmailAdapter"
+import type { LogAdapter } from "./adapter/LogAdapter"
+import type { SpreadsheetAdapter } from "./adapter/SpreadsheetAdapter"
+import type { ActionBaseConfig } from "./config/ActionConfig"
+import type { RequiredAttachmentConfig } from "./config/AttachmentConfig"
+import type { AttachmentMatchConfig } from "./config/AttachmentMatchConfig"
+import type { RequiredConfig } from "./config/Config"
+import type { RequiredMessageConfig } from "./config/MessageConfig"
+import type { MessageMatchConfig } from "./config/MessageMatchConfig"
+import type { RequiredThreadConfig } from "./config/ThreadConfig"
+import type { Logger } from "./utils/Logger"
+import type { Timer } from "./utils/Timer"
 
 export type Attachment = GoogleAppsScript.Gmail.GmailAttachment
 export type Message = GoogleAppsScript.Gmail.GmailMessage
@@ -99,7 +99,7 @@ export type ProcessingInfo = {
   logAdapter: LogAdapter
   spreadsheetAdapter: SpreadsheetAdapter
   timer: Timer
-  actionPromises: Promise<any>[]
+  actionPromises: Promise<ActionReturnType>[]
 }
 
 export type ThreadInfo = {
@@ -194,7 +194,7 @@ export class ProcessingResult {
   processedThreadConfigs: number = 0
   processedThreads: number = 0
   status: ProcessingStatus = ProcessingStatus.OK
-  actionPromises: Promise<any>[] = []
+  actionPromises: Promise<ActionReturnType>[] = []
 }
 
 export function newProcessingResult(): ProcessingResult {
@@ -207,3 +207,95 @@ export type Context =
   | ThreadContext
   | MessageContext
   | AttachmentContext
+
+function updateEnvContextMeta(
+  ctx: EnvContext,
+  addMeta: MetaInfo = {},
+): MetaInfo {
+  ctx.envMeta = { ...ctx.envMeta, ...addMeta }
+  ctx.meta = { ...ctx.meta, ...addMeta }
+  return ctx.envMeta
+}
+
+function updateProcessingContextMeta(
+  ctx: ProcessingContext,
+  addMeta: MetaInfo = {},
+): MetaInfo {
+  ctx.procMeta = { ...ctx.procMeta, ...addMeta }
+  ctx.meta = { ...ctx.meta, ...addMeta }
+  return {
+    ...ctx.envMeta,
+    ...ctx.procMeta,
+  }
+}
+
+function updateThreadContextMeta(
+  ctx: ThreadContext,
+  addMeta: MetaInfo = {},
+): MetaInfo {
+  ctx.threadMeta = { ...ctx.threadMeta, ...addMeta }
+  ctx.meta = { ...ctx.meta, ...addMeta }
+  return {
+    ...ctx.envMeta,
+    ...ctx.procMeta,
+    ...ctx.threadMeta,
+  }
+}
+
+function updateMessageContextMeta(
+  ctx: MessageContext,
+  addMeta: MetaInfo = {},
+): MetaInfo {
+  ctx.messageMeta = { ...ctx.messageMeta, ...addMeta }
+  ctx.meta = { ...ctx.meta, ...addMeta }
+  return {
+    ...ctx.envMeta,
+    ...ctx.procMeta,
+    ...ctx.threadMeta,
+    ...ctx.messageMeta,
+  }
+}
+
+function updateAttachmentContextMeta(
+  ctx: AttachmentContext,
+  addMeta: MetaInfo = {},
+): MetaInfo {
+  ctx.attachmentMeta = { ...ctx.attachmentMeta, ...addMeta }
+  ctx.meta = { ...ctx.meta, ...addMeta }
+  return {
+    ...ctx.envMeta,
+    ...ctx.procMeta,
+    ...ctx.threadMeta,
+    ...ctx.messageMeta,
+    ...ctx.attachmentMeta,
+  }
+}
+
+export function updateContextMeta(ctx: Context, addMeta: MetaInfo = {}) {
+  switch (ctx.type) {
+    case ContextType.ENV:
+      ctx.meta = updateEnvContextMeta(ctx as EnvContext, addMeta)
+      break
+    case ContextType.PROCESSING:
+      ctx.meta = updateProcessingContextMeta(ctx as ProcessingContext, addMeta)
+      break
+    case ContextType.THREAD:
+      ctx.meta = updateThreadContextMeta(ctx as ThreadContext, addMeta)
+      break
+    case ContextType.MESSAGE:
+      ctx.meta = updateMessageContextMeta(ctx as MessageContext, addMeta)
+      break
+    case ContextType.ATTACHMENT:
+      ctx.meta = updateAttachmentContextMeta(ctx as AttachmentContext, addMeta)
+      break
+  }
+  ctx.meta = {
+    ...ctx.meta,
+    "context.type": newMetaInfo(
+      MetaInfoType.STRING,
+      ctx.type,
+      "Context Type",
+      "The type of context.",
+    ),
+  }
+}

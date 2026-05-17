@@ -25,7 +25,6 @@ describe("run", () => {
   })
 
   it("should use default context if none is provided", () => {
-    // Mock GAS globals needed for defaultContext
     const mockGlobals = [
       "CacheService",
       "DriveApp",
@@ -39,8 +38,9 @@ describe("run", () => {
       "UrlFetchApp",
       "PropertiesService",
     ]
+    const globalRecord = global as Record<string, unknown>
     mockGlobals.forEach((g) => {
-      ;(global as any)[g] = {
+      globalRecord[g] = {
         getScriptCache: () => ({ get: () => null, put: () => {} }),
         getScriptTimeZone: () => "UTC",
         getActiveUser: () => ({ getEmail: () => "test@example.com" }),
@@ -54,15 +54,20 @@ describe("run", () => {
       getFilesByName: () => ({ hasNext: () => false }),
     }
     const mockFile = { moveTo: () => {}, getUrl: () => "http://log" }
-    ;(global as any).DriveApp.getRootFolder = () => mockFolder
-    ;(global as any).DriveApp.getFileById = () => mockFile
+    const driveAppMock = globalRecord.DriveApp as Record<string, unknown>
+    driveAppMock.getRootFolder = () => mockFolder
+    driveAppMock.getFileById = () => mockFile
     const mockSheet = { appendRow: () => {} }
     const mockSpreadsheet = {
       getId: () => "sheet-id",
       getSheets: () => [mockSheet],
     }
-    ;(global as any).SpreadsheetApp.create = () => mockSpreadsheet
-    ;(global as any).SpreadsheetApp.openById = () => mockSpreadsheet
+    const spreadsheetAppMock = globalRecord.SpreadsheetApp as Record<
+      string,
+      unknown
+    >
+    spreadsheetAppMock.create = () => mockSpreadsheet
+    spreadsheetAppMock.openById = () => mockSpreadsheet
 
     // We expect it to call GmailProcessor.runWithJson
     const result = run(configJson, RunMode.SAFE_MODE)
@@ -70,7 +75,7 @@ describe("run", () => {
 
     // Cleanup
     mockGlobals.forEach((g) => {
-      delete (global as any)[g]
+      delete globalRecord[g]
     })
   })
 })
@@ -270,6 +275,11 @@ describe("v1 config compatibility", () => {
       ],
     }
     const essentialConfig = convertV1Config(exampleMinConfigV1)
-    console.log(JSON.stringify(essentialConfig, null, 2))
+    expect(essentialConfig.settings?.markProcessedLabel).toBe(
+      "gmail2gdrive/client-test",
+    )
+    expect(essentialConfig.threads?.[0]?.match?.query).toBe(
+      "to:my.name+scans@gmail.com",
+    )
   })
 })

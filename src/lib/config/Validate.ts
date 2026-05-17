@@ -9,7 +9,9 @@ export type ValidationResult<T> =
   | { success: true; data: T }
   | { success: false; errors: ValidationError[] }
 
-export function validateConfig(config: any): ValidationResult<RequiredConfig> {
+export function validateConfig(
+  config: unknown,
+): ValidationResult<RequiredConfig> {
   const result = ConfigSchema.strict().safeParse(config)
   if (result.success) {
     return { success: true, data: result.data }
