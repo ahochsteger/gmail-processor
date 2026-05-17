@@ -45,7 +45,6 @@
     "eslint-import-resolver-typescript": "4.4.4",
     "eslint-plugin-import-x": "4.16.2",
     "globals": "17.6.0",
-    "patch-package": "8.0.1",
     "typescript": "6.0.3",
     "typescript-eslint": "8.59.2"
   },
@@ -63,7 +62,6 @@
     "deploy": "docusaurus deploy",
     "docusaurus": "docusaurus",
     "lint": "npx -y eslint",
-    "postinstall": "patch-package",
     "serve": "docusaurus serve",
     "start": "docusaurus start",
     "swizzle": "docusaurus swizzle",
