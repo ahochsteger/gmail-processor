@@ -1,4 +1,4 @@
-<!-- @generated - DO NOT EDIT MANUALLY - Use 'npm run update:examples' instead -->
+{/* @generated - DO NOT EDIT MANUALLY - Use 'npm run update:examples' instead */}
 
 ---
 id: headerMatching
@@ -6,7 +6,7 @@ title: Header Matching
 description: This example demonstrates how to match raw message headers.
 ---
 import RenderExample from "/src/components/RenderExample.tsx"
-import config from '!!raw-loader!../../../../src/examples/advanced/headerMatching.json';
+import configJson from '../../../../src/examples/advanced/headerMatching.json';
 import script from '!!raw-loader!../../../../src/gas/examples/advanced/headerMatching.js';
 import { info } from "../../../../src/examples/advanced/headerMatching.ts"
 
@@ -19,4 +19,4 @@ In this specific example:
 3.  For matching messages, it processes attachments named `invoice.pdf`.
 4.  Matching attachments are stored in Google Drive using a dynamically generated path based on message and attachment details.
 
-<RenderExample info={info} config={config} script={script} />
+<RenderExample info={info} config={JSON.stringify(configJson, null, 2)} script={script} />

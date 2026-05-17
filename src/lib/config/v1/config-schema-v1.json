@@ -93,27 +93,12 @@
             "type": "boolean"
           }
         },
-        "required": [
-          "archive",
-          "filenameFrom",
-          "filenameFromRegexp",
-          "filenameTo",
-          "filter",
-          "folder",
-          "newerThan",
-          "parentFolderId",
-          "ruleLabel",
-          "saveMessagePDF",
-          "saveThreadPDF",
-          "skipPDFHeader"
-        ],
         "additionalProperties": false
       },
       "description": "Processing rules"
     }
   },
   "required": [
-    "globalFilter",
     "processedLabel",
     "sleepTime",
     "maxRuntime",

@@ -3,7 +3,7 @@ import CodeBlock from '@theme/CodeBlock';
 import TabItem from '@theme/TabItem';
 import Tabs from '@theme/Tabs';
 import React from 'react';
-import { ExampleInfo, ExampleVariant } from '../../../src/examples/Example';
+import { ExampleInfo, ExampleVariant } from 'gmail-processor/examples/Example';
 
 const examplesBasePath = "src/examples"
 const examplesBaseUrl = `https://github.com/ahochsteger/gmail-processor/blob/main/${examplesBasePath}`

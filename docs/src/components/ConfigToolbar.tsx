@@ -1,7 +1,7 @@
 import Heading from '@theme/Heading';
 import { Icon } from '@iconify/react';
 import React from "react";
-import { Example, ExampleVariant, V1Example } from '../../../src/examples/Example';
+import { Example, ExampleVariant, V1Example } from 'gmail-processor/examples/Example';
 
 type Params = {
   examples: (Example|V1Example)[]

@@ -1,4 +1,4 @@
-<!-- @generated - DO NOT EDIT MANUALLY - Use 'npm run update:examples' instead -->
+{/* @generated - DO NOT EDIT MANUALLY - Use 'npm run update:examples' instead */}
 
 ---
 id: stringFnExpressions
@@ -6,7 +6,7 @@ title: String Function Expressions
 description: This example demonstrates how to use string function expressions in the configuration.
 ---
 import RenderExample from "/src/components/RenderExample.tsx"
-import config from '!!raw-loader!../../../../src/examples/advanced/stringFnExpressions.json';
+import configJson from '../../../../src/examples/advanced/stringFnExpressions.json';
 import script from '!!raw-loader!../../../../src/gas/examples/advanced/stringFnExpressions.js';
 import { info } from "../../../../src/examples/advanced/stringFnExpressions.ts"
 
@@ -23,4 +23,4 @@ The following string functions are supported:
 - `toUpperCase()`: Converts a string to uppercase letters. See [`String.prototype.toUpperCase()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/toUpperCase).
 - `toLowerCase()`: Converts a string to lowercase letters. See [`String.prototype.toLowerCase()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/toLowerCase).
 
-<RenderExample info={info} config={config} script={script} />
+<RenderExample info={info} config={JSON.stringify(configJson, null, 2)} script={script} />

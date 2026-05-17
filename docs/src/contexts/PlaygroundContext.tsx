@@ -2,7 +2,7 @@ import { createContext, useContext } from "react"
 import { monaco } from "docusaurus-json-schema-plugin/lib/theme/MonacoEditor/index.js"
 
 // Type I need for useRef
-import { Example, V1Example } from "../../../src/examples/Example"
+import { Example, V1Example } from "gmail-processor/examples/Example"
 
 export type State = {
   // The selected example

@@ -1,4 +1,4 @@
-<!-- @generated - DO NOT EDIT MANUALLY - Use 'npm run update:examples' instead -->
+{/* @generated - DO NOT EDIT MANUALLY - Use 'npm run update:examples' instead */}
 
 ---
 id: actionThreadRemoveLabel
@@ -6,11 +6,11 @@ title: Remove Thread Label
 description: The action `thread.removeLabel` removes a label from a thread.
 ---
 import RenderExample from "/src/components/RenderExample.tsx"
-import config from '!!raw-loader!../../../../src/examples/actions/actionThreadRemoveLabel.json';
+import configJson from '../../../../src/examples/actions/actionThreadRemoveLabel.json';
 import script from '!!raw-loader!../../../../src/gas/examples/actions/actionThreadRemoveLabel.js';
 import { info } from "../../../../src/examples/actions/actionThreadRemoveLabel.ts"
 
 This example demonstrates the usage of the action `thread.removeLabel`.
 It is also used to test a possible behavioral change for certain characters in label names (e.g. `-` vs. `/`).
 
-<RenderExample info={info} config={config} script={script} />
+<RenderExample info={info} config={JSON.stringify(configJson, null, 2)} script={script} />

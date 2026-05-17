@@ -1,4 +1,4 @@
-<!-- @generated - DO NOT EDIT MANUALLY - Use 'npm run update:examples' instead -->
+{/* @generated - DO NOT EDIT MANUALLY - Use 'npm run update:examples' instead */}
 
 ---
 id: convertToGoogle
@@ -6,7 +6,7 @@ title: Convert to Google
 description: Convert MS Office attachments into Google formats.
 ---
 import RenderExample from "/src/components/RenderExample.tsx"
-import config from '!!raw-loader!../../../../src/examples/features/convertToGoogle.json';
+import configJson from '../../../../src/examples/features/convertToGoogle.json';
 import script from '!!raw-loader!../../../../src/gas/examples/features/convertToGoogle.js';
 import { info } from "../../../../src/examples/features/convertToGoogle.ts"
 
@@ -14,4 +14,4 @@ This example shows how to convert MS Office attachments into Google formats.
 
 Use the argument `toMimeType` of the action `attachment.store` to convert the document into one of the supported formats.
 
-<RenderExample info={info} config={config} script={script} />
+<RenderExample info={info} config={JSON.stringify(configJson, null, 2)} script={script} />

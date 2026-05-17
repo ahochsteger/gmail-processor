@@ -107,10 +107,7 @@
                   }
                 },
                 "required": [
-                  "args",
-                  "description",
-                  "name",
-                  "processingStage"
+                  "name"
                 ],
                 "additionalProperties": false
               }
@@ -163,14 +160,6 @@
                   "type": "number"
                 }
               },
-              "required": [
-                "contentType",
-                "includeAttachments",
-                "includeInlineImages",
-                "largerThan",
-                "name",
-                "smallerThan"
-              ],
               "additionalProperties": false
             },
             "name": {
@@ -196,12 +185,6 @@
               ]
             }
           },
-          "required": [
-            "actions",
-            "description",
-            "match",
-            "name"
-          ],
           "additionalProperties": false
         },
         "message": {
@@ -258,10 +241,7 @@
                   }
                 },
                 "required": [
-                  "args",
-                  "description",
-                  "name",
-                  "processingStage"
+                  "name"
                 ],
                 "additionalProperties": false
               }
@@ -311,10 +291,7 @@
                         }
                       },
                       "required": [
-                        "args",
-                        "description",
-                        "name",
-                        "processingStage"
+                        "name"
                       ],
                       "additionalProperties": false
                     }
@@ -367,14 +344,6 @@
                         "type": "number"
                       }
                     },
-                    "required": [
-                      "contentType",
-                      "includeAttachments",
-                      "includeInlineImages",
-                      "largerThan",
-                      "name",
-                      "smallerThan"
-                    ],
                     "additionalProperties": false
                   },
                   "name": {
@@ -400,12 +369,6 @@
                     ]
                   }
                 },
-                "required": [
-                  "actions",
-                  "description",
-                  "match",
-                  "name"
-                ],
                 "additionalProperties": false
               }
             },
@@ -479,17 +442,6 @@
                   "type": "string"
                 }
               },
-              "required": [
-                "body",
-                "from",
-                "is",
-                "newerThan",
-                "olderThan",
-                "plainBody",
-                "rawHeaders",
-                "subject",
-                "to"
-              ],
               "additionalProperties": false
             },
             "name": {
@@ -516,13 +468,6 @@
               ]
             }
           },
-          "required": [
-            "actions",
-            "description",
-            "attachments",
-            "match",
-            "name"
-          ],
           "additionalProperties": false
         },
         "thread": {
@@ -575,10 +520,7 @@
                   }
                 },
                 "required": [
-                  "args",
-                  "description",
-                  "name",
-                  "processingStage"
+                  "name"
                 ],
                 "additionalProperties": false
               }
@@ -628,10 +570,7 @@
                         }
                       },
                       "required": [
-                        "args",
-                        "description",
-                        "name",
-                        "processingStage"
+                        "name"
                       ],
                       "additionalProperties": false
                     }
@@ -681,10 +620,7 @@
                               }
                             },
                             "required": [
-                              "args",
-                              "description",
-                              "name",
-                              "processingStage"
+                              "name"
                             ],
                             "additionalProperties": false
                           }
@@ -737,14 +673,6 @@
                               "type": "number"
                             }
                           },
-                          "required": [
-                            "contentType",
-                            "includeAttachments",
-                            "includeInlineImages",
-                            "largerThan",
-                            "name",
-                            "smallerThan"
-                          ],
                           "additionalProperties": false
                         },
                         "name": {
@@ -770,12 +698,6 @@
                           ]
                         }
                       },
-                      "required": [
-                        "actions",
-                        "description",
-                        "match",
-                        "name"
-                      ],
                       "additionalProperties": false
                     }
                   },
@@ -849,17 +771,6 @@
                         "type": "string"
                       }
                     },
-                    "required": [
-                      "body",
-                      "from",
-                      "is",
-                      "newerThan",
-                      "olderThan",
-                      "plainBody",
-                      "rawHeaders",
-                      "subject",
-                      "to"
-                    ],
                     "additionalProperties": false
                   },
                   "name": {
@@ -886,13 +797,6 @@
                     ]
                   }
                 },
-                "required": [
-                  "actions",
-                  "description",
-                  "attachments",
-                  "match",
-                  "name"
-                ],
                 "additionalProperties": false
               }
             },
@@ -935,10 +839,7 @@
                         }
                       },
                       "required": [
-                        "args",
-                        "description",
-                        "name",
-                        "processingStage"
+                        "name"
                       ],
                       "additionalProperties": false
                     }
@@ -991,14 +892,6 @@
                         "type": "number"
                       }
                     },
-                    "required": [
-                      "contentType",
-                      "includeAttachments",
-                      "includeInlineImages",
-                      "largerThan",
-                      "name",
-                      "smallerThan"
-                    ],
                     "additionalProperties": false
                   },
                   "name": {
@@ -1024,12 +917,6 @@
                     ]
                   }
                 },
-                "required": [
-                  "actions",
-                  "description",
-                  "match",
-                  "name"
-                ],
                 "additionalProperties": false
               }
             },
@@ -1070,13 +957,6 @@
                   "type": "string"
                 }
               },
-              "required": [
-                "firstMessageSubject",
-                "labels",
-                "maxMessageCount",
-                "minMessageCount",
-                "query"
-              ],
               "additionalProperties": false
             },
             "name": {
@@ -1102,13 +982,6 @@
               ]
             }
           },
-          "required": [
-            "actions",
-            "description",
-            "messages",
-            "match",
-            "name"
-          ],
           "additionalProperties": false
         },
         "variables": {
@@ -1138,21 +1011,10 @@
                 "type": "string"
               }
             },
-            "required": [
-              "type",
-              "key",
-              "value"
-            ],
             "additionalProperties": false
           }
         }
       },
-      "required": [
-        "attachment",
-        "message",
-        "thread",
-        "variables"
-      ],
       "additionalProperties": false
     },
     "threads": {
@@ -1195,10 +1057,7 @@
                 }
               },
               "required": [
-                "args",
-                "description",
-                "name",
-                "processingStage"
+                "name"
               ],
               "additionalProperties": false
             }
@@ -1248,10 +1107,7 @@
                       }
                     },
                     "required": [
-                      "args",
-                      "description",
-                      "name",
-                      "processingStage"
+                      "name"
                     ],
                     "additionalProperties": false
                   }
@@ -1301,10 +1157,7 @@
                             }
                           },
                           "required": [
-                            "args",
-                            "description",
-                            "name",
-                            "processingStage"
+                            "name"
                           ],
                           "additionalProperties": false
                         }
@@ -1357,14 +1210,6 @@
                             "type": "number"
                           }
                         },
-                        "required": [
-                          "contentType",
-                          "includeAttachments",
-                          "includeInlineImages",
-                          "largerThan",
-                          "name",
-                          "smallerThan"
-                        ],
                         "additionalProperties": false
                       },
                       "name": {
@@ -1390,12 +1235,6 @@
                         ]
                       }
                     },
-                    "required": [
-                      "actions",
-                      "description",
-                      "match",
-                      "name"
-                    ],
                     "additionalProperties": false
                   }
                 },
@@ -1469,17 +1308,6 @@
                       "type": "string"
                     }
                   },
-                  "required": [
-                    "body",
-                    "from",
-                    "is",
-                    "newerThan",
-                    "olderThan",
-                    "plainBody",
-                    "rawHeaders",
-                    "subject",
-                    "to"
-                  ],
                   "additionalProperties": false
                 },
                 "name": {
@@ -1506,13 +1334,6 @@
                   ]
                 }
               },
-              "required": [
-                "actions",
-                "description",
-                "attachments",
-                "match",
-                "name"
-              ],
               "additionalProperties": false
             }
           },
@@ -1555,10 +1376,7 @@
                       }
                     },
                     "required": [
-                      "args",
-                      "description",
-                      "name",
-                      "processingStage"
+                      "name"
                     ],
                     "additionalProperties": false
                   }
@@ -1611,14 +1429,6 @@
                       "type": "number"
                     }
                   },
-                  "required": [
-                    "contentType",
-                    "includeAttachments",
-                    "includeInlineImages",
-                    "largerThan",
-                    "name",
-                    "smallerThan"
-                  ],
                   "additionalProperties": false
                 },
                 "name": {
@@ -1644,12 +1454,6 @@
                   ]
                 }
               },
-              "required": [
-                "actions",
-                "description",
-                "match",
-                "name"
-              ],
               "additionalProperties": false
             }
           },
@@ -1690,13 +1494,6 @@
                 "type": "string"
               }
             },
-            "required": [
-              "firstMessageSubject",
-              "labels",
-              "maxMessageCount",
-              "minMessageCount",
-              "query"
-            ],
             "additionalProperties": false
           },
           "name": {
@@ -1722,13 +1519,6 @@
             ]
           }
         },
-        "required": [
-          "actions",
-          "description",
-          "messages",
-          "match",
-          "name"
-        ],
         "additionalProperties": false
       }
     },
@@ -2063,11 +1853,6 @@
                 "additionalProperties": false
               }
             },
-            "required": [
-              "name",
-              "title",
-              "ctxValues"
-            ],
             "additionalProperties": false
           }
         },
@@ -2144,24 +1929,6 @@
           "type": "string"
         }
       },
-      "required": [
-        "defaultTimestampFormat",
-        "defaultArrayJoinSeparator",
-        "logSheetLocation",
-        "logFields",
-        "logConfig",
-        "logLevel",
-        "logSensitiveRedactionMode",
-        "logSheetTracing",
-        "maxBatchSize",
-        "maxRuntime",
-        "markProcessedLabel",
-        "markProcessedMethod",
-        "sleepTimeThreads",
-        "sleepTimeMessages",
-        "sleepTimeAttachments",
-        "timezone"
-      ],
       "additionalProperties": false
     },
     "messages": {
@@ -2204,10 +1971,7 @@
                 }
               },
               "required": [
-                "args",
-                "description",
-                "name",
-                "processingStage"
+                "name"
               ],
               "additionalProperties": false
             }
@@ -2257,10 +2021,7 @@
                       }
                     },
                     "required": [
-                      "args",
-                      "description",
-                      "name",
-                      "processingStage"
+                      "name"
                     ],
                     "additionalProperties": false
                   }
@@ -2313,14 +2074,6 @@
                       "type": "number"
                     }
                   },
-                  "required": [
-                    "contentType",
-                    "includeAttachments",
-                    "includeInlineImages",
-                    "largerThan",
-                    "name",
-                    "smallerThan"
-                  ],
                   "additionalProperties": false
                 },
                 "name": {
@@ -2346,12 +2099,6 @@
                   ]
                 }
               },
-              "required": [
-                "actions",
-                "description",
-                "match",
-                "name"
-              ],
               "additionalProperties": false
             }
           },
@@ -2425,17 +2172,6 @@
                 "type": "string"
               }
             },
-            "required": [
-              "body",
-              "from",
-              "is",
-              "newerThan",
-              "olderThan",
-              "plainBody",
-              "rawHeaders",
-              "subject",
-              "to"
-            ],
             "additionalProperties": false
           },
           "name": {
@@ -2462,13 +2198,6 @@
             ]
           }
         },
-        "required": [
-          "actions",
-          "description",
-          "attachments",
-          "match",
-          "name"
-        ],
         "additionalProperties": false
       }
     },
@@ -2512,10 +2241,7 @@
                 }
               },
               "required": [
-                "args",
-                "description",
-                "name",
-                "processingStage"
+                "name"
               ],
               "additionalProperties": false
             }
@@ -2568,14 +2294,6 @@
                 "type": "number"
               }
             },
-            "required": [
-              "contentType",
-              "includeAttachments",
-              "includeInlineImages",
-              "largerThan",
-              "name",
-              "smallerThan"
-            ],
             "additionalProperties": false
           },
           "name": {
@@ -2601,24 +2319,10 @@
             ]
           }
         },
-        "required": [
-          "actions",
-          "description",
-          "match",
-          "name"
-        ],
         "additionalProperties": false
       }
     }
   },
-  "required": [
-    "description",
-    "global",
-    "threads",
-    "settings",
-    "messages",
-    "attachments"
-  ],
   "additionalProperties": false,
   "title": "Gmail Processor Config (v2)"
 }

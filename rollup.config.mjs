@@ -35,7 +35,10 @@ export default defineConfig({
       // browser: true, // Required to activate polyfills for Google Apps Script
     }),
     commonjs(),
-    typescript(),
+    typescript({
+      declaration: false,
+      declarationMap: false,
+    }),
     swc(),
     gas({
       gasEntryOptions: {

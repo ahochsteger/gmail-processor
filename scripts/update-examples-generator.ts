@@ -250,7 +250,9 @@ export class ExampleHandler {
       "@generated - DO NOT EDIT MANUALLY - Use 'npm run update:examples' instead"
     if (ext === ".js" || ext === ".ts") {
       content = `/** ${header} */\n${content}`
-    } else if (ext === ".md" || ext === ".mdx") {
+    } else if (ext === ".mdx") {
+      content = `{/* ${header} */}\n\n${content}`
+    } else if (ext === ".md") {
       content = `<!-- ${header} -->\n\n${content}`
     }
     // console.log(`  Generating file '${file}' from template '${template}' ...`)

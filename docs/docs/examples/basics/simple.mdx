@@ -1,4 +1,4 @@
-<!-- @generated - DO NOT EDIT MANUALLY - Use 'npm run update:examples' instead -->
+{/* @generated - DO NOT EDIT MANUALLY - Use 'npm run update:examples' instead */}
 
 ---
 id: simple
@@ -6,7 +6,7 @@ title: Store Attachment
 description: Use this to get started with Gmail Processor. It stores an attachment to Google Drive.
 ---
 import RenderExample from "/src/components/RenderExample.tsx"
-import config from '!!raw-loader!../../../../src/examples/basics/simple.json';
+import configJson from '../../../../src/examples/basics/simple.json';
 import script from '!!raw-loader!../../../../src/gas/examples/basics/simple.js';
 import { info } from "../../../../src/examples/basics/simple.ts"
 
@@ -52,4 +52,4 @@ Since the messages section does not have any additional matcher, all messages in
 In the attachments section the `match` section restricts processing to attachments that have the name `invoice.pdf` using a regular expression.
 Matching attachments will then be stored at the given location using [placeholder substitution](https://ahochsteger.github.io/gmail-processor/docs/reference/placeholder) to dynamically create the location based on thread/message/attachment data.
 
-<RenderExample info={info} config={config} script={script} />
+<RenderExample info={info} config={JSON.stringify(configJson, null, 2)} script={script} />

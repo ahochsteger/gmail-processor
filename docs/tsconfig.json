@@ -2,6 +2,7 @@
   "extends": "@docusaurus/tsconfig",
   "compilerOptions": {
     "strict": true,
+    "moduleResolution": "bundler",
     "forceConsistentCasingInFileNames": true,
     "jsx": "react-jsx",
     "baseUrl": ".",
@@ -10,9 +11,9 @@
     "experimentalDecorators": true,
     "skipLibCheck": true,
     "paths": {
-      "@lib/*": ["../src/lib/*" ],
       "@site/*": ["./*" ],
       "@theme/*": [
+        "../node_modules/docusaurus-json-schema-plugin/src/theme/*",
         "./node_modules/docusaurus-json-schema-plugin/src/theme/*",
         "./src/theme/*"
       ]    },

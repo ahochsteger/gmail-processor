@@ -2,14 +2,14 @@
 id: contributing
 sidebar_position: 71
 ---
-<!-- @generated - DO NOT EDIT MANUALLY - Use 'npm run update:docs' instead -->
+{/* @generated - DO NOT EDIT MANUALLY - Use 'npm run update:docs' instead */}
 
 # Contributing
 
-<!-- See
+{/* See
  * https://github.com/github/docs/blob/main/CONTRIBUTING.md
  * https://mozillascience.github.io/working-open-workshop/contributing/
--->
+*/}
 
 Thank you for investing your time in contributing to our project!
 

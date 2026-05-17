@@ -1,4 +1,4 @@
-<!-- @generated - DO NOT EDIT MANUALLY - Use 'npm run update:examples' instead -->
+{/* @generated - DO NOT EDIT MANUALLY - Use 'npm run update:examples' instead */}
 
 ---
 id: dateExpressions
@@ -6,10 +6,10 @@ title: Date Expressions
 description: This example demonstrates how to use date expressions in the configuration.
 ---
 import RenderExample from "/src/components/RenderExample.tsx"
-import config from '!!raw-loader!../../../../src/examples/advanced/dateExpressions.json';
+import configJson from '../../../../src/examples/advanced/dateExpressions.json';
 import script from '!!raw-loader!../../../../src/gas/examples/advanced/dateExpressions.js';
 import { info } from "../../../../src/examples/advanced/dateExpressions.ts"
 
 
 
-<RenderExample info={info} config={config} script={script} />
+<RenderExample info={info} config={JSON.stringify(configJson, null, 2)} script={script} />

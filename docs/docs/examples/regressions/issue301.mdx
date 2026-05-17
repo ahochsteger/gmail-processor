@@ -1,4 +1,4 @@
-<!-- @generated - DO NOT EDIT MANUALLY - Use 'npm run update:examples' instead -->
+{/* @generated - DO NOT EDIT MANUALLY - Use 'npm run update:examples' instead */}
 
 ---
 id: issue301
@@ -6,10 +6,10 @@ title: getBlob Issue
 description: Tests a fix for `getBlob` error on conflict strategy `update`.
 ---
 import RenderExample from "/src/components/RenderExample.tsx"
-import config from '!!raw-loader!../../../../src/examples/regressions/issue301.json';
+import configJson from '../../../../src/examples/regressions/issue301.json';
 import script from '!!raw-loader!../../../../src/gas/examples/regressions/issue301.js';
 import { info } from "../../../../src/examples/regressions/issue301.ts"
 
 This example is a test for PR #301 to fix `getBlob` error on conflict strategy `update`.
 
-<RenderExample info={info} config={config} script={script} />
+<RenderExample info={info} config={JSON.stringify(configJson, null, 2)} script={script} />

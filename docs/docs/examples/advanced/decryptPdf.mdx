@@ -1,4 +1,4 @@
-<!-- @generated - DO NOT EDIT MANUALLY - Use 'npm run update:examples' instead -->
+{/* @generated - DO NOT EDIT MANUALLY - Use 'npm run update:examples' instead */}
 
 ---
 id: decryptPdf
@@ -6,7 +6,7 @@ title: Decrypt and Store PDF
 description: The action custom.decryptAndStorePdf decrypts and stores a PDF file. NOTE Make sure to set the PDF_PASSWORD script property in the Google Apps Script project settings.
 ---
 import RenderExample from "/src/components/RenderExample.tsx"
-import config from '!!raw-loader!../../../../src/examples/advanced/decryptPdf.json';
+import configJson from '../../../../src/examples/advanced/decryptPdf.json';
 import script from '!!raw-loader!../../../../src/gas/examples/advanced/decryptPdf.js';
 import { info } from "../../../../src/examples/advanced/decryptPdf.ts"
 
@@ -15,4 +15,4 @@ To keep passwords secure, it uses a script property variable.
 You must manually create a script property named `PDF_PASSWORD` with the
 actual password in the Google Apps Script project settings.
 
-<RenderExample info={info} config={config} script={script} />
+<RenderExample info={info} config={JSON.stringify(configJson, null, 2)} script={script} />

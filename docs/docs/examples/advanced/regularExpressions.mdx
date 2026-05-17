@@ -1,4 +1,4 @@
-<!-- @generated - DO NOT EDIT MANUALLY - Use 'npm run update:examples' instead -->
+{/* @generated - DO NOT EDIT MANUALLY - Use 'npm run update:examples' instead */}
 
 ---
 id: regularExpressions
@@ -6,7 +6,7 @@ title: Regular Expressions
 description: Regular expressions allow to define patterns and extract values to simplify the configuration.
 ---
 import RenderExample from "/src/components/RenderExample.tsx"
-import config from '!!raw-loader!../../../../src/examples/advanced/regularExpressions.json';
+import configJson from '../../../../src/examples/advanced/regularExpressions.json';
 import script from '!!raw-loader!../../../../src/gas/examples/advanced/regularExpressions.js';
 import { info } from "../../../../src/examples/advanced/regularExpressions.ts"
 
@@ -24,4 +24,4 @@ The extracted data is finally used to dynamically define the location of the att
 
 Flags like searching for the case-insensitive string are also supported by prefixing the regex with `(?<flags>)` like `(?i)...`.
 
-<RenderExample info={info} config={config} script={script} />
+<RenderExample info={info} config={JSON.stringify(configJson, null, 2)} script={script} />

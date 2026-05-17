@@ -1,4 +1,4 @@
-<!-- @generated - DO NOT EDIT MANUALLY - Use 'npm run update:examples' instead -->
+{/* @generated - DO NOT EDIT MANUALLY - Use 'npm run update:examples' instead */}
 
 ---
 id: customActionsAdvanced
@@ -6,7 +6,7 @@ title: Advanced Custom Actions
 description: Demonstrates how to use actionMeta to pass data between actions.
 ---
 import RenderExample from "/src/components/RenderExample.tsx"
-import config from '!!raw-loader!../../../../src/examples/advanced/customActionsAdvanced.json';
+import configJson from '../../../../src/examples/advanced/customActionsAdvanced.json';
 import script from '!!raw-loader!../../../../src/gas/examples/advanced/customActionsAdvanced.js';
 import { info } from "../../../../src/examples/advanced/customActionsAdvanced.ts"
 
@@ -16,4 +16,4 @@ In this scenario, a custom action `custom.parseInvoice` extracts an invoice numb
 and stores it in `actionMeta`. This value is then accessible in the `attachment.store` action
 using the placeholder `{{message.invoiceNumber}}`.
 
-<RenderExample info={info} config={config} script={script} />
+<RenderExample info={info} config={JSON.stringify(configJson, null, 2)} script={script} />

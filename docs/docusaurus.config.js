@@ -7,8 +7,21 @@ const darkCodeTheme = themes.vsDark;
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  // plugins: ['docusaurus-node-polyfills'],
-  // plugins: [['docusaurus-node-polyfills', { includeAliases: ['fs', 'path'] }]],
+  plugins: [
+    () => ({
+      name: 'ignore-monaco-warnings',
+      configureWebpack() {
+        return {
+          ignoreWarnings: [
+            {
+              module: /editorSimpleWorker/,
+              message: /Critical dependency/,
+            },
+          ],
+        };
+      },
+    }),
+  ],
   themes: [
     'docusaurus-json-schema-plugin'
   ],
@@ -181,15 +194,15 @@ const config = {
         //... other Algolia params
       },
     }),
-  // future: {
-  //   experimental_faster: true,
-  //   experimental_storage: {
-  //     type: 'localStorage',
-  //     namespace: false,
-  //   },
-  //   experimental_router: 'browser',
-  //   v4: true,
-  // },
+  storage: {
+    type: 'localStorage',
+    namespace: false,
+  },
+  future: {
+    faster: true,
+    experimental_router: 'browser',
+    v4: true,
+  },
 };
 
 module.exports = config;

@@ -6,10 +6,10 @@ import React from "react";
 
 import JSONSchemaEditor from "@theme/JSONSchemaEditor";
 
-import { Config, essentialConfig } from "../../../src/lib/config/Config";
-import ConfigSchemaV2 from "../../../src/lib/config/config-schema-v2.json";
-import { V1ToV2Converter } from "../../../src/lib/config/v1/V1ToV2Converter";
-import ConfigSchemaV1 from "../../../src/lib/config/v1/config-schema-v1.json";
+import { Config, essentialConfig } from "gmail-processor/config/Config";
+import ConfigSchemaV2 from "gmail-processor/config/config-schema-v2.json";
+import { V1ToV2Converter } from "gmail-processor/config/v1/V1ToV2Converter";
+import ConfigSchemaV1 from "gmail-processor/config/v1/config-schema-v1.json";
 
 import JSONSchemaViewer from "@theme/JSONSchemaViewer";
 
@@ -24,15 +24,15 @@ import type { State as PlaygroundState } from "@site/src/contexts/PlaygroundCont
 import ConfigToolbar from "@site/src/components/ConfigToolbar";
 
 import { toast } from "react-toastify";
-import { allExamples, defaultExample } from "../../../src/examples";
+import { allExamples, defaultExample } from "gmail-processor/examples";
 
 import Actions from "@site/docs/reference/actions.mdx";
 import EnumTypes from "@site/docs/reference/enum-types.mdx";
 import Placeholder from "@site/docs/reference/placeholder.mdx";
 import { monaco } from "docusaurus-json-schema-plugin/lib/theme/MonacoEditor/index.js";
 import { jsonrepair } from "jsonrepair";
-import { Example, ExampleVariant, V1Example } from "../../../src/examples/Example";
-import { V1Config } from "../../../src/lib";
+import { Example, ExampleVariant, V1Example } from "gmail-processor/examples/Example";
+import { V1Config } from "gmail-processor";
 
 const DEBUG = false
 

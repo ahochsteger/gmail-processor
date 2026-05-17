@@ -63,6 +63,24 @@
   "engines": {
     "node": "24.x"
   },
+  "exports": {
+    ".": {
+      "types": "./build/lib/index.d.ts",
+      "default": "./build/lib/index.js"
+    },
+    "./config/*": {
+      "types": "./build/lib/config/*.d.ts",
+      "default": "./build/lib/config/*"
+    },
+    "./examples": {
+      "types": "./build/examples/index.d.ts",
+      "default": "./build/examples/index.js"
+    },
+    "./examples/*": {
+      "types": "./build/examples/*.d.ts",
+      "default": "./build/examples/*"
+    }
+  },
   "keywords": [
     "attachment",
     "email",
@@ -75,6 +93,7 @@
     "script"
   ],
   "license": "Apache-2.0",
+  "main": "build/lib/index.js",
   "name": "gmail-processor",
   "overrides": {
     "@tootallnate/once": "3.0.1",
@@ -90,7 +109,7 @@
   },
   "scripts": {
     "all:audit-security": "npx concurrently 'npm:audit:security:*'",
-    "all:build": "npx concurrently 'npm:build:*'",
+    "all:build": "npx concurrently 'npm:build:lib' 'npm:build:examples' && npm run build:docs",
     "all:ci": "npm run ci:build && npm run ci:test && npm run ci:docs",
     "all:clean": "npx concurrently 'npm:clean:*'",
     "all:deploy": "npx concurrently 'npm:deploy:*'",
@@ -107,7 +126,7 @@
     "all:rebuild": "npm run all:clean && npm run all:build",
     "all:rebuild:fast": "npm run all:clean && npx concurrently 'npm:build:lib' 'npm:build:examples'",
     "all:redeploy": "npx concurrently 'npm:redeploy:*'",
-    "all:reinstall": "npm run all:locks-clean && npm run locks:update:devbox && npm install && npm install --prefix docs",
+    "all:reinstall": "npm run all:locks-clean && npm run locks:update:devbox && npm install",
     "all:release-dry-run": "npm run all:setup && npm run all:rebuild && npm run all:test && npm run release:preview",
     "all:repush": "npx concurrently 'npm:repush:*'",
     "all:setup": "npm run setup:lib && npm run setup:docs",
@@ -118,7 +137,7 @@
     "build": "npm run all:build",
     "build:docs": "scripts/build-docs.sh",
     "build:examples": "scripts/clasp.sh examples build",
-    "build:lib": "scripts/clasp.sh lib build",
+    "build:lib": "scripts/clasp.sh lib build && mkdir -p build/lib/config/v1 && cp src/lib/config/*.json build/lib/config/ && cp src/lib/config/v1/*.json build/lib/config/v1/",
     "ci:build": "npm run build:lib && npm run build:examples && npm run lint:lib",
     "ci:docs": "npm run build:docs",
     "ci:test": "TZ=Etc/UTC npx jest --runInBand --ci --coverage",
@@ -157,6 +176,7 @@
     "gh-act:release": "act workflow_dispatch -W .github/workflows/release.yaml",
     "lint": "npm run all:lint",
     "lint-code": "npm run lint:lib",
+    "lint-fix": "npm run all:format",
     "lint-inspect": "npx eslint --inspect-config",
     "lint-prune": "npx knip || true",
     "lint:actions": "actionlint",
@@ -228,5 +248,9 @@
     "update:parser": "scripts/update-parser.sh && npm run format:lib",
     "update:schema": "TZ=Etc/UTC scripts/update-schema.sh && npm run format:lib"
   },
-  "version": "2.17.3"
+  "types": "build/lib/index.d.ts",
+  "version": "2.17.3",
+  "workspaces": [
+    "docs"
+  ]
 }

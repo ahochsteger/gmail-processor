@@ -96,15 +96,16 @@ function saveToDocs() {
   local sidebarPos="${2}"
   local destFile="${3}"
   local destDir="${destFile%/*}"
+  local comment="{/* @generated - DO NOT EDIT MANUALLY - Use 'npm run update:docs' instead */}"
   mkdir -p "${destDir}"
   {
     echo "---"
     echo "id: ${id}"
     echo "sidebar_position: ${sidebarPos}"
     echo "---"
-    echo "<!-- @generated - DO NOT EDIT MANUALLY - Use 'npm run update:docs' instead -->"
+    echo "${comment}"
     echo ""
-    cat
+    sed -e 's/<!--/{\/*/g' -e 's/-->/*\/}/g'
   } >"${destFile}"
 
 }
