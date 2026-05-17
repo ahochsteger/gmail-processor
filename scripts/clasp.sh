@@ -274,7 +274,7 @@ case "${cmd}" in
     # Run the command with redirections in the background
     runClaspWithRunAuth run "${functionName}" \
       > >(tee build/full.log | tee "${CLASP_BASEDIR}/full_pipe") 2>&1 \
-      > >(tee build/stdout.log | tee "${CLASP_BASEDIR}/stdout_pipe" >&2)
+      > >(tee build/stdout.log > "${CLASP_BASEDIR}/stdout_pipe")
     # Read from the pipes
     out=$(cat "${CLASP_BASEDIR}/stdout_pipe")
     full=$(cat "${CLASP_BASEDIR}/full_pipe")
@@ -289,10 +289,18 @@ case "${cmd}" in
     )
     if [[ "${status}" != "success" ]]; then
       echo "Error running tests (status: ${status}):"
-      echo "${full}"
+      if [[ -f "build/stdout.log" ]]; then
+        npx ts-node scripts/format-e2e.ts build/stdout.log || echo "${full}"
+      else
+        echo "${full}"
+      fi
       exit 1
     else
-      echo "Status: ${status}"
+      if [[ -f "build/stdout.log" ]]; then
+        npx ts-node scripts/format-e2e.ts build/stdout.log
+      else
+        echo "Status: ${status}"
+      fi
     fi
   ;;
   run-with-logs)

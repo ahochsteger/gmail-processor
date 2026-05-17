@@ -976,6 +976,27 @@ export class E2E {
     let resolvedRunId = testRunId
     let resolvedTimestamp = new Date().toISOString()
 
+    // Fetch E2E threads in one single query with 7-day time window and limit 100
+    const sevenDaysAgo = new Date(
+      new Date().getTime() - 7 * 24 * 60 * 60 * 1000,
+    )
+    const dateStr = ctx.env.utilities.formatDate(
+      sevenDaysAgo,
+      ctx.env.session.getScriptTimeZone() || "GMT",
+      "yyyy-MM-dd",
+    )
+    const searchQuery = `subject:"${E2EDefaults.EMAIL_SUBJECT_PREFIX}" after:${dateStr}`
+    ctx.log.info(
+      `E2E.ensureTestData(): Pre-fetching threads using query: ${searchQuery} ...`,
+    )
+    const allThreads = ctx.env.gmailApp.search(searchQuery, 0, 100)
+
+    // To prevent multiple redundant reset calls, map unique "runId#timestamp" to the list of configs to reset
+    const reusableBatches: Record<
+      string,
+      { runId: string; timestamp: string; configs: E2ETestConfig[] } | undefined
+    > = {}
+
     for (const testConfig of testConfigs) {
       const category = testConfig.info.category
       const name = testConfig.info.name
@@ -1008,21 +1029,29 @@ export class E2E {
           testConfig.globals,
           storedMetadata.runId,
         )
-        const query = `subject:"${globals.subjectPrefix}"`
         const expectedCount = testConfig.initConfig?.mails.length ?? 0
-        const threads = ctx.env.gmailApp.search(query)
 
-        if (threads.length >= expectedCount) {
+        // Filter pre-fetched threads in-memory instead of doing sequentially queried searches
+        const threadsForSuite = allThreads.filter((t) =>
+          t.getFirstMessageSubject().includes(globals.subjectPrefix),
+        )
+
+        if (threadsForSuite.length >= expectedCount) {
           ctx.log.info(
             `E2E.ensureTestData(): Data hash matches and emails exist for '${category}/${name}'. Reusing test run id '${storedMetadata.runId}'...`,
           )
-          this.resetTests(
-            [testConfig],
-            branch,
-            ctx,
-            storedMetadata.runId,
-            storedMetadata.timestamp,
-          )
+
+          // Queue the configuration for batched resets
+          const batchKey = `${storedMetadata.runId}#${storedMetadata.timestamp}`
+          if (!reusableBatches[batchKey]) {
+            reusableBatches[batchKey] = {
+              runId: storedMetadata.runId,
+              timestamp: storedMetadata.timestamp,
+              configs: [],
+            }
+          }
+          reusableBatches[batchKey]!.configs.push(testConfig)
+
           // Store resolved run info
           resolvedRunId = storedMetadata.runId
           resolvedTimestamp = storedMetadata.timestamp
@@ -1033,6 +1062,12 @@ export class E2E {
       if (!isReused) {
         pendingConfigs.push(testConfig)
       }
+    }
+
+    // Execute batched resets per run ID instead of per test suite
+    for (const batchKey of Object.keys(reusableBatches)) {
+      const batch = reusableBatches[batchKey]!
+      this.resetTests(batch.configs, branch, ctx, batch.runId, batch.timestamp)
     }
 
     if (pendingConfigs.length > 0) {
