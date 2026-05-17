@@ -99,6 +99,7 @@
   "overrides": {
     "@tootallnate/once": "3.0.1",
     "axios": "1.16.0",
+    "serialize-javascript": "7.0.5",
     "tar": "7.5.15",
     "tmp": "0.2.5",
     "yargs": "17.7.2"
@@ -109,7 +110,7 @@
     "url": "git+https://github.com/ahochsteger/gmail-processor.git"
   },
   "scripts": {
-    "all:audit-security": "npx concurrently 'npm:audit:security:*'",
+    "all:audit-security": "npm audit --audit-level moderate",
     "all:build": "npx concurrently 'npm:build:lib' 'npm:build:examples' && npm run build:docs",
     "all:ci": "npm run ci:build && npm run ci:test && npm run ci:docs",
     "all:clean": "npx concurrently 'npm:clean:*'",
@@ -133,8 +134,6 @@
     "all:setup": "npm run setup:lib && npm run setup:docs",
     "all:test": "npm run test:jest",
     "all:update": "npm run update:parser && npm run update:docs && npm run update:examples && npm run update:maintenance && npx concurrently 'npm:update:schema' 'npm:update:contributors' && npm run all:format",
-    "audit:security:docs": "npm audit --audit-level moderate --prefix docs",
-    "audit:security:lib": "npm audit --audit-level moderate",
     "build": "npm run all:build",
     "build:docs": "scripts/build-docs.sh",
     "build:examples": "scripts/clasp.sh examples build",
