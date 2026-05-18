@@ -227,7 +227,11 @@ jobs:
       - id: build-docs
         if: ${{ steps.profile.outputs.enable_build_docs == 'true' }}
         name: Build docs
-        run: devbox --quiet run npm run ci:docs
+        run: |
+          if [ ! -d "build/gas/lib" ]; then
+            devbox --quiet run npm run ci:build
+          fi
+          devbox --quiet run npm run ci:docs
       - name: Upload Docs artifacts
         if: ${{ env.ACT != 'true' && steps.profile.outputs.enable_build_docs == 'true' }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7

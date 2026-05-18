@@ -178,6 +178,9 @@ jobs:
         if: ${{ (inputs.job == 'ci-release' || inputs.job == 'publish-release' || startsWith(inputs.job, 'force-')) && inputs.enable_build_docs && github.ref == 'refs/heads/main' }}
         name: Build docs
         run: |
+          if [ ! -d "build/gas/lib" ]; then
+            devbox --quiet run npm run ci:build
+          fi
           if [ ! -d "docs/build" ]; then
             devbox --quiet run npm run ci:docs
           fi
