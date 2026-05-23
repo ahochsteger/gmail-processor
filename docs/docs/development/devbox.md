@@ -35,8 +35,8 @@ Scripts are custom commands that can be run using this project's environment. Th
 The Shell Init Hook is a script that runs whenever the devbox environment is instantiated. It runs on `devbox shell` and on `devbox run`.
 
 ```sh
-test -z $DEVBOX_COREPACK_ENABLED || corepack enable --install-directory "/home/a13870/private/ws/github/ahochsteger/gmail-processor/.devbox/virtenv/nodejs/corepack-bin/"
-test -z $DEVBOX_COREPACK_ENABLED || export PATH="/home/a13870/private/ws/github/ahochsteger/gmail-processor/.devbox/virtenv/nodejs/corepack-bin/:$PATH"
+test -z $DEVBOX_COREPACK_ENABLED || corepack enable --install-directory "$PWD/.devbox/virtenv/nodejs/corepack-bin/"
+test -z $DEVBOX_COREPACK_ENABLED || export PATH="$PWD/.devbox/virtenv/nodejs/corepack-bin/:$PATH"
 echo 'Welcome to gmail-processor devbox!' > /dev/null
 ```
 

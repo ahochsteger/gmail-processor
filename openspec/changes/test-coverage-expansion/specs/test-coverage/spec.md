@@ -1,6 +1,7 @@
 # Test Coverage Specification
 
 ## Purpose
+
 Specifies the requirements for enforcing, maintaining, and verifying 100% test coverage across all codebase branches, lines, functions, and statements.
 
 ## Requirements
@@ -8,14 +9,18 @@ Specifies the requirements for enforcing, maintaining, and verifying 100% test c
 ## ADDED Requirements
 
 ### Requirement: Strict 100% Test Coverage Enforcement
+
 The Jest test runner and build pipeline SHALL enforce a 100% threshold for statements, branches, functions, and lines across the core library.
 
 #### Scenario: Verify CI Failure on Code Coverage Regression
+
 - **WHEN** a change is introduced that lacks full test coverage for its lines or branches
 - **THEN** the Jest coverage check must fail and halt the pre-commit or CI run.
 
 ### Requirement: Address Coverage Gaps in Core Library
+
 Specific uncovered lines and branches in the core modules SHALL be covered by targeting tests:
+
 - **`lib/actions/ActionRegistry.ts`**: lines `87`, `118-119` (uncovered functions/branches).
 - **`lib/actions/MessageActions.ts`**: lines `29-30`.
 - **`lib/actions/ThreadActions.ts`**: lines `19-20`.
@@ -37,6 +42,6 @@ Specific uncovered lines and branches in the core modules SHALL be covered by ta
 - **`lib/utils/Logger.ts`**: line `70`.
 
 #### Scenario: Full Branch Verification
+
 - **WHEN** the Jest coverage test suite is executed
 - **THEN** it must show 100% coverage on all these modules without leaving any uncovered lines.
-

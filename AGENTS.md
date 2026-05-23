@@ -46,7 +46,7 @@ The system uses a hierarchical context model to pass information through the pro
 - **MessageContext:** Info about the current GMail message.
 - **AttachmentContext:** Info about the current GMail attachment.
 
-_File Reference:_ [Context.ts](file:///home/a13870/private/ws/github/ahochsteger/gmail-processor/src/lib/Context.ts)
+_File Reference:_ [Context.ts](src/lib/Context.ts)
 
 ### 2. Processing Flow
 
@@ -57,7 +57,7 @@ Processing is handled by specialized processor classes that follow the hierarchy
 3. `MessageProcessor`
 4. `AttachmentProcessor`
 
-Base logic for matching and action execution is in the [BaseProcessor](file:///home/a13870/private/ws/github/ahochsteger/gmail-processor/src/lib/processors/BaseProcessor.ts) abstract class.
+Base logic for matching and action execution is in the [BaseProcessor](src/lib/processors/BaseProcessor.ts) abstract class.
 
 ### 3. Action Registry & Providers
 
@@ -152,6 +152,10 @@ When you modify or create an example in `src/examples/**.ts`, the build process 
 
 ## Repository Hygiene
 
+### Workspace Path Portability
+
+To ensure documentation and specification files remain portable across different developer machines and workspaces, you MUST NOT use absolute paths (e.g. `file:///home/...` or `file:///C:/...`) inside committed markdown files or specifications. Always use workspace-relative paths (e.g., `src/lib/Context.ts` or markdown links like `[Context.ts](src/lib/Context.ts)`) instead.
+
 ### Formatting & Ordering
 
 - **Canonical Formatting**: Every file (JS, TS, JSON, MD, etc.) must be canonically formatted before committing to prevent style-only changes in the Git history. Use `npm run lint-fix` (Prettier) for global formatting.
@@ -193,7 +197,7 @@ Actions must respect the `RunMode` (Dry-run, Safe, Dangerous) using decorators:
 - `@writingAction()`: Blocked in `DRY_RUN`.
 - `@destructiveAction()`: Only allowed in `DANGEROUS` mode.
 
-_File Reference:_ [Decorators.ts](file:///home/a13870/private/ws/github/ahochsteger/gmail-processor/src/lib/utils/Decorators.ts)
+_File Reference:_ [Decorators.ts](src/lib/utils/Decorators.ts)
 
 ## Commit Messages
 
