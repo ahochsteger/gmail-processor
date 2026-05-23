@@ -177,3 +177,45 @@ it("should handle error in getLogSheet when openById fails", () => {
     expect.stringContaining("Error opening logSheet"),
   )
 })
+
+it("should handle error in createLogSheet when openById fails for existing file", () => {
+  const existingFile = mock<GoogleAppsScript.Drive.File>()
+  existingFile.getUrl.mockReturnValue("http://existing-url")
+  existingFile.getId.mockReturnValue("existing-id")
+
+  const iterator = mock<GoogleAppsScript.Drive.FileIterator>()
+  iterator.hasNext.mockReturnValue(true)
+  iterator.next.mockReturnValue(existingFile)
+
+  const spyFind = jest
+    .spyOn(DriveUtils, "findFilesByLocation")
+    .mockReturnValue({
+      existingFiles: iterator,
+      locationInfo: { filename: "logsheet-existing" } as any,
+    } as any)
+
+  const freshMocks = MockFactory.newMocks()
+  freshMocks.processingContext.proc.config.settings.logSheetLocation = ""
+
+  const logAdapter = new LogAdapter(freshMocks.envContext, config.settings!)
+  const spyWarn = jest.spyOn(freshMocks.envContext.log, "warn")
+  ;(
+    freshMocks.envContext.env.spreadsheetApp.openById as jest.Mock
+  ).mockImplementation(() => {
+    throw new Error("Permission denied for openById")
+  })
+
+  const adapter = new SpreadsheetAdapter(
+    freshMocks.envContext,
+    freshMocks.processingContext.proc.config.settings!,
+    logAdapter,
+  )
+
+  adapter.settings.logSheetLocation = "existing-location"
+  adapter.initLogSheet()
+
+  expect(spyWarn).toHaveBeenCalledWith(
+    expect.stringContaining("Error opening logSheet"),
+  )
+  spyFind.mockRestore()
+})

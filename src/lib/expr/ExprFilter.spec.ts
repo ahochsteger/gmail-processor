@@ -37,6 +37,28 @@ describe("executeFilter()", () => {
       const actual = executeFilter("offsetDate", new Date("2024-12-01"), "-2d")
       expect(actual).toEqual(new Date("2024-11-29"))
     })
+    it("should throw error for invalid offsetDate duration", () => {
+      expect(() => {
+        executeFilter("offsetDate", new Date("2024-12-01"), "invalid-duration")
+      }).toThrow("ERROR: Cannot parse date offset: invalid-duration")
+    })
+    it("should handle formatDate with no arguments", () => {
+      const actual = executeFilter(
+        "formatDate",
+        new Date("2024-12-01T00:00:00Z"),
+      )
+      expect(actual).toEqual("2024-12-01 00:00:00")
+    })
+
+    it("should handle formatDate with empty string argument", () => {
+      const actual = executeFilter(
+        "formatDate",
+        new Date("2024-12-01T00:00:00Z"),
+        "",
+      )
+      expect(actual).toEqual("2024-12-01 00:00:00")
+    })
+
     it("should handle parseDate", () => {
       const actual = executeFilter("parseDate", "01.12.2024", "dd.MM.yyyy")
       expect(actual).toEqual(new Date("2024-12-01"))

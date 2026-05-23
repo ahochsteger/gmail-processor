@@ -39,3 +39,9 @@ it("should export a thread as PDF document", () => {
   expect(actual).toBeDefined()
   expect(actual.getContentType()).toEqual("application/pdf")
 })
+
+it("should throw an error if adding a label with empty name", () => {
+  expect(() => {
+    adapter.threadAddLabel(mocks.thread, "")
+  }).toThrow("Invalid label name: ''")
+})

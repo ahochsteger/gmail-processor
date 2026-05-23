@@ -55,4 +55,39 @@ describe("EnvProvider", () => {
       delete globalRecord[g]
     })
   })
+
+  it("should fall back to Etc/UTC if Session.getScriptTimeZone returns falsy", () => {
+    const mockGlobals = [
+      "CacheService",
+      "DriveApp",
+      "DocumentApp",
+      "Drive",
+      "GmailApp",
+      "MailApp",
+      "SpreadsheetApp",
+      "Utilities",
+      "Session",
+      "UrlFetchApp",
+      "PropertiesService",
+    ]
+    const globalRecord = global as Record<string, unknown>
+    mockGlobals.forEach((g) => {
+      globalRecord[g] = {}
+    })
+    globalRecord.Session = {
+      getScriptTimeZone: jest.fn().mockReturnValue(""),
+      getActiveUser: jest
+        .fn()
+        .mockReturnValue({ getEmail: () => "test@example.com" }),
+    }
+
+    const ctx = EnvProvider.defaultContext({ runMode: RunMode.DANGEROUS })
+
+    expect(ctx.env.timezone).toBe("Etc/UTC")
+
+    // Cleanup globals
+    mockGlobals.forEach((g) => {
+      delete globalRecord[g]
+    })
+  })
 })

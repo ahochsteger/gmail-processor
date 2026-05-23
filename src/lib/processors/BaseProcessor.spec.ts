@@ -79,6 +79,17 @@ class TestActionProvider implements ActionProvider {
   }
 }
 
+class TestStringErrorActionProvider implements ActionProvider {
+  [key: string]: ActionFunction
+  public stringErrorThrowingMethod(
+    _ctx: ProcessingContext,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _args: ActionArgsType = {},
+  ) {
+    throw "string-error-message"
+  }
+}
+
 it("should handle error throwing actions", () => {
   const mocks = MockFactory.newMocks()
   const actionRegistry = new ActionRegistry()
@@ -319,6 +330,27 @@ describe("buildRegExpSubstitutionMap()", () => {
     expect(result["message.matched"]?.value).toBe(false)
   })
 
+  it("should handle regex match groups without named groups", () => {
+    const mocks = MockFactory.newMocks()
+    const m: MetaInfo = {
+      "message.subject": newMetaInfo(
+        MetaInfoType.STRING,
+        "Order #12345",
+        "",
+        "",
+      ),
+    }
+    const regexMap = new Map([["subject", "Order #([0-9]+)"]])
+    const result = BaseProcessor.buildRegExpSubstitutionMap(
+      mocks.processingContext,
+      m,
+      "message",
+      regexMap,
+    )
+    expect(result["message.subject.match.1"]?.value).toBe("12345")
+    expect(result["message.matched"]?.value).toBe(true)
+  })
+
   it("should handle effectiveValue with global set and local unset", () => {
     const res = TestProcessor["effectiveValue"](true, false, false)
     expect(res).toBe(true)
@@ -354,5 +386,80 @@ describe("buildRegExpSubstitutionMap()", () => {
       actionResult,
     )
     expect(attachmentTrace.traces.attachment).toBeDefined()
+  })
+
+  it("should handle effectiveCSV with undefined global", () => {
+    const res = TestProcessor["effectiveCSV"](undefined, "a,b")
+    expect(res).toBe(",a,b")
+  })
+
+  it("should handle effectiveMaxNumber with undefined global or local", () => {
+    const res1 = TestProcessor["effectiveMaxNumber"](undefined, 10, -1)
+    expect(res1).toBe(10)
+    const res2 = TestProcessor["effectiveMaxNumber"](5, -1, -1)
+    expect(res2).toBe(5)
+    const res3 = TestProcessor["effectiveMaxNumber"](5, 10, -1)
+    expect(res3).toBe(10)
+  })
+
+  it("should handle effectiveMinNumber with undefined global or local", () => {
+    const res1 = TestProcessor["effectiveMinNumber"](undefined, 10, -1)
+    expect(res1).toBe(10)
+    const res2 = TestProcessor["effectiveMinNumber"](5, -1, -1)
+    expect(res2).toBe(5)
+    const res3 = TestProcessor["effectiveMinNumber"](5, 10, -1)
+    expect(res3).toBe(5)
+  })
+
+  it("should handle getRefDocs with non-empty description", () => {
+    const res = TestProcessor["getRefDocs"](
+      "thread",
+      "moveToArchive",
+      "Some description.",
+    )
+    expect(res).toContain("Some description. See [GmailThread.moveToArchive()]")
+  })
+
+  it("should handle string throwing actions", () => {
+    const mocks = MockFactory.newMocks()
+    const actionRegistry = new ActionRegistry()
+    actionRegistry.registerActionProvider(
+      "test",
+      new TestStringErrorActionProvider(),
+    )
+    let result = newProcessingResult()
+    expect(() => {
+      result = TestProcessor.execute(
+        mocks.processingContext,
+        ProcessingStage.MAIN,
+        result,
+        [
+          {
+            name: "test.stringErrorThrowingMethod",
+            processingStage: ProcessingStage.MAIN,
+          },
+        ],
+      )
+    }).toThrow()
+  })
+
+  it("should handle matchesRules regex undefined value branch", () => {
+    const mocks = MockFactory.newMocks()
+    const res = BaseProcessor["matchesRules"](mocks.processingContext, [
+      { name: "test", type: "regex", config: "abc", value: undefined },
+    ])
+    expect(res).toBe(false)
+  })
+
+  it("should handle getStr default fallback", () => {
+    const res = BaseProcessor["getStr"](undefined as any, "default")
+    expect(res).toBe("default")
+  })
+
+  it("should handle getRefDocs empty description", () => {
+    const res = TestProcessor["getRefDocs"]("thread", "moveToArchive", "")
+    expect(res).toBe(
+      "See [GmailThread.moveToArchive()](https://developers.google.com/apps-script/reference/gmail/gmail-thread#moveToArchive\\(\\)) reference docs.",
+    )
   })
 })

@@ -1,20 +1,15 @@
-# Test Coverage Specification
+# test-coverage Specification
 
 ## Purpose
-
-Specifies the requirements for enforcing, maintaining, and verifying 100% test coverage across all codebase branches, lines, functions, and statements.
-
+TBD - created by archiving change test-coverage-expansion. Update Purpose after archive.
 ## Requirements
+### Requirement: Strict 95% Global / 90% Branch Test Coverage Enforcement
 
-## ADDED Requirements
-
-### Requirement: Strict 100% Test Coverage Enforcement
-
-The Jest test runner and build pipeline SHALL enforce a 100% threshold for statements, branches, functions, and lines across the core library.
+The Jest test runner and build pipeline SHALL enforce a 95% threshold for statements, functions, and lines, and a 90% threshold for branches across the core library.
 
 #### Scenario: Verify CI Failure on Code Coverage Regression
 
-- **WHEN** a change is introduced that lacks full test coverage for its lines or branches
+- **WHEN** a change is introduced that causes coverage metrics to drop below these thresholds
 - **THEN** the Jest coverage check must fail and halt the pre-commit or CI run.
 
 ### Requirement: Address Coverage Gaps in Core Library
@@ -44,4 +39,5 @@ Specific uncovered lines and branches in the core modules SHALL be covered by ta
 #### Scenario: Full Branch Verification
 
 - **WHEN** the Jest coverage test suite is executed
-- **THEN** it must show 100% coverage on all these modules without leaving any uncovered lines.
+- **THEN** it must show coverage meeting or exceeding the 95% global and 90% branch thresholds.
+

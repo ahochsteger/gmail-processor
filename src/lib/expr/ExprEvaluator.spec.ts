@@ -1,6 +1,7 @@
 import { ConfigMocks } from "../../test/mocks/ConfigMocks"
 import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
 import { ExprEvaluator, ExprListener } from "./ExprEvaluator"
+import * as ExprFilter from "./ExprFilter"
 
 let mocks: Mocks
 
@@ -181,9 +182,35 @@ describe("ExprEvaluator edge cases", () => {
 
   it("should throw error for visitErrorNode", () => {
     const listener = new ExprListener(mocks.messageContext)
+    listener["ctxs"].parseRoot = { getText: () => "root-expr" } as any
     expect(() =>
       listener.visitErrorNode({ getText: () => "err" } as any),
-    ).toThrow("Error parsing 'err'")
+    ).toThrow("Error parsing 'err' in expression 'root-expr'")
+  })
+
+  it("should handle legacy placeholder without arguments", () => {
+    const result = ExprEvaluator.evaluate(
+      mocks.messageContext,
+      "${message.date:date}",
+    )
+    expect(result).toBeDefined()
+  })
+
+  it("should log warning and handle undefined value in anyValueToString", () => {
+    const warnSpy = jest.spyOn(mocks.processingContext.log, "warn")
+    const ctxs = {
+      gmailProcessor: mocks.messageContext,
+      parseRoot: { getText: () => "root-expr" } as any,
+      parseCurrent: { getText: () => "curr-expr" } as any,
+      data: mocks.messageContext.meta,
+    }
+    const result = ExprEvaluator.anyValueToString(ctxs, undefined)
+    expect(result).toBe("")
+    expect(warnSpy).toHaveBeenCalledWith(
+      expect.stringContaining(
+        "About to process an undefined value with 'curr-expr' 'root-expr'",
+      ),
+    )
   })
 
   it("should handle objectValueToString with Arrays (join filter)", () => {
@@ -271,9 +298,21 @@ describe("ExprEvaluator edge cases", () => {
   })
 
   it("should handle objectValueToString fallback for Array join", () => {
-    // Mock executeFilter to return undefined for 'join' to hit line 216 fallback
     const result = ExprEvaluator.objectValueToString([], "default-fallback")
-    expect(result).toBe("") // Empty array join returns empty string, not fallback?
-    // Let's check the code: (executeFilter("join", value as ValueType) as string | undefined) ?? defaultValue
+    expect(result).toBe("") // Empty array join returns empty string, not fallback
+  })
+
+  it("should handle objectValueToString fallback for Array join when executeFilter returns undefined", () => {
+    const originalFn = ExprFilter.filterFunctions.join.fn
+    ExprFilter.filterFunctions.join.fn = () => undefined
+    try {
+      const result = ExprEvaluator.objectValueToString(
+        ["a", "b"],
+        "default-fallback",
+      )
+      expect(result).toBe("default-fallback")
+    } finally {
+      ExprFilter.filterFunctions.join.fn = originalFn
+    }
   })
 })

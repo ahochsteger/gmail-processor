@@ -158,6 +158,14 @@ describe("ActionRegistry.registerActionProvider()", () => {
       "testAttachment.instanceAttachmentMethodWithArgs",
     ])
   })
+  it("should throw an error when registering a duplicate provider name", () => {
+    expect(() => {
+      actionRegistry.registerActionProvider(
+        "testThread",
+        new TestThreadActionProvider(),
+      )
+    }).toThrow("An action provider with name testThread is already registered!")
+  })
 })
 
 describe("ActionRegistry.getActions()", () => {
@@ -171,6 +179,13 @@ describe("ActionRegistry.getActions()", () => {
       "testThread.instanceThreadMethodWithArgs",
       "testThread.staticThreadMethodWithArgs",
     ])
+  })
+})
+
+describe("ActionRegistry.getActionProviders()", () => {
+  it("should return the map of registered action providers", () => {
+    const providers = actionRegistry.getActionProviders()
+    expect(providers.has("testThread")).toBe(true)
   })
 })
 

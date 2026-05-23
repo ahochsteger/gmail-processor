@@ -73,3 +73,40 @@ it("should create a field config compliant JSON log object", () => {
     "env.runMode": mocks.processingContext.env.runMode,
   })
 })
+
+it("should extract custom field value when ctxValues[ctx.type] is defined", () => {
+  const field = {
+    name: "custom-field",
+    title: "Custom Field",
+    ctxValues: {
+      attachment: "custom-attachment-value",
+    },
+  }
+  const actual = richLogAdapter.getLogFieldValue(
+    mocks.attachmentContext,
+    field,
+    {
+      location: "LogAdapter.spec",
+      message: "Log message",
+    },
+  )
+  expect(actual).toEqual("custom-attachment-value")
+})
+
+it("should extract custom field value fallback when field.value is null", () => {
+  const field = {
+    name: "custom-field",
+    title: "Custom Field",
+    value: null as any,
+    ctxValues: {},
+  }
+  const actual = richLogAdapter.getLogFieldValue(
+    mocks.attachmentContext,
+    field,
+    {
+      location: "LogAdapter.spec",
+      message: "Log message",
+    },
+  )
+  expect(actual).toEqual("")
+})

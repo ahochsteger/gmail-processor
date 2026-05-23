@@ -55,6 +55,12 @@ it("should mark a thread as important", () => {
   expect(mocks.thread.markImportant).toHaveBeenCalled()
 })
 
+it("should do nothing on noop", () => {
+  const spyInfo = jest.spyOn(mocks.threadContext.log, "info")
+  ThreadActions.noop(mocks.threadContext)
+  expect(spyInfo).toHaveBeenCalledWith("NOOP: Do nothing.")
+})
+
 it("should not mark a thread as important (dryRun)", () => {
   const dryRunMocks = MockFactory.newMocks(
     ConfigMocks.newDefaultConfig(),

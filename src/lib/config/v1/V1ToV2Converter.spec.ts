@@ -596,3 +596,36 @@ it("should handle newerThan and trailing slash in V1 rule", () => {
       .location,
   ).toBe("/SomeFolder/{{attachment.name}}")
 })
+
+it("should handle missing filter but defined newerThan in rule", () => {
+  const v1config: V1Config = {
+    ...defaultV1Config,
+    rules: [
+      {
+        filter: "",
+        folder: "SomeFolder",
+        newerThan: "1d",
+      },
+    ],
+  }
+  const actual = V1ToV2Converter.v1ConfigToV2Config(v1config)
+  expect(actual.threads[0].match.query).toEqual(" newer_than:1d")
+})
+
+it("should handle empty globalFilter and newerThan in V1 config", () => {
+  const v1config: V1Config = {
+    ...defaultV1Config,
+    globalFilter: "",
+    newerThan: "",
+    rules: [
+      {
+        filter: "from:someone",
+        folder: "SomeFolder",
+      },
+    ],
+  }
+  const actual = V1ToV2Converter.v1ConfigToV2Config(v1config)
+  expect(actual.global?.thread?.match?.query).toEqual(
+    "has:attachment -in:trash -in:drafts -in:spam newer_than:1d -label:to-gdrive/processed",
+  )
+})

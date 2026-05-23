@@ -1,4 +1,4 @@
-import { MockProxy } from "jest-mock-extended"
+import { MockProxy, mock } from "jest-mock-extended"
 import {
   EXISTING_FILE_ID,
   EXISTING_FILE_NAME,
@@ -454,5 +454,77 @@ describe("extractAttachmentText()", () => {
     )
     // The doc file should NOT be trashed
     expect(mocks.newFile.setTrashed).not.toHaveBeenCalled()
+  })
+})
+
+describe("createFile() unknown strategy fallback", () => {
+  it("should warn and fallback to KEEP for unknown strategy", () => {
+    gdriveAdapter.ctx.env.runMode = RunMode.DANGEROUS
+    const warnSpy = jest.spyOn(gdriveAdapter.ctx.log, "warn")
+    const file = gdriveAdapter.createFile(
+      `/${EXISTING_FILE_NAME}`,
+      new FileContent(mocks.existingBlob),
+      "UNKNOWN_STRATEGY" as ConflictStrategy,
+    )
+    expect(file).toBeDefined()
+    expect(warnSpy).toHaveBeenCalledWith(
+      expect.stringContaining("Unknown conflict strategy 'UNKNOWN_STRATEGY'"),
+    )
+    expect(mocks.rootFolder.createFile).toHaveBeenCalled()
+  })
+})
+
+describe("GDriveAdapter additional coverage", () => {
+  it("should handle FileContent with blob getName returning null", () => {
+    const mockBlob = mock<GoogleAppsScript.Base.Blob>()
+    mockBlob.getName.mockReturnValue(null as any)
+    const fileContent = new FileContent(mockBlob)
+    expect(fileContent.name).toBe("")
+  })
+
+  it("should throw error when createdFile has no ID", () => {
+    ;(
+      mocks.driveApi
+        .Files as MockProxy<GoogleAppsScript.Drive_v3.Drive.V3.Collection.FilesCollection>
+    ).create.mockReturnValue({ id: undefined })
+    expect(() => {
+      gdriveAdapter.createFile(
+        `/new-file.pdf`,
+        new FileContent(mocks.newBlob, "new-file.pdf", "", "application/pdf"),
+        ConflictStrategy.KEEP,
+      )
+    }).toThrow(
+      "Failed creating file 'new-file.pdf'  (using MimeType 'application/pdf')!",
+    )
+  })
+
+  it("should return null text if docsFile has no ID in extractAttachmentText", () => {
+    ;(
+      mocks.driveApi
+        .Files as MockProxy<GoogleAppsScript.Drive_v3.Drive.V3.Collection.FilesCollection>
+    ).create.mockReturnValue({ id: undefined })
+    const attachment = mock<GoogleAppsScript.Gmail.GmailAttachment>()
+    attachment.getName.mockReturnValue("generic.pdf")
+    attachment.copyBlob.mockReturnValue(mocks.newBlob)
+
+    const result = gdriveAdapter.extractAttachmentText(attachment, {
+      language: "en",
+      docsFileLocation: "generic-doc",
+    })
+    expect(result.text).toBeNull()
+  })
+
+  it("should format location correctly when folderId is present in getActionMeta", () => {
+    mocks.existingFile.getName.mockReturnValue("existing-file.txt")
+    const result = gdriveAdapter.getActionMeta(
+      mocks.existingFile,
+      "{id:some-folder-id}/folder/existing-file.txt",
+      "file",
+      "test",
+      "test.action",
+    )
+    expect(result["test.stored.location"]?.value).toBe(
+      "{id:some-folder-id}/folder/existing-file.txt",
+    )
   })
 })

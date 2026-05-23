@@ -311,4 +311,9 @@ describe("order threads", () => {
     )
     expect(threads.map((t) => t.getId())).toEqual(["t3", "t2", "t1"])
   })
+
+  it("should return empty map for undefined config in getRegexMapFromThreadMatchConfig", () => {
+    const result = ThreadProcessor.getRegexMapFromThreadMatchConfig(undefined)
+    expect(result.size).toBe(0)
+  })
 })

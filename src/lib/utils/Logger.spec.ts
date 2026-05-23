@@ -153,3 +153,20 @@ describe("redact", () => {
     expect(actual).toEqual("")
   })
 })
+
+describe("redactJsonSecrets", () => {
+  it("should return empty string for null or undefined value", () => {
+    const logger = new Logger()
+    expect(logger.redactJsonSecrets(null)).toEqual("")
+    expect(logger.redactJsonSecrets(undefined)).toEqual("")
+    expect(logger.redactJsonSecrets("")).toEqual("")
+  })
+
+  it("should redact secrets in JSON", () => {
+    const logger = new Logger()
+    const input = '{"password":"mySecretPassword","other":"public"}'
+    expect(logger.redactJsonSecrets(input)).toEqual(
+      '{"password":"(redacted)","other":"public"}',
+    )
+  })
+})

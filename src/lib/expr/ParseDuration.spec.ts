@@ -144,4 +144,14 @@ describe("parseDuration()", () => {
     // To hit line 89 valid side
     expect(parseDuration("Infinity")).toBe(Infinity)
   })
+
+  it("should return null if parseFloat returns NaN during match processing", () => {
+    const originalParseFloat = global.parseFloat
+    global.parseFloat = () => NaN
+    try {
+      expect(parseDuration("10ms")).toBeNull()
+    } finally {
+      global.parseFloat = originalParseFloat
+    }
+  })
 })

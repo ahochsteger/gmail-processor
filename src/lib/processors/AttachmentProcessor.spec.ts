@@ -284,3 +284,24 @@ describe("order attachments", () => {
     expect(attachments.map((t) => t.getHash())).toEqual(["a3", "a2", "a1"])
   })
 })
+
+describe("getRegexMapFromAttachmentMatchConfig", () => {
+  it("should return empty map for undefined config", () => {
+    const result =
+      AttachmentProcessor.getRegexMapFromAttachmentMatchConfig(undefined)
+    expect(result.size).toBe(0)
+  })
+})
+
+describe("processConfigs() matching", () => {
+  it("should process matching attachment configs", () => {
+    const result = AttachmentProcessor.processConfigs(mocks.messageContext, [
+      newAttachmentConfig({
+        match: {
+          name: ".*",
+        },
+      }),
+    ])
+    expect(result.processedAttachments).toBeGreaterThanOrEqual(1)
+  })
+})

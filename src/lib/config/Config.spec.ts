@@ -290,3 +290,50 @@ it("should handle partial plainToInstance for Config", () => {
   expect(cfg.attachments).toEqual([])
   expect(cfg.threads).toHaveLength(1)
 })
+
+describe("configToJson without defaults", () => {
+  it("should serialize config to JSON stripping default values", () => {
+    const configJson: ProcessingConfig = {
+      description: "config description",
+      settings: {
+        markProcessedMethod: MarkProcessedMethod.ADD_THREAD_LABEL,
+        markProcessedLabel: "some label",
+      },
+      threads: [
+        {
+          description: "thread description",
+        },
+      ],
+    }
+    const cfg = newConfig(configJson)
+    const actual = configToJson(cfg, false)
+    expect(actual.settings?.maxBatchSize).toBeUndefined()
+  })
+})
+
+describe("MarkProcessedMethod.CUSTOM normalization", () => {
+  it("should not add labels or mark messages read when using CUSTOM method", () => {
+    const cfg = newConfig({
+      settings: {
+        markProcessedMethod: MarkProcessedMethod.CUSTOM,
+      },
+      threads: [{}],
+    })
+    expect(cfg.settings.markProcessedMethod).toEqual(MarkProcessedMethod.CUSTOM)
+  })
+})
+
+describe("Config normalization of partial global sub-configs", () => {
+  it("should initialize empty global thread, message, and attachment configurations when missing", () => {
+    const cfg = newConfig({
+      settings: {
+        markProcessedMethod: MarkProcessedMethod.ADD_THREAD_LABEL,
+      },
+      global: {},
+      threads: [{}],
+    })
+    expect(cfg.global.thread).toBeDefined()
+    expect(cfg.global.message).toBeDefined()
+    expect(cfg.global.attachment).toBeDefined()
+  })
+})

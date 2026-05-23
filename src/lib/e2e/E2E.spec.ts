@@ -1,6 +1,7 @@
 import { mock } from "jest-mock-extended"
 import { ExampleCategory, ExampleInfo } from "../../examples/Example"
 import { ConfigMocks } from "../../test/mocks/ConfigMocks"
+import { GMailMocks } from "../../test/mocks/GMailMocks"
 import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
 import {
   ContextType,
@@ -892,5 +893,143 @@ describe("E2E edge cases", () => {
     const res2 = E2E.assert({} as any, {} as any, assertion2, ctx)
     expect(res2.message).toContain("Expected: /regex/")
     expect(res2.message).toContain("Actual: {")
+  })
+})
+
+describe("ensureTestData and properties pruning", () => {
+  it("should warn and use fallback if propertiesService returns no properties", () => {
+    const localCtx = MockFactory.newMocks().envContext
+    localCtx.env.propertiesService = undefined as any
+    const spyWarn = jest.spyOn(localCtx.log, "warn")
+    const testConfig = {
+      info: { category: "basics", name: "test" },
+      initConfig: { mails: [] },
+      globals: { subjectPrefix: "prefix" },
+    } as any
+
+    const spyInit = jest.spyOn(E2E, "initAllTests").mockReturnValue("run-id")
+
+    const result = E2E.ensureTestData([testConfig], "main", localCtx)
+    expect(result.runId).toBe("run-id")
+    expect(spyWarn).toHaveBeenCalledWith(
+      expect.stringContaining("PropertiesService not available"),
+    )
+    spyInit.mockRestore()
+  })
+
+  it("should prune obsolete properties and handle invalid JSON", () => {
+    const localMocks = MockFactory.newMocks()
+    const localCtx = localMocks.envContext
+    const properties = mock<GoogleAppsScript.Properties.Properties>()
+    ;(
+      localCtx.env.propertiesService.getUserProperties as jest.Mock
+    ).mockReturnValue(properties)
+
+    const now = new Date().getTime()
+    const oldTimestamp = now - 40 * 24 * 60 * 60 * 1000
+    const recentTimestamp = now - 2 * 24 * 60 * 60 * 1000
+
+    const mockProps = {
+      E2E_METADATA_basics_test_old: JSON.stringify({
+        timestamp: new Date(oldTimestamp).toISOString(),
+      }),
+      E2E_METADATA_basics_test_recent: JSON.stringify({
+        timestamp: new Date(recentTimestamp).toISOString(),
+      }),
+      E2E_METADATA_basics_test_invalid: "invalid-json",
+      OTHER_KEY: "val",
+    }
+    properties.getProperties.mockReturnValue(mockProps)
+
+    E2E["pruneObsoleteProperties"](properties, localCtx)
+
+    expect(properties.deleteProperty).toHaveBeenCalledWith(
+      "E2E_METADATA_basics_test_old",
+    )
+    expect(properties.deleteProperty).toHaveBeenCalledWith(
+      "E2E_METADATA_basics_test_invalid",
+    )
+    expect(properties.deleteProperty).not.toHaveBeenCalledWith(
+      "E2E_METADATA_basics_test_recent",
+    )
+  })
+
+  it("should handle error during properties pruning", () => {
+    const localMocks = MockFactory.newMocks()
+    const localCtx = localMocks.envContext
+    const properties = mock<GoogleAppsScript.Properties.Properties>()
+    ;(
+      localCtx.env.propertiesService.getUserProperties as jest.Mock
+    ).mockReturnValue(properties)
+    properties.getProperties.mockImplementation(() => {
+      throw new Error("Get properties failed")
+    })
+    const spyWarn = jest.spyOn(localCtx.log, "warn")
+
+    E2E["pruneObsoleteProperties"](properties, localCtx)
+
+    expect(spyWarn).toHaveBeenCalledWith(
+      expect.stringContaining("Failed to prune: Error: Get properties failed"),
+    )
+  })
+
+  it("should reuse cached test run if data hash matches and enough emails exist", () => {
+    const localMocks = MockFactory.newMocks()
+    const localCtx = localMocks.envContext
+    const properties = mock<GoogleAppsScript.Properties.Properties>()
+    ;(
+      localCtx.env.propertiesService.getUserProperties as jest.Mock
+    ).mockReturnValue(properties)
+
+    const testConfig = {
+      info: { category: "basics", name: "test-reuse" },
+      initConfig: { mails: [{ subject: "test" }] },
+      globals: {},
+    } as any
+
+    const currentHash = E2E.generateDataHash([testConfig], localCtx)
+
+    properties.getProperty.mockReturnValue(
+      JSON.stringify({
+        runId: "reused-run-id",
+        timestamp: new Date().toISOString(),
+        dataHash: currentHash,
+      }),
+    )
+
+    const mockThread = GMailMocks.newThreadMock({
+      messages: [{ subject: "[GmailProcessor-Test] [reused-run-id] test" }],
+    })
+    ;(localCtx.env.gmailApp.search as jest.Mock).mockReturnValue([mockThread])
+
+    const spyReset = jest.spyOn(E2E, "resetTests").mockImplementation(() => {})
+
+    const result = E2E.ensureTestData([testConfig], "main", localCtx)
+
+    expect(result.runId).toBe("reused-run-id")
+    expect(spyReset).toHaveBeenCalled()
+    spyReset.mockRestore()
+  })
+
+  it("should initialize new test data and store metadata when cache is missing", () => {
+    const localMocks = MockFactory.newMocks()
+    const localCtx = localMocks.envContext
+    const properties = mock<GoogleAppsScript.Properties.Properties>()
+    ;(
+      localCtx.env.propertiesService.getUserProperties as jest.Mock
+    ).mockReturnValue(properties)
+
+    const testConfig = {
+      info: { category: "basics", name: "test-new" },
+      initConfig: { mails: [{ subject: "test", body: "body" }] },
+      globals: {},
+    } as any
+
+    properties.getProperty.mockReturnValue(null) // No cache
+
+    const result = E2E.ensureTestData([testConfig], "main", localCtx)
+
+    expect(result.runId).toBeDefined()
+    expect(properties.setProperty).toHaveBeenCalled()
   })
 })

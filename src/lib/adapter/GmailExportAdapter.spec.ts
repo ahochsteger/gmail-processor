@@ -299,6 +299,36 @@ describe("Image Embedding", () => {
     expect(actual).toContain(`<img src="${inlineImageCid}">`)
     expect(utilities.base64Encode).not.toHaveBeenCalledWith(inlineImageBytes) // Ensure it wasn't called for this image
   })
+
+  it("should process style attributes with single quotes", () => {
+    const body = `<p style='background: url("${remoteImageUrl}")'>Styled</p>`
+    const message = GMailMocks.newMessageMock({ body })
+    const actual = adapter.generateMessagesHtml([message], {
+      embedRemoteImages: true,
+      includeHeader: false,
+    })
+    expect(actual).toContain(`style='background: url("${remoteImageDataUri}")'`)
+  })
+
+  it("should fallback to original URL in style attributes if getDataUri returns null", () => {
+    const body = `<p style="background: url('${failedImageUrl}')">Styled</p>`
+    const message = GMailMocks.newMessageMock({ body })
+    const actual = adapter.generateMessagesHtml([message], {
+      embedRemoteImages: true,
+      includeHeader: false,
+    })
+    expect(actual).toContain(`style="background: url('${failedImageUrl}')"`)
+  })
+
+  it("should fallback to original URL in style tags if getDataUri returns null", () => {
+    const body = `<style>.bg { background-image: url("${failedImageUrl}"); }</style><p class="bg">Styled</p>`
+    const message = GMailMocks.newMessageMock({ body })
+    const actual = adapter.generateMessagesHtml([message], {
+      embedRemoteImages: true,
+      includeHeader: false,
+    })
+    expect(actual).toContain(`background-image: url("${failedImageUrl}");`)
+  })
 })
 
 describe("addressesToHtml", () => {
@@ -340,5 +370,15 @@ describe("getDataUri edge cases", () => {
   it("should return null if no image blob is provided", () => {
     const result = (adapter as any).getDataUri(undefined)
     expect(result).toBeNull()
+  })
+})
+
+describe("getAvatar edge cases", () => {
+  it("should return null avatar if email or address is falsy", () => {
+    const res1 = (adapter as any).getAvatar(undefined)
+    expect(res1).toBeNull()
+
+    const res2 = (adapter as any).getAvatar({ address: "" })
+    expect(res2).toBeNull()
   })
 })

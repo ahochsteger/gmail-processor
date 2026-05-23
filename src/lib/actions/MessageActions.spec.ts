@@ -55,6 +55,12 @@ it("should forward a message", () => {
   expect(mocks.message.forward).toHaveBeenCalled()
 })
 
+it("should do nothing on noop", () => {
+  const spyInfo = jest.spyOn(mocks.messageContext.log, "info")
+  MessageActions.noop(mocks.messageContext)
+  expect(spyInfo).toHaveBeenCalledWith("NOOP: Do nothing.")
+})
+
 it("should not forward a message (dry-run)", () => {
   const dryRunMocks = MockFactory.newMocks(
     ConfigMocks.newDefaultConfig(),
@@ -88,6 +94,17 @@ it("should store a message as PDF", () => {
     location: `${E2E_BASE_FOLDER_NAME}/${NEW_PDF_FILE_NAME}`,
     conflictStrategy: ConflictStrategy.KEEP,
     skipHeader: false,
+  })
+  expect(mocks.newHtmlBlob.getAs).toHaveBeenCalledWith("application/pdf")
+  expect(mocks.newPdfBlob.getDataAsString()).toEqual(NEW_PDF_FILE_CONTENT)
+  expect(result.file).toBeDefined()
+})
+
+it("should store a message as PDF with skipHeader true", () => {
+  const result = MessageActions.storePDF(mocks.messageContext, {
+    location: `${E2E_BASE_FOLDER_NAME}/${NEW_PDF_FILE_NAME}`,
+    conflictStrategy: ConflictStrategy.KEEP,
+    skipHeader: true,
   })
   expect(mocks.newHtmlBlob.getAs).toHaveBeenCalledWith("application/pdf")
   expect(mocks.newPdfBlob.getDataAsString()).toEqual(NEW_PDF_FILE_CONTENT)

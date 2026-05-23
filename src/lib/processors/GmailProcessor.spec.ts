@@ -2,6 +2,8 @@ import { ConfigMocks } from "../../test/mocks/ConfigMocks"
 import { GMailMocks } from "../../test/mocks/GMailMocks"
 import { MockFactory, Mocks } from "../../test/mocks/MockFactory"
 import { ProcessingStatus, newProcessingResult } from "../Context"
+import { ActionRegistry } from "../actions/ActionRegistry"
+
 import { ProcessingStage } from "../config/ActionConfig"
 import { Config, RequiredConfig } from "../config/Config"
 import { LogLevel, MarkProcessedMethod } from "../config/SettingsConfig"
@@ -234,4 +236,45 @@ it("should report non-OK status in reportResults", () => {
   )
   expect(spyError).toHaveBeenCalledWith(expect.stringContaining("test-action"))
   expect(spyError).toHaveBeenCalledWith(expect.stringContaining("test-error"))
+})
+
+describe("setupActionRegistry", () => {
+  it("should setup action registry with default registry", () => {
+    const registry = GmailProcessor.setupActionRegistry(mocks.envContext)
+    expect(registry.getActionProviders().size).toBeGreaterThan(0)
+  })
+
+  it("should setup action registry with custom registry", () => {
+    const customRegistry = new ActionRegistry()
+    const registry = GmailProcessor.setupActionRegistry(
+      mocks.envContext,
+      customRegistry,
+    )
+    expect(registry).toBe(customRegistry)
+    expect(registry.getActionProviders().size).toBeGreaterThan(0)
+  })
+})
+
+it("should report non-Error exception in reportResults", () => {
+  const freshMocks = MockFactory.newMocks()
+  const spyError = jest.spyOn(freshMocks.envContext.log, "error")
+  const result = newProcessingResult()
+  result.status = ProcessingStatus.ERROR
+  result.error = "test-error-string" as any
+
+  GmailProcessor["reportResults"](freshMocks.envContext, result, "text")
+
+  expect(spyError).toHaveBeenCalledWith(
+    expect.stringContaining("test-error-string"),
+  )
+})
+
+it("should handle variable with undefined value", () => {
+  const freshMocks = MockFactory.newMocks()
+  const ctx = freshMocks.processingContext
+  const variables = [{ key: "myVar", value: undefined, type: "string" }] as any
+  ctx.proc.config.global.variables = variables
+
+  const result = GmailProcessor.buildMetaInfo(ctx)
+  expect(result["variables.myVar"]?.value).toBe("")
 })

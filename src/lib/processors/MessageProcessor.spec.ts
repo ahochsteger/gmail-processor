@@ -256,3 +256,23 @@ describe("order messages", () => {
     expect(messages.map((t) => t.getId())).toEqual(["m3", "m2", "m1"])
   })
 })
+
+describe("getRegexMapFromMessageMatchConfig", () => {
+  it("should return empty map for undefined config", () => {
+    const result = MessageProcessor.getRegexMapFromMessageMatchConfig(undefined)
+    expect(result.size).toBe(0)
+  })
+})
+
+describe("processConfigs()", () => {
+  it("should process message configs and match messages", () => {
+    const result = MessageProcessor.processConfigs(mocks.threadContext, [
+      newMessageConfig({
+        match: {
+          subject: ".*",
+        },
+      }),
+    ])
+    expect(result.processedMessages).toBeGreaterThanOrEqual(1)
+  })
+})

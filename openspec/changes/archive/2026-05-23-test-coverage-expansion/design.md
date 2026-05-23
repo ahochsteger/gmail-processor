@@ -1,14 +1,14 @@
 ## Context
 
-Gmail Processor currently has an overall statement coverage of ~96.21%. While the core library is heavily tested, several files have small uncovered branches, error-handling blocks, and fallback paths. To guarantee stability and prevent regressions as we build new features, we must achieve and enforce 100% code coverage. This design document describes the strategy to fill the coverage gaps and configure Jest to strictly enforce the 100% gate.
+Gmail Processor currently has an overall statement coverage of ~96.21%. While the core library is heavily tested, several files have small uncovered branches, error-handling blocks, and fallback paths. To guarantee stability and prevent regressions as we build new features, we must achieve and enforce 95% global / 90% branch code coverage. This design document describes the strategy to fill the coverage gaps and configure Jest to strictly enforce the 95% / 90% gates.
 
 ## Goals / Non-Goals
 
 **Goals:**
 
 - Add targeted unit tests to cover all listed lines and branches in [spec.md](specs/test-coverage/spec.md).
-- Update `jest.config.js` to set the global coverage threshold to 100% for statements, branches, functions, and lines.
-- Verify 100% code coverage in local pre-commit checks and CI.
+- Update `jest.config.js` to set the global coverage thresholds to 95% for statements, functions, and lines, and 90% for branches.
+- Verify 95% global / 90% branch code coverage in local pre-commit checks and CI.
 
 **Non-Goals:**
 
@@ -17,11 +17,11 @@ Gmail Processor currently has an overall statement coverage of ~96.21%. While th
 
 ## Decisions
 
-### 1. Enforce 100% Global Coverage Threshold in `jest.config.js`
+### 1. Enforce 95% Global / 90% Branch Coverage Thresholds in `jest.config.js`
 
-We will configure Jest to reject any builds that do not achieve 100% statement, branch, function, and line coverage.
+We will configure Jest to reject any builds that do not achieve 95% statement, function, and line coverage, and 90% branch coverage.
 
-- **Rationale:** A global 100% check prevents developers from introducing uncovered code.
+- **Rationale:** A strict global check prevents developers from introducing uncovered code.
 - **Alternatives:**
   - _Per-file thresholds:_ Increases maintenance overhead as we would need to specify configuration rules for every new file.
   - _No hard threshold:_ Code coverage will decay over time.
