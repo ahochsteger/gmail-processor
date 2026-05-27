@@ -102,7 +102,7 @@
     "axios": "1.16.0",
     "serialize-javascript": "7.0.5",
     "tar": "7.5.15",
-    "tmp": "0.2.5",
+    "tmp": "0.2.6",
     "yargs": "17.7.2"
   },
   "private": true,
