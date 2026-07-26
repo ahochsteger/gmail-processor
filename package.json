@@ -99,7 +99,7 @@
   "name": "gmail-processor",
   "overrides": {
     "@tootallnate/once": "3.0.1",
-    "axios": "1.16.0",
+    "axios": "1.18.0",
     "serialize-javascript": "7.0.5",
     "tar": "7.5.15",
     "tmp": "0.2.5",
