@@ -299,7 +299,7 @@
     },
     "nodejs@24.12.0": {
       "last_modified": "2025-12-29T16:45:58Z",
-      "plugin_version": "0.0.2",
+      "plugin_version": "0.0.4",
       "resolved": "github:NixOS/nixpkgs/346dd96ad74dc4457a9db9de4f4f57dab2e5731d#nodejs_24",
       "source": "devbox-search",
       "version": "24.12.0",
@@ -375,6 +375,54 @@
             }
           ],
           "store_path": "/nix/store/9z1v3wyrxp6fpyzw21lcakd5w7aknzyc-nodejs-24.12.0"
+        }
+      }
+    },
+    "openspec@1.4.1": {
+      "last_modified": "2026-07-23T05:10:05Z",
+      "resolved": "github:NixOS/nixpkgs/7525d999cd850b9a488817abc89c75dc733acf17#openspec",
+      "source": "devbox-search",
+      "version": "1.4.1",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/vcmjq207pjfd1aaspn38adsqj4ckr8h4-openspec-1.4.1",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/vcmjq207pjfd1aaspn38adsqj4ckr8h4-openspec-1.4.1"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/ki755k939p8757p1pxy8qgcnifzwwags-openspec-1.4.1",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/ki755k939p8757p1pxy8qgcnifzwwags-openspec-1.4.1"
+        },
+        "x86_64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/bj0q7lihd2jhkjh553jiv30aiqj8p3dy-openspec-1.4.1",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/bj0q7lihd2jhkjh553jiv30aiqj8p3dy-openspec-1.4.1"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/5la79nlvwl0ni8a1ic65y1nrnp0l6p25-openspec-1.4.1",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/5la79nlvwl0ni8a1ic65y1nrnp0l6p25-openspec-1.4.1"
         }
       }
     },

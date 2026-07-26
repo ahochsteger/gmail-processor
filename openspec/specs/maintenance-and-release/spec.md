@@ -3,7 +3,9 @@
 ## Purpose
 
 This specification documents the strict Safe Git Protocol, repository hygiene rules, dependency auditing, automated E2E test data reuse, Webpack build sensitivity, and the draft-first release pipeline.
+
 ## Requirements
+
 ### Requirement: Safe Git Gating
 
 Agents SHALL NOT perform state-modifying Git operations (`git add`, `git commit`, `git push`).
@@ -66,4 +68,3 @@ The Security Audit CI step SHALL perform dependency auditing without blocking th
 
 - **WHEN** the `Audit Security` CI step executes in GitHub Actions
 - **THEN** it executes `npm run all:audit-security` with non-blocking error handling (`continue-on-error: true`), logging advisories in the build output while allowing subsequent test and build steps to complete.
-

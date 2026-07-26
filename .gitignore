@@ -20,6 +20,8 @@ node_modules/
 *.env
 
 # Editor & System
+.agent/
+.antigravitycli/
 .vscode/
 *.bak*
 *.log
