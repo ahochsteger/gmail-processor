@@ -1,8 +1,11 @@
 # test-coverage Specification
 
 ## Purpose
+
 TBD - created by archiving change test-coverage-expansion. Update Purpose after archive.
+
 ## Requirements
+
 ### Requirement: Strict 95% Global / 90% Branch Test Coverage Enforcement
 
 The Jest test runner and build pipeline SHALL enforce a 95% threshold for statements, functions, and lines, and a 90% threshold for branches across the core library.
@@ -40,4 +43,3 @@ Specific uncovered lines and branches in the core modules SHALL be covered by ta
 
 - **WHEN** the Jest coverage test suite is executed
 - **THEN** it must show coverage meeting or exceeding the 95% global and 90% branch thresholds.
-

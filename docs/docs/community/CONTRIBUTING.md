@@ -292,7 +292,7 @@ Follow this procedure when performing periodic dependency updates or fixing secu
 2.  **Audit**: Check for outdated packages (`npm run all:packages-outdated`).
 3.  **Update**: Use the automated system (`npm run all:packages-update`). This will automatically handle `overrides` for security issues.
 4.  **Verify**: Run `npm run all:ci` to ensure everything is still working correctly.
-5.  **Audit Security**: Run `npm run all:audit-security` to confirm all issues are resolved.
+5.  **Audit Security**: Run `npm run all:audit-security` to check production dependencies for security advisories.
 
 > [!CAUTION]
 > **Documentation Build Sensitivity**: The documentation workspace uses a complex Webpack 5 / Docusaurus 3 setup that is sensitive to `ajv` version conflicts. Always verify the `ci:docs` task specifically after modifying any `ajv` or `schema-utils` related dependencies.

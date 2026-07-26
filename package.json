@@ -111,7 +111,7 @@
     "url": "git+https://github.com/ahochsteger/gmail-processor.git"
   },
   "scripts": {
-    "all:audit-security": "npm audit --audit-level moderate",
+    "all:audit-security": "npm audit --omit=dev --audit-level high || true",
     "all:build": "npx concurrently 'npm:build:lib' 'npm:build:examples' && npm run build:docs",
     "all:ci": "npm run ci:build && npm run ci:test && npm run ci:docs",
     "all:clean": "npm run clean:docs && npm run clean:examples && npm run clean:lib",

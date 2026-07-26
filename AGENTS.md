@@ -410,7 +410,7 @@ Rather than manual tracking, security vulnerabilities are handled via automated 
 | :------------------ | :---------------------------- | :---------------------------------------------------------------------------- |
 | **Safe Update**     | `npm run all:packages-update` | Performs natural updates, enforces pinning, and generates security overrides. |
 | **Manual Override** | `npm run packages:update:lib` | Targets a specific workspace (root or docs).                                  |
-| **Security Audit**  | `npm run all:audit-security`  | Verifies that the current tree is clean.                                      |
+| **Security Audit**  | `npm run all:audit-security`  | Audits production dependencies for high-severity vulnerabilities.             |
 | **Integrity Check** | `npm run lint:scripts`        | Ensures all script references are valid after renames or reordering.          |
 
 ### 4. Version Pinning & Update Policy
