@@ -312,8 +312,7 @@ export class E2E {
     let error: unknown
     let status: E2EStatus
     let lastExpectation:
-      | { actual: unknown; expected: unknown; message?: string }
-      | undefined
+      { actual: unknown; expected: unknown; message?: string } | undefined
     const wrappedExpect = (
       ctx: EnvContext,
       actual: unknown,
@@ -590,8 +589,7 @@ export class E2E {
       const shortHash = currentHash.substring(0, 8)
       const propertyKey = `E2E_METADATA_${category}_${name}_${shortHash}`
       const propertiesService = ctx.env.propertiesService as
-        | GoogleAppsScript.Properties.PropertiesService
-        | undefined
+        GoogleAppsScript.Properties.PropertiesService | undefined
       const properties = propertiesService?.getUserProperties()
       const storedMetadataStr = properties?.getProperty(propertyKey)
       if (storedMetadataStr) {
@@ -958,8 +956,7 @@ export class E2E {
     testRunId?: string,
   ): { runId: string; timestamp: string } {
     const propertiesService = ctx.env.propertiesService as
-      | GoogleAppsScript.Properties.PropertiesService
-      | undefined
+      GoogleAppsScript.Properties.PropertiesService | undefined
     const properties = propertiesService?.getUserProperties()
     if (!properties) {
       ctx.log.warn(

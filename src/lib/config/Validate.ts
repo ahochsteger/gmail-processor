@@ -6,8 +6,7 @@ export interface ValidationError {
 }
 
 export type ValidationResult<T> =
-  | { success: true; data: T }
-  | { success: false; errors: ValidationError[] }
+  { success: true; data: T } | { success: false; errors: ValidationError[] }
 
 export function validateConfig(
   config: unknown,

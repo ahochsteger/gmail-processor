@@ -12,8 +12,7 @@ export enum EntryType {
 
 class EntryData<
   T extends GoogleAppsScript.Drive.File | GoogleAppsScript.Drive.Folder =
-    | GoogleAppsScript.Drive.File
-    | GoogleAppsScript.Drive.Folder,
+    GoogleAppsScript.Drive.File | GoogleAppsScript.Drive.Folder,
 > {
   constructor(
     public entry: MockProxy<T>,

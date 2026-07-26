@@ -238,14 +238,10 @@ export type AttachmentActionConfigType =
 export type CustomActionConfigType = ActionBaseConfig<`custom.${string}`>
 
 export type ProcessingContextActionConfigType =
-  | CustomActionConfigType
-  | GlobalActionConfigType
+  CustomActionConfigType | GlobalActionConfigType
 export type ThreadContextActionConfigType =
-  | ProcessingContextActionConfigType
-  | ThreadActionConfigType
+  ProcessingContextActionConfigType | ThreadActionConfigType
 export type MessageContextActionConfigType =
-  | ThreadContextActionConfigType
-  | MessageActionConfigType
+  ThreadContextActionConfigType | MessageActionConfigType
 export type AttachmentContextActionConfigType =
-  | MessageContextActionConfigType
-  | AttachmentActionConfigType
+  MessageContextActionConfigType | AttachmentActionConfigType

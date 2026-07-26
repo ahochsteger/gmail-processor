@@ -3,12 +3,12 @@
   "packages": [
     "actionlint@1.7.12",
     "antlr@4.13.2",
-    "gettext@0.25.1",
-    "gh@2.92.0",
+    "gettext@1.0",
+    "gh@2.96.0",
     "gojq@0.12.19",
     "nodejs@24.12.0",
     "openspec@1.4.1",
-    "yq-go@4.53.2"
+    "yq-go@4.53.3"
   ],
   "env": {
     "PATH": "$PATH:$PWD/node_modules/.bin"

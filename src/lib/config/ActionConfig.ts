@@ -85,9 +85,7 @@ export type RequiredAttachmentActionConfig = z.output<
 >
 
 export type ActionConfigType =
-  | ThreadActionConfig
-  | MessageActionConfig
-  | AttachmentActionConfig
+  ThreadActionConfig | MessageActionConfig | AttachmentActionConfig
 
 export function newThreadActionConfig(
   json: ThreadActionConfig,

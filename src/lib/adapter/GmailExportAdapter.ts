@@ -192,8 +192,7 @@ export class GmailExportAdapter extends BaseAdapter {
   protected processImgAttachments(
     html: string,
     images: (
-      | GoogleAppsScript.Base.Blob
-      | GoogleAppsScript.Gmail.GmailAttachment
+      GoogleAppsScript.Base.Blob | GoogleAppsScript.Gmail.GmailAttachment
     )[],
   ): string {
     return html.replace(
