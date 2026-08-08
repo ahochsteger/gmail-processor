@@ -4,10 +4,10 @@
     "actionlint@1.7.12",
     "antlr@4.13.2",
     "gettext@1.0",
-    "gh@2.96.0",
+    "gh@2.97.0",
     "gojq@0.12.19",
     "nodejs@24.12.0",
-    "openspec@1.4.1",
+    "openspec@1.7.0",
     "yq-go@4.53.3"
   ],
   "env": {
