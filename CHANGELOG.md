@@ -1,5 +1,42 @@
 # Changelog
 
+## [2.17.5](https://github.com/ahochsteger/gmail-processor/compare/v2.17.4...v2.17.5) (2026-09-05)
+
+
+### Documentation
+
+* consistently use relative paths and fix formatting ([5f5f642](https://github.com/ahochsteger/gmail-processor/commit/5f5f64282e74791783d7877b4dba44ef1dfdf56d))
+
+
+### Maintenance
+
+* **ci:** ensure library build before docs build ([5c4e0f1](https://github.com/ahochsteger/gmail-processor/commit/5c4e0f12ea5d81efc36b5f64591167e470ebea8e))
+* **ci:** make security audit step non-blocking and target runtime deps ([ceb1531](https://github.com/ahochsteger/gmail-processor/commit/ceb15311fa13964e49d268227ac898e4ee478833))
+* **deps:** adjust package overrides and update jscpd config ([27125a4](https://github.com/ahochsteger/gmail-processor/commit/27125a400b8f192fb4e5179130f739d6dbf268e2))
+* **deps:** update actions/cache digest to caa2961 ([#696](https://github.com/ahochsteger/gmail-processor/issues/696)) ([4bfabb4](https://github.com/ahochsteger/gmail-processor/commit/4bfabb4abf6f51e4b4bd25daa311d4f821ad4bb4))
+* **deps:** update actions/checkout action to v7 ([#697](https://github.com/ahochsteger/gmail-processor/issues/697)) ([63d78e0](https://github.com/ahochsteger/gmail-processor/commit/63d78e0735bccffa34f9ea35c9fb443f1ceb8c06))
+* **deps:** update dependencies and devbox packages ([0cf19a6](https://github.com/ahochsteger/gmail-processor/commit/0cf19a6b1087a596028df0d7dcc31ec43048f57f))
+* **deps:** update dependency @types/node to v24.13.3 ([#693](https://github.com/ahochsteger/gmail-processor/issues/693)) ([a5cf8f4](https://github.com/ahochsteger/gmail-processor/commit/a5cf8f4cf1263ebc9279fcb2d6f09d1d023f89e7))
+* **deps:** update dependency brace-expansion to v5.0.8 [security] ([#700](https://github.com/ahochsteger/gmail-processor/issues/700)) ([eab6ff1](https://github.com/ahochsteger/gmail-processor/commit/eab6ff152fa533fbd3336b7f5cfde7483adb9b34))
+* **deps:** update dependency brace-expansion to v5.0.9 [security] ([#703](https://github.com/ahochsteger/gmail-processor/issues/703)) ([b6f4307](https://github.com/ahochsteger/gmail-processor/commit/b6f4307122a57a5fc8cefd15bb794e7c511aefad))
+* **deps:** update dependency concurrently to v10 ([#687](https://github.com/ahochsteger/gmail-processor/issues/687)) ([160c341](https://github.com/ahochsteger/gmail-processor/commit/160c341fb1be862bfad8e3138d951d0704973ecd))
+* **deps:** update dependency tar to v7.5.21 [security] ([#694](https://github.com/ahochsteger/gmail-processor/issues/694)) ([5b3617b](https://github.com/ahochsteger/gmail-processor/commit/5b3617beb80a07b14eab92ac2af5bb25ca9fb46f))
+* **deps:** update deps:docs-major to v8 ([#698](https://github.com/ahochsteger/gmail-processor/issues/698)) ([ce36301](https://github.com/ahochsteger/gmail-processor/commit/ce363010a1615d01f7a9d05778178a8f1765849a))
+* **deps:** update deps:lib-non-major ([#701](https://github.com/ahochsteger/gmail-processor/issues/701)) ([df916a1](https://github.com/ahochsteger/gmail-processor/commit/df916a10963570812f870d39d7e65b83de9b1496))
+* **deps:** update deps:lib-non-major ([#704](https://github.com/ahochsteger/gmail-processor/issues/704)) ([bc510f1](https://github.com/ahochsteger/gmail-processor/commit/bc510f1ec04d9e70b0455ebef3900d724981802d))
+* **deps:** update deps:lib-non-major ([#707](https://github.com/ahochsteger/gmail-processor/issues/707)) ([124d8be](https://github.com/ahochsteger/gmail-processor/commit/124d8be4a384c80a661f74ad8f78a7fba777f819))
+* **deps:** update deps:lib-non-major ([#709](https://github.com/ahochsteger/gmail-processor/issues/709)) ([37690b5](https://github.com/ahochsteger/gmail-processor/commit/37690b5139b73cec3735275bf03606e41ff30a7f))
+* **deps:** update deps:lib-non-major ([#710](https://github.com/ahochsteger/gmail-processor/issues/710)) ([7f38595](https://github.com/ahochsteger/gmail-processor/commit/7f38595ebee6d40642180145e163b5b80bae2af4))
+* **deps:** update deps:lib-non-major ([#711](https://github.com/ahochsteger/gmail-processor/issues/711)) ([10f2599](https://github.com/ahochsteger/gmail-processor/commit/10f259994cefeb62341b1b2993879fa981f10131))
+* **openspec:** initialize OpenSpec and create core change proposals ([e4ad919](https://github.com/ahochsteger/gmail-processor/commit/e4ad9197acdf62d0704ca51d4649ef6d2101e8c8))
+* **openspec:** initialize OpenSpec and create core specifications ([a932976](https://github.com/ahochsteger/gmail-processor/commit/a9329768d8834388faa9dffbc2faadd20b57affb))
+* **openspec:** update OpenSpec tooling, guidelines, and audit script ([8833fe5](https://github.com/ahochsteger/gmail-processor/commit/8833fe5e9968ada4640c5bef3a4b3267fdb62f62))
+
+
+### Tests
+
+* **coverage:** expand unit tests to meet quality gate thresholds ([4211c4e](https://github.com/ahochsteger/gmail-processor/commit/4211c4ed99e8f9d88f8010490662d6a3994d3b72))
+
 ## [2.17.4](https://github.com/ahochsteger/gmail-processor/compare/v2.17.3...v2.17.4) (2026-05-17)
 
 
