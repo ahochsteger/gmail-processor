@@ -7,6 +7,7 @@
   "automergeType": "pr",
   "automergeStrategy": "squash",
   "labels": ["dependencies"],
+  "prConcurrentLimit": 3,
   "lockFileMaintenance": {
     "enabled": true,
     "schedule": ["before 8am on saturday"]
@@ -17,19 +18,12 @@
   "schedule": ["before 8am on saturday"],
   "packageRules": [
     {
-      "description": "Group all non-major dependencies into a single PR for noise reduction",
-      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
-      "groupName": "deps:all-non-major",
-      "semanticCommitType": "chore",
-      "automerge": true
-    },
-    {
-      "description": "Security vulnerability updates",
+      "description": "Security vulnerability updates with stability cooldown to avoid micro-patch thrashing",
       "groupName": "deps:security",
       "matchUpdateTypes": ["vulnerability"],
       "addLabels": ["security"],
       "prPriority": 100,
-      "minimumReleaseAge": "0 days",
+      "minimumReleaseAge": "3 days",
       "automerge": true
     },
     {
@@ -37,6 +31,11 @@
       "groupName": "deps:types",
       "matchPackagePatterns": ["^@types/"],
       "automerge": true
+    },
+    {
+      "description": "Keep @types/node major version in sync with devbox nodejs",
+      "matchPackageNames": ["@types/node"],
+      "allowedVersions": "24.x"
     },
     {
       "description": "Group @babel packages",
@@ -47,7 +46,8 @@
       "description": "Group Docusaurus and React-related packages as they are tightly coupled",
       "matchPackageNames": ["react", "react-dom", "prism-react-renderer"],
       "matchPackagePatterns": ["^@docusaurus/", "^@mdx-js/"],
-      "groupName": "deps:docs-docusaurus"
+      "groupName": "deps:docs-docusaurus",
+      "automerge": false
     },
     {
       "description": "Group eslint and typescript-eslint packages",
@@ -65,7 +65,8 @@
       "description": "Group Jest packages and related test tools",
       "groupName": "deps:dev-jest",
       "semanticCommitType": "build",
-      "matchPackagePatterns": ["^jest", "^@types/jest", "ts-jest", "@swc/jest"]
+      "matchPackagePatterns": ["^jest", "^@types/jest", "ts-jest", "@swc/jest"],
+      "automerge": false
     },
     {
       "description": "Group Prettier packages",
@@ -81,7 +82,15 @@
       "matchPackagePatterns": ["^@rollup/", "rollup"]
     },
     {
-      "description": "Other non-major updates for infrastructure files",
+      "description": "Keep typescript within tooling-compatible boundaries (defer breaking TS 7 until ecosystem is ready)",
+      "matchPackageNames": ["typescript"],
+      "groupName": "deps:dev-typescript",
+      "semanticCommitType": "build",
+      "allowedVersions": "<7.0.0",
+      "automerge": false
+    },
+    {
+      "description": "Infrastructure files non-major updates",
       "matchFileNames": [
         ".github/workflows/*.yaml",
         "devbox.json",
@@ -93,7 +102,7 @@
       "semanticCommitType": "build"
     },
     {
-      "description": "Other major updates for infrastructure files",
+      "description": "Infrastructure files major updates",
       "matchFileNames": [
         ".github/workflows/*.yaml",
         "devbox.json",
@@ -104,49 +113,21 @@
       "semanticCommitType": "build"
     },
     {
-      "description": "Lib non-major updates",
-      "matchFileNames": ["package.json"],
-      "groupName": "deps:lib-non-major",
+      "description": "Unified workspace non-major updates across root and docs",
+      "matchFileNames": ["package.json", "docs/package.json"],
+      "groupName": "deps:workspace-non-major",
       "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
       "semanticCommitType": "chore",
       "automerge": true
     },
     {
-      "description": "Lib major updates",
-      "matchFileNames": ["package.json"],
+      "description": "Unified workspace major updates (requiring manual review and testing)",
+      "matchFileNames": ["package.json", "docs/package.json"],
       "matchUpdateTypes": ["major"],
-      "groupName": "deps:lib-major",
+      "groupName": "deps:workspace-major",
       "semanticCommitType": "chore",
-      "automerge": false
-    },
-    {
-      "description": "Docs non-major updates",
-      "matchFileNames": ["docs/package.json"],
-      "groupName": "deps:docs-non-major",
-      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
-      "automerge": true,
-      "semanticCommitType": "chore"
-    },
-    {
-      "description": "Docs major updates (excluding React which is in Docusaurus group)",
-      "matchFileNames": ["docs/package.json"],
-      "groupName": "deps:docs-major",
-      "matchUpdateTypes": ["major"],
       "automerge": false,
-      "semanticCommitType": "chore",
       "excludePackageNames": ["react", "react-dom"]
-    },
-    {
-      "description": "Keep @types/node major version in sync with devbox nodejs",
-      "matchPackageNames": ["@types/node"],
-      "allowedVersions": "24.x"
-    },
-    {
-      "description": "Group typescript updates to ensure cross-workspace alignment",
-      "matchPackageNames": ["typescript"],
-      "groupName": "deps:dev-typescript",
-      "semanticCommitType": "build",
-      "automerge": true
     }
   ]
 }

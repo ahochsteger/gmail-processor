@@ -154,6 +154,8 @@ function lintNodeVersion() {
       if (fs.existsSync(pkgPath)) {
         const tempPkg = readJsonFile(pkgPath)
         delete tempPkg.overrides
+        delete tempPkg.dependencies?.["gmail-processor"]
+        delete tempPkg.devDependencies?.["gmail-processor"]
         fs.writeFileSync(
           path.join(tempDir, "package.json"),
           JSON.stringify(tempPkg, null, 2),
