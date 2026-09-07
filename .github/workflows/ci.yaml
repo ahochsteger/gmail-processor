@@ -169,7 +169,7 @@ jobs:
 
       - id: checkout
         name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           persist-credentials: true
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -242,11 +242,11 @@ jobs:
       - id: qa-coveralls
         if: ${{ steps.profile.outputs.enable_qa == 'true' }}
         name: QA Coveralls
-        uses: coverallsapp/github-action@5cbfd81b66ca5d10c19b062c04de0199c215fb6e # v2
+        uses: coverallsapp/github-action@8d6379e14d29928660c4ba802d8e85393440b329 # v2
       - id: qa-sonarqube
         if: ${{ steps.profile.outputs.enable_qa == 'true' }}
         name: QA SonarQube
-        uses: SonarSource/sonarqube-scan-action@59db25f34e16620e48ab4bb9e4a5dce155cb5432 # v8
+        uses: SonarSource/sonarqube-scan-action@22918119ff8e1ca75a623e15c8296b6ea4fbe28f # v8
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
