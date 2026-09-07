@@ -22,7 +22,7 @@ runs:
       uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
       with:
         path: ~/.npm
-        key: ${{ runner.os }}-npm-${{ hashFiles('package-lock.json', 'docs/package-lock.json') }}
+        key: ${{ runner.os }}-npm-${{ hashFiles('package-lock.json') }}
         restore-keys: |
           ${{ runner.os }}-npm-
 
@@ -40,7 +40,7 @@ runs:
       uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
       with:
         path: docs/.docusaurus
-        key: ${{ runner.os }}-docs-${{ hashFiles('docs/package-lock.json') }}
+        key: ${{ runner.os }}-docs-${{ hashFiles('docs/package.json', 'package-lock.json') }}
         restore-keys: |
           ${{ runner.os }}-docs-
 

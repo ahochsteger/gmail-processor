@@ -61,7 +61,7 @@ for pkg in ${DECLARED_PACKAGES}; do
         # Search for binary usage (excluding obvious noise)
         # We search in scripts, package.json, and source code.
         if grep -rE "\b${bin}\b" . \
-            --exclude-dir={.git,node_modules,build,docs,bak,.devbox} \
+            --exclude-dir={.git,node_modules,build,bak,.devbox,.docusaurus} \
             --exclude="devbox.json" \
             --exclude="package-lock.json" \
             --exclude=".knip.jsonc" \

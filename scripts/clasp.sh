@@ -36,7 +36,7 @@ function runClasp() {
   buildClaspAuthFile
   (
     cd "${CLASP_DIR}"
-    npx clasp "${@}" --auth .clasprc.json --project .clasp.json
+    npx clasp "${@}" --auth .clasprc.json
   )
 }
 
@@ -45,7 +45,7 @@ function runClaspWithRunAuth() {
   buildClaspFiles
   (
     cd "${CLASP_DIR}"
-    npx clasp "${@}" --auth "${CLASP_RUN_AUTH_FILE}" --project .clasp.json
+    npx clasp "${@}" --auth "${CLASP_RUN_AUTH_FILE}"
   )
 }
 
@@ -220,7 +220,7 @@ case "${cmd}" in
     checkGuardedAction "${cmd}"
     if [[ "${DRY_RUN:-}" == "true" ]]; then
       echo "DRYRUN: Would deploy to GAS (ID: ${CLASP_DEPLOYMENT_ID}, Name: ${CLASP_DEPLOYMENT_NAME})"
-      return 0
+      exit 0
     fi
     runClasp deploy -i "${CLASP_DEPLOYMENT_ID}" -d "${CLASP_DEPLOYMENT_NAME}"
     showLastGASVersion
@@ -246,8 +246,8 @@ case "${cmd}" in
   push)
     checkGuardedAction "${cmd}"
     if [[ "${DRY_RUN:-}" == "true" ]]; then
-      echo "DRYRUN: Would push code to GAS (script: ${CLASP_SCRIPT_ID:-$(setupClaspIDs && echo $CLASP_SCRIPT_ID)})"
-      return 0
+      echo "DRYRUN: Would push code to GAS (script: ${CLASP_SCRIPT_ID:-$(setupClaspIDs 2>/dev/null && echo $CLASP_SCRIPT_ID || echo '<not-set>')})"
+      exit 0
     fi
     if ! runClasp push --force; then
       echo "::warning::Clasp push failed. If the output says 'Invalid ID', please check that your CLASP_SCRIPT_ID secret is a valid Google Apps Script project ID."
@@ -310,7 +310,7 @@ case "${cmd}" in
     checkRunAuthFile
     runClaspWithRunAuth run "${functionName}"
     sleep "${CLASP_LOG_WAIT_SECONDS}"
-    runClasp logs "${functionName}" "${logTimeSeconds}"
+    "${0}" "${CLASP_PROFILE}" logs "${functionName}" "${logTimeSeconds}"
   ;;
   verify-lib-version)
     TAG_NAME="$2"

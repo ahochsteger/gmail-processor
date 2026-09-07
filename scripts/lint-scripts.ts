@@ -11,6 +11,20 @@ interface Scripts {
 
 interface PackageJson {
   scripts?: Scripts
+  workspaces?: string[]
+}
+
+const workspaceScripts = new Map<string, string[]>()
+
+function loadWorkspaceScripts(workspaces?: string[]) {
+  if (!workspaces) return
+  for (const ws of workspaces) {
+    const wsPkgPath = path.join(BASE_DIR, ws, "package.json")
+    if (fs.existsSync(wsPkgPath)) {
+      const wsPkg: PackageJson = JSON.parse(fs.readFileSync(wsPkgPath, "utf-8"))
+      workspaceScripts.set(ws, Object.keys(wsPkg.scripts || {}))
+    }
+  }
 }
 
 let errorCount = 0
@@ -21,7 +35,7 @@ function logError(message: string) {
 }
 
 // Graph for cycle detection
-// Node IDs: "npm:<name>" or "file:<path>"
+// Node IDs: "npm:<name>", "npm:<workspace>:<name>", or "file:<path>"
 const adjList = new Map<string, Set<string>>()
 
 function addEdge(from: string, to: string) {
@@ -46,7 +60,9 @@ function resolveNpmScript(
   scriptName: string,
   definedScripts: string[],
   context: string,
+  workspaceName?: string,
 ): string[] {
+  const prefixNode = workspaceName ? `workspace:${workspaceName}:` : "npm:"
   if (scriptName.endsWith("*")) {
     const prefix = scriptName.slice(0, -1)
     const matches = definedScripts.filter((s) => s.startsWith(prefix))
@@ -55,16 +71,95 @@ function resolveNpmScript(
         `No scripts match wildcard reference: '${scriptName}' (Context: ${context})`,
       )
     }
-    return matches.map((m) => `npm:${m}`)
+    return matches.map((m) => `${prefixNode}${m}`)
   }
 
   if (!definedScripts.includes(scriptName)) {
+    const scope = workspaceName ? `workspace '${workspaceName}'` : "root"
     logError(
-      `Referenced npm script is missing: '${scriptName}' (Context: ${context})`,
+      `Referenced npm script in ${scope} is missing: '${scriptName}' (Context: ${context})`,
     )
     return []
   }
-  return [`npm:${scriptName}`]
+  return [`${prefixNode}${scriptName}`]
+}
+
+function extractAndResolveNpmCalls(
+  commandText: string,
+  rootScriptNames: string[],
+  context: string,
+): string[] {
+  const resolvedTargets: string[] = []
+
+  // 1. Match npm (run|test|exec|start) invocations
+  const npmMatches = commandText.matchAll(
+    /(?:^|[;&|]\s*|\bnpx\s+)?npm\s+(run|test|exec|start)\b([^;&|]*)/g,
+  )
+
+  for (const match of npmMatches) {
+    const action = match[1]
+    const argsString = match[2].trim()
+    const tokens = argsString.split(/\s+/).filter(Boolean)
+
+    let workspace: string | undefined
+    let scriptName: string | undefined
+
+    for (let i = 0; i < tokens.length; i++) {
+      const token = tokens[i]
+      if (token === "-w" && i + 1 < tokens.length) {
+        workspace = tokens[++i]
+      } else if (token.startsWith("--workspace=")) {
+        workspace = token.slice("--workspace=".length)
+      } else if (token === "--workspace" && i + 1 < tokens.length) {
+        workspace = tokens[++i]
+      } else if (token === "--prefix" && i + 1 < tokens.length) {
+        workspace = tokens[++i]
+      } else if (token.startsWith("--prefix=")) {
+        workspace = token.slice("--prefix=".length)
+      } else if (token.startsWith("-")) {
+        // Option flag, skip
+      } else if (!scriptName) {
+        scriptName = token
+      }
+    }
+
+    if (!scriptName) {
+      if (action === "test" || action === "start") {
+        scriptName = action
+      }
+    }
+
+    if (scriptName) {
+      if (workspace) {
+        const wsScripts = workspaceScripts.get(workspace)
+        if (wsScripts) {
+          const targets = resolveNpmScript(
+            scriptName,
+            wsScripts,
+            context,
+            workspace,
+          )
+          resolvedTargets.push(...targets)
+        } else {
+          logError(
+            `Referenced workspace '${workspace}' does not exist or has no package.json (Context: ${context})`,
+          )
+        }
+      } else {
+        const targets = resolveNpmScript(scriptName, rootScriptNames, context)
+        resolvedTargets.push(...targets)
+      }
+    }
+  }
+
+  // 2. Extract npm: calls (e.g. from concurrently)
+  const npmColonMatches = commandText.matchAll(/npm:([a-zA-Z0-9:*-]+)/g)
+  for (const match of npmColonMatches) {
+    const targets = resolveNpmScript(match[1], rootScriptNames, context)
+    resolvedTargets.push(...targets)
+  }
+
+  return resolvedTargets
 }
 
 function detectCycles() {
@@ -109,6 +204,8 @@ function lint() {
   const pkg: PackageJson = JSON.parse(
     fs.readFileSync(PACKAGE_JSON_PATH, "utf-8"),
   )
+  loadWorkspaceScripts(pkg.workspaces)
+
   const scripts = pkg.scripts || {}
   const scriptNames = Object.keys(scripts)
 
@@ -117,23 +214,9 @@ function lint() {
     const sourceNode = `npm:${name}`
     const context = `package.json script '${name}'`
 
-    // Extract npm calls
-    const npmMatches = command.matchAll(
-      /npm (?:run|test|exec) ([a-zA-Z0-9:*-]+)(?!.*--prefix)/g,
-    )
-    for (const match of npmMatches) {
-      const targets = resolveNpmScript(match[1], scriptNames, context)
-      targets.forEach((t) => addEdge(sourceNode, t))
-    }
-
-    // Extract npm: calls (concurrently)
-    const npmColonMatches = command.matchAll(
-      /npm:([a-zA-Z0-9:*-]+)(?!.*--prefix)/g,
-    )
-    for (const match of npmColonMatches) {
-      const targets = resolveNpmScript(match[1], scriptNames, context)
-      targets.forEach((t) => addEdge(sourceNode, t))
-    }
+    // Extract and resolve npm calls
+    const npmTargets = extractAndResolveNpmCalls(command, scriptNames, context)
+    npmTargets.forEach((t) => addEdge(sourceNode, t))
 
     // Extract scripts/ file calls
     const scriptPathMatches = command.matchAll(
@@ -165,15 +248,9 @@ function lint() {
         if (trimmed.startsWith("#")) continue // Skip comments
         if (line.includes("@generated")) continue // Skip documentation mentions
 
-        // Extract npm calls from file
-        const npmMatches = line.matchAll(
-          /npm (?:run|test|exec) ([a-zA-Z0-9:*-]+)/g,
-        )
-        for (const match of npmMatches) {
-          if (line.includes("--prefix")) continue // Skip subpackages
-          const targets = resolveNpmScript(match[1], scriptNames, context)
-          targets.forEach((t) => addEdge(sourceNode, t))
-        }
+        // Extract and resolve npm calls
+        const npmTargets = extractAndResolveNpmCalls(line, scriptNames, context)
+        npmTargets.forEach((t) => addEdge(sourceNode, t))
 
         // Extract internal scripts/ file calls
         const scriptPathMatches = line.matchAll(
