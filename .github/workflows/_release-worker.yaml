@@ -81,7 +81,7 @@ jobs:
     steps:
       - id: checkout
         name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           fetch-depth: 0
 
@@ -188,7 +188,7 @@ jobs:
       - id: deploy-docs
         if: ${{ (inputs.job == 'ci-release' || inputs.job == 'publish-release' || startsWith(inputs.job, 'force-')) && inputs.enable_build_docs && github.ref == 'refs/heads/main' }}
         name: Deploy docs
-        uses: JamesIves/github-pages-deploy-action@d92aa235d04922e8f08b40ce78cc5442fcfbfa2f # v4
+        uses: JamesIves/github-pages-deploy-action@fa24774553152dd7873cd16ebd8d959b010c5445 # v4
         with:
           folder: docs/build
 
