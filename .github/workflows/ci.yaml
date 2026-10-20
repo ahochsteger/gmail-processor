@@ -169,7 +169,7 @@ jobs:
 
       - id: checkout
         name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           persist-credentials: true
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -190,7 +190,7 @@ jobs:
         run: devbox --quiet run npm run ci:build
       - name: Upload GAS artifacts
         if: ${{ env.ACT != 'true' && (steps.profile.outputs.enable_build_lib == 'true' || steps.profile.outputs.enable_beta_deploy == 'true') }}
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
           name: gas-artifacts
           path: build/gas
@@ -235,18 +235,18 @@ jobs:
           devbox --quiet run npm run ci:docs
       - name: Upload Docs artifacts
         if: ${{ env.ACT != 'true' && steps.profile.outputs.enable_build_docs == 'true' }}
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
           name: docs-artifacts
           path: docs/build
       - id: qa-coveralls
         if: ${{ steps.profile.outputs.enable_qa == 'true' }}
         name: QA Coveralls
-        uses: coverallsapp/github-action@5cbfd81b66ca5d10c19b062c04de0199c215fb6e # v2
+        uses: coverallsapp/github-action@8d6379e14d29928660c4ba802d8e85393440b329 # v2
       - id: qa-sonarqube
         if: ${{ steps.profile.outputs.enable_qa == 'true' }}
         name: QA SonarQube
-        uses: SonarSource/sonarqube-scan-action@59db25f34e16620e48ab4bb9e4a5dce155cb5432 # v8
+        uses: SonarSource/sonarqube-scan-action@d209202bc7d53ff1cc128f7f907dac145c9d6ae9 # v8
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
