@@ -20,7 +20,7 @@
     {
       "description": "Security vulnerability updates with stability cooldown to avoid micro-patch thrashing",
       "groupName": "deps:security",
-      "matchUpdateTypes": ["vulnerability"],
+      "matchUpdateTypes": ["patch"],
       "addLabels": ["security"],
       "prPriority": 100,
       "minimumReleaseAge": "3 days",
